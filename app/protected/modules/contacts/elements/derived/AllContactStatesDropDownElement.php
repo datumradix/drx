@@ -37,13 +37,15 @@
          */
         protected function renderControlEditable()
         {
-            $dropDownArray = $this->getDropDownArray();
-            $htmlOptions = array();
+            $dropDownArray            = $this->getDropDownArray();
+            $htmlOptions              = array();
+            $htmlOptions['id']        = $this->getEditableInputId();
+            $htmlOptions['name']      = $this->getEditableInputName();
             if ($this->getAddBlank())
             {
                 $htmlOptions['empty'] = Yii::t('Default', 'None');
             }
-            $htmlOptions['disabled'] = $this->getDisabledValue();
+            $htmlOptions['disabled']  = $this->getDisabledValue();
             return $this->form->dropDownList($this->model, $this->attribute, $dropDownArray, $htmlOptions);
         }
 
@@ -53,7 +55,7 @@
             {
                 return $this->getFormattedAttributeLabel();
             }
-            return $this->form->labelEx($this->model, $this->attribute);
+            return $this->form->labelEx($this->model, $this->attribute, array('for' => $this->getEditableInputId()));
         }
 
         protected function renderControlNonEditable()

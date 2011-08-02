@@ -24,42 +24,40 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ImportWizardModuleImportRulesView extends ImportWizardView
+    /**
+     * The import process includes a view for mapping import columns to attributes or derived attribute types
+     * in a model. When a column is selected to be mapped against an attribute or derived attribute type, there is the
+     * potentially for mapping rules to accompany that mapping. An example of a rule would be a default value rule
+     * or in the case of something like owner, is the value the owner's username or actuay user id.
+     */
+    abstract class MappingRuleForm extends ConfigurableMetadataModel
     {
-        public function __construct($controllerId, $moduleId, SelectModuleImportRulesForm $model, $importId)
+        /**
+         * @return string - If the class name is DefaultValueModelAttributeMappingRuleForm,
+         * then 'DefaultValueModelAttribute' will be returned.
+         */
+        public static function getType()
         {
-            assert('is_string($controllerId)');
-            assert('is_string($moduleId)');
-            assert('is_int($importId)');
-            $this->controllerId = $controllerId;
-            $this->moduleId     = $moduleId;
-            $this->model        = $model;
-            $this->modelId      = $importId;
+            $type = get_called_class();
+            $type = substr($type, 0, strlen($type) - strlen('MappingRuleForm'));
+            return $type;
         }
 
         /**
-         * Override to handle the form layout for this view.
-         * @param $form If the layout is editable, then pass a $form otherwise it can
-         * be null.
-         * @return A string containing the element's content.
-          */
-        protected function renderFormLayout($form = null)
+         * A mapping rule form has one attribute. This returns the name of that attribute.
+         */
+        public static function getAttributeName()
         {
-            assert('$form instanceof ZurmoActiveForm');
-            $content .= '<table>';
-            $content .= '<tr>';
-            $element  = new LayoutPanelsTypeStaticDropDownElement($formModel, 'type', $form);
-            $element->editableTemplate = $this->model->getAttributeLabel('type') . '<br/>{content}{error}';
-            $content .= $element->render();
-            $content .= '</tr>';
-            $content .= '</tbody>';
-            $content .= '</table>';
-            $content .= $this->renderActionLinksContent($form);
         }
 
-        protected function renderNextPageLinkContent($form)
+        public function rules()
         {
+            return array();
+        }
 
+        public function attributeLabels()
+        {
+            return array();
         }
     }
 ?>

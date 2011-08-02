@@ -24,7 +24,7 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ImportDatabaseUtilTest extends BaseTest
+    class ImportDatabaseUtilTest extends ImportBaseTest
     {
         public static function setUpBeforeClass()
         {
@@ -98,8 +98,6 @@
                 ),
             );
             $this->assertEquals($compareData, $tempTableData);
-
-
         }
 
         /**
@@ -138,6 +136,28 @@
                     'column_2' => 'a',
             );
             $this->assertEquals($compareData, $firstRowData);
+        }
+
+        /**
+         * @expectedException RedBean_Exception_SQL
+         */
+        public function testDropTableByTableName()
+        {
+            $testTableName = 'testimporttable';
+            $sql           = 'select * from ' . $testTableName;
+            $tempTableData = R::getAll($sql);
+            $this->assertEquals(2, count($tempTableData));
+            ImportDatabaseUtil::dropTableByTableName($testTableName);
+            $sql           = 'select * from ' . $testTableName;
+            R::getAll($sql);
+        }
+
+        public function testGetCount()
+        {
+            $testTableName = 'testimporttable';
+            $this->assertTrue(ImportTestHelper::createTempTableByFileNameAndTableName('importTest.csv', $testTableName));
+            $count = ImportDatabaseUtil::getCount($testTableName);
+            $this->assertEquals(5, $count);
         }
     }
 ?>

@@ -1,7 +1,7 @@
 <?php
     class ImportColumnDataSanitizationAnalyzer
     {
-        public function __construct($modelImportRules, $dataProvider)
+        public function __construct($importRules, $dataProvider)
         {
             assert('$dataProvider instanceof XXDataProvider');
         }
@@ -9,16 +9,16 @@
         public function analyzeByColumnNameAndColumnMappingData($columnName, $columnMappingData)
         {
 
-            //$columnMappingData would have information like ["attributeNameOrDerivedTypeData"]
-                //$columnMappingData["attributeNameOrDerivedTypeData"]['ownerMappingAttributeType']
+            //$columnMappingData would have information like ["attributeIndexOrDerivedTypeData"]
+                //$columnMappingData["attributeIndexOrDerivedTypeData"]['ownerMappingAttributeType']
 
-                //??? but what class would understand this: $columnMappingData["attributeNameOrDerivedTypeData"]['ownerMappingAttributeType']
+                //??? but what class would understand this: $columnMappingData["attributeIndexOrDerivedTypeData"]['ownerMappingAttributeType']
                 //I guess OwnerAttributeImportRules would have to understand it, this is a derived type i guess. and the sanitization to use
                 //that is getAttributeValueSanitizerUtilNames would have to make a decision based on that data. which saniziation to pass back
                 //cause we want OwnerIdsanitizer and OwnerUserNameSanitizer as seperate and not knowing of each other.  There fore the attributeImportRules
                 //must know.
 
-                assert('is_string($columnMappingData["attributeNameOrDerivedType"])');
+                assert('is_string($columnMappingData["attributeIndexOrDerivedType"])');
                 $attributeImportRules = AttributeImportRulesFactory::makeAttributeImportRulesByColumnMappingData(
                                                                         $columnMappingData);
                 if($attributeValueSanitizerUtilNames = $attributeImportRules->getAttributeValueSanitizerUtilNames() != null)
@@ -34,7 +34,7 @@
  //ACTUALLY - if we move the below logics into               $importAcceptableAttributeValuesCheckResults
  //then we can also move dataProvider in here too and then we dont have to pass Dataprovider into ImportColumnsSanitizerUtil
                             $sqlBulkAttributeValuesSanitizer = $attributeValueSanitizerUtilName::
-                                                                    makeSqlBulkAttributeValuesSanitizerByModelAndAttributeImportRules($modelImportRules, $attributeImportRules);
+                                                                    makeSqlBulkAttributeValuesSanitizerByModelAndAttributeImportRules($importRules, $attributeImportRules);
                             assert('$sqlBulkAttributeValuesSanitizer != null');
                             $clean = $sqlBulkAttributeValuesSanitizer->getAreAllValuesAcceptableByDataProvider($dataProvider);
                             //??? importAcceptableAttributeValuesCheckResults seems like a strange name.
@@ -45,7 +45,7 @@
                         else
                         {
                             $attributeValueSanitizer = $attributeValueSanitizerUtilName::
-                                                                    makeAttributeValueSanitizerByModelAndAttributeImportRules($modelImportRules, $attributeImportRules);
+                                                                    makeAttributeValueSanitizerByModelAndAttributeImportRules($importRules, $attributeImportRules);
                             assert('$attributeValueSanitizer != null');
                             $clean = $attributeValueSanitizer::isValueAcceptable();
                             //if this is owner, and we selected username, how do we pass that info here? - i think this is answered above.

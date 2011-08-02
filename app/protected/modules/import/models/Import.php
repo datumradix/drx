@@ -64,11 +64,11 @@
             $metadata = parent::getDefaultMetadata();
             $metadata[__CLASS__] = array(
                 'members' => array(
-                    'serializedMetadata',
+                    'serializedData',
                 ),
                 'rules' => array(
-                    array('serializedMetadata',  'required'),
-                    array('serializedMetadata',  'type', 'type' => 'string'),
+                    array('serializedData',  'required'),
+                    array('serializedData',  'type', 'type' => 'string'),
                 )
             );
             return $metadata;
@@ -77,6 +77,11 @@
         public static function isTypeDeletable()
         {
             return true;
+        }
+
+        public function getTempTableName()
+        {
+            return 'importtable' . $this->id;
         }
     }
 ?>

@@ -24,14 +24,20 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class CustomFieldDataModelUtilTest extends BaseTest
+    /**
+     * Import rules for any attributes that are a user model.
+     */
+    class UserAttributeImportRules extends AttributeImportRules
     {
-        public function testGetModelPluralNameAndAttributeLabelsByName()
+        public static function getModelAttributeMappingRuleFormTypesAndElementTypes()
         {
-            $data = CustomFieldDataModelUtil::getModelPluralNameAndAttributeLabelsByName('Industries');
-            $this->assertEquals(2, count($data));
-            $data = CustomFieldDataModelUtil::getModelPluralNameAndAttributeLabelsByName('AccountTypes');
-            $this->assertEquals(1, count($data));
+            return array('DefaultModelNameId'          => 'ImportMappingRuleDefaultModelNameId',
+                         'UserValueTypeModelAttribute' => 'ImportMappingUserValueTypeDropDown');
+        }
+
+        public static function getSanitizerUtilNames()
+        {
+            return array('Truncate');
         }
     }
 ?>
