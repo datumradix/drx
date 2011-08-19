@@ -24,7 +24,7 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ImportTest extends BaseTest
+    class ImportTest extends ImportBaseTest
     {
         public static function setUpBeforeClass()
         {
@@ -32,49 +32,6 @@
             SecurityTestHelper::createSuperAdmin();
         }
 
-        public function testImportColumnDataSanitizationAnalyzerResults()
-        {
-            $import = new Import();
-            $import->modelImportRulesType = 'xx';
-            $this->assertTrue($import->save());
-            $this->createTempTableByFileNameAndTableName('importAnalyzerTest.csv',
-                                                         ImportUtil::getDataTableNameByImport($import));
-            $mappingData = array(
-                'column_0' => array('attributeNameOrDerivedType' => 'xx'),
-                'column_1' => array('attributeNameOrDerivedType' => 'xx'),
-                'column_2' => array('attributeNameOrDerivedType' => 'xx'),
-            );
-            ImportUtil::SetMappingDataToImportAndSave($mappingData, $import);
-            $modelImportRules = ImportUtil::makeModelImportRulesByImportModel($import);
-            $dataProvider     = ImportDataProviderUtil::makeDataProviderByImportModel($import);
-            $importColumnDataSanitizationAnalyzer = new ImportColumnDataSanitizationAnalyzer($modelImportRules, $dataProvider);
-            foreach ($mappingData as $importColumnName => $columnMappingData)
-            {
-                $importColumnDataSanitizationAnalyzer->analyzeByColumnNameAndColumnMappingData($columnName, $columnMappingData);
-            }
-            $this->assertTrue($importColumnDataSanitizationAnalyzer->isThereAnyNonCleanData());
-            $this->assertEquals(1, $importColumnDataSanitizationAnalyzer->getWarningMessagesCount());
-            $this->assertEquals(1, $importColumnDataSanitizationAnalyzer->getRequiredFixesCount());
-            $this->assertEquals(1, $importColumnDataSanitizationAnalyzer->getOptionalFixesCount());
-            $nonCleanDataItems = $importColumnDataSanitizationAnalyzer->getNonCleanDataItems();
-            $compareNonCleanDataItems = array();
-            $this->assertEquals($compareNonCleanDataItems, $nonCleanDataItems);
-//!!!  the goal of the test is to make sure this output completely matches the expectation.
-                    //what is present?
-                    //just some warning messages ( like truncate)
-                    //something like dropdowns requiring a fix
-                    //something like owner notice that removal will occur, or optional if empty owner then which owner to use?
-
-            //Now test that the clean data information is correct
-            $this->assertTrue($importColumnDataSanitizationAnalyzer->isThereCleanData());
-            $cleanDataItems = $importColumnDataSanitizationAnalyzer->getCleanDataItems();
-            $compareCleanDataItems = array();
-            $this->assertEquals($compareCleanDataItems, $cleanDataItems);
-        }
-
-        /**
-         * @depends testImportColumnDataSanitizationAnalyzerResults
-         */
         public function testOptionalAndRequiredFixInputData()
         {
             //setting the settings for this by form.

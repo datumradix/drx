@@ -24,7 +24,7 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ImportDatabaseUtilTest extends BaseTest
+    class ImportDatabaseUtilTest extends ImportBaseTest
     {
         public static function setUpBeforeClass()
         {
@@ -126,16 +126,39 @@
         /**
          * @depends testGetFirstRowByTableName
          */
-        public function TestGetRowsByTableNameAndCount($tableName, $count, $offset = null)
+        public function testGetSubset()
         {
-            $firstRowData = ImportDatabaseUtil::getRowsByTableNameAndCount('testimporttable', 1, 1);
-            $compareData   = array(
-                    'id' => 2,
-                    'column_0' => 'efg',
-                    'column_1' => '456',
-                    'column_2' => 'a',
-            );
-            $this->assertEquals($compareData, $firstRowData);
+            $firstBean = ImportDatabaseUtil::getSubset('testimporttable', null, 1, 1);
+            $firstBean = current($firstBean);
+            $this->assertTrue($firstBean instanceof RedBean_OODBBean);
+            $this->assertEquals(2, $firstBean->id);
+            $this->assertEquals('efg', $firstBean->column_0);
+            $this->assertEquals('456', $firstBean->column_1);
+            $this->assertEquals('a', $firstBean->column_2);
+        }
+
+        /**
+         * @expectedException RedBean_Exception_SQL
+         */
+        public function testDropTableByTableName()
+        {
+            $testTableName = 'testimporttable';
+            $sql           = 'select * from ' . $testTableName;
+            $tempTableData = R::getAll($sql);
+            $this->assertEquals(2, count($tempTableData));
+            ImportDatabaseUtil::dropTableByTableName($testTableName);
+            $sql           = 'select * from ' . $testTableName;
+            R::getAll($sql);
+        }
+
+        public function testGetCount()
+        {
+            $testTableName = 'testimporttable';
+            $this->assertTrue(ImportTestHelper::createTempTableByFileNameAndTableName('importTest.csv', $testTableName));
+            $count = ImportDatabaseUtil::getCount($testTableName);
+            $this->assertEquals(5, $count);
+            $count = ImportDatabaseUtil::getCount($testTableName, 'column_1 = "456"');
+            $this->assertEquals(1, $count);
         }
     }
 ?>
