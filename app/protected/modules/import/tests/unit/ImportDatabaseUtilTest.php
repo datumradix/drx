@@ -24,7 +24,7 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ImportDatabaseUtilTest extends BaseTest
+    class ImportDatabaseUtilTest extends ImportBaseTest
     {
         public static function setUpBeforeClass()
         {
@@ -42,37 +42,47 @@
                 array
                 (
                     'id' => 1,
-                    'column_0' => 'name',
-                    'column_1' => 'phone',
-                    'column_2' => 'industry',
+                    'column_0'           => 'name',
+                    'column_1'           => 'phone',
+                    'column_2'           => 'industry',
+                    'status'			 => null,
+                    'serializedmessages' => null,
                 ),
                 array
                 (
                     'id' => 2,
-                    'column_0' => 'abc',
-                    'column_1' => '123',
-                    'column_2' => 'a',
+                    'column_0'           => 'abc',
+                    'column_1'           => '123',
+                    'column_2'           => 'a',
+                    'status'			 => null,
+                    'serializedmessages' => null,
                 ),
                 array
                 (
                     'id' => 3,
-                    'column_0' => 'def',
-                    'column_1' => '563',
-                    'column_2' => 'b',
+                    'column_0'           => 'def',
+                    'column_1'           => '563',
+                    'column_2'           => 'b',
+                    'status'			 => null,
+                    'serializedmessages' => null,
                 ),
                 array
                 (
                     'id' => 4,
-                    'column_0' => 'efg',
-                    'column_1' => '456',
-                    'column_2' => 'a',
+                    'column_0'           => 'efg',
+                    'column_1'           => '456',
+                    'column_2'           => 'a',
+                    'status'			 => null,
+                    'serializedmessages' => null,
                 ),
                 array
                 (
                     'id' => 5,
-                    'column_0' => 'we1s',
-                    'column_1' => null,
-                    'column_2' => 'b',
+                    'column_0'           => 'we1s',
+                    'column_1'           => null,
+                    'column_2'           => 'b',
+                    'status'			 => null,
+                    'serializedmessages' => null,
                 ),
             );
             $this->assertEquals($compareData, $tempTableData);
@@ -84,17 +94,21 @@
             $compareData   = array(
                 array
                 (
-                    'id' => 1,
-                    'column_0' => 'def',
-                    'column_1' => '563',
-                    'column_2' => 'b',
+                    'id'                 => 1,
+                    'column_0'			 => 'def',
+                    'column_1'		     => '563',
+                    'column_2'           => 'b',
+                    'status'			 => null,
+                    'serializedmessages' => null,
                 ),
                 array
                 (
                     'id' => 2,
-                    'column_0' => 'efg',
-                    'column_1' => '456',
-                    'column_2' => 'a',
+                    'column_0'           => 'efg',
+                    'column_1'			 => '456',
+                    'column_2'			 => 'a',
+                    'status'			 => null,
+                    'serializedmessages' => null,
                 ),
             );
             $this->assertEquals($compareData, $tempTableData);
@@ -105,7 +119,7 @@
          */
         public function testGetColumnCountByTableName()
         {
-            $this->assertEquals(3, ImportDatabaseUtil::getColumnCountByTableName('testimporttable'));
+            $this->assertEquals(5, ImportDatabaseUtil::getColumnCountByTableName('testimporttable'));
         }
 
         /**
@@ -116,9 +130,11 @@
             $firstRowData = ImportDatabaseUtil::getFirstRowByTableName('testimporttable');
             $compareData   = array(
                     'id' => 1,
-                    'column_0' => 'def',
-                    'column_1' => '563',
-                    'column_2' => 'b',
+                    'column_0'           => 'def',
+                    'column_1'           => '563',
+                    'column_2'           => 'b',
+                    'status'			 => null,
+                    'serializedmessages' => null,
             );
             $this->assertEquals($compareData, $firstRowData);
         }
@@ -126,16 +142,59 @@
         /**
          * @depends testGetFirstRowByTableName
          */
-        public function TestGetRowsByTableNameAndCount($tableName, $count, $offset = null)
+        public function testGetSubset()
         {
-            $firstRowData = ImportDatabaseUtil::getRowsByTableNameAndCount('testimporttable', 1, 1);
-            $compareData   = array(
-                    'id' => 2,
-                    'column_0' => 'efg',
-                    'column_1' => '456',
-                    'column_2' => 'a',
-            );
-            $this->assertEquals($compareData, $firstRowData);
+            $firstBean = ImportDatabaseUtil::getSubset('testimporttable', null, 1, 1);
+            $firstBean = current($firstBean);
+            $this->assertTrue($firstBean instanceof RedBean_OODBBean);
+            $this->assertEquals(2, $firstBean->id);
+            $this->assertEquals('efg', $firstBean->column_0);
+            $this->assertEquals('456', $firstBean->column_1);
+            $this->assertEquals('a', $firstBean->column_2);
+        }
+
+        /**
+         * @expectedException RedBean_Exception_SQL
+         */
+        public function testDropTableByTableName()
+        {
+            $testTableName = 'testimporttable';
+            $sql           = 'select * from ' . $testTableName;
+            $tempTableData = R::getAll($sql);
+            $this->assertEquals(2, count($tempTableData));
+            ImportDatabaseUtil::dropTableByTableName($testTableName);
+            $sql           = 'select * from ' . $testTableName;
+            R::getAll($sql);
+        }
+
+        /**
+         * @depends testDropTableByTableName
+         */
+        public function testGetCount()
+        {
+            $testTableName = 'testimporttable';
+            $this->assertTrue(ImportTestHelper::createTempTableByFileNameAndTableName('importTest.csv', $testTableName));
+            $count = ImportDatabaseUtil::getCount($testTableName);
+            $this->assertEquals(5, $count);
+            $count = ImportDatabaseUtil::getCount($testTableName, 'column_1 = "456"');
+            $this->assertEquals(1, $count);
+        }
+
+        /**
+         * @depends testGetCount
+         */
+        public function testUpdateRowAfterProcessing()
+        {
+            ImportDatabaseUtil::updateRowAfterProcessing('testimporttable', 2, 4, serialize(array('a' => 'b')));
+            $bean = R::findOne('testimporttable', "id = :id", array('id' => 2));
+            $this->assertEquals(4, $bean->status);
+            $this->assertEquals(serialize(array('a' => 'b')), $bean->serializedmessages);
+            $bean = R::findOne('testimporttable', "id = :id", array('id' => 1));
+            $this->assertEquals(null, $bean->status);
+            $this->assertEquals(null, $bean->serializedmessages);
+            $bean = R::findOne('testimporttable', "id = :id", array('id' => 3));
+            $this->assertEquals(null, $bean->status);
+            $this->assertEquals(null, $bean->serializedmessages);
         }
     }
 ?>
