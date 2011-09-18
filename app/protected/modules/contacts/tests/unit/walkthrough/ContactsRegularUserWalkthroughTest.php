@@ -71,7 +71,7 @@
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/list');
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/create');
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/edit');
-            
+
             $this->setGetArray(array('id' => $contact->id));
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/edit');
             $this->setGetArray(array('selectedIds' => '4,5,6,7,8', 'selectAll' => ''));  // Not Coding Standard
@@ -79,7 +79,7 @@
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/massEdit');
             $this->setGetArray(array('selectAll' => '1', 'Contact_page' => 2));
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/massEditProgressSave');
-            
+
             //Autocomplete for Contact should fail.
             $this->setGetArray(array('term' => 'super'));
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/autoComplete');
@@ -89,12 +89,12 @@
                 'modalTransferInformation' => array('sourceIdFieldId' => 'x', 'sourceNameFieldId' => 'y')
             ));
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/modalList');
-            
+
             //actionDelete should fail.
             $this->setGetArray(array('id' => $contact->id));
             $this->resetPostArray();
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/delete');
-            
+
         }
 
         /**
@@ -116,18 +116,18 @@
             Yii::app()->user->userModel = User::getByUsername('nobody');
             $this->runControllerWithNoExceptionsAndGetContent('contacts/default/list');
             $this->runControllerWithNoExceptionsAndGetContent('contacts/default/create');
-            
+
             //Test nobody can view an existing contact he owns.
             $contact = ContactTestHelper::createContactByNameForOwner('Switcheroo', $nobody);
             $this->setGetArray(array('id' => $contact->id));
             $this->runControllerWithNoExceptionsAndGetContent('contacts/default/edit');
-            
+
             //Test nobody can delete an existing contact he owns and it redirects to index.
             $this->setGetArray(array('id' => $contact->id));
             $this->resetPostArray();
             $this->runControllerWithRedirectExceptionAndGetContent('contacts/default/delete',
                         Yii::app()->getUrlManager()->getBaseUrl() . '?r=contacts/default/index'); // Not Coding Standard
-            
+
             //Autocomplete for Contact should not fail.
             $this->setGetArray(array('term' => 'super'));
             $this->runControllerWithNoExceptionsAndGetContent('contacts/default/autoComplete');
@@ -137,7 +137,7 @@
                 'modalTransferInformation' => array('sourceIdFieldId' => 'x', 'sourceNameFieldId' => 'y')
             ));
             $this->runControllerWithNoExceptionsAndGetContent('contacts/default/modalList');
-            
+
             //todo: more.
         }
 
@@ -149,8 +149,8 @@
             
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $nobody = User::getByUsername('nobody');
-            
-            //created contact owned by user super
+
+            //Created contact owned by user super.
             $contact = ContactTestHelper::createContactByNameForOwner('Switcheroo', $super);
             
             //Test nobody, access to edit and details should fail.
@@ -159,13 +159,13 @@
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/edit');
             $this->setGetArray(array('id' => $contact->id));
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/details');
-            
+
             //give nobody access to read
             Yii::app()->user->userModel = $super;
             $contact->addPermissions($nobody, Permission::READ);
             $this->assertTrue($contact->save());
-            
-            //Test nobody, access to details should not fail.
+
+            //Now the nobody user can access the details view.
             Yii::app()->user->userModel = $nobody;
             $this->setGetArray(array('id' => $contact->id));
             $this->runControllerWithNoExceptionsAndGetContent('contacts/default/details');
@@ -173,17 +173,19 @@
             //Test nobody, access to edit should fail.
             $this->setGetArray(array('id' => $contact->id));
             $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/edit');
-            
+
             //revoke nobody access to read
             Yii::app()->user->userModel = $super;
-            $contact->addPermissions($nobody, Permission::READ, Permission::DENY);
+            $contact->addPermissions($nobody, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($contact->save());
-            
-            //Test nobody, access to details should fail.
+
+            //Now the nobody user should be able to access the edit view and still the details view.
             Yii::app()->user->userModel = $nobody;
             $this->setGetArray(array('id' => $contact->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('contacts/default/details');
+            $this->runControllerWithNoExceptionsAndGetContent('contacts/default/details');
+            $this->setGetArray(array('id' => $contact->id));
             
+            $this->runControllerWithNoExceptionsAndGetContent('contacts/default/edit');
             Yii::app()->user->userModel = $super;
             //create some roles
             $higherRole = new Role();
