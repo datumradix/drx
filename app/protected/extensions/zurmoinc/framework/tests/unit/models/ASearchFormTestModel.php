@@ -24,20 +24,42 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class LoginPageView extends ZurmoPageView
+    /**
+     * Used for testing with @see MixedRelationsModel
+     */
+    class ASearchFormTestModel extends SearchForm
     {
-        public function __construct(CController $controller, CFormModel $formModel, $extraHeaderContent = null)
+        public $anyA;
+        public $ABName;
+
+        public function rules()
         {
-            assert('is_string($extraHeaderContent) || $extraHeaderContent == null');
-            $gridView = new GridView(2, 1);
-            $gridView->setView(new LoginView($controller, $formModel, $extraHeaderContent), 0, 0);
-            $gridView->setView(new FooterView(),                       1, 0);
-            parent::__construct($gridView);
+            return array(
+                array('anyA', 'safe'),
+                array('ABName', 'safe'),
+            );
         }
 
-        protected function getSubtitle()
+        public function attributeLabels()
         {
-            return Yii::t('Default', 'Login');
+            return array(
+                'anyA'            => Yii::t('Default', 'Any A'),
+                'ABName'          => Yii::t('Default', 'ABName'),
+            );
+        }
+
+        public function resolveAttributesMappedToRealAttributesMetadata()
+        {
+            return array(
+                'anyA' => array(
+                    array('primaryA',   'name'),
+                    array('secondaryA', 'name'),
+                ),
+                'ABName' => array(
+                    array('aName'),
+                    array('bName'),
+                ),
+            );
         }
     }
 ?>
