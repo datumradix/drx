@@ -24,27 +24,24 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Extend this class to make different types of activity models.
-     *
-     */
-    abstract class Activity extends OwnedSecurableItem
+    class MixedRelationsModel extends RedBeanModel
     {
         public static function getByName($name)
         {
-            assert('is_string($name) && $name != ""');
-            return self::getSubset(null, null, null, "name = '$name'");
+            assert('is_string($name)');
+            assert('$name != ""');
+            $bean = R::findOne('a', "name = '$name'");
+            assert('$bean === false || $bean instanceof RedBean_OODBBean');
+            if ($bean === false)
+            {
+                throw new NotFoundException();
+            }
+            return self::makeModel($bean);
         }
 
         public static function canSaveMetadata()
         {
-            return false;
-        }
-
-        public function onCreated()
-        {
-            parent::onCreated();
-            $this->unrestrictedSet('latestDateTime', DateTimeUtil::convertTimestampToDbFormatDateTime(time()));
+            return true;
         }
 
         public static function getDefaultMetadata()
@@ -52,37 +49,27 @@
             $metadata = parent::getDefaultMetadata();
             $metadata[__CLASS__] = array(
                 'members' => array(
-                    'latestDateTime',
-                ),
-                'relations' => array(
-                    'activityItems' => array(RedBeanModel::MANY_MANY, 'Item'),
+                    'aName',
+                    'bName',
                 ),
                 'rules' => array(
-                    array('latestDateTime', 'required'),
-                    array('latestDateTime', 'readOnly'),
-                    array('latestDateTime', 'type', 'type' => 'datetime'),
+                    array('aName',      'type',   'type' => 'string'),
+                    array('aName',      'length', 'min'  => 1, 'max' => 32),
+                    array('bName',      'required'),
+                    array('bName',      'type',   'type' => 'string'),
+                    array('bName',      'length', 'min'  => 2, 'max' => 32),
                 ),
-                'elements' => array(
-                    'latestDateTime' => 'DateTime',
-                    'activityItems' => 'ActivityItem'
-                ),
-                'activityItemsModelClassNames' => array(
-                    'Account',
-                    'Contact',
-                    'Opportunity',
+                'relations' => array(
+                    'primaryA'     => array(RedBeanModel::HAS_ONE, 'A', RedBeanModel::OWNED),
+                    'secondaryA'   => array(RedBeanModel::HAS_ONE, 'A', RedBeanModel::OWNED),
                 ),
             );
             return $metadata;
         }
 
-        public static function getModuleClassName()
-        {
-            return 'ActivitiesModule';
-        }
-
         public static function isTypeDeletable()
         {
-            return false;
+            return true;
         }
     }
 ?>
