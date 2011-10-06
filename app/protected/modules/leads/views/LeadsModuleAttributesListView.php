@@ -24,34 +24,24 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Display a drop down of contact states specifically for mapping rules during the import process.
-     */
-    class ImportMappingRuleContactStatesDropDownElement extends ImportMappingRuleStaticDropDownFormElement
+    class LeadsModuleAttributesListView extends GridView
     {
-        public function __construct($model, $attribute, $form = null, array $params = array())
+        public function __construct(
+            $controllerId,
+            $moduleId,
+            $breadcrumbLinks
+        )
         {
-            assert('$model instanceof DefaultContactStateIdMappingRuleForm');
-            parent::__construct($model, $attribute, $form, $params);
+            parent::__construct(3, 1);
+            $moduleDisplayName = LeadsModule::getModuleLabelByTypeAndLanguage('Plural');
+            $this->setView(new TitleBarView(yii::t('Default', $moduleDisplayName), yii::t('Default', 'Standard Fields')), 0, 0);
+            $this->setView(new DesignerBreadCrumbView($controllerId, $moduleId, $breadcrumbLinks), 1, 0);
+            $this->setView(new AttributesRedirectToContactsView($controllerId, $moduleId), 2, 0);
         }
 
-        /**
-         * Override to always return true since a blank should always be here.
-         * @see DropDownElement::getAddBlank()
-         */
-        protected function getAddBlank()
+        public function isUniqueToAPage()
         {
             return true;
-        }
-
-        protected function getDropDownArray()
-        {
-            $dropDownArray = $this->model->statesData;
-            if (empty($dropDownArray))
-            {
-                return array();
-            }
-            return $dropDownArray;
         }
     }
 ?>
