@@ -25,33 +25,36 @@
      ********************************************************************************/
 
     /**
-     * Display a drop down of contact states specifically for mapping rules during the import process.
+     * Helper tool for designer.  When a user select the fields option in the Leads module, it will provide a message
+     * explaining that leads attributes are the same as contacts and therefore controlled by the contacts attribute list.
      */
-    class ImportMappingRuleContactStatesDropDownElement extends ImportMappingRuleStaticDropDownFormElement
+    class AttributesRedirectToContactsView extends View
     {
-        public function __construct($model, $attribute, $form = null, array $params = array())
+        protected $controllerId;
+
+        protected $moduleId;
+
+        public function __construct($controllerId, $moduleId)
         {
-            assert('$model instanceof DefaultContactStateIdMappingRuleForm');
-            parent::__construct($model, $attribute, $form, $params);
+            $this->controllerId           = $controllerId;
+            $this->moduleId               = $moduleId;
         }
 
-        /**
-         * Override to always return true since a blank should always be here.
-         * @see DropDownElement::getAddBlank()
-         */
-        protected function getAddBlank()
+        protected function renderContent()
+        {
+            $content  = '<div class="horizontal-line">';
+            $content .= Yii::t('Default', 'LeadsModulePluralLabel and ContactsModulePluralLabel are the same records,' .
+                                          ' just in a different statuses. To create a LeadsModuleSingularLowerCaseLabel' .
+                                          ' field, create a ContactsModuleSingularLowerCaseLabel field, and then it ' .
+                                          ' will be placable in the LeadsModulePluralLowerCaseLabel layouts.',
+                                          LabelUtil::getTranslationParamsForAllModules());
+            $content .= '</div>' . "\n";
+            return $content;
+        }
+
+        public function isUniqueToAPage()
         {
             return true;
-        }
-
-        protected function getDropDownArray()
-        {
-            $dropDownArray = $this->model->statesData;
-            if (empty($dropDownArray))
-            {
-                return array();
-            }
-            return $dropDownArray;
         }
     }
 ?>
