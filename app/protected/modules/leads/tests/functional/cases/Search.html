@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/" />
-<title>SaveRelatedListViewLayout</title>
+<title>Search</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">SaveRelatedListViewLayout</td></tr>
+<tr><td rowspan="1" colspan="3">Search</td></tr>
 </thead><tbody>
 <tr>
 	<td>setSpeed</td>
@@ -18,7 +18,7 @@
 </tr>
 <tr>
 	<td>open</td>
-	<td>index.php?r=designer/default</td>
+	<td>index.php?r=leads/default</td>
 	<td></td>
 </tr>
 <tr>
@@ -27,38 +27,48 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='TitleBarAndDesignerPageMenuView']/div[2]/div/table/tbody/tr[2]/td/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Layouts</td>
+	<td>verifyTextPresent</td>
+	<td>Leads: Home</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>Accounts: Layouts</td>
+	<td>Advanced Search</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Related List View - Accounts For Account</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Edit Layout: Related List View - Accounts For Account</td>
-	<td></td>
+	<td>type</td>
+	<td>LeadsSearchForm_fullName</td>
+	<td>Sally ${randomSuffix}</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>yt0</td>
+	<td>search</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>Layout saved successfully</td>
+	<td>Displaying 1-1 of 1 result</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Silly Sally ${randomSuffix}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>LeadsSearchForm_fullName</td>
+	<td>Sally ${randomSuffix}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Clear Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>LeadsSearchForm_fullName</td>
 	<td></td>
 </tr>
 </tbody></table>
