@@ -24,32 +24,16 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class AccessFailureView extends View
+    class ViewIsMissingRequiredAttributesPageView extends ZurmoPageView
     {
-        protected $failureMessageContent;
-
-        public function __construct($failureMessageContent = null)
+        public function __construct(View $view)
         {
-            assert('$failureMessageContent == null || is_string($failureMessageContent)');
-            if($failureMessageContent == null)
-            {
-                $failureMessageContent = Yii::t('Default', 'You have tried to access a page you do not have access to.');
-            }
-            $this->failureMessageContent = $failureMessageContent;
+            parent::__construct(new ZurmoErrorView($view));
         }
 
-        protected function renderContent()
+        protected function getSubtitle()
         {
-            return <<<END
-    <br/>
-    <br/>
-    <br/>
-    <div align='center'>
-    <h2>
-    $this->failureMessageContent
-    </h2>
-    </div>
-END;
+            return Yii::t('Default', 'Missing Required Attributes');
         }
     }
 ?>
