@@ -24,32 +24,27 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class AccessFailureView extends View
+    /**
+     * Filter used by controllers to ascertain whether
+     * the view to be used is missing any required attributes or not. If it is not, then it can be displayed.
+     */
+    class RequiredAttributesControllerFilter extends CFilter
     {
-        protected $failureMessageContent;
+        public $moduleClassName;
 
-        public function __construct($failureMessageContent = null)
+        public $viewClassName;
+
+        protected function preFilter($filterChain)
         {
-            assert('$failureMessageContent == null || is_string($failureMessageContent)');
-            if($failureMessageContent == null)
+            if(null == $messageContent = RequiredAttributesValidViewUtil::
+                                  resolveValidView($this->moduleClassName, $this->viewClassName))
             {
-                $failureMessageContent = Yii::t('Default', 'You have tried to access a page you do not have access to.');
+                return true;
             }
-            $this->failureMessageContent = $failureMessageContent;
-        }
-
-        protected function renderContent()
-        {
-            return <<<END
-    <br/>
-    <br/>
-    <br/>
-    <div align='center'>
-    <h2>
-    $this->failureMessageContent
-    </h2>
-    </div>
-END;
+            $messageView                  = new ViewIsMissingRequiredAttributesView($messageContent);
+            $view                         = new ViewIsMissingRequiredAttributesPageView($messageView);
+            echo $view->render();
+            Yii::app()->end(0, false);
         }
     }
 ?>
