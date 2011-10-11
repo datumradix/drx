@@ -24,21 +24,27 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class EmailAddressInformationAttributeForm extends AttributeForm
+    /**
+     * Filter used by controllers to ascertain whether
+     * the view to be used is missing any required attributes or not. If it is not, then it can be displayed.
+     */
+    class RequiredAttributesControllerFilter extends CFilter
     {
-        public static function getAttributeTypeDisplayName()
-        {
-            return yii::t('Default', 'Email Address Information');
-        }
+        public $moduleClassName;
 
-        public static function getAttributeTypeDisplayDescription()
-        {
-            return yii::t('Default', 'Email address fields');
-        }
+        public $viewClassName;
 
-        public function getAttributeTypeName()
+        protected function preFilter($filterChain)
         {
-            return 'EmailAddressInformation';
+            if(null == $messageContent = RequiredAttributesValidViewUtil::
+                                  resolveValidView($this->moduleClassName, $this->viewClassName))
+            {
+                return true;
+            }
+            $messageView                  = new ViewIsMissingRequiredAttributesView($messageContent);
+            $view                         = new ViewIsMissingRequiredAttributesPageView($messageView);
+            echo $view->render();
+            Yii::app()->end(0, false);
         }
     }
 ?>
