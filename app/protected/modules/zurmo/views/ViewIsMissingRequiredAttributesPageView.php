@@ -24,21 +24,16 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class EmailAddressInformationAttributeForm extends AttributeForm
+    class ViewIsMissingRequiredAttributesPageView extends ZurmoPageView
     {
-        public static function getAttributeTypeDisplayName()
+        public function __construct(View $view)
         {
-            return yii::t('Default', 'Email Address Information');
+            parent::__construct(new ZurmoErrorView($view));
         }
 
-        public static function getAttributeTypeDisplayDescription()
+        protected function getSubtitle()
         {
-            return yii::t('Default', 'Email address fields');
-        }
-
-        public function getAttributeTypeName()
-        {
-            return 'EmailAddressInformation';
+            return Yii::t('Default', 'Missing Required Attributes');
         }
     }
 ?>
