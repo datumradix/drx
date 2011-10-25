@@ -93,7 +93,15 @@
                 $allowedGuestUserUrls = array (
                     Yii::app()->createUrl('zurmo/default/unsupportedBrowser'),
                     Yii::app()->createUrl('zurmo/default/login'),
-                    Yii::app()->createUrl('min/serve'));
+                    Yii::app()->createUrl('min/serve'),
+                    Yii::app()->createUrl('api/rest'),
+                    Yii::app()->createUrl('api/rest/list'),
+                    Yii::app()->createUrl('api/rest/view'),
+                    Yii::app()->createUrl('api/rest/create'),
+                    Yii::app()->createUrl('api/rest/delete'),
+                    Yii::app()->createUrl('api/rest/view'),
+                    Yii::app()->createUrl('api/rest/login'),
+                );
                 $reqestedUrl = Yii::app()->getRequest()->getUrl();
                 $isUrlAllowedToGuests = false;
                 foreach ($allowedGuestUserUrls as $url)
