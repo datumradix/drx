@@ -88,12 +88,30 @@
 
         public function handleBeginRequest($event)
         {
-            if (!array_key_exists('r', $_GET) ||
-                !in_array($_GET['r'], array('zurmo/default/unsupportedBrowser',
-                                            'zurmo/default/login',
-                                            'min/serve')))
+            if (Yii::app()->user->isGuest)
             {
-                if (Yii::app()->user->isGuest)
+                $allowedGuestUserUrls = array (
+                    Yii::app()->createUrl('zurmo/default/unsupportedBrowser'),
+                    Yii::app()->createUrl('zurmo/default/login'),
+                    Yii::app()->createUrl('min/serve'),
+                    Yii::app()->createUrl('api/rest'),
+                    Yii::app()->createUrl('api/rest/list'),
+                    Yii::app()->createUrl('api/rest/view'),
+                    Yii::app()->createUrl('api/rest/create'),
+                    Yii::app()->createUrl('api/rest/delete'),
+                    Yii::app()->createUrl('api/rest/view'),
+                    Yii::app()->createUrl('api/rest/login'),
+                );
+                $reqestedUrl = Yii::app()->getRequest()->getUrl();
+                $isUrlAllowedToGuests = false;
+                foreach ($allowedGuestUserUrls as $url)
+                {
+                    if (strpos($reqestedUrl, $url) === 0)
+                    {
+                        $isUrlAllowedToGuests = true;
+                    }
+                }
+                if (!$isUrlAllowedToGuests)
                 {
                     Yii::app()->user->loginRequired();
                 }
