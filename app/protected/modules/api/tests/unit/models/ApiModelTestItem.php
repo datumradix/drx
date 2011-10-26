@@ -24,8 +24,17 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ImportModelTestItem extends OwnedSecurableItem
+    class ApiModelTestItem extends OwnedSecurableItem
     {
+        protected function untranslatedAttributeLabels()
+        {
+            return array_merge(parent::untranslatedAttributeLabels(),
+                array(
+                    'fullName' => 'Name',
+                )
+            );
+        }
+
         public static function getDefaultMetadata()
         {
             $metadata = parent::getDefaultMetadata();
@@ -47,6 +56,9 @@
                     'currencyValue'    => array(RedBeanModel::HAS_ONE,   'CurrencyValue',    RedBeanModel::OWNED),
                     'dropDown'         => array(RedBeanModel::HAS_ONE,   'OwnedCustomField', RedBeanModel::OWNED),
                     'radioDropDown'    => array(RedBeanModel::HAS_ONE,   'OwnedCustomField', RedBeanModel::OWNED),
+                    'hasOne'           => array(RedBeanModel::HAS_ONE,   'ImportModelTestItem2'),
+                    'hasMany'          => array(RedBeanModel::MANY_MANY, 'ImportModelTestItem3'),
+                    'hasOneAlso'       => array(RedBeanModel::HAS_ONE,   'ImportModelTestItem4'),
                     'primaryEmail'     => array(RedBeanModel::HAS_ONE,   'Email', RedBeanModel::OWNED),
                     'primaryAddress'   => array(RedBeanModel::HAS_ONE,   'Address', RedBeanModel::OWNED),
 
@@ -74,11 +86,17 @@
                     'currencyValue'    => 'CurrencyValue',
                     'date'             => 'Date',
                     'dateTime'         => 'DateTime',
+                    'hasOne'           => 'ImportModelTestItem2',
+                    'hasOneAlso'       => 'ImportModelTestItem4',
                     'phone'            => 'Phone',
                     'primaryEmail'     => 'EmailAddressInformation',
                     'primaryAddress'   => 'Address',
                     'textArea'         => 'TextArea',
                     'radioDropDown'    => 'RadioDropDown',
+                ),
+                'customFields' => array(
+                    'dropDown'        => 'ImportTestDropDown',
+                    'radioDropDown'   => 'ImportTestRadioDropDown',
                 ),
             );
             return $metadata;
