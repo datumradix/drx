@@ -25,54 +25,64 @@
      ********************************************************************************/
 
     /**
-     * Application loaded component at run time. @see BeginBehavior - calls load() method.
+     *
+     * Utilize WebServiceX service provider to get currency rates
+     * @link http://www.webservicex.net/ws/WSDetails.aspx?CATID=2&WSID=10
+     *
      */
-    class ZurmoGrandTrunkCurrencyHelper extends ZurmoCurrencyHelper
+    class WebServiceXCurrencyServiceUtil extends CurrencyServiceUtil
     {
         /**
-         * @param $error - string by reference to attach error to if needed.
-         * @return rate as a float, otherwise null if there is some sort of error
+         * @param string $fromCode
+         * @param string $toCode
+         * @return float
          */
-        protected function getConversionRateViaWebService($fromCode, $toCode)
+        public function getConversionRateViaWebService($fromCode, $toCode)
         {
-            $url  = 'http://currencies.apps.grandtrunk.net/getlatest/';
-            $url .= $fromCode . '/' . $toCode;
+            $this->resetErrors();
+            $url  = 'http://www.webservicex.net/CurrencyConvertor.asmx/ConversionRate?FromCurrency=';
+            $url .= $fromCode . '&ToCurrency=' . $toCode;
             $ch = curl_init();
             $timeout = 2;
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_TIMEOUT, 3);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-            $file_contents = curl_exec($ch);
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $fileContents = curl_exec($ch);
+            $error_info = curl_error($ch);
             curl_close($ch);
-
-            if($httpcode == 200 )
+            if ($fileContents === false || empty($fileContents))
             {
-                if (!empty($file_contents) && floatval($file_contents) > 0)
-                {
-                    return floatval($file_contents);
-                }
-                //To-Do: Do we need this checking, because we already check if response code = 200??
-                if ($file_contents === false || empty($file_contents))
-                {
-                    $this->webServiceErrorMessage = curl_error($ch);
-                    $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_WEB_SERVICE;
-                    return null;
-                }
+                $this->webServiceErrorMessage = $error_info;
+                $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_WEB_SERVICE;
+                return null;
             }
-            else
+            if (!empty($fileContents) &&
+                false !== $xml = @simplexml_load_string($fileContents))
             {
-                if (stripos($file_contents, 'Invalid currency code') !== false)
+                if (is_object($xml) && $xml instanceof SimpleXMLElement)
                 {
-                    $this->webServiceErrorMessage = Yii::t('Default', 'Invalid currency code');
-                    $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_INVALID_CODE;
+                    $xmlAsArray = (array)$xml;
+                    return $xmlAsArray[0];
+                }
+                elseif (is_array($xml))
+                {
+                    return $xml[0];
                 }
                 else
                 {
-                    $this->webServiceErrorMessage = Yii::t('Default', 'There was an error with the web service.');
-                    $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_WEB_SERVICE;
+                    return null; //todo: throw exception
                 }
+            }
+            if (stripos($fileContents, 'error') === false)
+            {
+                $this->webServiceErrorMessage = Yii::t('Default', 'Invalid currency code');
+                $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_INVALID_CODE;
+            }
+            else
+            {
+                $this->webServiceErrorMessage = Yii::t('Default', 'There was an error with the web service.');
+                $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_WEB_SERVICE;
             }
             return null;
         }
