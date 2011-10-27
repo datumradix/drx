@@ -25,58 +25,52 @@
      ********************************************************************************/
 
     /**
-     * Application loaded component at run time. @see BeginBehavior - calls load() method.
+     *
+     * Utilize GrandTrunk service provider to get currency rates
+     * @link http://currencies.apps.grandtrunk.net/
+     *
      */
-    class ZurmoWebservicexCurrencyHelper extends ZurmoCurrencyHelper
+    class GrandTrunkCurrencyServiceUtil extends CurrencyServiceUtil
     {
         /**
-         * @param $error - string by reference to attach error to if needed.
-         * @return rate as a float, otherwise null if there is some sort of error
+         * @param string $fromCode
+         * @param string $toCode
+         * @return float
          */
-        protected function getConversionRateViaWebService($fromCode, $toCode)
+        public function getConversionRateViaWebService($fromCode, $toCode)
         {
-            $url  = 'http://www.webservicex.net/CurrencyConvertor.asmx/ConversionRate?FromCurrency=';
-            $url .= $fromCode . '&ToCurrency=' . $toCode;
+            $this->resetErrors();
+            $url  = 'http://currencies.apps.grandtrunk.net/getlatest/';
+            $url .= $fromCode . '/' . $toCode;
             $ch = curl_init();
             $timeout = 2;
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_TIMEOUT, 3);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-            $file_contents = curl_exec($ch);
+            $fileContents = curl_exec($ch);
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
-            if ($file_contents === false || empty($file_contents))
+
+            if($httpcode == 200 )
             {
-                $this->webServiceErrorMessage = curl_error($ch);
-                $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_WEB_SERVICE;
-                return null;
-            }
-            if (!empty($file_contents) &&
-                false !== $xml = @simplexml_load_string($file_contents))
-            {
-                if (is_object($xml) && $xml instanceof SimpleXMLElement)
+                if (!empty($fileContents) && floatval($fileContents) > 0)
                 {
-                    $xmlAsArray = (array)$xml;
-                    return $xmlAsArray[0];
+                    return floatval($fileContents);
                 }
-                elseif (is_array($xml))
-                {
-                    return $xml[0];
-                }
-                else
-                {
-                    return null; //todo: throw exception
-                }
-            }
-            if (stripos($file_contents, 'error') === false)
-            {
-                $this->webServiceErrorMessage = Yii::t('Default', 'Invalid currency code');
-                $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_INVALID_CODE;
             }
             else
             {
-                $this->webServiceErrorMessage = Yii::t('Default', 'There was an error with the web service.');
-                $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_WEB_SERVICE;
+                if (stripos($fileContents, 'Invalid currency code') !== false)
+                {
+                    $this->webServiceErrorMessage = Yii::t('Default', 'Invalid currency code');
+                    $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_INVALID_CODE;
+                }
+                else
+                {
+                    $this->webServiceErrorMessage = Yii::t('Default', 'There was an error with the web service.');
+                    $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_WEB_SERVICE;
+                }
             }
             return null;
         }
