@@ -108,6 +108,7 @@
                     }
                     if (class_exists($className, false) && is_subclass_of($className, 'CController'))
                     {
+
                         $id[0] = strtolower($id[0]);
                         return array(
                             new $className($controllerID . $id, $this->resolveWhatToPassAsParameterForOwner($owner)),
