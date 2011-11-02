@@ -24,15 +24,33 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class DateDefaultValueStaticDropDownElement extends StaticDropDownFormElement
+    /**
+     * This validator can be used by both a User model as well as a CFormModel like in User import for example.
+     * This validator validates to see if a valid time zone is entered by validating it with DateTimeZone class.
+     * See the yii documentation.
+     */     
+    class validateTimeZone extends CValidator
     {
-        protected function getDropDownArray()
+        /**
+         * See the yii documentation.
+         */
+        protected function validateAttribute($model, $attributeName)
         {
-            return array(
-                DateTimeCalculatorUtil::YESTERDAY => Yii::t('Default', 'Yesterday'),
-                DateTimeCalculatorUtil::TODAY     => Yii::t('Default', 'Today'),
-                DateTimeCalculatorUtil::TOMORROW  => Yii::t('Default', 'Tomorrow'),
-            );
+            if ($model->$attributeName != null)
+            {
+                try
+                {
+                    if (new DateTimeZone($model->$attributeName) === false)
+                    {
+                        $model->addError($attributeName, Yii::t('Default', 'The time zone is invalid.'));
+                    }
+                }
+                catch (Exception $e)
+                {
+                    //Need to set UTC instead of checking validity of time zone to properly handle db auto build.
+                    $model->$attributeName == 'UTC';
+                }
+            }
         }
     }
 ?>
