@@ -81,6 +81,7 @@
                     'city',
                     'state',
                     'postalCode',
+                    'latitude',
                     // Todo: make these relations.
                     'country',
                 ),
@@ -97,6 +98,9 @@
                     array('country',    'length', 'max' => 32),
                     array('postalCode', 'type', 'type' => 'string'),
                     array('postalCode', 'length', 'max' => 16),
+                    array('latitude',   'type', 'type' => 'float'),
+                    array('latitude',   'length', 'max' => 10),
+                    array('latitude',   'numerical', 'precision' => 6),
                 ),
             );
             return $metadata;

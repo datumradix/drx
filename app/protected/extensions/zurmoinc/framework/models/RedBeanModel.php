@@ -640,13 +640,27 @@
                         {
                             case 'RedBeanModelTypeValidator':
                             case 'TypeValidator':
+                                $tableName = self::getTableName($modelClassName);
                                 $columnName = strtolower($attributeName);
                                 if (array_key_exists($columnName, $hints))
                                 {
                                     unset($hints[$columnName]);
                                 }
-                                if (in_array($validator->type, array('date', 'datetime', 'blob', 'longblob')))
+                                if (in_array($validator->type, array('date', 'datetime', 'blob', 'longblob', 'float')))
                                 {
+                                    if ($validator->type === 'float')
+                                    {                                        
+                                        $floatAttributesMaxLengthArray = (count($bean->getMeta("floatAttributesMaxLengthArray"))>0) ? $bean->getMeta("floatAttributesMaxLengthArray") : array();
+                                        $floatAttributesPrecisionArray = (count($bean->getMeta("floatAttributesPrecisionArray"))>0) ? $bean->getMeta("floatAttributesPrecisionArray") : array();
+                                        $floatAttributesMaxLengthArray[$tableName][$columnName] = self::getAttributeMetaDataValueForColumnName(
+                                                                            $metadata[$modelClassName]['rules'],
+                                                                            $columnName, 'max');
+                                        $floatAttributesPrecisionArray[$tableName][$columnName] = self::getAttributeMetaDataValueForColumnName(
+                                                                            $metadata[$modelClassName]['rules'],
+                                                                            $columnName, 'precision');
+                                        $bean->setMeta('floatAttributesMaxLengthArray', $floatAttributesMaxLengthArray);
+                                        $bean->setMeta('floatAttributesPrecisionArray', $floatAttributesPrecisionArray);                                        
+                                    }
                                     $hints[$columnName] = $validator->type;
                                 }
                                 break;
@@ -678,6 +692,32 @@
                 }
                 $bean->setMeta('hint', $hints);
             }
+        }
+
+        /**
+         * Used for fetching the Attribute field value from the rules metadata.
+         */
+        public static function getAttributeMetaDataValueForColumnName($rulesMetaData = array(), $columnName = null, 
+                                                                      $metaSearchIndex = null)
+        {
+            assert('is_array($rulesMetaData)');
+            if (count($rulesMetaData) > 0)
+            {
+                foreach ($rulesMetaData as $metaRuleRow)
+                {
+                    foreach ($metaRuleRow as $ruleRowKey => $ruleRowValue)
+                    {
+                        if ($ruleRowValue == $columnName)
+                        {
+                            if (isset($metaRuleRow[$metaSearchIndex]))
+                            {
+                                return $metaRuleRow[$metaSearchIndex];
+                            }
+                        }
+                    }
+                }
+            }
+            return 0;
         }
 
         /**

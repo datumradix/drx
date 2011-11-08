@@ -35,6 +35,7 @@
         {
             $this->blobOptimizer     = new RedBean_Plugin_Optimizer_Blob($toolbox);
             $this->booleanOptimizer  = new RedBean_Plugin_Optimizer_Boolean($toolbox);
+            $this->floatOptimizer    = new RedBean_Plugin_Optimizer_Float($toolbox);
         }
 
         public function onEvent($type, $info)
@@ -64,11 +65,28 @@
                         $this->blobOptimizer->setValue($info->$key);
                         $this->blobOptimizer->optimize('longblob');
                         break;
-                   case 'boolean':
+                    case 'boolean':
                         $this->booleanOptimizer ->setTable($info->getMeta("type"));
                         $this->booleanOptimizer ->setColumn($key);
                         $this->booleanOptimizer ->setValue($info->$key);
                         $this->booleanOptimizer ->optimize();
+                        break;
+                    case 'float':
+                        $tableName = $info->getMeta("type");
+                        $floatAttributesMaxLengthArray = $info->getMeta("floatAttributesMaxLengthArray");
+                        $floatAttributesPrecisionArray = $info->getMeta("floatAttributesPrecisionArray");
+                        if (isset($floatAttributesMaxLengthArray[$tableName][$key]))
+                        {
+                            $columnMaxLength = $floatAttributesMaxLengthArray[$tableName][$key];
+                        }
+                        if (isset($floatAttributesPrecisionArray[$tableName][$key]))
+                        {
+                            $columnPrecision = $floatAttributesPrecisionArray[$tableName][$key];
+                        }
+                        $this->floatOptimizer->setTable($tableName);
+                        $this->floatOptimizer->setColumn($key);
+                        $this->floatOptimizer->setValue($info->$key);
+                        $this->floatOptimizer->optimize($columnMaxLength, $columnPrecision);
                         break;
                     }
                 }
