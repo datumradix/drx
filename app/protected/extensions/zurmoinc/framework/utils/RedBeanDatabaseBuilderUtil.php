@@ -381,6 +381,12 @@
                                 {
                                     $f = min($f, $maxValue);
                                 }
+                                $ifPrecisionPresent = self::checkIfPrecisionExits(get_class($model), $memberName,
+                                                                                    $model::getDefaultMetadata());
+                                if ($ifPrecisionPresent)
+                                {
+                                    $f = 123.125678;
+                                }
                                 $model->$memberName = $f;
                                 break;
 
@@ -448,6 +454,25 @@
             } while ($unique && in_array($s, self::$uniqueStrings));
             $uniqueStrings[] = $s;
             return $s;
+        }
+
+        protected static function checkIfPrecisionExits($className, $memberName, $metaData)
+        {
+            $isPrecisionPresent = false;
+            $rules = isset($metaData[$className]['rules']) ? $metaData[$className]['rules'] : array();
+            if (is_array($rules))
+            {
+                foreach ($rules as $rule)
+                {
+                    $fieldName = (isset($rule[0])) ? $rule[0] : '';
+                    if (isset($rule['precision']) && $fieldName == $memberName)
+                    {
+                        $isPrecisionPresent = true;
+                        break;
+                    }
+                }
+            }
+            return $isPrecisionPresent;
         }
     }
 ?>
