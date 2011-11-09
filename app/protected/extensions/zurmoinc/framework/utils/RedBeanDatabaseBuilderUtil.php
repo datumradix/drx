@@ -381,11 +381,13 @@
                                 {
                                     $f = min($f, $maxValue);
                                 }
-                                $ifPrecisionPresent = self::checkIfPrecisionExits(get_class($model), $memberName,
-                                                                                    $model::getDefaultMetadata());
-                                if ($ifPrecisionPresent)
+                                list($ifFloatMaxValuePresent, $floatMaxValue)        = self::checkIfMemberAttributeExistsAndGetValue(
+                                                get_class($model), $memberName, $model::getDefaultMetadata(), 'max');
+                                list($ifFloatPrecisionPresent, $floatPrecisionValue) = self::checkIfMemberAttributeExistsAndGetValue(
+                                                get_class($model), $memberName, $model::getDefaultMetadata(), 'precision');
+                                if ($ifFloatPrecisionPresent && $ifFloatMaxValuePresent)
                                 {
-                                    $f = 123.125678;
+                                    $f = self::getRandomValueForFloatMember($floatMaxValue, $floatPrecisionValue);
                                 }
                                 $model->$memberName = $f;
                                 break;
@@ -456,23 +458,51 @@
             return $s;
         }
 
-        protected static function checkIfPrecisionExits($className, $memberName, $metaData)
+        protected static function checkIfMemberAttributeExistsAndGetValue($className, $memberName, $metaData, 
+                                                                          $memberAttributeName)
         {
-            $isPrecisionPresent = false;
+            $isMemberAttributePresent = false;
+            $memberAttributeValue     = 0;
             $rules = isset($metaData[$className]['rules']) ? $metaData[$className]['rules'] : array();
             if (is_array($rules))
             {
-                foreach ($rules as $rule)
+                foreach ($rules as $rulePerAttribute)
                 {
-                    $fieldName = (isset($rule[0])) ? $rule[0] : '';
-                    if (isset($rule['precision']) && $fieldName == $memberName)
+                    $fieldName = (isset($rulePerAttribute[0])) ? $rulePerAttribute[0] : '';
+                    if (isset($rulePerAttribute[$memberAttributeName]) && $fieldName == $memberName)
                     {
-                        $isPrecisionPresent = true;
+                        $isMemberAttributePresent = true;
+                        $memberAttributeValue     = $rulePerAttribute[$memberAttributeName];
                         break;
                     }
                 }
             }
-            return $isPrecisionPresent;
+            return array($isMemberAttributePresent, $memberAttributeValue);
+        }
+
+        protected static function getRandomValueForFloatMember($floatMaxValue, $floatPrecisionValue)
+        {
+            if ($floatMaxValue == 0)
+            {
+                $floatMaxValue = 4;
+            }
+            if ($floatPrecisionValue == 0)
+            {
+                $floatPrecisionValue = 2;
+            }
+            $randomChars       = '0123456789';
+            $wholeNumber       = '';
+            $decimalNumber     = '';
+            $wholeNumberLength = $floatMaxValue - ($floatPrecisionValue + 1);
+            for ($i = 0; $i < $wholeNumberLength; $i++) 
+            {
+                $wholeNumber .= $randomChars[mt_rand(0, strlen($randomChars) - 1)];
+            }
+             for ($i = 0; $i < $floatPrecisionValue; $i++) 
+            {
+                $decimalNumber .= $randomChars[mt_rand(0, strlen($randomChars) - 1)];
+            }
+            return $wholeNumber.".".$decimalNumber;
         }
     }
 ?>

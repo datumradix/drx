@@ -40,8 +40,14 @@
         {       
             $defaultfloatMaxLength = 14;
             $defaultfloatPrecision = 6;
-            $columnMaxLength = ($columnMaxLength       == 0) ? $defaultfloatMaxLength : $columnMaxLength;
-            $columnPrecision = ($defaultfloatPrecision == 0) ? $defaultfloatPrecision : $defaultfloatPrecision;
+            if ($columnMaxLength == 0)
+            {
+                $columnMaxLength = $defaultfloatMaxLength;
+            }
+            if ($columnPrecision == 0)
+            {
+                $columnPrecision = $defaultfloatPrecision;
+            }
             try
             {
                 $columnNamesToTypes = $this->writer->getColumns($this->table);
