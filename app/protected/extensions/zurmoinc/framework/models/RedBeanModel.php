@@ -640,27 +640,28 @@
                         {
                             case 'RedBeanModelTypeValidator':
                             case 'TypeValidator':
-                                $tableName = self::getTableName($modelClassName);
+                                $tableName  = self::getTableName($modelClassName);
                                 $columnName = strtolower($attributeName);
                                 if (array_key_exists($columnName, $hints))
                                 {
                                     unset($hints[$columnName]);
                                 }
-                                if (in_array($validator->type, array('date', 'datetime', 'blob', 'longblob', 'float')))
+                                if (in_array($validator->type, array('date', 'datetime', 'blob', 'longblob')))
                                 {
-                                    if ($validator->type === 'float')
-                                    {                                        
-                                        $floatAttributesMaxLengthArray = (count($bean->getMeta("floatAttributesMaxLengthArray"))>0) ? $bean->getMeta("floatAttributesMaxLengthArray") : array();
-                                        $floatAttributesPrecisionArray = (count($bean->getMeta("floatAttributesPrecisionArray"))>0) ? $bean->getMeta("floatAttributesPrecisionArray") : array();
-                                        $floatAttributesMaxLengthArray[$tableName][$columnName] = self::getAttributeMetaDataValueForColumnName(
-                                                                            $metadata[$modelClassName]['rules'],
-                                                                            $columnName, 'max');
-                                        $floatAttributesPrecisionArray[$tableName][$columnName] = self::getAttributeMetaDataValueForColumnName(
-                                                                            $metadata[$modelClassName]['rules'],
-                                                                            $columnName, 'precision');
-                                        $bean->setMeta('floatAttributesMaxLengthArray', $floatAttributesMaxLengthArray);
-                                        $bean->setMeta('floatAttributesPrecisionArray', $floatAttributesPrecisionArray);                                        
-                                    }
+                                    $hints[$columnName] = $validator->type;
+                                }
+                                if ($validator->type == 'float')
+                                {
+                                    $floatAttributesMaxLengthData = (count($bean->getMeta("floatAttributesMaxLengthData"))>0) ? $bean->getMeta("floatAttributesMaxLengthData") : array();
+                                    $floatAttributesPrecisionData = (count($bean->getMeta("floatAttributesPrecisionData"))>0) ? $bean->getMeta("floatAttributesPrecisionData") : array();
+                                    $floatAttributesMaxLengthData[$tableName][$columnName] = self::getAttributeMetaDataValueForColumnName(
+                                                                        $metadata[$modelClassName]['rules'],
+                                                                        $columnName, 'max');
+                                    $floatAttributesPrecisionData[$tableName][$columnName] = self::getAttributeMetaDataValueForColumnName(
+                                                                        $metadata[$modelClassName]['rules'],
+                                                                        $columnName, 'precision');
+                                    $bean->setMeta('floatAttributesMaxLengthData', $floatAttributesMaxLengthData);
+                                    $bean->setMeta('floatAttributesPrecisionData', $floatAttributesPrecisionData);
                                     $hints[$columnName] = $validator->type;
                                 }
                                 break;

@@ -72,16 +72,16 @@
                         $this->booleanOptimizer ->optimize();
                         break;
                     case 'float':
-                        $tableName = $info->getMeta("type");
-                        $floatAttributesMaxLengthArray = $info->getMeta("floatAttributesMaxLengthArray");
-                        $floatAttributesPrecisionArray = $info->getMeta("floatAttributesPrecisionArray");
-                        if (isset($floatAttributesMaxLengthArray[$tableName][$key]))
+                        $tableName                    = $info->getMeta("type");
+                        $floatAttributesMaxLengthData = $info->getMeta("floatAttributesMaxLengthData");
+                        $floatAttributesPrecisionData = $info->getMeta("floatAttributesPrecisionData");
+                        if (isset($floatAttributesMaxLengthData[$tableName][$key]))
                         {
-                            $columnMaxLength = $floatAttributesMaxLengthArray[$tableName][$key];
+                            $columnMaxLength = $floatAttributesMaxLengthData[$tableName][$key];
                         }
-                        if (isset($floatAttributesPrecisionArray[$tableName][$key]))
+                        if (isset($floatAttributesPrecisionData[$tableName][$key]))
                         {
-                            $columnPrecision = $floatAttributesPrecisionArray[$tableName][$key];
+                            $columnPrecision = $floatAttributesPrecisionData[$tableName][$key];
                         }
                         $this->floatOptimizer->setTable($tableName);
                         $this->floatOptimizer->setColumn($key);
