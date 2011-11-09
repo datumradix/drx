@@ -50,7 +50,7 @@
             }
             try
             {
-                $columnNamesToTypes = $this->writer->getColumns($this->table);
+                $columnNamesToTypes = $this->writer->getColumns($this->table);                
                 if (array_key_exists($this->column, $columnNamesToTypes))
                 {
                     $columnType = $columnNamesToTypes[$this->column];
