@@ -28,18 +28,34 @@
     {
         public function attach($owner)
         {
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLibraryCompatibilityCheck'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleStartPerformanceClock'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleBrowserCheck'));
-            if (!Yii::app()->isApplicationInstalled())
+            if(!Yii::app()->apiRequest->isApiRequest())
             {
-                $owner->attachEventHandler('onBeginRequest', array($this, 'handleInstallCheck'));
-                $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadLanguage'));
-                $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadTimeZone'));
+                $owner->attachEventHandler('onBeginRequest', array($this, 'handleLibraryCompatibilityCheck'));
+                $owner->attachEventHandler('onBeginRequest', array($this, 'handleStartPerformanceClock'));
+                $owner->attachEventHandler('onBeginRequest', array($this, 'handleBrowserCheck'));
+
+                if (!Yii::app()->isApplicationInstalled())
+                {
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handleInstallCheck'));
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadLanguage'));
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadTimeZone'));
+                }
+                else
+                {
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handleBeginRequest'));
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handleSetupDatabaseConnection'));
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handleClearCache'));
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadLanguage'));
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadTimeZone'));
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handleCheckAndUpdateCurrencyRates'));
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handleResolveCustomData'));
+                }
             }
             else
             {
-                $owner->attachEventHandler('onBeginRequest', array($this, 'handleBeginRequest'));
+                $owner->attachEventHandler('onBeginRequest', array($this, 'handleBeginApiRequest'));
+                $owner->attachEventHandler('onBeginRequest', array($this, 'handleLibraryCompatibilityCheck'));
+                $owner->attachEventHandler('onBeginRequest', array($this, 'handleStartPerformanceClock'));
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleSetupDatabaseConnection'));
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleClearCache'));
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadLanguage'));
@@ -51,15 +67,27 @@
 
         public function handleInstallCheck($event)
         {
-            if (!array_key_exists('r', $_GET) ||
-            !in_array($_GET['r'], array('zurmo/default/unsupportedBrowser',
-                                        'install/default',
-                                        'install/default/welcome',
-                                        'install/default/checkSystem',
-                                        'install/default/settings',
-                                        'install/default/runInstallation',
-                                        'install/default/installDemoData',
-                                        'min/serve')))
+            $allowedInstallUrls = array (
+                Yii::app()->createUrl('zurmo/default/unsupportedBrowser'),
+                Yii::app()->createUrl('install/default'),
+                Yii::app()->createUrl('install/default/welcome'),
+                Yii::app()->createUrl('install/default/checkSystem'),
+                Yii::app()->createUrl('install/default/settings'),
+                Yii::app()->createUrl('install/default/runInstallation'),
+                Yii::app()->createUrl('install/default/installDemoData'),
+                Yii::app()->createUrl('min/serve')
+            );
+            $reqestedUrl = Yii::app()->getRequest()->getUrl();
+            $redirect = true;
+            foreach ($allowedInstallUrls as $allowedUrl)
+            {
+                if (strpos($reqestedUrl, $allowedUrl) === 0)
+                {
+                    $redirect = false;
+                    break;
+                }
+            }
+            if ($redirect)
             {
                 $url = Yii::app()->createUrl('install/default');
                 Yii::app()->request->redirect($url);
@@ -95,14 +123,50 @@
 
         public function handleBeginRequest($event)
         {
-            if (!array_key_exists('r', $_GET) ||
-                !in_array($_GET['r'], array('zurmo/default/unsupportedBrowser',
-                                            'zurmo/default/login',
-                                            'min/serve')))
+            if (Yii::app()->user->isGuest)
             {
-                if (Yii::app()->user->isGuest)
+                $allowedGuestUserUrls = array (
+                    Yii::app()->createUrl('zurmo/default/unsupportedBrowser'),
+                    Yii::app()->createUrl('zurmo/default/login'),
+                    Yii::app()->createUrl('min/serve'),
+                );
+                $reqestedUrl = Yii::app()->getRequest()->getUrl();
+                $isUrlAllowedToGuests = false;
+                foreach ($allowedGuestUserUrls as $url)
+                {
+                    if (strpos($reqestedUrl, $url) === 0)
+                    {
+                        $isUrlAllowedToGuests = true;
+                    }
+                }
+                if (!$isUrlAllowedToGuests)
                 {
                     Yii::app()->user->loginRequired();
+                }
+            }
+        }
+
+        public function handleBeginApiRequest($event)
+        {
+            if (Yii::app()->user->isGuest)
+            {
+                $allowedGuestUserUrls = array (
+                    Yii::app()->createUrl('api/rest/login'),
+                );
+                $reqestedUrl = Yii::app()->getRequest()->getUrl();
+                $isUrlAllowedToGuests = false;
+                foreach ($allowedGuestUserUrls as $url)
+                {
+                    if (strpos($reqestedUrl, $url) === 0 || strpos($reqestedUrl, $url) === 1)
+                    {
+                        $isUrlAllowedToGuests = true;
+                    }
+                }
+                if (!$isUrlAllowedToGuests)
+                {
+                    //To-Do: Send message to user that he must be logged in order to access this action
+                    echo "Login required";
+                    exit;
                 }
             }
         }
@@ -190,5 +254,5 @@
                 Yii::app()->custom->resolveIsCustomDataLoaded();
             }
         }
-    }
+     }
 ?>
