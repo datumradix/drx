@@ -43,6 +43,9 @@
             'assetManager' => array(
                 'basePath' => INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'assets/',
             ),
+            'apiRequest' => array(
+                'class' => 'application.modules.api.components.ApiRequest',
+            ),
             'browser' => array(
                 'class'          => 'application.extensions.zurmoinc.framework.components.Browser',
             ),
@@ -135,6 +138,10 @@
                 'sanitizePost'   => false, //off for now
                 'sanitizeCookie' => false, //off for now
             ),
+            'session'=>array(
+                'class'=>'CHttpSession',
+                'autoStart' => false,
+            ),
             'themeManager' => array(
                 'basePath' => INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'themes',
             ),
@@ -143,8 +150,24 @@
                 'timeZone'             => 'America/Chicago',
             ),
             'request' => array(
-                'enableCsrfValidation' => true,
+                'enableCsrfValidation' => false,
                 'enableCookieValidation' => false, //keep off until we can fix it on linux/windows servers.
+            ),
+            'urlManager' => array (
+                'urlFormat' => 'path',
+                'caseSensitive' => true,
+                'showScriptName' => true,
+                'rules'=>array(
+                    // REST patterns
+                    array('api/rest/login',  'pattern'=>'api/rest/login',                'verb'=>'POST'),
+                    array('api/rest/logout', 'pattern'=>'api/rest/logout',               'verb'=>'GET'),
+                    array('api/rest/list',   'pattern'=>'api/rest/<model:\w+>',          'verb'=>'GET'),
+                    array('api/rest/view',   'pattern'=>'api/rest/<model:\w+>/<id:\d+>', 'verb'=>'GET'),
+                    array('api/rest/update', 'pattern'=>'api/rest/<model:\w+>/<id:\d+>', 'verb'=>'PUT'),
+                    array('api/rest/delete', 'pattern'=>'api/rest/<model:\w+>/<id:\d+>', 'verb'=>'DELETE'),
+                    array('api/rest/create', 'pattern'=>'api/rest/<model:\w+>',          'verb'=>'POST'),
+                    '<module:\w+>/<controller:\w+>/<action:\w+>'=>'<module>/<controller>/<action>',
+                )
             ),
             'user' => array(
                 'allowAutoLogin' => true,
@@ -206,6 +229,7 @@
         'modules' => array(
             'accounts',
             'activities',
+            'api',
             'configuration',
             'contacts',
             'designer',
@@ -274,6 +298,7 @@
         $common_config['import'][] = "application.modules.$moduleName.rules.attributes.*";          // Not Coding Standard
         $common_config['import'][] = "application.modules.$moduleName.rules.policies.*";            // Not Coding Standard
         $common_config['import'][] = "application.modules.$moduleName.tests.unit.*";                // Not Coding Standard
+        $common_config['import'][] = "application.modules.$moduleName.tests.unit.controllers.*";    // Not Coding Standard
         $common_config['import'][] = "application.modules.$moduleName.tests.unit.files.*";          // Not Coding Standard
         $common_config['import'][] = "application.modules.$moduleName.tests.unit.models.*";         // Not Coding Standard
         $common_config['import'][] = "application.modules.$moduleName.tests.unit.walkthrough.*";    // Not Coding Standard

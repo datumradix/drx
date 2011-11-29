@@ -23,36 +23,31 @@
      * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
-
-    require_once('testRoots.php');
-
-    chdir(COMMON_ROOT);
-
-    if (!is_file(INSTANCE_ROOT . '/protected/config/debugTest.php'))
+    require_once "Request.php";
+    class Auth extends Request
     {
-        copy(INSTANCE_ROOT . '/protected/config/debugDIST.php', INSTANCE_ROOT . '/protected/config/debugTest.php');
+        public static function login($baseUrl, $username, $password)
+        {
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_AUTH_USERNAME: ' . $username,
+                'ZURMO_AUTH_PASSWORD: ' . $password
+            );
+            $response = self::createApiCall($baseUrl . '/index.php/api/rest/login', 'POST', $headers);
+            $response = json_decode($response, true);
+            return $response;
+        }
+
+        public static function logout($baseUrl, $sessionId)
+        {
+            $headers = array(
+                            'Accept: application/json',
+                            'ZURMO_SESSION_ID: ' . $sessionId
+            );
+            $response = self::createApiCall($baseUrl . '/index.php/api/rest/logout', 'GET', $headers);
+            $response = json_decode($response, true);
+            return $response;
+        }
+
     }
-    if (!is_file(INSTANCE_ROOT . '/protected/config/perInstanceTest.php'))
-    {
-        copy(INSTANCE_ROOT . '/protected/config/perInstanceDIST.php', INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-
-        //Mark test application installed, because we need this variable to be set to true, for api tests
-        $contents = file_get_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-        $contents = preg_replace('/\$installed\s*=\s*false;/',
-                                 '$installed = true;',
-                                 $contents);
-        file_put_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php', $contents);
-    }
-
-    $debug          = INSTANCE_ROOT . '/protected/config/debugTest.php';
-
-    $yiit   = COMMON_ROOT   . "/../yii/framework/yiit.php";
-    $config = INSTANCE_ROOT . "/protected/config/test.php";
-
-    require_once(COMMON_ROOT   . "/version.php");
-    require_once($debug);
-    require_once($yiit);
-    require_once(COMMON_ROOT . '/protected/extensions/zurmoinc/framework/components/WebApplication.php');
-    require_once(COMMON_ROOT . '/protected/tests/WebTestApplication.php');
-    Yii::createApplication('WebTestApplication', $config);
 ?>

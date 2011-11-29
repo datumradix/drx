@@ -24,35 +24,46 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    require_once('testRoots.php');
-
-    chdir(COMMON_ROOT);
-
-    if (!is_file(INSTANCE_ROOT . '/protected/config/debugTest.php'))
+    class ApiRestTestHelper
     {
-        copy(INSTANCE_ROOT . '/protected/config/debugDIST.php', INSTANCE_ROOT . '/protected/config/debugTest.php');
+        public static function createApiCall($url, $method, $headers, $data = array())
+        {
+            if ($method == 'PUT')
+            {
+                $headers[] = 'X-HTTP-Method-Override: PUT';
+            }
+
+            $handle = curl_init();
+            curl_setopt($handle, CURLOPT_URL, $url);
+            curl_setopt($handle, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
+
+            switch($method)
+            {
+
+                case 'GET':
+                    break;
+
+                case 'POST':
+                    curl_setopt($handle, CURLOPT_POST, true);
+                    curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+                    break;
+
+                case 'PUT':
+                    curl_setopt($handle, CURLOPT_CUSTOMREQUEST, 'PUT');
+                    curl_setopt($handle, CURLOPT_POSTFIELDS, http_build_query($data));
+                    break;
+
+                case 'DELETE':
+                    curl_setopt($handle, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                    break;
+            }
+            $response = curl_exec($handle);
+            //$info = curl_getinfo($handle);
+            //print_r($info);
+            return $response;
+        }
     }
-    if (!is_file(INSTANCE_ROOT . '/protected/config/perInstanceTest.php'))
-    {
-        copy(INSTANCE_ROOT . '/protected/config/perInstanceDIST.php', INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-
-        //Mark test application installed, because we need this variable to be set to true, for api tests
-        $contents = file_get_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-        $contents = preg_replace('/\$installed\s*=\s*false;/',
-                                 '$installed = true;',
-                                 $contents);
-        file_put_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php', $contents);
-    }
-
-    $debug          = INSTANCE_ROOT . '/protected/config/debugTest.php';
-
-    $yiit   = COMMON_ROOT   . "/../yii/framework/yiit.php";
-    $config = INSTANCE_ROOT . "/protected/config/test.php";
-
-    require_once(COMMON_ROOT   . "/version.php");
-    require_once($debug);
-    require_once($yiit);
-    require_once(COMMON_ROOT . '/protected/extensions/zurmoinc/framework/components/WebApplication.php');
-    require_once(COMMON_ROOT . '/protected/tests/WebTestApplication.php');
-    Yii::createApplication('WebTestApplication', $config);
 ?>

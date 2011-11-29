@@ -24,35 +24,32 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    require_once('testRoots.php');
-
-    chdir(COMMON_ROOT);
-
-    if (!is_file(INSTANCE_ROOT . '/protected/config/debugTest.php'))
+    class ApiRestRequest extends ApiRequest
     {
-        copy(INSTANCE_ROOT . '/protected/config/debugDIST.php', INSTANCE_ROOT . '/protected/config/debugTest.php');
+        public function getServiceType(){
+            return ApiRequest::REST;
+        }
+
+        public static function getParamsFromRequest()
+        {
+            $requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
+            switch ($requestMethod)
+            {
+                case 'get':
+                    $params = $_GET;
+                    break;
+                case 'post':
+                    $params = $_POST;
+                    break;
+                case 'put':
+                    parse_str(file_get_contents('php://input'), $params);
+                    $params['id'] = $_GET['id'];
+                    break;
+                case 'delete':
+                    $params['id'] = $_GET['id'];
+                    break;
+            }
+            return $params;
+        }
     }
-    if (!is_file(INSTANCE_ROOT . '/protected/config/perInstanceTest.php'))
-    {
-        copy(INSTANCE_ROOT . '/protected/config/perInstanceDIST.php', INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-
-        //Mark test application installed, because we need this variable to be set to true, for api tests
-        $contents = file_get_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-        $contents = preg_replace('/\$installed\s*=\s*false;/',
-                                 '$installed = true;',
-                                 $contents);
-        file_put_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php', $contents);
-    }
-
-    $debug          = INSTANCE_ROOT . '/protected/config/debugTest.php';
-
-    $yiit   = COMMON_ROOT   . "/../yii/framework/yiit.php";
-    $config = INSTANCE_ROOT . "/protected/config/test.php";
-
-    require_once(COMMON_ROOT   . "/version.php");
-    require_once($debug);
-    require_once($yiit);
-    require_once(COMMON_ROOT . '/protected/extensions/zurmoinc/framework/components/WebApplication.php');
-    require_once(COMMON_ROOT . '/protected/tests/WebTestApplication.php');
-    Yii::createApplication('WebTestApplication', $config);
 ?>

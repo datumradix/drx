@@ -24,35 +24,31 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    require_once('testRoots.php');
-
-    chdir(COMMON_ROOT);
-
-    if (!is_file(INSTANCE_ROOT . '/protected/config/debugTest.php'))
+    class ApiModelTestItem extends OwnedSecurableItem
     {
-        copy(INSTANCE_ROOT . '/protected/config/debugDIST.php', INSTANCE_ROOT . '/protected/config/debugTest.php');
+        public static function getDefaultMetadata()
+        {
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'name',
+                ),
+                'rules' => array(
+                    array('name',  'type',   'type' => 'string'),
+                    array('name',  'length', 'max' => 32),
+                ),
+            );
+            return $metadata;
+        }
+
+        public static function isTypeDeletable()
+        {
+            return true;
+        }
+
+        public static function getModuleClassName()
+        {
+            return 'ApiModule';
+        }
     }
-    if (!is_file(INSTANCE_ROOT . '/protected/config/perInstanceTest.php'))
-    {
-        copy(INSTANCE_ROOT . '/protected/config/perInstanceDIST.php', INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-
-        //Mark test application installed, because we need this variable to be set to true, for api tests
-        $contents = file_get_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-        $contents = preg_replace('/\$installed\s*=\s*false;/',
-                                 '$installed = true;',
-                                 $contents);
-        file_put_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php', $contents);
-    }
-
-    $debug          = INSTANCE_ROOT . '/protected/config/debugTest.php';
-
-    $yiit   = COMMON_ROOT   . "/../yii/framework/yiit.php";
-    $config = INSTANCE_ROOT . "/protected/config/test.php";
-
-    require_once(COMMON_ROOT   . "/version.php");
-    require_once($debug);
-    require_once($yiit);
-    require_once(COMMON_ROOT . '/protected/extensions/zurmoinc/framework/components/WebApplication.php');
-    require_once(COMMON_ROOT . '/protected/tests/WebTestApplication.php');
-    Yii::createApplication('WebTestApplication', $config);
 ?>

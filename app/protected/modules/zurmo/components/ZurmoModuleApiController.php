@@ -24,35 +24,12 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    require_once('testRoots.php');
-
-    chdir(COMMON_ROOT);
-
-    if (!is_file(INSTANCE_ROOT . '/protected/config/debugTest.php'))
+    /**
+     * Zurmo Modules api controllers
+     * should extend this class to provide generic functionality
+     * that is applicable to all standard api modules.
+     */
+    abstract class ZurmoModuleApiController extends ZurmoModuleController
     {
-        copy(INSTANCE_ROOT . '/protected/config/debugDIST.php', INSTANCE_ROOT . '/protected/config/debugTest.php');
     }
-    if (!is_file(INSTANCE_ROOT . '/protected/config/perInstanceTest.php'))
-    {
-        copy(INSTANCE_ROOT . '/protected/config/perInstanceDIST.php', INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-
-        //Mark test application installed, because we need this variable to be set to true, for api tests
-        $contents = file_get_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-        $contents = preg_replace('/\$installed\s*=\s*false;/',
-                                 '$installed = true;',
-                                 $contents);
-        file_put_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php', $contents);
-    }
-
-    $debug          = INSTANCE_ROOT . '/protected/config/debugTest.php';
-
-    $yiit   = COMMON_ROOT   . "/../yii/framework/yiit.php";
-    $config = INSTANCE_ROOT . "/protected/config/test.php";
-
-    require_once(COMMON_ROOT   . "/version.php");
-    require_once($debug);
-    require_once($yiit);
-    require_once(COMMON_ROOT . '/protected/extensions/zurmoinc/framework/components/WebApplication.php');
-    require_once(COMMON_ROOT . '/protected/tests/WebTestApplication.php');
-    Yii::createApplication('WebTestApplication', $config);
 ?>
