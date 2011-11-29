@@ -2473,7 +2473,16 @@
                             }
                             else
                             {
-                                $this->$attributeName->setAttributes($value);
+                                $setAttributeMethodName = 'set' . ucfirst($attributeName);
+                                if($this->$attributeName instanceof RedBeanOneToManyRelatedModels &&
+                                   method_exists($this, $setAttributeMethodName))
+                                {
+                                    $this->$setAttributeMethodName($value);
+                                }
+                                else
+                                {
+                                    $this->$attributeName->setAttributes($value);
+                                }
                             }
                         }
                     }
@@ -2648,6 +2657,16 @@
                 $models[] = self::makeModel($bean, $modelClassName);
             }
             return $models;
+        }
+
+        /**
+         * Given an array of data, create stringified content.
+         * @param array $values
+         */
+        public function stringifyOneToManyRelatedModelsValues($values)
+        {
+            assert('is_array($values)');
+            return ArrayUtil::stringify($values);
         }
     }
 ?>

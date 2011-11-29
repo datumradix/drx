@@ -73,16 +73,19 @@
             }
             else
             {
-                $modelClassName  = $moduleClassName::getPrimaryModelName();
-                $model           = new $modelClassName();
-                $adapter         = new ModelAttributesAdapter($model);
+                $modelClassName           = $moduleClassName::getPrimaryModelName();
+                $model                    = new $modelClassName();
+                $adapter                  = new ModelAttributesAdapter($model);
+                $derivedAttributesAdapter = new DerivedAttributesAdapter(get_class($model));
+                $customAttributes         = array_merge($adapter->getCustomAttributes(),
+                                                        $derivedAttributesAdapter->getAttributes());
                 $canvasView = new StandardAndCustomAttributesListView(
                             $this->getId(),
                             $this->getModule()->getId(),
                             $_GET['moduleClassName'],
                             $moduleClassName::getModuleLabelByTypeAndLanguage('Plural'),
                             $adapter->getStandardAttributes(),
-                            $adapter->getCustomAttributes(),
+                            $customAttributes,
                             $modelClassName,
                             $breadcrumbLinks
                 );
@@ -127,6 +130,7 @@
             if (!empty($_GET['attributeName']))
             {
                 $attributeForm = AttributesFormFactory::createAttributeFormByAttributeName($model, $_GET["attributeName"]);
+                $attributeForm->setModelClassName($modelClassName);
             }
             else
             {
@@ -164,7 +168,8 @@
 
         protected function actionAttributeValidate($attributeForm)
         {
-            echo ZurmoActiveForm::validate($attributeForm);
+            $attributeForm->sanitizeFromPostAndSetAttributes($_POST[get_class($attributeForm)]);
+            echo ZurmoActiveForm::validate($attributeForm, null, false);
             Yii::app()->end(0, false);
         }
 
@@ -201,19 +206,35 @@
         {
             assert('!empty($_GET["moduleClassName"])');
             $wasRequired = $attributeForm->isRequired;
-            $attributeForm->setAttributes($_POST[get_class($attributeForm)]);
+            $attributeForm->sanitizeFromPostAndSetAttributes($_POST[get_class($attributeForm)]);
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
             $adapter = new $modelAttributesAdapterClassName($model);
             $adapter->setAttributeMetadataFromForm($attributeForm);
             if ($attributeForm->isRequired && !$wasRequired)
             {
-                RequiredAttributesValidViewUtil::
-                resolveToSetAsMissingRequiredAttributesByModelClassName(get_class($model), $attributeForm->attributeName);
+                if($model->isAttribute($attributeForm->attributeName))
+                {
+                    RequiredAttributesValidViewUtil::
+                    resolveToSetAsMissingRequiredAttributesByModelClassName(get_class($model), $attributeForm->attributeName);
+                }
+                else
+                {
+                    //A derived attribute that can be made required/unrequired is not supported.
+                    throw new NotSupportedException();
+                }
             }
             elseif (!$attributeForm->isRequired && $wasRequired)
             {
-                RequiredAttributesValidViewUtil::
-                resolveToRemoveAttributeAsMissingRequiredAttribute(get_class($model), $attributeForm->attributeName);
+                if($model->isAttribute($attributeForm->attributeName))
+                {
+                    RequiredAttributesValidViewUtil::
+                    resolveToRemoveAttributeAsMissingRequiredAttribute(get_class($model), $attributeForm->attributeName);
+                }
+                else
+                {
+                    //A derived attribute that can be made required/unrequired is not supported.
+                    throw new NotSupportedException();
+                }
             }
             RedBeanModelsCache::forgetAll(); //Ensures existing models that are cached see the new dropdown.
             $routeParams = array_merge($_GET, array(
@@ -271,15 +292,17 @@
         {
             assert('!empty($_GET["moduleClassName"])');
             assert('!empty($_GET["viewClassName"])');
-            $viewClassName           = $_GET['viewClassName'];
-            $moduleClassName         = $_GET['moduleClassName'];
-            $modelClassName          = $moduleClassName::getPrimaryModelName();
-            $editableMetadata        = $viewClassName::getMetadata();
-            $designerRulesType       = $viewClassName::getDesignerRulesType();
-            $designerRulesClassName  = $designerRulesType . 'DesignerRules';
-            $designerRules           = new $designerRulesClassName();
-            $modelAttributesAdapter  = DesignerModelToViewUtil::getModelAttributesAdapter($viewClassName, $modelClassName);
-            $attributeCollection     = $modelAttributesAdapter->getAttributes();
+            $viewClassName            = $_GET['viewClassName'];
+            $moduleClassName          = $_GET['moduleClassName'];
+            $modelClassName           = $moduleClassName::getPrimaryModelName();
+            $editableMetadata         = $viewClassName::getMetadata();
+            $designerRulesType        = $viewClassName::getDesignerRulesType();
+            $designerRulesClassName   = $designerRulesType . 'DesignerRules';
+            $designerRules            = new $designerRulesClassName();
+            $modelAttributesAdapter   = DesignerModelToViewUtil::getModelAttributesAdapter($viewClassName, $modelClassName);
+            $derivedAttributesAdapter = new DerivedAttributesAdapter($modelClassName);
+            $attributeCollection      = array_merge($modelAttributesAdapter->getAttributes(),
+                                                        $derivedAttributesAdapter->getAttributes());
             $attributesLayoutAdapter = AttributesLayoutAdapterUtil::makeAttributesLayoutAdapter(
                 $attributeCollection,
                 $designerRules,
@@ -388,6 +411,41 @@
                 0 => 'default/modulesMenu'
             ));
             $this->redirect($routeParams);
+        }
+
+        /**
+         * Action called from user interface when the attributeName drop down is changed in the edit view for a dropdown
+         * dependency.
+         */
+        public function actionChangeDropDownDependencyAttribute()
+        {
+            assert('!empty($_GET["moduleClassName"])');
+            assert('!empty($_GET["attributeTypeName"])');
+            $attributeFormClassName = $_GET['attributeTypeName'] . 'AttributeForm';
+            $moduleClassName = $_GET['moduleClassName'];
+            $modelClassName  = $moduleClassName::getPrimaryModelName();
+            $model = new $modelClassName();
+            if (!empty($_GET['attributeName']))
+            {
+                $attributeForm = AttributesFormFactory::createAttributeFormByAttributeName($model, $_GET["attributeName"]);
+                $attributeForm->setModelClassName($modelClassName);
+            }
+            else
+            {
+                $attributeForm   = new $attributeFormClassName();
+                $attributeForm->setScenario('createAttribute');
+                $attributeForm->setModelClassName($modelClassName);
+            }
+            if (isset($_POST[get_class($attributeForm)]))
+            {
+                $attributeForm->sanitizeFromPostAndSetAttributes($_POST[get_class($attributeForm)]);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+            echo DropDownDependencyAttributeEditView::
+                 renderContainerAndMappingLayoutContent($attributeForm, $this->getId(), $this->getModule()->getId(), false);
         }
     }
 ?>
