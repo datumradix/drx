@@ -23,36 +23,35 @@
      * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
+    require_once('version.php');
+    require_once('roots.php');
 
-    require_once('testRoots.php');
+    define('IS_TEST', true);
 
-    chdir(COMMON_ROOT);
-
-    if (!is_file(INSTANCE_ROOT . '/protected/config/debugTest.php'))
+    // Debug is used per instance.
+    if (is_file(INSTANCE_ROOT . '/protected/config/debug.php'))
     {
-        copy(INSTANCE_ROOT . '/protected/config/debugDIST.php', INSTANCE_ROOT . '/protected/config/debugTest.php');
+        $debug          = INSTANCE_ROOT . '/protected/config/debug.php';
     }
-    if (!is_file(INSTANCE_ROOT . '/protected/config/perInstanceTest.php'))
+    else
     {
-        copy(INSTANCE_ROOT . '/protected/config/perInstanceDIST.php', INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-
-        //Mark test application installed, because we need this variable to be set to true, for api tests
-        $contents = file_get_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php');
-        $contents = preg_replace('/\$installed\s*=\s*false;/',
-                                 '$installed = true;',
-                                 $contents);
-        file_put_contents(INSTANCE_ROOT . '/protected/config/perInstanceTest.php', $contents);
+        $debug          = INSTANCE_ROOT . '/protected/config/debugDIST.php';
     }
+    // Runtime path is used per instance.
+    $runtimePath    = INSTANCE_ROOT . '/protected/runtime';
+    // The config is used per instance.
+    $config         = INSTANCE_ROOT . '/protected/config/main.php';
+    // Yii is used from the common source.
+    $yii            = COMMON_ROOT   . '/../yii/framework/yii.php';
+    // WebApplication is used from the common source.
+    $webApplication = COMMON_ROOT   . '/protected/extensions/zurmoinc/framework/components/WebApplication.php';
 
-    $debug          = INSTANCE_ROOT . '/protected/config/debugTest.php';
-
-    $yiit   = COMMON_ROOT   . "/../yii/framework/yiit.php";
-    $config = INSTANCE_ROOT . "/protected/config/test.php";
-
-    require_once(COMMON_ROOT   . "/version.php");
     require_once($debug);
-    require_once($yiit);
-    require_once(COMMON_ROOT . '/protected/extensions/zurmoinc/framework/components/WebApplication.php');
-    require_once(COMMON_ROOT . '/protected/tests/WebTestApplication.php');
-    Yii::createApplication('WebTestApplication', $config);
+    require_once($yii);
+    require_once($webApplication);
+
+    $webApplication = Yii::createApplication('WebApplication', $config);
+    $webApplication->setRuntimePath($runtimePath);
+    $webApplication->run();
+    exit;
 ?>
