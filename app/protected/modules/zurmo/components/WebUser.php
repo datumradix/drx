@@ -87,5 +87,42 @@
             AuditEvent::logAuditEvent('UsersModule', UsersModule::AUDIT_EVENT_USER_LOGGED_OUT);
             return true;
         }
+
+        /**
+        * Initializes the application component.
+        * This method overrides the parent implementation by starting session,
+        * performing cookie-based authentication if enabled, and updating the flash variables.
+        */
+        public function init()
+        {
+            CApplicationComponent::init();
+
+            if(Yii::app()->apiRequest->isApiRequest())
+            {
+                if ($sessionId = Yii::app()->apiRequest->getSessionId())
+                {
+                    Yii::app()->session->setSessionID($sessionId);
+                }
+                Yii::app()->session->open();
+            }
+            else
+            {
+                Yii::app()->getSession()->open();
+                if ($this->getIsGuest() && $this->allowAutoLogin)
+                {
+                    $this->restoreFromCookie();
+                }
+                elseif ($this->autoRenewCookie && $this->allowAutoLogin)
+                {
+                    $this->renewCookie();
+                }
+            }
+
+            if ($this->autoUpdateFlash)
+            {
+                $this->updateFlash();
+            }
+            $this->updateAuthStatus();
+        }
     }
 ?>
