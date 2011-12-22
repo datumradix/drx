@@ -25,21 +25,17 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when jobs are detected as being 'stuck' by the
-     * job monitor.
+     * A job for making unit tests regarding the Job Manager. This test will always fail
      */
-    class StuckJobsNotificationRules extends JobsManagerAccessNotificationRules
+    class TestAlwaysFailsJob extends TestJob
     {
-        protected $critical    = true;
+        public $causeFailure = true;
 
-        public static function getDisplayName()
-        {
-            return Yii::t('Default', 'Scheduled jobs are stuck');
-        }
 
         public static function getType()
         {
-            return 'StuckJobs';
+            return 'TestAlwaysFails';
         }
     }
+
 ?>
