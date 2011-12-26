@@ -25,45 +25,19 @@
      ********************************************************************************/
 
     /**
-     * A model owned by a SecurableItem in the sense that it is
-     * included in a relation with RedBeanModel::OWNED - its lifetime
-     * is controlled by the owning model. SecurableItems are secured
-     * and auditable and so the related models that they own are secured
-     * and auditable.
+     * Google map render view.
      */
-    class OwnedModel extends RedBeanModel
+    class AddressGoogleMapModalView extends GridView
     {
-        // On changing a member value the original value
-        // is saved (ie: on change it again the original
-        // value is not overwritten) so that on save the
-        // changes can be written to the audit log.
-        public $originalAttributeValues = array();
-
-        public function __set($attributeName, $value)
+        public function __construct($controllerId, $moduleId, $modalMapDataProvider, $gridIdSuffix = null)
         {
-            AuditUtil::saveOriginalAttributeValue($this, $attributeName, $value);
-            parent::__set($attributeName, $value);
+            //Call for rendering the map content in modal view.
+            Yii::app()->mappingHelper->renderMapContentForModalView($modalMapDataProvider);
         }
 
-        public function save($runValidation = true, array $attributeNames = null)
+        public function isUniqueToAPage()
         {
-            AuditUtil::throwNotSupportedExceptionIfNotCalledFromAnItem();
-            return parent::save($runValidation, $attributeNames);
-        }
-
-        public function unrestrictedSave($runValidation = true, array $attributeNames = null)
-        {
-            return parent::save($runValidation, $attributeNames);
-        }
-
-        public function forgetOriginalAttributeValues()
-        {
-            $this->unrestrictedSet('originalAttributeValues', array());
-        }
-
-        public static function isTypeDeletable()
-        {
-            return false;
+            return true;
         }
     }
 ?>
