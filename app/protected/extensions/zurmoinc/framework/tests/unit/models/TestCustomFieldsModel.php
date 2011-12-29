@@ -31,10 +31,14 @@
             $metadata = parent::getDefaultMetadata();
             $metadata[__CLASS__] = array(
                 'relations' => array(
-                    'industry' => array(RedBeanModel::HAS_ONE, 'CustomField'),
+                    'industry'           => array(RedBeanModel::HAS_ONE, 'CustomField'),
+                    'multipleIndustries' => array(RedBeanModel::HAS_ONE, 'MultipleValuesCustomField'),
+                    'multipleSomethings' => array(RedBeanModel::HAS_ONE, 'MultipleValuesCustomField'),
                 ),
                 'customFields' => array(
-                    'industry' => 'Industries',
+                    'industry'           => 'Industries',
+                    'multipleIndustries' => 'MultipleIndustries',
+                    'multipleSomethings' => 'MultipleSomethings',
                 ),
             );
             return $metadata;
