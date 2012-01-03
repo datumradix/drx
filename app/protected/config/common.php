@@ -43,6 +43,12 @@
             'assetManager' => array(
                 'basePath' => INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'assets/',
             ),
+            'apiRequest' => array(
+                'class' => 'application.modules.api.components.ApiRequest',
+            ),
+            'apiHelper' => array(
+                'class' => 'application.modules.api.components.ZurmoApiHelper',
+            ),
             'browser' => array(
                 'class'          => 'application.extensions.zurmoinc.framework.components.Browser',
             ),
@@ -135,6 +141,7 @@
                 'autoCompleteListPageSize' => 5,
                 'importPageSize'           => 50,
                 'dashboardListPageSize'    => 5,
+                'apiListPageSize'          => 10,
             ),
             'performance' => array(
                 'class'          => 'application.extensions.zurmoinc.framework.components.PerformanceMeasurement',
@@ -145,6 +152,10 @@
                 'sanitizePost'   => false, //off for now
                 'sanitizeCookie' => false, //off for now
             ),
+            'session'=>array(
+                'class'=>'application.modules.zurmo.components.ZurmoSession',
+                'autoStart' => false,
+            ),
             'themeManager' => array(
                 'basePath' => INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'themes',
             ),
@@ -153,8 +164,24 @@
                 'timeZone'             => 'America/Chicago',
             ),
             'request' => array(
-                'enableCsrfValidation' => true,
+                'enableCsrfValidation' => false,
                 'enableCookieValidation' => false, //keep off until we can fix it on linux/windows servers.
+            ),
+            'urlManager' => array (
+                'urlFormat' => 'path',
+                'caseSensitive' => true,
+                'showScriptName' => true,
+                'rules'=>array(
+                    // API REST patterns
+                    array('<module>/api/read',   'pattern'=>'<module:\w+>/api/<id:\d+>', 'verb'=>'GET'),
+                    array('<module>/api/list',   'pattern'=>'<module:\w+>/api/*',          'verb'=>'GET'),
+                    array('<module>/api/update', 'pattern'=>'<module:\w+>/api/<id:\d+>', 'verb'=>'PUT'),
+                    array('<module>/api/delete', 'pattern'=>'<module:\w+>/api/<id:\d+>', 'verb'=>'DELETE'),
+                    array('<module>/api/create', 'pattern'=>'<module:\w+>/api/',          'verb'=>'POST'),
+                    array('zurmo/<model>Api/read',   'pattern'=>'zurmo/<model:\w+>/api/<id:\d+>', 'verb'=>'GET'),
+                    array('zurmo/<model>Api/list',   'pattern'=>'zurmo/<model:\w+>/api/*',          'verb'=>'GET'),
+                    '<module:\w+>/<controller:\w+>/<action:\w+>'=>'<module>/<controller>/<action>',
+                )
             ),
             'user' => array(
                 'allowAutoLogin' => true,
@@ -189,6 +216,7 @@
         ),
         'import' => array(
             'application.extensions.zurmoinc.framework.adapters.*',
+            'application.extensions.zurmoinc.framework.adapters.api.*',
             'application.extensions.zurmoinc.framework.adapters.columns.*',
             'application.extensions.zurmoinc.framework.adapters.dataproviders.*',
             'application.extensions.zurmoinc.framework.configuration.*',
@@ -216,6 +244,7 @@
         'modules' => array(
             'accounts',
             'activities',
+            'api',
             'configuration',
             'contacts',
             'designer',
@@ -288,6 +317,7 @@
         $common_config['import'][] = "application.modules.$moduleName.rules.attributes.*";          // Not Coding Standard
         $common_config['import'][] = "application.modules.$moduleName.rules.policies.*";            // Not Coding Standard
         $common_config['import'][] = "application.modules.$moduleName.tests.unit.*";                // Not Coding Standard
+        $common_config['import'][] = "application.modules.$moduleName.tests.unit.controllers.*";    // Not Coding Standard
         $common_config['import'][] = "application.modules.$moduleName.tests.unit.files.*";          // Not Coding Standard
         $common_config['import'][] = "application.modules.$moduleName.tests.unit.models.*";         // Not Coding Standard
         $common_config['import'][] = "application.modules.$moduleName.tests.unit.walkthrough.*";    // Not Coding Standard
