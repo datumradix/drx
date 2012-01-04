@@ -23,7 +23,10 @@
      * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
-    define ('IS_TEST', true);
+    if (!defined('IS_TEST'))
+    {
+        define('IS_TEST', true);
+    }
     $common_config = CMap::mergeArray(
         require('main.php'),
         array(
@@ -50,6 +53,19 @@
             'components' => array(
                 'user' => array(
                     'class' => 'TestWebUser',
+                ),
+                'urlManager' => array (
+                     'rules'=>array(
+                        // API REST patterns
+    /*
+                        array('api/<model>Api/read',   'pattern'=>'api/<model:\w+>/api/<id:\d+>', 'verb'=>'GET'),
+                        array('api/<model>Api/list',   'pattern'=>'api/<model:\w+>/api/*',          'verb'=>'GET'),
+                        array('api/<model>Api/update', 'pattern'=>'api/<model:\w+>/api/<id:\d+>', 'verb'=>'PUT'),
+                        array('api/<model>Api/delete', 'pattern'=>'api/<model:\w+>/api/<id:\d+>', 'verb'=>'DELETE'),
+                        array('api/<model>Api/create', 'pattern'=>'api/<model:\w+>/api/',          'verb'=>'POST'),
+                        '<module:\w+>/<controller:\w+>/<action:\w+>'=>'<module>/<controller>/<action>',
+                        */
+                    )
                 ),
             ),
         )
