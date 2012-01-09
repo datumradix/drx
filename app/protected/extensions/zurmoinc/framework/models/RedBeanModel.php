@@ -1331,6 +1331,41 @@
         }
 
         /**
+         * Given an attribute return the column name.
+         * @param string $attributeName
+         */
+        public function getColumnNameByAttribute($attributeName)
+        {
+            assert('is_string($attributeName)');
+            if ($this->isRelation($attributeName))
+            {
+                $modelClassName = get_class($this);
+                $columnName = $modelClassName::getForeignKeyName($modelClassName, $attributeName);
+            }
+            else
+            {
+                $columnName = strtolower($attributeName);
+            }
+            return $columnName;
+        }
+
+        /**
+         * This method is needed to interpret when the attributeName is 'id'.  Since id is not an attribute
+         * on the model, we manaully check for this and return the appropriate class name.
+         * @param string $attributeName
+         * @return the model class name for the attribute.  This could be a casted up model class name.
+         */
+        public function resolveAttributeModelClassName($attributeName)
+        {
+            assert('is_string($attributeName)');
+            if ($attributeName == 'id')
+            {
+                return get_class($this);
+            }
+            return $this->getAttributeModelClassName($attributeName);
+        }
+
+        /**
          * Returns the model class name for an
          * attribute name defined by the extending class's getMetadata() method.
          * For use by RedBeanModelDataProvider. Is unlikely to be of any
@@ -2473,7 +2508,16 @@
                             }
                             else
                             {
-                                $this->$attributeName->setAttributes($value);
+                                $setAttributeMethodName = 'set' . ucfirst($attributeName);
+                                if($this->$attributeName instanceof RedBeanOneToManyRelatedModels &&
+                                   method_exists($this, $setAttributeMethodName))
+                                {
+                                    $this->$setAttributeMethodName($value);
+                                }
+                                else
+                                {
+                                    $this->$attributeName->setAttributes($value);
+                                }
                             }
                         }
                     }
@@ -2648,6 +2692,16 @@
                 $models[] = self::makeModel($bean, $modelClassName);
             }
             return $models;
+        }
+
+        /**
+         * Given an array of data, create stringified content.
+         * @param array $values
+         */
+        public function stringifyOneToManyRelatedModelsValues($values)
+        {
+            assert('is_array($values)');
+            return ArrayUtil::stringify($values);
         }
     }
 ?>
