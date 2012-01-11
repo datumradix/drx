@@ -29,6 +29,18 @@
      */
     class GlobalSearchAndRecentlyViewedView extends View
     {
+        protected $moduleNamesAndLabelsAndAll;
+
+        protected $sourceUrl;
+
+        public function __construct($moduleNamesAndLabelsAndAll, $sourceUrl)
+        {
+            assert('is_array($moduleNamesAndLabelsAndAll)');
+            assert('is_string($sourceUrl)');
+            $this->moduleNamesAndLabelsAndAll = $moduleNamesAndLabelsAndAll;
+            $this->sourceUrl            = $sourceUrl;
+        }
+
         protected function renderContent()
         {
             $content  = '<div><div style="float:right;">' . $this->renderRecentlyViewedContent() . '</div>';
@@ -61,8 +73,11 @@
 
         protected function renderGlobalSearchContent()
         {
-            $imagePath = Yii::app()->baseUrl . '/themes/default/images/searchIcon.gif';
-            $content                 = CHtml::image($imagePath, 'Search Icon');
+            if(count($this->moduleNamesAndLabelsAndAll) == 1)
+            {
+                return null;
+            }
+            $content                 = $this->renderGlobalSearchScopingInputContent();
             $hintMessage             = Yii::t('Default', 'Search by name, phone, or e-mail');
             $htmlOptions             = array('class'   => 'global-search global-search-hint',
                                              'onfocus' => '$(this).removeClass("global-search-hint"); $(this).val("");',
@@ -73,7 +88,7 @@
                 'name'        => 'globalSearchInput',
                 'id'          => 'globalSearchInput',
                 'value'       => $hintMessage,
-                'source'      => Yii::app()->createUrl('zurmo/default/globalSearchAutoComplete'),
+                'source'      => $this->sourceUrl,
                 'htmlOptions' => $htmlOptions,
                 'options'     => array('select' => 'js: function(event, ui) {if (ui.item.href.length > 0)' .
                                                    '{window.location = ui.item.href;} return false;}')
@@ -88,6 +103,65 @@
                             collision: "flip flip"});';
             /// End Not Coding Standard
             Yii::app()->clientScript->registerScript('GlobalSearchElementPosition', $script);
+            return $content;
+        }
+
+        protected function renderGlobalSearchScopingInputContent()
+        {
+            $imagePath            = Yii::app()->baseUrl . '/themes/default/images/searchIcon.gif';
+            $cClipWidget   = new CClipWidget();
+            $cClipWidget->beginClip("JuiMultiSelect");
+            $cClipWidget->widget('ext.zurmoinc.framework.widgets.JuiMultiSelect', array(
+                'dataAndLabels'  => $this->moduleNamesAndLabelsAndAll,
+                'selectedValue'  => 'All',
+                'inputId'        => 'globalSearchScope',
+                'inputName'      => 'globalSearchScope',
+                'options'        => array(
+                                          'selectedText' => '',
+                                          'noneSelectedText' => '', 'header' => false,
+                                          'position' => array('my' =>  'right top', 'at' => 'right bottom'))
+            ));
+            $cClipWidget->endClip();
+            $content = $cClipWidget->getController()->clips['JuiMultiSelect'];
+            // Begin Not Coding Standard
+            $script = '$("#globalSearchScope").multiselect("getButton").width("25");
+                       $("#globalSearchScope").multiselect("getButton").html(\'<span>' .
+                            CHtml::image($imagePath, 'Search Icon') . '</span>\');
+                       $("#globalSearchScope").bind("multiselectclick", function(event, ui){
+                            if($("#globalSearchScope").multiselect("widget").find(":checkbox:checked").length == 0)
+                            {
+                                $("#globalSearchScope").multiselect("widget").find(":checkbox").each(function(){
+                                    if(this.value == "All" && !this.checked)
+                                    {
+                                        this.click();
+                                    }
+                                });
+                            }
+                            if(ui.value == "All" && ui.checked)
+                            {
+                                $("#globalSearchScope").multiselect("widget").find(":checkbox").each(function(){
+                                    if(this.value != "All" && this.checked)
+                                    {
+                                        this.click();
+                                    }
+                                });
+                            }
+                            else if(ui.value != "All" && ui.checked)
+                            {
+                                $("#globalSearchScope").multiselect("widget").find(":checkbox").each(function(){
+                                    if(this.value == "All" && this.checked)
+                                    {
+                                        this.click();
+                                    }
+                                });
+                            }
+                        });
+                        $("#globalSearchInput").bind("focus", function(event, ui){
+                            $("#globalSearchInput").autocomplete("option", "source", "' . $this->sourceUrl . '&" + $.param($("#globalSearchScope").serializeArray()));
+                        });
+                       ';
+            /// End Not Coding Standard
+            Yii::app()->clientScript->registerScript('GlobalSearchScopeChanges', $script);
             return $content;
         }
     }

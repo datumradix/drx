@@ -26,9 +26,9 @@
 
     class InstallPageView extends ZurmoPageView
     {
-        public function __construct(CController $controller, View $view)
+        public function __construct(View $view)
         {
-            parent::__construct(new InstallView($controller, $view));
+            parent::__construct(new InstallView($view));
         }
 
         protected function getSubtitle()

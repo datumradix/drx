@@ -24,24 +24,14 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ZurmoErrorView extends View
+    /**
+     * Base class for module page views.  Constructs the ZurmoDefaultView.
+     */
+    abstract class ZurmoDefaultPageView extends ZurmoPageView
     {
-        private $verticalGridView;
-
-        public function __construct(View $view1)
+        public function __construct(View $view)
         {
-            $horizontalGridView = new GridView(1, 1);
-            $horizontalGridView->setView($view1, 0, 0);
-            $this->verticalGridView  = new GridView(4, 1);
-            $this->verticalGridView->setView(new HeaderView(),    0, 0);
-            $this->verticalGridView->setView(new MenuView(), 1, 0);
-            $this->verticalGridView->setView($horizontalGridView, 2, 0);
-            $this->verticalGridView->setView(new FooterView(),    3, 0);
-        }
-
-        protected function renderContent()
-        {
-            return $this->verticalGridView->render();
+            parent::__construct(new ZurmoDefaultView($view));
         }
     }
 ?>
