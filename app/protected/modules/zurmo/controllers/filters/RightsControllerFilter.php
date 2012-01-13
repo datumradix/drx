@@ -43,10 +43,20 @@
             {
                 return true;
             }
+            static::processAccessFailure();
+            Yii::app()->end(0, false);
+        }
+
+        protected static function processAccessFailure()
+        {
+            static::renderAccessFailureView();
+        }
+
+        protected static function renderAccessFailureView()
+        {
             $messageView = new AccessFailureView();
             $view        = new AccessFailurePageView($messageView);
             echo $view->render();
-            Yii::app()->end(0, false);
         }
     }
 ?>
