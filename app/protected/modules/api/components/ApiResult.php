@@ -27,9 +27,9 @@
     class ApiResult
     {
         public $status;
-        public $data = array();
+        public $data    = array();
         public $message = null;
-        public $errors = null;
+        public $errors  = null;
 
         public function __construct($status, $data, $message = null, $errors = null)
         {

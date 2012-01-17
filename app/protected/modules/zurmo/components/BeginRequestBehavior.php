@@ -33,14 +33,11 @@
             {
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleBeginApiRequest'));
             }
-
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLibraryCompatibilityCheck'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleStartPerformanceClock'));
-
             if(!Yii::app()->apiRequest->isApiRequest())
             {
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleBrowserCheck'));
-
                 if (!Yii::app()->isApplicationInstalled())
                 {
                     $owner->attachEventHandler('onBeginRequest', array($this, 'handleTidyCheck'));
@@ -53,7 +50,6 @@
                     $owner->attachEventHandler('onBeginRequest', array($this, 'handleBeginRequest'));
                 }
             }
-
             if (Yii::app()->isApplicationInstalled())
             {
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleSetupDatabaseConnection'));
