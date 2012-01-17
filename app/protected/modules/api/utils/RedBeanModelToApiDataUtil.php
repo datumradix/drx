@@ -39,27 +39,27 @@
 
         public function getData()
         {
-            $data       = array();
-            $data['id'] = $this->model->id;
+            $data                  = array();
+            $data['id']            = $this->model->id;
             $retrievableAttributes = static::resolveRetrievableAttributesByModel($this->model);
             foreach($this->model->getAttributes($retrievableAttributes) as $attributeName => $notUsed)
             {
-                $type             = ModelAttributeToMixedApiTypeUtil::getType($this->model, $attributeName);
-                $adapterClassName = $type . 'RedBeanModelAttributeValueToApiValueAdapter';
+                $type              = ModelAttributeToMixedApiTypeUtil::getType($this->model, $attributeName);
+                $adapterClassName  = $type . 'RedBeanModelAttributeValueToApiValueAdapter';
                 if($type != null && @class_exists($adapterClassName) &&
-                   !($this->model->isRelation($attributeName) && $this->model->getRelationType($attributeName) !=
-                      RedBeanModel::HAS_ONE))
+                   !($this->model->isRelation($attributeName) &&
+                     $this->model->getRelationType($attributeName) != RedBeanModel::HAS_ONE))
                 {
-                    $adapter = new $adapterClassName($this->model, $attributeName);
+                    $adapter       = new $adapterClassName($this->model, $attributeName);
                     $adapter->resolveData($data);
                 }
                 elseif($this->model->isOwnedRelation($attributeName) &&
-                       ($this->model->getRelationType($attributeName) == RedBeanModel::HAS_ONE ||
-                        $this->model->getRelationType($attributeName) == RedBeanModel::HAS_MANY_BELONGS_TO))
+                      ($this->model->getRelationType($attributeName) == RedBeanModel::HAS_ONE ||
+                       $this->model->getRelationType($attributeName) == RedBeanModel::HAS_MANY_BELONGS_TO))
                 {
                     if($this->model->{$attributeName}->id > 0)
                     {
-                        $util = new RedBeanModelToApiDataUtil($this->model->{$attributeName});
+                        $util                 = new RedBeanModelToApiDataUtil($this->model->{$attributeName});
                         $relatedData          = $util->getData();
                         $data[$attributeName] = $relatedData;
                     }
@@ -90,18 +90,18 @@
         public function resolveRetrievableAttributesByModel($model)
         {
             $retrievableAttributeNames = array();
-           foreach ($model->attributeNames() as $name)
-           {
-               try
-               {
+            foreach ($model->attributeNames() as $name)
+            {
+                try
+                {
                    $value = $model->{$name};
                    $retrievableAttributeNames[] = $name;
-               }
-               catch (Exception $e)
-               {
+                }
+                catch (Exception $e)
+                {
                    // Skip this attribute
-               }
-           }
+                }
+            }
             return $retrievableAttributeNames;
         }
     }

@@ -26,14 +26,14 @@
 
     class ApiSoapRequest extends ApiRequest
     {
-        public function getServiceType(){
+        public function getServiceType()
+        {
             return ApiRequest::SOAP;
         }
 
         public static function getParamsFromRequest()
         {
             throw new NotSupportedException();
-            //$params = ApiXmlParser::toArray($xml);
         }
     }
 ?>
