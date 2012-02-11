@@ -131,26 +131,20 @@
         protected function renderConfigurationFormLayout($form)
         {
             assert('$form instanceof ZurmoActiveForm');
-
-            $element                   = new LatestActivitiesViewTypeStaticDropDownElement($this->configurationForm,                                                                           'viewType', $form);
-            $element->editableTemplate = '{content}';
-            $viewTypeElementContent    = $element->render();
             $element                   = new LatestActivitiesRollUpCheckBoxElement($this->configurationForm, 'rollup',
                                                                                  $form);
             $element->editableTemplate = '{content}{label}';
             $rollupElementContent      = $element->render();
-            $element                   = new LatestActivitiesMashableFilterRadioElement($this->configurationForm,
-                                                                                      'filteredByModelName',
+            $element                   = new LatestActivitiesOwnedByFilterRadioElement($this->configurationForm,
+                                                                                      'ownedByFilter',
                                                                                       $form);
-            $element->editableTemplate =  '<div style="float:left;"' .
-                                          ' id="LatestActivitiesConfigurationForm_filteredByModelName">{content}</div>';
-            $filteredByContent         = $element->render();
+            $element->editableTemplate =  '<div id="LatestActivitiesConfigurationForm_ownedByFilter">{content}</div>';
+            $ownedByFilterContent      = $element->render();
 
             $content  = '<div class="horizontal-line latest-activity-toolbar">';
-            $content .= $filteredByContent;
+            $content .= $ownedByFilterContent;
             $content .= '<div class="latest-activity-rollup">' . $rollupElementContent . '</div>';
             $content .= '</div>' . "\n";
-            $content .= '<div class="latest-activity-view-type">' . $viewTypeElementContent . '</div>';
             return $content;
         }
 
@@ -167,18 +161,13 @@
             ));
             Yii::app()->clientScript->registerScript($this->uniquePageId, "
             $('#LatestActivitiesConfigurationForm_rollup').button();
-            $('#LatestActivitiesConfigurationForm_filteredByModelName').buttonset();
-            $('#LatestActivitiesConfigurationForm_viewType_value').change(function()
-                {
-                    " . $ajaxSubmitScript . "
-                }
-            );
+            $('#LatestActivitiesConfigurationForm_ownedByFilter').buttonset();
             $('#LatestActivitiesConfigurationForm_rollup').click(function()
                 {
                     " . $ajaxSubmitScript . "
                 }
             );
-            $('#LatestActivitiesConfigurationForm_filteredByModelName').change(function()
+            $('#LatestActivitiesConfigurationForm_ownedByFilter').change(function()
                 {
                     " . $ajaxSubmitScript . "
                 }
