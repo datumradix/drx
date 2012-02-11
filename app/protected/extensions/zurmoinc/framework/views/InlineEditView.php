@@ -100,7 +100,7 @@
 
             $content .= $formStart;
             $content .= $this->renderFormLayout($form);
-            $content .= '<div class="modal-view-toolbar">';
+            $content .= '<div class="view-toolbar-container clearfix">';
             $content .= $this->renderActionElementBar(true);
             $content .= '</div>';
             $formEnd = $clipWidget->renderEndWidget();

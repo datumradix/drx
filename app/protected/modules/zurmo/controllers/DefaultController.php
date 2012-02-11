@@ -103,7 +103,8 @@
 
         public function actionAbout()
         {
-            $view = new AboutPageView($this);
+            $view = new AboutPageView(ZurmoDefaultViewUtil::
+                                         makeStandardViewForCurrentUser($this, new AboutView()));
             echo $view->render();
         }
 
@@ -131,7 +132,8 @@
                                     'Edit',
                                     Yii::t('Default', 'Global Configuration')
             );
-            $view = new ZurmoConfigurationPageView($this, $titleBarAndEditView);
+            $view = new ZurmoConfigurationPageView(ZurmoDefaultViewUtil::
+                                         makeStandardViewForCurrentUser($this, $titleBarAndEditView));
             echo $view->render();
         }
 
@@ -142,10 +144,12 @@
 
         public function actionGlobalSearchAutoComplete($term)
         {
-            $pageSize = Yii::app()->pagination->resolveActiveForCurrentUserByType(
+            $scopeData = GlobalSearchUtil::resolveGlobalSearchScopeFromGetData($_GET);
+            $pageSize  = Yii::app()->pagination->resolveActiveForCurrentUserByType(
                             'autoCompleteListPageSize', get_class($this->getModule()));
             $autoCompleteResults = ModelAutoCompleteUtil::
-                                   getGlobalSearchResultsByPartialTerm($term, $pageSize, Yii::app()->user->userModel);
+                                   getGlobalSearchResultsByPartialTerm($term, $pageSize, Yii::app()->user->userModel,
+                                                                       $scopeData);
             echo CJSON::encode($autoCompleteResults);
         }
     }

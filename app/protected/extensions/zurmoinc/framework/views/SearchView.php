@@ -136,14 +136,12 @@
             {
                 $startingDivStyle = "style='display:none;'";
             }
-            $content  = '<tbody class="search-view-bottom-panel" ' . $startingDivStyle . '>';
-            $content .= '<tr><td colspan="4">';
+            $content  = '<div class="search-form-tools">';
             $content .= $searchButton . '&#160;';
             $content .= $moreSearchOptionsLink . '&#160;|&#160;';
             $content .= $clearSearchLink;
             $content .= $this->renderFormBottomPanelExtraLinks();
-            $content .= '</td></tr>';
-            $content .= '</tbody>';
+            $content .= '</div>';
             return $content;
         }
 
@@ -178,9 +176,10 @@
          */
         protected function renderFormLayout($form = null)
         {
-            $metadata = self::getMetadata();
-            $content  = '<table>';
-            $content .= TableUtil::getColGroupContent($this->getColumnCount($metadata['global']));
+            $metadata       = self::getMetadata();
+            $maxCellsPerRow = $this->getMaxCellsPerRow();
+            $content        = '';//'<table>';
+            $content       .= TableUtil::getColGroupContent($this->getColumnCount($metadata['global']));
             assert('count($metadata["global"]["panels"]) == 2');
             foreach ($metadata['global']['panels'] as $key => $panel)
             {
@@ -189,28 +188,32 @@
                 {
                     $startingDivStyle = "style='display:none;'";
                 }
-                $content .= '<tbody class="search-view-' . $key . '" ' . $startingDivStyle . '>';
+                $content .= '<div class="search-view-' . $key . '" ' . $startingDivStyle . '>';
                 foreach ($panel['rows'] as $row)
                 {
-                    $content .= '<tr>';
+                    //$content .= '<tr>';
                     foreach ($row['cells'] as $cell)
                     {
                         if (!empty($cell['elements']))
                         {
                             foreach ($cell['elements'] as $elementInformation)
                             {
+                                if (count($row['cells']) == 1 && count($row['cells']) < $maxCellsPerRow)
+                                {
+                                    $elementInformation['wide'] = true;
+                                }
                                 $elementclassname = $elementInformation['type'] . 'Element';
                                 $element = new $elementclassname($this->model, $elementInformation['attributeName'], $form, array_slice($elementInformation, 2));
                                 $content .= $element->render();
                             }
                         }
                     }
-                    $content .= '</tr>';
+                    //$content .= '</tr>';
                 }
-                $content .= '</tbody>';
+                $content .= '</div>';
             }
             $content .= $this->renderFormBottomPanel();
-            $content .= '</table>';
+            //$content .= '</table>';
             return $content;
         }
 
@@ -316,6 +319,14 @@
         protected function getSearchFormId()
         {
             return 'search-form' . $this->gridIdSuffix;
+        }
+
+        protected function getMaxCellsPerRow()
+        {
+            $designerRulesType = self::getDesignerRulesType();
+            $designerRulesClassName = $designerRulesType . 'DesignerRules';
+            $designerRules = new $designerRulesClassName();
+            return $designerRules->maxCellsPerRow();
         }
     }
 ?>

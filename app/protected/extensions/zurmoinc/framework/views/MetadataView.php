@@ -58,9 +58,9 @@
          */
         protected function renderViewToolBar($renderInForm = true)
         {
-            $content = '<div class="view-toolbar">';
+            $content = '<div class="view-toolbar-container clearfix"><div class="portlet-toolbar">';
             $content .= $this->renderActionElementBar($renderInForm);
-            $content .= '</div>';
+            $content .= '</div></div>';
             return $content;
         }
 
@@ -93,7 +93,7 @@
                     $renderedContent = $element->render();
                     if (!$first && !empty($renderedContent))
                     {
-                        $content .= '&#160;|&#160;';
+                       // $content .= '&#160;|&#160;';
                     }
                     $first = false;
                     $content .= $renderedContent;

@@ -2659,5 +2659,10 @@
             }
             return $models;
         }
+
+        public static function getModuleClassName()
+        {
+            return null;
+        }
     }
 ?>

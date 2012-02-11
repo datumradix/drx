@@ -26,37 +26,87 @@
 
     class HeaderLinksView extends View
     {
+        protected $settingsMenuItems;
+
+        protected $userMenuItems;
+
+        protected $notificationsUrl;
+
+        public function __construct($settingsMenuItems, $userMenuItems, $notificationsUrl)
+        {
+            assert('is_array($settingsMenuItems)');
+            assert('is_array($userMenuItems)');
+            assert('is_string($notificationsUrl)');
+            $this->settingsMenuItems     = $settingsMenuItems;
+            $this->userMenuItems         = $userMenuItems;
+            $this->notificationsUrl      = $notificationsUrl;
+        }
+
         protected function renderContent()
         {
-            $metadata = MenuUtil::getAccessibleHeaderMenuByCurrentUser();
-            foreach ($metadata as $menuItem)
-            {
-                $links[$menuItem['label']] = Yii::app()->createUrl($menuItem['route']);
-            }
 
-            $content  = '<div><ul>';
+            $content  = '<div class="clearfix"><div id="corp-logo"><img src="themes/default/images/Zurmo_logo.png"><span>Company Name</span></div>';
+            $content .= '<div id="user-toolbar" class="clearfix">';
+            $content .= static::renderHeaderMenuContent(
+                            static::resolveUserMenuItemsWithTopLevelItem($this->userMenuItems),
+                            'user-header-menu');
             $content .= static::renderNotificationsLinkContent();
-            $content .= '<li>' . Yii::t('Default', 'Welcome') . ', <b>' . Yii::app()->user->firstName . '</b></li>';
-            foreach ($links as $label => $link)
-            {
-                $content .= "<li><a href=\"$link\">$label</a></li>";
-            }
-            $content .= '</ul></div>';
+            $content .= static::renderHeaderMenuContent(
+                            static::resolveSettingsMenuItemsWithTopLevelItem($this->settingsMenuItems),
+                            'settings-header-menu');
+            $content .= '</div></div>';
             return $content;
+        }
+
+        protected static function resolveUserMenuItemsWithTopLevelItem($menuItems)
+        {
+            assert('is_array($menuItems)');
+            $finalMenuItems             = array(array('label' => Yii::app()->user->userModel->username, 'url' => null));
+            $finalMenuItems[0]['items'] = $menuItems;
+            return $finalMenuItems;
+        }
+
+        protected static function resolveSettingsMenuItemsWithTopLevelItem($menuItems)
+        {
+            assert('is_array($menuItems)');
+            $finalMenuItems             = array(array('label' => Yii::t('Default', 'Settings'), 'url' => null));
+            $finalMenuItems[0]['items'] = $menuItems;
+            return $finalMenuItems;
+        }
+
+
+        protected static function renderHeaderMenuContent($menuItems, $menuId)
+        {
+            assert('is_array($menuItems)');
+            assert('is_string($menuId) && $menuId != null');
+            if (empty($menuItems))
+            {
+                return;
+            }
+            $cClipWidget = new CClipWidget();
+            $cClipWidget->beginClip("headerMenu");
+            $cClipWidget->widget('ext.zurmoinc.framework.widgets.MbMenu', array(
+                'items'                   => $menuItems,
+                'navContainerClass'       => 'nav-single-container',
+                'navBarClass'             => 'nav-single-bar',
+                'htmlOptions' => array('id' => $menuId),
+            ));
+            $cClipWidget->endClip();
+            return $cClipWidget->getController()->clips['headerMenu'];
         }
 
         protected function renderNotificationsLinkContent()
         {
             $label    = Yii::t('Default', 'Notifications');
-            $link     = Yii::app()->createUrl('notifications/default');
+            $link     = $this->notificationsUrl;
             $content  = null;
             $count    = Notification::getUnreadCountByUser(Yii::app()->user->userModel);
             if ($count > 0)
             {
                 $content  = ' <span class="notifications-link-unread"> ' . Yii::t('Default', '{count} unread', array('{count}' => $count)) . '</span>&#160;';
             }
-            $content  .= "<a href=\"$link\">$label</a>";
-            return '<li><span class="notifications-link">' . $content . '</span></li>';
+            $content  .= "<a href=\"$link\"><span>g</span>$label</a>";
+            return '<span class="notifications-link">' . $content . '</span>';
         }
     }
 ?>

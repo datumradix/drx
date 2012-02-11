@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -24,24 +24,35 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ZurmoErrorView extends View
+    /**
+     * Base view for displaying a list of recently viewed items.
+     */
+    class RecentlyViewedView extends View
     {
-        private $verticalGridView;
+        protected $recentlyViewedItems;
 
-        public function __construct(View $view1)
+        public function __construct($recentlyViewedItems)
         {
-            $horizontalGridView = new GridView(1, 1);
-            $horizontalGridView->setView($view1, 0, 0);
-            $this->verticalGridView  = new GridView(4, 1);
-            $this->verticalGridView->setView(new HeaderView(),    0, 0);
-            $this->verticalGridView->setView(new MenuView(), 1, 0);
-            $this->verticalGridView->setView($horizontalGridView, 2, 0);
-            $this->verticalGridView->setView(new FooterView(),    3, 0);
+            assert('is_array($recentlyViewedItems)');
+            $this->recentlyViewedItems = $recentlyViewedItems;
         }
 
         protected function renderContent()
         {
-            return $this->verticalGridView->render();
+            $content = Yii::t('Default', '<h3>Recently Viewed</h3>');
+			
+			$content .= '<ul>';
+			
+            foreach($this->recentlyViewedItems as $recentlyViewedItem)
+            {
+                //$recentlyViewedItem['moduleClassName'] is also available, can use
+                //to determine class for image?
+                $content .= '<li class="type-'.$recentlyViewedItem['moduleClassName'].'"><em></em>'.$recentlyViewedItem['link'] . '</li>';
+            }
+			
+			$content .= '</ul>';
+			
+            return $content;
         }
     }
 ?>

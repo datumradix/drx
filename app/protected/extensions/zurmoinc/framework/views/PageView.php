@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -204,9 +204,14 @@
          */
         protected function renderXHtmlStart()
         {
+            $themeUrl = Yii::app()->baseUrl . '/themes';
+            $theme    = Yii::app()->theme->name;
+            $specialCss = '<link rel="stylesheet/less" type="text/css" href="' . $themeUrl . '/' . $theme . '/css/newui.less">';
+            Yii::app()->getClientScript()->registerScriptFile($themeUrl . '/' . $theme . '/js/less-1.2.0.min.js');
+            Yii::app()->getClientScript()->registerScriptFile($themeUrl . '/' . $theme . '/js/interactions.js');
             return '<?xml version="1.0" encoding="utf-8"?>'.
                    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' .
-                   '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">';
+                   '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">' . $specialCss;
         }
 
         /**
@@ -223,8 +228,8 @@
             {
                 $title = "$title - $subtitle";
             }
-            $defaultTheme = '/themes/default';
-            $theme        = '/themes/' . Yii::app()->theme->name;
+            $defaultTheme = 'themes/default';
+            $theme        = 'themes/' . Yii::app()->theme->name;
             $cs = Yii::app()->getClientScript();
             $cs->registerMetaTag('text/html; charset=UTF-8', null, 'Content-Type'); // Not Coding Standard
 
@@ -237,13 +242,15 @@
                 }
             }
 
-            $cs->registerCssFile(Yii::app()->baseUrl . $theme . '/css/screen.css', 'screen, projection');
-            $cs->registerCssFile(Yii::app()->baseUrl . $theme . '/css/print.css', 'print');
-            $cs->registerCssFile(Yii::app()->baseUrl . $theme . '/css/theme.css');
+            //$cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/screen.css', 'screen, projection');
+            //$cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/print.css', 'print');
+            //$cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/theme.css');
+            //$cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/newui.css');
+            //$cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/newui.less');
 
             if (Yii::app()->browser->getName() == 'msie' && Yii::app()->browser->getVersion() < 8)
             {
-                $cs->registerCssFile(Yii::app()->baseUrl . $theme . '/css' . '/ie.css', 'screen, projection');
+                $cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css' . '/ie.css', 'screen, projection');
             }
 
             foreach ($this->getStyles() as $style)
@@ -252,7 +259,7 @@
                 {
                     if (file_exists("$theme/css/$style.css"))
                     {
-                        $cs->registerCssFile(Yii::app()->baseUrl . $theme . '/css/' . $style. '.css'); // Not Coding Standard
+                        $cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/' . $style. '.css'); // Not Coding Standard
                     }
                 }
             }
