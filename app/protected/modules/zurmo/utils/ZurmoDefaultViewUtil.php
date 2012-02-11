@@ -38,21 +38,32 @@
          */
         public static function makeStandardViewForCurrentUser(CController $controller, View $containedView)
         {
-            $aVerticalGridView   = new GridView(1, 1);
-            $aVerticalGridView->setView(static::makeMenuView(), 0, 0);
-            //$aVerticalGridView->setView(static::makeMenuView(), 1, 0); //change to RecentlyViewed...
 
-            $horizontalGridView = new GridView(1, 2);
+
+            $aVerticalGridView   = new GridView(2, 1);
+
+            $aVerticalGridView->setCssClasses( array('AppNavigation', 'clearfix')); //navigation left column
+            $aVerticalGridView->setView(static::makeMenuView(), 0, 0); //TODO cuurent item/link shpuld have some class, like current-nav-item
+            $aVerticalGridView->setView(static::makeRecentlyViewedView(), 1, 0);
+
+            $horizontalGridView = new GridView(1, 3);
+            $horizontalGridView->setCssClasses(array('AppContainer', 'clearfix')); //teh conatiner for the floated items
             $horizontalGridView->setView($aVerticalGridView, 0, 0);
-            $horizontalGridView->setView($containedView, 0, 1);
 
-            $verticalGridView   = new GridView(5, 1);
+            $containedView->setCssClasses(array('AppContent')); //the app itself to the right
+
+            $horizontalGridView->setView(static::makeFlashMessageView($controller),   0, 1); //TODO needs to move into $cotainedView
+            $horizontalGridView->setView($containedView, 0, 2);
+
+            $verticalGridView   = new GridView(4, 1);
             $verticalGridView->setView(static::makeHeaderView(),                    0, 0);
+
             //$verticalGridView->setView(static::makeMenuView(),                      1, 0);
-            $verticalGridView->setView(static::makeFlashMessageView($controller),   1, 0);
-            $verticalGridView->setView($horizontalGridView,                         2, 0);
-            $verticalGridView->setView(static::makeModalContainerView(),            3, 0);
-            $verticalGridView->setView(static::makeFooterView(),                    4, 0);
+
+            $verticalGridView->setView($horizontalGridView,                         1, 0);
+            $verticalGridView->setView(static::makeModalContainerView(),            2, 0);
+            $verticalGridView->setView(static::makeFooterView(),                    3, 0);
+
             return $verticalGridView;
         }
 
@@ -95,6 +106,12 @@
         {
             $items = MenuUtil::resolveByCacheAndGetVisibleAndOrderedTabMenuByCurrentUser();
             return new MenuView($items);
+        }
+
+        protected static function makeRecentlyViewedView()
+        {
+            $items = AuditEventsRecentlyViewedUtil::getRecentlyViewedItemsByUser(Yii::app()->user->userModel, 10);
+            return new RecentlyViewedView($items);
         }
 
         protected static function makeFlashMessageView(CController $controller)

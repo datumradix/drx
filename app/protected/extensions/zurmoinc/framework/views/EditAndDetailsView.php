@@ -63,7 +63,9 @@
             {
                 return parent::renderContent();
             }
-            $content = '<div class="wide form">';
+			$content  = '<div>';
+            $content .= $this->renderTitleContent();
+            $content .= '<div class="wide form">';
             $clipWidget = new ClipWidget();
             list($form, $formStart) = $clipWidget->renderBeginWidget(
                                                                 'ZurmoActiveForm',
@@ -74,16 +76,50 @@
                                                                 )
                                                             );
             $content .= $formStart;
-            $content .= '<div class="view-toolbar">';
-            $content .= $this->renderActionElementBar(true);
-            $content .= '</div>';
             $content .= $this->renderFormLayout($form);
+            $content .= $this->renderRightSideContent($form);
             $content .= $this->renderAfterFormLayout($form);
+
+            $content .= '<div class="view-toolbar-container clearfix"><div class="form-toolbar">';
+            $content .= $this->renderActionElementBar(true);
+            $content .= '</div></div>';
+
             $formEnd = $clipWidget->renderEndWidget();
             $content .= $formEnd;
 
-            $content .= '</div>';
+            $content .= '</div></div>';
             return $content;
+        }
+
+        protected function renderTitleContent()
+        {
+            if($this->model->id > 0)
+            {
+                return '<h1>' . strval($this->model) . '</h1>';
+            }
+            return '<h1>' . $this->getNewModelTitleLabel() . '</h1>';
+        }
+
+        abstract protected function getNewModelTitleLabel();
+
+        protected function renderRightSideContent($form)
+        {
+            assert('$form == null || $form instanceof ZurmoActiveForm');
+            if($form != null)
+            {
+                $rightSideContent = $this->renderRightSideFormLayoutForEdit($form);
+                if($rightSideContent != null)
+                {
+                    $content  = '<div id="permissions-module"><div class="buffer"><div>';
+                    $content .= $rightSideContent;
+                    $content .= '</div></div></div>';
+                    return $content;
+                }
+            }
+        }
+
+        protected function renderRightSideFormLayoutForEdit($form)
+        {
         }
 
         protected function renderAfterFormLayout($form)

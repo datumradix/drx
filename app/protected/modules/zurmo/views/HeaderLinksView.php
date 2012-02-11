@@ -45,13 +45,16 @@
         protected function renderContent()
         {
 
-            $content  = '<div>';
+            $content  = '<div class="clearfix"><div id="corp-logo"><img src="themes/default/images/Zurmo_logo.png"><span>Company Name</span></div>';
+            $content .= '<div id="user-toolbar" class="clearfix">';
             $content .= static::renderHeaderMenuContent(
-                            static::resolveUserMenuItemsWithTopLevelItem($this->userMenuItems));
+                            static::resolveUserMenuItemsWithTopLevelItem($this->userMenuItems),
+                            'user-header-menu');
             $content .= static::renderNotificationsLinkContent();
             $content .= static::renderHeaderMenuContent(
-                            static::resolveSettingsMenuItemsWithTopLevelItem($this->settingsMenuItems));
-            $content .= '</div>';
+                            static::resolveSettingsMenuItemsWithTopLevelItem($this->settingsMenuItems),
+                            'settings-header-menu');
+            $content .= '</div></div>';
             return $content;
         }
 
@@ -72,9 +75,10 @@
         }
 
 
-        protected static function renderHeaderMenuContent($menuItems)
+        protected static function renderHeaderMenuContent($menuItems, $menuId)
         {
             assert('is_array($menuItems)');
+            assert('is_string($menuId) && $menuId != null');
             if (empty($menuItems))
             {
                 return;
@@ -85,6 +89,7 @@
                 'items'                   => $menuItems,
                 'navContainerClass'       => 'nav-single-container',
                 'navBarClass'             => 'nav-single-bar',
+                'htmlOptions' => array('id' => $menuId),
             ));
             $cClipWidget->endClip();
             return $cClipWidget->getController()->clips['headerMenu'];
@@ -100,7 +105,7 @@
             {
                 $content  = ' <span class="notifications-link-unread"> ' . Yii::t('Default', '{count} unread', array('{count}' => $count)) . '</span>&#160;';
             }
-            $content  .= "<a href=\"$link\">$label</a>";
+            $content  .= "<a href=\"$link\"><span>g</span>$label</a>";
             return '<span class="notifications-link">' . $content . '</span>';
         }
     }

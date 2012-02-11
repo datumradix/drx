@@ -36,7 +36,19 @@
 
         private $supportsMixedSearch;
 
+        /**
+         * String of search content to search on a mixed set of attributes scoped by
+         * @see $anyMixedAttributesScope
+         * @var string
+         */
         public  $anyMixedAttributes;
+
+        /**
+         * Array of attributes to only use for @see $anyMixedAttributes data.  Or set as
+         * null if nothing specifically scoped on.
+         * @var array or null
+         */
+        private $anyMixedAttributesScope;
 
         public function __construct(RedBeanModel $model)
         {
@@ -51,6 +63,16 @@
                                                      FormModelUtil::DELIMITER . $attributeData['elementType'];
                 }
             }
+        }
+
+        public function setAnyMixedAttributesScope($anyMixedAttributesScope)
+        {
+            $this->anyMixedAttributesScope = $anyMixedAttributesScope;
+        }
+
+        public function getAnyMixedAttributesScope()
+        {
+            return $this->anyMixedAttributesScope;
         }
 
         /**
@@ -353,15 +375,11 @@
             if($this->supportsMixedSearch === null)
             {
                 $this->supportsMixedSearch = false;
-                if($this->model instanceof Item)
+                $moduleClassName = $this->model->getModuleClassName();
+                if($moduleClassName != null && $moduleClassName::getGlobalSearchFormClassName() != null)
                 {
-                    $moduleClassName = $this->model->getModuleClassName();
-                    if($moduleClassName::getGlobalSearchFormClassName() != null)
-                    {
-                        $this->supportsMixedSearch  = true;
-                    }
+                    $this->supportsMixedSearch  = true;
                 }
-
             }
             return $this->supportsMixedSearch;
         }
@@ -384,6 +402,10 @@
             return array();
         }
 
+        /**
+         * Resolves a mixed attribute search by filtering out any attributes not part of the scope.
+         * @param unknown_type $realAttributesMetadata
+         */
         public function resolveMixedSearchAttributeMappedToRealAttributesMetadata(& $realAttributesMetadata)
         {
             assert('is_array($realAttributesMetadata)');
@@ -396,21 +418,25 @@
                 {
                     foreach($metadata['global']['globalSearchAttributeNames'] as $attributeName)
                     {
-                        if(!isset($realAttributesMetadata[$attributeName]))
+                        if($this->anyMixedAttributesScope == null ||
+                           in_array($attributeName, $this->anyMixedAttributesScope))
                         {
-                            $data['anyMixedAttributes'][] = array($attributeName);
-                        }
-                        elseif(isset($realAttributesMetadata[$attributeName]) &&
-                               is_array($realAttributesMetadata[$attributeName]))
-                        {
-                            foreach($realAttributesMetadata[$attributeName] as $mixedAttributeMetadata)
+                            if(!isset($realAttributesMetadata[$attributeName]))
                             {
-                                $data['anyMixedAttributes'][] = $mixedAttributeMetadata;
+                                $data['anyMixedAttributes'][] = array($attributeName);
                             }
-                        }
-                        else
-                        {
-                            throw new NotSupportedException();
+                            elseif(isset($realAttributesMetadata[$attributeName]) &&
+                                   is_array($realAttributesMetadata[$attributeName]))
+                            {
+                                foreach($realAttributesMetadata[$attributeName] as $mixedAttributeMetadata)
+                                {
+                                    $data['anyMixedAttributes'][] = $mixedAttributeMetadata;
+                                }
+                            }
+                            else
+                            {
+                                throw new NotSupportedException();
+                            }
                         }
                     }
                 }
@@ -424,6 +450,39 @@
             {
                 $metadata['anyMixedAttributes'] = 'AnyMixedAttributesSearch';
             }
+        }
+
+        /**
+         * @return array of attributeName and label pairings.  Based on what attributes are used
+         * in a mixed attribute search.
+         */
+        public function getGlobalSearchAttributeNamesAndLabelsAndAll()
+        {
+            $namesAndLabels = array();
+            if($this->supportsMixedSearch())
+            {
+                $moduleClassName            = $this->model->getModuleClassName();
+                $metadata                   = $moduleClassName::getMetadata();
+                if($metadata['global']['globalSearchAttributeNames'] != null)
+                {
+                    foreach($metadata['global']['globalSearchAttributeNames'] as $attributeName)
+                    {
+                        if($this->isAttribute($attributeName))
+                        {
+                            $namesAndLabels[$attributeName] = $this->getAttributeLabel($attributeName);
+                        }
+                        else
+                        {
+                            $namesAndLabels[$attributeName] = $this->model->getAttributeLabel($attributeName);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+            return array_merge(array('All' => Yii::t('Default', 'All')), $namesAndLabels);
         }
     }
 ?>

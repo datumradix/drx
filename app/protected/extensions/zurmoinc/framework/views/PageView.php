@@ -204,9 +204,14 @@
          */
         protected function renderXHtmlStart()
         {
+            $themeUrl = Yii::app()->baseUrl . '/themes';
+            $theme    = Yii::app()->theme->name;
+            $specialCss = '<link rel="stylesheet/less" type="text/css" href="' . $themeUrl . '/' . $theme . '/css/newui.less">';
+            Yii::app()->getClientScript()->registerScriptFile($themeUrl . '/' . $theme . '/js/less-1.2.0.min.js');
+            Yii::app()->getClientScript()->registerScriptFile($themeUrl . '/' . $theme . '/js/interactions.js');
             return '<?xml version="1.0" encoding="utf-8"?>'.
                    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' .
-                   '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">';
+                   '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">' . $specialCss;
         }
 
         /**
@@ -237,9 +242,11 @@
                 }
             }
 
-            $cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/screen.css', 'screen, projection');
-            $cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/print.css', 'print');
-            $cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/theme.css');
+            //$cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/screen.css', 'screen, projection');
+            //$cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/print.css', 'print');
+            //$cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/theme.css');
+            //$cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/newui.css');
+            //$cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css/newui.less');
 
             if (Yii::app()->browser->getName() == 'msie' && Yii::app()->browser->getVersion() < 8)
             {

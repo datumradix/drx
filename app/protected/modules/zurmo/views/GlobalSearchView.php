@@ -25,9 +25,9 @@
      ********************************************************************************/
 
     /**
-     * Base view for displaying a global search user interface and a recently viewed user interface.
+     * Base view for displaying a global search user interface..
      */
-    class GlobalSearchAndRecentlyViewedView extends View
+    class GlobalSearchView extends View
     {
         protected $moduleNamesAndLabelsAndAll;
 
@@ -43,31 +43,7 @@
 
         protected function renderContent()
         {
-            $content  = '<div><div style="float:right;">' . $this->renderRecentlyViewedContent() . '</div>';
-            $content .= '<div style="margin: 0 auto;">' . $this->renderGlobalSearchContent() . '</div></div>&#160;';
-            return $content;
-        }
-
-        protected function renderRecentlyViewedContent()
-        {
-            $content     = '&#160;&#160;&#160;<span id="recently-viewed" class="tooltip">';
-            $content    .= Yii::t('Default', 'Recently Viewed') . '</span>';
-
-            Yii::import('application.extensions.qtip.QTip');
-            $imageSourceUrl = Yii::app()->baseUrl . '/themes/default/images/loading.gif';
-            $qtip   = new QTip();
-            $params = array(
-                'content'  => array('text'    => CHtml::image($imageSourceUrl, Yii::t('Default', 'Loading')),
-                                    'url'     => Yii::app()->createUrl('zurmo/default/recentlyViewed'),
-                                    'title'   => array('text'   => Yii::t('Default', 'Recently Viewed'),
-                                                       'button' => Yii::t('Default', 'Close'))),
-                'show'     => array('when'    => 'click'),
-                'hide'     => array('when'    => 'click'),
-                'position' => array('corner'  => array(
-                                'target'      => 'bottomRight',
-                                'tooltip'     => 'topRight')),
-                'style'    => array('width'   =>  300));
-            $qtip->addQTip("#recently-viewed", $params);
+            $content  = '<div id="app-search">' . $this->renderGlobalSearchContent() . '</div>';
             return $content;
         }
 
@@ -79,8 +55,8 @@
             }
             $content                 = $this->renderGlobalSearchScopingInputContent();
             $hintMessage             = Yii::t('Default', 'Search by name, phone, or e-mail');
-            $htmlOptions             = array('class'   => 'global-search input-hint',
-                                             'onfocus' => '$(this).removeClass("input-hint"); $(this).val("");',
+            $htmlOptions             = array('class'   => 'global-search global-search-hint',
+                                             'onfocus' => '$(this).removeClass("global-search-hint"); $(this).val("");',
                                              'onblur'  => '$(this).val("")');
             $cClipWidget             = new CClipWidget();
             $cClipWidget->beginClip('GlobalSearchElement');
@@ -108,10 +84,9 @@
 
         protected function renderGlobalSearchScopingInputContent()
         {
-            $imagePath            = Yii::app()->baseUrl . '/themes/default/images/searchIcon.gif';
             $cClipWidget   = new CClipWidget();
-            $cClipWidget->beginClip("JuiMultiSelect");
-            $cClipWidget->widget('ext.zurmoinc.framework.widgets.JuiMultiSelect', array(
+            $cClipWidget->beginClip("ScopedJuiMultiSelect");
+            $cClipWidget->widget('ext.zurmoinc.framework.widgets.ScopedSearchJuiMultiSelect', array(
                 'dataAndLabels'  => $this->moduleNamesAndLabelsAndAll,
                 'selectedValue'  => 'All',
                 'inputId'        => 'globalSearchScope',
@@ -122,41 +97,9 @@
                                           'position' => array('my' =>  'right top', 'at' => 'right bottom'))
             ));
             $cClipWidget->endClip();
-            $content = $cClipWidget->getController()->clips['JuiMultiSelect'];
+            $content = $cClipWidget->getController()->clips['ScopedJuiMultiSelect'];
             // Begin Not Coding Standard
-            $script = '$("#globalSearchScope").multiselect("getButton").width("25");
-                       $("#globalSearchScope").multiselect("getButton").html(\'<span>' .
-                            CHtml::image($imagePath, 'Search Icon') . '</span>\');
-                       $("#globalSearchScope").bind("multiselectclick", function(event, ui){
-                            if($("#globalSearchScope").multiselect("widget").find(":checkbox:checked").length == 0)
-                            {
-                                $("#globalSearchScope").multiselect("widget").find(":checkbox").each(function(){
-                                    if(this.value == "All" && !this.checked)
-                                    {
-                                        this.click();
-                                    }
-                                });
-                            }
-                            if(ui.value == "All" && ui.checked)
-                            {
-                                $("#globalSearchScope").multiselect("widget").find(":checkbox").each(function(){
-                                    if(this.value != "All" && this.checked)
-                                    {
-                                        this.click();
-                                    }
-                                });
-                            }
-                            else if(ui.value != "All" && ui.checked)
-                            {
-                                $("#globalSearchScope").multiselect("widget").find(":checkbox").each(function(){
-                                    if(this.value == "All" && this.checked)
-                                    {
-                                        this.click();
-                                    }
-                                });
-                            }
-                        });
-                        $("#globalSearchInput").bind("focus", function(event, ui){
+            $script = '$("#globalSearchInput").bind("focus", function(event, ui){
                             $("#globalSearchInput").autocomplete("option", "source", "' . $this->sourceUrl . '&" + $.param($("#globalSearchScope").serializeArray()));
                         });
                        ';
