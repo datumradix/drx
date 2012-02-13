@@ -55,10 +55,6 @@
 
         public $installDemoData = false;
 
-        public $hostInfo = '';
-
-        public $scriptUrl = '';
-
         public function rules()
         {
             return array(
@@ -79,8 +75,6 @@
                 array('memcachePortNumber',    'numerical', 'min'  => 1024),
                 array('removeExistingData',    'boolean'),
                 array('installDemoData',       'boolean'),
-                array('hostInfo',              'type', 'type' => 'string'),
-                array('scriptUrl',             'type', 'type' => 'string'),
             );
         }
 
