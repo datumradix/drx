@@ -25,46 +25,45 @@
      ********************************************************************************/
 
     /**
-     * Helper functionality for finding the element or
-     * form type associated with a derived attribute
+     * Check settings related to optimizer search depth global option.
+     * For more details: DatabaseOptimizerSearchDepthServiceHelper
      */
-    class DerivedAttributeToMixedTypeUtil
+    class DatabaseOptimizerSearchDepthServiceHelper extends ServiceHelper
     {
-        /**
-         * Returns the a type that is derived by looking at several different components of an attribute.  This
-         * includes the metadata element data, validator data, and relation information.  The type returned can
-         * be utilized by different aspects of the application where an attribute type is needed.
-         * @return string type
-         */
-        public static function getType($modelClassName, $attributeName)
+        protected $required = true;
+        protected $form;
+
+        public function __construct($form)
         {
-            assert('is_string($modelClassName) && $modelClassName != ""');
-            assert('is_string($attributeName) && $attributeName != ""');
-            try
+            assert('$form instanceof InstallSettingsForm');
+            $this->form = $form;
+        }
+
+        protected function checkService()
+        {
+            $passed = true;
+            $optimizerSearchDepth = null;
+            if (!InstallUtil::checkDatabaseOptimizerSearchDepthValue('mysql',
+                                                               $this->form->databaseHostname,
+                                                               $this->form->databaseUsername,
+                                                               $this->form->databasePassword,
+                                                               $optimizerSearchDepth))
             {
-                $models = CalculatedDerivedAttributeMetadata::
-                          getByNameAndModelClassName($attributeName, $modelClassName);
-                if (count($models) == 1)
+                if ($optimizerSearchDepth == 0)
                 {
-                    return 'CalculatedNumber';
                 }
-            }
-            catch (NotFoundException $e)
-            {
-            }
-            try
-            {
-                $models = DropDownDependencyDerivedAttributeMetadata::
-                          getByNameAndModelClassName($attributeName, $modelClassName);
-                if (count($models) == 1)
+                else
                 {
-                    return 'DropDownDependency';
+                    $this->message  = Yii::t('Default', 'Database optimizer_search_depth value is:') . $optimizerSearchDepth . ', ';
+                    $this->message .= Yii::t('Default', 'it is required to be set to 0') . '.';
                 }
+                $passed = false;
             }
-            catch (NotFoundException $e)
+            else
             {
-                throw new NotImplementedException($attributeName . 'M' . $modelClassName);
+                $this->message = Yii::t('Default', 'Database optimizer-search-depth size meets requirement.');
             }
+            return $passed;
         }
     }
 ?>
