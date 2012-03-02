@@ -24,23 +24,19 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ZurmoTestHelper
+    /**
+     * Testing the views for the outbound email queue.
+     */
+    class EmailQueueSuperUserWalkthroughTest extends ZurmoWalkthroughBaseTest
     {
-        public static function createFileModel($fileName = 'testNote.txt', $modelClassName = 'FileModel')
+        public static function setUpBeforeClass()
         {
-            $pathToFiles          = Yii::getPathOfAlias('application.modules.zurmo.tests.unit.files');
-            $filePath             = $pathToFiles . DIRECTORY_SEPARATOR . $fileName;
-            $contents             = file_get_contents($pathToFiles . DIRECTORY_SEPARATOR . $fileName);
-            $fileContent          = new FileContent();
-            $fileContent->content = $contents;
-            $file                 = new $modelClassName();
-            $file->fileContent    = $fileContent;
-            $file->name           = $fileName;
-            $file->type           = ZurmoFileHelper::getMimeType($pathToFiles . DIRECTORY_SEPARATOR . $fileName);
-            $file->size           = filesize($filePath);
-            $saved                = $file->save();
-            assert('$saved'); // Not Coding Standard
-            return $file;
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
         }
+
+        //todo: test OutboundEmailQueueView
     }
 ?>

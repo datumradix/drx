@@ -25,16 +25,18 @@
      ********************************************************************************/
 
     /**
-     * Component for working with outbound and inbound email transport
+     * Testing the views for configuring outbound email
      */
-    class ZurmoEmailHelper extends CApplicationComponent
+    class EmailConfigurationSuperUserWalkthroughTest extends ZurmoWalkthroughBaseTest
     {
-        /**
-         * Send an email message using outbound email transport
-         * @param EmailMessage $email
-         */
-        public function send(EmailMessage $email)
+        public static function setUpBeforeClass()
         {
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
         }
+
+        //todo: test views for configuring outbound email
     }
 ?>

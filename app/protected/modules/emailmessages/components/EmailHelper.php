@@ -24,23 +24,27 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ZurmoTestHelper
+    /**
+     * Component for working with outbound and inbound email transport
+     */
+    class EmailHelper extends CApplicationComponent
     {
-        public static function createFileModel($fileName = 'testNote.txt', $modelClassName = 'FileModel')
+        /**
+         * Send an email message. This will queue up the email to be sent by the queue sending process. If you want to
+         * send immediately, consider using @sendImmediately
+         * @param EmailMessage $email
+         */
+        public function send(EmailMessage $emailMessage)
         {
-            $pathToFiles          = Yii::getPathOfAlias('application.modules.zurmo.tests.unit.files');
-            $filePath             = $pathToFiles . DIRECTORY_SEPARATOR . $fileName;
-            $contents             = file_get_contents($pathToFiles . DIRECTORY_SEPARATOR . $fileName);
-            $fileContent          = new FileContent();
-            $fileContent->content = $contents;
-            $file                 = new $modelClassName();
-            $file->fileContent    = $fileContent;
-            $file->name           = $fileName;
-            $file->type           = ZurmoFileHelper::getMimeType($pathToFiles . DIRECTORY_SEPARATOR . $fileName);
-            $file->size           = filesize($filePath);
-            $saved                = $file->save();
-            assert('$saved'); // Not Coding Standard
-            return $file;
+            //todo: note, build interactive command (or just taking the subject/message/to as params so we can test and send email via command line.
+        }
+
+        public function sendImmediately(EmailMessage $emailMessage)
+        {
+            //todo: move this into a getOutboundMailer, then you can use private to detect if this object is already created and populated.
+            //with smtp info etc.
+            Yii::import('ext.swiftmailer.SwiftMailer');
+            $swiftMailer = new SwiftMailer();
         }
     }
 ?>
