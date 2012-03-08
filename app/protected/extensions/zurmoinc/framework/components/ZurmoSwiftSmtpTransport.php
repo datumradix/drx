@@ -24,23 +24,40 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ZurmoTestHelper
+    /**
+     * Adding support for responseLog.  This will allow further troubleshooting when there is a problem
+     * sending mail.
+     */
+    class ZurmoSwiftSmtpTransport extends Swift_SmtpTransport
     {
-        public static function createFileModel($fileName = 'testNote.txt', $modelClassName = 'FileModel')
+        protected $responseLog = array();
+
+        public static function newInstance($host = 'localhost', $port = 25, $security = null)
         {
-            $pathToFiles          = Yii::getPathOfAlias('application.modules.zurmo.tests.unit.files');
-            $filePath             = $pathToFiles . DIRECTORY_SEPARATOR . $fileName;
-            $contents             = file_get_contents($pathToFiles . DIRECTORY_SEPARATOR . $fileName);
-            $fileContent          = new FileContent();
-            $fileContent->content = $contents;
-            $file                 = new $modelClassName();
-            $file->fileContent    = $fileContent;
-            $file->name           = $fileName;
-            $file->type           = ZurmoFileHelper::getMimeType($pathToFiles . DIRECTORY_SEPARATOR . $fileName);
-            $file->size           = filesize($filePath);
-            $saved                = $file->save();
-            assert('$saved'); // Not Coding Standard
-            return $file;
+            return new self($host, $port, $security);
+        }
+
+        protected function _doRcptToCommand($address)
+        {
+            try
+            {
+                $this->executeCommand(sprintf("RCPT TO: <%s>\r\n", $address), array(250, 251, 252));
+            }
+            catch (Swift_TransportException $e)
+            {
+               throw new Swift_TransportException($e->getCode(), $e->getMessage(), $e->getPrevious());
+            }
+        }
+
+        protected function _assertResponseCode($response, $wanted)
+        {
+            $this->responseLog[] = $response;
+            parent::_assertResponseCode($response, $wanted);
+        }
+
+        public function getResponseLog()
+        {
+            return $this->responseLog;
         }
     }
 ?>

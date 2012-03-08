@@ -24,23 +24,34 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ZurmoTestHelper
+    /**
+     * A class for creating email message content.
+     */
+    class EmailMessageContent extends OwnedModel
     {
-        public static function createFileModel($fileName = 'testNote.txt', $modelClassName = 'FileModel')
+        public static function getDefaultMetadata()
         {
-            $pathToFiles          = Yii::getPathOfAlias('application.modules.zurmo.tests.unit.files');
-            $filePath             = $pathToFiles . DIRECTORY_SEPARATOR . $fileName;
-            $contents             = file_get_contents($pathToFiles . DIRECTORY_SEPARATOR . $fileName);
-            $fileContent          = new FileContent();
-            $fileContent->content = $contents;
-            $file                 = new $modelClassName();
-            $file->fileContent    = $fileContent;
-            $file->name           = $fileName;
-            $file->type           = ZurmoFileHelper::getMimeType($pathToFiles . DIRECTORY_SEPARATOR . $fileName);
-            $file->size           = filesize($filePath);
-            $saved                = $file->save();
-            assert('$saved'); // Not Coding Standard
-            return $file;
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'htmlContent',
+                    'textContent',
+                ),
+                'rules' => array(
+                    array('htmlContent',   'type',    'type' => 'string'),
+                    array('textContent',   'type',    'type' => 'string'),
+                ),
+                'elements' => array(
+                    'htmlContent'     => 'TextArea',
+                    'textContent'     => 'TextArea',
+                ),
+            );
+            return $metadata;
+        }
+
+        public static function isTypeDeletable()
+        {
+            return true;
         }
     }
 ?>

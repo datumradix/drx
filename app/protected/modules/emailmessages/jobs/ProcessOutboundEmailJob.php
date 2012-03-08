@@ -24,9 +24,40 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    //Todo: finish class, and rework as needed.  Currently a stub as we complete
-    //notifications and scheduler.
-    class EmailMessage
+    /**
+     * A job for processing outbound emails in the queue to be sent
+     */
+    class ProcessOutboundEmailJob extends BaseJob
     {
+        /**
+         * @returns Translated label that describes this job type.
+         */
+        public static function getDisplayName()
+        {
+           return Yii::t('Default', 'Process Outbound Email Job');
+        }
+
+        /**
+         * @return The type of the NotificationRules
+         */
+        public static function getType()
+        {
+            return 'ProcessOutboundEmail';
+        }
+
+        public static function getRecommendedRunFrequencyContent()
+        {
+            return Yii::t('Default', 'Every 1 minute.');
+        }
+
+        /**
+         *
+         * (non-PHPdoc)
+         * @see BaseJob::run()
+         */
+        public function run()
+        {
+            return Yii::app()->emailHelper->sendQueued();
+        }
     }
 ?>

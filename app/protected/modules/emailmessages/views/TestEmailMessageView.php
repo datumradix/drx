@@ -24,23 +24,22 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ZurmoTestHelper
+    /**
+     * View used to render message content as a result of sending a test email.  This is rendered in a modal window.
+     */
+    class TestEmailMessageView extends View
     {
-        public static function createFileModel($fileName = 'testNote.txt', $modelClassName = 'FileModel')
+        protected $message;
+
+        public function __construct($message)
         {
-            $pathToFiles          = Yii::getPathOfAlias('application.modules.zurmo.tests.unit.files');
-            $filePath             = $pathToFiles . DIRECTORY_SEPARATOR . $fileName;
-            $contents             = file_get_contents($pathToFiles . DIRECTORY_SEPARATOR . $fileName);
-            $fileContent          = new FileContent();
-            $fileContent->content = $contents;
-            $file                 = new $modelClassName();
-            $file->fileContent    = $fileContent;
-            $file->name           = $fileName;
-            $file->type           = ZurmoFileHelper::getMimeType($pathToFiles . DIRECTORY_SEPARATOR . $fileName);
-            $file->size           = filesize($filePath);
-            $saved                = $file->save();
-            assert('$saved'); // Not Coding Standard
-            return $file;
+            assert('is_string($message)');
+            $this->message = $message;
+        }
+
+        protected function renderContent()
+        {
+            return nl2br($this->message);
         }
     }
 ?>
