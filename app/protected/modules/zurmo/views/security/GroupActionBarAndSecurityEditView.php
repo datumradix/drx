@@ -24,23 +24,25 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class GroupsTitleBarAndTreeView extends GridView
+    class GroupActionBarAndSecurityEditView extends GridView
     {
         protected $cssClasses =  array( 'AdministrativeArea' );
 
-        public function __construct($controllerId, $moduleId, $groups)
+        public function __construct(
+            $controllerId,
+            $moduleId,
+            $form,
+            Group $model,
+            $moduleName,
+            $metadata,
+            $editViewClassName)
         {
-            assert('$controllerId != null');
-            assert('$moduleId != null');
-            assert('is_array($groups)');
+            assert('$form instanceof ModulePermissionsForm ||
+                    $form instanceof RightsForm ||
+                    $form instanceof PoliciesForm');
             parent::__construct(2, 1);
-            $this->setView(new TitleBarView (Yii::t('Default', 'Groups'), Yii::t('Default', 'Home'), 1), 0, 0);
-            $this->setView(new GroupsTreeView($controllerId, $moduleId, $groups), 1, 0);
-        }
-
-        public function isUniqueToAPage()
-        {
-            return true;
+            $this->setView(new ActionBarForGroupsEditAndDetailsView ($controllerId, $moduleId, $model->id), 0, 0);
+            $this->setView(new $editViewClassName('Edit', $controllerId, $moduleId, $form, $model->id, $metadata), 1, 0);
         }
     }
 ?>
