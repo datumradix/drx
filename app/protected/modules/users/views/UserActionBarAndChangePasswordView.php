@@ -24,16 +24,16 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class AccountsModalSearchAndListView extends ModalSearchAndListView
+    class UserActionBarAndChangePasswordView extends GridView
     {
-        public static function getListViewClassName()
-        {
-            return 'AccountsModalListView';
-        }
+        protected $cssClasses =  array( 'AdministrativeArea' );
 
-        public static function getSearchViewClassName()
+        public function __construct($controllerId, $moduleId, UserPasswordForm $userForm)
         {
-            return 'AccountsModalSearchView';
+            parent::__construct(2, 1);
+            $this->setView(new ActionBarForUserEditAndDetailsView ($controllerId, $moduleId, $userForm->getModel()), 0, 0);
+            $title = strval($userForm) . ': ' . Yii::t('Default', 'Change Password');
+            $this->setView(new UserChangePasswordView($controllerId, $moduleId, $userForm, $title), 1, 0);
         }
     }
 ?>

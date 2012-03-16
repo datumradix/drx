@@ -24,19 +24,16 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class UserTitleBarAndChangePasswordView extends GridView
+    class UserActionBarAndEditView extends GridView
     {
         protected $cssClasses =  array( 'AdministrativeArea' );
 
-        public function __construct($controllerId, $moduleId, UserPasswordForm $userForm)
+            public function __construct($controllerId, $moduleId, RedBeanModel $model, $moduleName)
         {
             parent::__construct(2, 1);
-            $titleBar = new TitleBarView (
-                                    UsersModule::getModuleLabelByTypeAndLanguage('Plural'),
-                                    $userForm . '&#160;-&#160;' . Yii::t('Default', 'Change Password') . '&#160;',
-                                    1);
-            $this->setView($titleBar, 0, 0);
-            $this->setView(new UserChangePasswordView($controllerId, $moduleId, $userForm), 1, 0);
+            $this->setView(new ActionBarForUserEditAndDetailsView ($controllerId, $moduleId, $model), 0, 0);
+            $editViewClassName = get_class($model) . 'EditView';
+            $this->setView(new $editViewClassName($controllerId, $moduleId, $model), 1, 0);
         }
     }
 ?>
