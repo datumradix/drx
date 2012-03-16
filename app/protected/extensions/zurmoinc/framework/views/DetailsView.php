@@ -35,18 +35,22 @@
 
         protected $model;
 
+        protected $title;
+
         /**
          * Constructs a detail view specifying the controller as
          * well as the model that will have its details displayed.
          */
-        public function __construct($controllerId, $moduleId, $model)
+        public function __construct($controllerId, $moduleId, $model, $title = null)
         {
             assert('$model instanceof RedBeanModel || $model instanceof CFormModel || $model instanceof ModelForm');
+            assert('$title == null || is_string($title)');
             $this->controllerId   = $controllerId;
             $this->moduleId       = $moduleId;
             $this->model          = $model;
             $this->modelClassName = get_class($model);
             $this->modelId        = $model->id;
+            $this->title          = $title;
         }
 
         /**
@@ -112,6 +116,10 @@
 
         protected function renderTitleContent()
         {
+            if($this->title != null)
+            {
+                return '<h1>' . $this->title . "</h1>";
+            }
         }
 
         protected function renderAfterFormLayoutForDetailsContent()
@@ -204,9 +212,13 @@
 
         protected function getMaxCellsPerRow()
         {
-            $designerRulesType = self::getDesignerRulesType();
+            $designerRulesType      = static::getDesignerRulesType();
+            if($designerRulesType == null)
+            {
+                $designerRulesType      = self::getDesignerRulesType();
+            }
             $designerRulesClassName = $designerRulesType . 'DesignerRules';
-            $designerRules = new $designerRulesClassName();
+            $designerRules          = new $designerRulesClassName();
             return $designerRules->maxCellsPerRow();
         }
 
