@@ -25,13 +25,13 @@
      ********************************************************************************/
 
     /**
-     * Wrapper view for displaying an opportunity's note edit form and latest activities feed.
+     * View that renders role module breadcrumb content
      */
-    class OpportunityNoteInlineEditAndLatestActivtiesForPortletView extends NoteInlineEditAndLatestActivtiesForPortletView
+    class RoleBreadCrumbView extends BreadCrumbView
     {
-        public function getLatestActivitiesViewClassName()
+            protected function getHomeLinkLabel()
         {
-            return 'LatestActivitiesForOpportunityView';
+            return Yii::t('Default', 'Roles Home');
         }
     }
 ?>

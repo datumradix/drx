@@ -25,13 +25,13 @@
      ********************************************************************************/
 
     /**
-     * Wrapper view for displaying an account's note edit form and latest activities feed.
+     * View that renders user module breadcrumb content
      */
-    class AccountNoteInlineEditAndLatestActivtiesForPortletView extends NoteInlineEditAndLatestActivtiesForPortletView
+    class UserBreadCrumbView extends BreadCrumbView
     {
-        public function getLatestActivitiesViewClassName()
+            protected function getHomeLinkLabel()
         {
-            return 'LatestActivitiesForAccountView';
+            return Yii::t('Default', 'Users Home');
         }
     }
 ?>
