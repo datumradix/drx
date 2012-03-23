@@ -24,10 +24,22 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Helper class used to convert models into arrays
-     */
-    class RedBeanModelToApiDataUtil extends RedBeanModelToArrayAdapter
+    class ExportDefaultController extends Controller
     {
+        public function filters()
+        {
+            $filters   = array();
+            $filters[] = array(
+                         ZurmoBaseController::RIGHTS_FILTER_PATH,
+                         'moduleClassName' => 'ExportModule',
+                         'rightName' => ExportModule::getAccessRight(),
+            );
+            return $filters;
+        }
+
+        public function actionIndex()
+        {
+            // Do something here
+        }
     }
 ?>

@@ -25,9 +25,33 @@
      ********************************************************************************/
 
     /**
-     * Helper class used to convert models into arrays
+     * A job for removing old export models after the export are complete.
      */
-    class RedBeanModelToApiDataUtil extends RedBeanModelToArrayAdapter
+    class ExportCleanupJob extends BaseJob
     {
+        /**
+         * @returns Translated label that describes this job type.
+         */
+        public static function getDisplayName()
+        {
+           return Yii::t('Default', 'Export Cleanup Job');
+        }
+
+        /**
+         * @return The type of the NotificationRules
+         */
+        public static function getType()
+        {
+            return 'ExportCleanup';
+        }
+
+        public static function getRecommendedRunFrequencyContent()
+        {
+            return Yii::t('Default', 'Once a week, early in the morning.');
+        }
+
+        public function run()
+        {
+        }
     }
 ?>

@@ -25,9 +25,31 @@
      ********************************************************************************/
 
     /**
-     * Helper class used to convert models into arrays
+     * Utilized by module views that extend ListView
+     * to provide abstracted column element information
+     * that can be translated into one of the available
+     * GridView widgets in Yii.
      */
-    class RedBeanModelToApiDataUtil extends RedBeanModelToArrayAdapter
+    abstract class RedBeanModelAttributeValueToArrayValueAdapter
     {
+        protected $model;
+
+        protected $attribute;
+
+        public function __construct($model, $attribute)
+        {
+            $this->model     = $model;
+            $this->attribute = $attribute;
+        }
+
+        /**
+         * Resolve data
+         * @param array $data
+         */
+        public function resolveData(& $data)
+        {
+            $data[$this->attribute] = $this->model->{$this->attribute};
+            return;
+        }
     }
 ?>

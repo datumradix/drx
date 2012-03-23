@@ -25,9 +25,12 @@
      ********************************************************************************/
 
     /**
-     * Helper class used to convert models into arrays
+     * Class to make default data that needs to be created upon an installation.
      */
-    class RedBeanModelToApiDataUtil extends RedBeanModelToArrayAdapter
+    class ExportDefaultDataMaker extends DefaultDataMaker
     {
+        public function make()
+        {
+        }
     }
 ?>

@@ -24,10 +24,10 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Helper class used to convert models into arrays
-     */
-    class RedBeanModelToApiDataUtil extends RedBeanModelToArrayAdapter
-    {
-    }
+    // KEEP these in alphabetical order.
+    // KEEP them indented correctly.
+    // KEEP all the language files up-to-date with each other.
+    // DON'T MAKE A MESS!
+    return array(
+    );
 ?>

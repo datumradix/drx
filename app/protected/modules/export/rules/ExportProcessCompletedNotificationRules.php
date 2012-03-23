@@ -25,9 +25,20 @@
      ********************************************************************************/
 
     /**
-     * Helper class used to convert models into arrays
+     * Inform user that export process is completed.
      */
-    class RedBeanModelToApiDataUtil extends RedBeanModelToArrayAdapter
+    class ExportProcessCompletedNotificationRules extends JobsManagerAccessNotificationRules
     {
+        protected $critical    = false;
+
+        public static function getDisplayName()
+        {
+            return Yii::t('Default', 'Export process is completed.');
+        }
+
+        public static function getType()
+        {
+            return 'ExportProcessCompleted';
+        }
     }
 ?>
