@@ -98,14 +98,13 @@
                 }
             }";
             $options = CJavaScript::encode($this->options);
-
-
             $js = "jQuery('#{$id}').datepicker($options);";
             if ($this->language != '' && $this->language != 'en')
             {
                 $this->registerScriptFile($this->i18nScriptFile);
                 $js = "jQuery(function(){jQuery('#{$id}').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['{$this->language}'], {$options}));})";
             }
+            $js .= 'addSpansToDatesOnCalendar("' . $id . '");';
             $cs = Yii::app()->getClientScript();
             if (isset($this->defaultOptions))
             {
@@ -113,7 +112,6 @@
                 $cs->registerScript(__CLASS__,     $this->defaultOptions !== null?'jQuery.datepicker.setDefaults('.CJavaScript::encode($this->defaultOptions).');':'');
             }
             $cs->registerScript(__CLASS__. '#' . $id, $js);
-            $cs->registerScript(__CLASS__. '#' . $id . 'cssHelper', 'addSpansToDatesOnCalendar("' . $id . '");');
             $baseScriptUrl = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.zurmoinc.framework.widgets.assets'));
             $cs->registerScriptFile($baseScriptUrl . '/calendar/Calendar.js', CClientScript::POS_END);
 
