@@ -50,7 +50,9 @@
 
         protected function renderContent()
         {
-            $content = '<div class="wide form">';
+            $content = '<div>';
+            $content .= $this->renderTitleContent();
+            $content .= '<div class="wide form">';
             $clipWidget = new ClipWidget();
             list($form, $formStart) = $clipWidget->renderBeginWidget(
                                                                 'ZurmoActiveForm',
@@ -66,8 +68,13 @@
             $content .= $this->renderFormLayout($form);
             $content .= $this->renderViewToolBar();
             $content .= $clipWidget->renderEndWidget();
-            $content .= '</div>';
+            $content .= '</div></div>';
             return $content;
+        }
+
+        protected function renderTitleContent()
+        {
+            return '<h1>' . Yii::t('Default', 'Currencies: List') . '</h1>';
         }
 
             /**
@@ -155,7 +162,7 @@
             {
                 $content .= $lastAttempedDateTime;
             }
-            return '<span style="font-size:75%;"><i>(' . $content . ')</i></span>';
+            return '<span><i>(' . $content . ')</i></span>';
         }
 
         protected static function renderActiveHeaderContent()

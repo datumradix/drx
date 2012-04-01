@@ -58,8 +58,8 @@
                     'currentText'     => Yii::t('Default', 'Now'),
                     'closeText'       => Yii::t('Default', 'Done'),
                     'showOn'          => 'both',
-                    'buttonImage'     => $themePath . '/images/jqueryui/calendar.gif',
-                    'buttonImageOnly' => true,
+                    'buttonImageOnly' => false,
+                    'buttonText'      => '<span>Date</span>',
                     'dateFormat'      => YiiToJqueryUIDatePickerLocalization::resolveDateFormat(
                                             DateTimeUtil::getLocaleDateFormat()),
                     'timeFormat'      => YiiToJqueryUIDatePickerLocalization::resolveTimeFormat(
@@ -69,7 +69,8 @@
                 ),
             ));
             $cClipWidget->endClip();
-            return $cClipWidget->getController()->clips['EditableDateTimeElement'];
+            $content = $cClipWidget->getController()->clips['EditableDateTimeElement'];
+            return CHtml::tag('div', array('class' => 'has-date-select'), $content);
         }
 
         /**

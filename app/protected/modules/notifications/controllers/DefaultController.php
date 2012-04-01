@@ -64,7 +64,8 @@
                                         array(),
                                         false,
                                         Yii::t('Default', 'Unread'));
-            $view = new NotificationsPageView($this, $titleBarAndListView);
+            $view = new NotificationsPageView(ZurmoDefaultViewUtil::
+                                         makeStandardViewForCurrentUser($this, $titleBarAndListView));
             echo $view->render();
         }
 
@@ -77,8 +78,9 @@
                 $notification->save();
             }
             static::resolveCanCurrentUserAccessDetailsAction($notification->owner->id);
-            $view = new NotificationsPageView($this,
-                $this->makeTitleBarAndDetailsView($notification));
+            $view = new NotificationsPageView(ZurmoDefaultViewUtil::
+                                         makeStandardViewForCurrentUser($this,
+                                             $this->makeTitleBarAndDetailsView($notification)));
             echo $view->render();
         }
 
@@ -92,6 +94,20 @@
             $view = new AccessFailurePageView($messageView);
             echo $view->render();
             Yii::app()->end(0, false);
+        }
+
+        /**
+         * Method for testing creating a simple notification for the current user.
+         */
+        public function actionCreateTest()
+        {
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content';
+            $message->htmlContent       = 'html content';
+            $rules                      = new SimpleNotificationRules();
+            $rules->addUser(Yii::app()->user->userModel);
+            NotificationsUtil::submit($message, $rules);
+            echo 'Test notification created';
         }
     }
 ?>

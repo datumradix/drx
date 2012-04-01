@@ -97,15 +97,19 @@
         {
             assert('$this->model->{$this->attribute} instanceof Address');
             $addressModel = $this->model->{$this->attribute};
-            $content      = '';
-            foreach (array('street1', 'street2', 'city', 'state', 'postalCode', 'country') as $attribute)
-            {
-                $content .= $this->renderEditableAddressTextField($addressModel, $this->form, $this->attribute, $attribute) . "<br/>\n";
-            }
-            return $content;
+            $content  = $this->renderEditableAddressTextField($addressModel, $this->form, $this->attribute, 'street1')          . "\n";
+            $content .= $this->renderEditableAddressTextField($addressModel, $this->form, $this->attribute, 'street2')          . "\n";
+            $content .= $this->renderEditableAddressTextField($addressModel, $this->form, $this->attribute, 'city')             . "\n";
+            $content .= '<div class="hasHalfs">';
+            $content .= $this->renderEditableAddressTextField($addressModel, $this->form, $this->attribute, 'state', true)      . "\n";
+            $content .= $this->renderEditableAddressTextField($addressModel, $this->form, $this->attribute, 'postalCode', true) . "\n";
+			$content .= '</div>';
+            $content .= $this->renderEditableAddressTextField($addressModel, $this->form, $this->attribute, 'country')          . "\n";
+            return '<div class="address-fields">'.$content.'</div>';
         }
 
-        protected function renderEditableAddressTextField($model, $form, $inputNameIdPrefix, $attribute)
+        protected function renderEditableAddressTextField($model, $form, $inputNameIdPrefix, $attribute,
+                                                          $renderAsHalfSize = false)
         {
             $id          = $this->getEditableInputId($inputNameIdPrefix, $attribute);
             $htmlOptions = array(
@@ -115,7 +119,16 @@
             $label       = $form->labelEx  ($model, $attribute, array('for'   => $id));
             $textField   = $form->textField($model, $attribute, $htmlOptions);
             $error       = $form->error    ($model, $attribute);
-            return $label . "<br/>\n" . $textField . $error;
+            if($model->$attribute != null)
+            {
+                 $label = null;
+            }
+            $halfClassString = null;
+            if($renderAsHalfSize)
+            {
+                $halfClassString = ' half';
+            }
+            return CHtml::tag('div', array('class' => 'overlay-label-field' . $halfClassString), $label . $textField . $error);
         }
 
          /**
