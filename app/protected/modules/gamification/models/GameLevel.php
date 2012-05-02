@@ -25,45 +25,44 @@
      ********************************************************************************/
 
     /**
-     * Model for storing email folders.
+     * Model for game levels.
      */
-    class EmailFolder extends Item
+    class GameLevel extends Item
     {
-        const TYPE_INBOX        = 'Inbox';
-        const TYPE_SENT         = 'Sent';
-        const TYPE_OUTBOX       = 'Outbox';
-        const TYPE_DRAFT        = 'Draft';
-        const TYPE_OUTBOX_ERROR = 'OutboxError';
+        /**
+         * Used to define the level type as being general, which means it is a total of all point groups
+         * @var String
+         */
+        const TYPE_GENERAL            = 'General';
 
-        public static function getDefaultDraftName()
+        const TYPE_SALES              = 'Sales';
+
+        const TYPE_NEW_BUSINESS       = 'NewBusiness';
+
+        const TYPE_ACCOUNT_MANAGEMENT = 'AccountManagement';
+
+        const TYPE_COMMUNICATION      = 'Communication';
+
+        public function __toString()
         {
-            return Yii::t('Default', 'Draft');
+            if (trim($this->type) == '')
+            {
+                return Yii::t('Default', '(Unnamed)');
+            }
+            return $this->type;
         }
 
-        public static function getDefaultInboxName()
+        /**
+         * Given a point type and Item (Either User or Person),  try to find an existing model. If the model does
+         * not exist, create it and populate the Item and type. @return The found or created model.
+         * @param string $type
+         * @param Item $person
+         */
+        public static function resolveByTypeAndPerson($type, Item $person)
         {
-            return Yii::t('Default', 'Inbox');
-        }
-
-        public static function getDefaultSentName()
-        {
-            return Yii::t('Default', 'Sent');
-        }
-
-        public static function getDefaultOutboxName()
-        {
-            return Yii::t('Default', 'Outbox');
-        }
-
-        public static function getDefaultOutboxErrorName()
-        {
-            return Yii::t('Default', 'Outbox Error');
-        }
-
-        public static function getByBoxAndType(EmailBox $box, $type)
-        {
-            assert('$box->id > 0');
             assert('is_string($type)');
+            assert('$person->id > 0');
+            assert('$person instanceof Contact || $person instanceof User');
             $searchAttributeData = array();
             $searchAttributeData['clauses'] = array(
                 1 => array(
@@ -72,42 +71,34 @@
                     'value'                => $type,
                 ),
                 2 => array(
-                    'attributeName'        => 'emailBox',
+                    'attributeName'        => 'person',
                     'relatedAttributeName' => 'id',
                     'operatorType'         => 'equals',
-                    'value'                => $box->id,
+                    'value'                => $person->getClassId('Item'),
                 ),
             );
             $searchAttributeData['structure'] = '1 and 2';
-            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('EmailFolder');
-            $where = RedBeanModelDataProvider::makeWhere('EmailFolder', $searchAttributeData, $joinTablesAdapter);
+            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('GameLevel');
+            $where  = RedBeanModelDataProvider::makeWhere('GameLevel', $searchAttributeData, $joinTablesAdapter);
             $models = self::getSubset($joinTablesAdapter, null, null, $where, null);
-            if (count($models) == 0)
-            {
-                throw new NotFoundException();
-            }
-            elseif (count($models) > 1)
+            if (count($models) > 1)
             {
                 throw new NotSupportedException();
             }
-            else
+            if (count($models) == 0)
             {
-                return $models[0];
+                $gameLevel = new GameLevel();
+                $gameLevel->type   = $type;
+                $gameLevel->person = $person;
+                $gameLevel->value  = 1;
+                return $gameLevel;
             }
-        }
-
-        public function __toString()
-        {
-            if (trim($this->name) == '')
-            {
-                return Yii::t('Default', '(Unnamed)');
-            }
-            return $this->name;
+            return $models[0];
         }
 
         public static function getModuleClassName()
         {
-            return 'EmailMessagesModule';
+            return 'GamificationModule';
         }
 
         public static function canSaveMetadata()
@@ -120,22 +111,29 @@
             $metadata = parent::getDefaultMetadata();
             $metadata[__CLASS__] = array(
                 'members' => array(
-                    'name',
                     'type',
+                    'value',
                 ),
                 'relations' => array(
-                    'emailBox' => array(RedBeanModel::HAS_ONE, 'EmailBox'),
+                    'person' => array(RedBeanModel::HAS_ONE, 'Item'),
                 ),
                 'rules' => array(
-                    array('name',          'required'),
-                    array('name',          'type',    'type' => 'string'),
-                    array('name',          'length',  'min'  => 3, 'max' => 64),
+                    array('type', 		   'required'),
                     array('type',          'type',    'type' => 'string'),
-                    array('type',          'length',  'min'  => 3, 'max' => 12),
-                    //If we didn't need emailBox required,
-                    //we could use HAS_MANY_BELONGS_TO as the emailBox relation
-                    array('emailBox',      'required'),
-                )
+                    array('type',          'length',  'min'  => 3, 'max' => 64),
+                    array('value',     	   'type',    'type' => 'integer'),
+                    array('value', 		   'default', 'value' => 0),
+                    array('person', 	   'required'),
+                ),
+                'elements' => array(
+                    'person' => 'Person',
+                ),
+                'defaultSortAttribute' => 'type',
+                'noAudit' => array(
+                    'type',
+                    'value',
+                    'person',
+                ),
             );
             return $metadata;
         }
@@ -145,13 +143,13 @@
             return true;
         }
 
-        public function beforeDelete()
+        /**
+         * Add specified value.
+         */
+        public function addValue($value)
         {
-            if ($this->emailBox->isSpecialBox())
-            {
-                throw new NotSupportedException();
-            }
-            return parent::beforeDelete();
+            assert('is_int($value)');
+            $this->value = $this->value + $value;
         }
     }
 ?>

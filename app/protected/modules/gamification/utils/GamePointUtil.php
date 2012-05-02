@@ -24,26 +24,19 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    // This is the configuration for zurmoc console application.
-    // Any writable CConsoleApplication properties can be configured here.
-    $common_config = CMap::mergeArray(
-        require('main.php'),
-        array(
-            'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-            'name' => 'Zurmo Console Application',
-        )
-    );
-    //Utilize a custom begin request behavior class.
-    $common_config['behaviors']['onBeginRequest'] = array(
-        'class' => 'application.modules.zurmo.components.CommandBeginRequestBehavior'
-    );
-    //Turn off gamification
-    $common_config['components']['gamificationObserver']['enabled'] = false;
-    //Not applicable for console applications.
-    unset($common_config['defaultController']);
-    //Not applicable for console applications.
-    unset($common_config['theme']);
-    //Not applicable for console applications.
-    unset($common_config['controllerMap']);
-    return $common_config;
+    /**
+     * Helper class for working with game points.
+     */
+    class GamePointUtil
+    {
+        public static function addPointsByGameScore($type, User $user, $pointTypeAndValueData)
+        {
+            assert('is_string($type)');
+            assert('$user->id > 0');
+            foreach($pointTypeAndValueData as $type => $value)
+            {
+                Yii::app()->gameHelper->addPointsByUserDeferred($user, $type, $value);
+            }
+        }
+    }
 ?>

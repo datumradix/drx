@@ -24,17 +24,39 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class EndRequestTestBehavior extends EndRequestBehavior
+    /**
+     * Helps manage observation events on various classes.  Inspects modules for their primary model and detects
+     * if a gamificationRuleType is present. If it is then it will attempt to add scoring events for the model
+     * as defined by the gamificationRule class.
+     */
+    class GamificationObserver extends CComponent
     {
-        public function attach($owner)
-        {
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleGamification'));
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleEndRequest'));
-        }
+        public $enabled = true;
 
-        public function handleEndRequest($event)
+        public function init()
         {
-            throw new ExitException();
+            if($this->enabled)
+            {
+                $modules = Module::getModuleObjects();
+                foreach ($modules as $module)
+                {
+                    try
+                    {
+                        $modelClassName = $module->getPrimaryModelName();
+                        if ($modelClassName != null && is_subclass_of($modelClassName, 'Item') &&
+                            $modelClassName::getGamificationRulesType() != null)
+                        {
+                            $gamificationRulesType      = $modelClassName::getGamificationRulesType();
+                            $gamificationRulesClassName = $gamificationRulesType . 'Rules';
+                            $rules                      = new $gamificationRulesClassName();
+                            $rules->attachScoringEventsByModelClassName($modelClassName);
+                        }
+                    }
+                    catch(NotSupportedException $e)
+                    {
+                    }
+                }
+            }
         }
     }
 ?>

@@ -24,26 +24,33 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    // This is the configuration for zurmoc console application.
-    // Any writable CConsoleApplication properties can be configured here.
-    $common_config = CMap::mergeArray(
-        require('main.php'),
-        array(
-            'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-            'name' => 'Zurmo Console Application',
-        )
-    );
-    //Utilize a custom begin request behavior class.
-    $common_config['behaviors']['onBeginRequest'] = array(
-        'class' => 'application.modules.zurmo.components.CommandBeginRequestBehavior'
-    );
-    //Turn off gamification
-    $common_config['components']['gamificationObserver']['enabled'] = false;
-    //Not applicable for console applications.
-    unset($common_config['defaultController']);
-    //Not applicable for console applications.
-    unset($common_config['theme']);
-    //Not applicable for console applications.
-    unset($common_config['controllerMap']);
-    return $common_config;
+    /**
+     * Attaches events to the WebUser as needed for gamification.
+     */
+    class WebUserAfterLoginGamificationBehavior extends CBehavior
+    {
+        public function attach($owner)
+        {
+            $owner->attachEventHandler('onAfterLogin', array($this, 'handleScoreLogin'));
+        }
+
+        /**
+         * The login of a user is a scored game event.  This method processes this.
+         * @param CEvent $event
+         */
+        public function handleScoreLogin($event)
+        {
+            $scoreType           = 'LoginUser';
+            $category            = GamificationRules::SCORE_CATEGORY_LOGIN_USER;
+            $gameScore           = GameScore::resolveToGetByTypeAndUser($scoreType, Yii::app()->user->userModel);
+            $gameScore->addValue();
+            $saved = $gameScore->save();
+            if(!$saved)
+            {
+                throw new FailedToSaveModelException();
+            }
+                GamePointUtil::addPointsByGameScore($gameScore->type, Yii::app()->user->userModel,
+                               GamificationRules::getPointTypeAndValueDataByScoreTypeAndCategory($gameScore->type, $category));
+        }
+     }
 ?>

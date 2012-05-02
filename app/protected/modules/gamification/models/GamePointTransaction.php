@@ -24,36 +24,14 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class Import extends Item
+    /**
+     * Model for game points.
+     */
+    class GamePointTransaction extends RedBeanModel
     {
-        protected $tempTableName;
-
-        public function __toString()
-        {
-            return Yii::t('Default', '(Unnamed)');
-        }
-
         public static function getModuleClassName()
         {
-            return 'ImportModule';
-        }
-
-        /**
-         * Returns the display name for the model class.
-         * @return dynamic label name based on module.
-         */
-        protected static function getLabel()
-        {
-            return 'ImportsModuleSingularLabel';
-        }
-
-        /**
-         * Returns the display name for plural of the model class.
-         * @return dynamic label name based on module.
-         */
-        protected static function getPluralLabel()
-        {
-            return 'ImportModulePluralLabel';
+            return 'GamificationModule';
         }
 
         public static function canSaveMetadata()
@@ -66,54 +44,32 @@
             $metadata = parent::getDefaultMetadata();
             $metadata[__CLASS__] = array(
                 'members' => array(
-                    'serializedData',
+                    'value',
+                    'createdDateTime',
+                ),
+                'relations' => array(
                 ),
                 'rules' => array(
-                    array('serializedData',  'required'),
-                    array('serializedData',  'type', 'type' => 'string'),
-                )
+                    array('value',     	   	  'type',    'type' => 'integer'),
+                    array('value', 		      'default', 'value' => 0),
+                    array('createdDateTime',  'required'),
+                    array('createdDateTime',  'readOnly'),
+                    array('createdDateTime',  'type', 'type' => 'datetime'),
+                ),
+                'elements' => array(
+                    'createdDateTime'  => 'DateTime',
+                ),
+                'defaultSortAttribute' => 'type',
+                'noAudit' => array(
+                    'value',
+                    'createdDateTime',
+                ),
             );
             return $metadata;
         }
 
         public static function isTypeDeletable()
         {
-            return true;
-        }
-
-        /**
-         * Returns the string name of the temp table in the database used for the import data.
-         * @throws NotSupportedException
-         * @return Temporary table id if the import model has a valid id.
-         */
-        public function getTempTableName()
-        {
-            if ($this->id <= 0 )
-            {
-                throw new NotSupportedException();
-            }
-            if ($this->tempTableName != null)
-            {
-                return $this->tempTableName;
-            }
-            $this->tempTableName = 'importtable' . $this->id;
-            return $this->tempTableName;
-        }
-
-        public function setTempTableName($name)
-        {
-            assert('is_string($name)');
-            $this->tempTableName = $name;
-        }
-
-        protected function beforeDelete()
-        {
-            if(!parent::beforeDelete())
-            {
-                return false;
-            }
-            $sql = 'Drop table if exists ' . $this->getTempTableName();
-            R::exec($sql);
             return true;
         }
     }
