@@ -24,40 +24,40 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ReadPermissionsOptimizationUtilTest extends ZurmoBaseTest
+    /**
+     * Gamification Module
+     * Walkthrough for the super user of all possible controller actions.
+     * Since this is a super user, he should have access to all controller actions
+     * without any exceptions being thrown.
+     */
+    class GamificationSuperUserWalkthroughTest extends ZurmoWalkthroughBaseTest
     {
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
             SecurityTestHelper::createSuperAdmin();
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
         }
 
-        public function setUp()
+        public function testSuperUserAllDefaultControllerActions()
         {
-            parent::setUp();
-            Yii::app()->user->userModel = User::getByUsername('super');
-        }
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
-        public function testFindMungableModelClassNames()
-        {
-            $modelClassNames = ReadPermissionsOptimizationUtil::findMungableModelClassNames();
-            $compareData = array('Account', 'Contact', 'Meeting', 'Note', 'Opportunity', 'Task');
-            $this->assertEquals($compareData, $modelClassNames);
-            $modelClassNames2 = ReadPermissionsOptimizationUtil::getMungableModelClassNames();
-            $this->assertEquals($modelClassNames, $modelClassNames2);
-            $modelClassNames3 = ReadPermissionsOptimizationUtil::getMungableModelClassNames();
-            $this->assertEquals($modelClassNames2, $modelClassNames3);
-        }
-
-        public function testGetMungeIdsByUserIncludesEveryoneGroup()
-        {
-            Yii::app()->user->userModel = User::getByUsername('super');
-            $mungeIds = ReadPermissionsOptimizationUtil::getMungeIdsByUser(Yii::app()->user->userModel);
-            $this->assertEquals(2, count($mungeIds));
-            $group = Group::getByName(Group::EVERYONE_GROUP_NAME);
-            $group->save();
-            $mungeIds = ReadPermissionsOptimizationUtil::getMungeIdsByUser(Yii::app()->user->userModel);
-            $this->assertEquals(3, count($mungeIds));
+            //Test all default controller actions that do not require any POST/GET variables to be passed.
+            //This does not include portlet controller actions.
+            $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
+            $this->assertfalse(strpos($content, 'Leaderboard') === false);
+            $this->setGetArray(array(
+                'type' => GamePointUtil::LEADERBOARD_TYPE_WEEKLY));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
+            $this->assertfalse(strpos($content, 'Leaderboard') === false);
+            $this->setGetArray(array(
+                'type' => GamePointUtil::LEADERBOARD_TYPE_MONTHLY));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
+            $this->assertfalse(strpos($content, 'Leaderboard') === false);
+            $this->setGetArray(array(
+                'type' => GamePointUtil::LEADERBOARD_TYPE_OVERALL));
         }
     }
 ?>
