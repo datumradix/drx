@@ -25,28 +25,31 @@
      ********************************************************************************/
 
     /**
-     * Renders an action bar specifically for the search and listview.
+     * A view that displays the gamification leaderboard
+     *
      */
-    class ActionBarForUserEditAndDetailsView extends ConfigurableMetadataView
+    class LeaderboardView extends MetadataView
     {
         protected $controllerId;
 
         protected $moduleId;
 
-        protected $model;
+        protected $leaderboardData;
 
         protected $activeActionElementType;
 
-        public function __construct($controllerId, $moduleId, User $model, $activeActionElementType)
+        protected $cssClasses = array('ListView');
+
+        public function __construct($controllerId, $moduleId, $leaderboardData, $activeActionElementType)
         {
             assert('is_string($controllerId)');
             assert('is_string($moduleId)');
+            assert('is_array($leaderboardData)');
             assert('is_string($activeActionElementType)');
-            $this->controllerId              = $controllerId;
-            $this->moduleId                  = $moduleId;
-            $this->modelId                   = $model->id;
-            $this->model                     = $model;
-            $this->activeActionElementType   = $activeActionElementType;
+            $this->controllerId            = $controllerId;
+            $this->moduleId                = $moduleId;
+            $this->leaderboardData         = $leaderboardData;
+            $this->activeActionElementType = $activeActionElementType;
         }
 
         protected function renderContent()
@@ -54,12 +57,37 @@
             $content  = '<div class="view-toolbar-container clearfix"><div class="view-toolbar">';
             $content .= $this->renderActionElementBar(false);
             $content .= '</div></div>';
+            $content .= '<div class="cgrid-view">';
+            $content .= $this->renderLeaderboardContent();
+            $content .= '</div>';
             return $content;
         }
 
-        public function isUniqueToAPage()
+        protected function renderLeaderboardContent()
         {
-            return true;
+            $content  = '<table class="items">';
+            $content .= '<colgroup>';
+            $content .= '<col style="width:60%" /><col style="width:20%" /><col style="width:20%" />';
+            $content .= '</colgroup>';
+            $content .= '<tbody>';
+            $content .= '<tr><th>' . Yii::t('Default', 'Rank') . '</th>';
+            $content .= '<th>' . Yii::t('Default', 'User') . '</th>';
+            $content .= '<th>' . Yii::t('Default', 'Points') . '</th>';
+            $content .= '</tr>';
+            foreach ($this->leaderboardData as $userId => $leaderboardData)
+            {
+                assert('is_string($leaderboardData["rank"])');
+                assert('is_string($leaderboardData["userLabel"])');
+                assert('is_int($leaderboardData["points"])');
+                $content .= '<tr>';
+                $content .= '<td>' . $leaderboardData['rank'] . '</td>';
+                $content .= '<td>' . $leaderboardData['userLabel'] . '</td>';
+                $content .= '<td>' . $leaderboardData['points'] . '</td>';
+                $content .= '</tr>';
+            }
+            $content .= '</tbody>';
+            $content .= '</table>';
+            return $content;
         }
 
         public static function getDefaultMetadata()
@@ -68,24 +96,17 @@
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type' => 'DetailsLink',
-                                'label' => "eval:Yii::t('Default', 'Profile')",
-                                'htmlOptions' => array( 'class' => 'icon-user-details' )
+                            array(
+                                'type'            => 'LeaderboardWeeklyLink',
+                                'htmlOptions'     => array( 'class' => 'icon-leaderboard-weekly' )
                             ),
-                            array('type' => 'EditLink',
-                                'htmlOptions' => array( 'class' => 'icon-edit' )
+                            array(
+                                'type'            => 'LeaderboardMonthlyLink',
+                                'htmlOptions'     => array( 'class' => 'icon-leaderboard-monthly' )
                             ),
-                            array('type' => 'AuditEventsModalListLink',
-                                'htmlOptions' => array( 'class' => 'icon-audit' )
-                            ),
-                            array('type' => 'ChangePasswordLink',
-                                'htmlOptions' => array( 'class' => 'icon-password' )
-                            ),
-                            array('type' => 'UserConfigurationEditLink',
-                                'htmlOptions' => array( 'class' => 'icon-user-config' )
-                            ),
-                            array('type' => 'SecurityDetailsLink',
-                                'htmlOptions' => array( 'class' => 'icon-security' )
+                            array(
+                                'type'            => 'LeaderboardOverallLink',
+                                'htmlOptions'     => array( 'class' => 'icon-leaderboard-overall' )
                             ),
                         ),
                     ),
@@ -94,13 +115,17 @@
             return $metadata;
         }
 
+        public function isUniqueToAPage()
+        {
+            return true;
+        }
+
         protected function resolveActionElementInformationDuringRender(& $elementInformation)
         {
             parent::resolveActionElementInformationDuringRender($elementInformation);
-            if ($elementInformation['type'] == $this->activeActionElementType)
+            if($elementInformation['type'] == $this->activeActionElementType)
             {
                 $elementInformation['htmlOptions']['class'] .= ' active';
             }
         }
     }
-?>
