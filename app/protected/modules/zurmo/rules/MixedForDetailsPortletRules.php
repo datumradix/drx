@@ -25,44 +25,10 @@
      ********************************************************************************/
 
     /**
-     * Helper functionality for working with Strings
+     * Class defines rules for a miscellaneous portlet or mixed content used in a details and relation view.
+     * portlets.
      */
-    class StringUtil
+    class MixedForDetailsPortletRules extends PortletRules
     {
-        /**
-         * Given a string and a length, return the chopped string if it is larger than the length.
-         * @param string $string
-         * @param integer $length
-         */
-        public static function getChoppedStringContent($string, $length)
-        {
-            assert('is_string($string)');
-            assert('is_int($length)');
-            if (strlen($string) > $length)
-            {
-                return substr($string, 0, ($length - 3)) . '...';
-            }
-            else
-            {
-                return $string;
-            }
-        }
-
-        /**
-         * Given an integer, resolve the integer with an ordinal suffix and return the content as as string.
-         * @param integer $number
-         */
-        public static function resolveOrdinalIntegerAsStringContent($integer)
-        {
-            assert('is_int($integer)');
-            $ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
-            if (($integer %100) >= 11 && ($integer%100) <= 13)
-            {
-               return $integer. 'th';
-            }
-            else
-            {
-               return $integer. $ends[$integer % 10];
-            }
-        }
     }
+?>
