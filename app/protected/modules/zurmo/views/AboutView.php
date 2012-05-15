@@ -120,7 +120,7 @@
                                 </a>
                             </li>
                         </ul>
-            <div><h3>App Info</h3><p>';
+            <div><h3>Application Info</h3><p>';
             $content .= Yii::t('Default', 'This is <strong>version {zurmoVersion}</strong> of <strong>Zurmo</strong>.',
                         array('{zurmoVersion}' => $zurmoVersion));
             $content .= '</p>';
