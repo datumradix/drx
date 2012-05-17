@@ -254,7 +254,7 @@
                 $specialCssContent .= '<link rel="stylesheet/less" type="text/css" href="' .
                                       Yii::app()->baseUrl . '/' . $theme . '/css/less/newui.less"/>';
                 $specialCssContent .= '<!--[if lt IE 10]><link rel="stylesheet/less" type="text/css" href="' .
-                                      Yii::app()->baseUrl . '/' . $theme . '/css/ie.less"/><![endif]-->';
+                                      Yii::app()->baseUrl . '/' . $theme . '/css/less/ie.less"/><![endif]-->';
             }
             else
             {
