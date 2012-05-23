@@ -30,15 +30,20 @@
         {
             $modelClassName   = $this->getModule()->getPrimaryModelName();
             $viewClassName    = $modelClassName . 'EditAndDetailsView';
-            return array_merge(parent::filters(),
+            $x = array_merge(parent::filters(),
                 array(
                     array(
                         ZurmoBaseController::REQUIRED_ATTRIBUTES_FILTER_PATH . ' + create, createFromRelation, edit',
                         'moduleClassName' => get_class($this->getModule()),
                         'viewClassName'   => $viewClassName,
                    ),
+                    array(
+                        ZurmoModuleController::ZERO_MODELS_CHECK_FILTER_PATH . ' + list, index',
+                        'controller' => $this,
+                   ),
                )
             );
+            return $x;
         }
 
         public function actionList()
@@ -175,6 +180,9 @@
 
         public function actionModalList()
         {
+                                Yii::app()->user->setFlash('notification',
+                        Yii::t('Default', 'Global configuration saved successfully.')
+                    );
             $modalListLinkProvider = new SelectFromRelatedEditModalListLinkProvider(
                                             $_GET['modalTransferInformation']['sourceIdFieldId'],
                                             $_GET['modalTransferInformation']['sourceNameFieldId']

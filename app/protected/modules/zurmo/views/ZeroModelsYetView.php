@@ -25,33 +25,46 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Base class for showing in the user interface when there are no models yet visible for a particular user
+     * in a given module.
      */
-    class GamificationModule extends Module
+    abstract class ZeroModelsYetView extends View
     {
-        public function getDependencies()
+        protected $controllerId;
+
+        protected $moduleId;
+
+        protected $actionId;
+
+        abstract protected function getCreateLinkDisplayLabel();
+
+        abstract protected function getMessageContent();
+
+        public function __construct($controllerId, $moduleId, $modelClassName)
         {
-            return array('configuration', 'zurmo');
+            assert('is_string($controllerId)');
+            assert('is_string($moduleId)');
+            assert('is_string($modelClassName)');
+            $this->controllerId   = $controllerId;
+            $this->moduleId       = $moduleId;
+            $this->modelClassName = $modelClassName;
         }
 
-        public function getRootModelNames()
+        protected function renderContent()
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
+            $params             = array('label' => $this->getCreateLinkDisplayLabel());
+            $createLinkElement  = new CreateLinkActionElement($this->controllerId, $this->moduleId, null, $params);
+            $content = '<div>';
+            $content .= '<div>' . $this->getIconName() . '</div>';
+            $content .= '<div>' . $this->getMessageContent() . '</div>';
+            $content .= '<div>' . $createLinkElement->render() . '</div>';
+            $content .= '</div>';
+            return $content;
         }
 
-        public static function getDefaultMetadata()
+        protected function getIconName()
         {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 2,
-                        ),
-                ),
-            );
-            return $metadata;
+            return $this->modelClassName . '-large-icon';
         }
     }
 ?>

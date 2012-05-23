@@ -25,33 +25,34 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Class for showing a message and create link when there are no leads visible to the logged in user when
+     * going to the leads list view.
      */
-    class GamificationModule extends Module
+    class LeadsZeroModelsYetView extends ZeroModelsYetView
     {
-        public function getDependencies()
+        protected function getCreateLinkDisplayLabel()
         {
-            return array('configuration', 'zurmo');
+            return Yii::t('Default',
+                          'Create LeadsModuleSingularLabel',
+                          LabelUtil::getTranslationParamsForAllModules());
         }
 
-        public function getRootModelNames()
+        protected function getMessageContent()
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
+            return Yii::t('Default', '<h2>"Luke, don\'t give in to hate - that Leads to the dark side."</h2> ' .
+                                     '<i>Obi Wan</i><br/>Luke received sage advice from his Jedi mentor on how ' .
+                                     'important Leads are in the CRM. Turn away from the dark side and use the ' .
+                                     'force to create the first Lead record.');
         }
 
-        public static function getDefaultMetadata()
+        /**
+         * While the model is still a contact, the image should show a lead.
+         * (non-PHPdoc)
+         * @see ZeroModelsYetView::getIconName()
+         */
+        protected function getIconName()
         {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 2,
-                        ),
-                ),
-            );
-            return $metadata;
+            return 'lead-large-icon';
         }
     }
 ?>

@@ -25,33 +25,9 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Exception thrown when a model that is expected to delete ok, fails to delete.
      */
-    class GamificationModule extends Module
+    class FailedToDeleteModelException extends CException
     {
-        public function getDependencies()
-        {
-            return array('configuration', 'zurmo');
-        }
-
-        public function getRootModelNames()
-        {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 2,
-                        ),
-                ),
-            );
-            return $metadata;
-        }
     }
 ?>
