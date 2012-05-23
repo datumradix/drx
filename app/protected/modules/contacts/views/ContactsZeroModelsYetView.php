@@ -25,33 +25,24 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Class for showing a message and create link when there are no contacts visible to the logged in user when
+     * going to the contacts list view.
      */
-    class GamificationModule extends Module
+    class ContactsZeroModelsYetView extends ZeroModelsYetView
     {
-        public function getDependencies()
+        protected function getCreateLinkDisplayLabel()
         {
-            return array('configuration', 'zurmo');
+            return Yii::t('Default',
+                          'Create ContactsModuleSingularLabel',
+                          LabelUtil::getTranslationParamsForAllModules());
         }
 
-        public function getRootModelNames()
+        protected function getMessageContent()
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 2,
-                        ),
-                ),
-            );
-            return $metadata;
+            return Yii::t('Default', '<h2>"Skill is fine, and genius is splendid, but the right Contacts are more ' .
+                                     'valuable than either."</h2> - <i>Arthur Conan Doyle, Sr.</i><br/>Arthur ' .
+                                     'understands the value of having Contacts in the CRM and it takes little skill ' .
+                                     'or genius to create one. Why not be the first to do so.');
         }
     }
 ?>

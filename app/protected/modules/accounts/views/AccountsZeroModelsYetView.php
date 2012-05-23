@@ -25,33 +25,24 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Class for showing a message and create link when there are no accounts visible to the logged in user when
+     * going to the accounts list view.
      */
-    class GamificationModule extends Module
+    class AccountsZeroModelsYetView extends ZeroModelsYetView
     {
-        public function getDependencies()
+        protected function getCreateLinkDisplayLabel()
         {
-            return array('configuration', 'zurmo');
+            return Yii::t('Default',
+                          'Create AccountsModuleSingularLabel',
+                          LabelUtil::getTranslationParamsForAllModules());
         }
 
-        public function getRootModelNames()
+        protected function getMessageContent()
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 2,
-                        ),
-                ),
-            );
-            return $metadata;
+            return Yii::t('Default', '<h2>"As we must Account for every idle word, so must we Account for every idle ' .
+                                     'silence."</h2> - <i>Benjamin Franklin</i><br/>Be the first to create an Account and, ' .
+                                     'as Ben would say, "So must we Account for every company, organization, or ' .
+                                     'customer we interact with."');
         }
     }
 ?>
