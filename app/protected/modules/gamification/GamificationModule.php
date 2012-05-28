@@ -36,7 +36,7 @@
 
         public function getRootModelNames()
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge');
+            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
         }
 
         public static function getDefaultMetadata()
