@@ -25,18 +25,25 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage game changes requiring a notification to go out.
+     * Class for showing a message and create link when there are no opportunities visible to the logged in user when
+     * going to the opportunities list view.
      */
-    class GameNotificationRules extends NotificationRules
+    class OpportunitiesZeroModelsYetView extends ZeroModelsYetView
     {
-        public static function getDisplayName()
+        protected function getCreateLinkDisplayLabel()
         {
-            return Yii::t('Default', 'A game notification');
+            return Yii::t('Default',
+                          'Create OpportunitiesModuleSingularLabel',
+                          LabelUtil::getTranslationParamsForAllModules());
         }
 
-        public static function getType()
+        protected function getMessageContent()
         {
-            return 'Game';
+            return Yii::t('Default', '<h2>"In the middle of difficulty lies Opportunity."</h2> ' .
+                                     '- <i>Albert Einstein</i><br/>In the middle of a well-implemented ' .
+                                     'CRM system lie Opportunities, or expressions of potential revenue. ' .
+                                     'Nothing difficult about creating an Opportunity so go ahead and create the ' .
+                                     'first one.');
         }
     }
 ?>
