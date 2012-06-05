@@ -25,36 +25,21 @@
      ********************************************************************************/
 
     /**
-     * Override class is used specifically by the
-     * testing framework to handle testing of inbound and outbound email.
+     * View used to render message content as a result of sending a test email.  This is rendered in a modal window.
      */
-    class EmailHelperForTesting extends EmailHelper
+    class TestImapConnectionMessageView extends View
     {
-        public $sendEmailThroughTransport = false;
+        protected $message;
 
-        /**
-         * Override to avoid actually sending emails out through transport.
-         * (non-PHPdoc)
-         * @see EmailHelper::sendEmail()
-         */
-        protected function sendEmail(Mailer $mailer, EmailMessage $emailMessage)
+        public function __construct($message)
         {
-            if (!$this->sendEmailThroughTransport)
-            {
-                $emailMessage->error    = null;
-                $emailMessage->folder   = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
-            }
-            else
-            {
-                parent::sendEmail($mailer, $emailMessage);
-            }
+            assert('is_string($message)');
+            $this->message = $message;
         }
 
-
-        //For testing only
-        public function getSentCount()
+        protected function renderContent()
         {
-            return count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT));
+            return nl2br($this->message);
         }
     }
 ?>

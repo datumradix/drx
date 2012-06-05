@@ -24,37 +24,17 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Override class is used specifically by the
-     * testing framework to handle testing of inbound and outbound email.
-     */
-    class EmailHelperForTesting extends EmailHelper
+    class ZurmoImapTest extends BaseTest
     {
-        public $sendEmailThroughTransport = false;
-
-        /**
-         * Override to avoid actually sending emails out through transport.
-         * (non-PHPdoc)
-         * @see EmailHelper::sendEmail()
-         */
-        protected function sendEmail(Mailer $mailer, EmailMessage $emailMessage)
+        public static function setUpBeforeClass()
         {
-            if (!$this->sendEmailThroughTransport)
-            {
-                $emailMessage->error    = null;
-                $emailMessage->folder   = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
-            }
-            else
-            {
-                parent::sendEmail($mailer, $emailMessage);
-            }
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+            UserTestHelper::createBasicUser('billy');
         }
 
-
-        //For testing only
-        public function getSentCount()
+        public function testRun()
         {
-            return count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT));
         }
     }
 ?>

@@ -25,36 +25,25 @@
      ********************************************************************************/
 
     /**
-     * Override class is used specifically by the
-     * testing framework to handle testing of inbound and outbound email.
+     * Checks if IMAP extension is installed.
      */
-    class EmailHelperForTesting extends EmailHelper
+    class IMAPServiceHelper extends ServiceHelper
     {
-        public $sendEmailThroughTransport = false;
+        protected $required = false;
 
-        /**
-         * Override to avoid actually sending emails out through transport.
-         * (non-PHPdoc)
-         * @see EmailHelper::sendEmail()
-         */
-        protected function sendEmail(Mailer $mailer, EmailMessage $emailMessage)
+        protected function checkService()
         {
-            if (!$this->sendEmailThroughTransport)
+            $IMAPInstalled =  InstallUtil::checkIMAP();
+            if ($IMAPInstalled)
             {
-                $emailMessage->error    = null;
-                $emailMessage->folder   = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
+                $this->message  = Yii::t('Default', 'IMAP extension is loaded.');
+                return true;
             }
             else
             {
-                parent::sendEmail($mailer, $emailMessage);
+                $this->message  = Yii::t('Default', 'IMAP extension is not loaded.');
+                return false;
             }
-        }
-
-
-        //For testing only
-        public function getSentCount()
-        {
-            return count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT));
         }
     }
 ?>

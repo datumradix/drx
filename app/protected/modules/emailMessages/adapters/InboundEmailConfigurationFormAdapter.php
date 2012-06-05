@@ -25,36 +25,39 @@
      ********************************************************************************/
 
     /**
-     * Override class is used specifically by the
-     * testing framework to handle testing of inbound and outbound email.
+     * Class to adapt inbound email configuration values into a configuration form.
+     * Saves global values from a configuration form.
      */
-    class EmailHelperForTesting extends EmailHelper
+    class InboundEmailConfigurationFormAdapter
     {
-        public $sendEmailThroughTransport = false;
+        /**
+         * @return InboundEmailConfigurationForm
+         */
+        public static function makeFormFromGlobalConfiguration()
+        {
+            $form                             = new InboundEmailConfigurationForm();
+            $form->imapHost                   = Yii::app()->imap->imapHost;
+            $form->imapUsername               = Yii::app()->imap->imapUsername;
+            $form->imapPassword               = Yii::app()->imap->imapPassword;
+            $form->imapPort                   = Yii::app()->imap->imapPort;
+            $form->imapSSL                    = Yii::app()->imap->imapSSL;
+            $form->imapFolder                 = Yii::app()->imap->imapFolder;
+            return $form;
+        }
 
         /**
-         * Override to avoid actually sending emails out through transport.
-         * (non-PHPdoc)
-         * @see EmailHelper::sendEmail()
+         * Given a InboundEmailConfigurationForm, save the configuration global values.
          */
-        protected function sendEmail(Mailer $mailer, EmailMessage $emailMessage)
+        public static function setConfigurationFromForm(InboundEmailConfigurationForm $form)
         {
-            if (!$this->sendEmailThroughTransport)
-            {
-                $emailMessage->error    = null;
-                $emailMessage->folder   = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
-            }
-            else
-            {
-                parent::sendEmail($mailer, $emailMessage);
-            }
-        }
+            Yii::app()->imap->imapHost        = $form->imapHost;
+            Yii::app()->imap->imapUsername    = $form->imapUsername;
+            Yii::app()->imap->imapPassword    = $form->imapPassword;
+            Yii::app()->imap->imapPort        = $form->imapPort;
+            Yii::app()->imap->imapSSL         = $form->imapSSL;
+            Yii::app()->imap->imapFolder      = $form->imapFolder;
 
-
-        //For testing only
-        public function getSentCount()
-        {
-            return count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT));
-        }
+            Yii::app()->imap->setInboundSettings();
+       }
     }
 ?>

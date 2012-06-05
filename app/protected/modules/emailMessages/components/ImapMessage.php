@@ -25,36 +25,36 @@
      ********************************************************************************/
 
     /**
-     * Override class is used specifically by the
-     * testing framework to handle testing of inbound and outbound email.
+     * Class to store IMAP message info
      */
-    class EmailHelperForTesting extends EmailHelper
+    class ImapMessage
     {
-        public $sendEmailThroughTransport = false;
+        public $to = array();
 
-        /**
-         * Override to avoid actually sending emails out through transport.
-         * (non-PHPdoc)
-         * @see EmailHelper::sendEmail()
-         */
-        protected function sendEmail(Mailer $mailer, EmailMessage $emailMessage)
-        {
-            if (!$this->sendEmailThroughTransport)
-            {
-                $emailMessage->error    = null;
-                $emailMessage->folder   = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
-            }
-            else
-            {
-                parent::sendEmail($mailer, $emailMessage);
-            }
-        }
+        public $cc = array();
 
+        public $fromName = '';
 
-        //For testing only
-        public function getSentCount()
-        {
-            return count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT));
-        }
+        public $fromEmail = '';
+
+        public $senderName = '';
+
+        public $senderEmail = '';
+
+        public $subject = '';
+
+        public $htmlBody = '';
+
+        public $textBody = '';
+
+        public $attachments = array();
+
+        public $createdDate;
+
+        public $uid;
+
+        public $msgNumber;
+
+        public $msgId;
     }
 ?>
