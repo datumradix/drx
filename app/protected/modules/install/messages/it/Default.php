@@ -63,7 +63,7 @@
         'Ctype extension is not loaded.'
             => 'L\'estensione Ctype non è stata caricata.',
         'Curl'
-            => 'Curl',
+            => 'Curl', // Same Word Translated
         'Database admin password'
             => 'Password relativa all\'utente del database',
         'Database admin username'
@@ -102,6 +102,8 @@
             => 'Il valore del parametro optimizer_search_depth è {searchDepth}. Il valore dovrebbe essere 0.?',
         'Database password'
             => 'Password del database',
+        'Database port.'
+            => 'Porta database',
         'Database schema creation complete.'
             => 'Creazione schema di database è completato.',
         'Database thread_stack value is:'
@@ -146,8 +148,8 @@
             => 'Log da installazione:',
         'is installed, but the version is unknown.'
             => 'è installato, ma la versione non è conosciuta.',
-        'is not installed'
-            => 'non è installato',
+        'is not installed.'
+            => 'non è installato.',
         'It is highly recommended that all optional services are installed and ' .
         'working before continuing.'
             => 'È molto consigliato installare tutti i servizi opzionali ' .
@@ -160,14 +162,12 @@
             => 'Installa i dati di demo.  Attendere prego.',
         'Locking Installation.'
             => 'Proteggere l\'installazione.',
-        'Login'
-            => 'Login',
         'Mbstring is installed.'
             => 'Mbstring è installato.',
         'Mbstring is not installed.'
             => 'Mbstring non è installato.',
-        'Memcache'
-            => 'Memcache',
+        'Memcache extension'
+            => 'Estensione Memcache',
         'Memcache host'
             => 'Host Memcache',
         'Memcache host name. Default is 127.0.0.1'
@@ -177,23 +177,23 @@
         'Memcache port number. Default is 11211'
             => 'Numero di porta Memcache.  Il default è 11211',
         'Microsoft-IIS'
-            => 'Microsoft-IIS',
+            => 'Microsoft-IIS', // Same Word Translated
         'minimum requirement is:'
             => 'requisito minimo è:',
         'Minimum version required:'
             => 'La versione richiesta minimale è',
         'Mysql'
-            => 'Mysql',
+            => 'Mysql', // Same Word Translated
         'Oh no!'
-            => 'Oh no!',
+            => 'Oh no!', // Same Word Translated
         'PASS'
-            => 'PASS',
+            => 'PASS', // Same Word Translated
         'PCRE extension is loaded.'
             => 'L\'estensione PCRE è stata caricata.',
         'PCRE extension is not loaded.'
             => 'L\'estensione PCRE non è stata caricata.',
         'PHP'
-            => 'PHP',
+            => 'PHP', // Same Word Translated
         'PHP date.timezone is not set.'
             => 'Il parametro PHP date.timezone non è configurato.',
         'PHP date.timezone is set.'
@@ -221,7 +221,7 @@
         'Recheck System'
             => 'Re-controlla il sistema',
         'RedBean'
-            => 'RedBean',
+            => 'RedBean', // Same Word Translated
         'RedBean file is missing patch.'
             => 'Il file RedBean manca il patch.',
         'RedBean file is patched correctly'
@@ -275,7 +275,7 @@
         'There was a problem creating the user Error code:'
             => 'C\'era un error durante la creazione del utente dei codice Errore:',
         'Tidy'
-            => 'Tidy',
+            => 'Tidy', // Same Word Translated
         'User who can connect to the database.'
             => 'Utente che posso connettere al database.',
         'User`s password.'
@@ -295,7 +295,7 @@
         'Writing Configuration File.'
             => 'Creazione del file di configurazione.',
         'Yii'
-            => 'Yii',
+            => 'Yii', // Same Word Translated
         'You cannot access the installation area because the application is already installed.'
             => 'Non può accedere l\'area di installazione perche l\'applicazione è già installata.',
         'You have specified an existing database. If you would like to use this database, ' .
@@ -310,10 +310,14 @@
             => 'Avete specificato un nome di utente che esiste.  Si volete selezionare questo utente ' .
                'non specificate il nome di utente di database or la password di database.  Altrimenti, ' .
                'selezionate un nome di database che non esiste.',
+        'Your ZurmoCRM software is outdated, new stable release available:'
+            => 'La vostra versione di Zurmo è obsoleta, una nuova versione è disponibile:',
         'Zurmo administrative password. The username is `super`.  You can change this later.'
             => 'Password amministrativa di Zurmo.  Il utente è `super`.  Si può cambiare questo più tardi.',
         'Zurmo Installation'
             => 'Installazione di Zurmo',
+        'Zurmo Version'
+            => 'Versione di Zurmo',
         '{folderPath} is missing.'
             => '{folderPath} mancante.',
         '{folderPath} is not writable.'

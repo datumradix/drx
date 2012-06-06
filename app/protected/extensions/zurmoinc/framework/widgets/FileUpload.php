@@ -244,7 +244,7 @@ $scriptContent = <<<EOD
             <td class="name" colspan="4">\${name}</td>
             <td class="size">\${size}</td>
             <td class="delete">
-                <button data-url="{$this->deleteUrl}&id=\${id}">{$deleteLabel}</button>
+                <button data-url="{$this->deleteUrl}?id=\${id}">{$deleteLabel}</button>
             </td>
         {{/if}}
 
@@ -264,7 +264,7 @@ $scriptContent = <<<EOD
 <script id="template-upload" type="text/x-jquery-tmpl">
     <tr class="template-upload{{if error}} ui-state-error{{/if}}">
         <td class="preview"></td>
-        <td class="name">\${name}</td>
+        <td class="name" colspan="4">\${name}</td>
         <td class="size">\${sizef}</td>
         {{if error}}
             <td class="error" colspan="2">\${error}</td>

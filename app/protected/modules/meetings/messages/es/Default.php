@@ -39,6 +39,8 @@
             => 'Categoría',
         'Create MeetingsModulePluralLabel'
             => 'Crear MeetingsModulePluralLabel',
+        'Create MeetingsModuleSingularLabel'
+            => 'Crear MeetingsModuleSingularLabel',
         'Delete MeetingsModulePluralLabel'
             => 'Eliminar MeetingsModulePluralLabel',
         'End Time'
@@ -50,15 +52,19 @@
         'Meetings'
             => 'Reuniones',
         'MeetingsModulePluralLabel'
-            => 'MeetingsModulePluralLabel',
+            => 'MeetingsModulePluralLabel', // Same Word Translated
         'MeetingsModulePluralLabel For AccountsModuleSingularLabel'
             => 'MeetingsModulePluralLabel para AccountsModuleSingularLabel',
         'MeetingsModulePluralLabel For ContactsModuleSingularLabel'
             => 'MeetingsModulePluralLabel para ContactsModuleSingularLabel',
         'MeetingsModulePluralLabel For OpportunitiesModuleSingularLabel'
             => 'MeetingsModulePluralLabel para OpportunitiesModuleSingularLabel',
+        'MeetingsModulePluralLabel On {displayStringTime}'
+            => 'MeetingsModulePluralLabel el {displayStringTime}',
         'MeetingsModuleSingularLabel'
-            => 'MeetingsModuleSingularLabel',
+            => 'MeetingsModuleSingularLabel', // Same Word Translated
+        'MeetingsModuleSingularLabel Day Summary'
+            => 'Resumen de MeetingsModulePluralLabel',
         'My Upcoming MeetingsModulePluralLabel'
             => 'Mis próximas MeetingsModulePluralLabel',
         'Related ContactsModulePluralLabel and LeadsModulePluralLabel'
@@ -69,5 +75,13 @@
             => 'Escribir un ContactsModuleSingularLowerCaseLabel o LeadsModuleSingularLowerCaseLabel: nombre o dirección de email',
         'Upcoming MeetingsModulePluralLabel'
             => 'Próximos MeetingsModulePluralLabel',
+        '{n} Call created|{n} Calls created'
+            => '{n} Llamada creada|{n} LLamadas creadas',
+        '{n} MeetingsModuleSingularLabel created|{n} MeetingsModulePluralLabel created'
+            => '{n} MeetingsModuleSingularLabel ha sido creado|{n} MeetingsModulePluralLabel han sido creados',
+        '{quantity} MeetingsModulePluralLabel'
+            => '{quantity} MeetingsModulePluralLabel', // Same Word Translated
+        '{quantity} MeetingsModuleSingularLabel'
+            => '{quantity} MeetingsModuleSingularLabel', // Same Word Translated
     );
 ?>

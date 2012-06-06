@@ -37,6 +37,8 @@
             => 'Accès aux tâches système',
         'Available Jobs'
             => 'Jobs disponibles',
+        'Check if there is newer Zurmo version available Job'
+            => 'Job Vérifier mise à jour',
         'Cleanup old job logs Job'
             => 'Nettoyage des vieux job logs.',
         'Clear the assets folder on server(optional).'
@@ -73,20 +75,22 @@
             => 'Fichier log',
         'Job Log for {jobDisplayName}'
             => 'Fichier log pour {jobDisplayName}',
+        'Job Manager'
+            => 'Tâches système',
+        'Job Manager: Home'
+            => 'Tâches système: Home',
         'Job Name'
             => 'Nom du Job',
-        'Jobs Manager'
-            => 'Tâches système',
-        'Jobs Manager: Home'
-            => 'Tâches système: Home',
         'Last Completed Run'
             => 'Dernière exécution',
         'Manage Scheduled Jobs'
             => 'Gestion des tâches système',
         'Message'
-            => 'Message',
+            => 'Message', // Same Word Translated
         'Monitor Job'
             => 'Suivi des tâches système',
+        'New stable Zurmo release available'
+            => 'Une nouvelle version stable de Zurmo est disponible.',
         'Not Running'
             => 'Inactif',
         'Recommended Frequency'

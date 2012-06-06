@@ -45,14 +45,16 @@
             => '3D Kreisdiagramm',
         '3D Vertical Bar Graph'
             => '3D Säulendiagramm',
-        '<b>Zurmo</b> is a <b>Customer Relationship Management</b> system by <b>Zurmo Inc.</b>'
-            => '<b>Zurmo</b> ist ein <b>Customer Relationship Management</b> system von <b>Zurmo Inc.</b>',
-        '<b>Zurmo</b> is licensed under the GPLv3.  You can read the license <a href="http://www.zurmo.org/license">here</a>.'
-            => '<b> Zurmo </ b> ist unter der GPLv3 lizenziert. Sie können die Lizenz <a href="http://www.zurmo.org/license"> hier lesen</ a>',
-        '<b>Zurmo</b> uses the following great Open Source tools and frameworks:'
-            => '<b>Zurmo</b> uses the following great Open Source tools and frameworks:',
-        'About'
-            => 'über',
+        '<strong>Zurmo</strong> is a <strong>Customer Relationship Management</strong> system by <strong>Zurmo Inc.</strong>'
+            => '<strong>Zurmo</strong> ist ein <strong>Customer Relationship Management</strong> system von <strong>Zurmo Inc.</strong>',
+        '<strong>Zurmo</strong> is licensed under the GPLv3.  You can read the license <a href="http://www.zurmo.org/license">here</a>.'
+            => '<strong> Zurmo </strong> ist unter der GPLv3 lizenziert. Sie können die Lizenz <a href="http://www.zurmo.org/license"> hier lesen</a>',
+        '<strong>Zurmo</strong> uses the following great Open Source tools and frameworks:'
+            => '<strong>Zurmo</strong> nutzt die folgenden wunderbaren Open Source Tools und Frameworks:',
+        'A large amount of data has been requested for export.  You will receive a notification with the download link when the export is complete.'
+            => 'Viele Daten hat für den Export angefordert worden. Sie erhalten eine Benachrichtigung mit dem Download-Link, wenn der Export abgeschlossen ist.',
+        'About Zurmo'
+            => 'Über Zurmo',
         'Access Administration Tab'
             => 'Zugang Administration Tab',
         'Access Currency Configuration'
@@ -75,10 +77,12 @@
             => 'Ad-hoc / Besitzer',
         'Add Currency'
             => 'Währung hinzufügen',
+        'Add new fields, remove ones you don\'t need and change the layout using Designer.'
+            => 'Neue Felder hinzufügen, entfernan was nicht benötigt ist, und ändern das Layout mit Designer.',
         'Address'
             => 'Adresse',
         'Admin'
-            => 'Admin',
+            => 'Admin', // Same Word Translated
         'Alert'
             => 'Alarm',
         'Allow'
@@ -105,8 +109,12 @@
             => 'Staat',
         'Any Street'
             => 'Straße',
+        'Application Name'
+            => 'Systemname',
         'are required.'
             => 'Sind Erforderlich.',
+        'Are you number one{spaceAndFirstName}? Find out how you size up to your colleagues on the Leaderboard.'
+            => 'Bist du Nummer eins{spaceAndFirstName}? Vergleiche dich mit deinen Kollegen auf dem Leaderboard.',
         'Are you sure you want to remove this group?'
             => 'Sind Sie sicher, dass Sie dieser Gruppe entfernen möchten?',
         'Are you sure you want to remove this role?'
@@ -122,9 +130,11 @@
         'Automotive'
             => 'Autoindustrie',
         'Banking'
-            => 'Banking',
+            => 'Banking', // Same Word Translated
         'Business Services'
             => 'Handelsdienstleistungen',
+        'by {ownerStringContent}'
+            => 'von {ownerStringContent}',
         'Cancel'
             => 'Abbrechen',
         'Changes to active currencies saved successfully.'
@@ -135,12 +145,16 @@
             => 'Diagrammtyp',
         'City'
             => 'Stadt',
+        'Click on the Map link on records to see the customer location on Google Maps.'
+            => 'Klickst du auf den Link, um den Lageplan mit Google Maps zu sehen.',
         'Close'
             => 'schließen',
         'Code'
-            => 'Code',
+            => 'Code', // Same Word Translated
         'Configuration'
             => 'Konfiguration',
+        'Configure'
+            => 'Konfigurieren',
         'Convert'
             => 'Konvertieren',
         'Copyright &#169; Zurmo Inc., 2012. All Rights reserved.'
@@ -151,8 +165,6 @@
             => 'Gruppe erstellen',
         'Create Groups'
             => 'Gruppen erstellen',
-        'Create New'
-            => 'Neu erstellen',
         'Create Role'
             => 'Role erstellen',
         'Create Roles'
@@ -196,7 +208,7 @@
         'Description'
             => 'Beschreibung',
         'Dr.'
-            => 'Dr.',
+            => 'Dr.', // Same Word Translated
         'Email Address'
             => 'E-Mail Adresse',
         'Energy'
@@ -223,12 +235,14 @@
             => 'Finanzdienstleistung',
         'First Name'
             => 'Vorname',
+        'Forums'
+            => 'Forums', // Same Word Translated
+        'Global and Basic Search Fields'
+            => 'Globale und einfache Suche Felder',
         'Global Configuration'
             => 'Globale Konfiguration',
         'Global configuration saved successfully.'
             => 'Globale Konfiguration wurde erfolgreich gespeichert.',
-        'Global Search Fields'
-            => 'Die globale Suche Felder',
         'Go to Search'
             => 'Zugang Suche',
         'Group'
@@ -241,6 +255,8 @@
             => 'Gruppe Rechte',
         'Groups'
             => 'Gruppen',
+        'Groups Home'
+            => 'Gruppen Startseite',
         'here'
             => 'hier',
         'Home'
@@ -295,6 +311,8 @@
             => 'Aktualisiert',
         'Latitude'
             => 'Breite',
+        'Let Zurmo crunch the numbers, add calculated fields to your records in Designer.'
+            => 'Zurmo kann dein Zahlenfresser sein wenn du berechnete Felder in Designer hinzufügen.',
         'List Filters'
             => 'Liste Filtern',
         'List page size'
@@ -303,14 +321,6 @@
             => 'Listenansicht',
         'Load'
             => 'Laden',
-        'Login'
-            => 'Anmelden',
-        'Login required.'
-            => 'Login erforderlich.',
-        'Logout'
-            => 'Abmelden',
-        'Logout failed.'
-            => 'Fehler bei der Abmeldung.',
         'Longitude'
             => 'Länge',
         'Manage Active Languages'
@@ -335,6 +345,8 @@
             => 'Mitglieder',
         'Menu'
             => 'Menü',
+        'Missing Record'
+            => 'tei fehlt',
         'Missing Required Fields'
             => 'Fehlende Pflichtangaben',
         'Mobile Phone'
@@ -363,6 +375,8 @@
             => 'Frau',
         'My List Configuration View'
             => 'Meine Liste Konfigurationsansicht',
+        'Need to update multiple records at once? Select them from the list and hit the Update button.'
+            => 'Brauchst du mehrere Datensätze zu aktualisieren? Wähle aus der Liste und die Aktualisierung Taste drücken.',
         'Never'
             => 'Nie',
         'New'
@@ -390,7 +404,7 @@
         'Only Items I Own'
             => 'Nur meine Objekte',
         'Opt Out'
-            => 'Opt Out',
+            => 'Opt Out', // Same Word Translated
         'Owner'
             => 'Besitzer',
         'Owner and users in'
@@ -401,6 +415,8 @@
             => 'Übergeordnete Gruppe',
         'Parent Role'
             => 'übergeordneten Rolle',
+        'Parlez vous Français{spaceAndFirstName}?  Choose your preferred language in your My Profile area.'
+            => 'Parlez vous français{spaceAndFirstName}? Die gewünschte Sprache kann man in meinem Profil ausgewählt.',
         'Password'
             => 'Kennwort',
         'Permissions'
@@ -436,7 +452,7 @@
         'Recently Viewed'
             => 'Zuletzt angesehen',
         'Recycled'
-            => 'Recycled',
+            => 'Recycled', // Same Word Translated
         'Remember me next time'
             => 'Benutzername Behalten',
         'Retail'
@@ -445,12 +461,16 @@
             => 'Zurück zu Admin Menü',
         'Rights'
             => 'Rechte',
+        'Rights and Permissions'
+            => 'Berechtigungen und Sicherheit Rechte',
         'Rights Saved Successfully.'
             => 'Rechte erfolgreich gespeichert.',
         'Role'
             => 'Rolle',
         'Roles'
             => 'Rollen',
+        'Roles Home'
+            => 'Berechtigungen und Sicherheit Rechte',
         'Salutation'
             => 'Begrüßung',
         'Save Changes'
@@ -475,8 +495,18 @@
             => 'Wählen Sie eine Rolle',
         'Self-Generated'
             => 'Selbstgeneriert',
+        'Settings'
+            => 'Einstellungen',
         'Shipping Address'
             => 'Liefer-Adresse',
+        'Sign in'
+            => 'Anmelden',
+        'Sign in required.'
+            => 'Login erforderlich.',
+        'Sign out'
+            => 'Abmelden',
+        'Sign out failed.'
+            => 'Fehler bei der Abmeldung.',
         'Size'
             => 'Größe',
         'skipped because you do not have sufficient permissions.'
@@ -494,7 +524,7 @@
         'State'
             => 'Staat',
         'Status'
-            => 'Status',
+            => 'Status', // Same Word Translated
         'Street 1'
             => 'Straße 1',
         'Street 2'
@@ -515,16 +545,20 @@
             => 'Die Währung wurde nicht gelöscht, weil es in Gebrauch ist.',
         'The ID specified was invalid.'
             => 'ID ist ungültig.',
+        'The record you are trying to access does not exist.'
+            => 'Der Datensatz existiert nicht.',
         'The status specified is invalid.'
             => 'Der Status ist ungültig.',
         'There are no recently viewed items.'
             => 'Es gibt keine kürzlich angesehenen Artikel',
         'There are required fields missing from the following layout: {view}.  Please contact your administrator.'
             => 'Pflichtfelder fehlen in der folgenden Aufbau: {view}. Bitte kontaktieren Sie Ihren Administrator',
+        'There is no data to export.'
+            => 'Es gibt keine Daten zu exportieren.',
         'This action is only available in debug mode.'
             => 'Diese Aktion ist nur im Debug-Modus zur Verfügung.',
-        'This is <b>version {zurmoVersion}</b> of <b>Zurmo</b>.'
-            => 'Dies ist <b>version {zurmoVersion}</b> von <b>Zurmo</b>.',
+        'This is <strong>version {zurmoVersion}</strong> of <strong>Zurmo</strong>.'
+            => 'Dies ist <strong>version {zurmoVersion}</strong> von <strong>Zurmo</strong>.',
         'This name is reserved. Please pick a different name.'
             => 'Dieser Name ist reserviert. Bitte wählen Sie einen anderen Namen.',
         'Time zone'
@@ -549,10 +583,10 @@
             => 'Wert',
         'Values'
             => 'Werte',
-        'Visit <b>Zurmo Inc.</b> at {url}.'
-            => 'Besuchen Sie <b>Zurmo Inc.</ b> unter {url}',
-        'Visit the <b>Zurmo Open Source Project</b> at {url}.'
-            => 'Besuchen Sie die <b>Zurmo Open Source Project</b> unter {url}.',
+        'Visit <strong>Zurmo Inc.</strong> at {url}.'
+            => 'Besuchen Sie <strong>Zurmo Inc.</strong> unter {url}',
+        'Visit the <strong>Zurmo Open Source Project</strong> at {url}.'
+            => 'Besuchen Sie die <strong>Zurmo Open Source Project</strong> unter {url}.',
         'Website'
             => 'Webseite',
         'Welcome'
@@ -569,19 +603,15 @@
             => 'Sie haben keinen Zugriff auf die Seite.',
         'You must have at least one active currency.'
             => 'Sie müssen mindestens eine aktive Währung haben.',
-        'Your Profile'
-            => 'Ihr Profil',
         'Your RedBean version is currentVersion and it should be acceptableVersion.'
             => 'Ihre RedBean Version ist currentVersion und sollte acceptableVersion sein',
         'Your Yii version is currentVersion and it should be acceptableVersion.'
             => 'Ihre Yii-Version ist currentVersion und sollte acceptableVersion',
         'ZurmoCRM'
-            => 'ZurmoCRM',
-        '{count} unread'
-            => '{count} ungelesene',
+            => 'ZurmoCRM', // Same Word Translated
         '{url} (installed with Yii)'
-            => '{url} (installed with Yii)',
+            => '{url} (installed with Yii)', // Same Word Translated
         '{url} (version {version} is installed)'
-            => '{url} (version {version} is installed)',
+            => '{url} (version {version} is installed)', // Same Word Translated
     );
 ?>

@@ -24,9 +24,6 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    $basePath = Yii::app()->getBasePath();
-    require_once("$basePath/../../redbean/rb.php");
-
     /**
      * Abstraction over the top of an application database accessed via
      * <a href="http://www.redbeanphp.com/">RedBean</a>. The base class for
@@ -57,7 +54,7 @@
      * schema on the fly as opposed to Yii's getting attributes from an
      * already existing schema.
      */
-    abstract class RedBeanModel extends CComponent implements Serializable
+    abstract class RedBeanModel extends ObservableComponent implements Serializable
     {
         /**
          * Models that have not been saved yet have no id as far
@@ -67,8 +64,13 @@
          */
         private static $nextPseudoId = -1;
 
-        //
         /**
+         * Array of static models. Used by Observers @see ObservableComponent to add events to a class.
+         * @var array
+         */
+        private static $_models = array();
+
+        /*
          * The id of an unsaved model.
          * @var integer
          */
@@ -111,6 +113,7 @@
         protected $isInGetErrors          = false;
         protected $isValidating           = false;
         protected $isSaving               = false;
+        protected $isNewModel             = false;
 
         /**
          * Can this model be saved when save is called from a related model?  True if it can, false if it cannot.
@@ -179,7 +182,46 @@
          * is deleted it owns the related models and they are deleted along with it.
          * If not specified the related model is independent and is not deleted.
          */
-        const OWNED = true;
+        const OWNED     = true;
+
+        /**
+         * @see const OWNED for more information.
+         * @var boolean
+         */
+        const NOT_OWNED = false;
+
+        /**
+         * Returns the static model of the specified AR class.
+         * The model returned is a static instance of the AR class.
+         * It is provided for invoking class-level methods (something similar to static class methods.)
+         *
+         * EVERY derived AR class must override this method as follows,
+         * <pre>
+         * public static function model($className=__CLASS__)
+         * {
+         *     return parent::model($className);
+         * }
+         * </pre>
+         *
+         * @param string $className active record class name.
+         * @return CActiveRecord active record model instance.
+         */
+        public static function model($className = null)
+        {
+            if ($className == null)
+            {
+                $className = get_called_class();
+            }
+            if (isset(self::$_models[$className]))
+            {
+                return self::$_models[$className];
+            }
+            else
+            {
+                $model = self::$_models[$className] = new $className(false);
+                return $model;
+            }
+        }
 
         /**
          * Gets all the models from the database of the named model type.
@@ -340,6 +382,11 @@
             return RedBeanModel::makeModel(end($beans), $modelClassName);
         }
 
+        public function getIsNewModel()
+        {
+            return $this->isNewModel;
+        }
+
         /**
          * Constructs a new model.
          * Important:
@@ -362,6 +409,7 @@
         public function __construct($setDefaults = true, RedBean_OODBBean $bean = null, $forceTreatAsCreation = false)
         {
             $this->pseudoId = self::$nextPseudoId--;
+            $this->init();
             if ($bean === null)
             {
                 foreach (array_reverse(RuntimeUtil::getClassHierarchy(get_class($this), static::$lastClassInBeanHeirarchy)) as $modelClassName)
@@ -437,6 +485,7 @@
         protected function constructIncomplete($bean)
         {
             assert('$bean === null || $bean instanceof RedBean_OODBBean');
+            $this->init();
         }
 
         public function serialize()
@@ -621,7 +670,7 @@
                 {
                     foreach ($metadata[$modelClassName]['relations'] as $relationName => $relationTypeModelClassNameAndOwns)
                     {
-                        assert('in_array(count($relationTypeModelClassNameAndOwns), array(2, 3))');
+                        assert('in_array(count($relationTypeModelClassNameAndOwns), array(2, 3, 4))');
 
                         $relationType           = $relationTypeModelClassNameAndOwns[0];
                         $relationModelClassName = $relationTypeModelClassNameAndOwns[1];
@@ -635,19 +684,34 @@
                                       array('{relationName}' => $relationName,
                                             '{relationModelClassName}' => $relationModelClassName)));
                         }
-                        if (count($relationTypeModelClassNameAndOwns) == 3)
+                        if (count($relationTypeModelClassNameAndOwns) >= 3 &&
+                            $relationTypeModelClassNameAndOwns[2] == self::OWNED)
                         {
-                            $relationTypeModelClassNameAndOwns[2] == self::OWNED;
                             $owns = true;
                         }
                         else
                         {
                             $owns = false;
                         }
+                        if (count($relationTypeModelClassNameAndOwns) == 4 && $relationType != self::HAS_MANY)
+                        {
+                            throw new NotSupportedException();
+                        }
+                        if (count($relationTypeModelClassNameAndOwns) == 4)
+                        {
+                            $relationPolyOneToManyName = $relationTypeModelClassNameAndOwns[3];
+                        }
+                        else
+                        {
+                            $relationPolyOneToManyName = null;
+                        }
                         assert('in_array($relationType, array(self::HAS_ONE_BELONGS_TO, self::HAS_MANY_BELONGS_TO, ' .
                                                              'self::HAS_ONE, self::HAS_MANY, self::MANY_MANY))');
                         $this->attributeNameToBeanAndClassName[$relationName] = array($bean, $modelClassName);
-                        $this->relationNameToRelationTypeModelClassNameAndOwns[$relationName] = array($relationType, $relationModelClassName, $owns);
+                        $this->relationNameToRelationTypeModelClassNameAndOwns[$relationName] = array($relationType,
+                                                                                                $relationModelClassName,
+                                                                                                $owns,
+                                                                                                $relationPolyOneToManyName);
                         if (!in_array($relationType, array(self::HAS_ONE_BELONGS_TO, self::HAS_MANY_BELONGS_TO, self::MANY_MANY)))
                         {
                             $this->attributeNamesNotBelongsToOrManyMany[] = $relationName;
@@ -1079,7 +1143,8 @@
                 {
                     if (!array_key_exists($attributeName, $this->relationNameToRelatedModel))
                     {
-                        list($relationType, $relatedModelClassName, $owns) = $this->relationNameToRelationTypeModelClassNameAndOwns[$attributeName];
+                        list($relationType, $relatedModelClassName, $owns, $relationPolyOneToManyName) =
+                             $this->relationNameToRelationTypeModelClassNameAndOwns[$attributeName];
                         $relatedTableName = self::getTableName($relatedModelClassName);
                         switch ($relationType)
                         {
@@ -1144,7 +1209,12 @@
                                 break;
 
                             case self::HAS_MANY:
-                                $this->relationNameToRelatedModel[$attributeName] = new RedBeanOneToManyRelatedModels($bean, $relatedModelClassName, $attributeModelClassName, $owns);
+                                $this->relationNameToRelatedModel[$attributeName] =
+                                    new RedBeanOneToManyRelatedModels($bean,
+                                                                      $relatedModelClassName,
+                                                                      $attributeModelClassName,
+                                                                      $owns,
+                                                                      $relationPolyOneToManyName);
                                 break;
 
                             case self::MANY_MANY:
@@ -1227,7 +1297,8 @@
                 }
                 else
                 {
-                    list($relationType, $relatedModelClassName, $owns) = $this->relationNameToRelationTypeModelClassNameAndOwns[$attributeName];
+                    list($relationType, $relatedModelClassName, $owns, $relationPolyOneToManyName) =
+                        $this->relationNameToRelationTypeModelClassNameAndOwns[$attributeName];
                     $relatedTableName = self::getTableName($relatedModelClassName);
                     $linkName = strtolower($attributeName);
                     if ($linkName == strtolower($relatedModelClassName))
@@ -1517,7 +1588,7 @@
          * proceeding to non-validated models.
          * @see RedBeanModel
          * @param $ignoreRequiredValidator - set to true in scenarios where you want to validate everything but the
-         * 									 the required validator.  An example is a search form.
+         *                                   the required validator.  An example is a search form.
          */
         public function validate(array $attributeNames = null, $ignoreRequiredValidator = false)
         {
@@ -1841,13 +1912,75 @@
             }
         }
 
+        /**
+         * This method is invoked before saving a record (after validation, if any).
+         * The default implementation raises the {@link onBeforeSave} event.
+         * You may override this method to do any preparation work for record saving.
+         * Use {@link isNewModel} to determine whether the saving is
+         * for inserting or updating record.
+         * Make sure you call the parent implementation so that the event is raised properly.
+         * @return boolean whether the saving should be executed. Defaults to true.
+         */
         protected function beforeSave()
         {
-            return true;
+            if ($this->hasEventHandler('onBeforeSave'))
+            {
+                $event = new CModelEvent($this);
+                $this->onBeforeSave($event);
+                return $event->isValid;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         protected function afterSave()
         {
+            $event = new CEvent($this);
+            $this->onAfterSave($event);
+        }
+
+        /**
+         * This event is raised before the record is saved.
+         * By setting {@link CModelEvent::isValid} to be false, the normal {@link save()} process will be stopped.
+         * @param CModelEvent $event the event parameter
+         * @since 1.0.2
+         */
+        public function onBeforeSave($event)
+        {
+            $this->raiseEvent('onBeforeSave', $event);
+        }
+
+        /**
+         * This event is raised after the record is saved.
+         * @param CEvent $event the event parameter
+         * @since 1.0.2
+         */
+        public function onAfterSave($event)
+        {
+            $this->raiseEvent('onAfterSave', $event);
+        }
+
+        /**
+         * This event is raised before the record is deleted.
+         * By setting {@link CModelEvent::isValid} to be false, the normal {@link delete()} process will be stopped.
+         * @param CModelEvent $event the event parameter
+         * @since 1.0.2
+         */
+        public function onBeforeDelete($event)
+        {
+            $this->raiseEvent('onBeforeDelete', $event);
+        }
+
+        /**
+         * This event is raised after the record is deleted.
+         * @param CEvent $event the event parameter
+         * @since 1.0.2
+         */
+        public function onAfterDelete($event)
+        {
+            $this->raiseEvent('onAfterDelete', $event);
         }
 
         protected function linkBeans()
@@ -1927,7 +2060,7 @@
             {
                 // If the model was never saved
                 // then it doesn't need to be deleted.
-                return;
+                return false;
             }
             $modelClassName = get_called_class();
             if (!$modelClassName::isTypeDeletable() ||
@@ -1936,17 +2069,51 @@
                 // See comments below on isDeletable.
                 throw new NotSupportedException();
             }
-            $this->beforeDelete();
-            $this->unrestrictedDelete();
-            $this->afterDelete();
+            if ($this->beforeDelete())
+            {
+                $deleted = $this->unrestrictedDelete();
+                $this->afterDelete();
+                return $deleted;
+            }
+            else
+            {
+                return false;
+            }
         }
 
+        /**
+         * This method is invoked before deleting a record.
+         * The default implementation raises the {@link onBeforeDelete} event.
+         * You may override this method to do any preparation work for record deletion.
+         * Make sure you call the parent implementation so that the event is raised properly.
+         * @return boolean whether the record should be deleted. Defaults to true.
+         */
         protected function beforeDelete()
         {
+            if ($this->hasEventHandler('onBeforeDelete'))
+            {
+                $event = new CModelEvent($this);
+                $this->onBeforeDelete($event);
+                return $event->isValid;
+            }
+            else
+            {
+                return true;
+            }
         }
 
+        /**
+         * This method is invoked after deleting a record.
+         * The default implementation raises the {@link onAfterDelete} event.
+         * You may override this method to do postprocessing after the record is deleted.
+         * Make sure you call the parent implementation so that the event is raised properly.
+         */
         protected function afterDelete()
         {
+            if ($this->hasEventHandler('onAfterDelete'))
+            {
+                $this->onAfterDelete(new CEvent($this));
+            }
         }
 
         protected function unrestrictedDelete()
@@ -1965,6 +2132,7 @@
             }
             // The model cannot be used anymore.
             $this->deleted = true;
+            return true;
         }
 
         public function isDeleted()
@@ -1976,7 +2144,7 @@
         {
             foreach ($this->relationNameToRelationTypeModelClassNameAndOwns as $relationName => $relationTypeModelClassNameAndOwns)
             {
-                assert('count($relationTypeModelClassNameAndOwns) == 3');
+                assert('count($relationTypeModelClassNameAndOwns) == 3 || count($relationTypeModelClassNameAndOwns) == 4');
                 $relationType = $relationTypeModelClassNameAndOwns[0];
                 $owns         = $relationTypeModelClassNameAndOwns[2];
                 if ($owns)
@@ -2743,6 +2911,11 @@
                 }
             }
             return $models;
+        }
+
+        public static function getModuleClassName()
+        {
+            return null;
         }
 
         /**

@@ -27,7 +27,7 @@
     /**
     * Test RedBeanModelToApiDataUtil functions.
     */
-    class RedBeanModelToApiDataUtilTest extends BaseTest
+    class RedBeanModelToApiDataUtilTest extends ZurmoBaseTest
     {
         public $freeze = false;
 
@@ -111,7 +111,7 @@
             $customFieldValue->value = 'Cloud 3';
             $testItem->tagCloud->values->add($customFieldValue);
 
-            $createStamp         = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+            $createStamp         = strtotime(DateTimeUtil::convertTimestampToDbFormatDateTime(time()));
             $this->assertTrue($testItem->save());
             $id = $testItem->id;
             $testItem->forget();
@@ -124,11 +124,11 @@
                 'id'                => $id,
                 'firstName'         => 'Bob',
                 'lastName'          => 'Bob',
-                'boolean'           => 1,
+                'boolean'           => '1',
                 'date'              => '2002-04-03',
                 'dateTime'          => '2002-04-03 02:00:43',
-                'float'             => 54.22,
-                'integer'           => 10,
+                'float'             => '54.22',
+                'integer'           => '10',
                 'phone'             => '21313213',
                 'string'            => 'aString',
                 'textArea'          => 'Some Text Area',
@@ -136,6 +136,8 @@
                 'currencyValue'     => null,
                 'dropDown'          => null,
                 'radioDropDown'     => null,
+                'multiDropDown'     => array('values' => array('Multi 1', 'Multi 3')),
+                'tagCloud'          => array('values' => array('Cloud 2', 'Cloud 3')),
                 'hasOne'            => null,
                 'hasOneAlso'        => null,
                 'primaryEmail'      => null,
@@ -145,8 +147,6 @@
                     'id'       => $super->id,
                     'username' => 'super'
                 ),
-                'createdDateTime'  => $createStamp,
-                'modifiedDateTime' => $createStamp,
                 'createdByUser'    => array(
                     'id'       => $super->id,
                     'username' => 'super'
@@ -155,9 +155,14 @@
                     'id'       => $super->id,
                     'username' => 'super'
                 ),
-                'multiDropDown'    => array('values' => array('Multi 1', 'Multi 3')),
-                'tagCloud'         => array('values' => array('Cloud 2', 'Cloud 3')),
             );
+
+            // Because small delay in IO operation, allow tresholds
+            $this->assertEquals($createStamp, strtotime($data['createdDateTime']), '', 2);
+            $this->assertEquals($createStamp, strtotime($data['modifiedDateTime']), '', 2);
+            unset($data['createdDateTime']);
+            unset($data['modifiedDateTime']);
+
             $this->assertEquals($compareData, $data);
         }
 
@@ -199,7 +204,7 @@
             $testItem->owner         = $super;
             $testItem->currencyValue = $currencyValue;
             $testItem->dropDown->value = $values[1];
-            $createStamp             = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+            $createStamp             = strtotime(DateTimeUtil::convertTimestampToDbFormatDateTime(time()));
             $this->assertTrue($testItem->save());
             $id = $testItem->id;
             $testItem->forget();
@@ -245,8 +250,6 @@
                     'id' => $super->id,
                     'username' => 'super'
                 ),
-                'createdDateTime'  => $createStamp,
-                'modifiedDateTime' => $createStamp,
                 'createdByUser'    => array(
                     'id' => $super->id,
                     'username' => 'super'
@@ -256,6 +259,13 @@
                     'username' => 'super'
                 ),
             );
+
+            // Because small delay in IO operation, allow tresholds
+            $this->assertEquals($createStamp, strtotime($data['createdDateTime']), '', 2);
+            $this->assertEquals($createStamp, strtotime($data['modifiedDateTime']), '', 2);
+            unset($data['createdDateTime']);
+            unset($data['modifiedDateTime']);
+
             $this->assertEquals($compareData, $data);
         }
 
@@ -305,7 +315,7 @@
             $testItem->hasMany->add($testItem3_1);
             $testItem->hasMany->add($testItem3_2);
             $testItem->hasOneAlso    = $testItem4;
-            $createStamp             = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+            $createStamp             = strtotime(DateTimeUtil::convertTimestampToDbFormatDateTime(time()));
             $this->assertTrue($testItem->save());
             $id = $testItem->id;
             $testItem->forget();
@@ -315,50 +325,54 @@
             $adapter     = new RedBeanModelToApiDataUtil($testItem);
             $data        = $adapter->getData();
             $compareData = array(
-                        'id'                => $id,
-                        'firstName'         => 'Bob3',
-                        'lastName'          => 'Bob3',
-                        'boolean'           => 1,
-                        'date'              => '2002-04-03',
-                        'dateTime'          => '2002-04-03 02:00:43',
-                        'float'             => 54.22,
-                        'integer'           => 10,
-                        'phone'             => '21313213',
-                        'string'            => 'aString',
-                        'textArea'          => 'Some Text Area',
-                        'url'               => 'http://www.asite.com',
-                        'currencyValue'     => array(
-                            'id'         => $currencyValue->id,
-                            'value'      => 100,
-                            'rateToBase' => 1,
-                            'currency'   => array(
-                                'id'     => $currencies[0]->id,
-                            ),
-                        ),
-                        'dropDown'          => null,
-                        'radioDropDown'     => null,
-                        'multiDropDown'    => array('values' => null),
-                        'tagCloud'         => array('values' => null),
-                        'hasOne'            => array('id' => $testItem2->id),
-                        'hasOneAlso'        => array('id' => $testItem4->id),
-                        'primaryEmail'      => null,
-                        'primaryAddress'    => null,
-                        'secondaryEmail'    => null,
-                        'owner' => array(
-                            'id' => $super->id,
-                            'username' => 'super'
-                        ),
-                        'createdDateTime'  => $createStamp,
-                        'modifiedDateTime' => $createStamp,
-                        'createdByUser'    => array(
-                            'id' => $super->id,
-                            'username' => 'super'
-                        ),
-                        'modifiedByUser' => array(
-                            'id' => $super->id,
-                            'username' => 'super'
-                        ),
+                'id'                => $id,
+                'firstName'         => 'Bob3',
+                'lastName'          => 'Bob3',
+                'boolean'           => '1',
+                'date'              => '2002-04-03',
+                'dateTime'          => '2002-04-03 02:00:43',
+                'float'             => '54.22',
+                'integer'           => '10',
+                'phone'             => '21313213',
+                'string'            => 'aString',
+                'textArea'          => 'Some Text Area',
+                'url'               => 'http://www.asite.com',
+                'currencyValue'     => array(
+                    'id'         => $currencyValue->id,
+                    'value'      => 100,
+                    'rateToBase' => 1,
+                    'currency'   => array(
+                        'id'     => $currencies[0]->id,
+                     ),
+                ),
+                'dropDown'          => null,
+                'radioDropDown'     => null,
+                'multiDropDown'    => array('values' => null),
+                'tagCloud'         => array('values' => null),
+                'hasOne'            => array('id' => $testItem2->id),
+                'hasOneAlso'        => array('id' => $testItem4->id),
+                'primaryEmail'      => null,
+                'primaryAddress'    => null,
+                'secondaryEmail'    => null,
+                'owner' => array(
+                    'id' => $super->id,
+                    'username' => 'super'
+                ),
+                'createdByUser'    => array(
+                    'id' => $super->id,
+                    'username' => 'super'
+                ),
+                'modifiedByUser' => array(
+                    'id' => $super->id,
+                    'username' => 'super'
+                ),
             );
+            // Because small delay in IO operation, allow tresholds
+            $this->assertEquals($createStamp, strtotime($data['createdDateTime']), '', 2);
+            $this->assertEquals($createStamp, strtotime($data['modifiedDateTime']), '', 2);
+            unset($data['createdDateTime']);
+            unset($data['modifiedDateTime']);
+
             $this->assertEquals($compareData, $data);
         }
     }

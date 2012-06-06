@@ -36,13 +36,13 @@
         'Accounts'
             => 'Aziende',
         'AccountsModulePluralLabel'
-            => 'AccountsModulePluralLabel',
+            => 'AccountsModulePluralLabel', // Same Word Translated
         'AccountsModulePluralLabel For AccountsModuleSingularLabel'
             => 'AccountsModulePluralLabel per AccountsModuleSingularLabel',
         'AccountsModuleSingularLabel'
-            => 'AccountsModuleSingularLabel',
+            => 'AccountsModuleSingularLabel', // Same Word Translated
         'AccountsModuleSingularLabel Id'
-            => 'AccountsModuleSingularLabel Id',
+            => 'AccountsModuleSingularLabel Id', // Same Word Translated
         'AccountsModuleSingularLabel Name'
             => 'Nome AccountsModuleSingularLabel',
         'AccountsModuleSingularLabel Search'
@@ -68,10 +68,16 @@
         'Parent AccountsModuleSingularLabel'
             => 'AccountsModuleSingularLabel Genetori',
         'Prospect'
-            => 'Prospect',
+            => 'Prospect', // Same Word Translated
         'Related AccountsModulePluralLabel'
             => 'AccountsModulePluralLabel principale',
         'Vendor'
             => 'Fornitore',
-    );
+        '{n} AccountsModuleSingularLabel created|{n} AccountsModulePluralLabel created'
+            => '{n} AccountsModuleSingularLabel creato|{n} AccountsModulePluralLabel creati',
+        '{n} AccountsModuleSingularLabel mass updated|{n} AccountsModulePluralLabel mass updated'
+            => '{n} AccountsModuleSingularLabel è stato aggiornato|{n} AccountsModulePluralLabel sono stati aggiornati',
+        '{n} AccountsModuleSingularLabel search completed|{n} AccountsModuleSingularLabel searches completed'
+            => '{n} ricerca AccountsModuleSingularLabel completata|{n} ricerche AccountsModuleSingularLabel completate',
+   );
 ?>

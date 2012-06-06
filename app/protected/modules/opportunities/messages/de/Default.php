@@ -34,9 +34,9 @@
         'Close Date'
             => 'Abschlussdatum',
         'Closed Lost'
-            => 'Closed Lost',
+            => 'Closed Lost', // Same Word Translated
         'Closed Won'
-            => 'Closed Won',
+            => 'Closed Won', // Same Word Translated
         'Create OpportunitiesModulePluralLabel'
             => 'OpportunitiesModulePluralLabel erstellen',
         'Create OpportunitiesModuleSingularLabel'
@@ -46,7 +46,7 @@
         'My OpportunitiesModulePluralLabel'
             => 'Meine OpportunitiesModulePluralLabel',
         'Negotiating'
-            => 'Negotiating',
+            => 'Negotiating', // Same Word Translated
         'Opportunities'
             => 'Verkaufschancen',
         'Opportunities By Lead Source'
@@ -54,13 +54,13 @@
         'Opportunities By Sales Stage'
             => 'Verkaufschancen von Verkaufsphase',
         'OpportunitiesModulePluralLabel'
-            => 'OpportunitiesModulePluralLabel',
+            => 'OpportunitiesModulePluralLabel', // Same Word Translated
         'OpportunitiesModulePluralLabel For AccountsModuleSingularLabel'
             => 'OpportunitiesModulePluralLabel für AccountsModuleSingularLabel',
         'OpportunitiesModulePluralLabel For ContactsModuleSingularLabel'
             => 'OpportunitiesModulePluralLabel für ContactsModuleSingularLabel',
         'OpportunitiesModuleSingularLabel'
-            => 'OpportunitiesModuleSingularLabel',
+            => 'OpportunitiesModuleSingularLabel', // Same Word Translated
         'OpportunitiesModuleSingularLabel Search'
             => 'OpportunitiesModuleSingularLabel Suche',
         'Opportunity'
@@ -68,10 +68,18 @@
         'Probability'
             => 'Wahrscheinlichkeit ',
         'Prospecting'
-            => 'Prospecting',
+            => 'Prospecting', // Same Word Translated
         'Qualification'
             => 'Qualifikation',
         'Verbal'
             => 'Mündlich',
+        '{n} OpportunitiesModuleSingularLabel created|{n} OpportunitiesModulePluralLabel created'
+            => '{n} OpportunitiesModuleSingularLabel erstellt|{n} OpportunitiesModulePluralLabel erstellt',
+        '{n} OpportunitiesModuleSingularLabel mass updated|{n} OpportunitiesModulePluralLabel mass updated'
+            => '{n} OpportunitiesModuleSingularLabel wurde aktualisiert|{n} OpportunitiesModulePluralLabel wurden aktualisiert',
+        '{n} OpportunitiesModuleSingularLabel search completed|{n} OpportunitiesModuleSingularLabel searches completed'
+            => '{n} OpportunitiesModuleSingularLabel Suche wurde abgeschlossen|{n} OpportunitiesModuleSingularLabel Suchen wurden abgeschlossen',
+        '{n} OpportunitiesModuleSingularLabel won|{n} OpportunitiesModulePluralLabel won'
+            => '{n} OpportunitiesModuleSingularLabel gewonnen|{n} OpportunitiesModulePluralLabel gewonnen',
     );
 ?>

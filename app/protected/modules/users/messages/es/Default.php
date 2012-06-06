@@ -49,16 +49,12 @@
             => 'Forzar contraseñas robustas',
         'Hash'
             => 'Almohadilla',
+        'Hide welcome page'
+            => 'Ocultar la página de inicio',
         'Inactive users cannot log in using the web, mobile or web API. Login for active users is controlled by group rights.'
             => 'Los usuarios inactivos no pueden iniciar sesión en el uso de la web, móvil o web API. Inicio de sesión de usuarios activos es controlado por los derechos de grupo.',
         'Inherited Value:'
             => 'Valor heredado:',
-        'Login Via Mobile'
-            => 'Conexión móvil',
-        'Login Via Web'
-            => 'Conexión Web',
-        'Login Via Web API'
-            => 'Conexión Web API',
         'Manage Users'
             => 'Administrar Usuarios',
         'Manager'
@@ -67,12 +63,20 @@
             => 'Largo mínimo de la contraseña',
         'Minimum Username Length'
             => 'Largo mínimo de nombre de usuario',
+        'My Profile'
+            => 'Mi Perfil',
         'Password Expires'
             => 'Vencimiento de la contraseña',
         'Password Expiry Days'
             => 'Vida útil mínima de las contraseñas',
         'Profile'
             => 'Perfil',
+        'Sign in Via Mobile'
+            => 'Conexión móvil',
+        'Sign in Via Web'
+            => 'Conexión Web',
+        'Sign in Via Web API'
+            => 'Conexión Web API',
         'The password is too short. Minimum length is {minimumLength}.'
             => 'La contraseña es demasiado corta. Largo mínimo es {minimumLength}.',
         'The password must have at least one lowercase letter'
@@ -95,5 +99,7 @@
             => 'Busqueda de Usuarios',
         'Users'
             => 'Usuarios',
+        'Users Home'
+            => 'Accueil Utilisateurs',
     );
 ?>

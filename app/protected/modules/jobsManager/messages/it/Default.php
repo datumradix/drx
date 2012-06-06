@@ -37,6 +37,8 @@
             => 'Accesso ai jobs',
         'Available Jobs'
             => 'Jobs disponibili',
+        'Check if there is newer Zurmo version available Job'
+            => 'Verifica di una nuova versione di Zurmo',
         'Cleanup old job logs Job'
             => 'Pulire i vecchi job logs.',
         'Clear the assets folder on server(optional).'
@@ -73,12 +75,12 @@
             => 'Registro dei jobs',
         'Job Log for {jobDisplayName}'
             => 'Registro per job {jobDisplayName}',
+        'Job Manager'
+            => 'Gestione dei jobs',
+        'Job Manager: Home'
+            => 'Gestione dei jobs: Home',
         'Job Name'
             => 'Nome job',
-        'Jobs Manager'
-            => 'Gestione dei jobs',
-        'Jobs Manager: Home'
-            => 'Gestione dei jobs: Home',
         'Last Completed Run'
             => 'Ultima esecuzione',
         'Manage Scheduled Jobs'
@@ -87,6 +89,8 @@
             => 'Messagio',
         'Monitor Job'
             => 'Job monitoraggio',
+        'New stable Zurmo release available'
+            => 'L\'ultima versione stabile di Zurmo è disponibile.',
         'Not Running'
             => 'Inattivo',
         'Recommended Frequency'
@@ -94,7 +98,7 @@
         'Remove the api test entry script for production use.'
             => 'Rimuove il script test API per produzione.',
         'Reset'
-            => 'Reset',
+            => 'Reset', // Same Word Translated
         'Return to Job Manager'
             => 'Ritorno a Gestione dei jobs',
         'Scheduled jobs are stuck'

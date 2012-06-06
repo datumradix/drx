@@ -44,17 +44,17 @@
         'Contacts'
             => 'Contatti',
         'ContactsModulePluralLabel'
-            => 'ContactsModulePluralLabel',
+            => 'ContactsModulePluralLabel', // Same Word Translated
         'ContactsModulePluralLabel For AccountsModuleSingularLabel'
             => 'ContactsModulePluralLabel per AccountsModuleSingularLabel',
         'ContactsModulePluralLabel For OpportunitiesModuleSingularLabel'
             => 'ContactsModulePluralLabel per OpportunitiesModuleSingularLabel',
         'ContactsModuleSingularLabel'
-            => 'ContactsModuleSingularLabel',
+            => 'ContactsModuleSingularLabel', // Same Word Translated
         'ContactsModuleSingularLabel or LeadsModuleSingularLabel'
             => 'ContactsModuleSingularLabel o LeadsModuleSingularLabel',
         'ContactsModuleSingularLabel Search'
-            => 'ContactsModuleSingularLabel Search',
+            => 'Ricerca ContactsModuleSingularLabel',
         'Create ContactsModulePluralLabel'
             => 'Crea ContactsModulePluralLabel',
         'Create ContactsModuleSingularLabel'
@@ -81,5 +81,11 @@
             => 'Il stato specificato non esiste.',
         'The status specified is not unique and is invalid.'
             => 'Il stato specificato non è unico e non è valido.',
+        '{n} ContactsModuleSingularLabel created|{n} ContactsModulePluralLabel created'
+            => '{n} ContactsModuleSingularLabel create|{n} ContactsModulePluralLabel creati',
+        '{n} ContactsModuleSingularLabel mass updated|{n} ContactsModulePluralLabel mass updated'
+            => '{n} ContactsModuleSingularLabel è stato aggiornato|{n} ContactsModulePluralLabel sono stati aggiornati',
+        '{n} ContactsModuleSingularLabel search completed|{n} ContactsModuleSingularLabel searches completed'
+            => '{n} recherche ContactsModuleSingularLabel completata|{n} recherche ContactsModuleSingularLabel completate',
     );
 ?>
