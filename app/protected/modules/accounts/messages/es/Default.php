@@ -36,11 +36,11 @@
         'Accounts'
             => 'Cuentas',
         'AccountsModulePluralLabel'
-            => 'AccountsModulePluralLabel',
+            => 'AccountsModulePluralLabel', // Same Word Translated
         'AccountsModulePluralLabel For AccountsModuleSingularLabel'
             => 'AccountsModulePluralLabel para AccountsModuleSingularLabel',
         'AccountsModuleSingularLabel'
-            => 'AccountsModuleSingularLabel',
+            => 'AccountsModuleSingularLabel', // Same Word Translated
         'AccountsModuleSingularLabel Id'
             => 'AccountsModuleSingularLabel ID',
         'AccountsModuleSingularLabel Name'
@@ -68,10 +68,16 @@
         'Parent AccountsModuleSingularLabel'
             => 'AccountsModuleSingularLabel padre',
         'Prospect'
-            => 'Prospect',
+            => 'Prospect', // Same Word Translated
         'Related AccountsModulePluralLabel'
             => 'AccountsModulePluralLabel Relacionadas',
         'Vendor'
             => 'Vendedor',
+        '{n} AccountsModuleSingularLabel created|{n} AccountsModulePluralLabel created'
+            => '{n} AccountsModuleSingularLabel ha sido creado|{n} AccountsModulePluralLabel han sido creados',
+        '{n} AccountsModuleSingularLabel mass updated|{n} AccountsModulePluralLabel mass updated'
+            => '{n} AccountsModuleSingularLabel Se ha actualizado|{n} AccountsModulePluralLabel se han actualizados',
+        '{n} AccountsModuleSingularLabel search completed|{n} AccountsModuleSingularLabel searches completed'
+            => '{n} AccountsModuleSingularLabel búsqueda se ha completado|{n} AccountsModuleSingularLabel búsquedas se han completadas',
     );
 ?>

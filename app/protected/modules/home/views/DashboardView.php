@@ -64,9 +64,13 @@
 
         protected function renderContent()
         {
-            $content  = '<div class="view-toolbar">';
-            $content .= $this->renderActionElementBar(false);
-            $content .= '</div>';
+            $actionElementContent = $this->renderActionElementBar(false);
+            if ($actionElementContent != null)
+            {
+                $content  = '<div class="view-toolbar-container clearfix"><div class="view-toolbar">';
+                $content .= $actionElementContent;
+                $content .= '</div></div>';
+            }
             $this->portlets = $this->getPortlets($this->uniqueLayoutId, self::getMetadata());
             $content .= $this->renderPortlets($this->uniqueLayoutId);
             return $content;
@@ -86,7 +90,8 @@
                 $this->controllerId,
                 $this->moduleId,
                 $this->modelId,
-                array('htmlOptions' => array('confirm' => Yii::t('Default', 'Are you sure want to delete this dashboard?')))
+                array('htmlOptions' => array('class'   => 'icon-delete',
+                                             'confirm' => Yii::t('Default', 'Are you sure want to delete this dashboard?')))
             );
             if (!ActionSecurityUtil::canCurrentUserPerformAction($deleteDashboardLinkActionElement->getActionType(), $this->model))
             {
@@ -94,7 +99,7 @@
             }
             if (!$this->isDefaultDashboard)
             {
-                $content .= '&#160;|&#160;' . $deleteDashboardLinkActionElement->render();
+                $content .= $deleteDashboardLinkActionElement->render();
             }
             return $content;
         }

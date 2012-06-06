@@ -102,12 +102,12 @@
                     }
                     $content .= '</tr>';
                 }
-                $element  = new SaveButtonActionElement($this->controllerId, $this->moduleId,
-                                                        null, array('label' => Yii::t('Default', 'Install')));
-                $content .= '<tr><td colspan="3" style="text-align:right;">' . $element->render() . '</td></tr>';
                 $content .= '</tbody>';
             }
             $content .= '</table>';
+            $element  = new SaveButtonActionElement($this->controllerId, $this->moduleId,
+                                                        null, array('label' => Yii::t('Default', 'Install')));
+            $content .= '<div class="view-toolbar-container clearfix"><div class="form-toolbar">' . $element->render() . '</div></div>';
             return $content;
         }
 
@@ -133,6 +133,16 @@
                                     array(
                                         array(
                                             'elements' => array(
+                                                array('attributeName' => 'databasePort', 'type' => 'Text',
+                                                      'description' => Yii::t('Default', 'Database port.')),
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
                                                 array('attributeName' => 'databaseAdminUsername', 'type' => 'Text',
                                                       'description' => Yii::t('Default', 'Leave this blank unless you ' .
                                                       'would like to create the user and database for Zurmo to run in.')),
@@ -144,7 +154,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'databaseAdminPassword', 'type' => 'Text',
+                                                array('attributeName' => 'databaseAdminPassword', 'type' => 'Password',
                                                       'description' => Yii::t('Default', 'Leave this blank unless you ' .
                                                       'would like to create the user and database for Zurmo to run in.'))
                                             ),
@@ -189,7 +199,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'databasePassword', 'type' => 'Text',
+                                                array('attributeName' => 'databasePassword', 'type' => 'Password',
                                                       'description' => Yii::t('Default', 'User`s password.')),
                                             ),
                                         ),

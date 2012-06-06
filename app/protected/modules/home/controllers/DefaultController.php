@@ -31,7 +31,7 @@
             return array_merge(parent::filters(),
                 array(
                     array(
-                        ZurmoBaseController::RIGHTS_FILTER_PATH . ' - index',
+                        ZurmoBaseController::RIGHTS_FILTER_PATH . ' - index, welcome, hideWelcome',
                         'moduleClassName' => 'HomeModule',
                         'rightName' => HomeModule::RIGHT_ACCESS_DASHBOARDS,
                    ),
@@ -60,9 +60,42 @@
             }
             else
             {
-                $view = new HomePageView($this, new WelcomeView());
-                echo $view->render();
+                $this->actionWelcome();
             }
+        }
+
+        public function actionWelcome()
+        {
+            $hasDashboardAccess = true;
+            if (!RightsUtil::doesUserHaveAllowByRightName(
+            'HomeModule',
+            HomeModule::RIGHT_ACCESS_DASHBOARDS,
+            Yii::app()->user->userModel))
+            {
+                $hasDashboardAccess = false;
+            }
+            if (UserConfigurationFormAdapter::resolveAndGetHideWelcomeViewValue(Yii::app()->user->userModel))
+            {
+                //If you can see dashboards, then go there, otherwise stay here since the user has limited access.
+                if ($hasDashboardAccess)
+                {
+                    $this->redirect(array($this->getId() . '/index'));
+                }
+            }
+            $tipContent                = ZurmoTipsUtil::getRandomTipResolvedForCurrentUser();
+            $welcomeView               = new WelcomeView($tipContent, $hasDashboardAccess);
+            $view                      = new HomePageView(ZurmoDefaultViewUtil::
+                                             makeStandardViewForCurrentUser($this, $welcomeView));
+            echo $view->render();
+        }
+
+        public function actionHideWelcome()
+        {
+            $configurationForm = UserConfigurationFormAdapter::
+                                 makeFormFromUserConfigurationByUser(Yii::app()->user->userModel);
+            $configurationForm->hideWelcomeView = true;
+            UserConfigurationFormAdapter::setConfigurationFromForm($configurationForm, Yii::app()->user->userModel);
+            $this->redirect(array($this->getId() . '/index'));
         }
 
         public function actionDashboardDetails($id)
@@ -82,13 +115,14 @@
                 'moduleId'     => $this->getModule()->getId(),
             );
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($dashboard);
-            $view = new HomePageView($this, new HomeTitleBarAndDashboardView(
-                $this->getId(),
-                $this->getModule()->getId(),
-                'HomeDashboard' . $layoutId,
-                $dashboard,
-                $params)
-            );
+            $homeTitleBarAndDashboardView = new HomeTitleBarAndDashboardView(
+                                                    $this->getId(),
+                                                    $this->getModule()->getId(),
+                                                    'HomeDashboard' . $layoutId,
+                                                    $dashboard,
+                                                    $params);
+            $view = new HomePageView(ZurmoDefaultViewUtil::
+                                         makeStandardViewForCurrentUser($this, $homeTitleBarAndDashboardView));
             echo $view->render();
         }
 
@@ -103,10 +137,13 @@
                 assert('in_array($dashboard->layoutType, array_keys(Dashboard::getLayoutTypesData()))');
                 if ($dashboard->save())
                 {
+                    GeneralCache::forgetAll(); //Ensure menu refreshes
                     $this->redirect(array('default/dashboardDetails', 'id' => $dashboard->id));
                 }
             }
-            $view = new HomePageView($this, new DashboardTitleBarAndEditView($this->getId(), $this->getModule()->getId(), $dashboard));
+            $editView = new DashboardEditView($this->getId(), $this->getModule()->getId(), $dashboard,
+                                              Yii::t('Default', 'Create Dashboard'));
+            $view     = new HomePageView(ZurmoDefaultViewUtil::makeStandardViewForCurrentUser($this, $editView));
             echo $view->render();
         }
 
@@ -132,10 +169,13 @@
                         $portletCollection = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition($uniqueLayoutId, Yii::app()->user->userModel->id, array());
                         Portlet::shiftPositionsBasedOnColumnReduction($portletCollection, 1);
                     }
+                    GeneralCache::forgetAll(); //Ensure menu refreshes
                     $this->redirect(array('default/dashboardDetails', 'id' => $dashboard->id));
                 }
             }
-            $view = new HomePageView($this, new DashboardTitleBarAndEditView($this->getId(), $this->getModule()->getId(), $dashboard));
+            $editView = new DashboardEditView($this->getId(), $this->getModule()->getId(), $dashboard, strval($dashboard));
+            $view     = new AccountsPageView(ZurmoDefaultViewUtil::
+                                         makeStandardViewForCurrentUser($this, $editView));
             echo $view->render();
         }
 
