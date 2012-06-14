@@ -24,19 +24,58 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Extra MIME types.
-     *
-     * This file is an override of the Yii mime types file.  If more are needed, submit them on the zurmo forums and they
-     * will be checked into source.  You can also change your apache or php magic.mime file if you have unique ones to add.
-     * @see Yii.system.utils.mimeTypes
-     */
-    $extensions = require(Yii::getPathOfAlias('system.utils.mimeTypes') . '.php'); // Not Coding Standard
-    $extensions = array_merge($extensions, array(
-        'docx' => 'application/msword',
-        'pptx' => 'application/vnd.ms-powerpoint',
-        'xlsx' => 'application/vnd.ms-excel',
-        'csv' =>  'text/csv',
-    ));
-    return $extensions;
+    class EmailClientForwardTemplatesTestHelper
+    {
+        public static $subjectPrefixes = array(
+            'Gmail' => array('Fwd:'),
+            'Outlook' => array ('FW:'),
+            'OutlookExpress' => array ('FW:'),
+            'ThunderBird' => array('Fwd:'),
+            'Yahoo' => array ('Fw:')
+        );
+
+        public static $bodyPrefixes = array(
+            'Gmail' => array(<<<EOD
+---------- Forwarded message ----------
+From: FROM_NAME <FROM_EMAIL>
+Date: Fri, Jun 8, 2012 at 10:16 AM
+Subject: Email from John
+To: Steve <steve@example.com>
+EOD
+            ),
+            'Outlook' => array(<<<EOD
+-----Original Message-----
+From: FROM_NAME [mailto:FROM_EMAIL]
+Sent: Thursday, May 03, 2012 8:52 AM
+To: 'Steve'
+Subject: Email from John
+EOD
+            ),
+            'OutlookExpress' => array(<<<EOD
+-----Original Message-----
+From: FROM_NAME [mailto:FROM_EMAIL]
+Sent: Thursday, May 03, 2012 8:52 AM
+To: 'Steve'
+Subject: Email from John
+EOD
+            ),
+            'ThunderBird' => array(<<<EOD
+-------- Original Message --------
+Subject: 	Email from John
+Date: 	Thu, 7 Jun 2012 10:17:07 -0500
+From: 	FROM_NAME <FROM_EMAIL>
+Reply-To: 	<FROM_EMAIL>
+EOD
+            ),
+            'Yahoo' => array(<<<EOD
+--- On Fri, 6/8/12, FROM_NAME <FROM_EMAIL> wrote:
+
+From: FROM_NAME <FROM_EMAIL>
+Subject: Email from John
+To: "Steve" <steve@example.com>
+Date: Friday, June 8, 2012, 6:15 AM
+EOD
+            ),
+        );
+    }
 ?>

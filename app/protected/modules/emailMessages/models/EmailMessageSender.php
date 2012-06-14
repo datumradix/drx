@@ -59,12 +59,11 @@
                     'fromName',
                 ),
                 'relations' => array(
-                    'person'      => array(RedBeanModel::HAS_ONE, 'Item'),
+                    'personOrAccount'      => array(RedBeanModel::HAS_ONE, 'Item'),
                 ),
                 'rules' => array(
                     array('fromAddress', 'required'),
                     array('fromAddress', 'email'),
-                    array('fromName',    'required'),
                     array('fromName',    'type',    'type' => 'string'),
                     array('fromName',    'length',  'max' => 64),
                 )
