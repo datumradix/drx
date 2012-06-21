@@ -59,9 +59,9 @@
         {
             $labels                                    = array();
             $labels[self::RIGHT_ACCESS_CONFIGURATION]  = 'Access Email Configuration';
-            $labels[self::RIGHT_CREATE_EMAIL_MESSAGES] = 'Create EmailMessagesModulePluralLabel';
-            $labels[self::RIGHT_DELETE_EMAIL_MESSAGES] = 'Delete EmailMessagesModulePluralLabel';
-            $labels[self::RIGHT_ACCESS_EMAIL_MESSAGES] = 'Access EmailMessagesModulePluralLabel Tab';
+            $labels[self::RIGHT_CREATE_EMAIL_MESSAGES] = 'Create Emails';
+            $labels[self::RIGHT_DELETE_EMAIL_MESSAGES] = 'Delete Emails';
+            $labels[self::RIGHT_ACCESS_EMAIL_MESSAGES] = 'Access Emails Tab';
             return $labels;
         }
 
@@ -75,6 +75,13 @@
                         'titleLabel'       => 'Email Configuration',
                         'descriptionLabel' => 'Manage Email Configuration',
                         'route'            => '/emailMessages/default/configurationEdit',
+                        'right'            => self::RIGHT_ACCESS_CONFIGURATION,
+                    ),
+                    array(
+                        'category'         => ZurmoModule::ADMINISTRATION_CATEGORY_GENERAL,
+                        'titleLabel'       => 'Inbound Email Configuration',
+                        'descriptionLabel' => 'Manage Email Configuration',
+                        'route'            => '/emailMessages/default/inboundConfigurationEdit',
                         'right'            => self::RIGHT_ACCESS_CONFIGURATION,
                     ),
                 ),
@@ -110,6 +117,26 @@
         public static function hasPermissions()
         {
             return true;
+        }
+
+        /**
+        * Get last Zurmo Stable version from global configuration property.
+        */
+        public static function getLastImapDropboxCheckTime()
+        {
+            $lastImapDropboxCheckTime = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'lastImapDropboxCheckTime');
+            return $lastImapDropboxCheckTime;
+        }
+
+        /**
+         * Set lastZurmoStableVersion global pconfiguration property.
+         * @param string $zurmoVersion
+         */
+        public static function setLastImapDropboxCheckTime($lastImapDropboxCheckTime)
+        {
+            assert('isset($lastImapDropboxCheckTime)');
+            assert('$lastImapDropboxCheckTime != ""');
+            ZurmoConfigurationUtil::setByModuleName('EmailMessagesModule', 'lastImapDropboxCheckTime', $lastImapDropboxCheckTime);
         }
     }
 ?>
