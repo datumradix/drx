@@ -25,20 +25,38 @@
      ********************************************************************************/
 
     /**
-     * Display the name and hidden id of the account model.
-     * Displays a select button and auto-complete input
+     * Display the email message and options to resolve it against existing contacts/leads or creating a new contact
+     * or lead.  Used by @see ARchivedEmailMatchingListView
      */
-    class AccountNameIdElement extends NameIdElement
+    class ArchivedEmailMatchingElement extends Element implements DerivedElementInterface
     {
-        protected static $moduleId = 'accounts';
-
-        protected $idAttributeId = 'accountId';
-
-        protected $nameAttributeName = 'accountName';
-
-        protected static function getModalTitleForSelectingModel()
+        protected function renderEditable()
         {
-            return Yii::t('Default', 'AccountsModuleSingularLabel Search', LabelUtil::getTranslationParamsForAllModules());
+            throw NotSupportedException();
+        }
+
+        protected function renderControlEditable()
+        {
+            throw NotSupportedException();
+        }
+
+        /**
+         * Render the full name as a non-editable display
+         * @return The element's content.
+         */
+        protected function renderControlNonEditable()
+        {
+            throw NotSupportedException();
+        }
+
+        /**
+         * Get the attributeNames of attributes used in
+         * the derived element.
+         * @return array of model attributeNames used.
+         */
+        public static function getModelAttributeNames()
+        {
+            return array();
         }
     }
 ?>

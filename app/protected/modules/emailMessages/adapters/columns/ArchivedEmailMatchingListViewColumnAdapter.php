@@ -24,21 +24,16 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Display the name and hidden id of the account model.
-     * Displays a select button and auto-complete input
-     */
-    class AccountNameIdElement extends NameIdElement
+    class ArchivedEmailMatchingListViewColumnAdapter extends ListViewColumnAdapter
     {
-        protected static $moduleId = 'accounts';
-
-        protected $idAttributeId = 'accountId';
-
-        protected $nameAttributeName = 'accountName';
-
-        protected static function getModalTitleForSelectingModel()
+        public function renderGridViewData()
         {
-            return Yii::t('Default', 'AccountsModuleSingularLabel Search', LabelUtil::getTranslationParamsForAllModules());
+            return array(
+                'name'   => 'subject',
+                'header' => '',
+                'type'   => 'raw',
+                'value'  => 'ArchivedEmailMatchingUtil::renderEmailMessageToMatchContent($data, Yii::app()->user->userModel)',
+            );
         }
     }
 ?>
