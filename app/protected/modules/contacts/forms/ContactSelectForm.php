@@ -24,52 +24,45 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class InlineEditViewDesignerRules extends EditViewDesignerRules
+    /**
+     * Form used for selecting an contact
+     */
+    class ContactSelectForm extends CFormModel
     {
-        public function allowEditInLayoutTool()
-        {
-            return true;
-        }
+        public $contactId;
+        public $contactName;
 
-        public function resolveDisplayNameByView($viewClassName)
+        /**
+         * Override to handle use case of $name == 'id'.
+         * As this form does not have an 'id', it will return null;
+         * @see ModelElement.  This form is used by ModelElement for example
+         * and ModelElement expects the model to have an 'id' value.
+         */
+        public function __get($name)
         {
-            assert('is_string($viewClassName)');
-            $displayDescription = $viewClassName::getDisplayDescription();
-            if ($displayDescription != null)
+            if ($name == 'id')
             {
-                return $this->getDisplayName() . ' - ' . $displayDescription;
+                return null;
             }
-            return $this->getDisplayName();
+            return parent::__get($name);
         }
 
-        public function getDisplayName()
-        {
-            return Yii::t('Default', 'Inline Edit View');
-        }
-
-        public function maxCellsPerRow()
-        {
-            return 1;
-        }
-
-        public function canConfigureLayoutPanelsType()
-        {
-            return true;
-        }
-
-        public function getSavableMetadataRules()
-        {
-            return array();
-        }
-
-        public function getNonPlaceableLayoutAttributeNames()
+        public function rules()
         {
             return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id'
+                array('contactId',   'type',    'type' => 'integer'),
+                array('contactId',   'required'),
+                array('contactName', 'required'),
+            );
+        }
+
+        public function attributeLabels()
+        {
+            return array(
+                'contactId'          => Yii::t('Default', 'ContactsModuleSingularLabel Id',
+                                            LabelUtil::getTranslationParamsForAllModules()),
+                'contactName'        => Yii::t('Default', 'ContactsModuleSingularLabel Name',
+                                            LabelUtil::getTranslationParamsForAllModules()),
             );
         }
     }

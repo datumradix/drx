@@ -24,52 +24,15 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class InlineEditViewDesignerRules extends EditViewDesignerRules
+    class ArchivedEmailMatchingListViewColumnAdapter extends ListViewColumnAdapter
     {
-        public function allowEditInLayoutTool()
-        {
-            return true;
-        }
-
-        public function resolveDisplayNameByView($viewClassName)
-        {
-            assert('is_string($viewClassName)');
-            $displayDescription = $viewClassName::getDisplayDescription();
-            if ($displayDescription != null)
-            {
-                return $this->getDisplayName() . ' - ' . $displayDescription;
-            }
-            return $this->getDisplayName();
-        }
-
-        public function getDisplayName()
-        {
-            return Yii::t('Default', 'Inline Edit View');
-        }
-
-        public function maxCellsPerRow()
-        {
-            return 1;
-        }
-
-        public function canConfigureLayoutPanelsType()
-        {
-            return true;
-        }
-
-        public function getSavableMetadataRules()
-        {
-            return array();
-        }
-
-        public function getNonPlaceableLayoutAttributeNames()
+        public function renderGridViewData()
         {
             return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id'
+                'name'   => 'subject',
+                'header' => '',
+                'type'   => 'raw',
+                'value'  => 'ArchivedEmailMatchingUtil::renderEmailMessageToMatchContent($data, Yii::app()->user->userModel)',
             );
         }
     }

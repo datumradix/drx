@@ -24,53 +24,11 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class InlineEditViewDesignerRules extends EditViewDesignerRules
+    class EmailMessagesPageView extends ZurmoDefaultPageView
     {
-        public function allowEditInLayoutTool()
+        protected function getSubtitle()
         {
-            return true;
-        }
-
-        public function resolveDisplayNameByView($viewClassName)
-        {
-            assert('is_string($viewClassName)');
-            $displayDescription = $viewClassName::getDisplayDescription();
-            if ($displayDescription != null)
-            {
-                return $this->getDisplayName() . ' - ' . $displayDescription;
-            }
-            return $this->getDisplayName();
-        }
-
-        public function getDisplayName()
-        {
-            return Yii::t('Default', 'Inline Edit View');
-        }
-
-        public function maxCellsPerRow()
-        {
-            return 1;
-        }
-
-        public function canConfigureLayoutPanelsType()
-        {
-            return true;
-        }
-
-        public function getSavableMetadataRules()
-        {
-            return array();
-        }
-
-        public function getNonPlaceableLayoutAttributeNames()
-        {
-            return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id'
-            );
+            return Yii::t('Default', 'Emails');
         }
     }
 ?>

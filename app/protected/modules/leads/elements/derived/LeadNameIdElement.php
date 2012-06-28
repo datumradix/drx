@@ -24,53 +24,17 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class InlineEditViewDesignerRules extends EditViewDesignerRules
+    /**
+     * Display the name and hidden id of the lead state contact model
+     * Displays a select button and auto-complete input
+     */
+    class LeadNameIdElement extends NameIdElement
     {
-        public function allowEditInLayoutTool()
-        {
-            return true;
-        }
+        protected static $moduleId = 'leads';
 
-        public function resolveDisplayNameByView($viewClassName)
+        protected static function getModalTitleForSelectingModel()
         {
-            assert('is_string($viewClassName)');
-            $displayDescription = $viewClassName::getDisplayDescription();
-            if ($displayDescription != null)
-            {
-                return $this->getDisplayName() . ' - ' . $displayDescription;
-            }
-            return $this->getDisplayName();
-        }
-
-        public function getDisplayName()
-        {
-            return Yii::t('Default', 'Inline Edit View');
-        }
-
-        public function maxCellsPerRow()
-        {
-            return 1;
-        }
-
-        public function canConfigureLayoutPanelsType()
-        {
-            return true;
-        }
-
-        public function getSavableMetadataRules()
-        {
-            return array();
-        }
-
-        public function getNonPlaceableLayoutAttributeNames()
-        {
-            return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id'
-            );
+            return Yii::t('Default', 'LeadsModuleSingularLabel Search', LabelUtil::getTranslationParamsForAllModules());
         }
     }
 ?>
