@@ -101,22 +101,25 @@
                    "{relatedModelsByImportanceContent} </span><br/><span>{modelStringContent}</span>";
         }
 
-        public function renderRelatedModelsByImportanceContent(RedBeanModel $model)
+        public function renderRelatedModelsByImportanceContent(RedBeanModel $model, $lineBreak = false)
         {
             $content = null;
             if ($model->sender != null  && $model->sender->id > 0)
             {
-                $content .= Yii::t('Default', 'from: {senderContent}',
+                $senderContent  = Yii::t('Default', 'from: {senderContent}',
                                     array('{senderContent}' => static::getSenderContent($model->sender)));
+                $content       .= CHtml::tag('span', array(), $senderContent);
             }
             if($model->recipients->count() > 0)
             {
+                $recipientContent = null;
                 if($content != null)
                 {
-                    $content .= ' ';
+                    $recipientContent .= ' ';
                 }
-                $content .= Yii::t('Default', 'to: {recipientContent}',
-                                    array('{recipientContent}' => static::getRecipientsContent($model->recipients)));
+                $recipientContent .= Yii::t('Default', 'to: {recipientContent}',
+                                     array('{recipientContent}' => static::getRecipientsContent($model->recipients)));
+                $content       .= CHtml::tag('span', array(), $recipientContent);
             }
             return $content;
         }
@@ -148,10 +151,8 @@
             }
         }
 
-        public static function getRecipientsContent(RedBeanOneToManyRelatedModels $recipients, $type = null)
+        public static function getRecipientsContent(RedBeanOneToManyRelatedModels $recipients)
         {
-            assert('$type == null || $type == EmailMessageRecipient::TYPE_TO ||
-                    EmailMessageRecipient::TYPE_CC || EmailMessageRecipient::TYPE_BCC');
             $existingModels  = array();
             if($recipients->count() == 0)
             {
@@ -159,32 +160,29 @@
             }
             foreach($recipients as $recipient)
             {
-                if($type == null || $recipient->type == $type)
+                if($recipient->personOrAccount->id < 0)
                 {
-                    if($recipient->personOrAccount->id < 0)
+                    $existingModels[] = $recipient->toAddress . ' ' . $recipient->toName;
+                }
+                else
+                {
+                    $castedDownModel = self::castDownItem($recipient->personOrAccount);
+                    try
+                    {
+                        if (strval($castedDownModel) != null)
+                                    {
+                                        $params          = array('label' => strval($castedDownModel));
+                                        $moduleClassName = $castedDownModel->getModuleClassName();
+                                        $moduleId        = $moduleClassName::getDirectoryName();
+                                        $element         = new DetailsLinkActionElement('default', $moduleId,
+                                                                                        $castedDownModel->id, $params);
+                                        $existingModels[] = $element->render();
+                                    }
+
+                    }
+                    catch(AccessDeniedSecurityException $e)
                     {
                         $existingModels[] = $recipient->toAddress . ' ' . $recipient->toName;
-                    }
-                    else
-                    {
-                        $castedDownModel = self::castDownItem($recipient->personOrAccount);
-                        try
-                        {
-                            if (strval($castedDownModel) != null)
-                                        {
-                                            $params          = array('label' => strval($castedDownModel));
-                                            $moduleClassName = $castedDownModel->getModuleClassName();
-                                            $moduleId        = $moduleClassName::getDirectoryName();
-                                            $element         = new DetailsLinkActionElement('default', $moduleId,
-                                                                                            $castedDownModel->id, $params);
-                                            $existingModels[] = $element->render();
-                                        }
-
-                        }
-                        catch(AccessDeniedSecurityException $e)
-                        {
-                            $existingModels[] = $recipient->toAddress . ' ' . $recipient->toName;
-                        }
                     }
                 }
             }

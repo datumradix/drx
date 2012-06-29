@@ -24,53 +24,41 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class InlineEditViewDesignerRules extends EditViewDesignerRules
+    /**
+     * Display the name and hidden id of the contact model including contacts of all states (leads and contacts).
+     * Displays a select button and auto-complete input
+     */
+    class AnyContactNameIdElement extends ContactNameIdElement
     {
-        public function allowEditInLayoutTool()
-        {
-            return true;
-        }
+        protected static $autoCompleteActionId = 'autoCompleteAllContacts';
 
-        public function resolveDisplayNameByView($viewClassName)
+        protected static $modalActionId = 'modalListAllContacts';
+
+        protected function renderLabel()
         {
-            assert('is_string($viewClassName)');
-            $displayDescription = $viewClassName::getDisplayDescription();
-            if ($displayDescription != null)
+            $label = Yii::t('Default', 'ContactsModuleSingularLabel or LeadsModuleSingularLabel',
+                                                LabelUtil::getTranslationParamsForAllModules());
+            if ($this->form === null)
             {
-                return $this->getDisplayName() . ' - ' . $displayDescription;
+                return $this->getFormattedAttributeLabel();
             }
-            return $this->getDisplayName();
+            $id = $this->getIdForHiddenField();
+            return $this->form->labelEx($this->model, $this->attribute, array('for' => $id, 'label' => $label));
         }
 
-        public function getDisplayName()
+        protected function getAutoCompleteControllerId()
         {
-            return Yii::t('Default', 'Inline Edit View');
+            return 'variableContactState';
         }
 
-        public function maxCellsPerRow()
+        protected function getSelectLinkControllerId()
         {
-            return 1;
+            return 'variableContactState';
         }
 
-        public function canConfigureLayoutPanelsType()
+        protected static function getModalTitleForSelectingModel()
         {
-            return true;
-        }
-
-        public function getSavableMetadataRules()
-        {
-            return array();
-        }
-
-        public function getNonPlaceableLayoutAttributeNames()
-        {
-            return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id'
-            );
+            return Yii::t('Default', 'LeadsModuleSingularLabel and ContactsModuleSingularLabel Search', LabelUtil::getTranslationParamsForAllModules());
         }
     }
 ?>
