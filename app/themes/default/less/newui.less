@@ -20,6 +20,7 @@
 @import 'gamification.less';
 @import 'welcome.less';
 @import 'tablet.less';
+@import 'conversations.less';
 
 @font-face {
     font-family: 'ZurmoGamificationSymblyReguRg';
@@ -842,7 +843,7 @@ footer, header, hgroup, menu, nav, section {
     display:block;
     float:left;
     position:relative;
-    span{
+    > span{
         font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
         font-weight:bold;
         font-size:12px;
@@ -865,22 +866,46 @@ footer, header, hgroup, menu, nav, section {
             height:33px;
             .opacity(0);
         }
+        /*Conversation button*/
+        > span {
+        	margin-left:10px;
+        	background: @themeColor2;
+        	padding:0;
+        	width:16px;
+        	height:16px;
+        	line-height:16px;
+        	text-align:center;
+        	text-indent:0;
+        	display:inline-block;
+        	color:#fff;
+        	.radius(50%);
+        }
     }
 }
 
 /*#MenuView .parent >*/
-#MenuView li.active > a span,
-#MenuView a:hover span{
+#MenuView li.active > a > span,
+#MenuView a:hover > span{
     .t-shadow(rgba(156, 156, 156, 0.8) 0px 1px);
     background-image: url(../images/main-nav-selected.png);
     background-repeat: no-repeat;
     background-position-x: 0;
     background-position-y: 0;
+     > span{
+    	.b-shadow(inset 0 0 2px 0 #333);
+    	background: #fff;
+    	color:@themeColor;
+    }
 }
 
-#MenuView li.active > a span{
+#MenuView li.active > a > span{
     background-color:@themeColor2;
     color:#fff;
+    > span{
+    	.b-shadow(inset 0 0 2px 0 #333);
+    	background: #fff;
+    	color:@themeColor;
+    }
 }
 
 /*=Recently Viewed*/
@@ -966,6 +991,21 @@ footer, header, hgroup, menu, nav, section {
 @recentlyViewedIconSize : 24px;
 
 #RecentlyViewedView {
+	/*deafult for if an icon doesnt exist*/
+	li{
+		em:before{
+            content: "z";
+        }
+	}
+	li.type-ConversationsModule{
+		em{
+            padding-top:3px;
+            padding-right:3px;
+        }
+        em:before{
+            content: "b";
+        }
+    }
     li.type-UsersModule{
         em:before{
             content: "e";
@@ -1348,6 +1388,19 @@ table.items tbody tr:last-child td{
     border-bottom: none;
 }
 
+table.items{
+	tbody{
+		tr{
+			td:first-child:not(.checkbox-column),
+			th:first-child:not(.checkbox-column){
+				padding-left:10px;
+			}
+		}
+	}
+}
+
+
+
 .juiportlet-widget table.items thead tr th:first-child,
 .juiportlet-widget table.items tbody tr td:first-child{
     padding-left:15px;
@@ -1475,7 +1528,7 @@ table.items thead tr:hover{
         }
     }
     form{
-        padding:15px;
+        padding:0 15px 15px 15px;
         border:1px solid #CCC;
         .b-shadow(0 0 20px 5px rgba(153, 153, 153, 0.12)); /*999*/
         background: #ffffff;
@@ -1852,7 +1905,7 @@ div.wide.form{
             content: "Y";
             .symbly(24px);
             position: relative;
-            top: -1px;
+            top: 2px;
             left:-5px;
             margin-right:3px;
             color:@themeColor2;
@@ -1885,6 +1938,11 @@ div.wide.form{
         content:"9";
         .symbly(300px);
         line-height: 80%;
+    }
+    .Conversation .large-icon:after{
+        content:"b";
+        .symbly(230px);
+        line-height: 90%;
     }
 
 }
@@ -2042,7 +2100,16 @@ div.wide.form{
 
 /*=Edit + Add Account View*/
 .buffer{
+	.clearfix();
     padding-left:30px;
+    
+    > div{
+    	float:left;
+        padding:8px 10px;
+        background:#F4F4F4;
+    	width:100%;
+        .box-sizing();
+    }
 }
 
 .double-column{
@@ -2056,17 +2123,13 @@ div.wide.form{
             color:@themeColor;
         }
     }
-    #permissions-module{
+    #right-side-edit-view-panel{
         margin-bottom:15px;
         position:relative !important;
         //width:100% !important;
         float:left !important;
         .buffer{
-            padding-left:15px;
-            > div{
-                width:100%;
-                .box-sizing();
-            }
+           // padding-left:15px;
         }
     }
     .col-0, .col-2{
@@ -2093,6 +2156,7 @@ div.wide.form{
 .attributesContainer{
     /*min-height: 260px;*/
     padding-bottom:15px;
+    .clearfix();
 }
 
 #edit-form{
@@ -2129,7 +2193,17 @@ div.wide.form{
     .view-toolbar-container{
         border-top:1px solid #CCCCCC;
     }
-    #permissions-module{
+    
+    .hasCheckBox{
+        margin:8px 0 0 0;
+        display:block;
+        input[type="checkbox"]{
+            margin-bottom:0 !important;
+        }
+    }
+}
+
+#right-side-edit-view-panel{
         position:absolute;
         right:15px;
         top:15px;
@@ -2139,9 +2213,9 @@ div.wide.form{
             margin-bottom:8px;
         }
         .buffer > div{
-            float:left;
-            padding:8px 10px;
-            background:#F4F4F4;
+            //float:left;
+            //padding:8px 10px;
+            //background:#F4F4F4;
         }
         label{
             width: 100%;
@@ -2197,14 +2271,7 @@ div.wide.form{
             margin-top:6px;
         }
     }
-    .hasCheckBox{
-        margin:8px 0 0 0;
-        display:block;
-        input[type="checkbox"]{
-            margin-bottom:0 !important;
-        }
-    }
-}
+
 
 .has-date-select, .has-model-select{
     position: relative;
@@ -2214,14 +2281,6 @@ div.wide.form{
     }
 }
 
-.panel{
-    .has-model-select a{
-        top:1px !important;
-    }
-    .has-date-select button{
-        top:1px !important;
-    }
-}
 
 .has-model-select{
 	clear:left;
@@ -2263,6 +2322,11 @@ div.wide.form{
 }
 
 .has-date-select{
+	clear:left;
+	padding:0 !important;
+	input{
+		margin:0 !important;
+	}
     button{
         background: url(../images/dropdown-general.png) left top no-repeat;
         width:28px;
@@ -2464,14 +2528,16 @@ div.wide.form{
     th{
         color:#999;
         text-align:right;
-        line-height: 24px;
+        //line-height: 24px;
     }
     td, td a{
         color:#525252;
     }
     th, td{
         font-weight:600;
-        padding:0 0 15px 0;
+        //padding:0 0 15px 0;
+    	padding-top:15px !important;
+    	vertical-align: top !important;
     }
      //for opt in email checkboxes
     input[type="checkbox"] + label{
@@ -2481,9 +2547,9 @@ div.wide.form{
     //for address fields
     td > label{
         &:first-child{
-            margin-top:5px;
+            //margin-top:5px;
         }
-        margin-top:10px;
+        //margin-top:10px;
     }
     //for 2 columns
     td + th{
@@ -2513,18 +2579,19 @@ div.wide.form{
     ul{
         list-style: none;
     }
-    #OptionsMenu{ }
-    #OptionsMenu > li > a{
+    .options-menu{ }
+    .options-menu > li > a{
         text-align:center;
         width: 60px;
         .zButton();
         font-size:11px;
+        color: #666 !important;
         &:after{
             content: "▾";
             margin-left:5px;
         }
     }
-    #OptionsMenu ul{
+    .options-menu ul{
         .flyout();
         margin-top:-8px;
         padding-top:3px;
@@ -2668,14 +2735,6 @@ div.wide.form{
     }
 }
 
-#NoteEditAndDetailsView{
-    .has-model-select{
-        a{
-            top:24px !important;
-        }
-    }
-}
-
 #inline-edit-form{
     table + table{
         float:left;
@@ -2709,6 +2768,9 @@ div.wide.form{
         a{
             float:right;
         }
+    }
+    textarea{
+        line-height: 130%;
     }
 }
 
@@ -3164,6 +3226,13 @@ div.hasHalfs{
         content: "g";
         .latest-activity-icon();
     }
+    .Conversation{
+    	padding-top:5px;
+    	&:after{
+	        content: "b";
+	        .latest-activity-icon();
+	    }
+    }
 }
 #activities-rollup-tooltip{
     position:relative;
@@ -3191,6 +3260,23 @@ div.hasHalfs{
     span{
         display:none;
     }
+}
+
+
+.LatestActivtiesForPortletView{
+	position:relative;
+	.toolbar-mbmenu{
+		z-index:999999;
+		top:-34px;
+    	right:10px;
+    	.view-toolbar{
+    		background:none;
+    		margin:0;
+    	}
+    	li{
+    		padding:0;
+    	}
+	}
 }
 
 /*=Search User Modal*/
@@ -3636,3 +3722,18 @@ div.hasHalfs{
         }
     }
 }
+
+/*RSS Widget*/
+.rssBody{
+	ul{
+		list-style: none;
+	}
+	li{
+		padding:10px 15px;
+		border-bottom:1px solid #dfdfdf;
+		&:last-child{
+			border-bottom:none;
+		}
+	}
+}
+
