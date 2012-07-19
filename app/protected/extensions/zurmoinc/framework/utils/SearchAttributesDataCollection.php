@@ -25,23 +25,50 @@
      ********************************************************************************/
 
     /**
-     * Filtered lists that are specific to the Opportunities module.
+     * Base class for managing the source of search attributes.  Attributes can be coming from a $_GET, a $_POST or
+     * potentially a model as a saved search.
      */
-    class OpportunitiesFilteredList extends FilteredList
+    class SearchAttributesDataCollection
     {
-        protected static function getLabel()
+
+        protected $model;
+
+        public function __construct($model)
         {
-            return 'Filtered OpportunitiesModuleSingularLabel List';
+            assert('$model instanceof RedBeanModel || $model instanceof SearchForm');
+            $this->model = $model;
         }
 
-        protected static function getPluralLabel()
+        public function getDynamicSearchAttributes()
         {
-            return 'Filtered OpportunitiesModuleSingularLabel Lists';
+            return SearchUtil::getDynamicSearchAttributesFromGetArray(get_class($this->model));
         }
 
-        public static function isTypeDeletable()
+        public function getDynamicStructure()
         {
-            return true;
+            return SearchUtil::getDynamicSearchStructureFromGetArray(get_class($this->model));
+        }
+
+        public function resolveSearchAttributesFromSourceData()
+        {
+            return SearchUtil::resolveSearchAttributesFromGetArray(get_class($this->model), get_class($this->model));
+        }
+
+        public function resolveAnyMixedAttributesScopeForSearchModelFromSourceData()
+        {
+            return SearchUtil::resolveAnyMixedAttributesScopeForSearchModelFromGetArray($this->model, get_class($this->model));
+        }
+
+        public static function resolveSortAttributeFromSourceData($name)
+        {
+            assert('is_string($name)');
+            return SearchUtil::resolveSortAttributeFromGetArray($name);
+        }
+
+        public static function resolveSortDescendingFromSourceData($name)
+        {
+            assert('is_string($name)');
+            return SearchUtil::resolveSortDescendingFromGetArray($$name);
         }
     }
 ?>

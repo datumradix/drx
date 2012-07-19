@@ -24,17 +24,32 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class FilteredListSaveUtil
+    class AAA extends CustomFieldsModel
     {
-        /**
-         * Todo:
-         */
-        public static function makeDataFromPost(array $array)
+        public static function getDefaultMetadata()
         {
-            return array(
-                'clauses'   => array(),
-                'structure' => '',
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'aaaMember',
+                    'aaaBoolean',
+                ),
+                'relations' => array(
+                    'bbb'                => array(RedBeanModel::HAS_ONE,            'BBB'),
+                    'hhh'                => array(RedBeanModel::HAS_ONE,            'HHH'),
+                    'industry'           => array(RedBeanModel::HAS_ONE, 'CustomField'),
+                    'multipleIndustries' => array(RedBeanModel::HAS_ONE, 'MultipleValuesCustomField'),
+                ),
+                'rules' => array(
+                    array('aaaMember', 'type', 'type' => 'string'),
+                    array('aaaBoolean', 'boolean'),
+                ),
+                'customFields' => array(
+                    'industry'           => 'Industries',
+                    'multipleIndustries' => 'MultipleIndustries',
+                ),
             );
+            return $metadata;
         }
     }
 ?>

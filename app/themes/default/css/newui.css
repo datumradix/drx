@@ -5844,30 +5844,30 @@ section {
 .AppContent{
      .radius(0 0 5px 5px);
     .single-column{
-    	background:pink !important;
-		padding-right:0 !important;
-		.GridView{
-			display:block;
-			width:100% !important;
-		}
-		.GridView:first-child{
-			display:block;
-			width:100% !important;
-		}
-		.panel{
-			width:70%;
-			float:left;
-			td, th{
-				padding-bottom:10px !important;
-			}
-		}
-		.details-table{
-			.clearfix();
-		}
-		#right-side-edit-view-panel{
-			top:55px;
-		}
-	}
+        background:pink !important;
+        padding-right:0 !important;
+        .GridView{
+            display:block;
+            width:100% !important;
+        }
+        .GridView:first-child{
+            display:block;
+            width:100% !important;
+        }
+        .panel{
+            width:70%;
+            float:left;
+            td, th{
+                padding-bottom:10px !important;
+            }
+        }
+        .details-table{
+            .clearfix();
+        }
+        #right-side-edit-view-panel{
+            top:55px;
+        }
+    }
 }
 */
 /*
@@ -5875,30 +5875,30 @@ section {
 .single-coloumn-details-view,
 #ConversationDetailsView,
 #ConversationDetailsAndRelationsView{
-	&.AppContent{
-		padding-right:0;
-	}
-	.GridView{
-		display:none;
-	}
-	.GridView:first-child{
-		display:block;
-		width:100%;
-	}
-	.panel{
-		width:70%;
-		float:left;
-		td, th{
-			padding-bottom:10px !important;
-		}
-	}
-	.details-table{
-		.clearfix();
-	}
-	#right-side-edit-view-panel{
-		top:55px;
-	}
-	
+    &.AppContent{
+        padding-right:0;
+    }
+    .GridView{
+        display:none;
+    }
+    .GridView:first-child{
+        display:block;
+        width:100%;
+    }
+    .panel{
+        width:70%;
+        float:left;
+        td, th{
+            padding-bottom:10px !important;
+        }
+    }
+    .details-table{
+        .clearfix();
+    }
+    #right-side-edit-view-panel{
+        top:55px;
+    }
+
 }
 */
 #HeaderView {
@@ -6359,9 +6359,9 @@ section {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff', GradientType=0);
   zoom: 1;
   /*> .MetadataView{
-    	padding-right:20px;
-    	.box-sizing();
-    	.clearfix();
+        padding-right:20px;
+        .box-sizing();
+        .clearfix();
     }*/
 
 }
@@ -7655,11 +7655,7 @@ div.wide.form a {
   font-family: "ZurmoGamificationSymblyReguRg";
   line-height: 90%;
 }
-#FilteredListView,
-.summary {
-  display: none;
-}
-.ZurmoSearchView {
+.SavedDynamicSearchView {
   padding: 0;
   -webkit-box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.12);
   -moz-box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.12);
@@ -7669,7 +7665,7 @@ div.wide.form a {
   float: left;
   width: 100%;
 }
-.ZurmoSearchView #search-form {
+.SavedDynamicSearchView #search-form {
   position: relative;
   padding: 10px 0 10px 0;
   border: 1px solid #DFDFDF;
@@ -7692,16 +7688,16 @@ div.wide.form a {
   box-shadow: inset 0 1px 0 0 #ffffff;
   zoom: 1;
 }
-.ZurmoSearchView #search-form:before {
+.SavedDynamicSearchView #search-form:before {
   content: "";
   display: table;
 }
-.ZurmoSearchView #search-form:after {
+.SavedDynamicSearchView #search-form:after {
   content: "";
   display: table;
   clear: both;
 }
-.ZurmoSearchView #search-form table {
+.SavedDynamicSearchView #search-form table {
   border-bottom: none;
 }
 .SecuredListView {

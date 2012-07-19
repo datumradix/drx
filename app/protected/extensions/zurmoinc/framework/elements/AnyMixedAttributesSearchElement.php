@@ -82,8 +82,8 @@
             $cClipWidget->widget('ext.zurmoinc.framework.widgets.ScopedSearchJuiMultiSelect', array(
                 'dataAndLabels'  => $this->model->getGlobalSearchAttributeNamesAndLabelsAndAll(),
                 'selectedValue'  => 'All',
-                'inputId'        => $this->getEditableInputId(SearchUtil::ANY_MIXED_ATTRIBUTES_SCOPE_NAME),
-                'inputName'      => $this->getEditableInputName(SearchUtil::ANY_MIXED_ATTRIBUTES_SCOPE_NAME),
+                'inputId'        => $this->getEditableInputId(SearchForm::ANY_MIXED_ATTRIBUTES_SCOPE_NAME),
+                'inputName'      => $this->getEditableInputName(SearchForm::ANY_MIXED_ATTRIBUTES_SCOPE_NAME),
                 'options'        => array(
                                           'selectedText' => '',
                                           'noneSelectedText' => '', 'header' => false,
@@ -103,13 +103,7 @@
             $inputId = $this->getEditableInputId();
             $script   = " basicSearchQueued = 0;";
             $script  .= " basicSearchOldValue = '';";
-            $script  .= "   $('#" . $inputId . "').removeAttr('clearForm'); ";
-            $script  .= "   $('#" . $inputId . "').clearform(
-                                {
-                                    form: '#" . $this->form->getId() . "',
-                                }
-                            );
-                            var basicSearchHandler = function(event)
+            $script  .= "   var basicSearchHandler = function(event)
                             {
                                 if ($(this).val() != '')
                                 {

@@ -48,27 +48,36 @@
 
         public function actionList()
         {
-            $pageSize = Yii::app()->pagination->resolveActiveForCurrentUserByType(
-                            'listPageSize', get_class($this->getModule()));
-            $contact  = new Contact(false);
-            $searchForm = new ContactsSearchForm($contact);
-            $dataProvider = $this->makeSearchFilterListDataProvider(
+            $pageSize                       = Yii::app()->pagination->resolveActiveForCurrentUserByType(
+                                              'listPageSize', get_class($this->getModule()));
+            $contact                        = new Contact(false);
+            $searchForm                     = new ContactsSearchForm($contact);
+            $dataProvider = $this->makeSearchDataProvider(
                 $searchForm,
                 'Contact',
-                'ContactsFilteredList',
                 $pageSize,
                 Yii::app()->user->userModel->id,
                 'ContactsStateMetadataAdapter'
             );
-            $actionBarSearchAndListView = $this->makeActionBarSearchAndListView(
-                $searchForm,
-                $pageSize,
-                ContactsModule::getModuleLabelByTypeAndLanguage('Plural'),
-                Yii::app()->user->userModel->id,
-                $dataProvider
-            );
+            if(isset($_GET['ajax']) && $_GET['ajax'] == 'list-view')
+            {
+                $mixedView = $this->makeListView(
+                    $searchForm,
+                    $dataProvider
+                );
+            }
+            else
+            {
+                $mixedView = $this->makeActionBarSearchAndListView(
+                    $searchForm,
+                    $pageSize,
+                    ContactsModule::getModuleLabelByTypeAndLanguage('Plural'),
+                    Yii::app()->user->userModel->id,
+                    $dataProvider
+                );
+            }
             $view = new ContactsPageView(ZurmoDefaultViewUtil::
-                                         makeStandardViewForCurrentUser($this, $actionBarSearchAndListView));
+                                         makeStandardViewForCurrentUser($this, $mixedView));
             echo $view->render();
         }
 
@@ -144,7 +153,6 @@
                 'Contact',
                 $pageSize,
                 Yii::app()->user->userModel->id,
-                'ContactsFilteredList',
                 'ContactsStateMetadataAdapter');
             $selectedRecordCount = $this->getSelectedRecordCountByResolvingSelectAllFromGet($dataProvider);
             $contact = $this->processMassEdit(
@@ -184,7 +192,6 @@
                 'Contact',
                 $pageSize,
                 Yii::app()->user->userModel->id,
-                'ContactsFilteredList',
                 'ContactsStateMetadataAdapter'
             );
             $this->processMassEditProgressSave(
@@ -246,11 +253,6 @@
         protected function getSearchFormClassName()
         {
             return 'ContactsSearchForm';
-        }
-
-        protected function getModelFilteredListClassName()
-        {
-            return 'ContactsFilteredList';
         }
 
         public function actionExport()

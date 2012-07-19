@@ -24,7 +24,24 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class FilteredListEditView extends EditView
+    class FFF extends RedBeanModel
     {
+        public static function getDefaultMetadata()
+        {
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'fffMember',
+                ),
+                'relations' => array(
+                    'bbb'                => array(RedBeanModel::HAS_ONE,            'BBB'),
+                    'eee'                => array(RedBeanModel::HAS_ONE,            'EEE'),
+                ),
+                'rules' => array(
+                    array('fffMember', 'type', 'type' => 'string'),
+                ),
+            );
+            return $metadata;
+        }
     }
 ?>

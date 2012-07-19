@@ -55,23 +55,32 @@
                             'listPageSize', get_class($this->getModule()));
             $contact  = new Contact(false);
             $searchForm = new LeadsSearchForm($contact);
-            $dataProvider = $this->makeSearchFilterListDataProvider(
+            $dataProvider = $this->makeSearchDataProvider(
                 $searchForm,
                 'Contact',
-                'LeadsFilteredList',
                 $pageSize,
                 Yii::app()->user->userModel->id,
                 'LeadsStateMetadataAdapter'
             );
-            $actionBarSearchAndListView = $this->makeActionBarSearchAndListView(
-                $searchForm,
-                $pageSize,
-                LeadsModule::getModuleLabelByTypeAndLanguage('Plural'),
-                Yii::app()->user->userModel->id,
-                $dataProvider
-            );
+            if(isset($_GET['ajax']) && $_GET['ajax'] == 'list-view')
+            {
+                $mixedView = $this->makeListView(
+                    $searchForm,
+                    $dataProvider
+                );
+            }
+            else
+            {
+                $mixedView = $this->makeActionBarSearchAndListView(
+                    $searchForm,
+                    $pageSize,
+                    LeadsModule::getModuleLabelByTypeAndLanguage('Plural'),
+                    Yii::app()->user->userModel->id,
+                    $dataProvider
+                );
+            }
             $view = new LeadsPageView(ZurmoDefaultViewUtil::
-                                         makeStandardViewForCurrentUser($this, $actionBarSearchAndListView));
+                                         makeStandardViewForCurrentUser($this, $mixedView));
             echo $view->render();
         }
 
@@ -152,7 +161,6 @@
                 'Contact',
                 $pageSize,
                 Yii::app()->user->userModel->id,
-                'LeadsFilteredList',
                 'LeadsStateMetadataAdapter');
             $selectedRecordCount = $this->getSelectedRecordCountByResolvingSelectAllFromGet($dataProvider);
             $contact = $this->processMassEdit(
@@ -192,7 +200,6 @@
                 'Contact',
                 $pageSize,
                 Yii::app()->user->userModel->id,
-                'LeadsFilteredList',
                 'LeadsStateMetadataAdapter'
             );
             $this->processMassEditProgressSave(
@@ -334,11 +341,6 @@
         protected function getSearchFormClassName()
         {
             return 'LeadsSearchForm';
-        }
-
-        protected function getModelFilteredListClassName()
-        {
-            return 'LeadsFilteredList';
         }
 
         public function actionExport()

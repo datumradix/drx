@@ -47,26 +47,35 @@
 
         public function actionList()
         {
-            $pageSize = Yii::app()->pagination->resolveActiveForCurrentUserByType(
-                            'listPageSize', get_class($this->getModule()));
-            $account = new Account(false);
-            $searchForm = new AccountsSearchForm($account);
-            $dataProvider = $this->makeSearchFilterListDataProvider(
+            $pageSize                       = Yii::app()->pagination->resolveActiveForCurrentUserByType(
+                                              'listPageSize', get_class($this->getModule()));
+            $account                        = new Account(false);
+            $searchForm                     = new AccountsSearchForm($account);
+            $dataProvider = $this->makeSearchDataProvider(
                 $searchForm,
                 'Account',
-                'AccountsFilteredList',
                 $pageSize,
                 Yii::app()->user->userModel->id
             );
-            $actionBarSearchAndListView = $this->makeActionBarSearchAndListView(
-                $searchForm,
-                $pageSize,
-                AccountsModule::getModuleLabelByTypeAndLanguage('Plural'),
-                Yii::app()->user->userModel->id,
-                $dataProvider
-            );
+            if(isset($_GET['ajax']) && $_GET['ajax'] == 'list-view')
+            {
+                $mixedView = $this->makeListView(
+                    $searchForm,
+                    $dataProvider
+                );
+            }
+            else
+            {
+                $mixedView = $this->makeActionBarSearchAndListView(
+                    $searchForm,
+                    $pageSize,
+                    AccountsModule::getModuleLabelByTypeAndLanguage('Plural'),
+                    Yii::app()->user->userModel->id,
+                    $dataProvider
+                );
+            }
             $view = new AccountsPageView(ZurmoDefaultViewUtil::
-                                         makeStandardViewForCurrentUser($this, $actionBarSearchAndListView));
+                                         makeStandardViewForCurrentUser($this, $mixedView));
             echo $view->render();
         }
 
@@ -127,8 +136,7 @@
                 new AccountsSearchForm($account),
                 'Account',
                 $pageSize,
-                Yii::app()->user->userModel->id,
-                'AccountsFilteredList');
+                Yii::app()->user->userModel->id);
             $selectedRecordCount = $this->getSelectedRecordCountByResolvingSelectAllFromGet($dataProvider);
             $account = $this->processMassEdit(
                 $pageSize,
@@ -166,8 +174,7 @@
                 new AccountsSearchForm($account),
                 'Account',
                 $pageSize,
-                Yii::app()->user->userModel->id,
-                'AccountsFilteredList'
+                Yii::app()->user->userModel->id
             );
             $this->processMassEditProgressSave(
                 'Account',
@@ -198,11 +205,6 @@
         protected function getSearchFormClassName()
         {
             return 'AccountsSearchForm';
-        }
-
-        protected function getModelFilteredListClassName()
-        {
-            return 'AccountsFilteredList';
         }
 
         public function actionExport()
