@@ -124,7 +124,6 @@
             $userId,
             $stateMetadataAdapterClassName = null)
         {
-            assert('$searchModel != null');
             assert('$searchModel instanceof RedBeanModel || $searchModel instanceof ModelForm');
             static::resolveToTriggerOnSearchEvents($listModelClassName);
             $dataCollection = new SearchAttributesDataCollection($searchModel);
@@ -164,7 +163,6 @@
             $stateMetadataAdapterClassName = null
             )
         {
-            assert('$searchModel != null');
             assert('$searchModel instanceof RedBeanModel || $searchModel instanceof ModelForm');
             if ($_GET['selectAll'])
             {
@@ -374,14 +372,20 @@
             if (isset($_POST[$postVariableName]))
             {
                 $postData = $_POST[$postVariableName];
-                $model            = ZurmoControllerUtil::
-                                    saveModelFromPost($postData, $model, $savedSucessfully, $modelToStringValue);
+                $controllerUtil   = static::getZurmoControllerUtil();
+                $model            = $controllerUtil->saveModelFromPost($postData, $model, $savedSucessfully,
+                                                                       $modelToStringValue);
             }
             if ($savedSucessfully && $redirect)
             {
                 $this->actionAfterSuccessfulModelSave($model, $modelToStringValue, $redirectUrlParams);
             }
             return $model;
+        }
+
+        protected static function getZurmoControllerUtil()
+        {
+            return new ZurmoControllerUtil();
         }
 
         protected function actionAfterSuccessfulModelSave($model, $modelToStringValue, $redirectUrlParams = null)
