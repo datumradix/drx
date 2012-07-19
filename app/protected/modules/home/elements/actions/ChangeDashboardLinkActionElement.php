@@ -24,33 +24,51 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class MenuView extends View
+    class ChangeDashboardLinkActionElement extends LinkActionElement
     {
-        protected $items;
-
-        public function __construct(array $items)
+        public function getActionType()
         {
-            $this->items = $items;
+            return 'Details';
         }
 
-        /**
-         * Will attemp to get the menu items from cache, otherwise from the appropriate storage, and cache the information
-         * for the next call to this method.
-         * @see View::renderContent()
-         */
-        protected function renderContent()
+        public function render()
         {
-            if (count($this->items) == 0)
+            $menuItems = array('label' => $this->getDefaultLabel(), 'items' => array());
+            foreach($this->getDashboardsData() as $dashboardData)
             {
-                return null;
+                $menuItems['items'][] = array('label' => $dashboardData['name'],
+                                               'url'   => Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/dashboardDetails/',
+                                                   array('id' => $dashboardData['id'])));
             }
             $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("Tabs");
+            $cClipWidget->beginClip("DetailsOptionMenu");
             $cClipWidget->widget('ext.zurmoinc.framework.widgets.MbMenu', array(
-                'items' => $this->items
+                'htmlOptions' => array('id' => 'ChangeDashboardsMenu', 'class'   => 'icon-change-dashboard'),
+                'items'                   => array($menuItems),
+                'navContainerClass'       => 'nav-single-container',
+                'navBarClass'             => 'nav-single-bar',
             ));
             $cClipWidget->endClip();
-            return $cClipWidget->getController()->clips['Tabs'];
+            return $cClipWidget->getController()->clips['DetailsOptionMenu'];
         }
+
+        protected function getDefaultLabel()
+        {
+            return Yii::t('Default', 'Change Dashboard');
+        }
+
+        protected function getDefaultRoute()
+        {
+            return null;
+        }
+
+        protected function getDashboardsData()
+        {
+            if (isset($this->params['dashboardsData']))
+            {
+                return $this->params['dashboardsData'];
+            }
+        }
+
     }
 ?>

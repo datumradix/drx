@@ -24,53 +24,39 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class InlineEditViewDesignerRules extends EditViewDesignerRules
+    /**
+     * Display the email message and options to resolve it against existing contacts/leads or creating a new contact
+     * or lead.  Used by @see ArchivedEmailMatchingListView
+     */
+    class ArchivedEmailMatchingElement extends Element implements DerivedElementInterface
     {
-        public function allowEditInLayoutTool()
+        protected function renderEditable()
         {
-            return true;
+            throw NotSupportedException();
         }
 
-        public function resolveDisplayNameByView($viewClassName)
+        protected function renderControlEditable()
         {
-            assert('is_string($viewClassName)');
-            $displayDescription = $viewClassName::getDisplayDescription();
-            if ($displayDescription != null)
-            {
-                return $this->getDisplayName() . ' - ' . $displayDescription;
-            }
-            return $this->getDisplayName();
+            throw NotSupportedException();
         }
 
-        public function getDisplayName()
+        /**
+         * Render the full name as a non-editable display
+         * @return The element's content.
+         */
+        protected function renderControlNonEditable()
         {
-            return Yii::t('Default', 'Inline Edit View');
+            throw NotSupportedException();
         }
 
-        public function maxCellsPerRow()
-        {
-            return 1;
-        }
-
-        public function canConfigureLayoutPanelsType()
-        {
-            return true;
-        }
-
-        public function getSavableMetadataRules()
+        /**
+         * Get the attributeNames of attributes used in
+         * the derived element.
+         * @return array of model attributeNames used.
+         */
+        public static function getModelAttributeNames()
         {
             return array();
-        }
-
-        public function getNonPlaceableLayoutAttributeNames()
-        {
-            return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id'
-            );
         }
     }
 ?>

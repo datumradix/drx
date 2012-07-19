@@ -24,53 +24,61 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class HomeModule extends SecurableModule
+    /**
+     * View is used to display rows of email messages that are archived but not connected to any contacts or leads.
+     */
+    class ArchivedEmailMatchingListView extends SecuredListView
     {
-        const RIGHT_CREATE_DASHBOARDS = 'Create Dashboards';
-        const RIGHT_DELETE_DASHBOARDS = 'Delete Dashboards';
-        const RIGHT_ACCESS_DASHBOARDS = 'Access Dashboards';
-
-        public function getDependencies()
+       /**
+        * Override to set rows as not being selectable.
+        */
+       public function __construct(
+            $controllerId,
+            $moduleId,
+            $modelClassName,
+            $dataProvider
+        )
         {
-            return array(
-                'zurmo',
-            );
-        }
-
-        public function getRootModelNames()
-        {
-            return array('Dashboard');
+            parent::__construct($controllerId, $moduleId, $modelClassName, $dataProvider, array());
+            $this->rowsAreSelectable = false;
         }
 
         public static function getDefaultMetadata()
         {
-            $metadata = array();
-            $metadata['global'] = array(
-                'adminTabMenuItems' => array(
-                    array(
-                        'label'       => 'Back to Application',
-                        'url'         => array('/home/default'),
-                        'itemOptions' => array('class' => 'back-to-app-menu-item')
+            $metadata = array(
+                'global' => array(
+                    'derivedAttributeTypes' => array(
+                        'ArchivedEmailMatching',
+                    ),
+                    'panels' => array(
+                        array(
+                            'rows' => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'null', 'type' => 'ArchivedEmailMatching'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                            ),
+                        ),
                     ),
                 ),
-                'tabMenuItems' => array(
-                    array(
-                        'label' => 'Home',
-                        'url'   => array('/home/default'),
-                    ),
-                ),
+
             );
             return $metadata;
         }
 
-        protected static function getSingularModuleLabel()
+        /**
+         * Override so the edit link does not show.
+         * (non-PHPdoc)
+         * @see SecuredListView::getCGridViewLastColumn()
+         */
+        protected function getCGridViewLastColumn()
         {
-            return 'Home';
-        }
-
-        public static function getDeleteRight()
-        {
-            return self::RIGHT_DELETE_DASHBOARDS;
+            return array();
         }
     }
 ?>
