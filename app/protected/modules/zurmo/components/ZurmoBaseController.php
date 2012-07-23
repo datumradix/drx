@@ -122,19 +122,44 @@
             $listModelClassName,
             $pageSize,
             $userId,
-            $stateMetadataAdapterClassName = null)
+            $stateMetadataAdapterClassName = null,
+            $stickySearchKey = null,
+            $setSticky       = true)
         {
             assert('$searchModel instanceof RedBeanModel || $searchModel instanceof ModelForm');
+            assert('$stickySearchKey == null || is_string($stickySearchKey)');
+            assert('is_bool($setSticky)');
             static::resolveToTriggerOnSearchEvents($listModelClassName);
             $dataCollection = new SearchAttributesDataCollection($searchModel);
             if($searchModel instanceof SavedDynamicSearchForm)
             {
-                SavedSearchUtil::resolveSearchFormByGetData(GetUtil::getData(), $searchModel);
-                $searchModel->loadSavedSearchUrl = Yii::app()->createUrl($this->getModule()->getId() . '/' . $this->getId() . '/list/');
-                if($searchModel->savedSearchId != null)
+                if($stickySearchKey == null)
                 {
+                    throw new NotSupportedException();
+                }
+                $getData = GetUtil::getData();
+                if(isset($getData['clearingSearch']) && $getData['clearingSearch'])
+                {
+                    SavedSearchUtil::clearDataByKey($stickySearchKey);
+                }
+                if(null != $stickySearchData = SavedSearchUtil::getDataByKey($stickySearchKey))
+                {
+                    SavedSearchUtil::resolveSearchFormByStickyDataAndModel($stickySearchData, $searchModel);
                     $dataCollection = new SavedSearchAttributesDataCollection($searchModel);
                 }
+                else
+                {
+                    SavedSearchUtil::resolveSearchFormByGetData(GetUtil::getData(), $searchModel);
+                    if($searchModel->savedSearchId != null)
+                    {
+                        $dataCollection = new SavedSearchAttributesDataCollection($searchModel);
+                    }
+                }
+                if($setSticky)
+                {
+                    SavedSearchUtil::setDataByKeyAndDataCollection($stickySearchKey, $dataCollection);
+                }
+                $searchModel->loadSavedSearchUrl = Yii::app()->createUrl($this->getModule()->getId() . '/' . $this->getId() . '/list/');
             }
             $dataProvider = $this->makeRedBeanDataProviderFromGet(
                 $searchModel,
