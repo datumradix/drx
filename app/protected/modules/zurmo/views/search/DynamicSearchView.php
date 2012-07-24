@@ -112,7 +112,9 @@
                             $this->listModelClassName . "_sort=" .
                             $this->getExtraQueryPartForSearchFormScriptSubmitFunction() ."' // Not Coding Standard
                          }
-                        );";
+                        );
+                        $('#" . $this->getClearingSearchInputId() . "').val('');
+                        ";
         }
 
         protected function getExtraRenderFormBottomPanelScriptPart()
@@ -225,7 +227,7 @@
                                           }'),
                                     array('id' => 'addExtraAdvancedSearchRowButton-' . $this->getSearchFormId(), 'namespace' => 'add'));
             // End Not Coding Standard
-            return CHtml::tag('div', array(), $content);
+            return CHtml::tag('div', array('class' => 'add-fields-container'), $content);
         }
 
         protected function renderAfterFormLayout($form)
