@@ -182,6 +182,17 @@
                     {
                         $('#" . $this->getClearingSearchInputId() . "').val('1');
                         " . $this->getExtraRenderForClearSearchLinkScript() . "
+                        //Reseting DropKick Information                        
+                        $( '.search-view-1' ).find('select:not(.ignore-style)').each(function(){                                                                            
+                            $(this).removeData('dropkick');
+                        });
+                        $( '.search-view-1' ).find('div.dk_container').each(function(){
+                            $(this).remove();
+                        });
+                        $( '.search-view-1' ).find('select:not(.ignore-style)').each(function(){                                                
+                            $(this).dropkick();
+                            $(this).dropkick('rebindToggle');
+                        });
                         $(this).closest('form').submit();
                         $('#" . $this->getClearingSearchInputId() . "').val('');
                         return false;
