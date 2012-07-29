@@ -24,39 +24,22 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Module for managing the gamification of Zurmo
-     */
-    class GamificationModule extends Module
+    class MissionAccessUtil
     {
-        public function getDependencies()
+        /**
+         * Only the owner of a mission can edit a mission.
+         * @param Mission $mission
+         */
+        public static function resolveCanCurrentUserWriteOrDeleteMission(Mission $mission)
         {
-            return array('configuration', 'zurmo');
-        }
-
-        public function getRootModelNames()
-        {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 3,
-                        ),
-                ),
-            );
-            return $metadata;
-        }
-
-        public static function getDemoDataMakerClassName()
-        {
-            return 'GamificationDemoDataMaker';
+            if (Yii::app()->user->userModel == $mission->owner)
+            {
+                return;
+            }
+            $messageView = new AccessFailureView();
+            $view = new AccessFailurePageView($messageView);
+            echo $view->render();
+            Yii::app()->end(0, false);
         }
     }
 ?>

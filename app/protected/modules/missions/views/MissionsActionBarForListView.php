@@ -24,39 +24,34 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Module for managing the gamification of Zurmo
-     */
-    class GamificationModule extends Module
+    class MissionsActionBarForListView extends ActionBarForSearchAndListView
     {
-        public function getDependencies()
-        {
-            return array('configuration', 'zurmo');
-        }
-
-        public function getRootModelNames()
-        {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
         public static function getDefaultMetadata()
         {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 3,
+            $metadata = array(
+                'global' => array(
+                    'toolbar' => array(
+                        'elements' => array(
+                            array('type'          => 'CreateLink',
+                                'htmlOptions'     => array('class' => 'icon-create'),
+                            ),
+                            array(
+                                'type'            => 'MissionsCreatedLink',
+                                'htmlOptions'     => array( 'class' => 'icon-missions-created' )
+                            ),
+                            array(
+                                'type'            => 'MissionsAvailableLink',
+                                'htmlOptions'     => array( 'class' => 'icon-missions-available' )
+                            ),
+                            array(
+                                'type'            => 'MissionsMineTakenButNotAcceptedLink',
+                                'htmlOptions'     => array( 'class' => 'icon-missions-taken-but-not-accepted' )
+                            ),
                         ),
+                    ),
                 ),
             );
             return $metadata;
-        }
-
-        public static function getDemoDataMakerClassName()
-        {
-            return 'GamificationDemoDataMaker';
         }
     }
 ?>

@@ -24,39 +24,11 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Module for managing the gamification of Zurmo
-     */
-    class GamificationModule extends Module
+    class MissionsPageView extends ZurmoDefaultPageView
     {
-        public function getDependencies()
+        protected function getSubtitle()
         {
-            return array('configuration', 'zurmo');
-        }
-
-        public function getRootModelNames()
-        {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 3,
-                        ),
-                ),
-            );
-            return $metadata;
-        }
-
-        public static function getDemoDataMakerClassName()
-        {
-            return 'GamificationDemoDataMaker';
+            return Yii::t('Default', 'Missions');
         }
     }
 ?>

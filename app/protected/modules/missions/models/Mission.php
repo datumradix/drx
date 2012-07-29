@@ -24,70 +24,43 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class Conversation extends OwnedSecurableItem implements MashableActivityInterface
+    class Mission extends OwnedSecurableItem implements MashableActivityInterface
     {
+        const STATUS_AVAILABLE = 1;
+
+        const STATUS_TAKEN     = 2;
+
+        const STATUS_COMPLETED = 3;
+
+        const STATUS_REJECTED  = 4;
+
+        const STATUS_ACCEPTED  = 5;
+
         public static function getMashableActivityRulesType()
         {
-            return 'Conversation';
+            return 'Mission';
         }
 
-        public static function getBySubject($subject)
+        public static function getDescription($description)
         {
-            assert('is_string($subject) && $subject != ""');
-            return self::getSubset(null, null, null, "subject = '$subject'");
+            assert('is_string($description) && $description != ""');
+            return self::getSubset(null, null, null, "description = '$description'");
         }
 
         public function __toString()
         {
             try
             {
-                if (trim($this->subject) == '')
+                if (trim($this->description) == '')
                 {
                     return Yii::t('Default', '(Unnamed)');
                 }
-                return $this->subject;
+                return $this->description;
             }
             catch (AccessDeniedSecurityException $e)
             {
                 return '';
             }
-        }
-
-        /**
-         * Given a user get the count of conversations that have unread comments.
-         * @param object $user User
-         */
-        public static function getUnreadCountByUser(User $user)
-        {
-            $searchAttributeData = array();
-            $searchAttributeData['clauses'] = array(
-                1 => array(
-                    'attributeName'        => 'ownerHasReadLatest',
-                    'operatorType'         => 'doesNotEqual',
-                    'value'                => (bool)1
-                ),
-                2 => array(
-                    'attributeName'        => 'owner',
-                    'operatorType'         => 'equals',
-                    'value'                => $user->id
-                ),
-                3 => array(
-                    'attributeName'        => 'conversationParticipants',
-                    'relatedAttributeName' => 'person',
-                    'operatorType'         => 'equals',
-                    'value'                => $user->getClassId('Item'),
-                ),
-                4 => array(
-                    'attributeName'        => 'conversationParticipants',
-                    'relatedAttributeName' => 'hasReadLatest',
-                    'operatorType'         => 'doesNotEqual',
-                    'value'                => (bool)1
-                ),
-            );
-            $searchAttributeData['structure'] = '((1 and 2) or (3 and 4))';
-            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('Conversation');
-            $where  = RedBeanModelDataProvider::makeWhere('Conversation', $searchAttributeData, $joinTablesAdapter);
-            return self::getCount($joinTablesAdapter, $where, null, true);
         }
 
         public function onCreated()
@@ -98,7 +71,7 @@
 
         public static function getModuleClassName()
         {
-            return 'ConversationsModule';
+            return 'MissionsModule';
         }
 
         public static function canSaveMetadata()
@@ -112,42 +85,48 @@
             $metadata[__CLASS__] = array(
                 'members' => array(
                     'description',
+                    'dueDateTime',
                     'latestDateTime',
-                    'subject',
                     'ownerHasReadLatest',
+                    'reward',
+                    'status',
+                    'takenByUserHasReadLatest',
                 ),
                 'relations' => array(
                     'comments'                 => array(RedBeanModel::HAS_MANY,  'Comment', RedBeanModel::OWNED, 'relatedModel'),
-                    'conversationItems'	 	   => array(RedBeanModel::MANY_MANY, 'Item'),
-                    'conversationParticipants' => array(RedBeanModel::HAS_MANY,  'ConversationParticipant', RedBeanModel::OWNED),
                     'files'                    => array(RedBeanModel::HAS_MANY,  'FileModel', RedBeanModel::OWNED, 'relatedModel'),
+                    'takenByUser'              => array(RedBeanModel::HAS_ONE,   'User'),
                 ),
                 'rules' => array(
-                    array('description',    	'type',    'type' => 'string'),
-                    array('latestDateTime', 	'required'),
-                    array('latestDateTime', 	'readOnly'),
-                    array('latestDateTime', 	'type', 'type' => 'datetime'),
-                    array('subject',           	'required'),
-                    array('subject',          	'type',    'type' => 'string'),
-                    array('subject',           	'length',  'min'  => 3, 'max' => 255),
-                    array('ownerHasReadLatest', 'boolean'),
+                    array('description',              'required'),
+                    array('description',    		  'type', 'type' => 'string'),
+                    array('dueDateTime', 	          'type', 'type' => 'datetime'),
+                    array('latestDateTime', 		  'required'),
+                    array('latestDateTime', 		  'readOnly'),
+                    array('latestDateTime', 		  'type', 'type' => 'datetime'),
+                    array('status',           		  'required'),
+                    array('status',          		  'type',    'type' => 'integer'),
+                    array('ownerHasReadLatest',       'boolean'),
+                    array('reward',  	  'type', 'type' => 'string'),
+                    array('takenByUserHasReadLatest', 'boolean'),
+
                 ),
                 'elements' => array(
-                    'conversationItems' => 'ConversationItem',
                     'description'       => 'TextArea',
+                    'dueDateTime'       => 'DateTime',
                     'files'             => 'Files',
                     'latestDateTime'    => 'DateTime',
+                    'reward' => 'TextArea',
                 ),
                 'defaultSortAttribute' => 'subject',
                 'noAudit' => array(
                     'description',
+                    'dueDateTime',
                     'latestDateTime',
-                    'subject',
                     'ownerHasReadLatest',
-                ),
-                'conversationItemsModelClassNames' => array(
-                    'Account',
-                    'Opportunity',
+                    'reward',
+                    'status',
+                    'takenByUserHasReadLatest'
                 ),
             );
             return $metadata;
@@ -165,7 +144,7 @@
 
         public static function getGamificationRulesType()
         {
-            return 'ConversationGamification';
+            return 'MissionGamification';
         }
 
         /**
@@ -195,14 +174,9 @@
                             {
                                 $this->ownerHasReadLatest = false;
                             }
-                            foreach($this->conversationParticipants as $position => $participant)
+                            if(Yii::app()->user->userModel != $this->takenByUser)
                             {
-                                //At this point the createdByUser is not populated yet in the comment, so we can
-                                //use the current user.
-                                if($participant->person != Yii::app()->user->userModel)
-                                {
-                                    $this->conversationParticipants[$position]->hasReadLatest = false;
-                                }
+                                $this->takenByUserHasReadLatest = false;
                             }
                         }
                     }
@@ -217,7 +191,7 @@
 
         public static function hasRelatedItems()
         {
-            return true;
+            return false;
         }
     }
 ?>

@@ -25,38 +25,50 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Display the mMission latest information either the latest comment or the description of the mission.
+     * Current support is for  the list view only.
      */
-    class GamificationModule extends Module
+    class MissionLatestElement extends Element implements DerivedElementInterface
     {
-        public function getDependencies()
+        protected function renderEditable()
         {
-            return array('configuration', 'zurmo');
+            throw NotSupportedException();
         }
 
-        public function getRootModelNames()
+        protected function renderControlEditable()
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
+            throw NotSupportedException();
         }
 
-        public static function getDefaultMetadata()
+        /**
+         * Render the full name as a non-editable display
+         * @return The element's content.
+         */
+        protected function renderControlNonEditable()
         {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 3,
-                        ),
-                ),
+            throw NotSupportedException();
+        }
+
+        protected function renderLabel()
+        {
+            return Yii::t('Default', 'Mission');
+        }
+
+        public static function getDisplayName()
+        {
+            return Yii::t('Default', 'Mission Latest');
+        }
+
+        /**
+         * Get the attributeNames of attributes used in
+         * the derived element.
+         * @return array of model attributeNames used.
+         */
+        public static function getModelAttributeNames()
+        {
+            return array(
+                'description',
             );
-            return $metadata;
-        }
-
-        public static function getDemoDataMakerClassName()
-        {
-            return 'GamificationDemoDataMaker';
         }
     }
 ?>

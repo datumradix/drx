@@ -24,39 +24,18 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Module for managing the gamification of Zurmo
-     */
-    class GamificationModule extends Module
+    class MissionsMineTakenButNotAcceptedLinkActionElement extends EditLinkActionElement
     {
-        public function getDependencies()
+        protected function getDefaultLabel()
         {
-            return array('configuration', 'zurmo');
+            return Yii::t('Default', 'My Missions');
         }
 
-        public function getRootModelNames()
+        protected function getDefaultRoute()
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 3,
-                        ),
-                ),
-            );
-            return $metadata;
-        }
-
-        public static function getDemoDataMakerClassName()
-        {
-            return 'GamificationDemoDataMaker';
+            return Yii::app()->createUrl(
+                $this->moduleId . '/' . $this->controllerId . '/list/',
+                array('type' => MissionsSearchDataProviderMetadataAdapter::LIST_TYPE_MINE_TAKEN_BUT_NOT_ACCEPTED));
         }
     }
 ?>

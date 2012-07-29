@@ -25,38 +25,15 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Defines specific rules for mission gamification.
      */
-    class GamificationModule extends Module
+    class MissionGamificationRules extends GamificationRules
     {
-        public function getDependencies()
-        {
-            return array('configuration', 'zurmo');
-        }
+        protected $scoreOnUpdate = false;
 
-        public function getRootModelNames()
+        public static function getPointTypesAndValuesForCreateModel()
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 3,
-                        ),
-                ),
-            );
-            return $metadata;
-        }
-
-        public static function getDemoDataMakerClassName()
-        {
-            return 'GamificationDemoDataMaker';
+            return array(GamePoint::TYPE_COMMUNICATION => 10);
         }
     }
 ?>

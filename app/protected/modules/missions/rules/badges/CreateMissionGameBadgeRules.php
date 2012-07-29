@@ -25,38 +25,40 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Class for defining the badge associated with creating a new mission
      */
-    class GamificationModule extends Module
+    class CreateMissionGameBadgeRules extends GameBadgeRules
     {
-        public function getDependencies()
+        public static $valuesIndexedByGrade = array(
+            1  => 1,
+            2  => 5,
+            3  => 10,
+            4  => 25,
+            5  => 50,
+            6  => 75,
+            7  => 100,
+            8  => 125,
+            9  => 150,
+            10 => 175,
+            11 => 200,
+            12 => 225,
+            13 => 250
+        );
+
+        public static function getPassiveDisplayLabel($value)
         {
-            return array('configuration', 'zurmo');
+            return Yii::t('Default', '{n} Mission created|{n} Missions created', array($value));
         }
 
-        public function getRootModelNames()
+        public static function badgeGradeUserShouldHaveByPointsAndScores($userPointsByType, $userScoresByType)
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 3,
-                        ),
-                ),
-            );
-            return $metadata;
-        }
-
-        public static function getDemoDataMakerClassName()
-        {
-            return 'GamificationDemoDataMaker';
+            assert('is_array($userPointsByType)');
+            assert('is_array($userScoresByType)');
+            if (isset($userScoresByType['CreateMission']))
+            {
+                return static::getBadgeGradeByValue((int)$userScoresByType['CreateMission']->value);
+            }
+            return 0;
         }
     }
 ?>

@@ -25,38 +25,13 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * View that renders missions module breadcrumb content
      */
-    class GamificationModule extends Module
+    class MissionBreadCrumbView extends BreadCrumbView
     {
-        public function getDependencies()
+        protected function getHomeLinkLabel()
         {
-            return array('configuration', 'zurmo');
-        }
-
-        public function getRootModelNames()
-        {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 3,
-                        ),
-                ),
-            );
-            return $metadata;
-        }
-
-        public static function getDemoDataMakerClassName()
-        {
-            return 'GamificationDemoDataMaker';
+            return Yii::t('Default', 'Missions');
         }
     }
 ?>

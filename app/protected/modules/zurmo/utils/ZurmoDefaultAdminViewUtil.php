@@ -31,24 +31,16 @@
     {
         protected static $showRecentlyViewed = false;
 
-        /**
-         * Given a controller, contained view, construct the gridview
-         * used by the designer page view.
-         * @param CController $controller
-         * @param View $containedView
-         * @param mixed $activeNodeModuleClassName (null or string)
-         */
         public static function makeViewWithBreadcrumbsForCurrentUser(CController $controller,
                                                                      View $containedView,
                                                                      $breadcrumbLinks,
                                                                      $breadcrumbViewClassName)
         {
-            assert('is_array($breadcrumbLinks)');
-            $gridView    = new GridView(2, 1);
-            $gridView->setCssClasses(array( 'AdministrativeArea' ));
-            $gridView->setView(new $breadcrumbViewClassName($controller->getId(), $controller->getModule()->getId(), $breadcrumbLinks), 0, 0);
-            $gridView->setView($containedView, 1, 0);
-            return static::makeStandardViewForCurrentUser($controller, $gridView);
+            return parent::makeViewWithBreadcrumbsForCurrentUser($controller,
+                                                                 $containedView,
+                                                                 $breadcrumbLinks,
+                                                                 $breadcrumbViewClassName,
+                                                                 array( 'AdministrativeArea' ));
         }
 
         protected static function makeMenuView($controller = null)

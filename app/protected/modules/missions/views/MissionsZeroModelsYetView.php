@@ -25,38 +25,25 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Class for showing a message and create link when there are no missions visible to the logged in user when
+     * going to the missions list view.
      */
-    class GamificationModule extends Module
+    class MissionsZeroModelsYetView extends ZeroModelsYetView
     {
-        public function getDependencies()
+        protected function getCreateLinkDisplayLabel()
         {
-            return array('configuration', 'zurmo');
+            return Yii::t('Default',
+                          'Create Mission');
         }
 
-        public function getRootModelNames()
+        protected function getMessageContent()
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => 'Leaderboard',
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 3,
-                        ),
-                ),
-            );
-            return $metadata;
-        }
-
-        public static function getDemoDataMakerClassName()
-        {
-            return 'GamificationDemoDataMaker';
+            return Yii::t('Default', '<h2>"Make your life a mission - not an intermission."' .
+                                     '</h2><i>- Arnold Glasgow</i></i><div class="large-icon"></div><p>' .
+                                     'Create a Mission in the CRM for something that needs to get done. ' .
+                                     'Could be getting lunch for the team at the local taco stand or completing ' .
+                                     'a powerpoint presentation for tomorrow\'s meeting. Users can select from ' .
+                                     'available Missions and receive rewards for completion.</p>');
         }
     }
 ?>
