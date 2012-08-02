@@ -153,7 +153,7 @@
             return $result;
         }
 
-        protected function getSearchFormClassName()
+        protected static function getSearchFormClassName()
         {
             return null;
         }
@@ -161,7 +161,7 @@
         protected function processList($params)
         {
             $modelClassName = $this->getModelName();
-            $searchFormClassName = $this->getSearchFormClassName();
+            $searchFormClassName = static::getSearchFormClassName();
 
             try
             {
@@ -203,7 +203,7 @@
                 }
 
                 $stateMetadataAdapterClassName = $this->getModule()->getStateMetadataAdapterClassName();
-                $dataProvider = $this->makeRedBeanDataProviderFromGet(
+                $dataProvider = $this->makeRedBeanDataProviderByDataCollection(
                     $searchForm,
                     $modelClassName,
                     $pageSize,

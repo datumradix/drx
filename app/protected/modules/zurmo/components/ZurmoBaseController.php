@@ -157,7 +157,7 @@
                 }
                 $searchModel->loadSavedSearchUrl = Yii::app()->createUrl($this->getModule()->getId() . '/' . $this->getId() . '/list/');
             }
-            $dataProvider = $this->makeRedBeanDataProviderFromGet(
+            $dataProvider = $this->makeRedBeanDataProviderByDataCollection(
                 $searchModel,
                 $listModelClassName,
                 $pageSize,

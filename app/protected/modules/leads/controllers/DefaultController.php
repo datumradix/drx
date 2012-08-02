@@ -341,7 +341,7 @@
             return new $editViewClassName($renderType, $this->getId(), $this->getModule()->getId(), $model);
         }
 
-        protected function getSearchFormClassName()
+        protected static function getSearchFormClassName()
         {
             return 'LeadsSearchForm';
         }

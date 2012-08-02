@@ -244,7 +244,7 @@
                                                     $relationModuleId);
         }
 
-        protected function getSearchFormClassName()
+        protected static function getSearchFormClassName()
         {
             return 'OpportunitiesSearchForm';
         }

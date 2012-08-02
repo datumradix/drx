@@ -253,7 +253,7 @@
             echo CJSON::encode($autoCompleteResults);
         }
 
-        protected function getSearchFormClassName()
+        protected static function getSearchFormClassName()
         {
             return 'ContactsSearchForm';
         }
