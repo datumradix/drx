@@ -34,7 +34,7 @@
         public function render()
         {
             $menuItems = array('label' => $this->getDefaultLabel(), 'items' => array());
-            foreach($this->getDashboardsData() as $dashboardData)
+            foreach ($this->getDashboardsData() as $dashboardData)
             {
                 $menuItems['items'][] = array('label' => $dashboardData['name'],
                                                'url'   => Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/dashboardDetails/',
@@ -44,7 +44,9 @@
             $cClipWidget->beginClip("DetailsOptionMenu");
             $cClipWidget->widget('ext.zurmoinc.framework.widgets.MbMenu', array(
                 'htmlOptions' => array('id' => 'ChangeDashboardsMenu', 'class'   => 'icon-change-dashboard'),
-                'items'                     => array($menuItems),
+                'items'                   => array($menuItems),
+                'navContainerClass'       => 'nav-single-container',
+                'navBarClass'             => 'nav-single-bar',
             ));
             $cClipWidget->endClip();
             return $cClipWidget->getController()->clips['DetailsOptionMenu'];
@@ -52,7 +54,7 @@
 
         protected function getDefaultLabel()
         {
-            return Yii::t('Default', 'Change Dashboard');
+            return Yii::t('Default', 'Switch Dashboard');
         }
 
         protected function getDefaultRoute()
@@ -67,6 +69,5 @@
                 return $this->params['dashboardsData'];
             }
         }
-
     }
 ?>
