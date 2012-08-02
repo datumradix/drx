@@ -57,8 +57,11 @@
             $searchForm = new LeadsSearchForm($contact);
             $dataProvider = $this->makeSearchDataProvider(
                 $searchForm,
+                'Contact',
                 $pageSize,
-                'LeadsStateMetadataAdapter'
+                Yii::app()->user->userModel->id,
+                'LeadsStateMetadataAdapter',
+                'LeadsSearchView'
             );
             if(isset($_GET['ajax']) && $_GET['ajax'] == 'list-view')
             {
@@ -93,9 +96,11 @@
             else
             {
                 AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($contact), 'LeadsModule'), $contact);
+                $breadCrumbView          = StickySearchUtil::resolveBreadCrumbViewForDetailsControllerAction($this, 'LeadsSearchView', $contact);
                 $detailsAndRelationsView = $this->makeDetailsAndRelationsView($contact, 'LeadsModule',
                                                                               'LeadDetailsAndRelationsView',
-                                                                              Yii::app()->request->getRequestUri());
+                                                                              Yii::app()->request->getRequestUri(),
+                                                                              $breadCrumbView);
                 $view = new LeadsPageView(ZurmoDefaultViewUtil::
                                          makeStandardViewForCurrentUser($this, $detailsAndRelationsView));
                 echo $view->render();
@@ -155,6 +160,7 @@
             $contact = new Contact(false);
             $dataProvider = $this->getDataProviderByResolvingSelectAllFromGet(
                 new LeadsSearchForm($contact),
+                'Contact',
                 $pageSize,
                 Yii::app()->user->userModel->id,
                 'LeadsStateMetadataAdapter');
@@ -193,6 +199,7 @@
             $contact = new Contact(false);
             $dataProvider = $this->getDataProviderByResolvingSelectAllFromGet(
                 new LeadsSearchForm($contact),
+                'Contact',
                 $pageSize,
                 Yii::app()->user->userModel->id,
                 'LeadsStateMetadataAdapter'
