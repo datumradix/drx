@@ -54,7 +54,6 @@
             $searchForm                     = new ContactsSearchForm($contact);
             $dataProvider = $this->makeSearchDataProvider(
                 $searchForm,
-                'Contact',
                 $pageSize,
                 Yii::app()->user->userModel->id,
                 'ContactsStateMetadataAdapter',
@@ -66,6 +65,7 @@
                     $searchForm,
                     $dataProvider
                 );
+                $view = new ContactsPageView($mixedView);
             }
             else
             {
@@ -73,12 +73,11 @@
                     $searchForm,
                     $pageSize,
                     ContactsModule::getModuleLabelByTypeAndLanguage('Plural'),
-                    Yii::app()->user->userModel->id,
                     $dataProvider
                 );
-            }
-            $view = new ContactsPageView(ZurmoDefaultViewUtil::
+                $view = new ContactsPageView(ZurmoDefaultViewUtil::
                                          makeStandardViewForCurrentUser($this, $mixedView));
+            }
             echo $view->render();
         }
 
@@ -253,7 +252,7 @@
             echo CJSON::encode($autoCompleteResults);
         }
 
-        protected function getSearchFormClassName()
+        protected static function getSearchFormClassName()
         {
             return 'ContactsSearchForm';
         }
