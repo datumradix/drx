@@ -53,9 +53,7 @@
             $searchForm                     = new AccountsSearchForm($account);
             $dataProvider = $this->makeSearchDataProvider(
                 $searchForm,
-                'Account',
                 $pageSize,
-                Yii::app()->user->userModel->id,
                 null,
                 'AccountsSearchView'
             );
@@ -65,6 +63,7 @@
                     $searchForm,
                     $dataProvider
                 );
+                $view = new AccountsPageView($mixedView);
             }
             else
             {
@@ -72,12 +71,11 @@
                     $searchForm,
                     $pageSize,
                     AccountsModule::getModuleLabelByTypeAndLanguage('Plural'),
-                    Yii::app()->user->userModel->id,
                     $dataProvider
                 );
-            }
-            $view = new AccountsPageView(ZurmoDefaultViewUtil::
+                $view = new AccountsPageView(ZurmoDefaultViewUtil::
                                          makeStandardViewForCurrentUser($this, $mixedView));
+            }
             echo $view->render();
         }
 
@@ -138,7 +136,6 @@
             $activeAttributes = $this->resolveActiveAttributesFromMassEditPost();
             $dataProvider = $this->getDataProviderByResolvingSelectAllFromGet(
                 new AccountsSearchForm($account),
-                'Account',
                 $pageSize,
                 Yii::app()->user->userModel->id);
             $selectedRecordCount = $this->getSelectedRecordCountByResolvingSelectAllFromGet($dataProvider);
@@ -176,7 +173,6 @@
             $account = new Account(false);
             $dataProvider = $this->getDataProviderByResolvingSelectAllFromGet(
                 new AccountsSearchForm($account),
-                'Account',
                 $pageSize,
                 Yii::app()->user->userModel->id
             );
@@ -206,7 +202,7 @@
             $this->redirect(array($this->getId() . '/index'));
         }
 
-        protected function getSearchFormClassName()
+        protected static function getSearchFormClassName()
         {
             return 'AccountsSearchForm';
         }
