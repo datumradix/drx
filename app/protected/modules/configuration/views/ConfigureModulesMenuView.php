@@ -38,9 +38,9 @@
             return $content;
         }
 
-        protected function renderTitleContent()
+        public function getTitle()
         {
-            return '<h1>' . Yii::t('Default', 'Administration') . '</h1>';
+            return Yii::t('Default', 'Administration');
         }
 
         protected function getCategoryData()
@@ -79,7 +79,7 @@
                 $content .= '<li>';
                 $content .= '<h4>' . $item['titleLabel'] . '</h4>';
                 $content .= ' - ' . $item['descriptionLabel'];
-                $content .= CHtml::link(CHtml::tag('span', array(), Yii::t('Default', 'Configure') ),
+                $content .= ZurmoHtml::link(ZurmoHtml::tag('span', array(), Yii::t('Default', 'Configure') ),
                                         Yii::app()->createUrl($item['route']));
                 $content .= '</li>';
             }

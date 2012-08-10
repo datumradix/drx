@@ -53,9 +53,7 @@
             $searchForm = new OpportunitiesSearchForm($opportunity);
             $dataProvider = $this->makeSearchDataProvider(
                 $searchForm,
-                'Opportunity',
                 $pageSize,
-                Yii::app()->user->userModel->id,
                 null,
                 'OpportunitiesSearchView'
             );
@@ -65,6 +63,7 @@
                     $searchForm,
                     $dataProvider
                 );
+                $view = new OpportunitiesPageView($mixedView);
             }
             else
             {
@@ -72,12 +71,11 @@
                     $searchForm,
                     $pageSize,
                     OpportunitiesModule::getModuleLabelByTypeAndLanguage('Plural'),
-                    Yii::app()->user->userModel->id,
                     $dataProvider
                 );
-            }
-            $view = new OpportunitiesPageView(ZurmoDefaultViewUtil::
+                $view = new OpportunitiesPageView(ZurmoDefaultViewUtil::
                                          makeStandardViewForCurrentUser($this, $mixedView));
+            }
             echo $view->render();
         }
 
@@ -160,7 +158,6 @@
             $activeAttributes = $this->resolveActiveAttributesFromMassEditPost();
             $dataProvider = $this->getDataProviderByResolvingSelectAllFromGet(
                 new OpportunitiesSearchForm($opportunity),
-                'Opportunity',
                 $pageSize,
                 Yii::app()->user->userModel->id);
             $selectedRecordCount = $this->getSelectedRecordCountByResolvingSelectAllFromGet($dataProvider);
@@ -198,7 +195,6 @@
             $opportunity = new Opportunity(false);
             $dataProvider = $this->getDataProviderByResolvingSelectAllFromGet(
                 new OpportunitiesSearchForm($opportunity),
-                'Opportunity',
                 $pageSize,
                 Yii::app()->user->userModel->id
             );
@@ -244,7 +240,7 @@
                                                     $relationModuleId);
         }
 
-        protected function getSearchFormClassName()
+        protected static function getSearchFormClassName()
         {
             return 'OpportunitiesSearchForm';
         }
