@@ -47,8 +47,13 @@
                 'anyMixedAttributes'      => $searchForm->anyMixedAttributes,
                 'anyMixedAttributesScope' => $searchForm->getAnyMixedAttributesScope(),
                 'dynamicStructure'        => $searchForm->dynamicStructure,
-                'dynamicClauses'          => $searchForm->dynamicClauses
+                'dynamicClauses'          => $searchForm->dynamicClauses,
             );
+
+            if($searchForm->getListAttributesSelector() != null)
+            {
+                $data[SearchForm::SELECTED_LIST_ATTRIBUTES]  = $searchForm->getListAttributesSelector()->getSelected();
+            }
             $savedSearch->serializedData = serialize($data);
             return $savedSearch;
         }
@@ -69,6 +74,12 @@
                 {
                     $searchForm->setAnyMixedAttributesScope($unserializedData['anyMixedAttributesScope']);
                 }
+                if(isset($unserializedData[SearchForm::SELECTED_LIST_ATTRIBUTES]) &&
+                   $searchForm->getListAttributesSelector() != null)
+                {
+                    $searchForm->getListAttributesSelector()->setSelected(
+                                    $unserializedData[SearchForm::SELECTED_LIST_ATTRIBUTES]);
+                }
                 if(isset($unserializedData['dynamicStructure']))
                 {
                     $searchForm->dynamicStructure = $unserializedData['dynamicStructure'];
@@ -83,7 +94,6 @@
         public static function setDataByKeyAndDataCollection($key, SearchAttributesDataCollection $dataCollection)
         {
             assert('is_string($key)');
-
             $stickyData['dynamicClauses']          = $dataCollection->getDynamicSearchAttributes();
             $stickyData['dynamicStructure']        = $dataCollection->getDynamicStructure();
             $anyMixedAttributes                    = $dataCollection->resolveSearchAttributesFromSourceData();
@@ -92,7 +102,11 @@
                 $stickyData['anyMixedAttributes']      = $anyMixedAttributes['anyMixedAttributes'];
             }
             $dataCollection->resolveAnyMixedAttributesScopeForSearchModelFromSourceData();
-            $stickyData['anyMixedAttributesScope']     = $dataCollection->getAnyMixedAttributesScopeFromModel();
+
+            $dataCollection->resolveSelectedListAttributesForSearchModelFromSourceData();
+
+            $stickyData['anyMixedAttributesScope']            = $dataCollection->getAnyMixedAttributesScopeFromModel();
+            $stickyData[SearchForm::SELECTED_LIST_ATTRIBUTES] = $dataCollection->getSelectedListAttributesFromModel();
             if($dataCollection instanceof SavedSearchAttributesDataCollection)
             {
                 $stickyData['savedSearchId']           = $dataCollection->getSavedSearchId();
@@ -124,6 +138,11 @@
             if(isset($stickyData['dynamicClauses']))
             {
                 $model->dynamicClauses = $stickyData['dynamicClauses'];
+            }
+            if(isset($stickyData[SearchForm::SELECTED_LIST_ATTRIBUTES]) &&
+               $model->getListAttributesSelector() != null)
+            {
+                $model->getListAttributesSelector()->setSelected($stickyData[SearchForm::SELECTED_LIST_ATTRIBUTES]);
             }
         }
     }

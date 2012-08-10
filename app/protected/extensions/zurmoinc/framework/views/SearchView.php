@@ -111,6 +111,7 @@
         protected function renderFormBottomPanel()
         {
             $moreSearchOptionsLink        = ZurmoHtml::link(Yii::t('Default', 'Advanced'), '#', array('id' => 'more-search-link' . $this->gridIdSuffix));
+            $selectListAttributesLink     = $this->getSelectListAttributesLinkContent();
             $clearSearchLabelPrefix       = $this->getClearSearchLabelPrefixContent();
             $clearSearchLabel             = $this->getClearSearchLabelContent();
             $clearSearchLinkStartingStyle = $this->getClearSearchLinkStartingStyle();
@@ -124,6 +125,7 @@
             }
             $content  = '<div class="search-form-tools">';
             $content .= $moreSearchOptionsLink;
+            $content .= $selectListAttributesLink;
             $content .= $clearSearchLink;
             $content .= $this->renderFormBottomPanelExtraLinks();
             $content .= $this->renderClearingSearchInputContent();
@@ -146,7 +148,6 @@
 
         protected function getExtraRenderForClearSearchLinkScript()
         {
-
         }
 
         protected function renderClearingSearchInputContent()
@@ -182,14 +183,14 @@
                     {
                         $('#" . $this->getClearingSearchInputId() . "').val('1');
                         " . $this->getExtraRenderForClearSearchLinkScript() . "
-                        //Reseting DropKick Information                        
-                        $(this).closest('form').find('select:not(.ignore-style)').each(function(){                                                                            
+                        //Reseting DropKick Information
+                        $(this).closest('form').find('select:not(.ignore-style)').each(function(){
                             $(this).removeData('dropkick');
                         });
                         $(this).closest('form').find('div.dk_container').each(function(){
                             $(this).remove();
                         });
-                        $(this).closest('form').find('select:not(.ignore-style)').each(function(){                                                
+                        $(this).closest('form').find('select:not(.ignore-style)').each(function(){
                             $(this).dropkick();
                             $(this).dropkick('rebindToggle');
                         });
@@ -201,6 +202,7 @@
                 $('#more-search-link" . $this->gridIdSuffix . "').unbind('click.more');
                 $('#more-search-link" . $this->gridIdSuffix . "').bind('click.more',  function(event)
                     {
+                        $('.select-list-attributes-view').hide();
                         $('.search-view-1').toggle();
                         return false;
                     }
@@ -221,6 +223,7 @@
                 $('#" . $this->getSearchFormId() . "').bind('submit', function(event)
                     {
                         $('.search-view-1').hide();
+                        $('.select-list-attributes-view').hide();
                         $('#" . $this->gridId . $this->gridIdSuffix . "-selectedIds').val(null);
                         $.fn.yiiGridView.update('" . $this->gridId . $this->gridIdSuffix . "',
                         {
@@ -263,7 +266,7 @@
          * second panel is hidden by default in the user interface.
          * @return A string containing the element's content.
          */
-        protected function renderFormLayout($form = null)
+        protected function renderFormLayout(ZurmoActiveForm $form)
         {
             $metadata       = self::getMetadata();
             $maxCellsPerRow = $this->getMaxCellsPerRow();
@@ -292,6 +295,7 @@
                 }
                 $content .= '</div>';
             }
+            $content .= $this->renderListAttributesSelectionContent($form);
             $content .= $this->renderFormBottomPanel();
             return $content;
         }
@@ -299,6 +303,49 @@
         protected function renderSummaryCloneContent()
         {
             return '<div class="list-view-items-summary-clone"></div>';
+        }
+
+        protected function getSelectListAttributesLinkContent()
+        {
+            if($this->model->getListAttributesSelector() != null)
+            {
+                return ZurmoHtml::link(Yii::t('Default', 'Columns'), '#', array('id' => 'select-list-attributes-link' . $this->gridIdSuffix));
+            }
+        }
+
+        protected function renderListAttributesSelectionContent(ZurmoActiveForm $form)
+        {
+            if($this->model->getListAttributesSelector() == null)
+            {
+                return;
+            }
+            Yii::app()->clientScript->registerScript('listAttributes' . $this->getSearchFormId(), "
+                $('#select-list-attributes-link" . $this->gridIdSuffix . "').unbind('click.more');
+                $('#select-list-attributes-link" . $this->gridIdSuffix . "').bind('click.more',  function(event)
+                    {
+                        $('.search-view-1').hide();
+                        $('.select-list-attributes-view').toggle();
+                        return false;
+                    }
+                );
+                $('#list-attributes-reset').unbind('click.close');
+                $('#list-attributes-reset').bind('click.close', function()
+                    {
+                        $('.select-list-attributes-view').hide();
+                    }
+                );
+                $('#list-attributes-apply').unbind('click.close');
+                $('#list-attributes-apply').bind('click.close', function()
+                    {
+                        $('.select-list-attributes-view').hide();
+                    }
+                );
+                ");
+            $element = new ListAttributesSelectionElement($this->model, null, $form, array());
+            $element->editableTemplate = '{content}';
+            $content = $element->render();
+            return ZurmoHtml::tag('div', array('class' => 'select-list-attributes-view',
+                                            'style'    => 'display:none'), $content);
         }
 
         protected function renderViewToolBarContainerForAdvancedSearch($form)
