@@ -102,7 +102,7 @@
 
         protected static function resolveDynamicSearchMetadata($searchModel, $metadata, SearchAttributesDataCollection $dataCollection)
         {
-
+            );
             $dynamicSearchAttributes          = $dataCollection->getDynamicSearchAttributes();
             if($dynamicSearchAttributes == null)
             {
