@@ -57,7 +57,6 @@
             $searchForm = new LeadsSearchForm($contact);
             $dataProvider = $this->makeSearchDataProvider(
                 $searchForm,
-                'Contact',
                 $pageSize,
                 'LeadsStateMetadataAdapter',
                 'LeadsSearchView'
@@ -68,6 +67,7 @@
                     $searchForm,
                     $dataProvider
                 );
+                $view = new LeadsPageView($mixedView);
             }
             else
             {
@@ -75,12 +75,11 @@
                     $searchForm,
                     $pageSize,
                     LeadsModule::getModuleLabelByTypeAndLanguage('Plural'),
-                    Yii::app()->user->userModel->id,
                     $dataProvider
                 );
-            }
-            $view = new LeadsPageView(ZurmoDefaultViewUtil::
+                $view = new LeadsPageView(ZurmoDefaultViewUtil::
                                          makeStandardViewForCurrentUser($this, $mixedView));
+            }
             echo $view->render();
         }
 
@@ -340,7 +339,7 @@
             return new $editViewClassName($renderType, $this->getId(), $this->getModule()->getId(), $model);
         }
 
-        protected function getSearchFormClassName()
+        protected static function getSearchFormClassName()
         {
             return 'LeadsSearchForm';
         }
