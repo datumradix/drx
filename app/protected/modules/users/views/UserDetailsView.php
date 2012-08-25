@@ -25,7 +25,7 @@
      ********************************************************************************/
 
     class UserDetailsView extends DetailsView
-    {
+    {  
         public static function getDefaultMetadata()
         {
             $metadata = array(
@@ -184,6 +184,19 @@
             {
                 throw new NotSupportedException();
             }
+        }
+        
+        protected function renderRightSideContent()
+        {                
+            $avatarUrl = UserAvatarUtil::getAvatarUrl($this->model, 250);
+            $avatarImage = ZurmoHtml::image($avatarUrl);
+            $url = Yii::app()->createUrl('/users/default/changeAvatar', array('id' => $this->model->id));
+            $modalTitle = ModalView::getAjaxOptionsForModalLink(Yii::t('Default', 'Change Avatar') . ": " . strval($this->model));            
+            $content = ZurmoHtml::ajaxLink($avatarImage,
+                                           $url,
+                                           $modalTitle
+                    );            
+            return $content;
         }
     }
 ?>
