@@ -65,7 +65,7 @@
             $pageSize        = Yii::app()->pagination->resolveActiveForCurrentUserByType(
                                'listPageSize', get_class($this->getModule()));
             $searchForm      = new UsersSearchForm(new User(false));
-            $dataProvider    = $this->makeRedBeanDataProviderFromGet(
+            $dataProvider    = $this->makeRedBeanDataProviderByDataCollection(
                 $searchForm,
                 'User',
                 $pageSize
@@ -74,7 +74,6 @@
                 $searchForm,
                 $pageSize,
                 UsersModule::getModuleLabelByTypeAndLanguage('Plural'),
-                Yii::app()->user->userModel->id,
                 $dataProvider
             );
             $view = new UsersPageView(ZurmoDefaultAdminViewUtil::
@@ -285,7 +284,6 @@
             $activeAttributes = $this->resolveActiveAttributesFromMassEditPost();
             $dataProvider = $this->getDataProviderByResolvingSelectAllFromGet(
                 new UsersSearchForm($user),
-                'User',
                 $pageSize,
                 Yii::app()->user->userModel->id);
             $selectedRecordCount = $this->getSelectedRecordCountByResolvingSelectAllFromGet($dataProvider);
@@ -323,7 +321,6 @@
             $user = new User(false);
             $dataProvider = $this->getDataProviderByResolvingSelectAllFromGet(
                 new UsersSearchForm($user),
-                'User',
                 $pageSize,
                 Yii::app()->user->userModel->id
             );
@@ -429,7 +426,7 @@
             echo $view->render();
         }
 
-        protected function getSearchFormClassName()
+        protected static function getSearchFormClassName()
         {
             return 'UsersSearchForm';
         }
