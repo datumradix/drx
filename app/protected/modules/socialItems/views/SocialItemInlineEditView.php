@@ -25,16 +25,16 @@
      ********************************************************************************/
 
     /**
-     * An inline edit view for a comment.
+     * An inline edit view for a social item.
      *
      */
-    class CommentInlineEditView extends InlineEditView
+    class SocialItemInlineEditView extends InlineEditView
     {
         protected $viewContainsFileUploadElement = true;
 
         public function getFormName()
         {
-            return "comment-inline-edit-form";
+            return "social-item-inline-edit-form";
         }
 
         public static function getDefaultMetadata()
@@ -43,7 +43,7 @@
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type' => 'SaveButton', 'label' => 'eval:Yii::t("Default", "Add Comment")'),
+                            array('type' => 'SaveButton', 'label' => 'eval:Yii::t("Default", "Post")'),
                         ),
                     ),
                     'derivedAttributeTypes' => array(
@@ -101,26 +101,6 @@
             {
                 $element->editableTemplate = '<td colspan="{colspan}">{label}<br/>{content}{error}</td>';
             }
-        }
-
-        /**
-         * Override to allow the comment thread, if it exists to be refreshed.
-         * (non-PHPdoc)
-         * @see InlineEditView::renderConfigSaveAjax()
-         */
-        protected function renderConfigSaveAjax($formName)
-        {
-            // Begin Not Coding Standard
-            return ZurmoHtml::ajax(array(
-                    'type' => 'POST',
-                    'data' => 'js:$("#' . $formName . '").serialize()',
-                    'url'  =>  $this->getValidateAndSaveUrl(),
-                    'update' => '#' . $this->uniquePageId,
-                    'complete' => "function(XMLHttpRequest, textStatus){
-                        //find if there is a comment thread to refresh
-                        $('.hiddenCommentRefresh').click();}"
-                ));
-            // End Not Coding Standard
         }
 
         protected function doesLabelHaveOwnCell()
