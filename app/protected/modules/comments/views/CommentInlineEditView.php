@@ -32,6 +32,11 @@
     {
         protected $viewContainsFileUploadElement = true;
 
+        public function getFormName()
+        {
+            return "comment-inline-edit-form";
+        }
+
         public static function getDefaultMetadata()
         {
             $metadata = array(
