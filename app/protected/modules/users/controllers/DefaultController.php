@@ -39,7 +39,8 @@
             $filters = array();
             $filters[] = array(
                     ZurmoBaseController::RIGHTS_FILTER_PATH .
-                    ' - modalList, autoComplete, details, profile, edit, auditEventsModalList, changePassword, configurationEdit, securityDetails, autoCompleteForMultiSelectAutoComplete, confirmTimeZone',
+                    ' - modalList, autoComplete, details, profile, edit, auditEventsModalList, changePassword, configurationEdit, securityDetails, ' .
+                        'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar',
                     'moduleClassName' => 'UsersModule',
                     'rightName' => UsersModule::getAccessRight(),
             );
@@ -80,6 +81,28 @@
             $view = new UsersPageView(ZurmoDefaultAdminViewUtil::
                                          makeViewWithBreadcrumbsForCurrentUser($this, $actionBarSearchAndListView, $breadcrumbLinks, 'UserBreadCrumbView'));
             echo $view->render();
+        }
+
+        public function actionChangeAvatar($id)
+        {
+            if (Yii::app()->user->userModel->id == intval($id) ||
+                RightsUtil::canUserAccessModule('UsersModule', Yii::app()->user->userModel))
+            {
+                $user                 = User::getById(intval($id));
+                $userAvatarForm       = new UserAvatarForm($user);
+                $this->attemptToValidateAjaxFromPost($userAvatarForm, 'UserAvatarForm');
+                $viewForModal = new UserChangeAvatarView($this->getId(), $this->getModule()->getId(), $userAvatarForm);
+                $this->attemptToSaveModelFromPost($userAvatarForm);
+            }
+            else
+            {
+                $viewForModal = new AccessFailureView();
+            }
+
+            $view = new ModalView($this, $viewForModal);
+            Yii::app()->getClientScript()->setToAjaxMode();
+            echo $view->render();
+
         }
 
         public function actionDetails($id)
@@ -215,7 +238,7 @@
          */
         protected function attemptToSaveModelFromPost($model, $redirectUrlParams = null, $redirect = true)
         {
-            assert('$model instanceof User || $model instanceof UserPasswordForm');
+            assert('$model instanceof User || $model instanceof UserPasswordForm || $model instanceof UserAvatarForm');
             assert('$redirectUrlParams == null || is_array($redirectUrlParams) || is_string($redirectUrlParams)');
             $postVariableName   = get_class($model);
             if (isset($_POST[$postVariableName]))
@@ -241,7 +264,7 @@
                 {
                     if ($userStatus != null)
                     {
-                        if ($model instanceof UserPasswordForm)
+                        if ($model instanceof UserPasswordForm || $model instanceof UserAvatarForm)
                         {
                             UserStatusUtil::resolveUserStatus($model->getModel(), $userStatus);
                         }
