@@ -24,21 +24,18 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class UserConfigurationEditLinkActionElement extends LinkActionElement
+    /**
+     * Class for when an user tries to compose an email but dont have an Email Account yeat created
+     */
+    class NoEmailAccountYetView extends View
     {
-        public function getActionType()
+        protected function renderContent()
         {
-            return 'Edit';
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Yii::t('Default', 'Configuration');
-        }
-
-        protected function getDefaultRoute()
-        {
-            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/configurationEdit/', array('id' => $this->modelId));
+            $url        = Yii::app()->createUrl('/users/default/mailConfiguration', array('id' => Yii::app()->user->userModel->id));
+            $link       = ZurmoHtml::link(Yii::t('Default', 'here'), $url);
+            $content    = Yii::t('Default', 'You need to create an Email Account before you can start sending emails.' .
+                                        ' Please click {link} to create one.', array('{link}' => $link));
+            return $content;
         }
     }
 ?>

@@ -24,7 +24,10 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class AccountEditAndDetailsView extends SecuredEditAndDetailsView
+    /**
+     * Edit and details view for a user's email configuration view.
+     */
+    class UserMailConfigurationEditView extends EditView
     {
         public static function getDefaultMetadata()
         {
@@ -32,16 +35,12 @@
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type'  => 'CancelLink',    'renderType' => 'Edit'),
-                            array('type'  => 'SaveButton',    'renderType' => 'Edit'),
-                            array('type' => 'EditLink',       'renderType' => 'Details'),
-                            array('type' => 'AuditEventsModalListLink',  'renderType' => 'Details'),
-                            array('type' => 'AccountDeleteLink', 'renderType' => 'Details'),
+                            array('type' => 'CancelLink'),
+                            array('type' => 'SaveButton'),
                         ),
                     ),
-                    'nonPlaceableAttributeNames' => array(
-                        'owner',
-                    ),
+                    //'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_FIRST,
+                    //TODO: Change the useSystemSettings to a check box
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
                         array(
@@ -50,7 +49,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'name', 'type' => 'Text'),
+                                                array('attributeName' => 'fromName', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -59,7 +58,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'officePhone', 'type' => 'Phone'),
+                                                array('attributeName' => 'fromAddress', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -68,7 +67,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'industry', 'type' => 'DropDown', 'addBlank' => true),
+                                                array('attributeName' => 'replyToName', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -77,7 +76,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'officeFax', 'type' => 'Phone'),
+                                                array('attributeName' => 'replyToAddress', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -86,7 +85,31 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'employees', 'type' => 'Integer'),
+                                                array('attributeName' => 'useSystemSettings', 'type' => 'OutboundTypeStaticDropDown'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                // For now we only support smtp
+                                /*
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'outboundType', 'type' => 'Text'),
+                                            ),
+                                        ),
+                                    )
+                                ),*/
+                            ),
+                        ),
+                        array(
+                            'rows' => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'outboundHost', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -95,7 +118,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'annualRevenue', 'type' => 'Decimal'),
+                                                array('attributeName' => 'outboundPort', 'type' => 'Integer'),
                                             ),
                                         ),
                                     )
@@ -104,7 +127,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'type', 'type' => 'DropDown', 'addBlank' => true),
+                                                array('attributeName' => 'outboundUsername', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -113,7 +136,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'website', 'type' => 'Url'),
+                                                array('attributeName' => 'outboundPassword', 'type' => 'Password'),
                                             ),
                                         ),
                                     )
@@ -122,25 +145,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'billingAddress', 'type' => 'Address'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'shippingAddress', 'type' => 'Address'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'description', 'type' => 'TextArea'),
+                                                array('attributeName' => 'outboundSecurity', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -153,10 +158,32 @@
             return $metadata;
         }
 
-        protected function getNewModelTitleLabel()
+        protected function renderAfterFormLayout($form)
         {
-            return Yii::t('Default', 'Create AccountsModuleSingularLabel',
-                                     LabelUtil::getTranslationParamsForAllModules());
+            parent::renderAfterFormLayout($form);
+            $dropDownId = $this->modelClassName . '_outboundType_value';
+            Yii::app()->clientScript->registerScript('userMailConfigurationOutbound', "
+                    $('#{$dropDownId}').change(function(){
+                        if ($(this).val() == true)
+                        {
+                            $(this).closest('.panel').next('.panel').hide();
+                        }
+                        else
+                        {
+                            $(this).closest('.panel').next('.panel').show();
+                        }
+                    });
+                ");
+        }
+
+        protected function getMorePanelsLinkLabel()
+        {
+            return null;
+        }
+
+        protected function getLessPanelsLinkLabel()
+        {
+            return null;
         }
     }
 ?>

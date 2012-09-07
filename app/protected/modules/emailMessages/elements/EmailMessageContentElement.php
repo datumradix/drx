@@ -45,17 +45,34 @@
 
         protected function renderControlEditable()
         {
-            throw new NotImplementedException();
-        }
-
-        protected function renderError()
-        {
-            throw new NotImplementedException();
+            $emailMessageContent     = $this->model->{$this->attribute};
+            $inputNameIdPrefix       = $this->attribute;
+            $attribute               = 'htmlContent';
+            $id                      = $this->getEditableInputId  ($inputNameIdPrefix, $attribute);
+            $htmlOptions             = array();
+            $htmlOptions['id']       = $id;
+            $htmlOptions['name']     = $this->getEditableInputName($inputNameIdPrefix, $attribute);
+            $htmlOptions['rows']     = 10;
+            $htmlOptions['cols']     = 50;
+            $content = $this->form->textArea($emailMessageContent, $attribute, $htmlOptions);
+            //$content .= $form->error($emailMessageContent, $attribute);
+            return $content;
         }
 
         protected function renderLabel()
         {
-            return Yii::t('Default', 'Body');
+            $label = Yii::t('Default', 'Body');
+            if ($this->form === null)
+            {
+                return $label;
+            }
+            else
+            {
+                return $this->form->labelEx($this->model,
+                                            $this->attribute,
+                                            array('for' => $this->getEditableInputId($this->attribute, 'htmlContent'),
+                                                  'label' => $label));
+            }
         }
     }
 ?>
