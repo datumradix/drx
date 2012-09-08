@@ -25,54 +25,72 @@
      ********************************************************************************/
 
     /**
-     * Display email message content.
+     * Element to edit and display email message signature content.
      */
-    class EmailMessageContentElement extends Element
+    class EmailMessageSignatureElement extends Element
     {
         protected function renderControlNonEditable()
         {
-            assert('$this->model->{$this->attribute} instanceof EmailMessageContent');
-            $emailMessageContent = $this->model->{$this->attribute};
-            if ($emailMessageContent->htmlContent != null)
+            /*
+            assert('$this->model->{$this->attribute} instanceof EmailMessageSignature');
+            $emailMessageSignature = $this->model->{$this->attribute};
+            if ($emailMessageSignature->htmlContent != null)
             {
-                return Yii::app()->format->html($emailMessageContent->htmlContent);
+                return Yii::app()->format->html($emailMessageSignature->htmlContent);
             }
-            elseif ($emailMessageContent->textContent != null)
+            elseif ($emailMessageSignature->textContent != null)
             {
-                return Yii::app()->format->text($emailMessageContent->textContent);
-            }
+                return Yii::app()->format->text($emailMessageSignature->textContent);
+            }*/
         }
 
         protected function renderControlEditable()
         {
-            $emailMessageContent     = $this->model->{$this->attribute};
-            $inputNameIdPrefix       = $this->attribute;
+            $emailMessageSignature   = $this->model;
             $attribute               = 'htmlContent';
-            $id                      = $this->getEditableInputId  ($inputNameIdPrefix, $attribute);
+            $id                      = $this->getEditableInputId  ();
             $htmlOptions             = array();
             $htmlOptions['id']       = $id;
-            $htmlOptions['name']     = $this->getEditableInputName($inputNameIdPrefix, $attribute);
-            $htmlOptions['rows']     = 10;
-            $htmlOptions['cols']     = 50;
-            $content = $this->form->textArea($emailMessageContent, $attribute, $htmlOptions);
-            //$content .= $form->error($emailMessageContent, $attribute);
+            $htmlOptions['name']     = $this->getEditableInputName();
+            $htmlOptions['rows']     = 3;
+            $htmlOptions['cols']     = 10;
+            $content  = $this->form->textArea($emailMessageSignature, $attribute, $htmlOptions);
+            $content .= $this->renderSaveButton();
             return $content;
         }
 
         protected function renderLabel()
         {
-            $label = Yii::t('Default', 'Body');
+            $label = Yii::t('Default', 'Email Signature');
             if ($this->form === null)
             {
                 return $label;
             }
             else
             {
-                return $this->form->labelEx($this->model,
-                                            $this->attribute,
-                                            array('for' => $this->getEditableInputId($this->attribute, 'htmlContent'),
-                                                  'label' => $label));
+                return null;
             }
+        }
+
+        protected function renderSaveButton()
+        {
+            $content  = '<span>';
+            $content .= ZurmoHtml::ajaxButton(Yii::t('Default', 'Save'),
+                Yii::app()->createUrl('emailMessages/default/saveEmailSignature/'),
+                    static::resolveAjaxOptionsForSaveEmailSignature($this->form->getId()),
+                    array('id' => 'SaveEmailSignature')
+            );
+            $content .= '</span>';
+            return $content;
+        }
+
+        protected static function resolveAjaxOptionsForSaveEmailSignature($formId)
+        {
+            assert('is_string($formId)');
+            $ajaxOptions = array();
+            $ajaxOptions['type'] = 'POST';
+            $ajaxOptions['data'] = 'js:$("#' . $formId . '").serialize()';
+            return $ajaxOptions;
         }
     }
 ?>

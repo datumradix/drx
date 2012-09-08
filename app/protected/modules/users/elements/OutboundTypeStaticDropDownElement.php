@@ -24,21 +24,14 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class SecurityDetailsLinkActionElement extends LinkActionElement
+    class OutboundTypeStaticDropDownElement extends StaticDropDownFormElement
     {
-        public function getActionType()
+        protected function getDropDownArray()
         {
-            return 'Details';
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Yii::t('Default', 'Security');
-        }
-
-        protected function getDefaultRoute()
-        {
-            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/securityDetails/', array('id' => $this->modelId));
+            return array(
+                true  => Yii::t('Default', 'System default'),
+                false => Yii::t('Default', 'Custom'),
+            );
         }
     }
 ?>
