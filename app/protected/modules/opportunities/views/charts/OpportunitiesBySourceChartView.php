@@ -31,22 +31,36 @@
     class OpportunitiesBySourceChartView extends ChartView implements PortletViewInterface
     {
         public function renderContent()
-        {
+        {                      
             $accessContent = $this->resolveContentIfCurrentUserCanAccessChartByModule(
                                         'OpportunitiesModule', 'OpportunitiesModulePluralLabel');
             if ($accessContent != null)
             {
                 return $accessContent;
-            }
+            }                        
+            $chartDataProviderType = $this->getChartDataProviderType();
+            $chartDataProvider     = ChartDataProviderFactory::createByType($chartDataProviderType);                                  
+            ControllerSecurityUtil::resolveCanCurrentUserAccessModule(
+                                        $chartDataProvider->getModel()->getModuleClassName(), true);            
+            $chartData = $chartDataProvider->getChartData();  
+            Yii::import('ext.amcharts.AmChartMaker');
+            $amChart = new AmChartMaker();
+            $amChart->data = $chartData;
+            $amChart->id =  $this->uniqueLayoutId;
+            $amChart->type = $this->resolveViewAndMetadataValueByName('type');  
+            $amChart->addSerialGraph('value', 'column');
+            //$amChart->addSerialGraph('value', 'line', array('fillAlphas' => 0));
+            $amChart->xAxisName = $chartDataProvider->getXAxisName();
+            $amChart->yAxisName = $chartDataProvider->getYAxisName();            
+            $javascript= $amChart->JavascriptChart();            
+            //echo $javascript;
+            Yii::app()->getClientScript()->registerScript(__CLASS__ . '#' . $this->uniqueLayoutId,$javascript);
             $cClipWidget = new CClipWidget();
             $cClipWidget->beginClip("Chart");
-            $cClipWidget->widget('ext.zurmoinc.framework.widgets.FusionChart', array(
-                    'id'      => $this->uniqueLayoutId,
-                    'dataUrl' => Yii::app()->createUrl('/home/defaultPortlet/makeChartXML',
-                                    array('portletId' => $this->params['portletId'], 'chartLibraryName' => 'Fusion')),
-                    'type'    => $this->resolveViewAndMetadataValueByName('type'),
+            $cClipWidget->widget('ext.zurmoinc.framework.widgets.AmChart', array(
+                    'id'        => $this->uniqueLayoutId,                    
             ));
-            $cClipWidget->endClip();
+            $cClipWidget->endClip();            
             return $cClipWidget->getController()->clips['Chart'];
         }
 
