@@ -120,9 +120,21 @@
         {
             $configurationForm = EmailSmtpConfigurationFormAdapter::makeFormFromGlobalConfiguration();
             $postVariableName   = get_class($configurationForm);
-            if (isset($_POST[$postVariableName]))
+            if (isset($_POST[$postVariableName]) || (isset($_POST['EmailAccount'])))
             {
-                $configurationForm->setAttributes($_POST[$postVariableName]);
+                if (isset($_POST[$postVariableName]))
+                {
+                    $configurationForm->setAttributes($_POST[$postVariableName]);
+                }
+                else
+                {
+                    $configurationForm->host            = $_POST['EmailAccount']['outboundHost'];
+                    $configurationForm->port            = $_POST['EmailAccount']['outboundPort'];
+                    $configurationForm->username        = $_POST['EmailAccount']['outboundUsername'];
+                    $configurationForm->password        = $_POST['EmailAccount']['outboundPassword'];
+                    $configurationForm->security        = $_POST['EmailAccount']['outboundSecurity'];
+                    $configurationForm->aTestToAddress  = $_POST['EmailAccount']['aTestToAddress'];
+                }
                 if ($configurationForm->aTestToAddress != null)
                 {
                     $emailHelper = new EmailHelper;
@@ -336,6 +348,102 @@
                     }
                 }
             }
+        }
+
+        public function actionComposeEmail()
+        {
+            //Yii::app()->getClientScript()->setToAjaxMode();
+            //TODO: Make modal view work
+            try
+            {
+                EmailAccount::getByUserAndName(Yii::app()->user->userModel);
+                if (count(Yii::app()->user->userModel->emailSignatures) == 0)  //TODO: Test this
+                {
+                    $messageSignature       = new EmailSignature();
+                    $messageSignature->user = Yii::app()->user->userModel;
+                    Yii::app()->user->userModel->emailSignatures->add($messageSignature);
+                }
+                $emailMessage       = new EmailMessage();
+                $emailSignature     = Yii::app()->user->userModel->emailSignatures[0]->htmlContent;
+                if ($emailSignature != '')
+                {
+                    $emailMessage->content->htmlContent = ' ' . PHP_EOL . $emailSignature;
+                }
+                if (isset($_GET['toRecipients']))
+                {
+                    $toRecipients = explode(",", $_GET['toRecipients']);
+                    EmailMessageHelper::attachRecipientsToMessage($toRecipients, $emailMessage, EmailMessageRecipient::TYPE_TO);
+                    unset($_GET['toRecipients']);
+                }
+                if (isset($_POST['EmailMessage']))
+                {
+                    $emailMessage = EmailMessageHelper::sendEmailFromPost(Yii::app()->user->userModel);
+                    if ($emailMessage->validate())
+                    {
+                        $emailMessage->save();
+                        Yii::app()->user->setFlash('notification',
+                            Yii::t('Default', 'Your message has been sent to outbox.')
+                        );
+                        $this->redirect(Yii::app()->createUrl('/home/default'));
+                        //TODO: Emails are not connected to contacts/leads if more than one recipient
+                    }
+                }
+                $composeEmailEditAndDetailsView = new ComposeEmailEditAndDetailsView(
+                    'Edit',
+                    $this->getId(),
+                    $this->getModule()->getId(),
+                    $emailMessage);
+                $view = new ZurmoConfigurationPageView(ZurmoDefaultAdminViewUtil::
+                                         makeStandardViewForCurrentUser($this, $composeEmailEditAndDetailsView));
+                //$view = new ModalView($this, $composeEmailEditAndDetailsView);
+            }
+            catch (NotFoundException $e)
+            {
+                $view = new ModalView($this, new NoEmailAccountYetView());
+
+            }
+            echo $view->render();
+        }
+
+        /**
+         * Given a partial name or e-mail address, search for all Users, Leads or Contacts
+         * JSON encode the resulting array of contacts.
+         */
+        public function actionAutoCompleteForMultiSelectAutoComplete($term)
+        {
+            $pageSize               = Yii::app()->pagination->resolveActiveForCurrentUserByType(
+                                                'autoCompleteListPageSize', get_class($this->getModule()));
+            $usersByFullName        = UserSearch::getUsersByPartialFullName($term, $pageSize);
+            $usersByEmailAddress    = UserSearch::getUsersByEmailAddress($term, 'contains');
+            $contacts               = ContactSearch::getContactsByPartialFullNameOrAnyEmailAddress($term, $pageSize, null, 'contains');
+            $autoCompleteResults    = array();
+            foreach ($usersByEmailAddress as $user)
+            {
+                $autoCompleteResults[] = array(
+                    'id'   => strval($user->primaryEmail),
+                    'name' => strval($user) . ' (' . $user->primaryEmail . ')',
+                );
+            }
+            foreach ($usersByFullName as $user)
+            {
+                $autoCompleteResults[] = array(
+                    'id'   => strval($user->primaryEmail),
+                    'name' => strval($user) . ' (' . $user->primaryEmail . ')',
+                );
+            }
+            foreach ($contacts as $contact)
+            {
+                $autoCompleteResults[] = array(
+                    'id'   => strval($contact->primaryEmail),
+                    'name' => strval($contact) . ' (' . $contact->primaryEmail . ')',
+                );
+            }
+            $emailValidator = new CEmailValidator();
+            if (count($autoCompleteResults) == 0 && $emailValidator->validateValue($term))
+            {
+                $autoCompleteResults[] = array('id' => $term, 'name' => $term);
+            }
+            echo CJSON::encode($autoCompleteResults);
         }
 
         protected static function makeSelectForm($userCanAccessLeads, $userCanAccessContacts)
