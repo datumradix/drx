@@ -122,6 +122,7 @@
 
         protected function renderAttributeDropDownOnChangeScript($id, $inputDivId, $ajaxOnChangeUrl)
         {
+            // Begin Not Coding Standard
             $ajaxSubmitScript  = CHtml::ajax(array(
                     'type'    => 'GET',
                     'data'    => 'js:\'suffix=' . $this->suffix .
@@ -129,7 +130,7 @@
                     'url'     =>  $ajaxOnChangeUrl,
                     'beforeSend' => 'js:function(){
                         $("#' . $inputDivId . '").html("<span class=\"loading z-spinner\"></span>");
-                        attachLoadingSpinner("' . $inputDivId . '", true);
+                        attachLoadingSpinner("' . $inputDivId . '", true, "dark");
                         }',
                     'success' => 'js:function(data){ $("#' . $inputDivId . '").html(data); }',
             ));
@@ -138,6 +139,7 @@
                 $ajaxSubmitScript
             }
             );";
+            // End Not Coding Standard
         }
 
         protected function getInputsDivId()
