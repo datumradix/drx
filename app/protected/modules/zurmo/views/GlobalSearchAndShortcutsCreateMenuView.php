@@ -25,36 +25,30 @@
      ********************************************************************************/
 
     /**
-     * Form used for selecting an account
+     * Base view for displaying a global search and shortcuts create menu view
      */
-    class MixedModelsSearchForm extends CFormModel
+    class GlobalSearchAndShortcutsCreateMenuView extends View
     {
-        public $term;
+        protected $moduleNamesAndLabelsAndAll;
 
-        public $anyMixedAttributesScope;
+        protected $sourceUrl;
 
-        private $moduleNamesAndLabelsAndAll = array();
+        protected $shortcutsCreateMenuView;
 
-        public function rules()
+        public function __construct($moduleNamesAndLabelsAndAll, $sourceUrl, $shortcutsCreateMenuView)
         {
-            return array();
-        }
-
-        public function attributeLabels()
-        {
-            return array(
-                'term'          => '',
-            );
-        }
-
-        public function setGlobalSearchAttributeNamesAndLabelsAndAll($moduleNamesAndLabelsAndAll)
-        {
+            assert('is_array($moduleNamesAndLabelsAndAll)');
+            assert('is_string($sourceUrl)');
+            assert('$shortcutsCreateMenuView instanceof ShortcutsCreateMenuView');
             $this->moduleNamesAndLabelsAndAll = $moduleNamesAndLabelsAndAll;
+            $this->sourceUrl                  = $sourceUrl;
+            $this->shortcutsCreateMenuView    = $shortcutsCreateMenuView;
         }
 
-        public function getGlobalSearchAttributeNamesAndLabelsAndAll()
+        protected function renderContent()
         {
-            return $this->moduleNamesAndLabelsAndAll;
+            $globalSearchView = new GlobalSearchView($this->moduleNamesAndLabelsAndAll, $this->sourceUrl);
+            return $globalSearchView->render() . $this->shortcutsCreateMenuView->render();
         }
     }
 ?>

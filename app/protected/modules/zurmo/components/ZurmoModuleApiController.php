@@ -435,6 +435,7 @@
             }
             return $result;
         }
+
         /**
          * Create new model
          * @param array $data
@@ -542,7 +543,7 @@
                         }
                         catch (Exception $e)
                         {
-                            $message = Yii::t('Default', 'Model was updated, but there was issue with relations.');
+                            $message = Yii::t('Default', 'Model was updated, but there were issues with relations.');
                             $message .= ' ' . $e->getMessage();
                             throw new ApiException($message);
                         }
@@ -584,7 +585,7 @@
             {
                 if (isset($modelRelations) && !empty($modelRelations))
                 {
-                    foreach($modelRelations as $modelRelation => $relations)
+                    foreach ($modelRelations as $modelRelation => $relations)
                     {
                         if ($model->isAttribute($modelRelation) &&
                             ($model->getRelationType($modelRelation) == RedBeanModel::HAS_MANY ||

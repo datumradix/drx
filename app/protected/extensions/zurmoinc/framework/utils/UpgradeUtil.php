@@ -40,7 +40,8 @@
          */
         public static function runPart1(MessageStreamer $messageStreamer)
         {
-            try {
+            try
+            {
                 $messageStreamer->add(Yii::t('Default', 'Checking permissions, files, upgrade version....'));
                 $messageLogger = new MessageLogger($messageStreamer);
 
@@ -54,7 +55,7 @@
                 self::setUpgradeState('zurmoUpgradeFolderPath', $upgradeExtractPath);
 
                 $configuration = self::checkManifestIfVersionIsOk($upgradeExtractPath);
-                $messageStreamer->add(Yii::t('Default', 'Checking completed.'));
+                $messageStreamer->add(Yii::t('Default', 'Check completed.'));
                 $messageStreamer->add(Yii::t('Default', 'Loading UpgraderComponent.'));
                 self::loadUpgraderComponent($upgradeExtractPath, $messageLogger);
                 $messageStreamer->add(Yii::t('Default', 'UpgraderComponent loaded.'));
@@ -95,7 +96,8 @@
          */
         public static function runPart2(MessageStreamer $messageStreamer)
         {
-            try {
+            try
+            {
                 $upgradeExtractPath = self::getUpgradeState('zurmoUpgradeFolderPath');
                 $messageLogger = new MessageLogger($messageStreamer);
 
@@ -116,7 +118,7 @@
                 self::clearCache();
                 $messageStreamer->add(Yii::t('Default', 'Running tasks after schema is updated.'));
                 self::processAfterUpdateSchema();
-                $messageStreamer->add(Yii::t('Default', 'Clearng cache.'));
+                $messageStreamer->add(Yii::t('Default', 'Clearing cache.'));
                 self::clearCache();
                 $messageStreamer->add(Yii::t('Default', 'Clearing assets and runtime folders.'));
                 self::clearAssetsAndRunTimeItems();
@@ -149,7 +151,7 @@
         {
             if (isset(Yii::app()->maintenanceMode) && Yii::app()->maintenanceMode)
             {
-                $message = Yii::t('Default', 'Application is not in maintenance mode. Please edit perInstance.php file, and set "$maintenanceMode  = true;"');
+                $message = Yii::t('Default', 'Application is not in maintenance mode. Please edit perInstance.php file, and set "$maintenanceMode = true;"');
                 throw new NotSupportedException($message);
             }
             return true;
@@ -278,9 +280,9 @@
         protected static function checkManifestIfVersionIsOk($upgradeExtractPath)
         {
             require_once($upgradeExtractPath . DIRECTORY_SEPARATOR . 'manifest.php');
-            if (preg_match('/^(\d+)\.(\d+)\.(\d+)$/', $configuration['fromVersion'], $upgradeFromVersionMatches) !== false)
+            if (preg_match('/^(\d+)\.(\d+)\.(\d+)$/', $configuration['fromVersion'], $upgradeFromVersionMatches) !== false) // Not Coding Standard
             {
-                if (preg_match('/^(\d+)\.(\d+)\.(\d+)$/', $configuration['toVersion'], $upgradeToVersionMatches) !== false)
+                if (preg_match('/^(\d+)\.(\d+)\.(\d+)$/', $configuration['toVersion'], $upgradeToVersionMatches) !== false) // Not Coding Standard
                 {
                     $currentZurmoVersion = MAJOR_VERSION . '.' . MINOR_VERSION . '.' . PATCH_VERSION;
                     if (version_compare($currentZurmoVersion, $upgradeFromVersionMatches[0], '>=') &&
@@ -299,13 +301,13 @@
                 }
                 else
                 {
-                    $message = Yii::t('Default', 'Could not extract upgrade "to version" from the manifest file.');
+                    $message = Yii::t('Default', 'Could not extract upgrade "to version" in the manifest file.');
                     throw new NotSupportedException($message);
                 }
             }
             else
             {
-                $message = Yii::t('Default', 'Could not extract upgrade "from version" from the manifest file.');
+                $message = Yii::t('Default', 'Could not extract upgrade "from version" in the manifest file.');
                 throw new NotSupportedException($message);
             }
         }
