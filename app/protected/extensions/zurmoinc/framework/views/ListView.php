@@ -68,6 +68,8 @@
 
         protected $emptyText = null;
 
+        private $listAttributesSelector;
+
         /**
          * Constructs a list view specifying the controller as
          * well as the model that will have its details displayed.
@@ -79,11 +81,13 @@
             $dataProvider,
             $selectedIds,
             $gridIdSuffix = null,
-            $gridViewPagerParams = null
+            $gridViewPagerParams = null,
+            $listAttributesSelector = null
         )
         {
             assert('is_array($selectedIds)');
             assert('is_string($modelClassName)');
+            assert('$listAttributesSelector == null || $listAttributesSelector instanceof ListAttributesSelector');
             $this->controllerId           = $controllerId;
             $this->moduleId               = $moduleId;
             $this->modelClassName         = $modelClassName;
@@ -93,6 +97,7 @@
             $this->gridIdSuffix           = $gridIdSuffix;
             $this->gridViewPagerParams    = $gridViewPagerParams;
             $this->gridId                 = 'list-view';
+            $this->listAttributesSelector = $listAttributesSelector;
         }
 
         /**
@@ -111,7 +116,7 @@
             $content .= $cClipWidget->getController()->clips['ListView'] . "\n";
             if ($this->rowsAreSelectable)
             {
-                $content .= CHtml::hiddenField($this->gridId . $this->gridIdSuffix . '-selectedIds', implode(",", $this->selectedIds)) . "\n"; // Not Coding Standard
+                $content .= ZurmoHtml::hiddenField($this->gridId . $this->gridIdSuffix . '-selectedIds', implode(",", $this->selectedIds)) . "\n"; // Not Coding Standard
             }
             $content .= $this->renderScripts();
             return $content;
@@ -232,10 +237,14 @@
                 );
                 array_push($columns, $firstColumn);
             }
-            $lastColumn = $this->getCGridViewLastColumn();
-            if (!empty($lastColumn))
+            $menuColumn = $this->getGridViewMenuColumn();
+            if($menuColumn == null)
             {
-                array_push($columns, $lastColumn);
+                $lastColumn = $this->getCGridViewLastColumn();
+                if (!empty($lastColumn))
+                {
+                    array_push($columns, $lastColumn);
+                }
             }
             $metadata = $this->getResolvedMetadata();
             foreach ($metadata['global']['panels'] as $panel)
@@ -259,11 +268,19 @@
                 }
             }
 
+            if (!empty($menuColumn))
+            {
+                array_push($columns, $menuColumn);
+            }
             return $columns;
         }
 
         protected function resolveMetadata()
         {
+            if($this->listAttributesSelector != null)
+            {
+                return $this->listAttributesSelector->getResolvedMetadata();
+            }
             return self::getMetadata();
         }
 
@@ -361,6 +378,23 @@
             );
         }
 
+        protected function getGridViewMenuColumn()
+        {
+            $metadata = $this::getMetadata();
+            $content = null;
+            if (isset($metadata['global']['rowMenu']) && is_array($metadata['global']['rowMenu']['elements']))
+            {
+                return array(
+                    'class'           => 'RowMenuColumn',
+                    'rowMenu'		  => $metadata['global']['rowMenu'],
+                    'listView'		  => $this,
+                    'redirectUrl'	  => ArrayUtil::getArrayValue($this->params, 'redirectUrl'),
+                    'modelClassName'  => $this->modelClassName
+                );
+            }
+            return $content;
+        }
+
         protected function getGridViewActionRoute($action, $moduleId = null)
         {
             if ($moduleId == null)
@@ -372,7 +406,7 @@
 
         public function getLinkString($attributeString)
         {
-            $string  = 'CHtml::link(';
+            $string  = 'ZurmoHtml::link(';
             $string .=  $attributeString . ', ';
             $string .= 'Yii::app()->createUrl("' .
                         $this->getGridViewActionRoute('details') . '", array("id" => $data->id))';
@@ -382,7 +416,7 @@
 
         public function getRelatedLinkString($attributeString, $attributeName, $moduleId)
         {
-            $string  = 'CHtml::link(';
+            $string  = 'ZurmoHtml::link(';
             $string .=  $attributeString . ', ';
             $string .= 'Yii::app()->createUrl("' .
                         $this->getGridViewActionRoute('details', $moduleId) . '",
@@ -414,6 +448,16 @@
             Yii::app()->clientScript->registerScriptFile(
                 Yii::app()->getAssetManager()->publish(
                     Yii::getPathOfAlias('ext.zurmoinc.framework.views.assets')) . '/ListViewUtils.js');
+        }
+
+        public function getModuleId()
+        {
+            return $this->moduleId;
+        }
+
+        public function getControllerId()
+        {
+            return $this->controllerId;
         }
     }
 ?>

@@ -15,7 +15,7 @@
         
     }
 }
-.conversation-date{
+.list-row-model-date{
     float: right;
     margin-right:10px;
 }
@@ -68,7 +68,7 @@
     }
 }
 
-#ConversationSummaryView,
+#ModelDetailsSummaryView,
 #CommentList{
     padding:10px 0 0 15px;
     h2{
@@ -78,19 +78,8 @@
         margin-bottom:5px;
         display:block;
     }
-    .delete-comment{
-        visibility:hidden;
-        display:block;
-        margin-top:4px;
-        a{
-            margin-left:4px;
-        }
-        &:before{
-            .symbly(18px);
-            content:"_";
-        }
-    }
 }
+
 .comment{
     margin-bottom:15px;
     line-height: 140%;
@@ -105,6 +94,18 @@
     &.unread{
         font-weight:bold;
     }
+    .delete-comment{
+        visibility:hidden;
+        display:block;
+        margin-top:4px;
+        a{
+            margin-left:4px;
+        }
+        &:before{
+            .symbly(18px);
+            content:"_";
+        }
+    }
 }
 .conversation-subject{
     margin-bottom: 30px;   
@@ -117,14 +118,14 @@
 }
 
 
-#ConversationSummaryView,
-#CommentInlineEditForConversationView,
+#ModelDetailsSummaryView,
+#CommentInlineEditForModelView,
 #CommentsForRelatedModelView{
     width:70%;
     float:left;
 }
 
-#CommentInlineEditForConversationView{
+#CommentInlineEditForModelView{
      h2{
         margin-bottom:15px;
         margin-left:15px;

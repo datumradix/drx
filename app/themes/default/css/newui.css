@@ -1924,6 +1924,130 @@ table.configuration-list tr td:last-child a:before {
 #DashboardEditView .panel {
   width: 100% !important;
 }
+/*Social Items*/
+#AllSocialItemsForPortletView .wide.form {
+  border: none;
+  background: none !important;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+}
+#AllSocialItemsForPortletView .wide.form form {
+  border: none;
+  background: none !important;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+}
+#AllSocialItemsForPortletView .wide.form table.files {
+  border-bottom: none;
+}
+#AllSocialItemsForPortletView .wide.form .panel > table {
+  padding-bottom: 10px;
+}
+#AllSocialItemsForPortletView .social-item {
+  padding: 10px 15px;
+}
+#AllSocialItemsForPortletView .delete-social-item {
+  margin-left: 5px;
+}
+#AllSocialItemsForPortletView .delete-social-item a {
+  margin-left: 4px;
+}
+#AllSocialItemsForPortletView .delete-social-item:before {
+  font-weight: normal;
+  font-size: 18px;
+  font-family: "ZurmoGamificationSymblyReguRg";
+  content: "_";
+}
+/*Missions*/
+#MyMissionsForPortletView > div {
+  float: none;
+  margin-bottom: 0;
+}
+#MyMissionsForPortletView .filter-portlet-model-bar {
+  padding-left: 8px;
+  border-bottom: 1px solid #DFDFDF;
+  padding: 10px 15px;
+  background-color: #ededed;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#f6f6f6), to(#ededed));
+  background-image: -moz-linear-gradient(top, #f6f6f6, #ededed);
+  background-image: -ms-linear-gradient(top, #f6f6f6, #ededed);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f6f6f6), color-stop(100%, #ededed));
+  background-image: -webkit-linear-gradient(top, #f6f6f6, #ededed);
+  background-image: -o-linear-gradient(top, #f6f6f6, #ededed);
+  background-image: linear-gradient(top, #f6f6f6, #ededed);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ededed', GradientType=0);
+  -webkit-box-shadow: inset 0 1px 0 0 #ffffff;
+  -moz-box-shadow: inset 0 1px 0 0 #ffffff;
+  -o-box-shadow: inset 0 1px 0 0 #ffffff;
+  -ms-box-shadow: inset 0 1px 0 0 #ffffff;
+  box-shadow: inset 0 1px 0 0 #ffffff;
+  /*
+        #LatestActivitiesConfigurationForm_ownedByFilter_area{
+            display:inline-block;
+        }
+        #LatestActivitiesConfigurationForm_rollup_area{
+            display:inline-block;
+        }
+        #filter-latest-activities-link{
+            color:@themeColor !important;
+            margin-left:20px;
+            text-decoration: underline;
+             .t-shadow( rgba( 255, 255, 255, 0.8 ) 0 1px 0 );
+             &:hover{
+                 color:@themeColor2  !important;
+             }
+        }
+        */
+
+}
+#MyMissionsForPortletView .filter-portlet-model-bar label {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 11px !important;
+  padding: 4px;
+  margin: 0 3px;
+  color: #262877;
+}
+#MyMissionsForPortletView .filter-portlet-model-bar label span {
+  font-size: 11px;
+}
+#MyMissionsForPortletView .filter-portlet-model-bar label:hover {
+  background: #262877;
+  color: #FFF;
+  -webkit-border-radius: 3px !important;
+  -moz-border-radius: 3px !important;
+  -ms-border-radius: 3px !important;
+  -o-border-radius: 3px !important;
+  border-radius: 3px !important;
+  border: none;
+}
+#MyMissionsForPortletView .filter-portlet-model-bar input[type="radio"],
+#MyMissionsForPortletView .filter-portlet-model-bar input[type="checkbox"] {
+  visibility: hidden;
+  display: none;
+}
+#MyMissionsForPortletView .filter-portlet-model-bar .ui-state-active {
+  background: #262877;
+  color: #FFF;
+  -webkit-border-radius: 3px !important;
+  -moz-border-radius: 3px !important;
+  -ms-border-radius: 3px !important;
+  -o-border-radius: 3px !important;
+  border-radius: 3px !important;
+  border: none;
+}
+#MyMissionsForPortletView .filter-portlet-model-bar .ui-button-text {
+  padding: 0;
+  margin: 0;
+}
 /*Upload Files Box (in selected account, in Note)*/
 .file-upload-box {
   -moz-box-sizing: border-box;
@@ -4882,7 +5006,7 @@ span.tooltip {
   position: relative;
   top: 0;
 }
-.conversation-date {
+.list-row-model-date {
   float: right;
   margin-right: 10px;
 }
@@ -4948,35 +5072,18 @@ span.tooltip {
 #ConversationDetailsAndRelationsView #right-side-edit-view-panel {
   top: 55px;
 }
-#ConversationSummaryView,
+#ModelDetailsSummaryView,
 #CommentList {
   padding: 10px 0 0 15px;
 }
-#ConversationSummaryView h2,
+#ModelDetailsSummaryView h2,
 #CommentList h2 {
   margin-bottom: 15px;
 }
-#ConversationSummaryView .comment-details,
+#ModelDetailsSummaryView .comment-details,
 #CommentList .comment-details {
   margin-bottom: 5px;
   display: block;
-}
-#ConversationSummaryView .delete-comment,
-#CommentList .delete-comment {
-  visibility: hidden;
-  display: block;
-  margin-top: 4px;
-}
-#ConversationSummaryView .delete-comment a,
-#CommentList .delete-comment a {
-  margin-left: 4px;
-}
-#ConversationSummaryView .delete-comment:before,
-#CommentList .delete-comment:before {
-  font-weight: normal;
-  font-size: 18px;
-  font-family: "ZurmoGamificationSymblyReguRg";
-  content: "_";
 }
 .comment {
   margin-bottom: 15px;
@@ -4991,6 +5098,20 @@ span.tooltip {
 .comment.unread {
   font-weight: bold;
 }
+.comment .delete-comment {
+  visibility: hidden;
+  display: block;
+  margin-top: 4px;
+}
+.comment .delete-comment a {
+  margin-left: 4px;
+}
+.comment .delete-comment:before {
+  font-weight: normal;
+  font-size: 18px;
+  font-family: "ZurmoGamificationSymblyReguRg";
+  content: "_";
+}
 .conversation-subject {
   margin-bottom: 30px;
 }
@@ -4999,17 +5120,17 @@ span.tooltip {
   line-height: 150%;
   font-style: italic;
 }
-#ConversationSummaryView,
-#CommentInlineEditForConversationView,
+#ModelDetailsSummaryView,
+#CommentInlineEditForModelView,
 #CommentsForRelatedModelView {
   width: 70%;
   float: left;
 }
-#CommentInlineEditForConversationView h2 {
+#CommentInlineEditForModelView h2 {
   margin-bottom: 15px;
   margin-left: 15px;
 }
-#CommentInlineEditForConversationView .wide.form {
+#CommentInlineEditForModelView .wide.form {
   padding: 0;
   border: none;
   background: none;
@@ -5019,34 +5140,34 @@ span.tooltip {
   -ms-box-shadow: none;
   box-shadow: none;
 }
-#CommentInlineEditForConversationView form {
+#CommentInlineEditForModelView form {
   padding: 0;
 }
-#CommentInlineEditForConversationView .panel {
+#CommentInlineEditForModelView .panel {
   width: 100%;
   float: none;
   border-bottom: 1px solid #CCCCCC;
 }
-#CommentInlineEditForConversationView #inline-edit-form {
+#CommentInlineEditForModelView #inline-edit-form {
   padding-left: 15px;
 }
-#CommentInlineEditForConversationView #inline-edit-form table {
+#CommentInlineEditForModelView #inline-edit-form table {
   border-bottom: none;
 }
-#CommentInlineEditForConversationView #inline-edit-form td {
+#CommentInlineEditForModelView #inline-edit-form td {
   padding-left: 0 !important;
 }
-#CommentInlineEditForConversationView #inline-edit-form .files {
+#CommentInlineEditForModelView #inline-edit-form .files {
   margin-bottom: 0;
 }
-#CommentInlineEditForConversationView #inline-edit-form .files td {
+#CommentInlineEditForModelView #inline-edit-form .files td {
   padding-bottom: 0;
 }
-#CommentInlineEditForConversationView .view-toolbar-container {
+#CommentInlineEditForModelView .view-toolbar-container {
   border-top: 1px solid #fff;
   padding-top: 13px;
 }
-#CommentInlineEditForConversationView .view-toolbar-container a {
+#CommentInlineEditForModelView .view-toolbar-container a {
   color: #fff !important;
 }
 .attachments {
@@ -9497,14 +9618,14 @@ div.hasHalfs .twoThirds {
 }
 .LatestActivitiesListView .latest-activity-toolbar,
 .LatestActivitiesView .latest-activity-toolbar,
-.LatestActivitiesListView .filter-latest-activities-bar,
-.LatestActivitiesView .filter-latest-activities-bar {
+.LatestActivitiesListView .filter-portlet-model-bar,
+.LatestActivitiesView .filter-portlet-model-bar {
   padding-left: 8px;
 }
 .LatestActivitiesListView .latest-activity-toolbar label,
 .LatestActivitiesView .latest-activity-toolbar label,
-.LatestActivitiesListView .filter-latest-activities-bar label,
-.LatestActivitiesView .filter-latest-activities-bar label {
+.LatestActivitiesListView .filter-portlet-model-bar label,
+.LatestActivitiesView .filter-portlet-model-bar label {
   cursor: pointer;
   border: none;
   background: none;
@@ -9515,8 +9636,8 @@ div.hasHalfs .twoThirds {
 }
 .LatestActivitiesListView .latest-activity-toolbar label:hover,
 .LatestActivitiesView .latest-activity-toolbar label:hover,
-.LatestActivitiesListView .filter-latest-activities-bar label:hover,
-.LatestActivitiesView .filter-latest-activities-bar label:hover {
+.LatestActivitiesListView .filter-portlet-model-bar label:hover,
+.LatestActivitiesView .filter-portlet-model-bar label:hover {
   background: #262877;
   color: #FFF;
   -webkit-border-radius: 3px !important;
@@ -9528,19 +9649,19 @@ div.hasHalfs .twoThirds {
 }
 .LatestActivitiesListView .latest-activity-toolbar input[type="radio"],
 .LatestActivitiesView .latest-activity-toolbar input[type="radio"],
-.LatestActivitiesListView .filter-latest-activities-bar input[type="radio"],
-.LatestActivitiesView .filter-latest-activities-bar input[type="radio"],
+.LatestActivitiesListView .filter-portlet-model-bar input[type="radio"],
+.LatestActivitiesView .filter-portlet-model-bar input[type="radio"],
 .LatestActivitiesListView .latest-activity-toolbar input[type="checkbox"],
 .LatestActivitiesView .latest-activity-toolbar input[type="checkbox"],
-.LatestActivitiesListView .filter-latest-activities-bar input[type="checkbox"],
-.LatestActivitiesView .filter-latest-activities-bar input[type="checkbox"] {
+.LatestActivitiesListView .filter-portlet-model-bar input[type="checkbox"],
+.LatestActivitiesView .filter-portlet-model-bar input[type="checkbox"] {
   visibility: hidden;
   display: none;
 }
 .LatestActivitiesListView .latest-activity-toolbar .ui-state-active,
 .LatestActivitiesView .latest-activity-toolbar .ui-state-active,
-.LatestActivitiesListView .filter-latest-activities-bar .ui-state-active,
-.LatestActivitiesView .filter-latest-activities-bar .ui-state-active {
+.LatestActivitiesListView .filter-portlet-model-bar .ui-state-active,
+.LatestActivitiesView .filter-portlet-model-bar .ui-state-active {
   background: #262877;
   color: #FFF;
   -webkit-border-radius: 3px !important;
@@ -9552,13 +9673,13 @@ div.hasHalfs .twoThirds {
 }
 .LatestActivitiesListView .latest-activity-toolbar .ui-button-text,
 .LatestActivitiesView .latest-activity-toolbar .ui-button-text,
-.LatestActivitiesListView .filter-latest-activities-bar .ui-button-text,
-.LatestActivitiesView .filter-latest-activities-bar .ui-button-text {
+.LatestActivitiesListView .filter-portlet-model-bar .ui-button-text,
+.LatestActivitiesView .filter-portlet-model-bar .ui-button-text {
   padding: 0;
   margin: 0;
 }
-.LatestActivitiesListView .filter-latest-activities-bar,
-.LatestActivitiesView .filter-latest-activities-bar {
+.LatestActivitiesListView .filter-portlet-model-bar,
+.LatestActivitiesView .filter-portlet-model-bar {
   border-bottom: 1px solid #DFDFDF;
   overflow: hidden;
   height: 40px;

@@ -32,6 +32,11 @@
     {
         protected $viewContainsFileUploadElement = true;
 
+        public function getFormName()
+        {
+            return "comment-inline-edit-form";
+        }
+
         public static function getDefaultMetadata()
         {
             $metadata = array(
@@ -106,7 +111,7 @@
         protected function renderConfigSaveAjax($formName)
         {
             // Begin Not Coding Standard
-            return CHtml::ajax(array(
+            return ZurmoHtml::ajax(array(
                     'type' => 'POST',
                     'data' => 'js:$("#' . $formName . '").serialize()',
                     'url'  =>  $this->getValidateAndSaveUrl(),
