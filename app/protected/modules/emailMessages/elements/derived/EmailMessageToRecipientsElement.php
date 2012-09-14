@@ -25,7 +25,7 @@
      ********************************************************************************/
 
     /**
-     * Display email message content.
+     * Display email message to recipients.
      */
     class EmailMessageToRecipientsElement extends Element implements DerivedElementInterface
     {
@@ -38,27 +38,91 @@
 
         protected function renderControlEditable()
         {
-            throw new NotImplementedException();
+            assert('$this->model instanceof EmailMessage');
+            $toContent  = $this->renderTokenInput('to');
+            $toContent .= ZurmoHtml::link('Cc/Bcc', '#', array('onclick' => "js:$('#cc-bcc-fields').toggle();"));
+            $ccContent  = $this->renderTokenInput('cc');
+            $bccContent = $this->renderTokenInput('bcc');
+            return $toContent . CHtml::tag('div',
+                                           array('id' => 'cc-bcc-fields',
+                                                 'style'   => 'display: none;'
+                                               ),
+                                           $ccContent . $bccContent);
         }
 
-        protected function renderError()
+        protected function renderTokenInput($prefix)
         {
-            throw new NotImplementedException();
+            $inputId   = $this->getEditableInputId($this->attribute, $prefix);
+            $inputName = $this->getEditableInputName($this->attribute, $prefix);
+            $content   = $this->form->labelEx($this->model,
+                                            $this->attribute,
+                                            array('for' => $inputId,
+                                                  'label' => ucfirst($prefix)));
+
+            $cClipWidget = new CClipWidget();
+            $cClipWidget->beginClip("ModelElement");
+            $cClipWidget->widget('ext.zurmoinc.framework.widgets.MultiSelectAutoComplete', array(
+                'name'        => $inputName,
+                'id'          => $inputId,
+                'jsonEncodedIdsAndLabels'   => CJSON::encode($this->getExistingPeopleRelationsIdsAndLabels($prefix)),
+                'sourceUrl'   => Yii::app()->createUrl('emailMessages/default/autoCompleteForMultiSelectAutoComplete'),
+                'htmlOptions' => array(
+                    'disabled' => $this->getDisabledValue(),
+                    ),
+                'hintText' => Yii::t('Default', 'Type name or email'),
+                'onAdd'    => $this->getOnAddContent(),
+                'onDelete' => $this->getOnDeleteContent(),
+            ));
+            $cClipWidget->endClip();
+            $content  .= $cClipWidget->getController()->clips['ModelElement'];
+            return $content;
         }
 
         protected function renderLabel()
         {
-            return Yii::t('Default', 'To');
+            if ($this->form === null)
+            {
+                return $this->getDisplayName();
+            }
+            else
+            {
+                return $this->form->labelEx($this->model,
+                                            $this->attribute,
+                                            array('for' => $this->getEditableInputId(),
+                                                  'label' => $this->getDisplayName()));
+            }
         }
 
         public static function getDisplayName()
         {
-            return Yii::t('Default', 'To Recipients');
+            return Yii::t('Default', 'Recipients');
         }
 
         public static function getModelAttributeNames()
         {
             return array();
+        }
+
+        protected function getOnAddContent()
+        {
+        }
+
+        protected function getOnDeleteContent()
+        {
+        }
+
+        protected function getExistingPeopleRelationsIdsAndLabels($prefix)
+        {
+            $existingPeople = array();
+            foreach ($this->model->recipients as $recipient)
+            {
+                if($recipient->type == constant('EmailMessageRecipient::TYPE_' . strtoupper($prefix)))
+                {
+                    $existingPeople[] = array('id'   => $recipient->toAddress,
+                                              'name' => $recipient->toName . ' (' . $recipient->toAddress . ')');
+                }
+            }
+            return $existingPeople;
         }
     }
 ?>
