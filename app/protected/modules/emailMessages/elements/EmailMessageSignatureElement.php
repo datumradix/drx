@@ -24,21 +24,41 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class SecurityDetailsLinkActionElement extends LinkActionElement
+    /**
+     * Element to edit and display email message signature content.
+     */
+    class EmailMessageSignatureElement extends Element
     {
-        public function getActionType()
+        protected function renderControlNonEditable()
         {
-            return 'Details';
+            throw new NotSupportedException();
         }
 
-        protected function getDefaultLabel()
+        protected function renderControlEditable()
         {
-            return Yii::t('Default', 'Security');
+            $emailMessageSignature   = $this->model;
+            $attribute               = 'htmlContent';
+            $id                      = $this->getEditableInputId  ();
+            $htmlOptions             = array();
+            $htmlOptions['id']       = $id;
+            $htmlOptions['name']     = $this->getEditableInputName();
+            $htmlOptions['rows']     = 3;
+            $htmlOptions['cols']     = 10;
+            $content  = $this->form->textArea($emailMessageSignature, $attribute, $htmlOptions);
+            return $content;
         }
 
-        protected function getDefaultRoute()
+        protected function renderLabel()
         {
-            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/securityDetails/', array('id' => $this->modelId));
+            $label = Yii::t('Default', 'Email Signature');
+            if ($this->form === null)
+            {
+                return $label;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 ?>
