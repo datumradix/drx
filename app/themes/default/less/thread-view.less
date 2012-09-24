@@ -1,3 +1,7 @@
+.gravatar{
+    float:left;
+}
+
 .icon-missions-created:before,
 .icon-conversations-created:before{
     content:"w";
@@ -106,10 +110,12 @@
     margin-left: 130px;
 }
 
-
 .comment{
     margin-bottom:15px;
     line-height: 140%;
+    .gravatar{
+        margin-top:1px;
+    }
     .comment-content{
         font-size: 12px;
         padding-left:50px;
@@ -118,6 +124,9 @@
     &:hover{
         .delete-comment{
             visibility:visible !important;
+            a{
+                color:@themeColor !important;
+            }
         }
     }
     &.unread{
@@ -125,9 +134,6 @@
     }
     .delete-comment{
         visibility:hidden;
-        //display:block;
-        //margin-top:4px;
-        //margin-left:5px;
         a{
             margin-left:4px;
         }
@@ -141,7 +147,7 @@
 .model-details-summary{
     padding-left: 130px;
     padding-top:15px;
-    img{
+    .gravatar{
         margin-left: -115px;
     }
     .comment-content{
@@ -160,6 +166,11 @@
     }
 }
 
+.showAllCommentsLink{
+    margin-left: 130px;
+    margin-bottom: 10px;
+    display: block;
+}
 
 #ModelDetailsSummaryView,
 #CommentInlineEditForModelView,
@@ -191,40 +202,15 @@
     .panel{
         width:100%;
         float:none;
-        //border-bottom: 1px solid #CCCCCC;
     }
     table{
         margin-bottom: 0;
-    }
-    /*
-    #comment-inline-edit-form{
-        padding-left:15px;
-        table{
-            border-bottom:none;
-        }
-        td{
-            padding-left:0 !important;
-        }
-        .files{
-            margin-bottom:0;
-            td{
-                padding-bottom: 0;
-            }
-        }
-    }
-    */
-    .view-toolbar-container{
-        //border-top:1px solid #fff;
-        //padding-top:13px;
-        //text-align:center;
-        
     }
     .form-toolbar{
         border-top: none;
         padding-top: 0;
         text-align: right;
         a{
-            //float:none !important;
             color:#fff !important;
             margin-right:0;
         }
@@ -279,4 +265,81 @@
 
 .mission-change-status-link{
     margin-right:10px;
+}
+
+
+
+/*=Social Items*/
+.SocialItemsListView,
+#AllSocialItemsForPortletView{
+    tr:hover{
+        background: none !important;
+        color: inherit !important;
+    }
+    .CommentList{
+        margin-left: 80px;
+    }
+    .model-details-summary{
+        padding-left: 80px;
+        padding-top:0;
+        .gravatar{
+            margin-left: -65px;
+        }
+    }
+    .show-create-comment{
+        margin-left: 80px;
+    }
+    .wide.form{
+        border:none;
+        background: none !important;
+        .b-shadow(none);
+        form{
+            border:none;
+            background: none !important;
+            .b-shadow(none);
+            padding-bottom: 0;
+        }
+        table.files{
+            border-bottom: none;
+        }
+        .panel > table{
+            padding-bottom: 10px;
+        }
+    }
+    .delete-social-item{
+        margin-left:5px;
+        a{
+            margin-left:4px;
+        }
+        &:before{
+            .symbly(18px);
+            content: "_";
+        }
+    }
+    .form-toolbar{
+        text-align: right;
+        a{
+            color:#fff !important;
+            margin-right:0;
+        }
+    }
+}
+
+#SocialItemInlineEditView{
+    .form-toolbar{
+        text-align: right;
+        a{
+            color:#fff !important;
+            margin-right:0;
+        }
+    }
+}
+
+.social-item{
+    form{
+        td{
+           padding-left: 65px !important;
+           padding-top: 0 !important;
+        }
+    }
 }
