@@ -60,7 +60,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'description', 'type' => 'TextArea'),
+                                                array('attributeName' => 'description', 'type' => 'TextArea', 'rows' => 2),
                                             ),
                                         ),
                                     )
@@ -69,7 +69,8 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'Files'),
+                                                array('attributeName' => 'null', 'type' => 'Files',
+                                                      'showMaxSize'   => false),
                                             ),
                                         ),
                                     )

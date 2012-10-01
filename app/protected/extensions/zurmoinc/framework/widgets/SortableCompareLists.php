@@ -63,6 +63,8 @@
 
         public $allowSorting = false;
 
+        public $multiselectNavigationClasses;
+
         public function init()
         {
             assert('($this->model instanceof CModel && $this->form instanceof ZurmoActiveForm) ||
@@ -108,6 +110,7 @@
             $content  = '<td><div class="multiselect-holder"><div class="multiselect-left">';
             $content .= '<label>' . $this->leftSideDisplayLabel . '</label>';
             $content .= $leftListContent;
+
             $content .= '</div><div class="multiselect-nav">';
             $content .= ZurmoHtml::button( '7', array( 'id' => $id . 'moveRight', 'class' => 'icon-right-arrow' ) ); //used 7, 8 becuase those are rendered as icons with symbly, other option is to make it an A with a SPAN inside it
             $content .= ZurmoHtml::button( '8', array( 'id' => $id . 'moveLeft', 'class' => 'icon-left-arrow' ) );
@@ -121,9 +124,9 @@
 
             if($this->allowSorting)
             {
-                $content .= '<div class="multiselect-nav">';
-                $content .= ZurmoHtml::button( 'up', array( 'id' => $id . 'moveUp', 'class' => 'icon-up-arrow' ) );
-                $content .= ZurmoHtml::button( 'down', array( 'id' => $id . 'moveDown', 'class' => 'icon-down-arrow' ) );
+                $content .= '<div class="multiselect-nav' . $this->resolveMultiselectNavigationClassesContent() . '">';
+                $content .= ZurmoHtml::button( '5', array( 'id' => $id . 'moveUp', 'class' => 'icon-up-arrow' ) );     // value "up" in icon font
+                $content .= ZurmoHtml::button( '6', array( 'id' => $id . 'moveDown', 'class' => 'icon-down-arrow' ) ); // value "down" in icon font
                 $content .= '</div>';
             }
             $content .= '</td>';
@@ -218,6 +221,14 @@
                 });
             ";
             Yii::app()->getClientScript()->registerScript(__CLASS__ . '#' . $id, $script);
+        }
+
+        protected function resolveMultiselectNavigationClassesContent()
+        {
+            if($this->multiselectNavigationClasses != null)
+            {
+                return ' ' . $this->multiselectNavigationClasses;
+            }
         }
     }
 ?>

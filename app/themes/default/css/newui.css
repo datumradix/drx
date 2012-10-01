@@ -13,10 +13,10 @@
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -28,11 +28,11 @@
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 .zButton:not(.attachLoading),
 .z-button:not(.attachLoading) {
@@ -41,6 +41,11 @@
 .zButton:hover,
 .z-button:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .zButton:active,
 .z-button:active {
@@ -389,10 +394,10 @@ a.remove:hover .icon:after {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -404,17 +409,22 @@ a.remove:hover .icon:after {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 #InstallPageView .AppContainer a:not(.attachLoading) {
   background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
 }
 #InstallPageView .AppContainer a:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 #InstallPageView .AppContainer a:active {
   color: #656565;
@@ -488,10 +498,10 @@ a.remove:hover .icon:after {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -503,17 +513,22 @@ a.remove:hover .icon:after {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 #InstallPageView #install-form input[type="submit"]:not(.attachLoading) {
   background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
 }
 #InstallPageView #install-form input[type="submit"]:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 #InstallPageView #install-form input[type="submit"]:active {
   color: #656565;
@@ -691,10 +706,10 @@ a.remove:hover .icon:after {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -706,11 +721,11 @@ a.remove:hover .icon:after {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   float: right;
   position: absolute;
   right: 15px;
@@ -722,6 +737,11 @@ a.remove:hover .icon:after {
 }
 .configuration-list li a:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .configuration-list li a:active {
   color: #656565;
@@ -772,10 +792,10 @@ table.configuration-list tr td:last-child a {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -787,11 +807,11 @@ table.configuration-list tr td:last-child a {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   float: right;
 }
 table.configuration-list tr td:last-child a:not(.attachLoading) {
@@ -799,6 +819,11 @@ table.configuration-list tr td:last-child a:not(.attachLoading) {
 }
 table.configuration-list tr td:last-child a:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 table.configuration-list tr td:last-child a:active {
   color: #656565;
@@ -898,10 +923,10 @@ table.configuration-list tr td:last-child a:before {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -913,11 +938,11 @@ table.configuration-list tr td:last-child a:before {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   font-weight: normal;
   font-size: 22px;
   font-family: "ZurmoGamificationSymblyReguRg";
@@ -927,6 +952,11 @@ table.configuration-list tr td:last-child a:before {
 }
 .multiselect-holder input[type="button"]:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .multiselect-holder input[type="button"]:active {
   color: #656565;
@@ -1305,7 +1335,7 @@ table.configuration-list tr td:last-child a:before {
   -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
   text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
 }
-#currency-collection-form .portlet-toolbar a.attachLoading {
+#currency-collection-form .portlet-toolbar a.attachLoading.z-button {
   color: #fff !important;
 }
 #currency-collection-form .portlet-toolbar a:not(.attachLoading) {
@@ -1420,10 +1450,10 @@ table.configuration-list tr td:last-child a:before {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -1435,17 +1465,22 @@ table.configuration-list tr td:last-child a:before {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 .add-custom-field .configure-custom-field-button:not(.attachLoading) {
   background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
 }
 .add-custom-field .configure-custom-field-button:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .add-custom-field .configure-custom-field-button:active {
   color: #656565;
@@ -1537,10 +1572,10 @@ table.configuration-list tr td:last-child a:before {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -1552,17 +1587,22 @@ table.configuration-list tr td:last-child a:before {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 .EmailTestingButton:not(.attachLoading) {
   background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
 }
 .EmailTestingButton:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .EmailTestingButton:active {
   color: #656565;
@@ -1616,10 +1656,10 @@ table.configuration-list tr td:last-child a:before {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -1631,17 +1671,22 @@ table.configuration-list tr td:last-child a:before {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 .AppContent.ImportWizardView #addExtraColumnButton:not(.attachLoading) {
   background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
 }
 .AppContent.ImportWizardView #addExtraColumnButton:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .AppContent.ImportWizardView #addExtraColumnButton:active {
   color: #656565;
@@ -1934,46 +1979,6 @@ table.configuration-list tr td:last-child a:before {
 #DashboardEditView .panel {
   width: 100% !important;
 }
-/*Social Items*/
-#AllSocialItemsForPortletView .wide.form {
-  border: none;
-  background: none !important;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  -o-box-shadow: none;
-  -ms-box-shadow: none;
-  box-shadow: none;
-}
-#AllSocialItemsForPortletView .wide.form form {
-  border: none;
-  background: none !important;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  -o-box-shadow: none;
-  -ms-box-shadow: none;
-  box-shadow: none;
-}
-#AllSocialItemsForPortletView .wide.form table.files {
-  border-bottom: none;
-}
-#AllSocialItemsForPortletView .wide.form .panel > table {
-  padding-bottom: 10px;
-}
-#AllSocialItemsForPortletView .social-item {
-  padding: 10px 15px;
-}
-#AllSocialItemsForPortletView .delete-social-item {
-  margin-left: 5px;
-}
-#AllSocialItemsForPortletView .delete-social-item a {
-  margin-left: 4px;
-}
-#AllSocialItemsForPortletView .delete-social-item:before {
-  font-weight: normal;
-  font-size: 18px;
-  font-family: "ZurmoGamificationSymblyReguRg";
-  content: "_";
-}
 /*Missions*/
 #MyMissionsForPortletView > div {
   float: none;
@@ -1998,24 +2003,6 @@ table.configuration-list tr td:last-child a:before {
   -o-box-shadow: inset 0 1px 0 0 #ffffff;
   -ms-box-shadow: inset 0 1px 0 0 #ffffff;
   box-shadow: inset 0 1px 0 0 #ffffff;
-  /*
-        #LatestActivitiesConfigurationForm_ownedByFilter_area{
-            display:inline-block;
-        }
-        #LatestActivitiesConfigurationForm_rollup_area{
-            display:inline-block;
-        }
-        #filter-latest-activities-link{
-            color:@themeColor !important;
-            margin-left:20px;
-            text-decoration: underline;
-             .t-shadow( rgba( 255, 255, 255, 0.8 ) 0 1px 0 );
-             &:hover{
-                 color:@themeColor2  !important;
-             }
-        }
-        */
-
 }
 #MyMissionsForPortletView .filter-portlet-model-bar label {
   cursor: pointer;
@@ -2065,9 +2052,14 @@ table.configuration-list tr td:last-child a:before {
 #MyMissionsForPortletView .items td:last-child {
   border-top: none;
 }
-.mission-change-status-link {
-  float: right;
-  margin-top: -5px;
+#MyMissionsForPortletView .missionStatusChangeArea a:first-child {
+  margin-left: 0;
+}
+#MyMissionsForPortletView .missionStatusChangeArea a:last-child {
+  margin-right: 0;
+}
+#MyMissionsForPortletView .actions-column {
+  width: 200px;
 }
 /*Upload Files Box (in selected account, in Note)*/
 .file-upload-box {
@@ -2092,10 +2084,10 @@ table.configuration-list tr td:last-child a:before {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -2107,11 +2099,11 @@ table.configuration-list tr td:last-child a:before {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   padding: 0 5px;
 }
 .file-upload-box .ui-icon-plusthick:not(.attachLoading) {
@@ -2119,6 +2111,11 @@ table.configuration-list tr td:last-child a:before {
 }
 .file-upload-box .ui-icon-plusthick:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .file-upload-box .ui-icon-plusthick:active {
   color: #656565;
@@ -2442,7 +2439,7 @@ div.wide.form .errorMessage {
   text-shadow: #000000 0 1px 0;
 }
 .ui-datepicker .ui-datepicker-calendar {
-  width: 100%;
+  width: 100.1%;
   border-color: #BBB;
   border-style: solid;
   border-width: 0 0 1px 1px;
@@ -2536,10 +2533,10 @@ div.wide.form .errorMessage {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -2551,11 +2548,11 @@ div.wide.form .errorMessage {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   float: left;
 }
 .ui-datepicker .ui-datepicker-current:not(.attachLoading) {
@@ -2563,6 +2560,11 @@ div.wide.form .errorMessage {
 }
 .ui-datepicker .ui-datepicker-current:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .ui-datepicker .ui-datepicker-current:active {
   color: #656565;
@@ -2583,10 +2585,10 @@ div.wide.form .errorMessage {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -2598,11 +2600,11 @@ div.wide.form .errorMessage {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   float: right;
 }
 .ui-datepicker .ui-datepicker-close:not(.attachLoading) {
@@ -2610,6 +2612,11 @@ div.wide.form .errorMessage {
 }
 .ui-datepicker .ui-datepicker-close:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .ui-datepicker .ui-datepicker-close:active {
   color: #656565;
@@ -2922,10 +2929,10 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -2937,11 +2944,11 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   margin-bottom: 15px;
 }
 .designer-toolbar input[type="submit"]:not(.attachLoading) {
@@ -2949,6 +2956,11 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 }
 .designer-toolbar input[type="submit"]:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .designer-toolbar input[type="submit"]:active {
   color: #656565;
@@ -3115,6 +3127,11 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   cursor: hand;
   cursor: pointer;
   float: left;
+}
+.panel-settings div.wide.form label.hasCheckBox,
+.cell-settings div.wide.form label.hasCheckBox {
+  margin-top: -5px !important;
+  margin-bottom: 0;
 }
 .sortable-row-list-container ul {
   list-style-type: none;
@@ -3388,12 +3405,13 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 }
 .AttributeEditView .sortable .remove-sortable-item-link {
   position: absolute;
-  left: 4px;
-  top: -7px;
+  left: 6px;
+  top: 5px;
+  z-index: 100;
 }
 .AttributeEditView .sortable .remove-sortable-item-link span {
   text-indent: -9999px;
-  display: block;
+  display: inline-block;
 }
 .AttributeEditView .sortable .remove-sortable-item-link:after {
   content: "_";
@@ -3420,10 +3438,10 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -3435,11 +3453,11 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   margin: 15px 0 0 0;
   float: left;
   clear: both;
@@ -3449,6 +3467,11 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 }
 .AttributeEditView form div table #customFieldDataData_AddInputButton:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .AttributeEditView form div table #customFieldDataData_AddInputButton:active {
   color: #656565;
@@ -4395,7 +4418,11 @@ span.tooltip {
 }
 .game-badge-CreateMission .badge-icon:before,
 .CreateMission .badge-icon:before {
-  content: "{";
+  content: "Q";
+}
+.game-badge-CreateSocialItem .badge-icon:before,
+.CreateSocialItem .badge-icon:before {
+  content: "u";
 }
 /*Night Icons*/
 .game-badge-NightOwl .badge-icon:before,
@@ -4793,10 +4820,10 @@ span.tooltip {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -4808,17 +4835,22 @@ span.tooltip {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 .ModalGameNotification a:not(.attachLoading) {
   background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
 }
 .ModalGameNotification a:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .ModalGameNotification a:active {
   color: #656565;
@@ -4841,6 +4873,12 @@ span.tooltip {
   margin: -175px 0 0 -175px;
   width: 310px;
   height: 310px;
+}
+a.close-ModalGameNotification.simple-select {
+  background: none !important;
+  margin-right: 10px;
+  margin-left: -5px;
+  font-size: 11px;
 }
 /*=User Profile Page*/
 .UserSocialItemsForPortletView {
@@ -4892,12 +4930,22 @@ span.tooltip {
   margin: 15px 15px 15px 0;
 }
 .gravatar-container span {
+  text-align: center;
   padding: 10px;
   position: absolute;
   z-index: 1;
-  display: block;
+  display: none;
   width: 100%;
   height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  width: auto;
+  height: auto;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.gravatar-container:hover span {
+  display: block;
 }
 #UserChangeAvatarView {
   zoom: 1;
@@ -4979,10 +5027,10 @@ span.tooltip {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -4994,11 +5042,11 @@ span.tooltip {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   text-decoration: none !important;
   color: #656565 !important;
   margin-top: 15px;
@@ -5010,6 +5058,11 @@ span.tooltip {
 }
 #WelcomeView .dashboard-link:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 #WelcomeView .dashboard-link:active {
   color: #656565;
@@ -5126,6 +5179,9 @@ span.tooltip {
     min-width: none;
   }
 }
+.gravatar {
+  float: left;
+}
 .icon-missions-created:before,
 .icon-conversations-created:before {
   content: "w";
@@ -5156,7 +5212,7 @@ span.tooltip {
   top: 0;
 }
 .icon-missions-available:before {
-  content: "{";
+  content: "Q";
   font-weight: normal;
   font-size: 24px;
   font-family: "ZurmoGamificationSymblyReguRg";
@@ -5254,42 +5310,47 @@ span.tooltip {
 #ConversationDetailsAndRelationsView #right-side-edit-view-panel {
   top: 55px;
 }
-#ModelDetailsSummaryView,
-#CommentList,
-.CommentList {
-  padding: 10px 0 0 45px;
-}
 #ModelDetailsSummaryView h2,
 #CommentList h2,
 .CommentList h2 {
   margin-bottom: 15px;
 }
-#ModelDetailsSummaryView .comment-details,
-#CommentList .comment-details,
-.CommentList .comment-details {
-  margin-top: 2px;
-  display: block;
+.comment-details {
+  margin: 2px 0;
+  display: inline-block;
 }
-#ModelDetailsSummaryView .comment-details strong,
-#CommentList .comment-details strong,
-.CommentList .comment-details strong {
+.comment-details strong {
   color: #999;
   font-weight: normal !important;
 }
+#CommentList,
 .CommentList {
-  padding-left: 25px;
+  margin-left: 130px;
+}
+#CommentList .comment,
+.CommentList .comment {
+  margin-top: 15px;
+}
+#CommentList:last-child,
+.CommentList:last-child {
+  margin-bottom: 8px;
 }
 .comment {
-  margin-bottom: 30px;
   line-height: 140%;
+}
+.comment .gravatar {
+  margin-top: 1px;
 }
 .comment .comment-content {
   font-size: 12px;
   padding-left: 50px;
-  margin: 5px 0;
+  line-height: 140%;
 }
 .comment:hover .delete-comment {
   visibility: visible !important;
+}
+.comment:hover .delete-comment a {
+  color: #262877 !important;
 }
 .comment.unread {
   font-weight: bold;
@@ -5307,6 +5368,18 @@ span.tooltip {
   font-family: "ZurmoGamificationSymblyReguRg";
   content: "_";
 }
+.model-details-summary {
+  font-size: 12px !important;
+  padding-left: 130px;
+  padding-top: 15px;
+}
+.model-details-summary .gravatar {
+  margin-left: -115px;
+}
+.model-details-summary .comment-content {
+  font-size: 12px;
+  padding-left: 0;
+}
 .conversation-subject {
   margin-bottom: 30px;
 }
@@ -5315,20 +5388,30 @@ span.tooltip {
   line-height: 150%;
   font-style: italic;
 }
+.showAllCommentsLink {
+  margin-left: 130px;
+  margin-bottom: 10px;
+  display: block;
+}
 #ModelDetailsSummaryView,
 #CommentInlineEditForModelView,
 #CommentsForRelatedModelView {
   width: 70%;
   float: left;
   max-width: 600px;
-  padding-left: 50px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 #CommentInlineEditForModelView {
   margin-top: 15px;
+  padding-left: 120px;
+}
+#CommentInlineEditForModelView td {
+  padding-right: 0 !important;
 }
 #CommentInlineEditForModelView h2 {
-  margin-bottom: 15px;
-  margin-left: 15px;
+  margin-left: 10px;
 }
 #CommentInlineEditForModelView .wide.form {
   padding: 0;
@@ -5347,29 +5430,21 @@ span.tooltip {
   width: 100%;
   float: none;
 }
-#CommentInlineEditForModelView #inline-edit-form {
-  padding-left: 15px;
-}
-#CommentInlineEditForModelView #inline-edit-form table {
-  border-bottom: none;
-}
-#CommentInlineEditForModelView #inline-edit-form td {
-  padding-left: 0 !important;
-}
-#CommentInlineEditForModelView #inline-edit-form .files {
+#CommentInlineEditForModelView table {
   margin-bottom: 0;
-}
-#CommentInlineEditForModelView #inline-edit-form .files td {
-  padding-bottom: 0;
-}
-#CommentInlineEditForModelView .view-toolbar-container {
-  padding-top: 13px;
-}
-#CommentInlineEditForModelView .view-toolbar-container a {
-  color: #fff !important;
 }
 #CommentInlineEditForModelView .form-toolbar {
   border-top: none;
+  padding-top: 0;
+  text-align: right;
+  margin-top: 15px;
+}
+#CommentInlineEditForModelView .form-toolbar a {
+  color: #fff !important;
+  margin-right: 0;
+}
+#CommentInlineEditForModelView .files {
+  float: left;
 }
 .attachments {
   margin-top: 5px;
@@ -5419,6 +5494,113 @@ span.tooltip {
 }
 .mission-change-status-link {
   margin-right: 10px;
+}
+.missionStatusChangeArea {
+  display: inline-block;
+}
+.missionStatusChangeArea a {
+  float: none;
+  color: #fff !important;
+}
+.comment-content .missionStatusChangeArea a:first-child {
+  margin-left: 15px;
+}
+.mission-status {
+  margin: 0 5px;
+}
+#MissionsListView .actions-column {
+  width: 250px;
+}
+/*=Social Items*/
+.SocialItemsListView tr:hover,
+#AllSocialItemsForPortletView tr:hover {
+  background: none !important;
+  color: inherit !important;
+}
+.SocialItemsListView .CommentList,
+#AllSocialItemsForPortletView .CommentList {
+  margin-left: 80px;
+}
+.SocialItemsListView .model-details-summary,
+#AllSocialItemsForPortletView .model-details-summary {
+  padding-left: 80px;
+  padding-top: 0;
+}
+.SocialItemsListView .model-details-summary .gravatar,
+#AllSocialItemsForPortletView .model-details-summary .gravatar {
+  margin-left: -65px;
+}
+.SocialItemsListView .show-create-comment,
+#AllSocialItemsForPortletView .show-create-comment {
+  margin-left: 80px;
+}
+.SocialItemsListView .wide.form,
+#AllSocialItemsForPortletView .wide.form {
+  border: none;
+  background: none !important;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+}
+.SocialItemsListView .wide.form form,
+#AllSocialItemsForPortletView .wide.form form {
+  border: none;
+  background: none !important;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+  padding-bottom: 0;
+}
+.SocialItemsListView .wide.form table.files,
+#AllSocialItemsForPortletView .wide.form table.files {
+  border-bottom: none;
+}
+.SocialItemsListView .wide.form .panel > table,
+#AllSocialItemsForPortletView .wide.form .panel > table {
+  padding-bottom: 10px;
+}
+.SocialItemsListView .delete-social-item,
+#AllSocialItemsForPortletView .delete-social-item {
+  margin-left: 5px;
+}
+.SocialItemsListView .delete-social-item a,
+#AllSocialItemsForPortletView .delete-social-item a {
+  margin-left: 4px;
+}
+.SocialItemsListView .delete-social-item:before,
+#AllSocialItemsForPortletView .delete-social-item:before {
+  font-weight: normal;
+  font-size: 18px;
+  font-family: "ZurmoGamificationSymblyReguRg";
+  content: "_";
+}
+.SocialItemsListView .form-toolbar,
+#AllSocialItemsForPortletView .form-toolbar {
+  text-align: right;
+}
+.SocialItemsListView .form-toolbar a,
+#AllSocialItemsForPortletView .form-toolbar a {
+  color: #fff !important;
+  margin-right: 0;
+}
+.SocialItemsListView .comment-content,
+#AllSocialItemsForPortletView .comment-content {
+  padding-right: 15px;
+}
+#SocialItemInlineEditView .form-toolbar {
+  text-align: right;
+}
+#SocialItemInlineEditView .form-toolbar a {
+  color: #fff !important;
+  margin-right: 0;
+}
+.social-item form td {
+  padding-left: 65px !important;
+  padding-top: 0 !important;
 }
 #ArchivedEmailMatchingListView .items td {
   padding-right: 10px;
@@ -5588,9 +5770,6 @@ span.tooltip {
     right: 0 !important;
   }
 }
-.gravatar {
-  float: left;
-}
 @font-face {
   font-family: 'ZurmoGamificationSymblyReguRg';
   src: url('../fonts/zurmogamificationsymblyregular-regular-webfont.eot');
@@ -5656,11 +5835,11 @@ h4,
 h5,
 h6 {
   color: #262877;
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
-  text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
+  -webkit-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  -moz-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  -o-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  -ms-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 a:link,
 a:hover,
@@ -5674,6 +5853,12 @@ a:hover img,
 a:active img,
 a:visited img {
   border: none;
+}
+a:link:focus,
+a:hover:focus,
+a:active:focus,
+a:visited:focus {
+  outline: none;
 }
 a:hover {
   color: #262877 !important;
@@ -6697,11 +6882,8 @@ section {
 #RecentlyViewedView li.type-EmailMessageModule em:before {
   content: "g";
 }
-#RecentlyViewedView li.type-MissionsModule em {
-  padding-top: 1px;
-}
 #RecentlyViewedView li.type-MissionsModule em:before {
-  content: "{";
+  content: "Q";
 }
 /*=Content*/
 .AppContent {
@@ -7248,14 +7430,14 @@ table.items th {
   padding: 0;
 }
 .checkbox-column {
-  width: 35px;
+  width: 45px;
   text-align: center;
 }
 .checkbox-column .hasCheckBox {
   margin-top: -4px;
 }
 .button-column {
-  width: 25px;
+  width: 35px;
   text-align: center;
   vertical-align: middle !important;
 }
@@ -7350,6 +7532,15 @@ td.empty {
 .form input[type="password"],
 .form select.multiple,
 .form textarea {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* @doubtful_existance: I don’t think these even exist? Can’t hurt much, I guess. */
+
+  -moz-font-smoothing: antialiased;
+  -o-font-smoothing: antialiased;
+  /* end @doubtful_existance */
+
+  font-smoothing: antialiased;
   display: inline-block;
   border: 1px solid #ccc;
   -webkit-border-radius: 3px;
@@ -7474,8 +7665,8 @@ td.empty {
   -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
   text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
 }
-.modal-view-toolbar a.attachLoading,
-.form-toolbar a.attachLoading {
+.modal-view-toolbar a.attachLoading.z-button,
+.form-toolbar a.attachLoading.z-button {
   color: #fff !important;
 }
 .modal-view-toolbar a:not(.attachLoading),
@@ -7495,7 +7686,8 @@ td.empty {
   -ms-box-shadow: inset 0 10px 10px 4px rgba(153, 153, 153, 0.4), 0 1px 0 0 #FFF;
   box-shadow: inset 0 10px 10px 4px rgba(153, 153, 153, 0.4), 0 1px 0 0 #FFF;
 }
-a.attachLoading {
+.green-button,
+.attachLoading {
   color: #FFF !important;
   -webkit-text-shadow: rgba(156, 156, 156, 0.8) 0px 1px;
   -moz-text-shadow: rgba(156, 156, 156, 0.8) 0px 1px;
@@ -7519,16 +7711,66 @@ a.attachLoading {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#97c43d', endColorstr='#6fa82d', GradientType=0);
   cursor: pointer;
 }
-a.attachLoading:hover {
+.green-button:hover,
+.attachLoading:hover {
   color: #656565 !important;
 }
-a.attachLoading:active {
+.green-button:active,
+.attachLoading:active {
   color: #FFF !important;
   -webkit-box-shadow: inset 0 1px 5px 2px rgba(0, 0, 0, 0.4), 0 1px 0 0 #FFF;
   -moz-box-shadow: inset 0 1px 5px 2px rgba(0, 0, 0, 0.4), 0 1px 0 0 #FFF;
   -o-box-shadow: inset 0 1px 5px 2px rgba(0, 0, 0, 0.4), 0 1px 0 0 #FFF;
   -ms-box-shadow: inset 0 1px 5px 2px rgba(0, 0, 0, 0.4), 0 1px 0 0 #FFF;
   box-shadow: inset 0 1px 5px 2px rgba(0, 0, 0, 0.4), 0 1px 0 0 #FFF;
+}
+.action-take {
+  background-color: #ffad43;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#ffa660), to(#ffad43));
+  background-image: -moz-linear-gradient(top, #ffa660, #ffad43);
+  background-image: -ms-linear-gradient(top, #ffa660, #ffad43);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffa660), color-stop(100%, #ffad43));
+  background-image: -webkit-linear-gradient(top, #ffa660, #ffad43);
+  background-image: -o-linear-gradient(top, #ffa660, #ffad43);
+  background-image: linear-gradient(top, #ffa660, #ffad43);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffa660', endColorstr='#ffad43', GradientType=0);
+}
+.action-complete {
+  background-color: #6fa82d;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#97c43d), to(#6fa82d));
+  background-image: -moz-linear-gradient(top, #97c43d, #6fa82d);
+  background-image: -ms-linear-gradient(top, #97c43d, #6fa82d);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #97c43d), color-stop(100%, #6fa82d));
+  background-image: -webkit-linear-gradient(top, #97c43d, #6fa82d);
+  background-image: -o-linear-gradient(top, #97c43d, #6fa82d);
+  background-image: linear-gradient(top, #97c43d, #6fa82d);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#97c43d', endColorstr='#6fa82d', GradientType=0);
+}
+.action-accept {
+  background-color: #6fa82d;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#97c43d), to(#6fa82d));
+  background-image: -moz-linear-gradient(top, #97c43d, #6fa82d);
+  background-image: -ms-linear-gradient(top, #97c43d, #6fa82d);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #97c43d), color-stop(100%, #6fa82d));
+  background-image: -webkit-linear-gradient(top, #97c43d, #6fa82d);
+  background-image: -o-linear-gradient(top, #97c43d, #6fa82d);
+  background-image: linear-gradient(top, #97c43d, #6fa82d);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#97c43d', endColorstr='#6fa82d', GradientType=0);
+}
+.action-reject {
+  background-color: #a82d31;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#c43d53), to(#a82d31));
+  background-image: -moz-linear-gradient(top, #c43d53, #a82d31);
+  background-image: -ms-linear-gradient(top, #c43d53, #a82d31);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #c43d53), color-stop(100%, #a82d31));
+  background-image: -webkit-linear-gradient(top, #c43d53, #a82d31);
+  background-image: -o-linear-gradient(top, #c43d53, #a82d31);
+  background-image: linear-gradient(top, #c43d53, #a82d31);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c43d53', endColorstr='#a82d31', GradientType=0);
 }
 .portlet-toolbar {
   position: absolute;
@@ -7814,7 +8056,7 @@ label.hasCheckBox + label {
   margin-top: 6px;
 }
 div.wide.form label.hasCheckBox {
-  margin-top: 0 !important;
+  margin-top: 0;
 }
 div.wide.form a {
   color: #262877;
@@ -7924,10 +8166,10 @@ div.wide.form a {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -7939,11 +8181,11 @@ div.wide.form a {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   margin-left: 30px;
   margin-top: 15px;
   float: left;
@@ -7953,6 +8195,11 @@ div.wide.form a {
 }
 .ZeroModelsYetView a:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .ZeroModelsYetView a:active {
   color: #656565;
@@ -8016,6 +8263,13 @@ div.wide.form a {
   font-size: 230px;
   font-family: "ZurmoGamificationSymblyReguRg";
   line-height: 90%;
+}
+.ZeroModelsYetView .Mission .large-icon:after {
+  content: "Q";
+  font-weight: normal;
+  font-size: 230px;
+  font-family: "ZurmoGamificationSymblyReguRg";
+  line-height: 80%;
 }
 .ZurmoSearchView {
   padding: 0;
@@ -8175,10 +8429,10 @@ div.wide.form a {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -8190,17 +8444,22 @@ div.wide.form a {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 .search-form-tools input[type="submit"]:not(.attachLoading) {
   background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
 }
 .search-form-tools input[type="submit"]:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .search-form-tools input[type="submit"]:active {
   color: #656565;
@@ -8315,11 +8574,30 @@ div.wide.form a {
 .search-view-1 .view-toolbar-container {
   display: inline-block;
 }
+.select-list-attributes-view {
+  /*.multiselect-nav-updown{
+        height:auto;
+        margin-top:10px;
+        margin-right:75px;
+        float: right;
+        width:142px;
+        input{
+            float: left;
+            margin-right:10px;
+            margin-bottom: 0 !important;
+        }
+    }*/
+
+}
 .select-list-attributes-view table {
   border-bottom: none;
 }
 .select-list-attributes-view .attributesContainer:after {
   display: none !important;
+}
+.select-list-attributes-view .multiselect-holder {
+  width: 750px;
+  padding-left: 60px;
 }
 #clear-search-link {
   background: #262877;
@@ -8851,10 +9129,11 @@ div.wide.form a {
   padding: 0 5px 0 10px !important;
 }
 .details-table p {
-  color: #545454 !important;
+  /*color:#545454 !important
+        float:none;
+        clear:left;*/
+
   width: 100%;
-  float: none;
-  clear: left;
 }
 .details-table p a {
   color: #262877 !important;
@@ -8864,7 +9143,7 @@ div.wide.form a {
   padding-left: 10px;
 }
 .details-table a {
-  color: #262877 !important;
+  color: #262877;
 }
 .details-table .map-link {
   display: inline-block;
@@ -8882,6 +9161,19 @@ div.wide.form a {
 .details-table .hasCheckBox {
   margin-top: 0;
   margin-left: 0;
+}
+.after-form-details-content {
+  color: #545454 !important;
+  float: none;
+  clear: left;
+  width: 100%;
+  font-size: 10px;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.after-form-details-content a {
+  color: #262877 !important;
 }
 .mapcanvas {
   width: 600px;
@@ -8920,6 +9212,20 @@ div.wide.form a {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+}
+.ProgressView,
+#MetadataViewEditView,
+.TableOfContentsView,
+.DetailsView,
+.EditAndDetailsView {
+  /*p{
+        font-size:10px;
+        font-style:italic;
+        color:#999999;
+        text-align:center;
+        margin-bottom:10px;
+    }*/
+
 }
 .ProgressView > div,
 #MetadataViewEditView > div,
@@ -8982,17 +9288,6 @@ div.wide.form a {
   box-shadow: inset 0 1px 0 0 #ffffff;
   border-bottom: 1px solid #ccc;
   overflow: hidden;
-}
-.ProgressView p,
-#MetadataViewEditView p,
-.TableOfContentsView p,
-.DetailsView p,
-.EditAndDetailsView p {
-  font-size: 10px;
-  font-style: italic;
-  color: #999999;
-  text-align: center;
-  margin-bottom: 10px;
 }
 .ProgressView th,
 #MetadataViewEditView th,
@@ -9080,10 +9375,10 @@ div.wide.form a {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -9095,11 +9390,11 @@ div.wide.form a {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
   font-size: 11px;
   color: #666 !important;
 }
@@ -9108,6 +9403,11 @@ div.wide.form a {
 }
 .toolbar-mbmenu .options-menu > li > a:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 .toolbar-mbmenu .options-menu > li > a:active {
   color: #656565;
@@ -9496,6 +9796,20 @@ div.wide.form a {
 #inline-edit-form .permissions-box select {
   margin-top: 6px;
 }
+.post-to-profile {
+  float: right;
+  margin-right: 25px;
+  margin-top: 6px;
+}
+.post-to-profile span {
+  margin-left: 10px;
+  margin-top: -3px;
+  position: relative;
+  right: 0;
+}
+.post-to-profile label.hasCheckBox {
+  margin-top: -6px !important;
+}
 /*=Sticky search*/
 .BreadCrumbView {
   position: relative;
@@ -9671,7 +9985,7 @@ div.hasHalfs .twoThirds {
   width: 64%;
 }
 .juiportlet-widget td {
-  padding-left: 0 !important;
+  padding-left: 0;
 }
 .juiportlet-widget td:first-child {
   border-top: none;
@@ -9707,6 +10021,116 @@ div.hasHalfs .twoThirds {
 .juiportlet-widget.OpportunitiesForAccountRelatedListView div.button-column,
 .juiportlet-widget.ContactsForAccountRelatedListView div.button-column {
   padding-top: 4px;
+}
+/*Related lists portlet with gear menu*/
+.RelatedListView .items td {
+  border-top: none !important;
+}
+.RelatedListView .items td:first-child {
+  padding-left: 15px;
+}
+.RelatedListView .items tr:hover .edit-row-menu > li > a {
+  filter: alpha(opacity=100);
+  -khtml-opacity: 1;
+  -moz-opacity: 1;
+  opacity: 1;
+}
+.edit-row-menu {
+  float: right;
+  margin: 0 15px 0 0;
+  list-style: none;
+}
+.edit-row-menu > li {
+  position: relative;
+  -webkit-text-shadow: none !important;
+  -moz-text-shadow: none !important;
+  -o-text-shadow: none !important;
+  -ms-text-shadow: none !important;
+  text-shadow: none !important;
+}
+.edit-row-menu > li > a {
+  padding: 0;
+  display: block;
+  overflow: visible;
+  filter: alpha(opacity=25);
+  -khtml-opacity: 0.25;
+  -moz-opacity: 0.25;
+  opacity: 0.25;
+}
+.edit-row-menu > li > a span {
+  display: inline-block;
+  text-indent: -9999px;
+  -webkit-text-shadow: none !important;
+  -moz-text-shadow: none !important;
+  -o-text-shadow: none !important;
+  -ms-text-shadow: none !important;
+  text-shadow: none !important;
+}
+.edit-row-menu > li > a:hover {
+  filter: alpha(opacity=100);
+  -khtml-opacity: 1;
+  -moz-opacity: 1;
+  opacity: 1;
+}
+.edit-row-menu > li > a:after {
+  content: "n";
+  color: #262877;
+  font-weight: normal;
+  font-size: 26px;
+  font-family: "ZurmoGamificationSymblyReguRg";
+}
+.edit-row-menu > li a {
+  -webkit-text-shadow: none !important;
+  -moz-text-shadow: none !important;
+  -o-text-shadow: none !important;
+  -ms-text-shadow: none !important;
+  text-shadow: none !important;
+}
+.edit-row-menu ul {
+  display: block;
+  width: 110px;
+  margin-left: -97px;
+  list-style: none;
+  z-index: 9999;
+  min-width: 110px;
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 33px;
+  border: 1px solid #b6b6b6;
+  background-color: #ebebeb;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#f5f5f5), to(#ebebeb));
+  background-image: -moz-linear-gradient(top, #f5f5f5, #ebebeb);
+  background-image: -ms-linear-gradient(top, #f5f5f5, #ebebeb);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f5f5f5), color-stop(100%, #ebebeb));
+  background-image: -webkit-linear-gradient(top, #f5f5f5, #ebebeb);
+  background-image: -o-linear-gradient(top, #f5f5f5, #ebebeb);
+  background-image: linear-gradient(top, #f5f5f5, #ebebeb);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f5f5f5', endColorstr='#ebebeb', GradientType=0);
+  -webkit-box-shadow: inset 0 0 0 2px #ffffff,  0 0 9px 5px rgba(153, 153, 153, 0.12);
+  -moz-box-shadow: inset 0 0 0 2px #ffffff,  0 0 9px 5px rgba(153, 153, 153, 0.12);
+  -o-box-shadow: inset 0 0 0 2px #ffffff,  0 0 9px 5px rgba(153, 153, 153, 0.12);
+  -ms-box-shadow: inset 0 0 0 2px #ffffff,  0 0 9px 5px rgba(153, 153, 153, 0.12);
+  box-shadow: inset 0 0 0 2px #ffffff,  0 0 9px 5px rgba(153, 153, 153, 0.12);
+  padding-top: 3px;
+  padding-bottom: 3px;
+  top: 16px;
+}
+.edit-row-menu ul li {
+  line-height: 100%;
+}
+.edit-row-menu ul a {
+  color: #666;
+  font-size: 11px;
+  font-weight: normal;
+  display: block;
+  padding: 5px 10px 5px 10px;
+  margin: 0 2px;
+}
+.edit-row-menu ul a:hover {
+  color: #fff !important;
+  background: #7cb730;
 }
 /*Upcoming Meeting Pager*/
 .pager {
@@ -10121,6 +10545,17 @@ div.hasHalfs .twoThirds {
   font-family: "ZurmoGamificationSymblyReguRg";
   line-height: 28px;
 }
+.LatestActivitiesListView .Mission:after,
+.LatestActivitiesView .Mission:after {
+  content: "Q";
+  position: relative;
+  top: -3px;
+  color: #666 !important;
+  font-weight: normal;
+  font-size: 42px;
+  font-family: "ZurmoGamificationSymblyReguRg";
+  line-height: 28px;
+}
 #activities-rollup-tooltip {
   position: relative;
   margin-top: -9px;
@@ -10148,7 +10583,7 @@ div.hasHalfs .twoThirds {
   font-weight: normal;
   font-size: 20px;
   font-family: "ZurmoGamificationSymblyReguRg";
-  content: "6";
+  content: "6" !important;
 }
 .vertical-forward-pager span {
   display: none;
@@ -10313,7 +10748,7 @@ div.hasHalfs .twoThirds {
   -o-border-radius: 3px;
   border-radius: 3px;
   font-size: 12px;
-  color: #999;
+  color: #666;
   text-indent: 0;
   line-height: 24px;
   -webkit-box-shadow: 0 0 1px 1px rgba(153, 153, 153, 0.3);
@@ -10347,7 +10782,7 @@ div.hasHalfs .twoThirds {
   padding-left: 6px;
   display: block !important;
   font-weight: normal !important;
-  color: #999 !important;
+  color: #666 !important;
 }
 .dk_toggle:hover {
   background: url(../images/dropdown-arrow.png) right bottom no-repeat;
@@ -10382,7 +10817,7 @@ div.hasHalfs .twoThirds {
   padding: 0 6px;
   line-height: 24px;
   font-weight: normal !important;
-  color: #999 !important;
+  color: #666 !important;
 }
 .dk_options li:last-child a {
   border-bottom: none;
@@ -10399,7 +10834,7 @@ div.hasHalfs .twoThirds {
   border: 1px solid #ccc;
   border-bottom-width: 2px;
   border-bottom-color: #ccc;
-  color: #999;
+  color: #666;
   max-height: 250px;
   -webkit-border-radius: 0 0 3px 3px;
   -moz-border-radius: 0 0 3px 3px;
@@ -10548,10 +10983,10 @@ div.hasHalfs .twoThirds {
   font-weight: bold;
   text-indent: 0;
   display: inline-block;
-  border-top: 1px solid #e7e7e7;
-  border-left: 1px solid #d7d7d7;
-  border-right: 1px solid #d7d7d7;
-  border-bottom: 1px solid #bababa;
+  border-top: 1px solid rgba(230, 230, 230, 0.75);
+  border-left: 1px solid rgba(215, 215, 215, 0.75);
+  border-right: 1px solid rgba(215, 215, 215, 0.75);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.75);
   color: #656565;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -10563,17 +10998,22 @@ div.hasHalfs .twoThirds {
   -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
   box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.15);
-  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -o-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
-  text-shadow: rgba(255, 255, 255, 0.8) 0px 1px;
+  -webkit-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -moz-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -o-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  -ms-text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
+  text-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1) !important;
 }
 #progressBar-links a:not(.attachLoading) {
   background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
 }
 #progressBar-links a:hover {
   color: #7bb730 !important;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -moz-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -o-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  -ms-text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
+  text-shadow: rgba(255, 255, 255, 0.5) 0px 1px !important;
 }
 #progressBar-links a:active {
   color: #656565;
@@ -10743,6 +11183,9 @@ div.hasHalfs .twoThirds {
   margin-left: 0;
 }
 /*=RSS Widget*/
+.rssBody {
+  line-height: 140%;
+}
 .rssBody ul {
   list-style: none;
 }

@@ -79,11 +79,10 @@
                 assert('is_string($leaderboardData["rank"])');
                 assert('is_string($leaderboardData["userLabel"])');
                 assert('is_int($leaderboardData["points"])');
-                
-                
-                $avatarUrl = null;// $model->getAvatarImageUrl(24);
-                $avatarImage = ZurmoHtml::image($avatarUrl, null);
-                
+
+                $user        = User::getById($userId);
+                $avatarImage = $user->getAvatarImage(24);
+
                 $content .= '<tr>';
                 $content .= '<td><span class="ranking">' . $leaderboardData['rank'] . '</span></td>';
                 $content .= '<td class="user-label">' . $avatarImage . '<span>' . $leaderboardData['userLabel'] . '</span></td>';

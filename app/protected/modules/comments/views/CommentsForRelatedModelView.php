@@ -120,12 +120,11 @@
                     $rows++;
                     continue;
                 }
-                
-                $avatarUrl = $comment->createdByUser->getAvatarImageUrl(36);
-                $stringContent = ZurmoHtml::image($avatarUrl, null, array('class' => 'gravatar'));
+
+                $stringContent = $comment->createdByUser->getAvatarImage(36);
                 $userName = Yii::t('Default', '<strong>{ownerStringContent}</strong>',
                                         array('{ownerStringContent}' => strval($comment->createdByUser)));
-                $stringContent .= '<div class="comment-content">' . $userName . ': ' . $comment->description;
+                $stringContent .= '<div class="comment-content"><p>' . $userName . ': ' . $comment->description . '</p>';
 
                 //attachments
                 if ($comment->files->count() > 0)
@@ -144,9 +143,9 @@
                 }
                 $stringContent .= '<span class="comment-details"><strong>'. DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
                                               $comment->createdDateTime, 'long', null) . '</strong></span>' . $deleteCommentLink;
-                
+
                 $stringContent .= '</div>';
-                
+
                 $content .= '<div class="comment">' . $stringContent . '</div>';
                 $rows++;
             }
@@ -161,7 +160,7 @@
             return       ZurmoHtml::ajaxLink(Yii::t('Default', 'Delete Comment'), $url,
                          array('type'     => 'GET',
                                'complete' => "function(XMLHttpRequest, textStatus){
-                                              $('#deleteCommentLink" . $comment->id . "').parent().parent().remove();}"),
+                                              $('#deleteCommentLink" . $comment->id . "').parent().parent().parent().remove();}"),
                          array('id'         => 'deleteCommentLink' . $comment->id,
                                 'class'     => 'deleteCommentLink' . $comment->id,
                                 'namespace' => 'delete'));

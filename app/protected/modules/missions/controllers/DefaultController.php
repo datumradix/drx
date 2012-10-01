@@ -134,6 +134,7 @@
                                    'relatedModelRelationName' => 'comments',
                                    'redirectUrl'              => $redirectUrl); //After save, the url to go to.
             $uniquePageId  = 'CommentInlineEditForModelView';
+            echo             ZurmoHtml::tag('h2', array(), Yii::t('Default', 'Add Comment'));
             $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
                                                        $urlParameters, $uniquePageId);
             $view          = new AjaxPageView($inlineView);
@@ -177,7 +178,8 @@
             {
                 $content .= '<div>' . Yii::t('Default', 'This mission is already taken') . '</div>';
             }
-            $content = ZurmoHtml::tag('div', array('id' => MissionStatusElement::getStatusChangeDivId($mission->id)), $content);
+            $content = ZurmoHtml::tag('div', array('id'    => MissionStatusElement::getStatusChangeDivId($mission->id),
+                                                   'class' => 'missionStatusChangeArea'), $content);
             Yii::app()->getClientScript()->setToAjaxMode();
             Yii::app()->getClientScript()->render($content);
             echo $content;

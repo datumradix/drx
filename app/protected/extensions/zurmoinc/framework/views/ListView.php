@@ -237,15 +237,7 @@
                 );
                 array_push($columns, $firstColumn);
             }
-            $menuColumn = $this->getGridViewMenuColumn();
-            if($menuColumn == null)
-            {
-                $lastColumn = $this->getCGridViewLastColumn();
-                if (!empty($lastColumn))
-                {
-                    array_push($columns, $lastColumn);
-                }
-            }
+
             $metadata = $this->getResolvedMetadata();
             foreach ($metadata['global']['panels'] as $panel)
             {
@@ -267,8 +259,16 @@
                     }
                 }
             }
-
-            if (!empty($menuColumn))
+            $menuColumn = $this->getGridViewMenuColumn();
+            if($menuColumn == null)
+            {
+                $lastColumn = $this->getCGridViewLastColumn();
+                if (!empty($lastColumn))
+                {
+                    array_push($columns, $lastColumn);
+                }
+            }
+            else
             {
                 array_push($columns, $menuColumn);
             }
@@ -416,13 +416,21 @@
 
         public function getRelatedLinkString($attributeString, $attributeName, $moduleId)
         {
-            $string  = 'ZurmoHtml::link(';
+            $string  = 'ListView::resolveRelatedListStringContent($data->' . $attributeName . '->id, ZurmoHtml::link(';
             $string .=  $attributeString . ', ';
             $string .= 'Yii::app()->createUrl("' .
                         $this->getGridViewActionRoute('details', $moduleId) . '",
                         array("id" => $data->' . $attributeName . '->id))';
-            $string .= ')';
+            $string .= '))';
             return $string;
+        }
+
+        public static function resolveRelatedListStringContent($modelId, $linkStringContent)
+        {
+            if($modelId  > 0)
+            {
+                return $linkStringContent;
+            }
         }
 
         public static function getDesignerRulesType()

@@ -40,32 +40,26 @@
         public static function renderItemAndCommentsContent(SocialItem $model, $redirectUrl)
         {
             assert('is_string($redirectUrl) || $redirectUrl == null');
+
             $content  = '<div class="social-item">';
-            //todo: use user's avatar (owner)
-            $avatarUrl = null;// $model->getAvatarImageUrl(24);
-            $avatarImage = ZurmoHtml::image($avatarUrl, null, array('class' => 'gravatar'));
-                
-            $content .= '<span class="user-details clearfix">' . $avatarImage;
+            $avatarImage = $model->owner->getAvatarImage(50);
+            $content .= '<div class="comment model-details-summary clearfix">';
+            $content .= '<span class="user-details">' . $avatarImage;
             $content .= ZurmoHtml::tag('strong', array(), strval($model->owner) );
             $content .= '</span>';
-            
+
             $content .= '<div class="comment-content"><p>' . self::renderModelDescription($model) . '</p></div>';
-            
-            //$content .= '<em class="'.get_class($model).'"></em>';
-            
             $content .= self::renderAfterDescriptionContent($model);
             $content .= self::renderItemFileContent($model);
-            
+
             $content .= '<span class="comment-details"><strong>'. DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
                                     $model->latestDateTime, 'long', null) . '</strong>';
-            
+
             $content .= '<span class="delete-social-item">' . self::renderDeleteLinkContent($model) . '</span></span>';
-            
-            
-            $content .= '<div>';
+            $content .= '</div>';
+
             $content .= self::renderCommentsContent($model);
             $content .= self::renderCreateCommentContent($model);
-            $content .= '</div>';
 
             $content .= '</div>';
             self::registerListColumnScripts();
@@ -91,10 +85,10 @@
                 $content = null;
                 if($model->note->activityItems->count() > 0)
                 {
-                    $content                     .= '<br/>';
                     $element                      = new NoteActivityItemsForSocialItemsListElement($model->note, null);
                     $element->nonEditableTemplate = '{content}';
                     $content                     .= $element->render();
+                    $content                     .= '<br/>';
                 }
                 return $content;
             }
@@ -153,7 +147,7 @@
         private static function renderCreateCommentContent(SocialItem $model)
         {
             $content       = ZurmoHtml::tag('span', array(),
-                                            ZurmoHtml::link(Yii::t('Default', 'Comment'), '#',
+                                            ZurmoHtml::link(Yii::t('Default', 'Add your comment'), '#',
                                                             array('class' => 'show-create-comment')));
             $comment       = new Comment();
             $uniquePageId  = self::makeUniquePageIdByModel($model);
