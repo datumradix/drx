@@ -3518,6 +3518,9 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   input[type="button"] {
     height: 26px;
   }
+  input::-moz-focus-inner {
+    border: 0;
+  }
 }
 span.tooltip {
   width: 15px;
@@ -5858,6 +5861,7 @@ a:active,
 a:visited {
   text-decoration: none;
   color: #545454;
+  outline: none;
 }
 a:link img,
 a:hover img,
@@ -8108,7 +8112,7 @@ div.wide.form a {
   -ms-box-shadow: 0 0 30px 0 rgba(100, 100, 100, 0.7);
   box-shadow: 0 0 30px 0 rgba(100, 100, 100, 0.7);
   position: absolute;
-  top: 50%;
+  top: 40px;
   left: 50%;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
@@ -8124,6 +8128,9 @@ div.wide.form a {
   height: auto;
   display: block;
   margin: 4px 0 0 4px;
+}
+.juiportlet-widget .list-preloader {
+  top: 50%;
 }
 .overlay-spinner {
   position: fixed;
@@ -10879,6 +10886,7 @@ div.hasHalfs .twoThirds {
   color: inherit;
 }
 .dk_options {
+  z-index: 0;
   display: none;
   margin-top: 3px;
   position: absolute;
