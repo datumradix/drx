@@ -3518,6 +3518,9 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   input[type="button"] {
     height: 26px;
   }
+  input::-moz-focus-inner {
+    border: 0;
+  }
 }
 span.tooltip {
   width: 15px;
@@ -5586,6 +5589,9 @@ a.close-ModalGameNotification.simple-select {
 #AllSocialItemsForPortletView .comment-content {
   padding-right: 15px;
 }
+.SocialItemsListView .items td {
+  padding-left: 0 !important;
+}
 .delete-social-item {
   margin-left: 5px;
   visibility: hidden;
@@ -5858,6 +5864,7 @@ a:active,
 a:visited {
   text-decoration: none;
   color: #545454;
+  outline: none;
 }
 a:link img,
 a:hover img,
@@ -7401,6 +7408,7 @@ td {
   text-align: left;
 }
 table.items {
+  width: 100%;
   border: 1px solid #DFDFDF;
   border-collapse: collapse;
   border-spacing: 1px;
@@ -7408,64 +7416,19 @@ table.items {
 table.items th,
 table.items td {
   border: 1px solid #DFDFDF;
-  vertical-align: middle;
-  padding: 2px;
-}
-table.items {
-  width: 100%;
-}
-table.items td,
-table.items th {
   border-right: none;
   border-left: none;
-  padding: 10px 0;
-}
-table.items tbody,
-table.items tbody tr:last-child,
-table.items tbody tr:last-child td {
-  border-bottom: none;
-}
-table.items tbody tr td:first-child:not(.checkbox-column),
-table.items tbody tr th:first-child:not(.checkbox-column) {
-  padding-left: 10px;
-}
-.juiportlet-widget table.items thead tr th:first-child,
-.juiportlet-widget table.items tbody tr td:first-child {
-  padding-left: 15px;
+  vertical-align: middle;
+  padding: 10px 5px;
 }
 table.items th {
   font-weight: bold !important;
   height: 35px;
   line-height: 35px;
   background: url(../images/table-items-header.png) left top repeat-x;
-  padding: 0;
-}
-.checkbox-column {
-  width: 45px;
-  text-align: center;
-}
-.checkbox-column .hasCheckBox {
-  margin-top: -4px;
-}
-.button-column {
-  width: 35px;
-  text-align: center;
-  vertical-align: middle !important;
-}
-tr.odd {
-  background: none;
-  -webkit-transition: all 0.05s ease-out;
-  -moz-transition: all 0.05s ease-out;
-  -o-transition: all 0.05s ease-out;
-  -ms-transition: all 0.05s ease-out;
-  transition: all 0.05s ease-out;
-}
-tr.even {
-  -webkit-transition: all 0.05s ease-out;
-  -moz-transition: all 0.05s ease-out;
-  -o-transition: all 0.05s ease-out;
-  -ms-transition: all 0.05s ease-out;
-  transition: all 0.05s ease-out;
+  padding-top: 0;
+  padding-bottom: 0;
+  white-space: nowrap;
 }
 table.items tr:hover {
   background-color: #D4E7BC;
@@ -7504,6 +7467,47 @@ table.items thead tr:hover {
   background-image: linear-gradient(top, #f9f9f9, #f4f4f4);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#f4f4f4', GradientType=0);
 }
+table.items tbody tr:last-child,
+table.items tbody tr:last-child td {
+  border-bottom: none;
+}
+table.items tbody tr td:first-child:not(.checkbox-column),
+table.items tbody tr th:first-child:not(.checkbox-column) {
+  padding-left: 10px;
+}
+tr.odd {
+  background: none;
+  -webkit-transition: all 0.05s ease-out;
+  -moz-transition: all 0.05s ease-out;
+  -o-transition: all 0.05s ease-out;
+  -ms-transition: all 0.05s ease-out;
+  transition: all 0.05s ease-out;
+}
+tr.even {
+  -webkit-transition: all 0.05s ease-out;
+  -moz-transition: all 0.05s ease-out;
+  -o-transition: all 0.05s ease-out;
+  -ms-transition: all 0.05s ease-out;
+  transition: all 0.05s ease-out;
+}
+.checkbox-column {
+  width: 40px;
+  text-align: center;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+.checkbox-column .hasCheckBox {
+  margin-top: -4px;
+}
+.button-column {
+  width: 35px;
+  text-align: center;
+  vertical-align: middle !important;
+}
+.juiportlet-widget table.items thead tr th:first-child,
+.juiportlet-widget table.items tbody tr td:first-child {
+  padding-left: 15px;
+}
 .pencil {
   display: block;
   margin-top: -2px;
@@ -7516,8 +7520,10 @@ table.items thead tr:hover {
   padding: 10px 0 10px 15px;
   display: block;
 }
+.juiportlet-widget td.empty > .empty {
+  padding: 0 !important;
+}
 .empty {
-  padding-left: 15px;
   display: block;
 }
 td.empty {
@@ -8108,7 +8114,7 @@ div.wide.form a {
   -ms-box-shadow: 0 0 30px 0 rgba(100, 100, 100, 0.7);
   box-shadow: 0 0 30px 0 rgba(100, 100, 100, 0.7);
   position: absolute;
-  top: 50%;
+  top: 40px;
   left: 50%;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
@@ -8124,6 +8130,9 @@ div.wide.form a {
   height: auto;
   display: block;
   margin: 4px 0 0 4px;
+}
+.juiportlet-widget .list-preloader {
+  top: 50%;
 }
 .overlay-spinner {
   position: fixed;
@@ -8929,7 +8938,7 @@ div.wide.form a {
 }
 #right-side-edit-view-panel {
   position: absolute;
-  right: 15px;
+  right: 40px;
   top: 15px;
   width: 30%;
   float: right;
@@ -9224,6 +9233,7 @@ div.wide.form a {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
+.TitleBarAndDetailsView,
 .ProgressView,
 #MetadataViewEditView,
 .TableOfContentsView,
@@ -9238,6 +9248,7 @@ div.wide.form a {
     }*/
 
 }
+.TitleBarAndDetailsView > div,
 .ProgressView > div,
 #MetadataViewEditView > div,
 .TableOfContentsView > div,
@@ -9260,6 +9271,7 @@ div.wide.form a {
   background-image: linear-gradient(#ffffff, #f5f5f5 80%, #f5f5f5) ;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f5f5f5', GradientType=0);
 }
+.TitleBarAndDetailsView > div .form form,
 .ProgressView > div .form form,
 #MetadataViewEditView > div .form form,
 .TableOfContentsView > div .form form,
@@ -9273,6 +9285,7 @@ div.wide.form a {
   -ms-box-shadow: none;
   box-shadow: none;
 }
+.TitleBarAndDetailsView h1,
 .ProgressView h1,
 #MetadataViewEditView h1,
 .TableOfContentsView h1,
@@ -9300,6 +9313,7 @@ div.wide.form a {
   border-bottom: 1px solid #ccc;
   overflow: hidden;
 }
+.TitleBarAndDetailsView th,
 .ProgressView th,
 #MetadataViewEditView th,
 .TableOfContentsView th,
@@ -9308,11 +9322,13 @@ div.wide.form a {
   color: #999;
   text-align: right;
 }
+.TitleBarAndDetailsView td,
 .ProgressView td,
 #MetadataViewEditView td,
 .TableOfContentsView td,
 .DetailsView td,
 .EditAndDetailsView td,
+.TitleBarAndDetailsView td a,
 .ProgressView td a,
 #MetadataViewEditView td a,
 .TableOfContentsView td a,
@@ -9320,11 +9336,13 @@ div.wide.form a {
 .EditAndDetailsView td a {
   color: #525252;
 }
+.TitleBarAndDetailsView th,
 .ProgressView th,
 #MetadataViewEditView th,
 .TableOfContentsView th,
 .DetailsView th,
 .EditAndDetailsView th,
+.TitleBarAndDetailsView td,
 .ProgressView td,
 #MetadataViewEditView td,
 .TableOfContentsView td,
@@ -9334,6 +9352,7 @@ div.wide.form a {
   padding-top: 15px !important;
   vertical-align: top !important;
 }
+.TitleBarAndDetailsView input[type="checkbox"] + label,
 .ProgressView input[type="checkbox"] + label,
 #MetadataViewEditView input[type="checkbox"] + label,
 .TableOfContentsView input[type="checkbox"] + label,
@@ -9342,6 +9361,7 @@ div.wide.form a {
   width: 60px;
   margin-top: 0;
 }
+.TitleBarAndDetailsView td + th,
 .ProgressView td + th,
 #MetadataViewEditView td + th,
 .TableOfContentsView td + th,
@@ -10085,6 +10105,12 @@ div.hasHalfs .twoThirds {
   -khtml-opacity: 1;
   -moz-opacity: 1;
   opacity: 1;
+}
+.edit-row-menu > li > a:before {
+  content: "▾ ";
+  color: #262877;
+  position: relative;
+  top: -3px;
 }
 .edit-row-menu > li > a:after {
   content: "n";
@@ -10879,12 +10905,12 @@ div.hasHalfs .twoThirds {
   color: inherit;
 }
 .dk_options {
+  z-index: 0;
   display: none;
   margin-top: 3px;
   position: absolute;
   right: 0;
   width: 100%;
-  z-index: 0;
 }
 .dk_options a,
 .dk_options a:link,
