@@ -584,6 +584,7 @@
         /**
         * Test get notes that are related with particular contact(MANY_MANY relationship)
         *
+        * @depends testApiServerUrl
         */
         public function testGetNotesThatAreRelatedWithContactModel()
         {
@@ -612,7 +613,7 @@
             $this->assertEquals($firstContact->id, $firstNote->activityItems[0]->id);
             $this->assertEquals($secondContact->id, $firstNote->activityItems[1]->id);
 
-            $id = $firstContact->getClassId('Item');
+            //$id = $firstContact->getClassId('Item');
 
             $authenticationData = $this->login();
             $headers = array(
@@ -629,7 +630,8 @@
                             'attributeIndexOrDerivedType' => 'activityItems',
                             'structurePosition' => 1,
                             'activityItems' => array(
-                                'id' => $id,
+                                'modelClassName' => 'Contact',
+                                'modelId' => $firstContact->id,
                             ),
                         )
                     ),
