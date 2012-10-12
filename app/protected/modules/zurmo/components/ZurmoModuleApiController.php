@@ -201,11 +201,7 @@
             return $result;
         }
 
-        /**
-         * Should be overriden by children classes
-         * @return NULL
-         */
-        protected function getSearchFormClassName()
+        protected static function getSearchFormClassName()
         {
             return null;
         }
@@ -219,7 +215,7 @@
         protected function processList($params)
         {
             $modelClassName = $this->getModelName();
-            $searchFormClassName = $this->getSearchFormClassName();
+            $searchFormClassName = static::getSearchFormClassName();
 
             try
             {
@@ -263,6 +259,8 @@
                     !empty($filterParams['dynamicSearch']['dynamicClauses']) &&
                     !empty($filterParams['dynamicSearch']['dynamicStructure']))
                 {
+                    // Convert model ids into item ids, so we can perform dynamic search
+                    DynamicSearchUtil::resolveDynamicSearchClausesForModelIdsNeedingToBeItemIds($modelClassName, $filterParams['dynamicSearch']['dynamicClauses']);
                     $_GET[$searchFormClassName]['dynamicClauses'] = $filterParams['dynamicSearch']['dynamicClauses'];
                     $_GET[$searchFormClassName]['dynamicStructure'] = $filterParams['dynamicSearch']['dynamicStructure'];
                 }
@@ -274,7 +272,7 @@
                 }
                 else
                 {
-                    $searchForm = null;
+                    throw new NotSupportedException();
                 }
 
                 // In case of ContactState model, we can't use Module::getStateMetadataAdapterClassName() function,
@@ -289,9 +287,8 @@
                     $stateMetadataAdapterClassName = $this->getModule()->getStateMetadataAdapterClassName();
                 }
 
-                $dataProvider = $this->makeSearchDataProvider(
+                $dataProvider = $this->makeRedBeanDataProviderByDataCollection(
                     $searchForm,
-                    $modelClassName,
                     $pageSize,
                     $stateMetadataAdapterClassName
                 );
