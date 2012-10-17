@@ -69,8 +69,7 @@
 
         protected function renderContent()
         {
-            $content = '<div>';
-            $content .= '<div>' . $this->renderHiddenRefreshLinkContent() . '</div>';
+            $content = '<div>' . $this->renderHiddenRefreshLinkContent() . '</div>';
             if (count($this->commentsData) > 0)
             {
                 if (count($this->commentsData) > $this->pageSize && $this->pageSize != null)
@@ -79,7 +78,6 @@
                 }
                 $content .= '<div id="CommentList' . $this->uniquePageId . '" class="CommentList">' . $this->renderCommentsContent() . '</div>';
             }
-            $content .= '</div>';
             return $content;
         }
 
@@ -120,9 +118,9 @@
                     $rows++;
                     continue;
                 }
-
-                $stringContent  = $comment->createdByUser->getAvatarImage(36);
-                $userName       = strval($comment->createdByUser);
+                $userUrl        = Yii::app()->createUrl('/users/default/details', array('id' => $comment->createdByUser->id));
+                $stringContent  = ZurmoHtml::link($comment->createdByUser->getAvatarImage(36), $userUrl);
+                $userName       = ZurmoHtml::link(strval($comment->createdByUser), $userUrl);
                 $stringContent .= '<div class="comment-content"><p>' . $userName . ': ' . $comment->description . '</p>';
 
                 //attachments

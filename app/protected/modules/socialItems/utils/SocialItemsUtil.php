@@ -40,12 +40,12 @@
         public static function renderItemAndCommentsContent(SocialItem $model, $redirectUrl)
         {
             assert('is_string($redirectUrl) || $redirectUrl == null');
-
+            $userUrl  = Yii::app()->createUrl('/users/default/details', array('id' => $model->owner->id));
             $content  = '<div class="social-item">';
             $avatarImage = $model->owner->getAvatarImage(50);
             $content .= '<div class="comment model-details-summary clearfix">';
-            $content .= '<span class="user-details">' . $avatarImage;
-            $content .= ZurmoHtml::tag('strong', array(), strval($model->owner) );
+            $content .= '<span class="user-details">' . ZurmoHtml::link($avatarImage, $userUrl);
+            $content .= ZurmoHtml::tag('strong', array(), ZurmoHtml::link(strval($model->owner), $userUrl) );
             $content .= '</span>';
 
             $content .= '<div class="comment-content"><p>' . self::renderModelDescription($model) . '</p></div>';
@@ -147,7 +147,7 @@
         private static function renderCreateCommentContent(SocialItem $model)
         {
             $content       = ZurmoHtml::tag('span', array(),
-                                            ZurmoHtml::link(Yii::t('Default', 'Add your comment'), '#',
+                                            ZurmoHtml::link(Yii::t('Default', 'Add comment'), '#',
                                                             array('class' => 'show-create-comment')));
             $comment       = new Comment();
             $uniquePageId  = self::makeUniquePageIdByModel($model);

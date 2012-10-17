@@ -101,6 +101,7 @@
 .comment-details{
     margin:2px 0;
     display:inline-block;
+    font-size: 11px;
     strong{
         color: #999;
         font-weight: normal !important;
@@ -125,9 +126,8 @@
         margin-top:1px;
     }
     .comment-content{
-        font-size: 12px;
         padding-left:50px;
-        //margin:5px 0;
+        margin:3px 0;
         line-height: 140%;
     }
     &:hover{
@@ -193,6 +193,7 @@
 #CommentInlineEditForModelView,
 #CommentsForRelatedModelView{
     width:70%;
+    margin-right:30%;
     float:left;
     max-width: 600px;
     .box-sizing();
@@ -294,6 +295,7 @@
 }
 
 .missionStatusChangeArea{
+    margin-top: 10px;
     display: inline-block;
     a{
         float: none;
@@ -321,6 +323,16 @@
     }
 }
 
+.actions-column{
+    text-align: right;
+}
+
+#MissionDetailsView,
+#ConversationDetailsView{
+    .files{
+        padding-bottom: 10px;
+    }
+}
 
 /*=Social Items*/
 .SocialItemsListView,
@@ -343,25 +355,32 @@
         margin-left: 80px;
     }
     .wide.form{
+        margin-bottom: 5px;
         border:none;
-        background: none !important;
+        border-bottom: 1px solid #fff !important;
+        //background: none !important;
         .b-shadow(none);
-        form{
+        form{ 
             border:none;
+            border-bottom: 1px solid #ccc;
             background: none !important;
             .b-shadow(none);
-            padding-bottom: 0;
+            //padding-bottom: 0;
         }
         table.files{
             border-bottom: none;
             float: left;
+            margin-top: 5px;
         }
         .panel > table{
-            padding-bottom: 10px;
+            //padding-bottom: 10px;
+            border:none;
         }
     }
     .form-toolbar{
         text-align: right;
+        border-top:none;
+        padding-top: 0;
         a{
             color:#fff !important;
             margin-right:0;
@@ -369,6 +388,11 @@
     }
     .comment-content{
         padding-right:15px;
+    }
+}
+.SocialItemsListView{
+    .items td{
+        padding-left: 0 !important;
     }
 }
 
@@ -394,9 +418,19 @@
         }
     }
     #social-item-inline-edit-form{
+        padding-top:15px;
+        td{
+            //padding-bottom: 15px;
+        }
         td:first-child{
             padding-left: 0;
         }
+    }
+    .file-upload-box{
+        padding-top: 15px;
+        display: none;
+        float: left;
+        padding-bottom: 10px;
     }
 }
 

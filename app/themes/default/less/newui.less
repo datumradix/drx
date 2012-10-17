@@ -110,6 +110,7 @@
     font-weight: bold;
 }
 
+
 /*=For modern browsers */
 .clearfix{
     &:before{
@@ -148,7 +149,7 @@ html, body{
 
 body{
     font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size:11px;
+    font-size:12px;
     color:#545454;
     -webkit-font-smoothing: antialiased;
     /* @doubtful_existance: I don’t think these even exist? Can’t hurt much, I guess. */
@@ -166,6 +167,7 @@ h1, h2, h3, h4, h5, h6{
 a:link, a:hover, a:active, a:visited{
     text-decoration:none;
     color:#545454;
+    outline: none;
     img{
         border:none;
     }
@@ -1055,6 +1057,7 @@ footer, header, hgroup, menu, nav, section {
 		.panel{
 			width:70%;
 			float:left;
+            position: relative;
 			td, th{
 				padding-bottom:10px !important;
 			}
@@ -1096,6 +1099,7 @@ footer, header, hgroup, menu, nav, section {
     width:100%;
     display:inline-block;
     position:relative;
+    font-size:11px;
 }
 
 .view-toolbar{
@@ -1316,6 +1320,7 @@ footer, header, hgroup, menu, nav, section {
     line-height: 19px;
     display:inline-block;
     margin-left:10px;
+    font-size: 11px;
     span{
         margin-left:70px;
     }
@@ -1333,75 +1338,54 @@ caption, th, td {
 }
 
 table.items{
+    width:100%;
     border: 1px solid #DFDFDF;
     border-collapse: collapse;
     border-spacing: 1px;
-}
-
-table.items th, table.items td{
-    border: 1px solid #DFDFDF;
-    vertical-align:middle;
-    padding:2px;
-}
-
-table.items{
-    width:100%;
-}
-
-table.items tr{}
-
-table.items td,
-table.items th{
-    border-right:none;
-    border-left:none;
-    padding:10px 0;
-}
-
-table.items tbody,
-table.items tbody tr:last-child,
-table.items tbody tr:last-child td{
-    border-bottom: none;
-}
-
-table.items{
-	tbody{
-		tr{
+    th, td{
+        border: 1px solid #DFDFDF;
+        border-right:none;
+        border-left:none;
+        vertical-align:middle;
+        //padding:2px;
+        padding:10px 5px;
+    }
+    th{
+        font-weight:bold !important;
+        height:35px;
+        line-height: 35px;
+        background: url(../images/table-items-header.png) left top repeat-x;
+        padding-top:0;
+        padding-bottom: 0;
+        white-space: nowrap;
+    }
+    tr:hover{
+        background-color:#D4E7BC;
+        color:@themeColor;
+        .animateAll(0.05s);
+        .pencil{
+            visibility:visible;
+            color:@themeColor;
+        }
+    }
+    thead{
+        #gradient > .vertical(#f9f9f9, #f4f4f4);
+        tr:hover{
+            #gradient > .vertical(#f9f9f9, #f4f4f4);
+        }
+    }
+    tbody{
+        tr:last-child,
+        tr:last-child td{
+            border-bottom: none;
+        }
+        tr{
 			td:first-child:not(.checkbox-column),
 			th:first-child:not(.checkbox-column){
 				padding-left:10px;
 			}
-		}
-	}
-}
-
-.juiportlet-widget table.items thead tr th:first-child,
-.juiportlet-widget table.items tbody tr td:first-child{
-    padding-left:15px;
-}
-
-table.items thead tr th:last-child,
-table.items tbody tr td:last-child{}
-
-table.items th{
-    font-weight:bold !important;
-    height:35px;
-    line-height: 35px;
-    background: url(../images/table-items-header.png) left top repeat-x;
-    padding:0;
-}
-
-.checkbox-column{
-    width:45px;
-    text-align:center;
-    .hasCheckBox{
-        margin-top:-4px;
+		}   
     }
-}
-
-.button-column{
-    width:35px;
-    text-align:center;
-    vertical-align:middle !important;
 }
 
 tr.odd{
@@ -1413,22 +1397,25 @@ tr.even{
     .animateAll(0.05s);
 }
 
-table.items tr:hover{
-    background-color:#D4E7BC;
-    color:@themeColor;
-    .animateAll(0.05s);
-    .pencil{
-        visibility:visible;
-        color:@themeColor;
+.checkbox-column{
+    width:40px;
+    text-align:center;
+    padding-right:0 !important;
+    padding-left: 0 !important;
+    .hasCheckBox{
+        margin-top:-4px;
     }
 }
 
-table.items thead{
-    #gradient > .vertical(#f9f9f9, #f4f4f4);
+.button-column{
+    width:35px;
+    text-align:center;
+    vertical-align:middle !important;
 }
 
-table.items thead tr:hover{
-    #gradient > .vertical(#f9f9f9, #f4f4f4);
+.juiportlet-widget table.items thead tr th:first-child,
+.juiportlet-widget table.items tbody tr td:first-child{
+    padding-left:15px;
 }
 
 .pencil{
@@ -1443,12 +1430,15 @@ table.items thead tr:hover{
         padding:10px 0 10px 15px;
         display:block;
     }
+    td.empty > .empty{
+        padding:0 !important;
+    }
 }
 
 .empty{
-    padding-left:15px;
     display:block;
 }
+
 td.empty{
     display: table-cell;
 }
@@ -1806,7 +1796,7 @@ label.hasCheckBox{
 
 div.wide.form{
     label.hasCheckBox{
-        margin-top:0; //was !important
+        margin-top:0 !important; //was !important
     }
     a{
         color:@themeColor;
@@ -1831,6 +1821,14 @@ div.wide.form{
 /*=LIST VIEW*/
 /*=Search Scope box, and account list*/
 
+.list-item-details{
+    display: block;
+    font-weight: normal;
+    color:#999;
+    margin-top: 5px;
+    font-size:11px;
+}
+
 .summary{
     display: none;
 }
@@ -1847,7 +1845,7 @@ div.wide.form{
     background: rgba(0, 0, 0, 0.5);
     .b-shadow(  0 0 30px 0 rgba(100, 100, 100, 0.7) );
     position:absolute;
-    top:50%;
+    top:40px;
     left:50%;
     .radius(6px);
     width:28px;
@@ -1859,6 +1857,11 @@ div.wide.form{
         display:block;
         margin:4px 0 0 4px;
    }
+}
+.juiportlet-widget{
+    .list-preloader{
+        top:50%;
+    }
 }
 
 .overlay-spinner{
@@ -2378,6 +2381,7 @@ div.wide.form{
 #edit-form{
     .clearfix();
     position: relative;
+    padding-top:15px;
    .panel{
         float:left;
         width:70%;
@@ -2392,7 +2396,7 @@ div.wide.form{
     }
     table{
         border-bottom:none;
-        margin-bottom:15px;
+        //margin-bottom:15px;
         br{
             display:none;
         }
@@ -2400,8 +2404,13 @@ div.wide.form{
     td table{
         width:100%;
     }
+    
+    td{
+        padding-bottom: 15px;
+    }
+    
     .panelTitle{
-        margin:0;
+        margin:0 0 10px 0;
         padding:0;
         font-size:12px;
         display:block;
@@ -2415,6 +2424,12 @@ div.wide.form{
         input[type="checkbox"]{
             margin-bottom:0 !important;
         }
+    }
+}
+
+.address-fields{
+    div:last-child{
+        padding-bottom:0; 
     }
 }
 
@@ -2485,19 +2500,18 @@ div.wide.form{
             margin:0 8px 0 10px;
             vertical-align: middle;
         }
-        select, .dk_container{
+        .hasDropDown{
+            float: left;
             margin-top:8px;
-            margin-left:30px;
+            padding-left:40px;
             margin-bottom:0;
-            width:80%;
-            background:#fff;
+            .box-sizing();
         }
     }
-    input[type="text"], select{
+    input[type="text"]{
         margin-top:6px;
     }
 }
-
 
 .has-date-select, .has-model-select{
     position: relative;
@@ -2651,6 +2665,9 @@ div.wide.form{
     }
     td, th{
         padding:0 5px 0 10px !important;
+        font-weight:600;
+    	padding-top:15px !important;
+    	vertical-align: top !important;
     }
     p{
         /*color:#545454 !important
@@ -2732,11 +2749,13 @@ div.wide.form{
     .box-sizing();
 }
 
+.TitleBarAndDetailsView,
 .ProgressView,
 #MetadataViewEditView,
 .TableOfContentsView,
 .DetailsView,
 .EditAndDetailsView{
+//.AppContent{
     > div{
        //margin-right:20px;
        margin-bottom:20px;
@@ -2775,8 +2794,8 @@ div.wide.form{
     }
     th, td{
         font-weight:600;
-    	padding-top:15px !important;
-    	vertical-align: top !important;
+    	//padding-top:15px !important;
+    	//vertical-align: top !important;
     }
      //for opt in email checkboxes
     input[type="checkbox"] + label{
@@ -3023,9 +3042,13 @@ div.wide.form{
 }
 
 #inline-edit-form{
+    padding-top: 15px;
     table + table{
         float:left;
         .box-sizing();
+    }
+    .panel td{
+        padding-bottom: 15px;
     }
     > table{
         td > a{
@@ -3060,6 +3083,7 @@ div.wide.form{
     }
     .form-toolbar{
         border-top:none;
+        padding-top:0;
     }
     textarea{
         line-height: 130%;
@@ -3113,23 +3137,14 @@ div.wide.form{
             margin:0 8px 0 10px;
             vertical-align: middle;
         }
-        select, .dk_container{
-            line-height: 24px !important;
+        .hasDropDown{
+            float: left;
             margin-top:8px;
-            margin-left:30px;
+            padding-left:30px;
             margin-bottom:0;
-            width:80%;
-            background:#fff;
-            div{
-                line-height:inherit !important;
-            }
-            li{
-                padding:0 !important;
-                line-height:inherit !important;
-            }
         }
     }
-    input[type="text"], select{
+    input[type="text"]{
         margin-top:6px;
     }
 }
@@ -3285,8 +3300,8 @@ div.hasHalfs{
         }
         div{
             line-height: 150%;
-            float:left
-            display:block;
+            //float:left;
+            //display:block;
         }
         div.button-column{
             float:left;
@@ -3341,7 +3356,7 @@ div.hasHalfs{
 }
 .edit-row-menu{
     float:right;
-    margin:0 15px 0 0;
+    margin:0 0 0 0;
     list-style: none;
     > li{
         position: relative;
@@ -3351,6 +3366,7 @@ div.hasHalfs{
             display:block;
             overflow: visible;
             .opacity(25);
+            white-space: nowrap;
             span{
                 display:inline-block;
                 text-indent:-9999px;
@@ -3358,6 +3374,13 @@ div.hasHalfs{
             }
             &:hover{
                 .opacity(100);
+            }
+            &:before{
+                content: "▾ ";
+                color:@themeColor;
+                //.symbly(26px);
+                position: relative;
+                top:-3px;
             }
             &:after{
                 content: "n";
@@ -3811,134 +3834,69 @@ div.hasHalfs{
     }
 }
 
-/*DropKick Dropdowns*/
-.dk_container {
-    background: #fff;
-    border: 1px solid #ccc;.radius(3px);
-    font-size: 12px;
-    color: #666;
-    text-indent: 0;
-    line-height: 24px;.b-shadow(0 0 1px 1px rgba(153, 153, 153, 0.3));
+/*Dropdowns*/
+
+.hasDropDown{
     width: 100%;
-    .box-sizing();
-    display: none;
-    float: left;
+    margin: 0;
+    padding: 0;
     position: relative;
-    &:focus {
-        .b-shadow(0 0 1px 1px @themeColor);
-        outline: 0;
-    }
-    a {
-        cursor: pointer;
-        text-decoration: none;
-        outline: 0;
-    }
-}
-
-.dk_toggle {
-    background: url(../images/dropdown-arrow.png) 100% 0 no-repeat;
-    padding-left: 6px;
-    display: block !important;
-    font-weight: normal !important;
-    color: #666 !important;
-    z-index: 999;
-    &:hover {
-        background-position: 100% 100%; //top right
-    }
-}
-
-.dk_focus .dk_toggle {
-    border-color: #ccc;
-}
-
-.dk_open {
-    .b-shadow(0 0 1px 1px @themeColor);
-    z-index: 10000;
-}
-
-/* The outer container of the options */
-.dk_options {
-    .b-shadow(rgba(0, 0, 0, .2) 0 2px 8px);
-    .radius(0 0 3px 3px);
-    a {
-        background-color: #fff;
-        border-bottom: 1px solid #ccc;
-        padding: 0 6px;
-        line-height: 24px;
+    cursor: pointer;
+    .box-sizing();
+    span{
+        width: 22px;
+        height: 24px;
+        display: block;
+        position: absolute;
+        top:1px;
+        right: 1px;
+        z-index: 1;
+        pointer-events:none;
+        background: url(../images/dropdown-arrow.png) 100% 0 no-repeat;
+        padding-left: 6px;
+        display: block !important;
         font-weight: normal !important;
         color: #666 !important;
+        z-index: 3;
+        cursor:pointer;
     }
-    li:last-child a {
-        border-bottom: none;
+    span:hover, .over-dd{
+        background-position: 100% 100%;
     }
-}
-
-.dk_options a:hover, .dk_option_current a {
-    background-color: @themeColor;
-    border-bottom-color: #ccc;
-    color: #fff !important;
-    text-decoration: none;
-}
-
-/* Inner container for options, this is what makes the scrollbar possible. */
-.dk_options_inner {
-    border: 1px solid #ccc;
-    border-bottom-width: 2px;
-    border-bottom-color: #ccc;
-    color: #666;
-    max-height: 250px;
-    .radius(0 0 3px 3px);
-}
-
-/* Set a max-height on the options inner */
-.dk_options_inner, .dk_touch .dk_options {
-    max-height: 250px;
-}
-
-.dk_toggle {
-    display: -moz-inline-stack;
-    display: inline-block;
-    *display: inline;
-    position: relative;
-    zoom: 1;
-}
-
-.dk_open {
-    position: relative;
-}
-
-.dk_open .dk_options {
-    display: block;
-}
-
-.dk_open .dk_label {
-    color: inherit;
-}
-
-.dk_options {
-    display: none;
-    margin-top: 3px;
-    position: absolute;
-    right: 0;
-    width: 100%;
-    z-index: 0;
-    a, a:link, a:visited{
-        display: block;
+    select{
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        margin: 0;
+        padding: 3px 0;
+        height: 26px;
+        line-height: 26px;
+        line-height: 1;
+        width: 100%;
+        //background: #fff url(../images/dropdown-arrow.png) 100% 0 no-repeat;
+        border: 1px solid #ccc;
+        .radius(3px);
+        font-size: 12px;
+        color: #666;
+        text-indent: 6px;
+        vertical-align: middle;
+        .box-sizing();
+        .b-shadow(0 0 1px 1px rgba(153, 153, 153, 0.3));
+        outline: none !important;
+        cursor: pointer;
+        position: relative;
+        z-index: 1;
+        // for IE z-index: 5;
+        // for IE padding-right: 5px;
+        &:focus, &:hover{
+            outline: none;
+            .b-shadow(0 0 1px 1px @themeColor);
+        }
     }
-}
-
-.dk_options_inner {
-    overflow: auto;
-    position: relative;
-}
-
-.dk_touch .dk_options {
-    overflow: hidden;
-}
-
-.dk_touch .dk_options_inner {
-    //max-height: none;
-    //overflow: visible;
+    &:hover select{
+        outline: none;
+        .b-shadow(0 0 1px 1px @themeColor);
+    }
 }
 
 
