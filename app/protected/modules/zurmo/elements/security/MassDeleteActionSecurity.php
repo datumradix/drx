@@ -24,16 +24,15 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ConversationLatestDateTimeListViewColumnAdapter extends TextListViewColumnAdapter
+    /**
+     * 'MassDelete' takes the user to a form
+     * This is also known as bulk delete or mass delete.
+     */
+    class MassDeleteActionSecurity extends ActionSecurity
     {
-        public function renderGridViewData()
+        protected function getRightToCheck()
         {
-            return array(
-                'name'   => $this->attribute,
-                'header' => false,
-                'value'  => '"<span class=\'list-row-model-date\'>" . DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay($data->' . $this->attribute . ') . "</span>"',
-                'type'   => 'raw',
-            );
+            return array('ZurmoModule', ZurmoModule::RIGHT_BULK_DELETE);
         }
     }
 ?>
