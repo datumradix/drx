@@ -112,6 +112,19 @@
   color: #fff !important;
   text-decoration: underline;
 }
+.unstyle-panel,
+#NoteInlineEditForPortletView .wide.form,
+#inline-edit-form {
+  border: none;
+  background: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
 @font-face {
   font-family: 'ZurmoGamificationSymblyReguRg';
   src: url('../fonts/zurmogamificationsymblyregular-regular-webfont.eot');
@@ -380,7 +393,6 @@ section {
 }
 #HeaderLinksView li a {
   color: #fff;
-  font-size: 12px;
   font-weight: bold;
 }
 #HeaderLinksView li a:hover {
@@ -677,6 +689,7 @@ section {
   top: 0;
   left: 4px;
   font-size: 10px;
+  line-height: 1;
 }
 #settings-header-menu {
   margin-left: -1px;
@@ -2932,7 +2945,7 @@ div.wide.form a {
   color: #999;
   text-indent: 10px;
   line-height: 25px;
-  height: 25px;
+  height: 25px !important;
   border: 1px solid #d5d4d4;
   border-left: none;
   background: url(../images/search-bar-gradient.png) left top repeat-x;
@@ -3157,9 +3170,6 @@ div.wide.form a {
 .select-list-attributes-view .attributesContainer:after {
   display: none !important;
 }
-.select-list-attributes-view .multiselect-nav {
-  display: none;
-}
 .select-list-attributes-view .multiselect-nav-updown {
   display: block;
   position: absolute;
@@ -3170,10 +3180,8 @@ div.wide.form a {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   width: 75px;
-  text-align: center;
   height: 75px;
-  margin-top: 70px;
-  top: auto;
+  text-align: center;
   left: auto;
 }
 #clear-search-link {
@@ -3408,71 +3416,89 @@ div.wide.form a {
   display: table;
   clear: both;
 }
-#edit-form {
+#edit-form,
+#delete-form {
   zoom: 1;
   position: relative;
   padding-top: 15px;
 }
-#edit-form:before {
+#edit-form:before,
+#delete-form:before {
   content: "";
   display: table;
 }
-#edit-form:after {
+#edit-form:after,
+#delete-form:after {
   content: "";
   display: table;
   clear: both;
 }
-#edit-form .panel {
+#edit-form .panel,
+#delete-form .panel {
   float: left;
   width: 70%;
   display: block;
   zoom: 1;
 }
-#edit-form .panel:before {
+#edit-form .panel:before,
+#delete-form .panel:before {
   content: "";
   display: table;
 }
-#edit-form .panel:after {
+#edit-form .panel:after,
+#delete-form .panel:after {
   content: "";
   display: table;
   clear: both;
 }
-#edit-form .panel table {
+#edit-form .panel table,
+#delete-form .panel table {
   width: 100% !important;
 }
-#edit-form h3 {
+#edit-form h3,
+#delete-form h3 {
   margin-bottom: 8px;
 }
-#edit-form table {
+#edit-form table,
+#delete-form table {
   border-bottom: none;
 }
-#edit-form table br {
+#edit-form table br,
+#delete-form table br {
   display: none;
 }
 #edit-form td,
-#edit-form th {
+#delete-form td,
+#edit-form th,
+#delete-form th {
   vertical-align: top;
 }
-#edit-form td table {
+#edit-form td table,
+#delete-form td table {
   width: 100%;
 }
-#edit-form td {
+#edit-form td,
+#delete-form td {
   padding-bottom: 15px;
 }
-#edit-form .panelTitle {
+#edit-form .panelTitle,
+#delete-form .panelTitle {
   margin: 0 0 10px 0;
   padding: 0;
   font-size: 12px;
   display: block;
 }
-#edit-form .view-toolbar-container {
+#edit-form .view-toolbar-container,
+#delete-form .view-toolbar-container {
   border-top: 1px solid #CCCCCC;
 }
-#edit-form .hasCheckBox {
+#edit-form .hasCheckBox,
+#delete-form .hasCheckBox {
   margin: 8px 0 0 0;
   display: block;
 }
-#edit-form .hasCheckBox input[type="checkbox"] {
+#edit-form .hasCheckBox input[type="checkbox"],
+#delete-form .hasCheckBox input[type="checkbox"] {
   margin-bottom: 0 !important;
 }
 .more-panels-link {
@@ -3697,6 +3723,14 @@ div.wide.form a {
 }
 .details-table table {
   margin: 10px 0;
+}
+.details-table .double-column .col-0,
+.details-table .double-column .col-2 {
+  width: 22% !important;
+}
+.details-table .double-column .col-1,
+.details-table .double-column .col-3 {
+  width: 28% !important;
 }
 .details-table td,
 .details-table th {
@@ -4186,7 +4220,7 @@ div.wide.form a {
   border-top: none;
 }
 #inline-edit-form {
-  padding-top: 15px;
+  padding: 15px 15px 15px 0;
 }
 #inline-edit-form table + table {
   float: left;
@@ -4218,6 +4252,12 @@ div.wide.form a {
   margin-left: -90px;
   text-align: right;
   margin-top: 6px;
+}
+#inline-edit-form table {
+  border-bottom: none;
+}
+#inline-edit-form .view-toolbar-container {
+  display: inline-block;
 }
 #inline-edit-form .view-toolbar-container a {
   float: right;
@@ -5303,30 +5343,64 @@ div.hasHalfs .twoThirds {
 }
 /*=Flash Message View*/
 #FlashMessageView {
-  position: relative;
-  margin-left: 192px;
-  top: 20px;
+  position: fixed;
+  top: 100px;
+  width: 25%;
+  right: 3%;
+  z-index: 9999;
 }
 #FlashMessageView .jnotify-item {
+  position: relative;
   margin: 0 20px 20px 0;
   padding: 10px;
   border-radius: 5px !important;
   border: 1px solid #FFCC00;
   background: #FFFCB5;
-  font-size: 12px;
-  font-weight: 600;
-  color: #333333;
+  font-weight: bold;
+  -webkit-box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.5);
+  -moz-box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.5);
+  -o-box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.5);
+  -ms-box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.5);
+  box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.5);
+}
+#FlashMessageView .jnotify-item p,
+#FlashMessageView .jnotify-item ul {
+  margin-bottom: 5px;
+  line-height: 1;
+}
+#FlashMessageView .jnotify-item ul {
+  padding-left: 18px;
+}
+#FlashMessageView .jnotify-item li {
+  margin-bottom: 3px;
+}
+#FlashMessageView .ui-state-error {
+  border: 1px solid #cc0000;
+  background: #ffb5b5;
 }
 #FlashMessageView .ui-icon-circle-close {
   position: absolute;
   top: -17px;
-  right: 6px;
+  right: -15px;
   background: transparent url(../images/widget-close-btn.png) left top no-repeat;
   padding: 0 !important;
   margin: 0 !important;
   width: 30px !important;
   height: 31px !important;
   cursor: pointer;
+}
+.operation-description {
+  display: block;
+  margin: 0 0 15px 0;
+  color: #262877;
+  line-height: 150%;
+}
+.operation-description strong {
+  font-weight: bold;
+}
+.operation-description em {
+  color: #cc0000;
+  font-style: normal;
 }
 /*Dropdowns*/
 .hasDropDown {
@@ -5410,7 +5484,7 @@ div.hasHalfs .twoThirds {
   -ms-box-shadow: 0 0 1px 1px #262877;
   box-shadow: 0 0 1px 1px #262877;
 }
-/*=Mass Edit view*/
+/*=Mass Edit + DELETE view*/
 .AppContent.MassEditView #edit-form table {
   width: 100%;
 }
@@ -5431,9 +5505,6 @@ div.hasHalfs .twoThirds {
   padding-left: 0;
   margin-bottom: 30px;
   margin-left: -8px;
-}
-.ui-state-warning {
-  color: #ff0000 !important;
 }
 /*=Lead Conversion*/
 #LeadConvertView .DetailsView > div {
