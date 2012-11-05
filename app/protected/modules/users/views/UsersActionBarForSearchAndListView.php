@@ -24,15 +24,30 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * 'MassDelete' takes the user to a form
-     * This is also known as bulk delete or mass delete.
-     */
-    class MassDeleteActionSecurity extends ActionSecurity
+    class UsersActionBarForSearchAndListView extends SecuredActionBarForSearchAndListView
     {
-        protected function getRightToCheck()
+        public static function getDefaultMetadata()
         {
-            return array('ZurmoModule', ZurmoModule::RIGHT_BULK_DELETE);
+            $metadata = array(
+                'global' => array(
+                    'toolbar' => array(
+                        'elements' => array(
+                            array('type'  => 'CreateLink',
+                                'htmlOptions' => array('class' => 'icon-create'),
+                            ),
+                            array('type'  => 'MassEditLink',
+                                  'htmlOptions' => array('class' => 'icon-edit'),
+                                  'listViewGridId' => 'eval:$this->listViewGridId',
+                                  'pageVarName' => 'eval:$this->pageVarName'),
+                            array('type'  => 'ExportLink',
+                                  'htmlOptions' => array('class' => 'icon-export'),
+                                  'listViewGridId' => 'eval:$this->listViewGridId',
+                                  'pageVarName' => 'eval:$this->pageVarName'),
+                        ),
+                    ),
+                ),
+            );
+            return $metadata;
         }
     }
 ?>

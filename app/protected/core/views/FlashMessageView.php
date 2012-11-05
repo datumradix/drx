@@ -24,15 +24,43 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * 'MassDelete' takes the user to a form
-     * This is also known as bulk delete or mass delete.
-     */
-    class MassDeleteActionSecurity extends ActionSecurity
+    class FlashMessageView extends View
     {
-        protected function getRightToCheck()
+        protected $controller;
+
+        public function __construct(CController $controller)
         {
-            return array('ZurmoModule', ZurmoModule::RIGHT_BULK_DELETE);
+            $this->controller = $controller;
+        }
+
+        protected function renderContent()
+        {
+            $content = '<div id = "FlashMessageBar"></div>';
+            if (Yii::app()->user->hasFlash('notification'))
+            {
+                $script = "
+                $('#FlashMessageBar').jnotifyAddMessage(
+                {
+                    text: '". ZurmoHtml::encode(Yii::app()->user->getFlash('notification')) ."',
+                    permanent: true,
+                    showIcon: true,
+                }
+                );
+                ";
+                Yii::app()->clientScript->registerScript('FlashMessage', $script);
+            }
+            $this->controller->beginClip("FlashMessage");
+            $this->controller->widget('application.core.widgets.JNotify', array(
+                'statusBarId' => 'FlashMessageBar',
+            ));
+            $this->controller->endClip();
+            $content .= $this->controller->clips['FlashMessage'];
+            return $content;
+        }
+
+        public function isUniqueToAPage()
+        {
+            return true;
         }
     }
 ?>

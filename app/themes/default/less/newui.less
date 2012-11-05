@@ -6,7 +6,6 @@
 /*Imports*/
 @import 'mixins.less';
 
-
 @font-face {
     font-family: 'ZurmoGamificationSymblyReguRg';
     src: url('../fonts/zurmogamificationsymblyregular-regular-webfont.eot');
@@ -263,7 +262,6 @@ footer, header, hgroup, menu, nav, section {
 
 #HeaderLinksView li a{
     color:#fff;
-    font-size:12px;
     font-weight:bold;
 }
 
@@ -558,6 +556,7 @@ footer, header, hgroup, menu, nav, section {
         top: 0;
         left: 4px;
         font-size: 10px;
+        line-height: 1;
     }
 }
 
@@ -2171,7 +2170,7 @@ div.wide.form{
         color: #999;
         text-indent: 10px;
         line-height: 25px;
-        height: 25px;
+        height: 25px !important;
         border: 1px solid #d5d4d4;
         border-left: none;
         background: url(../images/search-bar-gradient.png) left top repeat-x;
@@ -2320,9 +2319,6 @@ div.wide.form{
     .attributesContainer:after{
         display: none !important;
     }
-    .multiselect-nav{
-        display: none;
-    }
     .multiselect-nav-updown{
         display: block;
         position: absolute;
@@ -2331,10 +2327,8 @@ div.wide.form{
         padding:0 15px;
         .box-sizing();
         width:75px;
-        text-align:center;
         height:75px;
-        margin-top:70px;
-        top:auto;
+        text-align:center;
         left: auto;
     }
 }
@@ -2546,7 +2540,8 @@ div.wide.form{
     .clearfix();
 }
 
-#edit-form{
+#edit-form,
+#delete-form{
     .clearfix();
     position: relative;
     padding-top:15px;
@@ -2837,6 +2832,14 @@ div.wide.form{
     table{
         margin:10px 0;
     }
+    .double-column{
+        .col-0, .col-2{
+            width: 22% !important;
+        }
+        .col-1, .col-3{
+            width: 28% !important;
+        }
+    }
     td, th{
         font-weight: bold;
         .box-sizing();
@@ -2854,13 +2857,10 @@ div.wide.form{
     td{
         vertical-align:top;
     }
-    
-    
     td + th{
         //border-left: 1px solid  #dfdfdf;
         padding-left:15px !important;
     }
-    
     p{
         width:100%;
         a{
@@ -3178,8 +3178,13 @@ div.wide.form{
     }
 }
 
+#NoteInlineEditForPortletView .wide.form{
+    ++.unstyle-panel;
+}
+
 #inline-edit-form{
-    padding-top: 15px;
+    ++.unstyle-panel;
+    padding: 15px 15px 15px 0;
     table + table{
         float:left;
         .box-sizing();
@@ -3211,7 +3216,11 @@ div.wide.form{
             margin-top:6px;
         }
     }
+    table{
+        border-bottom: none;
+    }
     .view-toolbar-container{
+        display: inline-block;
         a{
             float:right;
             clear: both;
@@ -4001,23 +4010,41 @@ div.hasHalfs{
 
 /*=Flash Message View*/
 #FlashMessageView{
-    position: relative;
-    margin-left:192px;
-    top:20px;
+    position: fixed;
+    //margin-left:192px;
+    top:100px;
+    width: 25%;
+    right: 3%;
+    
+    z-index: 9999;
     .jnotify-item{
+        position: relative;
         margin:0 20px 20px 0;
         padding:10px;
         border-radius:5px !important;
         border:1px solid #FFCC00;
         background:#FFFCB5;
-        font-size:12px;
-        font-weight:600;
-        color:#333333;
+        font-weight: bold;
+        .b-shadow( 0 0 20px 5px rgba(153, 153, 153, 0.5) );
+        p, ul{
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+        ul{
+            padding-left:18px;
+        }
+        li{
+            margin-bottom: 3px;
+        }
+    }
+    .ui-state-error{
+        border:1px solid #cc0000;
+        background:#ffb5b5;
     }
     .ui-icon-circle-close{
         position: absolute;
         top:-17px;
-        right:6px;
+        right:-15px;
         background: transparent url(../images/widget-close-btn.png) left top no-repeat;
         padding: 0 !important;
         margin:0 !important;
@@ -4027,8 +4054,22 @@ div.hasHalfs{
     }
 }
 
-/*Dropdowns*/
+.operation-description{
+    display: block;
+    margin: 0 0 15px 0;
+    color: @themeColor;
+    line-height: 150%;
+    strong{
+        font-weight:bold;
+    }
+    em{
+        color: #cc0000;
+        font-style: normal;
+    }
+}
 
+
+/*Dropdowns*/
 .hasDropDown{
     width: 100%;
     margin: 0;
@@ -4093,7 +4134,7 @@ div.hasHalfs{
 }
 
 
-/*=Mass Edit view*/
+/*=Mass Edit + DELETE view*/
 .AppContent.MassEditView{
     #edit-form table{
         width:100%;
@@ -4116,10 +4157,6 @@ div.hasHalfs{
         margin-bottom:30px;
         margin-left:-8px;
     }
-}
-
-.ui-state-warning{
-    color: #ff0000 !important;
 }
 
 /*=Lead Conversion*/
