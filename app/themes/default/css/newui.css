@@ -1456,6 +1456,10 @@ section {
 .AppContent .single-column #inline-edit-form .panel {
   width: 100%;
 }
+.DynamicSearchView {
+  position: relative;
+  z-index: 9999;
+}
 /*=dashboard*/
 #HomePageView .AppContent {
   padding-right: 0;
@@ -3116,9 +3120,6 @@ div.wide.form a {
 #ModalView #clear-search-linkmodal {
   margin-left: 10px;
 }
-#ModalView .view-toolbar-container {
-  margin-top: 15px;
-}
 #ModalView .items {
   border: none;
 }
@@ -3389,6 +3390,9 @@ div.wide.form a {
   position: relative !important;
   float: left !important;
 }
+.double-column #right-side-edit-view-panel .buffer {
+  padding-left: 5px;
+}
 .double-column .col-0,
 .double-column .col-2 {
   width: 15% !important;
@@ -3419,23 +3423,27 @@ div.wide.form a {
   display: table;
   clear: both;
 }
+#modal-edit-form,
 #edit-form,
 #delete-form {
   zoom: 1;
   position: relative;
   padding-top: 15px;
 }
+#modal-edit-form:before,
 #edit-form:before,
 #delete-form:before {
   content: "";
   display: table;
 }
+#modal-edit-form:after,
 #edit-form:after,
 #delete-form:after {
   content: "";
   display: table;
   clear: both;
 }
+#modal-edit-form .panel,
 #edit-form .panel,
 #delete-form .panel {
   float: left;
@@ -3443,47 +3451,58 @@ div.wide.form a {
   display: block;
   zoom: 1;
 }
+#modal-edit-form .panel:before,
 #edit-form .panel:before,
 #delete-form .panel:before {
   content: "";
   display: table;
 }
+#modal-edit-form .panel:after,
 #edit-form .panel:after,
 #delete-form .panel:after {
   content: "";
   display: table;
   clear: both;
 }
+#modal-edit-form .panel table,
 #edit-form .panel table,
 #delete-form .panel table {
   width: 100% !important;
 }
+#modal-edit-form h3,
 #edit-form h3,
 #delete-form h3 {
   margin-bottom: 8px;
 }
+#modal-edit-form table,
 #edit-form table,
 #delete-form table {
   border-bottom: none;
 }
+#modal-edit-form table br,
 #edit-form table br,
 #delete-form table br {
   display: none;
 }
+#modal-edit-form td,
 #edit-form td,
 #delete-form td,
+#modal-edit-form th,
 #edit-form th,
 #delete-form th {
   vertical-align: top;
 }
+#modal-edit-form td table,
 #edit-form td table,
 #delete-form td table {
   width: 100%;
 }
+#modal-edit-form td,
 #edit-form td,
 #delete-form td {
   padding-bottom: 15px;
 }
+#modal-edit-form .panelTitle,
 #edit-form .panelTitle,
 #delete-form .panelTitle {
   margin: 0 0 10px 0;
@@ -3491,18 +3510,24 @@ div.wide.form a {
   font-size: 12px;
   display: block;
 }
+#modal-edit-form .view-toolbar-container,
 #edit-form .view-toolbar-container,
 #delete-form .view-toolbar-container {
   border-top: 1px solid #CCCCCC;
 }
+#modal-edit-form .hasCheckBox,
 #edit-form .hasCheckBox,
 #delete-form .hasCheckBox {
   margin: 8px 0 0 0;
   display: block;
 }
+#modal-edit-form .hasCheckBox input[type="checkbox"],
 #edit-form .hasCheckBox input[type="checkbox"],
 #delete-form .hasCheckBox input[type="checkbox"] {
   margin-bottom: 0 !important;
+}
+#modal-edit-form .panel {
+  width: 100%;
 }
 .more-panels-link {
   font-size: 11px;
@@ -4491,7 +4516,7 @@ div.overlay-label-field:after {
 .overlay-label-field label {
   position: absolute !important;
   left: 4px;
-  top: 1px;
+  top: 6px;
   color: #999;
   font-size: 14px;
   font-weight: normal;
@@ -5468,7 +5493,6 @@ div.hasHalfs .twoThirds {
   outline: none !important;
   cursor: pointer;
   position: relative;
-  z-index: 1;
 }
 .hasDropDown select:focus,
 .hasDropDown select:hover {
@@ -6042,11 +6066,15 @@ a.remove:hover .icon:after {
 .juiportlet-widget.ContactsForAccountRelatedListView h3:before {
   content: 'e';
 }
+.juiportlet-widget.OpportunitiesForContactRelatedListView h3,
 .juiportlet-widget.OpportunitiesForAccountRelatedListView h3,
+.juiportlet-widget.ContactsForOpportunityRelatedListView h3,
 .juiportlet-widget.ContactsForAccountRelatedListView h3 {
   text-indent: 30px;
 }
+.juiportlet-widget.OpportunitiesForContactRelatedListView h3:before,
 .juiportlet-widget.OpportunitiesForAccountRelatedListView h3:before,
+.juiportlet-widget.ContactsForOpportunityRelatedListView h3:before,
 .juiportlet-widget.ContactsForAccountRelatedListView h3:before {
   font-weight: normal;
   font-size: 32px;
@@ -6057,12 +6085,16 @@ a.remove:hover .icon:after {
   position: absolute;
   top: 6px;
 }
+.juiportlet-widget.OpportunitiesForContactRelatedListView td:first-child div,
 .juiportlet-widget.OpportunitiesForAccountRelatedListView td:first-child div,
+.juiportlet-widget.ContactsForOpportunityRelatedListView td:first-child div,
 .juiportlet-widget.ContactsForAccountRelatedListView td:first-child div {
   font-size: 11px;
   margin-top: 3px;
 }
+.juiportlet-widget.OpportunitiesForContactRelatedListView td:first-child div:first-child,
 .juiportlet-widget.OpportunitiesForAccountRelatedListView td:first-child div:first-child,
+.juiportlet-widget.ContactsForOpportunityRelatedListView td:first-child div:first-child,
 .juiportlet-widget.ContactsForAccountRelatedListView td:first-child div:first-child {
   font-size: 12px;
   font-weight: bold;
@@ -7476,7 +7508,7 @@ table.configuration-list tr td:last-child a:before {
   margin-top: 5px;
 }
 /*=Step 5, process details*/
-#import-preloader .z-spinner {
+#sequential-process-spinner .z-spinner {
   display: block;
   margin: -1px 10px 0 0;
 }
@@ -7801,10 +7833,18 @@ div.form select.error {
   box-shadow: 0 0 1px 1px rgba(205, 0, 0, 0.5);
 }
 div.form .errorSummary {
-  padding: 7px 7px 12px 7px;
-  margin: 0 0 20px 0;
-  background: #FEE;
-  font-size: 11px;
+  position: relative;
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: 5px !important;
+  border: 1px solid #cc0000;
+  background: #ffb5b5;
+  font-weight: bold;
+  -webkit-box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.5);
+  -moz-box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.5);
+  -o-box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.5);
+  -ms-box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.5);
+  box-shadow: 0 0 20px 5px rgba(153, 153, 153, 0.5);
 }
 #edit-form td {
   position: relative;
@@ -7843,8 +7883,7 @@ div.form .errorMessage:before {
   background: url(../images/error-tip.png) left bottom no-repeat;
 }
 div.form .errorSummary p {
-  margin: 0;
-  padding: 5px;
+  margin: 0 0 5px 0;
 }
 div.form .errorSummary ul {
   margin: 0;
@@ -9470,8 +9509,7 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
     font-smooth: always !important;
   }
   .form input[type="text"],
-  .form input[type="password"],
-  .form textarea {
+  .form input[type="password"] {
     height: 26px;
   }
   input[type="submit"],
