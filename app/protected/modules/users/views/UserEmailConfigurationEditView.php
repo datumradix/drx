@@ -24,18 +24,23 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class EmailMessageDetailsView extends DetailsView
+    /**
+     * Edit and details view for a user's email configuration view.
+     */
+    class UserEmailConfigurationEditView extends EditView
     {
         public static function getDefaultMetadata()
         {
             $metadata = array(
                 'global' => array(
-                    'derivedAttributeTypes' => array(
-                        'EmailMessageToRecipients',
-                        'EmailMessageCcRecipients',
-                        'EmailMessageContent'
+                    'toolbar' => array(
+                        'elements' => array(
+                            array('type' => 'CancelLink'),
+                            array('type' => 'SaveButton'),
+                        ),
                     ),
-                    'nonPlaceableAttributeNames' => array(
+                    'derivedAttributeTypes' => array(
+                        'EmailMessageContent'
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
@@ -45,7 +50,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'sentDateTime', 'type' => 'DateTime'),
+                                                array('attributeName' => 'fromName', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -54,7 +59,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'sender', 'type' => 'EmailMessageSender'),
+                                                array('attributeName' => 'fromAddress', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -63,7 +68,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'EmailMessageToRecipients'),
+                                                array('attributeName' => 'replyToName', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -72,7 +77,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'subject', 'type' => 'Text'),
+                                                array('attributeName' => 'replyToAddress', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -81,7 +86,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'content', 'type' => 'EmailMessageContent'),
+                                                array('attributeName' => 'useCustomOutboundSettings', 'type' => 'OutboundSettingsCheckBox'),
                                             ),
                                         ),
                                     )
@@ -90,7 +95,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'Files'),
+                                                array('attributeName' => 'emailSignatureHtmlContent', 'type' => 'EmailSignature'),
                                             ),
                                         ),
                                     )
@@ -101,18 +106,6 @@
                 ),
             );
             return $metadata;
-        }
-
-        public function getTitle()
-        {
-            if ($this->model->id > 0)
-            {
-                return strval($this->model);
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
         }
     }
 ?>

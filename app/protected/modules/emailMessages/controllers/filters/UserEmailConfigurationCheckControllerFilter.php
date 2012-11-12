@@ -24,16 +24,29 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class EmailAddressInformationListViewColumnAdapter extends TextListViewColumnAdapter
+    /**
+     * Filter used by user controller to ascertain whether the global email settings has been configured or not.
+     * If not, then the user is instructed to contact the administrator for them to set this up.
+     */
+    class UserEmailConfigurationCheckControllerFilter extends CFilter
     {
-        public function renderGridViewData()
+        public $controller;
+
+        protected function preFilter($filterChain)
         {
-            return array(
-                'name'  => $this->attribute,
-                'value' => 'Yii::app()->format->email($data->' . $this->attribute . '->emailAddress)',
-                'type'  => 'raw',
-                'htmlOptions' => array( 'class' => 'email')
-            );
+            try
+            {
+                EmailAccount::getByUserAndName(Yii::app()->user->userModel);
+            }
+            catch (NotFoundException $e)
+            {
+                $messageView                  = new NoUserEmailConfigurationYetView();
+                $view = new ModalView($this->controller, $messageView);
+                Yii::app()->getClientScript()->setToAjaxMode();
+                echo $view->render();
+                return false;
+            }
+            return true;
         }
     }
 ?>

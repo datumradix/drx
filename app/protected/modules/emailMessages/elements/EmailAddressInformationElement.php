@@ -88,12 +88,12 @@
         {
             $addressModel    = $this->model->{$this->attribute};
             $emailAddress    = $addressModel->emailAddress;
-            $optOut    = $addressModel->optOut;
-            $isInvalid    = $addressModel->isInvalid;
+            $optOut          = $addressModel->optOut;
+            $isInvalid       = $addressModel->isInvalid;
             $content = null;
             if (!empty($emailAddress))
             {
-                $content  .= Yii::app()->format->email($emailAddress);
+                $content .= EmailMessageUtil::renderEmailAddressAsMailToOrModalLinkStringContent($emailAddress, $this->model);
                 if ($optOut || $isInvalid)
                 {
                     $content  .= '&#160;&#40;';

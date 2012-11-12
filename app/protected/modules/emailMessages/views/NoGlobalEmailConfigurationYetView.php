@@ -24,21 +24,40 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class UserConfigurationEditLinkActionElement extends LinkActionElement
+    /**
+     * Class for showing in the user interface when there is no global email configuration yet.  This needs to be
+     * configured first before a user's email configuration can be setup.
+     */
+    class NoGlobalEmailConfigurationYetView extends View
     {
-        public function getActionType()
+        protected function renderContent()
         {
-            return 'Edit';
+            $params   = array('label' => $this->getCreateLinkDisplayLabel());
+            $url      = Yii::app()->createUrl('/emailMessages/default/configurationEditOutbound');
+            $content  = '<div class="' . $this->getIconName() . '">';
+            $content .= $this->getMessageContent();
+            $content .= ZurmoHtml::link(ZurmoHtml::tag('span', array(), $this->getCreateLinkDisplayLabel()), $url);
+            $content .= '</div>';
+            return $content;
         }
 
-        protected function getDefaultLabel()
+        protected function getIconName()
         {
-            return Yii::t('Default', 'Configuration');
+            return 'EmailMessage';
         }
 
-        protected function getDefaultRoute()
+        protected function getCreateLinkDisplayLabel()
         {
-            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/configurationEdit/', array('id' => $this->modelId));
+            return Yii::t('Default', 'Configure');
+        }
+        /**
+            $content    = Yii::t('Default', 'You need to create an Email Account before you can start sending emails.' .
+                                        ' Please click {link} to create one.', array('{link}' => $link));
+                                        **/
+        protected function getMessageContent()
+        {
+            return Yii::t('Default', '<h2>Not so fast</h2></i><div class="large-icon"></div>' .
+                                     '<p>First the administrator must configure the outbound email settings.</p>');
         }
     }
 ?>

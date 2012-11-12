@@ -24,18 +24,30 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class EmailMessageDetailsView extends DetailsView
+    class ComposeEmailModalEditView extends EditView
     {
+        protected function renderTitleContent()
+        {
+            return null;
+        }
+
         public static function getDefaultMetadata()
         {
             $metadata = array(
                 'global' => array(
+                    'toolbar' => array(
+                        'elements' => array(
+                            array('type'  => 'SaveButton', 'label' => Yii::t('Default', 'Send')),
+                        ),
+                    ),
                     'derivedAttributeTypes' => array(
                         'EmailMessageToRecipients',
                         'EmailMessageCcRecipients',
-                        'EmailMessageContent'
+                        'Files',
                     ),
                     'nonPlaceableAttributeNames' => array(
+                        'sentDateTime',
+                        'sender'
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
@@ -45,25 +57,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'sentDateTime', 'type' => 'DateTime'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'sender', 'type' => 'EmailMessageSender'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'EmailMessageToRecipients'),
+                                                array('attributeName' => 'recipients', 'type' => 'EmailMessageToRecipients'),
                                             ),
                                         ),
                                     )
@@ -103,16 +97,43 @@
             return $metadata;
         }
 
-        public function getTitle()
+        protected function resolveActiveFormAjaxValidationOptions()
         {
-            if ($this->model->id > 0)
-            {
-                return strval($this->model);
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
+            $afterValidateAjax = $this->renderConfigSaveAjax(
+                static::getFormId(),
+                $this->moduleId,
+                $this->controllerId,
+                'composeEmail');
+            return array(
+                'enableAjaxValidation' => true,
+                'clientOptions' => array(
+                    'beforeValidate'    => 'js:beforeValidateAction',
+                    'afterValidate'     => 'js:afterValidateAjaxAction',
+                    'validateOnSubmit'  => true,
+                    'validateOnChange'  => false,
+                    'inputContainer'    => 'td',
+                    'afterValidateAjax' => $afterValidateAjax,
+                )
+            );
+        }
+
+        public static function getNotificationBarId()
+        {
+            return 'FlashMessageBar';
+        }
+
+        protected function renderConfigSaveAjax($formName, $moduleId, $controllerId, $actionSave)
+        {
+            return ZurmoHtml::ajax(array(
+                    'type' => 'POST',
+                    'data' => 'js:$("#' . $formName . '").serialize()',
+                    'url'  => Yii::app()->createUrl($moduleId . '/' . $controllerId . '/' . $actionSave, GetUtil::getData()),
+                    'complete' => "function(XMLHttpRequest, textStatus){\$('#modalContainer').dialog('close');
+                        //find if there is a latest activities portlet
+                        $('.LatestActivtiesForPortletView').each(function(){
+                            $(this).find('.pager').find('.refresh').find('a').click();
+                        });}"
+                ));
         }
     }
 ?>
