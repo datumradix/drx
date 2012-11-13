@@ -24,34 +24,16 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Wrapper view for displaying an contact's latest activities feed.
-     */
-    class ContactLatestActivtiesForPortletView extends LatestActivtiesForPortletView
+    class EmailAddressInformationListViewColumnAdapter extends TextListViewColumnAdapter
     {
-            public static function getDefaultMetadata()
+        public function renderGridViewData()
         {
-            $metadata = parent::getDefaultMetadata();
-            return array_merge($metadata, array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type'                    => 'CreateEmailMessageFromRelatedListLink',
-                                  'modelClassName'          => 'EmailMessage',
-                                  'routeParameters'         =>
-                                    array(  'relatedModelClassName'  => 'Contact',
-                                            'relatedId'        =>
-                                                'eval:$this->params["relationModel"]->id',
-                                            'toAddress'        =>
-                                                'eval:$this->params["relationModel"]->primaryEmail->emailAddress')
-                        ),
-                    ),
-                ),
-            )));
-        }
-        public function getLatestActivitiesViewClassName()
-        {
-            return 'LatestActivitiesForContactListView';
+            return array(
+                'name'  => $this->attribute,
+                'value' => 'EmailMessageUtil::renderEmailAddressAsMailToOrModalLinkStringContent($data->' . $this->attribute . '->emailAddress, $data)',
+                'type'  => 'raw',
+                'htmlOptions' => array( 'class' => 'email')
+            );
         }
     }
 ?>

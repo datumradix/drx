@@ -25,33 +25,28 @@
      ********************************************************************************/
 
     /**
-     * Wrapper view for displaying an contact's latest activities feed.
+     * Filter used by user controller to ascertain whether the user's email settings has been configured or not.
+     * If not, then the user is instructed to set this up first before they can send email from the system.
      */
-    class ContactLatestActivtiesForPortletView extends LatestActivtiesForPortletView
+    class UserEmailConfigurationCheckControllerFilter extends CFilter
     {
-            public static function getDefaultMetadata()
+        public $controller;
+
+        protected function preFilter($filterChain)
         {
-            $metadata = parent::getDefaultMetadata();
-            return array_merge($metadata, array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type'                    => 'CreateEmailMessageFromRelatedListLink',
-                                  'modelClassName'          => 'EmailMessage',
-                                  'routeParameters'         =>
-                                    array(  'relatedModelClassName'  => 'Contact',
-                                            'relatedId'        =>
-                                                'eval:$this->params["relationModel"]->id',
-                                            'toAddress'        =>
-                                                'eval:$this->params["relationModel"]->primaryEmail->emailAddress')
-                        ),
-                    ),
-                ),
-            )));
-        }
-        public function getLatestActivitiesViewClassName()
-        {
-            return 'LatestActivitiesForContactListView';
+            try
+            {
+                EmailAccount::getByUserAndName(Yii::app()->user->userModel);
+            }
+            catch (NotFoundException $e)
+            {
+                $messageView = new NoUserEmailConfigurationYetView();
+                $view        = new ModalView($this->controller, $messageView);
+                Yii::app()->getClientScript()->setToAjaxMode();
+                echo $view->render();
+                return false;
+            }
+            return true;
         }
     }
 ?>

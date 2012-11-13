@@ -25,33 +25,44 @@
      ********************************************************************************/
 
     /**
-     * Wrapper view for displaying an contact's latest activities feed.
+     * Use this form when creating a new email message
      */
-    class ContactLatestActivtiesForPortletView extends LatestActivtiesForPortletView
+    class CreateEmailMessageForm extends ModelForm
     {
-            public static function getDefaultMetadata()
+        public $recipientsData;
+
+        public function __construct(EmailMessage $model)
         {
-            $metadata = parent::getDefaultMetadata();
-            return array_merge($metadata, array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type'                    => 'CreateEmailMessageFromRelatedListLink',
-                                  'modelClassName'          => 'EmailMessage',
-                                  'routeParameters'         =>
-                                    array(  'relatedModelClassName'  => 'Contact',
-                                            'relatedId'        =>
-                                                'eval:$this->params["relationModel"]->id',
-                                            'toAddress'        =>
-                                                'eval:$this->params["relationModel"]->primaryEmail->emailAddress')
-                        ),
-                    ),
-                ),
-            )));
+            $this->model = $model;
         }
-        public function getLatestActivitiesViewClassName()
+
+        public function rules()
         {
-            return 'LatestActivitiesForContactListView';
+            return array(
+                array('recipientsData', 'validateMinimumToRecipients', 'on' => 'createNonDraft')
+            );
         }
+
+        public function attributeLabels()
+        {
+            return array_merge($this->model->attributeLabels(), array(
+                'recipientsData'            => Yii::t('Default', 'Recipients'),
+            ));
+        }
+
+        /**
+         * When the scenario is createNonDraft, it means you have to have at least one recipient
+         * @param string $attribute
+         * @param array $params
+         */
+        public function validateMinimumToRecipients($attribute, $params)
+        {
+            if(isset($this->recipientsData['to']) && $this->recipientsData['to'] != null)
+            {
+                return;
+            }
+            $this->addError($attribute . '_to', Yii::t('Default', 'To address cannot be blank'));
+        }
+
     }
 ?>

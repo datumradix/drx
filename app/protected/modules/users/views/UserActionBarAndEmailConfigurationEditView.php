@@ -24,34 +24,19 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Wrapper view for displaying an contact's latest activities feed.
-     */
-    class ContactLatestActivtiesForPortletView extends LatestActivtiesForPortletView
+    class UserActionBarAndEmailConfigurationEditView extends GridView
     {
-            public static function getDefaultMetadata()
+        public function __construct(
+            $controllerId,
+            $moduleId,
+            User $user,
+            UserEmailConfigurationForm $emailAccountForm
+            )
         {
-            $metadata = parent::getDefaultMetadata();
-            return array_merge($metadata, array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type'                    => 'CreateEmailMessageFromRelatedListLink',
-                                  'modelClassName'          => 'EmailMessage',
-                                  'routeParameters'         =>
-                                    array(  'relatedModelClassName'  => 'Contact',
-                                            'relatedId'        =>
-                                                'eval:$this->params["relationModel"]->id',
-                                            'toAddress'        =>
-                                                'eval:$this->params["relationModel"]->primaryEmail->emailAddress')
-                        ),
-                    ),
-                ),
-            )));
-        }
-        public function getLatestActivitiesViewClassName()
-        {
-            return 'LatestActivitiesForContactListView';
+            parent::__construct(2, 1);
+            $this->setView(new ActionBarForUserEditAndDetailsView ($controllerId, $moduleId, $user, 'UserConfigurationEditLink'), 0, 0);
+            $title = strval($user) . ': ' . Yii::t('Default', 'Email Configuration');
+            $this->setView(new UserEmailConfigurationEditView($controllerId, $moduleId, $emailAccountForm, $title), 1, 0);
         }
     }
 ?>
