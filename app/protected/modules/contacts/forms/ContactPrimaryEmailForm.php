@@ -25,33 +25,58 @@
      ********************************************************************************/
 
     /**
-     * Wrapper view for displaying an contact's latest activities feed.
+     * Form used for populating the primary email of a contact.
      */
-    class ContactLatestActivtiesForPortletView extends LatestActivtiesForPortletView
+    class ContactPrimaryEmailForm extends CFormModel
     {
-            public static function getDefaultMetadata()
+        public $emailAddress;
+
+        public $name;
+
+        public function __toString()
         {
-            $metadata = parent::getDefaultMetadata();
-            return array_merge($metadata, array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type'                    => 'CreateEmailMessageFromRelatedListLink',
-                                  'modelClassName'          => 'EmailMessage',
-                                  'routeParameters'         =>
-                                    array(  'relatedModelClassName'  => 'Contact',
-                                            'relatedId'        =>
-                                                'eval:$this->params["relationModel"]->id',
-                                            'toAddress'        =>
-                                                'eval:$this->params["relationModel"]->primaryEmail->emailAddress')
-                        ),
-                    ),
-                ),
-            )));
+            try
+            {
+                if (trim($this->name) == '')
+                {
+                    return Yii::t('Default', '(Unnamed)');
+                }
+                return $this->name;
+            }
+            catch (AccessDeniedSecurityException $e)
+            {
+                return '';
+            }
         }
-        public function getLatestActivitiesViewClassName()
+
+        /**
+         * Override to handle use case of $name == 'id'.
+         * As this form does not have an 'id', it will return null;
+         * @see ModelElement.  This form is used by ModelElement for example
+         * and ModelElement expects the model to have an 'id' value.
+         */
+        public function __get($name)
         {
-            return 'LatestActivitiesForContactListView';
+            if ($name == 'id')
+            {
+                return null;
+            }
+            return parent::__get($name);
+        }
+
+        public function rules()
+        {
+            return array(
+                array('emailAddress',   'email'),
+                array('emailAddress',   'required'),
+            );
+        }
+
+        public function attributeLabels()
+        {
+            return array(
+                'emailAddress'          => Yii::t('Default', 'Primary Email'),
+            );
         }
     }
 ?>

@@ -25,33 +25,36 @@
      ********************************************************************************/
 
     /**
-     * Wrapper view for displaying an contact's latest activities feed.
+     * View  for showing in the user interface when there the global email configuration is not yet set up.
+     * This needs to be configured first before a user's email configuration can be setup.
      */
-    class ContactLatestActivtiesForPortletView extends LatestActivtiesForPortletView
+    class NoGlobalEmailConfigurationYetView extends View
     {
-            public static function getDefaultMetadata()
+        protected function renderContent()
         {
-            $metadata = parent::getDefaultMetadata();
-            return array_merge($metadata, array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type'                    => 'CreateEmailMessageFromRelatedListLink',
-                                  'modelClassName'          => 'EmailMessage',
-                                  'routeParameters'         =>
-                                    array(  'relatedModelClassName'  => 'Contact',
-                                            'relatedId'        =>
-                                                'eval:$this->params["relationModel"]->id',
-                                            'toAddress'        =>
-                                                'eval:$this->params["relationModel"]->primaryEmail->emailAddress')
-                        ),
-                    ),
-                ),
-            )));
+            $params   = array('label' => $this->getCreateLinkDisplayLabel());
+            $url      = Yii::app()->createUrl('/emailMessages/default/configurationEditOutbound');
+            $content  = '<div class="' . $this->getIconName() . '">';
+            $content .= $this->getMessageContent();
+            $content .= ZurmoHtml::link(ZurmoHtml::tag('span', array(), $this->getCreateLinkDisplayLabel()), $url);
+            $content .= '</div>';
+            return $content;
         }
-        public function getLatestActivitiesViewClassName()
+
+        protected function getIconName()
         {
-            return 'LatestActivitiesForContactListView';
+            return 'EmailMessage';
+        }
+
+        protected function getCreateLinkDisplayLabel()
+        {
+            return Yii::t('Default', 'Configure');
+        }
+
+        protected function getMessageContent()
+        {
+            return Yii::t('Default', '<h2>Not so fast</h2></i><div class="large-icon"></div>' .
+                                     '<p>First the administrator must configure the outbound email settings.</p>');
         }
     }
 ?>

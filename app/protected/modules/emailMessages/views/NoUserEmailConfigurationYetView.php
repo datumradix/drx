@@ -24,16 +24,38 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class EmailAddressInformationListViewColumnAdapter extends TextListViewColumnAdapter
+    /**
+     * View for showing in the user interface when the user does not have a valid email configuration.  This needs to be
+     * configured first before a user can send email from the application.
+     */
+    class NoUserEmailConfigurationYetView extends View
     {
-        public function renderGridViewData()
+        protected function renderContent()
         {
-            return array(
-                'name'  => $this->attribute,
-                'value' => 'Yii::app()->format->email($data->' . $this->attribute . '->emailAddress)',
-                'type'  => 'raw',
-                'htmlOptions' => array( 'class' => 'email')
-            );
+            $params  = array('label' => $this->getCreateLinkDisplayLabel());
+            $url     = Yii::app()->createUrl('/users/default/emailConfiguration',
+                                             array('id' => Yii::app()->user->userModel->id));
+            $content = '<div class="' . $this->getIconName() . '">';
+            $content .= $this->getMessageContent();
+            $content .= ZurmoHtml::link(ZurmoHtml::tag('span', array(), $this->getCreateLinkDisplayLabel()), $url);
+            $content .= '</div>';
+            return $content;
+        }
+
+        protected function getIconName()
+        {
+            return 'EmailMessage';
+        }
+
+        protected function getCreateLinkDisplayLabel()
+        {
+            return Yii::t('Default', 'Configure');
+        }
+
+        protected function getMessageContent()
+        {
+            return Yii::t('Default', '<h2>First things first</h2></i>' .
+                                     '<div class="large-icon"></div><p>Set up your email before you can send emails.</p>');
         }
     }
 ?>

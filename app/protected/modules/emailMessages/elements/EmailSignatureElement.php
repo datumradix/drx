@@ -25,38 +25,27 @@
      ********************************************************************************/
 
     /**
-     * Display email message content.
+     * Element to edit and display an email signature content for a user.
      */
-    class EmailMessageContentElement extends Element
+    class EmailSignatureElement extends Element
     {
         protected function renderControlNonEditable()
         {
-            assert('$this->model->{$this->attribute} instanceof EmailMessageContent');
-            $emailMessageContent = $this->model->{$this->attribute};
-            if ($emailMessageContent->htmlContent != null)
-            {
-                return Yii::app()->format->html($emailMessageContent->htmlContent);
-            }
-            elseif ($emailMessageContent->textContent != null)
-            {
-                return Yii::app()->format->text($emailMessageContent->textContent);
-            }
+            throw new NotSupportedException();
         }
 
         protected function renderControlEditable()
         {
-            $emailMessageContent     = $this->model->{$this->attribute};
-            $inputNameIdPrefix       = $this->attribute;
-            $attribute               = 'htmlContent';
-            $id                      = $this->getEditableInputId  ($inputNameIdPrefix, $attribute);
+            assert('$this->model instanceof EmailSignature || $this->model instanceof ModelForm');
+            $id                      = $this->getEditableInputId  ();
             $htmlOptions             = array();
             $htmlOptions['id']       = $id;
-            $htmlOptions['name']     = $this->getEditableInputName($inputNameIdPrefix, $attribute);
+            $htmlOptions['name']     = $this->getEditableInputName();
             $cClipWidget   = new CClipWidget();
             $cClipWidget->beginClip("Redactor");
             $cClipWidget->widget('application.core.widgets.Redactor', array(
                                         'htmlOptions' => $htmlOptions,
-                                        'content'     => $emailMessageContent->$attribute,
+                                        'content'     => $this->model->{$this->attribute},
                                         'buttons'     => "['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|',
                                                            'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
                                                            'fontcolor', 'backcolor', '|',
@@ -65,24 +54,7 @@
             ));
             $cClipWidget->endClip();
             $content  = $cClipWidget->getController()->clips['Redactor'];
-            $content .= $this->form->error($emailMessageContent, $attribute);
             return $content;
-        }
-
-        protected function renderLabel()
-        {
-            $label = Yii::t('Default', 'Body');
-            if ($this->form === null)
-            {
-                return $label;
-            }
-            else
-            {
-                return $this->form->labelEx($this->model,
-                                            $this->attribute,
-                                            array('for' => $this->getEditableInputId($this->attribute, 'htmlContent'),
-                                                  'label' => $label));
-            }
         }
     }
 ?>

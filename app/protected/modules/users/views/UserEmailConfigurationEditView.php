@@ -24,46 +24,25 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    abstract class ContactsRelatedListView extends SecuredRelatedListView
+    /**
+     * Edit view for a user's email configuration.
+     */
+    class UserEmailConfigurationEditView extends EditView
     {
         public static function getDefaultMetadata()
         {
             $metadata = array(
-                'perUser' => array(
-                    'title' => "eval:Yii::t('Default', 'ContactsModulePluralLabel', LabelUtil::getTranslationParamsForAllModules())",
-                ),
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array(  'type'            => 'CreateFromRelatedListLink',
-                                    'routeModuleId'   => 'eval:$this->moduleId',
-                                    'routeParameters' => 'eval:$this->getCreateLinkRouteParameters()'),
-                        ),
-                    ),
-                    'rowMenu' => array(
-                        'elements' => array(
-                            array('type'                      => 'EditLink'),
-                            array('type'                      => 'CreateEmailMessageFromRelatedListLink',
-                                  'modelClassName'            => 'EmailMessage',
-                                  'routeParameters'           =>
-                                    array(  'relatedModelClassName'  => 'Contact',
-                                            'relatedId'        =>
-                                                'eval:$this->params["relationModel"]->id',
-                                            'toAddress'        =>
-                                                'eval:$this->params["relationModel"]->primaryEmail->emailAddress')
-                        ),
-                            array('type'                      => 'RelatedDeleteLink'),
-                            array('type'                      => 'RelatedUnlink',
-                                  'relationModelClassName'    => 'eval:get_class($this->params["relationModel"])',
-                                  'relationModelId'           => 'eval:$this->params["relationModel"]->id',
-                                  'relationModelRelationName' => 'contacts',
-                                  'userHasRelatedModelAccess' => 'eval:ActionSecurityUtil::canCurrentUserPerformAction( "Edit", $this->params["relationModel"])'),
+                            array('type' => 'CancelLink'),
+                            array('type' => 'SaveButton'),
                         ),
                     ),
                     'derivedAttributeTypes' => array(
-                        'FullName',
+                        'EmailMessageContent'
                     ),
-                    'gridViewType' => RelatedListView::GRID_VIEW_TYPE_STACKED,
+                    'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
                         array(
                             'rows' => array(
@@ -71,7 +50,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'FullName', 'isLink' => true),
+                                                array('attributeName' => 'fromName', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -80,7 +59,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'officePhone', 'type' => 'Phone'),
+                                                array('attributeName' => 'fromAddress', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -89,7 +68,34 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'primaryEmail', 'type' => 'EmailAddressInformation'),
+                                                array('attributeName' => 'replyToName', 'type' => 'Text'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'replyToAddress', 'type' => 'Text'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'useCustomOutboundSettings', 'type' => 'OutboundSettingsCheckBox'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'emailSignatureHtmlContent', 'type' => 'EmailSignature'),
                                             ),
                                         ),
                                     )
@@ -100,11 +106,6 @@
                 ),
             );
             return $metadata;
-        }
-
-        public static function getModuleClassName()
-        {
-            return 'ContactsModule';
         }
     }
 ?>

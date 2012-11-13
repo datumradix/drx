@@ -25,33 +25,37 @@
      ********************************************************************************/
 
     /**
-     * Wrapper view for displaying an contact's latest activities feed.
+     * Model for user's email signatures
      */
-    class ContactLatestActivtiesForPortletView extends LatestActivtiesForPortletView
+    class EmailSignature extends OwnedModel
     {
-            public static function getDefaultMetadata()
+
+        public static function getDefaultMetadata()
         {
             $metadata = parent::getDefaultMetadata();
-            return array_merge($metadata, array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type'                    => 'CreateEmailMessageFromRelatedListLink',
-                                  'modelClassName'          => 'EmailMessage',
-                                  'routeParameters'         =>
-                                    array(  'relatedModelClassName'  => 'Contact',
-                                            'relatedId'        =>
-                                                'eval:$this->params["relationModel"]->id',
-                                            'toAddress'        =>
-                                                'eval:$this->params["relationModel"]->primaryEmail->emailAddress')
-                        ),
-                    ),
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'textContent',
+                    'htmlContent'
                 ),
-            )));
+                'relations' => array(
+                    'user'     => array(RedBeanModel::HAS_ONE,  'User'),
+                ),
+                'rules' => array(
+                     array('htmlContent', 'type', 'type' => 'string'),
+                     array('textContent', 'type', 'type' => 'string')
+                ),
+                'elements' => array(
+                    'htmlContent'     => 'TextArea',
+                    'textContent'     => 'TextArea',
+                ),
+            );
+            return $metadata;
         }
-        public function getLatestActivitiesViewClassName()
+
+        public static function isTypeDeletable()
         {
-            return 'LatestActivitiesForContactListView';
+            return true;
         }
     }
 ?>

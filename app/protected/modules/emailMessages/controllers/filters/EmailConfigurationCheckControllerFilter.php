@@ -25,33 +25,29 @@
      ********************************************************************************/
 
     /**
-     * Wrapper view for displaying an contact's latest activities feed.
+     * Filter used by user controller to ascertain whether the global email settings has been configured or not.
+     * If not, then the user is instructed to contact the administrator for them to set this up.
      */
-    class ContactLatestActivtiesForPortletView extends LatestActivtiesForPortletView
+    class EmailConfigurationCheckControllerFilter extends CFilter
     {
-            public static function getDefaultMetadata()
+        public $controller;
+
+        protected function preFilter($filterChain)
         {
-            $metadata = parent::getDefaultMetadata();
-            return array_merge($metadata, array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type'                    => 'CreateEmailMessageFromRelatedListLink',
-                                  'modelClassName'          => 'EmailMessage',
-                                  'routeParameters'         =>
-                                    array(  'relatedModelClassName'  => 'Contact',
-                                            'relatedId'        =>
-                                                'eval:$this->params["relationModel"]->id',
-                                            'toAddress'        =>
-                                                'eval:$this->params["relationModel"]->primaryEmail->emailAddress')
-                        ),
-                    ),
-                ),
-            )));
-        }
-        public function getLatestActivitiesViewClassName()
-        {
-            return 'LatestActivitiesForContactListView';
+            if (isset($_POST['ajax']))
+            {
+                return true;
+            }
+            if(Yii::app()->emailHelper->outboundHost != null)
+            {
+                return true;
+            }
+            $messageView                  = new NoGlobalEmailConfigurationYetView();
+            $pageViewClassName            = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
+            $view                         = new $pageViewClassName(ZurmoDefaultViewUtil::
+                                                 makeStandardViewForCurrentUser($this->controller, $messageView));
+            echo $view->render();
+            return false;
         }
     }
 ?>
