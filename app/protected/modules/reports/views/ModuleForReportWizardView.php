@@ -24,49 +24,51 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class RedBeanModelsTest extends BaseTest
+    class ModuleForReportWizardView extends ComponentForReportWizardView
     {
-        const USERS = 5;
-
-        private $usernames;
-
-        public function setUp()
+        protected function renderFormContent()
         {
-            if (!isset($this->usernames))
-            {
-                $this->usernames = TestHelpers::makeUniqueRandomUsernames(RedBeanModelsTest::USERS);
-            }
-            foreach ($this->usernames as $username)
-            {
-                $user = new User();
-                $user->username           = $username;
-                $user->title->value       = 'Mr.';
-                $user->firstName          = $username;
-                $user->lastName           = $username;
-                $user->setPassword(strtolower($username));
-                $this->assertTrue($user->save());
-            }
+            $element                   = new ModuleForReportRadioDropDownElement($this->model, 'moduleClassName',
+                                                                                 $this->form);
+            $element->editableTemplate = '{label}{content}';
+
+            $content  = $this->form->errorSummary($this->model);
+            $content .= '<table>'     . "\n";
+            $content .= '<tbody>'     . "\n";
+            $content .= '<tr><td>'    . "\n";
+            $content .= $element->render();
+            $content .= '</td></tr>'  . "\n";
+            $content .= '</tbody>'    . "\n";
+            $content .= '</table>'    . "\n";
+            return $content;
         }
 
-        public function tearDown()
+        public static function getWizardStepTitle()
         {
-            foreach ($this->usernames as $username)
-            {
-                $user = User::getByUsername($username);
-                $user->delete();
-            }
+            return Yii::t('Default', 'Select Module');
         }
 
-        public function testCreateAndIterateLazyModels()
+        protected function renderPreviousPageLinkContent()
         {
-            $users = new RedBeanModels('User');
-            $this->assertEquals(count($this->usernames), $users->count());
-            foreach ($users as $user)
+            if($this->model->isNew())
             {
-                $this->assertTrue(in_array($user->username, $this->usernames));
-                $this->assertEquals($user->username, $user->firstName);
-                $this->assertEquals($user->username, $user->lastName);
+                $label = Yii::t('Default', 'Cancel');
             }
+            else
+            {
+                $label = Yii::t('Default', 'Cancel Changes');
+            }
+            return ZurmoHtml::link($label, '#', array('id' => static::getPreviousPageLinkId()));
+        }
+
+        public static function getPreviousPageLinkId()
+        {
+            return 'moduleCancelLink';
+        }
+
+        public static function getNextPageLinkId()
+        {
+            return 'moduleNextLink';
         }
     }
 ?>
