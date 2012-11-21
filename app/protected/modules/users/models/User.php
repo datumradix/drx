@@ -622,11 +622,12 @@
                     'serializedAvatarData'
                 ),
                 'relations' => array(
-                    'currency'         => array(RedBeanModel::HAS_ONE,             'Currency'),
-                    'groups'           => array(RedBeanModel::MANY_MANY,           'Group'),
-                    'manager'          => array(RedBeanModel::HAS_ONE,             'User'),
-                    'role'             => array(RedBeanModel::HAS_MANY_BELONGS_TO, 'Role'),
-                    'emailBoxes'       => array(RedBeanModel::HAS_MANY,            'EmailBox'),
+                    'currency'   => array(RedBeanModel::HAS_ONE,             'Currency'),
+                    'groups'     => array(RedBeanModel::MANY_MANY,           'Group'),
+                    'manager'    => array(RedBeanModel::HAS_ONE,             'User', RedBeanModel::NOT_OWNED,
+                                         RedBeanModel::LINK_TYPE_SPECIFIC, 'manager'),
+                    'role'       => array(RedBeanModel::HAS_MANY_BELONGS_TO, 'Role'),
+                    'emailBoxes' => array(RedBeanModel::HAS_MANY,            'EmailBox'),
                     'emailAccounts'    => array(RedBeanModel::HAS_MANY,            'EmailAccount'),
                     'emailSignatures'  => array(RedBeanModel::HAS_MANY,            'EmailSignature',         RedBeanModel::OWNED),
                 ),
