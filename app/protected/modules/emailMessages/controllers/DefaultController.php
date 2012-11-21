@@ -578,5 +578,13 @@
             }
             return $selectForm;
         }
+
+        public function actionDelete($id)
+        {
+            $emailMessage = EmailMessage::getById(intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserDeleteModel($emailMessage);
+            $emailMessage->delete();
+            //$this->redirect(array($this->getId() . '/matchingList'));
+        }
     }
 ?>
