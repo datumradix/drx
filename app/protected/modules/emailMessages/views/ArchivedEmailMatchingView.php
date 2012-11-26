@@ -145,7 +145,7 @@
                                                                     $this->saveActionId,
                                                                     $this->urlParameters), 0, 0);
             $row = 1;
-            $content = $this->renderEmailMessageContentAndResolveLink();
+           // $content = $this->renderEmailMessageContentAndResolveLink();
             if ($this->userCanCreateContact)
             {
                 $this->setView(new ContactInlineCreateForArchivedEmailCreateView(
@@ -181,17 +181,20 @@
                                      array('class' => 'lead-create-link'));
             $createLeadContent     = Yii::t('Default', 'Create LeadsModuleSingularLabel',
                                      LabelUtil::getTranslationParamsForAllModules());
-
-            $content .= '<div class="matching-actions-and-content" style="display:none;"><div class="email-matching-actions">';
-            $content .= $this->renderContactSelectTitleDivContent($selectContent, $createLeadLink,    $createContactLink);
-            $content .= $this->renderLeadCreateTitleDivContent($selectLink,       $createLeadContent, $createContactLink);
-            $content .= $this->renderContactCreateTitleDivContent($selectLink,    $createLeadLink,    $createContactContent);
+            $deleteLink            = $this->renderDeleteLink();
+            $rules    = new EmailMessageMashableActivityRules();
+            $content = $rules->renderRelatedModelsByImportanceContent($this->emailMessage);
+            $content .= ZurmoHtml::tag('span', array(), strval($this->emailMessage));
+            $content .= '<div class="matching-actions-and-content"><div class="email-matching-actions">';
+            $content .= $this->renderContactSelectTitleDivContent($selectLink, $selectContent,    $createLeadLink,    $createContactLink, $deleteLink);
+            $content .= $this->renderLeadCreateTitleDivContent($selectLink,       $createLeadContent, $createContactLink, $deleteLink);
+            $content .= $this->renderContactCreateTitleDivContent($selectLink,    $createLeadLink,    $createContactContent, $deleteLink);
             $content .= '</div>';
             $content .= parent::renderContent() . '</div>';
             return '<div id="wrapper-' . $this->uniqueId . '" class="email-archive-item">' . $content .  '</div>';
         }
 
-        protected function renderEmailMessageContentAndResolveLink()
+      /**  protected function renderEmailMessageContentAndResolveLink()
         {
             $rules    = new EmailMessageMashableActivityRules();
 
@@ -206,7 +209,7 @@
             $content .= '<span class="icon-up-arrow"></span>Collapse';
             $content .= '</div>';
             return $content;
-        }
+        }*/
 
         public function isUniqueToAPage()
         {
@@ -311,13 +314,13 @@
             }
         }
 
-        protected function renderContactSelectTitleDivContent($selectContent, $createLeadLink, $createContactLink)
+        protected function renderContactSelectTitleDivContent($selectLink, $selectContent, $createLeadLink, $createContactLink, $deleteLink)
         {
             assert('is_string($selectContent)');
             assert('is_string($createLeadLink)');
             assert('is_string($createContactLink)');
             $content  = '<div id="contact-select-title-' . $this->uniqueId . '" class="contact-select-title">';
-            $content .= $selectContent .  ' ' . Yii::t('Default', 'or') . ' ';
+            $content .= $selectLink .  ' ' . Yii::t('Default', 'or') . ' ';
             if ($this->userCanCreateContact && $this->userCanCreateLead)
             {
                 $content .= $createLeadLink . ' ' . Yii::t('Default', 'or') . ' ' . $createContactLink;
@@ -330,11 +333,12 @@
             {
                 $content .= $createLeadLink;
             }
+            $content .= $deleteLink;
             $content .= '</div>';
             return $content;
         }
 
-        protected function renderLeadCreateTitleDivContent($selectContent, $createLeadContent, $createContactLink)
+        protected function renderLeadCreateTitleDivContent($selectContent, $createLeadContent, $createContactLink, $deleteLink)
         {
             assert('is_string($selectContent)');
             assert('is_string($createLeadContent)');
@@ -346,11 +350,12 @@
             {
                 $content .= ' ' . Yii::t('Default', 'or') . ' ' . $createContactLink;
             }
+            $content .= $deleteLink;
             $content .= '</div>';
             return $content;
         }
 
-        protected function renderContactCreateTitleDivContent($selectContent, $createLeadLink, $createContactContent)
+        protected function renderContactCreateTitleDivContent($selectContent, $createLeadLink, $createContactContent, $deleteLink)
         {
             assert('is_string($selectContent)');
             assert('is_string($createLeadLink)');
@@ -362,8 +367,65 @@
                 $content .= ' ' . $createLeadLink;
             }
             $content .= ' ' . Yii::t('Default', 'or') . ' ' . $createContactContent;
+            $content .= $deleteLink;
             $content .= '</div>';
             return $content;
+        }
+
+/**        protected function renderDeleteLink()
+        {
+            $htmlOptions['id']   = 'delete-link-' . $this->uniqueId;
+            $htmlOptions['confirm'] = Yii::t('Default', 'Are you sure you want to delete?');
+            $route = $this->getDefaultRouteForDelete();
+            $content = Yii::t('Default', 'or') . ZurmoHtml::link(Yii::t('Default', 'Delete'),$route,
+                                     $htmlOptions);
+            return $content;
+        }*/
+
+        protected function renderDeleteLink()
+        {
+            $htmlOptions = $this->getHtmlOptionsForDelete();
+            $route = $this->getDefaultRouteForDelete();
+            $ajaxOptions = $this->getAjaxOptionsForDelete();
+            $content = Yii::t('Default', 'or') . ZurmoHtml::ajaxLink(Yii::t('Default', 'Delete'),$route, $ajaxOptions, 
+                                     $htmlOptions);
+            return $content;
+        }
+
+        protected function getDefaultRouteForDelete()
+        {
+            $params = array('id' => $this->uniqueId);
+            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/delete/', $params);
+        }
+
+        protected function getAjaxOptionsForDelete()
+        { 
+            return array('type'     => 'GET',
+                         'success' => "function(){
+                                       window.location = '" . $this->getMatchingListUrl() . "';
+                                       $('#" . self::getNotificationBarId() . "').jnotifyAddMessage(
+                                       {
+                                          text: '" . Yii::t('Default', 'Deleted successfully') . "',
+                                          permanent: false,
+                                          showIcon: true,
+                                       })}");
+        }
+
+        protected function getHtmlOptionsForDelete()
+        {
+            $htmlOptions['id']   = 'delete-link-' . $this->uniqueId;
+            $htmlOptions['confirm'] = Yii::t('Default', 'Are you sure you want to delete?');
+            return $htmlOptions;
+        }
+
+        protected static function getMatchingListUrl()
+       {
+           return Yii::app()->createUrl('emailMessages/default/matchingList');
+       }
+
+        protected static function getNotificationBarId()
+        {
+            return 'FlashMessageBar';
         }
     }
 ?>
