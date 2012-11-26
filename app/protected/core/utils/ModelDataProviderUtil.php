@@ -674,10 +674,8 @@
             $onTableAliasName                = self::resolveShouldAddFromTableAndGetAliasName(
                                                         $modelAttributeToDataProviderAdapter,
                                                         $joinTablesAdapter);
-            $manyToManyTables                = array($relationTableName, $onTableAliasName);
-            sort($manyToManyTables);
             $relationJoiningTableAliasName   = $joinTablesAdapter->addLeftTableAndGetAliasName(
-                                               implode('_', $manyToManyTables),
+                                               $modelAttributeToDataProviderAdapter->getManyToManyTableName(),
                                                "id",
                                                $onTableAliasName,
                                                $modelAttributeToDataProviderAdapter->getAttributeTableName() . '_id');

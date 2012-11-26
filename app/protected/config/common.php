@@ -55,6 +55,18 @@
             ),
             'clientScript' => array(
                 'class' => 'ClientScript',
+                'packages' => array(
+                    'treeview' => array(
+                        'basePath' => 'application.core.widgets.assets',
+                        'js' => array(
+                            '/treeView/jquery.treeview.async.js'),
+                        'depends'  => array('baseTreeView')),
+                    'baseTreeView' => array(
+                        'js' => array(
+                            'jquery.treeview.js',
+                            'jquery.treeview.edit.js'),
+                        'depends'  => array('jquery', 'cookie')),
+                ),
             ),
             'currencyHelper' => array(
                 'class' => 'application.modules.zurmo.components.ZurmoCurrencyHelper',
@@ -94,7 +106,7 @@
                 'groupMap' => array(
                     'css' => array(
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'themes/THEME_NAME/css/newui.css',
-                        INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/extensions/timepicker/assets/jquery-ui-timepicker-addon.css'
+                        INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/extensions/timepicker/assets/jquery-ui-timepicker-addon.css',
                     ),
 
                     'js' => array(
@@ -103,6 +115,9 @@
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jquery.ba-bbq.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jui/js/jquery-ui.min.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jquery.yiiactiveform.js',
+                        INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jquery.cookie.js',
+                        INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jquery.treeview.js',
+                        INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jquery.treeview.edit.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/extensions/qtip/assets/jquery.qtip-2.min.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/widgets/assets/extendedGridView/jquery.yiigridview.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/widgets/assets/fusionChart/jquery.fusioncharts.js',
@@ -121,6 +136,7 @@
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/widgets/assets/fileUpload/jquery.fileupload-ui.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/widgets/assets/fileUpload/jquery.tmpl.min.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/widgets/assets/fileUpload/jquery.iframe-transport.js',
+                        INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/widgets/assets/treeView/jquery.treeview.async.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/extensions/timepicker/assets/jquery-ui-timepicker-addon.min.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/widgets/assets/calendar/Calendar.js'
                     )
@@ -133,6 +149,9 @@
                     array('system.web.js.source',                                       '/jquery.ba-bbq.js'),
                     array('system.web.js.source',                                       '/jui/js/jquery-ui.min.js'),
                     array('system.web.js.source',                                       '/jquery.yiiactiveform.js'),
+                    array('system.web.js.source',                                       '/jquery.jquery.cookie.js'),
+                    array('system.web.js.source',                                       '/jquery.jquery.treeview.js'),
+                    array('system.web.js.source',                                       '/jquery.treeview.edit.js'),
                     array('application.extensions.qtip.assets',                         '/jquery.qtip-2.min.js'),
                     array('application.core.widgets.assets',   '/extendedGridView/jquery.yiigridview.js'),
                     array('application.core.widgets.assets',   '/fusionChart/jquery.fusioncharts.js'),
@@ -150,6 +169,7 @@
                     array('application.core.widgets.assets',   '/fileUpload/jquery.fileupload-ui.js'),
                     array('application.core.widgets.assets',   '/fileUpload/jquery.tmpl.min.js'),
                     array('application.core.widgets.assets',   '/fileUpload/jquery.iframe-transport.js'),
+                    array('application.core.widgets.assets',   '/treeView/jquery.treeview.async.js'),
                     array('application.extensions.timepicker.assets',                   '/jquery-ui-timepicker-addon.min.js'),
                     array('application.core.widgets.assets',   '/calendar/Calendar.js')
                 ),
@@ -309,6 +329,7 @@
             'notes',
             'notifications',
             'opportunities',
+            'reports',
             'rssReader',
             'socialItems',
             'tasks',
