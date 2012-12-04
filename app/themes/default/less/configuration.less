@@ -118,7 +118,11 @@
             right:15px;
             top:14px;
             vertical-align: middle;
-            &:before{
+            margin:0;
+            .z-label{
+                .z-label-smaller();
+            }
+            .z-label:before{
                 content: "n";
                 .symbly(20px);
                 color: #666;
@@ -141,22 +145,29 @@ table.configuration-list{
     tbody > tr > td{
         position:relative !important;
     }
-    tr td:last-child a{
+    td:last-child a{
         ++.z-button;
         float:right;
-        &:before{
+        margin:0;
+        .z-label{
+            .z-label-smaller();
+        }
+        .z-label:before{
             content: "n";
-            .symbly(16px);
+            .symbly(20px);
+            color: #666;
             margin-right:5px;
             position:relative;
-            top:0px;
+            top:-2px;
+            font-weight: normal !important;
+            vertical-align: middle;
         }
     }
 }
 
 #DevelopmentMenuView{
     .configuration-list{
-        li a{
+        li span{
             &:before{
                 content: "";
                 margin-right:0px;
@@ -239,9 +250,14 @@ table.configuration-list{
     }
     input[type="button"]{
         display:block !important;
-        margin-bottom:15px !important;
+        margin:0 0 15px 0 !important;
         ++.z-button;
         .symbly(22px);
+        background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
+        padding:0 15px;
+        line-height:25px;
+        .radius( 4px );
+        cursor:pointer;
     }
     .select-arrow{
         display: none !important;
@@ -388,6 +404,9 @@ table.configuration-list{
         td{
             border-bottom: none !important;
         }
+    }
+    .checkbox-column{
+        padding-left:15px !important;
     }
 }
 
