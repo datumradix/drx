@@ -1699,6 +1699,9 @@
 
         public static function createIndexes()
         {
+            // To-Do: Uncoment those lines, once we fix issue with RedBean string optimizer
+            // PT: https://www.pivotaltracker.com/story/show/40694789
+            /*
             self::createUniqueIndex(
                                     'messagesource',
                                     'source_category_Index',
@@ -1716,6 +1719,7 @@
                                           'translation(767)'
                                           )
                                     );
+          */
         }
 
         protected static function createUniqueIndex($tableName, $indexName, $columns = array())
@@ -1740,7 +1744,7 @@
                             }
                         }
                     }
-                    $columnsString = implode(",", $columns);
+                    $columnsString = implode(",", $columns); // Not Coding Standard
                     R::exec("ALTER TABLE $tableName  ADD  UNIQUE INDEX $indexName ($columnsString);");
                 }
                 catch (Exception $e)
