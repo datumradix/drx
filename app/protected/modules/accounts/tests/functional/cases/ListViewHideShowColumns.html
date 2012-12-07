@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/" />
+<title>New Test</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">New Test</td></tr>
+</thead><tbody>
+<tr> 
+    <td>setTimeout</td> 
+    <td>45000</td> 
+    <td></td> 
+</tr>
+<tr>
+	<td>setSpeed</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>index.php/accounts/default</td>
+	<td></td>
+</tr>
+<tr>
+  <td>click</td>
+  <td>id=clear-search-link</td>
+  <td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>//a[id='clear-search-link' contains(text(), "Criteria Selected")] </td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=select-list-attributes-link</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=list-attributes-reset</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=select-list-attributes-link</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=#AccountsSearchForm_selectedListAttributes &gt; option[value=&quot;name&quot;]</td>
+	<td>Name</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#list-attributes-apply &gt; span.z-label</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Name</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Type</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Owner</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=select-list-attributes-link</td>
+	<td></td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Annual Revenue</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Billing Address</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Created By User</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Created Date Time</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Description</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Employees</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Id</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Industry</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Modified By User</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Modified Date Time</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Office Fax</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Primary Email</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Secondary Email</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Shipping Address</td>
+</tr>
+<tr>
+	<td>removeSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Website</td>
+</tr>
+<tr>
+	<td>addSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Office Phone</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=yw2moveRight</td>
+	<td></td>
+</tr>
+<tr>
+	<td>addSelection</td>
+	<td>id=AccountsSearchForm_selectedListAttributes_hidden</td>
+	<td>label=Primary Email</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=yw2moveRight</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#list-attributes-apply &gt; span.z-label</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Name</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Office Phone</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Primary Email</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Type</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Owner</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=select-list-attributes-link</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=list-attributes-reset</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Name</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Type</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Owner</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextNotPresent</td>
+	<td>//div[@id='list-view']/table/thead/tr/th[@id='list-view_c4' contains(text(), "Primary Email")]</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
