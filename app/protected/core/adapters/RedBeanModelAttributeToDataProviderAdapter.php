@@ -150,6 +150,33 @@
         }
 
         /**
+         * @return bool
+         */
+        public function isRelationTypeAHasManyVariant()
+        {
+            if($this->getRelationType() == RedBeanModel::HAS_MANY  ||
+               $this->getRelationType() == RedBeanModel::HAS_MANY_BELONGS_TO ||
+               $this->getRelationType() == RedBeanModel::HAS_ONE_BELONGS_TO)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isRelationTypeAHasOneVariant()
+        {
+            if($this->getRelationType() == RedBeanModel::HAS_MANY_BELONGS_TO ||
+               $this->getRelationType() == RedBeanModel::HAS_ONE)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /**
          * @return true/false if the $relatedAttribute was specified in the construcor.
          */
         public function hasRelatedAttribute()
@@ -210,7 +237,49 @@
         public function getRelationTableName()
         {
             $modelClassName = $this->getRelationModelClassName();
-            return $modelClassName::getTableName($modelClassName);
+            if($this->canRelationHaveTable())
+            {
+                return $modelClassName::getTableName($modelClassName);
+            }
+            else
+            {
+                while (get_parent_class($modelClassName) != 'RedBeanModel')
+                {
+                    $modelClassName = get_parent_class($modelClassName);
+                    if($modelClassName::getCanHaveBean())
+                    {
+                        return $modelClassName::getTableName($modelClassName);
+                    }
+                }
+                throw new NotSupportedException();
+            }
+        }
+
+        /**
+         * If the attribute is a relation, returns the relation model class name or the next available that
+         * can have a table
+         */
+        public function getRelationModelClassNameThatCanHaveATable()
+        {
+            $modelClassName = $this->getRelationModelClassName();
+            if($this->canRelationHaveTable())
+            {
+                return $modelClassName;
+            }
+            else
+            {
+                $count = 0;
+                while (get_parent_class($modelClassName) != 'RedBeanModel')
+                {
+                    $modelClassName = get_parent_class($modelClassName);
+                    if($modelClassName::getCanHaveBean())
+                    {
+                        return $modelClassName;
+                    }
+                    $count ++;
+                }
+                throw new NotSupportedException();
+            }
         }
 
         /**
@@ -251,6 +320,10 @@
             return $this->getRelationModel()->getRelationType($this->relatedAttribute);
         }
 
+        /**
+         * @return mixed
+         * @throws NotSupportedException
+         */
         public function getRelatedAttributeRelationModelClassName()
         {
             if (!$this->isRelatedAttributeRelation())
@@ -258,6 +331,61 @@
                 throw new NotSupportedException();
             }
             return $this->getRelationModel()->getRelationModelClassName($this->relatedAttribute);
+        }
+
+        /**
+         * @return string
+         * @throws NotSupportedException
+         */
+        public function getManyToManyTableName()
+        {
+            if($this->getRelationType() != RedBeanModel::MANY_MANY)
+            {
+                throw new NotSupportedException();
+            }
+            $attributeName = $this->getAttribute();
+            return $this->getModel()->{$attributeName}->getTableName();
+        }
+
+        /**
+         * @return bool
+         */
+        public function isAttributeMixedIn()
+        {
+            if ($this->getModelClassName() == 'User' &&
+                $this->getAttributeModelClassName() == 'Person')
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isAttributeOnDifferentModel()
+        {
+            if($this->getAttributeModelClassName() == $this->getModelClassName())
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * Resolve which column to use when querying a many to many relation.
+         * @return string
+         */
+        public function resolveManyToManyColumnName()
+        {
+            if ($this->getRelatedAttribute() != 'id')
+            {
+               return $this->getRelatedAttributeColumnName();
+            }
+            else
+            {
+                return $this->getRelationTableName() . '_id';
+            }
         }
     }
 ?>
