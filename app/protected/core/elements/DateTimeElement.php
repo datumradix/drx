@@ -57,8 +57,6 @@
                     'hourText'        => Yii::t('Default', 'Hour'),
                     'minuteText'      => Yii::t('Default', 'Minute'),
                     'secondText'      => Yii::t('Default', 'Second'),
-                    'currentText'     => Yii::t('Default', 'Now'),
-                    'closeText'       => Yii::t('Default', 'Done'),
                     'showOn'          => 'both',
                     'buttonImageOnly' => false,
                     'buttonText'      => ZurmoHtml::tag('span', array(), '<!--Date-->'),
