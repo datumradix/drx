@@ -130,6 +130,30 @@
             $content .= $this->renderFormBottomPanelExtraLinks();
             $content .= $this->renderClearingSearchInputContent();
             $content .= '</div>';
+            $content .= '<div id="table-scrubber"><span>scrub table</span><div id="slider"></div></div>
+                <script>
+                $(window).ready(function(){
+                    $( "#slider" ).hide();
+                    var scrollPane = $( "#list-view" ),
+                        scrollContent = $( ".items" );
+                    $( "#slider" ).slider({
+                        slide: function( event, ui ) {
+                            if ( scrollContent.width() > scrollPane.width() ) {
+                                scrollContent.css( "margin-left", Math.floor(
+                                    ui.value / 100 * ( scrollPane.width() - scrollContent.width() )
+                                ) + "px" );
+                            } else {
+                                scrollContent.css( "margin-left", 0 );
+                            }
+                        }
+                    });
+                    $( "#table-scrubber > span" ).click(function(){
+                        $( "#slider" ).fadeIn();
+                        $(this).hide();
+                    });
+
+                });
+                </script>';
             return $content;
         }
 
