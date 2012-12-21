@@ -50,11 +50,11 @@
         {
             $title = Yii::t('Default', 'Email');
             return ModalView::getAjaxOptionsForModalLink(
-                                     Yii::t('Default', 'Compose Email'), 'modalContainer', 'auto', 800,
-                                                                         array(
-                                                                            'my' => 'top',
-                                                                            'at' => 'bottom',
-                                                                            'of' => '#HeaderView'));
+                                    Yii::t('Default', 'Compose Email'),
+                                    'modalContainer',
+                                    "'100%'",
+                                    "'100%'",
+                                    array( 'my' => 'top', 'at' => 'top', 'of' => '.ZurmoDefaultPageView'));
         }
 
         protected function getDefaultLabel()
