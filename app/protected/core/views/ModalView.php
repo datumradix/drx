@@ -94,8 +94,16 @@
             return "js:function(){jQuery('#" . $containerId . "').html('');" .
                                     "makeLargeLoadingSpinner('" . $containerId . "');" .
                                     "window.scrollTo(0, 0);" .
+                                    "var modalWidth = $width;
+                                     var modalHeight = $heightContent;
+                                     if (modalWidth === '100%'){
+                                         modalWidth = jQuery(window).width();
+                                     }
+                                     if (modalHeight === '100%'){
+                                         modalHeight = jQuery(window).height();
+                                     }" .
                                     "jQuery('#" . $containerId . "').dialog({'title':\"" . CJavaScript::quote($title) . "\",'autoOpen':true," .
-                                    "'modal':true,'height':" . $heightContent . ",'width':" . $width . ", 'position':" . $position . "}); return true;}";
+                                    "'modal':true,'height':modalHeight,'width':modalWidth, 'position':" . $position . "}); return true;}";
             // End Not Coding Standard
         }
     }
