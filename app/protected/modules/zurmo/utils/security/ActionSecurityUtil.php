@@ -128,7 +128,8 @@
             $model,
             $moduleClassName,
             $linkRoute,
-            $redirectUrl = null)
+            $redirectUrl = null,
+            $isAjax = false)
         {
             assert('is_string($attributeString)');
             assert('$model instanceof Item');
@@ -141,8 +142,24 @@
             }
             if (RightsUtil::canUserAccessModule($moduleClassName, Yii::app()->user->userModel))
             {
-                return ZurmoHtml::link($attributeString,
-                    Yii::app()->createUrl($linkRoute, array("id" => $model->id, 'redirectUrl' => $redirectUrl)));
+                if (!($isAjax))
+                {
+                    return ZurmoHtml::link($attributeString,
+                        Yii::app()->createUrl($linkRoute, array("id" => $model->id, 'redirectUrl' => $redirectUrl)));
+                }
+                else
+                {
+                    $modalAjaxOptions = ModalView::getAjaxOptionsForModalLink(
+                                     $attributeString, 'modalContainer', 'auto', 800,
+                                                                    array(
+                                                                        'my' => 'top',
+                                                                        'at' => 'bottom',
+                                                                        'of' => '#HeaderView'));
+                    return ZurmoHtml::ajaxLink($attributeString,
+                        Yii::app()->createUrl($linkRoute, array("id" => $model->id, 'redirectUrl' => $redirectUrl)),
+                        $modalAjaxOptions);
+                }
+
             }
             return $attributeString;
         }

@@ -141,7 +141,7 @@
         {
             $string  = 'ActionSecurityUtil::resolveLinkToEditModelForCurrentUser("' . $attributeString . '", ';
             $string .= '$data, "' . $this->getActionModuleClassName() . '", ';
-            $string .= '"' . $this->getGridViewActionRoute('edit') . '", "' . $this->redirectUrl . '")';
+            $string .= '"' . $this->getGridViewActionRoute('edit') . '", "' . $this->redirectUrl . '", true)';
             return $string;
         }
 
