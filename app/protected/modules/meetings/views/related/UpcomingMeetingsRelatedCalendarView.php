@@ -60,7 +60,7 @@
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array(  'type'            => 'CreateFromRelatedListLink',
+                            array(  'type'            => 'ModalCreateFromRelatedListLink',
                                     'routeModuleId'   => 'eval:$this->moduleId',
                                     'routeParameters' => 'eval:$this->getCreateLinkRouteParameters()'),
                         ),
