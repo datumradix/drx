@@ -57,5 +57,27 @@
             $view = new ModalView($this, $meetingsView);
             echo $view->render();
         }
+
+        protected function actionCreateByModel(Activity $activity, $redirectUrl)
+        {
+            $EditAndDetailsView = $this->makeEditAndDetailsView(
+                                            $this->attemptToSaveModelFromPost($activity, $redirectUrl), 'Edit');
+            Yii::app()->getClientScript()->setToAjaxMode();
+            $view = new ModalView($this, $EditAndDetailsView);
+            echo $view->render();
+        }
+
+        public function actionEdit($id, $redirectUrl = null)
+        {
+            $modelClassName     = $this->getModule()->getPrimaryModelName();
+            $activity           = $modelClassName::getById(intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($activity);
+            $pageViewClassName  = $this->getPageViewClassName();
+            $EditAndDetailsView = $this->makeEditAndDetailsView(
+                                           $this->attemptToSaveModelFromPost($activity, $redirectUrl), 'Edit');
+            Yii::app()->getClientScript()->setToAjaxMode();
+            $view = new ModalView($this, $EditAndDetailsView);
+            echo $view->render();
+        }
     }
 ?>
