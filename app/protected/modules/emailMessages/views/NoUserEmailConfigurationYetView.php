@@ -30,6 +30,8 @@
      */
     class NoUserEmailConfigurationYetView extends View
     {
+        public $cssClasses = array('splash-view');
+
         protected function renderContent()
         {
             $params  = array('label' => $this->getCreateLinkDisplayLabel());
@@ -37,7 +39,7 @@
                                              array('id' => Yii::app()->user->userModel->id));
             $content = '<div class="' . $this->getIconName() . '">';
             $content .= $this->getMessageContent();
-            $content .= ZurmoHtml::link(ZurmoHtml::tag('span', array(), $this->getCreateLinkDisplayLabel()), $url, array('class' => 'z-button'));
+            $content .= ZurmoHtml::link(ZurmoHtml::tag('span', array('class' => 'z-label'), $this->getCreateLinkDisplayLabel()), $url, array('class' => 'z-button green-button'));
             $content .= '</div>';
             return $content;
         }
@@ -54,7 +56,7 @@
 
         protected function getMessageContent()
         {
-            return Yii::t('Default', '<h2>Not so fast</h2></i>' .
+            return Yii::t('Default', '<h2>Not so fast</h2>' .
                                      '<div class="large-icon"></div><p>Configure your email settings before you can send emails.</p>');
         }
     }

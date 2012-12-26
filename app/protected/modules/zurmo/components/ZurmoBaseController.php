@@ -57,6 +57,11 @@
                 'moduleClassName' => 'ZurmoModule',
                 'rightName' => ZurmoModule::RIGHT_BULK_WRITE,
             );
+            $filters[] = array(
+                self::getRightsFilterPath() . ' + massDelete, massDeleteProgress',
+                'moduleClassName' => 'ZurmoModule',
+                'rightName' => ZurmoModule::RIGHT_BULK_DELETE,
+            );
             return $filters;
         }
 
@@ -190,7 +195,7 @@
             assert('is_string($stickySearchKey) || $stickySearchKey == null');
             if ($_GET['selectAll'])
             {
-                if(!isset($_GET[get_class($searchModel)]) && $stickySearchKey != null)
+                if (!isset($_GET[get_class($searchModel)]) && $stickySearchKey != null)
                 {
                     $resolvedStickySearchKey = $stickySearchKey;
                 }

@@ -77,9 +77,6 @@
             'format' => array(
                 'class' => 'application.core.components.Formatter',
             ),
-            'fusioncharts' => array(
-                'class' => 'application.extensions.fusioncharts.fusionCharts',
-            ),
             'imap' => array(
                 'class'       => 'application.modules.emailMessages.components.ZurmoImap',
             ),
@@ -89,6 +86,11 @@
             'gamificationObserver' => array(
                 'class' => 'application.modules.gamification.observers.GamificationObserver',
             ),
+            /* Will be enabled later
+            'messages' => array(
+                'class' => 'application.core.components.ZurmoMessageSource',
+            ),
+            */
             'minScript' => array(
                 'class' => 'application.core.components.ZurmoExtMinScript',
                 'groupMap' => array(
@@ -105,7 +107,6 @@
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jquery.yiiactiveform.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/extensions/qtip/assets/jquery.qtip-2.min.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/widgets/assets/extendedGridView/jquery.yiigridview.js',
-                        INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/widgets/assets/fusionChart/jquery.fusioncharts.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/elements/assets/Modal.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/views/assets/dynamicSearchViewUtils.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected/core/views/assets/FormUtils.js',
@@ -135,7 +136,6 @@
                     array('system.web.js.source',                                       '/jquery.yiiactiveform.js'),
                     array('application.extensions.qtip.assets',                         '/jquery.qtip-2.min.js'),
                     array('application.core.widgets.assets',   '/extendedGridView/jquery.yiigridview.js'),
-                    array('application.core.widgets.assets',   '/fusionChart/jquery.fusioncharts.js'),
                     array('application.core.elements.assets',  '/Modal.js'),
                     array('application.core.views.assets',     '/FormUtils.js'),
                     array('application.core.views.assets',     '/dynamicSearchViewUtils.js'),
@@ -164,13 +164,6 @@
                         'class'  => 'CFileLogRoute',
                         'levels' => 'error, warning',
                     ),
-                        /*
-                    array(
-                        'class'=>'application.extensions.sentrylog.RSentryLog',
-                        'dsn' => 'http://5232100222bc4404b368026413df2d9a:47f7a2f1542348d68bea7b00f2261ede@sentry.zurmo.com/2',
-                        'levels'=>'error',
-                    ),
-                    */
                 ),
             ),
             'mappingHelper' => array(

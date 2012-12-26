@@ -142,6 +142,7 @@
             try
             {
                 $xhtmlValidationErrors = W3CValidatorServiceUtil::validate($content);
+
                 if (count($xhtmlValidationErrors))
                 {
                     foreach ($xhtmlValidationErrors as $xhtmlValidationError)
@@ -161,7 +162,7 @@
             }
             catch (Exception $e)
             {
-                self::$xhtmlValidationErrors[] = str_replace('{text}', 'Error accessising W3C validation service.', $wrapper);
+                self::$xhtmlValidationErrors[] = str_replace('{text}', 'Error accessing W3C validation service.', $wrapper);
                 self::$xhtmlValidationErrors[] = str_replace('{text}', $e->getMessage(), $wrapper);
             }
             return $valid;
@@ -209,11 +210,9 @@
             Yii::app()->clientScript->registerScriptFile(
                 Yii::app()->getAssetManager()->publish(
                     Yii::getPathOfAlias('application.core.views.assets')) . '/jquery.truncateText.js');
-            /*return '<?xml version="1.0" encoding="utf-8"?>'.
-                   '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' .
-                   '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">';*/
-            return '<!doctype html>' .
-                   '<html lang="en">';
+            return '<!DOCTYPE html>' .
+                   '<!--[if IE 8]><html class="ie8" lang="en"><![endif]-->' .
+                   '<!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->';
         }
 
         /**
@@ -240,7 +239,7 @@
             {
                 $specialCssContent .= '<link rel="stylesheet/less" type="text/css" href="' .
                                       Yii::app()->baseUrl . '/' . $theme . '/less/newui.less"/>';
-                $specialCssContent .= '<!--[if lt IE 10]><link rel="stylesheet/less" type="text/css" href="' .
+                $specialCssContent .= '<!--[if lt IE 9]><link rel="stylesheet/less" type="text/css" href="' .
                                       Yii::app()->baseUrl . '/' . $theme . '/less/ie.less"/><![endif]-->';
             }
             else
@@ -255,7 +254,7 @@
                     Yii::app()->minScript->generateScriptMap('js');
                 }
             }
-            if (Yii::app()->browser->getName() == 'msie' && Yii::app()->browser->getVersion() < 8)
+            if (Yii::app()->browser->getName() == 'msie' && Yii::app()->browser->getVersion() < 9)
             {
                 $cs->registerCssFile(Yii::app()->baseUrl . '/' . $theme . '/css' . '/ie.css', 'screen, projection');
             }
@@ -313,7 +312,7 @@
         {
             $classContent      = Yii::app()->themeManager->getActiveThemeColor();
             $backgroundTexture = Yii::app()->themeManager->getActiveBackgroundTexture();
-            if($backgroundTexture != null)
+            if ($backgroundTexture != null)
             {
                 $classContent .= ' ' . $backgroundTexture;
             }

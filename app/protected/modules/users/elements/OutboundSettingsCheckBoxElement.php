@@ -68,7 +68,6 @@
             }
             else
             {
-
                 $textField = $form->passwordField($model, $attribute, $htmlOptions);
             }
             $error       = $form->error    ($model, $attribute);
@@ -86,7 +85,7 @@
 
         protected function renderLabel()
         {
-            $label = Yii::t('Default', 'Customize Outbound Email Settings');
+            $label = Yii::t('Default', 'Custom Outbound Email Settings');
             if ($this->form === null)
             {
                 return $this->getFormattedAttributeLabel();
@@ -99,11 +98,13 @@
         protected function renderScripts()
         {
             $checkBoxId = $this->getEditableInputId();
+            // Begin Not Coding Standard
             Yii::app()->clientScript->registerScript('userEmailConfigurationOutbound', "
                     $('#{$checkBoxId}').change(function(){
                         $('.outbound-settings').toggle();
                     });
                 ");
+            // End Not Coding Standard
         }
     }
 ?>

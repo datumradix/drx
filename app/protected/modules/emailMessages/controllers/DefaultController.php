@@ -289,7 +289,7 @@
             $selectForm            = self::makeSelectForm($userCanAccessLeads, $userCanAccessContacts);
 
             if (isset($_POST[get_class($selectForm)]))
-            {
+            { 
                 if (isset($_POST['ajax']) && $_POST['ajax'] === 'select-contact-form-' . $id)
                 {
                     $selectForm->setAttributes($_POST[get_class($selectForm)][$id]);
@@ -309,7 +309,7 @@
                     ArchivedEmailMatchingUtil::resolveContactToSenderOrRecipient($emailMessage, $contact);
                     ArchivedEmailMatchingUtil::resolveEmailAddressToContactIfEmailRelationAvailable($emailMessage, $contact);
                     $emailMessage->folder = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox,
-                                                                         EmailFolder::TYPE_ARCHIVED_UNMATCHED);
+                                                                         EmailFolder::TYPE_ARCHIVED);
                     if (!$emailMessage->save())
                     {
                         throw new FailedToSaveModelException();
@@ -352,7 +352,7 @@
                     }
                     ArchivedEmailMatchingUtil::resolveContactToSenderOrRecipient($emailMessage, $contact);
                     $emailMessage->folder = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox,
-                                                                         EmailFolder::TYPE_ARCHIVED_UNMATCHED);
+                                                                         EmailFolder::TYPE_ARCHIVED);
                     if (!$emailMessage->save())
                     {
                         throw new FailedToSaveModelException();
@@ -369,7 +369,7 @@
             $contactPrimaryEmailForm       = new ContactPrimaryEmailForm();
             $contactPrimaryEmailForm->name = strval($contact);
             $this->actionValidatePopulateContactEmailBeforeCreating($postData, $contactPrimaryEmailForm);
-            if(isset($postData[get_class($contactPrimaryEmailForm)]))
+            if (isset($postData[get_class($contactPrimaryEmailForm)]))
             {
                 //Process saving the email address and redirecting to create email view
                 $contactPrimaryEmailForm->setAttributes($postData[get_class($contactPrimaryEmailForm)]);
@@ -377,7 +377,7 @@
                 $email->emailAddress   = $contactPrimaryEmailForm->emailAddress;
                 $contact->primaryEmail = $email;
                 $saved = $contact->save();
-                if(!$saved)
+                if (!$saved)
                 {
                     throw new FailedToSaveModelException($message, $code, $previous);
                 }
@@ -427,13 +427,13 @@
             $emailMessageForm = new CreateEmailMessageForm($emailMessage);
             $emailMessageForm->setScenario('createNonDraft');
             $postVariableName = get_class($emailMessageForm);
-            if($toAddress == null && $personOrAccount != null && $personOrAccount->primaryEmail->emailAddress != null)
+            if ($toAddress == null && $personOrAccount != null && $personOrAccount->primaryEmail->emailAddress != null)
             {
                 $toAddress = $personOrAccount->primaryEmail->emailAddress;
             }
             if (isset($postData[$postVariableName]))
             {
-                if($relatedId != null && $relatedModelClassName != null && $toAddress != null)
+                if ($relatedId != null && $relatedModelClassName != null && $toAddress != null)
                 {
                     $messageRecipient                   = new EmailMessageRecipient();
                     $messageRecipient->toName           = strval($personOrAccount);
@@ -464,11 +464,11 @@
         protected function resolvePersonOrAccountFromGet($relatedId = null, $relatedModelClassName = null)
         {
             $personOrAccount = null;
-            if($relatedId != null && $relatedModelClassName != null)
+            if ($relatedId != null && $relatedModelClassName != null)
             {
                 $personOrAccount = $relatedModelClassName::getById((int)$relatedId);
                 //Only attempt to populate email if the user has write permissions
-                if($relatedModelClassName == 'Contact' &&
+                if ($relatedModelClassName == 'Contact' &&
                    $personOrAccount->primaryEmail->emailAddress == null &&
                    ControllerSecurityUtil::doesCurrentUserHavePermissionOnSecurableItem($personOrAccount, Permission::WRITE))
                 {
@@ -581,6 +581,13 @@
                 $selectForm = new LeadSelectForm();
             }
             return $selectForm;
+        }
+
+        public function actionDelete($id)
+        {
+            $emailMessage = EmailMessage::getById(intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserDeleteModel($emailMessage);
+            $emailMessage->delete();
         }
     }
 ?>

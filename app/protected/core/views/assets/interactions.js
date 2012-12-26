@@ -78,6 +78,13 @@ $(window).ready(function(){
     }
 
     resizeWhiteArea();
+    $(window).resize(function(){
+      console.log('resizing');
+      resizeWhiteArea();
+    });
+
+    /*Autogrow text areas*/
+    $('textarea').autogrow();
 
     /*Label overlays input, address fields*/
     $(".overlay-label-field input").live('focus', function(){
@@ -199,15 +206,46 @@ function setupCheckboxStyling( $context ) {
        });
 }
 
-function onAjaxSubmitRelatedListAction(confirmTitle, gridId)
-{
-    if(!confirm(confirmTitle))
-    {
+function onAjaxSubmitRelatedListAction(confirmTitle, gridId){
+    if(!confirm(confirmTitle)){
         return false;
     }
     $('#' + gridId).addClass("loading");
     makeSmallLoadingSpinner(gridId);
     return true;
+}
+
+/*
+* Spinner Functions
+*/
+
+function attachLoadingSpinner( id, state, color ){
+    var color;
+    if ( color === 'dark' ){
+        color = '#999';
+    } else {
+        color = '#fff';
+    }
+    if ( state === true ){
+        $( '.z-spinner', '#' + id ).spin({
+            lines : 9, // The number of lines to draw
+            length : 2.3, // The length of each line
+            width : 1.7, // The line thickness
+            radius : 3, // The radius of the inner circle
+            rotate : 0, // The rotation offset
+            color : color, // #rgb or #rrggbb
+            speed : 2.5, // Rounds per second
+            trail : 37, // Afterglow percentage
+            shadow : false, // Whether to render a shadow
+            hwaccel : false, // Whether to use hardware acceleration
+            className : 'spinner', // The CSS class to assign to the spinner
+            zIndex : 2e9, // The z-index (defaults to 2000000000)
+            top : 4, // Top position relative to parent in px
+            left : 0 // Left position relative to parent in px
+        });
+    } else {
+        $( '.z-spinner', '#' + id ).spin(false);
+    }
 }
 
 function makeSmallLoadingSpinner(id, color){
@@ -244,7 +282,7 @@ function makeLargeLoadingSpinner(id){
         radius : 8, // The radius of the inner circle
         rotate : 0, // The rotation offset
         color : '#CCCCCC', // #rgb or #rrggbb
-        speed : 2, // Rounds per second
+        speed : 2.5, // Rounds per second
         trail : 37, // Afterglow percentage
         shadow : false, // Whether to render a shadow
         hwaccel : false, // Whether to use hardware acceleration
@@ -258,13 +296,13 @@ function makeLargeLoadingSpinner(id){
 function makeGlobalSearchSpinner(id, state){
     if ( state === true ){
         $( '.z-spinner', '#' + id ).spin({
-            lines : 9, // The number of lines to draw
+            lines : 10, // The number of lines to draw
             length : 3, // The length of each line
             width : 2, // The line thickness
             radius : 4, // The radius of the inner circle
             rotate : 0, // The rotation offset
             color : '#999', // #rgb or #rrggbb
-            speed : 2, // Rounds per second
+            speed : 2.5, // Rounds per second
             trail : 100, // Afterglow percentage
             shadow : false, // Whether to render a shadow
             hwaccel : false, // Whether to use hardware acceleration
@@ -627,3 +665,49 @@ $.fn.spin = function(opts) {
   });
   return this;
 };
+
+
+
+/*
+Autogrow textfields from https://github.com/rumpl/jquery.autogrow
+*/
+(function ($) {
+    $.fn.autogrow = function () {
+        this.filter('textarea').each(function () {
+            var $this = $(this),
+                minHeight = $this.height(),
+                shadow = $('<div></div>').css({
+                    position:   'absolute',
+                    top: -10000,
+                    left: -10000,
+                    width: $(this).width(),
+                    fontSize: $this.css('fontSize'),
+                    fontFamily: $this.css('fontFamily'),
+                    lineHeight: $this.css('lineHeight'),
+                    resize: 'none'
+                }).addClass('shadow').appendTo(document.body),
+                update = function () {
+                    var t = this;
+                    setTimeout(function () {
+                        var val = t.value.replace(/</g, '&lt;')
+                                .replace(/>/g, '&gt;')
+                                .replace(/&/g, '&amp;')
+                                .replace(/\n/g, '<br/>&nbsp;');
+    
+                        if ($.trim(val) === '') {
+                            val = 'a';
+                        }
+    
+                        shadow.html(val);
+                        $(t).css('height', Math.max(shadow[0].offsetHeight + 15, minHeight));
+                    }, 0);
+                };
+
+            $this.change(update).keyup(update).keydown(update).focus(update);
+            update.apply(this);
+        });
+
+        return this;
+    };
+
+}(jQuery));

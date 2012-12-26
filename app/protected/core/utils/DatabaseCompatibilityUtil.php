@@ -342,7 +342,10 @@
                 else
                 {
                     throw new BulkInsertFailedException(
-                              Yii::t('Default', 'Bulk insert failed. There was a row with an incorrect column quantity'));
+                              Yii::t('Default', 'Bulk insert failed. There was a row with an incorrect column quantity.') .
+                              ' ' .
+                              Yii::t('Default', 'Row Counter: {rowNumber} Serialized row data: {serializedRowData}',
+                              array('{rowNumber}' => $counter, '{serializedRowData}' => serialize($row))));
                 }
             }
             if ($counter > 0)
@@ -1000,6 +1003,7 @@
          * @param string $host
          * @param string $username
          * @param string $password
+         * @param int $port
          * @param string $databaseName
          * @param string $backupFilePath
          * @throws NotSupportedException
@@ -1009,6 +1013,7 @@
                                             $host,
                                             $username,
                                             $password,
+                                            $port,
                                             $databaseName,
                                             $backupFilePath)
         {
@@ -1020,7 +1025,7 @@
 
             if ($databaseType == 'mysql')
             {
-                $result = exec("mysqldump --host=$host --user=$username --password=$password --routines --add-drop-database $databaseName > $backupFilePath", $output, $returnVal);  // Not Coding Standard
+                $result = exec("mysqldump --host=$host --user=$username --password=$password --port=$port --routines --add-drop-database $databaseName > $backupFilePath", $output, $returnVal);  // Not Coding Standard
 
                 if ($returnVal !== 0)
                 {
@@ -1041,6 +1046,7 @@
                                                $host,
                                                $username,
                                                $password,
+                                               $port,
                                                $databaseName,
                                                $restoreFilePath)
         {
@@ -1052,7 +1058,7 @@
 
             if ($databaseType == 'mysql')
             {
-                $result = exec("mysql --host=$host --user=$username --password=$password $databaseName < $restoreFilePath", $output, $returnVal); // Not Coding Standard
+                $result = exec("mysql --host=$host --user=$username --password=$password --port=$port $databaseName < $restoreFilePath", $output, $returnVal); // Not Coding Standard
                 if ($returnVal !== 0)
                 {
                     return false;
