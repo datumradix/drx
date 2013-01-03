@@ -42,9 +42,14 @@
 
         public  $xAxisName              = null;
 
+        public  $xAxisUnitContent       = null;
+
         public  $yAxisName              = null;
 
+        public  $yAxisUnitContent       = null;
+
         private $serial                 = array();
+
         private $chartProperties        = array();
 
         private $graphProperties        = array();
@@ -76,7 +81,6 @@
             $this->addChartProperties('colors', $colorTheme[4]);
             if ($this->type === "Column2D")
             {
-                $currencySymbol = Yii::app()->locale->getCurrencySymbol(Yii::app()->currencyHelper->getCodeForCurrentUserForDisplay());
                 //Chart
                 $this->addChartProperties('usePrefixes',            true);
                 $this->addChartProperties('plotAreaBorderColor',    "'#000000'");
@@ -88,16 +92,13 @@
                 $this->addGraphProperties('lineAlpha',              0);
                 $this->addGraphProperties('fillColors',             $colorTheme[5]);
                 //Axis
-                $this->addCategoryAxisProperties('title',           "'{$this->xAxisName}'");
                 $this->addCategoryAxisProperties('inside',          0);
                 $this->addCategoryAxisProperties('fillColors',      $colorTheme[5]);
                 //ValueAxis
-                $this->addValueAxisProperties('title',              "'$this->yAxisName'");
                 $this->addValueAxisProperties('minimum',            0);
                 $this->addValueAxisProperties('dashLength',         2);
-                $this->addValueAxisProperties('usePrefixes',        1);
-                $this->addValueAxisProperties('unitPosition',       "'left'");
-                $this->addValueAxisProperties('unit',               "'{$currencySymbol}'");
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
             }
             elseif ($this->type === "Column3D")
             {
@@ -105,6 +106,8 @@
                 $this->addGraphProperties('lineAlpha',              0.5);
                 $this->addGraphProperties('fillAlphas',             1);
                 $this->addGraphProperties('fillColors',             $colorTheme[5]);
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
                 $this->makeChart3d();
             }
             elseif ($this->type === "Bar2D")
@@ -119,6 +122,24 @@
                 $this->addGraphProperties('labelPosition',          "'right'");
                 $this->addGraphProperties('labelText',              "'[[category]]: [[value]]'");
                 $this->addGraphProperties('balloonText',            "'[[category]]: [[value]]'");
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
+            }
+            elseif ($this->type === "Bar3D")
+            {
+                $this->addChartProperties('rotate',                 true);
+                $this->addChartProperties('usePrefixes',            true);
+                $this->addGraphProperties('plotAreaBorderAlpha',    0);
+                $this->addGraphProperties('lineAlpha',              0);
+                $this->addGraphProperties('fillAlphas',             1);
+                $this->addGraphProperties('fillColors',             $colorTheme[5]);
+                $this->addGraphProperties('gradientOrientation',    "'vertical'");
+                $this->addGraphProperties('labelPosition',          "'right'");
+                $this->addGraphProperties('labelText',              "'[[category]]: [[value]]'");
+                $this->addGraphProperties('balloonText',            "'[[category]]: [[value]]'");
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
+                $this->makeChart3d();
             }
             elseif ($this->type === "Donut2D")
             {
@@ -135,6 +156,23 @@
                 $this->addChartProperties('pullOutRadius',          "'0%'");
                 $this->addChartProperties('startDuration',          0);
                 $this->chartIsPie = true;
+            }
+            elseif ($this->type === "Donut3D")
+            {
+                $this->addChartProperties('color',                  "'#A39595'");
+                $this->addChartProperties('sequencedAnimation',     true);
+                $this->addChartProperties('startEffect',            "'elastic'");
+                $this->addChartProperties('innerRadius',            "'30%'");
+                $this->addChartProperties('startDuration',          2);
+                $this->addChartProperties('labelRadius',            15);
+                $this->addChartProperties('usePrefixes',            true);
+                $this->addChartProperties('radius',                 "'45%'");
+                $this->addChartProperties('labelRadius',            -55);
+                $this->addChartProperties('labelText',              "'[[title]]<br>[[percents]]%'");
+                $this->addChartProperties('pullOutRadius',          "'0%'");
+                $this->addChartProperties('startDuration',          0);
+                $this->chartIsPie = true;
+                $this->makeChart3d();
             }
             elseif ($this->type === "Pie2D")
             {
@@ -309,6 +347,18 @@
             $javascript .= "chart.write('chartContainer{$this->id}');
                      });";
             return $javascript;
+        }
+
+        protected function resolveColumnAndBarGeneralProperties()
+        {
+            $this->addCategoryAxisProperties('title',           "'{$this->xAxisName}'");
+            $this->addCategoryAxisProperties('unitPosition',    "'left'");
+            $this->addCategoryAxisProperties('unit',            "'{$this->xAxisUnitContent}'");
+            $this->addCategoryAxisProperties('usePrefixes',     true);
+            $this->addValueAxisProperties('title',              "'$this->yAxisName'");
+            $this->addValueAxisProperties('unitPosition',       "'left'");
+            $this->addValueAxisProperties('unit',               "'{$this->yAxisUnitContent}'");
+            $this->addValueAxisProperties('usePrefixes',        true);
         }
     }
 ?>
