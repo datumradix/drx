@@ -107,6 +107,14 @@
                                  array('defaultValue',  'type', 'type' => 'string'),
                                  array('defaultValue',  'length',  'min'  => 2, 'max' => 32));
             $this->assertEquals($compareData, $rules);
+
+           // Testing AttributeImportRules.
+            $rules = ModelAttributeRulesToDefaultValueMappingRuleUtil::
+                     getApplicableRulesByModelClassNameAndAttributeName('ImportModelTestItem', 'lastName', 'defaultValue', true);
+            $compareData = array(array('defaultValue',  'required'),
+                                 array('defaultValue',  'type', 'type' => 'string'),
+                                 array('defaultValue',  'length',  'min'  => 2, 'max' => 32));
+            $this->assertEquals($compareData, $rules);
         }
 
         public function testGetApplicableRulesByModelClassNameAndAttributeNameForCustomCreatedTypes()
