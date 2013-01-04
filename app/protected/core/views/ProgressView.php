@@ -133,7 +133,7 @@
             ));
             $cClipWidget->endClip();
             $progressBarContent =  $cClipWidget->getController()->clips['ProgressBar'];
-            $content  = "<div><h1>" . Yii::t('Default', 'Mass Update') . ' ' . $this->title . '</h1>';
+            $content  = "<div><h1>" . Zurmo::t('Core', 'Mass Update') . ' ' . $this->title . '</h1>';
             $content .= '<div class="progress-counter">';
             $content .= '<h3><span id="' . $this->progressBarId . '-msg">' . $this->getMessage() . '</span></h3>';
             $content .= '<div class="progressbar-wrapper"><span id="progress-percent">0%</span>' . $progressBarContent . '</div>';
