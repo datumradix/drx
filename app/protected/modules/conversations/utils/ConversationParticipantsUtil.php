@@ -232,10 +232,20 @@
             return $content;
         }
 
-        protected static function getUrlToConversationDetailAndRelationsView($id)
+        public static function getUrlToConversationDetailAndRelationsView($id)
         {
             assert('is_int($id)');
             return Yii::app()->createAbsoluteUrl('conversations/default/details/', array('id' => $id));
+        }
+
+        public static function getConversationParticipants(Conversation $conversation)
+        {
+            $participants = array();
+            foreach ($conversation->conversationParticipants as $participant)
+            {
+                $participants[] = static::castDownItem($participant->person);
+            }
+            return $participants;
         }
     }
 ?>
