@@ -25,40 +25,26 @@
      ********************************************************************************/
 
     /**
-     * Base class used for wrapping a view of a report chart
+     * Base class for showing in the user interface a message and image about a problem or recommendation that needs
+     * to be handled
      */
-    class ReportChartForPortletView extends ReportResultsComponentForPortletView
+    abstract class SplashView extends View
     {
-        public function getTitle()
-        {
-            $title  = Yii::t('Default', 'ReportChartTitleNeeded');
-            return $title;
-        }
+        public $cssClasses = array('splash-view');
 
-        public function renderContent()
+        abstract protected function getMessageContent();
+
+        protected function renderContent()
         {
-            $content  = $this->renderRefreshLink();
-            $content .= $this->makeChartViewAndRender();
+            $content = '<div class="' . $this->getIconName() . '">';
+            $content .= $this->getMessageContent();
+            $content .= '</div>';
             return $content;
         }
 
-        protected function makeChartViewAndRender()
+        protected function getIconName()
         {
-            $dataProvider = null;
-            if(isset($this->params['dataProvider']) &&
-                $this->params['dataProvider']->getReport()->getChart()->type != null)
-            {
-                $dataProvider = $this->params['dataProvider'];
-                if($dataProvider->getReport()->canCurrentUserProperlyRenderResults())
-                {
-                    $view      = new ReportChartView('default', 'reports', $dataProvider, $this->uniqueLayoutId);
-                }
-                else
-                {
-                    $view      = new UserCannotRenderReportProperlySplashView();
-                }
-                return $view->render();
-            }
+            return null;
         }
     }
 ?>

@@ -49,33 +49,19 @@
             $this->actionList();
         }
 
+        protected function resolveMetadataBeforeMakingDataProvider(& $metadata)
+        {
+            $metadata = SavedReportUtil::resolveSearchAttributeDataByModuleClassNames($metadata,
+                        Report::getReportableModulesClassNamesCurrentUserHasAccessTo());
+        }
+
         public function actionList()
         {
             $pageSize                       = Yii::app()->pagination->resolveActiveForCurrentUserByType(
                                               'listPageSize', get_class($this->getModule()));
             $savedReport                    = new SavedReport(false);
             $searchForm                     = new ReportsSearchForm($savedReport);
-
-            $searchAttributes = array(
-                'moduleClassName'    => array('x','y','z'),
-            );
-            $metadataAdapter = new SearchDataProviderMetadataAdapter(
-                $savedReport,
-                Yii::app()->user->userModel->id,
-                $searchAttributes
-            );
-            $dataProvider = RedBeanModelDataProviderUtil::makeDataProvider(
-                SavedReportUtil::resolveSearchAttributeDataByModuleClassNames($metadataAdapter->getAdaptedMetadata(),
-                    Report::getReportableModulesClassNamesCurrentUserHasAccessTo()),
-                'Notification',
-                'RedBeanModelDataProvider',
-                'createdDateTime',
-                true,
-                $pageSize
-            );
-
-
-            $dataProvider = $this->resolveSearchDataProvider(
+            $dataProvider                   = $this->resolveSearchDataProvider(
                 $searchForm,
                 $pageSize,
                 null,
@@ -112,6 +98,7 @@
         public function actionDetails($id)
         {
             $savedReport = static::getModelAndCatchNotFoundAndDisplayError('SavedReport', intval($id));
+            ControllerSecurityUtil::resolveCanCurrentUserAccessModule($savedReport->moduleClassName);
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($savedReport);
             AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($savedReport), 'ReportsModule'), $savedReport);
             $breadcrumbLinks         = array(strval($savedReport));
@@ -159,6 +146,7 @@
         public function actionEdit($id)
         {
             $savedReport      = SavedReport::getById((int)$id);
+            ControllerSecurityUtil::resolveCanCurrentUserAccessModule($savedReport->moduleClassName);
             ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($savedReport);
             $breadcrumbLinks  = array(strval($savedReport));
             $report           = SavedReportToReportAdapter::makeReportBySavedReport($savedReport);
@@ -188,6 +176,11 @@
             $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::
                                                  resolveByPostDataAndModelThenMake($postData[get_class($model)], $savedReport);
             SavedReportToReportAdapter::resolveReportToSavedReport($report, $savedReport);
+            if($savedReport->id > 0)
+            {
+                ControllerSecurityUtil::resolveCanCurrentUserAccessModule($savedReport->moduleClassName);
+            }
+            ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($savedReport);
             if($savedReport->save())
             {
                 if($explicitReadWriteModelPermissions != null)
@@ -209,39 +202,6 @@
             {
                 throw new FailedToSaveModelException();
             }
-        }
-
-        protected function resolveCanCurrentUserAccessReports()
-        {
-            if(!RightsUtil::doesUserHaveAllowByRightName('ReportsModule',
-                                                            ReportsModule::RIGHT_CREATE_REPORTS,
-                                                            Yii::app()->user->userModel))
-            {
-                $messageView = new AccessFailureView();
-                $view        = new AccessFailurePageView($messageView);
-                echo $view->render();
-                Yii::app()->end(0, false);
-            }
-            return true;
-        }
-
-        protected function resolveSavedReportAndReportByPostData(Array $postData, & $savedReport, & $report, $type, $id = null)
-        {
-            if($id == null)
-            {
-                $this->resolveCanCurrentUserAccessReports();
-                $savedReport               = new SavedReport();
-                $report                    = new Report();
-                $report->setType($type);
-            }
-            else
-            {
-                $savedReport                = SavedReport::getById(intval($id));
-                ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($savedReport);
-                $report                     = SavedReportToReportAdapter::makeReportBySavedReport($savedReport);
-            }
-            DataToReportUtil::resolveReportByWizardPostData($report, $postData,
-                                                            ReportToWizardFormAdapter::getFormClassNameByType($type));
         }
 
         public function actionRelationsAndAttributesTree($type, $treeType, $id = null, $nodeId = null)
@@ -380,6 +340,66 @@
             StickyReportUtil::clearDataByKey($report->getId());
         }
 
+        public function actionDelete($id)
+        {
+            $report = SavedReport::GetById(intval($id));
+            ControllerSecurityUtil::resolveCanCurrentUserAccessModule($savedReport->moduleClassName);
+            ControllerSecurityUtil::resolveAccessCanCurrentUserDeleteModel($report);
+            $report->delete();
+            $this->redirect(array($this->getId() . '/index'));
+        }
+
+        public function actionDrillDownDetails($id, $rowId)
+        {
+            $savedReport  = SavedReport::getById((int)$id);
+            ControllerSecurityUtil::resolveCanCurrentUserAccessModule($savedReport->moduleClassName);
+            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($savedReport, true);
+            $report       = SavedReportToReportAdapter::makeReportBySavedReport($savedReport);
+            $report->resolveGroupBysAsFilters(GetUtil::getData());
+            $pageSize     = Yii::app()->pagination->resolveActiveForCurrentUserByType(
+                'listPageSize', get_class($this->getModule()));
+            $dataProvider = ReportDataProviderFactory::makeForSummationDrillDown($report, $pageSize);
+            $dataProvider->setRunReport(true);
+            $view         = new SummationDrillDownReportResultsGridView('default', 'reports', $dataProvider, $rowId);
+            $content = $view->render();
+            Yii::app()->getClientScript()->setToAjaxMode();
+            Yii::app()->getClientScript()->render($content);
+            echo $content;
+        }
+
+        protected function resolveCanCurrentUserAccessReports()
+        {
+            if(!RightsUtil::doesUserHaveAllowByRightName('ReportsModule',
+                                                            ReportsModule::RIGHT_CREATE_REPORTS,
+                                                            Yii::app()->user->userModel))
+            {
+                $messageView = new AccessFailureView();
+                $view        = new AccessFailurePageView($messageView);
+                echo $view->render();
+                Yii::app()->end(0, false);
+            }
+            return true;
+        }
+
+        protected function resolveSavedReportAndReportByPostData(Array $postData, & $savedReport, & $report, $type, $id = null)
+        {
+            if($id == null)
+            {
+                $this->resolveCanCurrentUserAccessReports();
+                $savedReport               = new SavedReport();
+                $report                    = new Report();
+                $report->setType($type);
+            }
+            else
+            {
+                $savedReport                = SavedReport::getById(intval($id));
+                ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($savedReport);
+                $report                     = SavedReportToReportAdapter::makeReportBySavedReport($savedReport);
+            }
+            DataToReportUtil::resolveReportByWizardPostData($report, $postData,
+                                                            ReportToWizardFormAdapter::getFormClassNameByType($type));
+        }
+
         protected function resolveAfterSaveHasPermissionsProblem(SavedReport $savedReport, $modelToStringValue)
         {
             assert('is_string($modelToStringValue)');
@@ -429,31 +449,6 @@
             $gridView->setView($breadCrumbView, 0, 0);
             $gridView->setView($reportDetailsAndRelationsView, 1, 0);
             return $gridView;
-        }
-
-        public function actionDelete($id)
-        {
-            $report = SavedReport::GetById(intval($id));
-            ControllerSecurityUtil::resolveAccessCanCurrentUserDeleteModel($report);
-            $report->delete();
-            $this->redirect(array($this->getId() . '/index'));
-        }
-
-        public function actionDrillDownDetails($id, $rowId)
-        {
-            $savedReport  = SavedReport::getById((int)$id);
-            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($savedReport, true);
-            $report       = SavedReportToReportAdapter::makeReportBySavedReport($savedReport);
-            $report->resolveGroupBysAsFilters(GetUtil::getData());
-            $pageSize     = Yii::app()->pagination->resolveActiveForCurrentUserByType(
-                            'listPageSize', get_class($this->getModule()));
-            $dataProvider = ReportDataProviderFactory::makeForSummationDrillDown($report, $pageSize);
-            $dataProvider->setRunReport(true);
-            $view         = new SummationDrillDownReportResultsGridView('default', 'reports', $dataProvider, $rowId);
-            $content = $view->render();
-            Yii::app()->getClientScript()->setToAjaxMode();
-            Yii::app()->getClientScript()->render($content);
-            echo $content;
         }
     }
 ?>
