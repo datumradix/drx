@@ -25,40 +25,22 @@
      ********************************************************************************/
 
     /**
-     * Base class used for wrapping a view of a report chart
+     * If a user has access to run a report, but does not have all the required RIGHTS for related modules that are
+     * part of the report, then this message will appear instructing the user to have the admin either fix Rights
+     * or fix the report owner to fix the report.
      */
-    class ReportChartForPortletView extends ReportResultsComponentForPortletView
+    class UserCannotRenderReportProperlySplashView extends SplashView
     {
-        public function getTitle()
+        protected function getIconName()
         {
-            $title  = Yii::t('Default', 'ReportChartTitleNeeded');
-            return $title;
+            return 'Account'; //todo: we should have an image for this. montage of something related to reports plus an exclamation or some error
         }
 
-        public function renderContent()
+        protected function getMessageContent()
         {
-            $content  = $this->renderRefreshLink();
-            $content .= $this->makeChartViewAndRender();
-            return $content;
-        }
-
-        protected function makeChartViewAndRender()
-        {
-            $dataProvider = null;
-            if(isset($this->params['dataProvider']) &&
-                $this->params['dataProvider']->getReport()->getChart()->type != null)
-            {
-                $dataProvider = $this->params['dataProvider'];
-                if($dataProvider->getReport()->canCurrentUserProperlyRenderResults())
-                {
-                    $view      = new ReportChartView('default', 'reports', $dataProvider, $this->uniqueLayoutId);
-                }
-                else
-                {
-                    $view      = new UserCannotRenderReportProperlySplashView();
-                }
-                return $view->render();
-            }
+            return Yii::t('Default', '<h2>Someone messed with the flux capacitor!</h2><div class="large-icon"></div>' .
+            '<p>You cannot run this report because it contains data you do not have access to. ' .
+            'Speak to the report creator or CRM administrator about this issue.</p>');
         }
     }
 ?>

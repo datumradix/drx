@@ -24,15 +24,11 @@
  * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
  ********************************************************************************/
 
-class ReportTest extends ZurmoBaseTest
+class ReportSecurityUtilTest extends ZurmoBaseTest
 {
     public function tesSomeMethodsInReportModel()
     {
-        //todo: areRuntimeFiltersPresent()
-        //todo: resolveGroupBysAsFilters(Array $getData)
-        //todO: test for variable state getReportableModulesAndLabelsForCurrentUser()
-        //todo: test for variable state getReportableModulesClassNamesCurrentUserHasAccessTo()
-        //todo: test canCurrentUserProperlyRenderResults() variable states, regular modules, super and regular users
+//todO: test methods
         $this->fail();
     }
 }

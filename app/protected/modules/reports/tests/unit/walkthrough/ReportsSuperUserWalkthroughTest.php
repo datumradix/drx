@@ -61,5 +61,9 @@
         //actionRelationsAndAttributesTree - for different tree types and different report types
 
         //actionAddAttributeFromTree - all various attribute types
+
+        //todo: test regular user and elevations for all actions not just on reports right, but on the base module for the report itself.
+
+        //todO: list security elevated and not, also where the user is nobody and can't see any of the modules but has access to reports
     }
 ?>
