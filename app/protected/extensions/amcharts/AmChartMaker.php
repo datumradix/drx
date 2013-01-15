@@ -42,9 +42,14 @@
 
         public  $xAxisName              = null;
 
+        public  $xAxisUnitContent       = null;
+
         public  $yAxisName              = null;
 
+        public  $yAxisUnitContent       = null;
+
         private $serial                 = array();
+
         private $chartProperties        = array();
 
         private $graphProperties        = array();
@@ -52,6 +57,8 @@
         private $valueAxisProperties    = array();
 
         private $categoryAxisProperties = array();
+
+        private $legendProperties = array();
 
         /**
          * Returns the type of chart to be used in AmChart
@@ -74,9 +81,8 @@
             $this->addValueAxisProperties('axisColor',              '"#545454"');
             $this->addValueAxisProperties('gridColor',              '"#545454"');
             $this->addChartProperties('colors', $colorTheme[4]);
-            if ($this->type === "Column2D")
+            if ($this->type == ChartRules::TYPE_COLUMN_2D)
             {
-                $currencySymbol = Yii::app()->locale->getCurrencySymbol(Yii::app()->currencyHelper->getCodeForCurrentUserForDisplay());
                 //Chart
                 $this->addChartProperties('usePrefixes',            true);
                 $this->addChartProperties('plotAreaBorderColor',    "'#000000'");
@@ -88,26 +94,25 @@
                 $this->addGraphProperties('lineAlpha',              0);
                 $this->addGraphProperties('fillColors',             $colorTheme[5]);
                 //Axis
-                $this->addCategoryAxisProperties('title',           "'{$this->xAxisName}'");
                 $this->addCategoryAxisProperties('inside',          0);
                 $this->addCategoryAxisProperties('fillColors',      $colorTheme[5]);
                 //ValueAxis
-                $this->addValueAxisProperties('title',              "'$this->yAxisName'");
                 $this->addValueAxisProperties('minimum',            0);
                 $this->addValueAxisProperties('dashLength',         2);
-                $this->addValueAxisProperties('usePrefixes',        1);
-                $this->addValueAxisProperties('unitPosition',       "'left'");
-                $this->addValueAxisProperties('unit',               "'{$currencySymbol}'");
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
             }
-            elseif ($this->type === "Column3D")
+            elseif ($this->type == ChartRules::TYPE_COLUMN_3D)
             {
                 $this->addGraphProperties('balloonText',            "'[[category]]:[[value]]'");
                 $this->addGraphProperties('lineAlpha',              0.5);
                 $this->addGraphProperties('fillAlphas',             1);
                 $this->addGraphProperties('fillColors',             $colorTheme[5]);
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
                 $this->makeChart3d();
             }
-            elseif ($this->type === "Bar2D")
+            elseif ($this->type == ChartRules::TYPE_BAR_2D)
             {
                 $this->addChartProperties('rotate',                 true);
                 $this->addChartProperties('usePrefixes',            true);
@@ -119,8 +124,26 @@
                 $this->addGraphProperties('labelPosition',          "'right'");
                 $this->addGraphProperties('labelText',              "'[[category]]: [[value]]'");
                 $this->addGraphProperties('balloonText',            "'[[category]]: [[value]]'");
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
             }
-            elseif ($this->type === "Donut2D")
+            elseif ($this->type == ChartRules::TYPE_BAR_3D)
+            {
+                $this->addChartProperties('rotate',                 true);
+                $this->addChartProperties('usePrefixes',            true);
+                $this->addGraphProperties('plotAreaBorderAlpha',    0);
+                $this->addGraphProperties('lineAlpha',              0);
+                $this->addGraphProperties('fillAlphas',             1);
+                $this->addGraphProperties('fillColors',             $colorTheme[5]);
+                $this->addGraphProperties('gradientOrientation',    "'vertical'");
+                $this->addGraphProperties('labelPosition',          "'right'");
+                $this->addGraphProperties('labelText',              "'[[category]]: [[value]]'");
+                $this->addGraphProperties('balloonText',            "'[[category]]: [[value]]'");
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
+                $this->makeChart3d();
+            }
+            elseif ($this->type == ChartRules::TYPE_DONUT_2D)
             {
                 $this->addChartProperties('color',                  "'#A39595'");
                 $this->addChartProperties('sequencedAnimation',     true);
@@ -136,7 +159,24 @@
                 $this->addChartProperties('startDuration',          0);
                 $this->chartIsPie = true;
             }
-            elseif ($this->type === "Pie2D")
+            elseif ($this->type == ChartRules::TYPE_DONUT_3D)
+            {
+                $this->addChartProperties('color',                  "'#A39595'");
+                $this->addChartProperties('sequencedAnimation',     true);
+                $this->addChartProperties('startEffect',            "'elastic'");
+                $this->addChartProperties('innerRadius',            "'30%'");
+                $this->addChartProperties('startDuration',          2);
+                $this->addChartProperties('labelRadius',            15);
+                $this->addChartProperties('usePrefixes',            true);
+                $this->addChartProperties('radius',                 "'45%'");
+                $this->addChartProperties('labelRadius',            -55);
+                $this->addChartProperties('labelText',              "'[[title]]<br>[[percents]]%'");
+                $this->addChartProperties('pullOutRadius',          "'0%'");
+                $this->addChartProperties('startDuration',          0);
+                $this->chartIsPie = true;
+                $this->makeChart3d();
+            }
+            elseif ($this->type == ChartRules::TYPE_PIE_2D)
             {
                 $this->addChartProperties('color',                  "'#A39595'");
                 $this->addChartProperties('outlineColor',           "'#FFFFFF'");
@@ -151,7 +191,7 @@
                 $this->addChartProperties('startDuration',          0);
                 $this->chartIsPie = true;
             }
-            elseif ($this->type === "Pie3D")
+            elseif ($this->type == ChartRules::TYPE_PIE_3D)
             {
                 $this->addChartProperties('color',                  "'#A39595'");
                 $this->addChartProperties('outlineColor',           "'#FFFFFF'");
@@ -166,6 +206,111 @@
                 $this->addChartProperties('startDuration',          0);
                 $this->makeChart3d();
                 $this->chartIsPie = true;
+            }
+            elseif ($this->type == ChartRules::TYPE_STACKED_AREA)
+            {
+                //Chart
+                $this->addChartProperties('usePrefixes',            true);
+                $this->addChartProperties('plotAreaBorderColor',    "'#000000'");
+                $this->addChartProperties('plotAreaBorderAlpha',    0);
+                //Graph
+                $this->addGraphProperties('type',                   "'line'");
+                $this->addGraphProperties('fillAlphas',             0.6);
+                $this->addGraphProperties('cornerRadiusTop',        0);
+                $this->addGraphProperties('cornerRadiusBottom',     0);
+                $this->addGraphProperties('lineAlpha',              0);
+                //Axis
+                $this->addCategoryAxisProperties('inside',          0);
+                //ValueAxis
+                $this->addValueAxisProperties('minimum',            0);
+                $this->addValueAxisProperties('dashLength',         2);
+                $this->addValueAxisProperties('stackType',          "'regular'");
+                //Legend
+                $this->addLegendProperties('borderAlpha',           0.2);
+                $this->addLegendProperties('valueWidth',            0);
+                $this->addLegendProperties('horizontalGap',         10);
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
+            }
+            elseif ($this->type == ChartRules::TYPE_STACKED_COLUMN_2D)
+            {
+                //Chart
+                $this->addChartProperties('usePrefixes',            true);
+                $this->addChartProperties('plotAreaBorderColor',    "'#000000'");
+                $this->addChartProperties('plotAreaBorderAlpha',    0);
+                //Graph
+                $this->addGraphProperties('balloonText',            "'[[title]]:[[value]]'");
+                $this->addGraphProperties('fillAlphas',             1);
+                $this->addGraphProperties('cornerRadiusTop',        0);
+                $this->addGraphProperties('cornerRadiusBottom',     0);
+                $this->addGraphProperties('lineAlpha',              0);
+                //Axis
+                $this->addCategoryAxisProperties('inside',          0);
+                //ValueAxis
+                $this->addValueAxisProperties('minimum',            0);
+                $this->addValueAxisProperties('dashLength',         2);
+                $this->addValueAxisProperties('stackType',          "'regular'");
+                //Legend
+                $this->addLegendProperties('borderAlpha',           0.2);
+                $this->addLegendProperties('valueWidth',            0);
+                $this->addLegendProperties('horizontalGap',         10);
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
+            }
+            elseif ($this->type == ChartRules::TYPE_STACKED_COLUMN_3D)
+            {
+                $this->addValueAxisProperties('stackType',          "'regular'");
+                $this->addGraphProperties('balloonText',            "'[[title]]:[[value]]'");
+                $this->addGraphProperties('lineAlpha',              0.5);
+                $this->addGraphProperties('fillAlphas',             1);
+                //Legend
+                $this->addLegendProperties('borderAlpha',           0.2);
+                $this->addLegendProperties('valueWidth',            0);
+                $this->addLegendProperties('horizontalGap',         10);
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
+                $this->addChartProperties('depth3D',                40);
+                $this->addChartProperties('angle',                  30);
+                $this->chartIs3d = true;
+            }
+            elseif ($this->type == ChartRules::TYPE_STACKED_BAR_2D)
+            {
+                $this->addChartProperties('rotate',                 true);
+                $this->addChartProperties('usePrefixes',            true);
+                $this->addGraphProperties('plotAreaBorderAlpha',    0);
+                $this->addGraphProperties('lineAlpha',              0);
+                $this->addGraphProperties('fillAlphas',             1);
+                $this->addGraphProperties('gradientOrientation',    "'vertical'");
+                $this->addGraphProperties('labelPosition',          "'right'");
+                $this->addGraphProperties('balloonText',            "'[[title]]: [[value]]'");
+                //Legend
+                $this->addLegendProperties('borderAlpha',           0.2);
+                $this->addLegendProperties('valueWidth',            0);
+                $this->addLegendProperties('horizontalGap',         10);
+                //General properties
+                $this->addValueAxisProperties('stackType',          "'regular'");
+                $this->resolveColumnAndBarGeneralProperties();
+            }
+            elseif ($this->type == ChartRules::TYPE_STACKED_BAR_3D)
+            {
+                $this->addValueAxisProperties('stackType',          "'regular'");
+                $this->addChartProperties('rotate',                 true);
+                $this->addChartProperties('usePrefixes',            true);
+                $this->addGraphProperties('plotAreaBorderAlpha',    0);
+                $this->addGraphProperties('lineAlpha',              0);
+                $this->addGraphProperties('fillAlphas',             1);
+                $this->addGraphProperties('gradientOrientation',    "'vertical'");
+                $this->addGraphProperties('labelPosition',          "'right'");
+                $this->addGraphProperties('balloonText',            "'[[title]]: [[value]]'");
+                //Legend
+                $this->addLegendProperties('borderAlpha',           0.2);
+                $this->addLegendProperties('valueWidth',            0);
+                $this->addLegendProperties('horizontalGap',         10);
+                //General properties
+                $this->resolveColumnAndBarGeneralProperties();
+                $this->addChartProperties('depth3D',                40);
+                $this->addChartProperties('angle',                  30);
+                $this->chartIs3d = true;
             }
             else
             {
@@ -234,9 +379,22 @@
            $this->graphProperties[$tag]         = $value;
         }
 
+        /**
+         * Add properties to legend
+         * Info on http://docs.amcharts.com/javascriptcharts/AmLegend
+         */
+        public function addLegendProperties($tag, $value)
+        {
+           $this->legendProperties[$tag]         = $value;
+        }
+
         public function javascriptChart()
         {
             //Init AmCharts
+            if (empty($this->data))
+            {
+                return $this->renderOnEmptyDataMessage();
+            }
             $this->addChartPropertiesByType();
             $javascript  = "var chartData_{$this->id} = ". $this->convertDataArrayToJavascriptArray() . ";";
             $javascript .=" $(document).ready(function () {     ";
@@ -273,15 +431,12 @@
                                      window.g1              = graph{$key};
                                      graph{$key}.valueField = '". $serial['valueField'] ."';
                                      graph{$key}.type       = '" . $serial['type'] .  "';";
-                    if(count($serial['options']) == 0)
+                    //Add graph properties from GraphType
+                    foreach($this->graphProperties as $graphTag => $graphOption)
                     {
-                        //Add graph properties from GraphType
-                        foreach($this->graphProperties as $graphTag => $graphOption)
-                        {
-                            $javascript .= "graph{$key}." . $graphTag . " = " . $graphOption . ";";
-                        }
+                        $javascript .= "graph{$key}." . $graphTag . " = " . $graphOption . ";";
                     }
-                    else
+                    if(count($serial['options']) > 0)
                     {
                         //Add graph properties from option passed
                         foreach($serial['options'] as $graphTag => $graphOption)
@@ -304,10 +459,43 @@
                     $javascript .= "valueAxis." . $tag . " = " . $option . ";";
                 }
                 $javascript .= "chart.addValueAxis(valueAxis);";
+                //Add legend to graph
+                if (count($this->legendProperties) > 0)
+                {
+                    //Add legend properties from GraphType
+                    $javascript .= "var legend = new AmCharts.AmLegend();";
+                    foreach($this->legendProperties as $tag => $option)
+                    {
+                        $javascript .= "legend." . $tag . " = " . $option . ";";
+                    }
+                    $javascript .= "chart.addLegend(legend);";
+                }
             }
             //Write chart
             $javascript .= "chart.write('chartContainer{$this->id}');
                      });";
+            return $javascript;
+        }
+
+        protected function resolveColumnAndBarGeneralProperties()
+        {
+            $this->addCategoryAxisProperties('title',           "'{$this->xAxisName}'");
+            $this->addCategoryAxisProperties('unitPosition',    "'left'");
+            $this->addCategoryAxisProperties('unit',            "'{$this->xAxisUnitContent}'");
+            $this->addCategoryAxisProperties('usePrefixes',     true);
+            $this->addValueAxisProperties('title',              "'$this->yAxisName'");
+            $this->addValueAxisProperties('unitPosition',       "'left'");
+            $this->addValueAxisProperties('unit',               "'{$this->yAxisUnitContent}'");
+            $this->addValueAxisProperties('usePrefixes',        true);
+        }
+
+        private function renderOnEmptyDataMessage()
+        {
+            $errorMessage = Yii::t('Default', 'Not enough data to render chart');
+            $content      = ZurmoHtml::tag('span', array('class' => 'empty'), $errorMessage);
+            $javascript   = "
+                    $('#chartContainer{$this->id}').html('" . $content . "');
+                ";
             return $javascript;
         }
     }
