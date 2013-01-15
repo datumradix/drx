@@ -329,7 +329,6 @@ footer, header, hgroup, menu, nav, section {
     }
 }
 
-
 .notifications-link{
     z-index: 10;
     position: relative;
@@ -659,21 +658,21 @@ body > .ui-autocomplete{
 }
 
 .ui-multiselect {
-  padding:0;
-  text-align:left;
-  span.ui-icon {
-    float:right;
-  }
+    padding:0;
+    text-align:left;
+    span.ui-icon {
+        float:right;
+    }
 }
 
 .ui-multiselect-single .ui-multiselect-checkboxes input {
-  position:absolute !important;
-  top:auto !important;
-  left:-9999px;
+    position:absolute !important;
+    top:auto !important;
+    left:-9999px;
 }
 
 .ui-multiselect-single .ui-multiselect-checkboxes label {
-  padding:5px !important;
+    padding:5px !important;
 }
 
 .ui-multiselect-header {
@@ -996,18 +995,18 @@ body > .ui-autocomplete{
 #RecentlyViewedView {
 	/*deafult for if an icon doesnt exist*/
 	li{
-		em:before{
-            content: "z";
-        }
+	    em:before{
+                content: "z";
+            }
 	}
 	li.type-ConversationsModule{
-		em{
-            padding-top:3px;
-            padding-right:3px;
-        }
-        em:before{
-            content: "b";
-        }
+	    em{
+                padding-top:3px;
+                padding-right:3px;
+            }
+            em:before{
+                content: "b";
+            }
     }
     li.type-UsersModule{
         em:before{
@@ -1066,12 +1065,16 @@ body > .ui-autocomplete{
             content: "Q";
         }
     }
-        
+    li.type-ReportsModule{
+        em:before{
+            content: "V";
+        }
+    }       
 }
 
 /*=Content*/
 .AppContent{
-	.radius(0 0 5px 5px);
+    .radius(0 0 5px 5px);
     padding:20px 20px 0 20px;
     margin-left:172px;
     margin-bottom:20px;
@@ -1079,30 +1082,27 @@ body > .ui-autocomplete{
     .clearfix();
     .single-column{
     	padding-right:0 !important;
-		> .GridView{
-			display:block;
-			width:100% !important;
-		}
-		.panel{
-			width:70%;
-			float:left;
+        > .GridView{
+            display:block;
+            width:100% !important;
+        }
+        .panel{
+            width:70%;
+            float:left;
             position: relative;
-			td, th{
-				padding-bottom:10px !important;
-			}
-		}
-		.juiportlet-widget,
-		.details-table{
-			margin-right:0 !important;
+        }
+        .juiportlet-widget,
+        .details-table{
+            margin-right:0 !important;
             .clearfix();
-		}
-		#right-side-edit-view-panel{
-			top:55px;
-		}
-		#inline-edit-form .panel{
-			width:100%;
-		}
 	}
+        #right-side-edit-view-panel{
+            top:55px;
+        }
+        #inline-edit-form .panel{
+            width:100%;
+        }
+    }
 }
 
 .DynamicSearchView{
@@ -1687,7 +1687,7 @@ td.empty{
         color:#656565;
         display:inline-block;
         .t-shadow( rgba(255, 255, 255, 0.8) 0px 1px);
-        
+        .smaller();
         .z-label{
             padding:0 10px 0 10px;
             float:none;
@@ -1709,6 +1709,7 @@ td.empty{
     .icon-create .z-label:before{
     	content: "Y";
         .view-toolbar-icons();
+        font-size:22px;
         top:-2px;
         margin:0 5px 0 0 !important;
     }
@@ -1980,8 +1981,7 @@ div.wide.form{
 #NoUserEmailConfigurationYetView,
 #NoGlobalEmailConfigurationYetView,
 .ZeroModelsYetView*/
-.splash-view
-{
+.splash-view {
     h2{
         font-family:"Times New Roman", Times, serif;
         font-style:italic;
@@ -2063,6 +2063,11 @@ div.wide.form{
     }
     .EmailMessage .large-icon:after{
         content:"g";
+        .symbly(250px);
+        line-height: 60%;
+    }
+    .Report .large-icon:after{
+        content:"j";
         .symbly(250px);
         line-height: 60%;
     }
@@ -2615,6 +2620,10 @@ div.wide.form{
     position:absolute;
     right:15px;
     top:15px;
+}
+
+.right-side-edit-view-panel,
+#right-side-edit-view-panel{
     width:30%;
     float:right;
     h3{
@@ -2932,22 +2941,21 @@ div.wide.form{
     .box-sizing();
 }
 
-.TitleBarAndDetailsView,
-.ProgressView,
-#MetadataViewEditView,
-.TableOfContentsView,
-.DetailsView,
-.EditAndDetailsView{
-    > div{
-        margin-bottom:20px;
-        border:1px solid #ccc;
-        .b-shadow(~"inset 0 0 0 2px #ffffff,  0 0 9px 5px rgba(153, 153, 153, 0.12)");
-        #gradient > .vertical-three-colors( #ffffff, #f5f5f5, 80%, #f5f5f5 );
-        .form form{
-            border:none;
-            background:none;
-            .b-shadow(none);
-        }
+.wrapper,
+.TitleBarAndDetailsView > div,
+.ProgressView > div,
+#MetadataViewEditView > div,
+.TableOfContentsView > div,
+.DetailsView > div,
+.EditAndDetailsView > div{
+   margin-bottom:20px;
+   border:1px solid #ccc;
+   .b-shadow(~"inset 0 0 0 2px #ffffff,  0 0 9px 5px rgba(153, 153, 153, 0.12)");
+   #gradient > .vertical-three-colors( #ffffff, #f5f5f5, 80%, #f5f5f5 );
+   .form form{
+        border:none;
+        background:none;
+        .b-shadow(none);
     }
     h1{
         text-indent:15px;
@@ -4067,6 +4075,9 @@ div.hasHalfs{
     }
 }
 
+
+
+
 /*=Mass Edit + DELETE view*/
 .AppContent.MassEditView{
     #edit-form table{
@@ -4393,6 +4404,21 @@ div.hasHalfs{
     } 
 }
 
+//here becuase of some weird encoding issue
+.drillDownExpandLink,
+.drillDownExpandAndLoadLink{
+    &:before{
+        content: 'G';
+    }
+}
+
+.drillDownCollapseLink{
+    &:before{
+        content: '÷';
+    }
+}
+
+
 @import 'widget-juiportlets.less';
 @import 'install.less';
 @import 'configuration.less';
@@ -4410,4 +4436,5 @@ div.hasHalfs{
 @import 'tablet.less';
 @import 'thread-view.less';
 @import 'email.less';
+@import 'reports.less';
 @import 'media-queries.less';
