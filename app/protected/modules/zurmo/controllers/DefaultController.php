@@ -332,5 +332,25 @@
         {
             StickySearchUtil::clearDataByKey($key);
         }
+
+        public function actionGetUpdatesForRefresh($uconv, $unoti)
+        {
+            header('Content-Type: text/event-stream');
+            header('Cache-Control: no-cache');
+            $unreadConversations = ConversationsUtil::getUnreadCountTabMenuContentForCurrentUser();
+            if ($unreadConversations > $uconv)
+            {
+                $data['unreadConversations'] = $unreadConversations;
+                $data['imgUrl'] = Yii::app()->request->hostinfo . Yii::app()->theme->baseUrl . '/images/zurmo-module.png';
+                $data['title'] = Yii::t('Default', 'ZurmoCRM (New comment)');
+                $data['message'] = Yii::t('Default', 'There is an unread conversation.');
+                echo "retry: 10000" . PHP_EOL; // retry in 10 seconds
+                echo "event: updateConversations\n"; // retry in 10 seconds
+                echo "data: " . CJSON::encode($data) . PHP_EOL;
+                echo PHP_EOL;
+                ob_flush();
+                flush();
+            }
+        }
     }
 ?>
