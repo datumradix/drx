@@ -28,9 +28,11 @@
      * This is a general cache helper that utilizes both php caching and memcaching if available. Utilized for
      * caching requirements that are simple in/out of a serialized array or string of information.
      */
-    class GeneralCache
+    class GeneralCache extends ZurmoCache
     {
         private static $cachedEntries = array();
+
+        public static $cacheType = 'G:';
 
         public static function getEntry($identifier)
         {
@@ -44,7 +46,9 @@
             }
             if (MEMCACHE_ON && Yii::app()->cache !== null)
             {
-                @$serializedData = Yii::app()->cache->get('G:' . $identifier);
+                $prefix = self::getCachePrefix($identifier, self::$cacheType);
+
+                @$serializedData = Yii::app()->cache->get($prefix . $identifier);
                 if ($serializedData !== false)
                 {
                     $unserializedData = unserialize($serializedData);
@@ -68,7 +72,8 @@
             }
             if (MEMCACHE_ON && Yii::app()->cache !== null)
             {
-                @Yii::app()->cache->set('G:' . $identifier, serialize($entry));
+                $prefix = self::getCachePrefix($identifier, self::$cacheType);
+                @Yii::app()->cache->set($prefix . $identifier, serialize($entry));
             }
         }
 
@@ -83,7 +88,8 @@
             }
             if (MEMCACHE_ON && Yii::app()->cache !== null)
             {
-                @Yii::app()->cache->delete('G:' . $identifier);
+                $prefix = self::getCachePrefix($identifier, self::$cacheType);
+                @Yii::app()->cache->delete($prefix . $identifier);
             }
         }
 
@@ -95,7 +101,7 @@
             }
             if (MEMCACHE_ON && Yii::app()->cache !== null)
             {
-                @Yii::app()->cache->flush();
+                self::incrementCacheIncrementValue(static::$cacheType);
             }
         }
     }
