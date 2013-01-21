@@ -61,6 +61,7 @@
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleSentryLogs'));
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleApplicationCache'));
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleImports'));
+
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleLibraryCompatibilityCheck'));
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleStartPerformanceClock'));
                 $owner->attachEventHandler('onBeginRequest', array($this, 'handleBrowserCheck'));
@@ -116,11 +117,13 @@
         {
             if (MEMCACHE_ON)
             {
+                //Yii::import('application.core.components.ZurmoMemCache');
                 $memcacheServiceHelper = new MemcacheServiceHelper();
                 if ($memcacheServiceHelper->runCheckAndGetIfSuccessful())
                 {
-                    $cacheComponent = Yii::createComponent('CMemCache',
-                        array('servers' => Yii::app()->params['memcacheServers']));
+                    $cacheComponent = Yii::createComponent(array(
+                        'class' => 'CMemCache',
+                        'servers' => Yii::app()->params['memcacheServers']));
                     Yii::app()->setComponent('cache', $cacheComponent);
                 }
             }
