@@ -93,10 +93,13 @@ footer, header, hgroup, menu, nav, section {
 }
 
 /*=Login*/
+#LoginPageView{
+    padding-top:30px;
+}
 #LoginView{
     min-width:900px;
     height:100%;
-    margin:30px;
+    margin:0 30px 30px 30px;
     .b-shadow(0 0 12px 5px rgba(153, 153, 153, 0.3)); /*999*/
     .radius(5px);
     padding:0;
@@ -111,23 +114,16 @@ footer, header, hgroup, menu, nav, section {
             left:6px;
         }
     }
-    #login-box{
-        float:left;
-        width:500px;
-        margin:-100px auto 0 -250px;
-        height:200px;
-        position:relative;
-        top:40%;
-        left:50%;
-    }
-    #LoginLogo{
-        .box-sizing();
-        height:100%;
-        width:50%;
-        padding-right:10px;
-        float:left;
-        background: url(../images/ZurmoLogo.png) 56px 35px no-repeat;
-    }
+}
+
+#login-box{
+    float:left;
+    width:500px;
+    margin:-100px auto 0 -250px;
+    height:200px;
+    position:relative;
+    top:40%;
+    left:50%;
     .form{
         width:50%;
         float:right;
@@ -170,6 +166,14 @@ footer, header, hgroup, menu, nav, section {
     .error{
         margin-bottom: 40px !important;
     }
+}
+#LoginLogo{
+    .box-sizing();
+    height:100%;
+    width:50%;
+    padding-right:10px;
+    float:left;
+    background: url(../images/ZurmoLogo.png) 56px 35px no-repeat;
 }
 
 #Login{
@@ -1432,6 +1436,7 @@ form,
     display:inline-block;
     margin-left:10px;
     .smaller();
+    .t-shadow(0 1px 0 #fff);
     span{
         margin-left:70px;
     }
@@ -3744,6 +3749,7 @@ div.hasHalfs{
     .filter-portlet-model-bar{
         .smaller();
         padding-left:8px;
+        white-space:nowrap;
         label{
             cursor:pointer;
             border:none;
@@ -3751,10 +3757,8 @@ div.hasHalfs{
             font-size:11px !important;
             padding:3px;
             margin:0 3px;
-            ++.themeColor;
         }
         label:hover{
-            ++.themeBackgroundColor;
             color:#FFF;
             .radius(3px) !important;
             border:none;
@@ -3764,7 +3768,6 @@ div.hasHalfs{
             display:none;
         }
         .ui-state-active{
-            ++.themeBackgroundColor;
             color:#FFF;
             .radius(3px) !important;
             border:none;
@@ -3782,6 +3785,9 @@ div.hasHalfs{
         #gradient > .vertical(#f6f6f6, #ededed);
         .b-shadow(inset 0 1px 0 0 #ffffff);
         position:relative;
+        label{
+            margin:0 3px 0 0;
+        }
     }
     .items{
         border-top:none !important;
