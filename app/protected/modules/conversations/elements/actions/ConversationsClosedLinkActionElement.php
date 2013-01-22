@@ -24,40 +24,18 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * Tests various scenarios to help with performance tuning
-     */
-    class AccountPerformanceTuningTest extends ZurmoBaseTest
+    class ConversationsClosedLinkActionElement extends EditLinkActionElement
     {
-        public static function setUpBeforeClass()
+        protected function getDefaultLabel()
         {
-            parent::setUpBeforeClass();
-            SecurityTestHelper::createSuperAdmin();
+            return Yii::t('Default', 'Closed');
         }
 
-        public function setUp()
+        protected function getDefaultRoute()
         {
-            parent::setUp();
-            Yii::app()->user->userModel = User::getByUsername('super');
-        }
-
-        public function testModelInstantiation()
-        {
-            $allTime = 0;
-            for($j = 0; $j < 10; $j++)
-            {
-                $startTime = microtime(true);
-                for($i = 0; $i < 500; $i++)
-                {
-                    $account = new Account();
-                }
-                $endTime   = microtime(true);
-                $totalTime = round($endTime - $startTime, 4);
-                $allTime   = $allTime + $totalTime;
-                echo 'run #' . $j . ' total time : ' . $totalTime . "\n";
-            }
-            echo 'all time is: ' . $allTime . "\n";
+            return Yii::app()->createUrl(
+                $this->moduleId . '/' . $this->controllerId . '/list/',
+                array('type' => ConversationsSearchDataProviderMetadataAdapter::LIST_TYPE_CLOSED));
         }
     }
-
-
+?>
