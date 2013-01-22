@@ -677,6 +677,22 @@ a:visited {
   color: #545454;
   cursor: pointer;
 }
+body.blue #nav-trigger {
+  border-right: 1px solid #191a48;
+  -webkit-box-shadow: 1px 0 0 0 #292b7a;
+  -moz-box-shadow: 1px 0 0 0 #292b7a;
+  -o-box-shadow: 1px 0 0 0 #292b7a;
+  -ms-box-shadow: 1px 0 0 0 #292b7a;
+  box-shadow: 1px 0 0 0 #292b7a;
+  color: #ffffff;
+}
+body.blue #nav-trigger:active {
+  -webkit-text-shadow: 0 1px 0 #575ac6;
+  -moz-text-shadow: 0 1px 0 #575ac6;
+  -o-text-shadow: 0 1px 0 #575ac6;
+  -ms-text-shadow: 0 1px 0 #575ac6;
+  text-shadow: 0 1px 0 #575ac6;
+}
 body.blue .textColor {
   color: #545454;
 }
@@ -828,7 +844,8 @@ body.blue #show-filters-structure-div-link {
 body.blue .latest-activity-toolbar label:hover,
 body.blue .filter-portlet-model-bar label:hover,
 body.blue .latest-activity-toolbar .ui-state-active,
-body.blue .filter-portlet-model-bar .ui-state-active {
+body.blue .filter-portlet-model-bar .ui-state-active,
+body.blue #clear-search-link {
   background-color: #282a76 !important;
 }
 body.blue #MyMissionsForPortletView .filter-portlet-model-bar label a:hover,
@@ -1216,6 +1233,22 @@ body.blue .action-reject:hover .z-label {
 .color-swatch.blue .theme-color-3 {
   background: #464646;
 }
+body.brown #nav-trigger {
+  border-right: 1px solid #3c565b;
+  -webkit-box-shadow: 1px 0 0 0 #567c83;
+  -moz-box-shadow: 1px 0 0 0 #567c83;
+  -o-box-shadow: 1px 0 0 0 #567c83;
+  -ms-box-shadow: 1px 0 0 0 #567c83;
+  box-shadow: 1px 0 0 0 #567c83;
+  color: #ffffff;
+}
+body.brown #nav-trigger:active {
+  -webkit-text-shadow: 0 1px 0 #98b6bb;
+  -moz-text-shadow: 0 1px 0 #98b6bb;
+  -o-text-shadow: 0 1px 0 #98b6bb;
+  -ms-text-shadow: 0 1px 0 #98b6bb;
+  text-shadow: 0 1px 0 #98b6bb;
+}
 body.brown .textColor {
   color: #545454;
 }
@@ -1367,7 +1400,8 @@ body.brown #show-filters-structure-div-link {
 body.brown .latest-activity-toolbar label:hover,
 body.brown .filter-portlet-model-bar label:hover,
 body.brown .latest-activity-toolbar .ui-state-active,
-body.brown .filter-portlet-model-bar .ui-state-active {
+body.brown .filter-portlet-model-bar .ui-state-active,
+body.brown #clear-search-link {
   background-color: #547980 !important;
 }
 body.brown #MyMissionsForPortletView .filter-portlet-model-bar label a:hover,
@@ -1755,6 +1789,22 @@ body.brown .action-reject:hover .z-label {
 .color-swatch.brown .theme-color-3 {
   background: #594f4f;
 }
+body.lime #nav-trigger {
+  border-right: 1px solid #152127;
+  -webkit-box-shadow: 1px 0 0 0 #2d4652;
+  -moz-box-shadow: 1px 0 0 0 #2d4652;
+  -o-box-shadow: 1px 0 0 0 #2d4652;
+  -ms-box-shadow: 1px 0 0 0 #2d4652;
+  box-shadow: 1px 0 0 0 #2d4652;
+  color: #ffffff;
+}
+body.lime #nav-trigger:active {
+  -webkit-text-shadow: 0 1px 0 #5889a2;
+  -moz-text-shadow: 0 1px 0 #5889a2;
+  -o-text-shadow: 0 1px 0 #5889a2;
+  -ms-text-shadow: 0 1px 0 #5889a2;
+  text-shadow: 0 1px 0 #5889a2;
+}
 body.lime .textColor {
   color: #545454;
 }
@@ -1906,7 +1956,8 @@ body.lime #show-filters-structure-div-link {
 body.lime .latest-activity-toolbar label:hover,
 body.lime .filter-portlet-model-bar label:hover,
 body.lime .latest-activity-toolbar .ui-state-active,
-body.lime .filter-portlet-model-bar .ui-state-active {
+body.lime .filter-portlet-model-bar .ui-state-active,
+body.lime #clear-search-link {
   background-color: #2b434f !important;
 }
 body.lime #MyMissionsForPortletView .filter-portlet-model-bar label a:hover,
@@ -2294,6 +2345,22 @@ body.lime .action-reject:hover .z-label {
 .color-swatch.lime .theme-color-3 {
   background: #464646;
 }
+body.cherry #nav-trigger {
+  border-right: 1px solid #52616f;
+  -webkit-box-shadow: 1px 0 0 0 #6f8394;
+  -moz-box-shadow: 1px 0 0 0 #6f8394;
+  -o-box-shadow: 1px 0 0 0 #6f8394;
+  -ms-box-shadow: 1px 0 0 0 #6f8394;
+  box-shadow: 1px 0 0 0 #6f8394;
+  color: #ffffff;
+}
+body.cherry #nav-trigger:active {
+  -webkit-text-shadow: 0 1px 0 #b5bfc8;
+  -moz-text-shadow: 0 1px 0 #b5bfc8;
+  -o-text-shadow: 0 1px 0 #b5bfc8;
+  -ms-text-shadow: 0 1px 0 #b5bfc8;
+  text-shadow: 0 1px 0 #b5bfc8;
+}
 body.cherry .textColor {
   color: #545454;
 }
@@ -2445,7 +2512,8 @@ body.cherry #show-filters-structure-div-link {
 body.cherry .latest-activity-toolbar label:hover,
 body.cherry .filter-portlet-model-bar label:hover,
 body.cherry .latest-activity-toolbar .ui-state-active,
-body.cherry .filter-portlet-model-bar .ui-state-active {
+body.cherry .filter-portlet-model-bar .ui-state-active,
+body.cherry #clear-search-link {
   background-color: #6c8092 !important;
 }
 body.cherry #MyMissionsForPortletView .filter-portlet-model-bar label a:hover,
@@ -2833,6 +2901,22 @@ body.cherry .action-reject:hover .z-label {
 .color-swatch.cherry .theme-color-3 {
   background: #464646;
 }
+body.turquoise #nav-trigger {
+  border-right: 1px solid #31566f;
+  -webkit-box-shadow: 1px 0 0 0 #467a9d;
+  -moz-box-shadow: 1px 0 0 0 #467a9d;
+  -o-box-shadow: 1px 0 0 0 #467a9d;
+  -ms-box-shadow: 1px 0 0 0 #467a9d;
+  box-shadow: 1px 0 0 0 #467a9d;
+  color: #ffffff;
+}
+body.turquoise #nav-trigger:active {
+  -webkit-text-shadow: 0 1px 0 #8fb4cd;
+  -moz-text-shadow: 0 1px 0 #8fb4cd;
+  -o-text-shadow: 0 1px 0 #8fb4cd;
+  -ms-text-shadow: 0 1px 0 #8fb4cd;
+  text-shadow: 0 1px 0 #8fb4cd;
+}
 body.turquoise .textColor {
   color: #545454;
 }
@@ -2984,7 +3068,8 @@ body.turquoise #show-filters-structure-div-link {
 body.turquoise .latest-activity-toolbar label:hover,
 body.turquoise .filter-portlet-model-bar label:hover,
 body.turquoise .latest-activity-toolbar .ui-state-active,
-body.turquoise .filter-portlet-model-bar .ui-state-active {
+body.turquoise .filter-portlet-model-bar .ui-state-active,
+body.turquoise #clear-search-link {
   background-color: #447799 !important;
 }
 body.turquoise #MyMissionsForPortletView .filter-portlet-model-bar label a:hover,
@@ -3372,6 +3457,22 @@ body.turquoise .action-reject:hover .z-label {
 .color-swatch.turquoise .theme-color-3 {
   background: #464646;
 }
+body.violet #nav-trigger {
+  border-right: 1px solid #2f2447;
+  -webkit-box-shadow: 1px 0 0 0 #4c3b73;
+  -moz-box-shadow: 1px 0 0 0 #4c3b73;
+  -o-box-shadow: 1px 0 0 0 #4c3b73;
+  -ms-box-shadow: 1px 0 0 0 #4c3b73;
+  box-shadow: 1px 0 0 0 #4c3b73;
+  color: #ffffff;
+}
+body.violet #nav-trigger:active {
+  -webkit-text-shadow: 0 1px 0 #8772b7;
+  -moz-text-shadow: 0 1px 0 #8772b7;
+  -o-text-shadow: 0 1px 0 #8772b7;
+  -ms-text-shadow: 0 1px 0 #8772b7;
+  text-shadow: 0 1px 0 #8772b7;
+}
 body.violet .textColor {
   color: #545454;
 }
@@ -3523,7 +3624,8 @@ body.violet #show-filters-structure-div-link {
 body.violet .latest-activity-toolbar label:hover,
 body.violet .filter-portlet-model-bar label:hover,
 body.violet .latest-activity-toolbar .ui-state-active,
-body.violet .filter-portlet-model-bar .ui-state-active {
+body.violet .filter-portlet-model-bar .ui-state-active,
+body.violet #clear-search-link {
   background-color: #4a3970 !important;
 }
 body.violet #MyMissionsForPortletView .filter-portlet-model-bar label a:hover,
@@ -3911,6 +4013,22 @@ body.violet .action-reject:hover .z-label {
 .color-swatch.violet .theme-color-3 {
   background: #464646;
 }
+body.honey #nav-trigger {
+  border-right: 1px solid #1a0c0b;
+  -webkit-box-shadow: 1px 0 0 0 #4a221d;
+  -moz-box-shadow: 1px 0 0 0 #4a221d;
+  -o-box-shadow: 1px 0 0 0 #4a221d;
+  -ms-box-shadow: 1px 0 0 0 #4a221d;
+  box-shadow: 1px 0 0 0 #4a221d;
+  color: #ffffff;
+}
+body.honey #nav-trigger:active {
+  -webkit-text-shadow: 0 1px 0 #a14a40;
+  -moz-text-shadow: 0 1px 0 #a14a40;
+  -o-text-shadow: 0 1px 0 #a14a40;
+  -ms-text-shadow: 0 1px 0 #a14a40;
+  text-shadow: 0 1px 0 #a14a40;
+}
 body.honey .textColor {
   color: #545454;
 }
@@ -4062,7 +4180,8 @@ body.honey #show-filters-structure-div-link {
 body.honey .latest-activity-toolbar label:hover,
 body.honey .filter-portlet-model-bar label:hover,
 body.honey .latest-activity-toolbar .ui-state-active,
-body.honey .filter-portlet-model-bar .ui-state-active {
+body.honey .filter-portlet-model-bar .ui-state-active,
+body.honey #clear-search-link {
   background-color: #46201c !important;
 }
 body.honey #MyMissionsForPortletView .filter-portlet-model-bar label a:hover,
@@ -4559,10 +4678,13 @@ section {
   line-height: 150%;
 }
 /*=Login*/
+#LoginPageView {
+  padding-top: 30px;
+}
 #LoginView {
   min-width: 900px;
   height: 100%;
-  margin: 30px;
+  margin: 0 30px 30px 30px;
   -webkit-box-shadow: 0 0 12px 5px rgba(153, 153, 153, 0.3);
   -moz-box-shadow: 0 0 12px 5px rgba(153, 153, 153, 0.3);
   -o-box-shadow: 0 0 12px 5px rgba(153, 153, 153, 0.3);
@@ -4586,7 +4708,7 @@ section {
   top: -4px;
   left: 6px;
 }
-#LoginView #login-box {
+#login-box {
   float: left;
   width: 500px;
   margin: -100px auto 0 -250px;
@@ -4595,21 +4717,11 @@ section {
   top: 40%;
   left: 50%;
 }
-#LoginView #LoginLogo {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  height: 100%;
-  width: 50%;
-  padding-right: 10px;
-  float: left;
-  background: url(../images/ZurmoLogo.png) 56px 35px no-repeat;
-}
-#LoginView .form {
+#login-box .form {
   width: 50%;
   float: right;
 }
-#LoginView .form form {
+#login-box .form form {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   background: none !important;
@@ -4623,33 +4735,43 @@ section {
   box-shadow: none !important;
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
-#LoginView .form form > div {
+#login-box .form form > div {
   margin-bottom: 15px;
 }
-#LoginView .form form > div.clearfix {
+#login-box .form form > div.clearfix {
   margin-bottom: 0;
 }
-#LoginView .form form label {
+#login-box .form form label {
   display: inline-block;
   margin-bottom: 5px;
 }
-#LoginView .form form input[type="password"],
-#LoginView .form form input[type="text"] {
+#login-box .form form input[type="password"],
+#login-box .form form input[type="text"] {
   background: #fff !important;
   margin: 0 !important;
 }
-#LoginView .form form input[type="checkbox"] {
+#login-box .form form input[type="checkbox"] {
   float: left;
   margin-right: 10px !important;
   margin-top: 1px !important;
   clear: both;
 }
-#LoginView .form form .errorMessage {
+#login-box .form form .errorMessage {
   font-size: 11px;
   padding-top: 4px;
 }
-#LoginView .error {
+#login-box .error {
   margin-bottom: 40px !important;
+}
+#LoginLogo {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 100%;
+  width: 50%;
+  padding-right: 10px;
+  float: left;
+  background: url(../images/ZurmoLogo.png) 56px 35px no-repeat;
 }
 #Login {
   margin-left: 0;
@@ -6255,6 +6377,11 @@ form .view-toolbar-container,
   display: inline-block;
   margin-left: 10px;
   font-size: 11px;
+  -webkit-text-shadow: 0 1px 0 #ffffff;
+  -moz-text-shadow: 0 1px 0 #ffffff;
+  -o-text-shadow: 0 1px 0 #ffffff;
+  -ms-text-shadow: 0 1px 0 #ffffff;
+  text-shadow: 0 1px 0 #ffffff;
 }
 #credit-link span {
   margin-left: 70px;
@@ -9111,6 +9238,7 @@ div.hasHalfs .twoThirds {
 .LatestActivitiesView .filter-portlet-model-bar {
   font-size: 11px;
   padding-left: 8px;
+  white-space: nowrap;
 }
 .LatestActivitiesListView .latest-activity-toolbar label,
 .LatestActivitiesView .latest-activity-toolbar label,
@@ -9187,6 +9315,10 @@ div.hasHalfs .twoThirds {
   -ms-box-shadow: inset 0 1px 0 0 #ffffff;
   box-shadow: inset 0 1px 0 0 #ffffff;
   position: relative;
+}
+.LatestActivitiesListView .filter-portlet-model-bar label,
+.LatestActivitiesView .filter-portlet-model-bar label {
+  margin: 0 3px 0 0;
 }
 .LatestActivitiesListView .items,
 .LatestActivitiesView .items {
@@ -15997,4 +16129,416 @@ a.user-link {
     top: -25px !important;
     right: 0 !important;
   }
+}
+/*
+min-width: … px Used when the viewport’s width is bigger or equal to width
+max-width: … px Used when the viewport’s width is smaller or equal to width
+min-device-width: … px  Used when the device’s width is bigger or equal to width
+max-device-width: … px  Used when the device’s width is smaller or equal to width
+orientation : portrait // orientation: landscape    Target orientation
+-webkit-min-device-pixel-ratio : 1.5
+	
+	http://bennettfeely.com/flexplorer/
+*/
+.ui-chooser {
+  padding: 10px;
+  display: block;
+  text-align: center;
+}
+#nav-trigger {
+  display: none;
+  float: left;
+  text-align: left;
+  padding: 0 10px 0 0;
+  margin-right: 15px;
+  line-height: 38px;
+  height: 38px;
+  font-size: 24px;
+  font-weight: normal;
+  font-size: 30px;
+  font-family: "ZurmoGamificationSymblyReguRg";
+}
+@media all and (max-width: 640px) {
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+  }
+  body {
+    height: 100%;
+  }
+  body > div {
+    height: 100%;
+  }
+  #LoginPageView {
+    padding-top: 0;
+  }
+  #LoginPageView > div {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    display: -ms-flex;
+    display: -moz-flex;
+    display: -webkit-flex;
+    display: flex;
+    -ms-flex-direction: column;
+    -ms-flex-wrap: wrap;
+    -moz-flex-flow: column wrap;
+    -webkit-flex-flow: column wrap;
+    flex-flow: column wrap;
+    -ms-flex-pack: start;
+    -moz-justify-content: flex-start;
+    -webkit-justify-content: flex-start;
+    justify-content: flex-start;
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+  #LoginPageView #FooterView {
+    -ms-flex: 1 0 auto;
+    -moz-flex: 1 0 auto;
+    -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
+    margin: 10px 10px 5px 10px;
+  }
+  #LoginPageView #credit-link {
+    margin-left: 0;
+  }
+  #LoginView {
+    min-width: 0 !important;
+    margin: 0;
+    background-image: none;
+    height: auto;
+    -ms-flex: 1 0 auto;
+    -moz-flex: 1 0 auto;
+    -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
+  }
+  #login-box {
+    width: 100%;
+    height: auto;
+    float: none;
+    margin: 10px 0 0 0;
+    top: 0;
+    left: 0;
+  }
+  #login-box .form {
+    float: none;
+    width: 100%;
+  }
+  #login-box .form form {
+    border: none;
+    padding: 0 10px 10px 10px;
+  }
+  #login-box #LoginLogo {
+    float: none;
+    width: 100%;
+    height: 80px;
+    padding: 0;
+    background-position: 50% 50%;
+  }
+  #login-form {
+    padding: 0 20px !important;
+  }
+  #nav-trigger {
+    display: block;
+  }
+  #corp-logo span {
+    display: none;
+  }
+  #corp-logo img {
+    max-width: 50px;
+    margin-top: 10px;
+  }
+  #HeaderView {
+    position: fixed;
+    width: 100%;
+  }
+  #HeaderLinksView + div {
+    height: 0;
+  }
+  #GlobalSearchAndShortcutsCreateMenuView {
+    display: none;
+  }
+  #FooterView {
+    margin: 10px 10px 5px 10px;
+    padding-bottom: 5px;
+  }
+  #credit-link {
+    margin-left: 0;
+  }
+  #credit-link span {
+    margin-left: 65px;
+  }
+  .view-toolbar {
+    display: -ms-flex;
+    display: -moz-flex;
+    display: -webkit-flex;
+    display: flex;
+    -ms-flex-direction: row;
+    -ms-flex-wrap: wrap;
+    -moz-flex-flow: row wrap;
+    -webkit-flex-flow: row wrap;
+    flex-flow: row wrap;
+    width: 100% !important;
+  }
+  .view-toolbar .nav,
+  .view-toolbar > a {
+    float: none;
+    -ms-flex: 1 auto;
+    -moz-flex: 1 auto;
+    -webkit-flex: 1 auto;
+    flex: 1 auto;
+  }
+  .view-toolbar .parent > a,
+  .view-toolbar > a {
+    padding: 0 5px;
+    text-align: center;
+  }
+  .view-toolbar .parent > a {
+    width: 100%;
+  }
+  .view-toolbar .parent a:before,
+  .view-toolbar > a:before {
+    display: none;
+  }
+  .view-toolbar .parent a:after {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .AppContainer {
+    min-width: 0 !important;
+    /* should be 100% but i need to put box-sizing on top level nodes */
+  
+    /*background-image:none;*/
+  
+    margin: 0 10px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+  .AppContent {
+    position: relative;
+    top: 20px;
+    padding-top: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 0;
+    -webkit-border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    -ms-border-radius: 0 0 5px 5px;
+    -o-border-radius: 0 0 5px 5px;
+    border-radius: 0 0 5px 5px;
+    -webkit-transition: all 0.22s ease-in 0;
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+  #HomePageView .AppContent {
+    padding-right: 10px;
+  }
+  .nav-open {
+    transform: translate3d(170px, 0, 0);
+    -webkit-transform: translate3d(170px, 0, 0);
+  }
+  .AppNavigation {
+    background: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -o-box-shadow: none;
+    -ms-box-shadow: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+    border: none;
+    position: fixed;
+    padding-top: 35px;
+  }
+  #MenuView {
+    background-color: #f4f4f4;
+    background-repeat: repeat-x;
+    background-image: -khtml-gradient(linear, left top, left bottom, from(#f6f6f6), to(#f4f4f4));
+    background-image: -moz-linear-gradient(top, #f6f6f6, #f4f4f4);
+    background-image: -ms-linear-gradient(top, #f6f6f6, #f4f4f4);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f6f6f6), color-stop(100%, #f4f4f4));
+    background-image: -webkit-linear-gradient(top, #f6f6f6, #f4f4f4);
+    background-image: -o-linear-gradient(top, #f6f6f6, #f4f4f4);
+    background-image: linear-gradient(top, #f6f6f6, #f4f4f4);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#f4f4f4', GradientType=0);
+    border-right: 1px solid #eee;
+    border-left: 1px solid #eee;
+    -webkit-border-radius: 0 0 0 5px;
+    -moz-border-radius: 0 0 0 5px;
+    -ms-border-radius: 0 0 0 5px;
+    -o-border-radius: 0 0 0 5px;
+    border-radius: 0 0 0 5px;
+  }
+  #RecentlyViewedView ul {
+    max-height: 200px;
+    overflow: scroll;
+  }
+  #HomeDashboardView .juiportlet-column {
+    width: 100%;
+    float: none;
+  }
+  #HomeDashboardView .juiportlet-widget {
+    min-width: auto;
+    margin-right: 10px;
+  }
+  #credit-link {
+    line-height: 17px;
+    font-size: 10px;
+  }
+  .BreadCrumbView + div > div {
+    float: none;
+    width: 100% !important;
+  }
+  .breadcrumbs {
+    padding-bottom: 10px;
+  }
+  .BreadCrumbView #StickyListMenu > li > a > span {
+    top: 2px;
+  }
+  .details-table {
+    margin-right: 0;
+  }
+  .details-table .toolbar-mbmenu {
+    right: 10px;
+  }
+  .details-table .toolbar-mbmenu .view-toolbar {
+    position: relative;
+    clear: both;
+  }
+  .LatestActivtiesForPortletView .toolbar-mbmenu {
+    right: 10px;
+  }
+  .LatestActivtiesForPortletView .toolbar-mbmenu .view-toolbar {
+    position: relative;
+    clear: both;
+  }
+  .juiportlet-widget.OpportunitiesForContactRelatedListView h3:before,
+  .juiportlet-widget.OpportunitiesForAccountRelatedListView h3:before,
+  .juiportlet-widget.ContactsForOpportunityRelatedListView h3:before,
+  .juiportlet-widget.ContactsForAccountRelatedListView h3:before {
+    text-indent: 0;
+    top: 5px;
+  }
+  .juiportlet-widget {
+    margin-right: 0 !important;
+  }
+  /*Edit View*/
+  #modal-edit-form .panel,
+  #edit-form .panel,
+  #delete-form .panel {
+    float: none;
+    width: 100%;
+  }
+  #right-side-edit-view-panel {
+    float: none;
+    width: 100%;
+    position: relative;
+    right: 0;
+    top: 0;
+  }
+  #right-side-edit-view-panel .buffer {
+    padding-left: 0;
+  }
+  #right-side-edit-view-panel .buffer > div {
+    padding: 0;
+  }
+  /*Thread View*/
+  #ModelDetailsSummaryView,
+  #CommentInlineEditForModelView,
+  #CommentsForRelatedModelView {
+    width: 100%;
+    margin-right: 0;
+    float: none;
+    padding: 0 10px;
+  }
+  #ConversationDetailsView #right-side-edit-view-panel {
+    display: none;
+  }
+  .model-details-summary {
+    padding-left: 65px;
+    padding-top: 10px;
+  }
+  .model-details-summary .gravatar {
+    margin-left: -65px;
+    max-width: 50px;
+    max-height: 50px;
+  }
+  #CommentList,
+  .CommentList {
+    margin-left: 0;
+  }
+  #CommentInlineEditForModelView {
+    padding: 0 10px 0 0;
+  }
+  .toolbar-mbmenu .options-menu > li > a {
+    text-indent: -9999px;
+    width: auto;
+    padding: 0;
+  }
+  .toolbar-mbmenu .options-menu > li > a:after {
+    content: "n";
+    font-weight: normal;
+    font-size: 24px;
+    font-family: "ZurmoGamificationSymblyReguRg";
+  }
+  .toolbar-mbmenu .options-menu > li > a span {
+    display: none;
+  }
+  .toolbar-mbmenu .options-menu ul {
+    right: 0;
+    margin-top: -8px;
+  }
+  #NoUserEmailConfigurationYetView > div,
+  #NoGlobalEmailConfigurationYetView > div,
+  .ZeroModelsYetView > div {
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    box-orient: vertical;
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    box-align: center;
+  }
+  #NoUserEmailConfigurationYetView h2,
+  #NoGlobalEmailConfigurationYetView h2,
+  .ZeroModelsYetView h2 {
+    font-size: 20px;
+    line-height: 28px;
+    padding: 0 0 15px 0;
+    text-align: center;
+  }
+  #NoUserEmailConfigurationYetView i,
+  #NoGlobalEmailConfigurationYetView i,
+  .ZeroModelsYetView i {
+    margin-left: 0;
+    text-align: center;
+  }
+  #NoUserEmailConfigurationYetView .large-icon,
+  #NoGlobalEmailConfigurationYetView .large-icon,
+  .ZeroModelsYetView .large-icon {
+    display: none;
+  }
+  #NoUserEmailConfigurationYetView p,
+  #NoGlobalEmailConfigurationYetView p,
+  .ZeroModelsYetView p {
+    width: 100%;
+    font-size: 12px;
+    line-height: 19px;
+    margin-left: 0;
+    margin-top: 15px;
+    float: none;
+  }
+  #NoUserEmailConfigurationYetView a,
+  #NoGlobalEmailConfigurationYetView a,
+  .ZeroModelsYetView a {
+    margin: 15px auto;
+    padding: 0;
+  }
+  /*closing media query bracket*/
 }

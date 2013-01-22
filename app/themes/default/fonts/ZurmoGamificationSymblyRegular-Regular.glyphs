@@ -1,4 +1,7 @@
 {
+DisplayStrings = (
+/guilsinglright
+);
 customParameters = (
 {
 name = glyphOrder;
@@ -6946,6 +6949,7 @@ unicode = 002D;
 },
 {
 glyphname = guilsinglright;
+lastChange = "2012-12-12 16:57:09 -0300";
 layers = (
 {
 layerId = "2B2FE4A8-39A2-493B-A970-B9343EE81639";
