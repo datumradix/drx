@@ -73,20 +73,22 @@
 
             //Load the portlet details for latest activity
             $getData = array('id' => $superAccountId,
-                             'portletId' => 2,
-                             'uniqueLayoutId' => 'AccountDetailsAndRelationsView_2',
+                             'portletId' => $portletToUse->id,
+                             'uniqueLayoutId' => 'AccountDetailsAndRelationsView_'.$portletToUse->id,
                              'LatestActivitiesConfigurationForm' => array(
                                 'filteredByModelName' => 'all',
-                                'rollup' => false
+                                'rollup' => ''
                              ));
             $this->setGetArray($getData);
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/defaultPortlet/details');
+            $this->assertTrue(LatestActivitiesUtil::getRollUpStateForCurrentUserByPortletId($getData['portletId']) === '');
 
             //Now add roll up
-            $getData['LatestActivitiesConfigurationForm']['rollup'] = true;
+            $getData['LatestActivitiesConfigurationForm']['rollup'] = '1';
             $this->setGetArray($getData);
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/defaultPortlet/details');
+            $this->assertTrue(LatestActivitiesUtil::getRollUpStateForCurrentUserByPortletId($getData['portletId']) === '1');
             //Now filter by meeting, task, and note
             $getData['LatestActivitiesConfigurationForm']['filteredByModelName'] = 'Meeting';
             $this->setGetArray($getData);
@@ -98,10 +100,11 @@
             $this->setGetArray($getData);
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/defaultPortlet/details');
             //Now do the same thing with filtering but turn off rollup.
-            $getData['LatestActivitiesConfigurationForm']['rollup'] = true;
+            $getData['LatestActivitiesConfigurationForm']['rollup'] = '';
             $getData['LatestActivitiesConfigurationForm']['filteredByModelName'] = 'Meeting';
             $this->setGetArray($getData);
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/defaultPortlet/details');
+            $this->assertTrue(LatestActivitiesUtil::getRollUpStateForCurrentUserByPortletId($getData['portletId']) === '');
             $getData['LatestActivitiesConfigurationForm']['filteredByModelName'] = 'Note';
             $this->setGetArray($getData);
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/defaultPortlet/details');
