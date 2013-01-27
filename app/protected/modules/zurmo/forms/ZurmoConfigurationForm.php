@@ -36,6 +36,7 @@
         public $modalListPageSize;
         public $dashboardListPageSize;
         public $gamificationModalNotificationsEnabled;
+        public $realtimeUpdatesEnabled;
 
         public function rules()
         {
@@ -55,7 +56,8 @@
                 array('dashboardListPageSize',                  'required'),
                 array('dashboardListPageSize',                  'type',      'type' => 'integer'),
                 array('dashboardListPageSize',                  'numerical', 'min' => 1),
-                array('gamificationModalNotificationsEnabled',  'type', 'type' => 'boolean'),
+                array('gamificationModalNotificationsEnabled',  'boolean'),
+                array('realtimeUpdatesEnabled',                 'boolean'),
             );
         }
 
@@ -69,6 +71,7 @@
                 'modalListPageSize'                     => Yii::t('Default', 'Popup list page size'),
                 'dashboardListPageSize'                 => Yii::t('Default', 'Dashboard portlet list page size'),
                 'gamificationModalNotificationsEnabled' => Yii::t('Default', 'Enable game notification popup'),
+                'realtimeUpdatesEnabled'                => Yii::t('Default', 'Enable real-time updates'),
             );
         }
     }

@@ -46,6 +46,8 @@
 
         public $turnOffEmailNotifications = false;
 
+        public $enableDesktopNotifications = true;
+
         public function __construct($userId)
         {
             assert('is_int($userId) && $userId > 0');
@@ -64,29 +66,31 @@
         public function rules()
         {
             return array(
-                array('listPageSize',              'required'),
-                array('listPageSize',              'type',      'type' => 'integer'),
-                array('listPageSize',              'numerical', 'min' => 1),
-                array('subListPageSize',           'required'),
-                array('subListPageSize',           'type',      'type' => 'integer'),
-                array('subListPageSize',           'numerical', 'min' => 1),
-                array('themeColor',                'required'),
-                array('themeColor',                'type',      'type' => 'string'),
-                array('backgroundTexture',         'type',      'type' => 'string'),
-                array('hideWelcomeView',           'boolean'),
-                array('turnOffEmailNotifications', 'boolean')
+                array('listPageSize',               'required'),
+                array('listPageSize',               'type',      'type' => 'integer'),
+                array('listPageSize',               'numerical', 'min' => 1),
+                array('subListPageSize',            'required'),
+                array('subListPageSize',            'type',      'type' => 'integer'),
+                array('subListPageSize',            'numerical', 'min' => 1),
+                array('themeColor',                 'required'),
+                array('themeColor',                 'type',      'type' => 'string'),
+                array('backgroundTexture',          'type',      'type' => 'string'),
+                array('hideWelcomeView',            'boolean'),
+                array('turnOffEmailNotifications',  'boolean'),
+                array('enableDesktopNotifications', 'boolean')
             );
         }
 
         public function attributeLabels()
         {
             return array(
-                'listPageSize'              => Yii::t('Default', 'List page size'),
-                'subListPageSize'           => Yii::t('Default', 'Sublist page size'),
-                'themeColor'                => Yii::t('Default', 'Theme'),
-                'backgroundTexture'         => Yii::t('Default', 'Texture'),
-                'hideWelcomeView'           => Yii::t('Default', 'Hide welcome page'),
-                'turnOffEmailNotifications' => Yii::t('Default', 'Turn off email notifications')
+                'listPageSize'                  => Yii::t('Default', 'List page size'),
+                'subListPageSize'               => Yii::t('Default', 'Sublist page size'),
+                'themeColor'                    => Yii::t('Default', 'Theme'),
+                'backgroundTexture'             => Yii::t('Default', 'Texture'),
+                'hideWelcomeView'               => Yii::t('Default', 'Hide welcome page'),
+                'turnOffEmailNotifications'     => Yii::t('Default', 'Turn off email notifications'),
+                'enableDesktopNotifications'    => Yii::t('Default', 'Enable Desktop notifications')
             );
         }
     }
