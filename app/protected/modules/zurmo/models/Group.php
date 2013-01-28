@@ -176,6 +176,10 @@
         {
             if ($this->isEveryone)
             {
+                if ($attributeName == 'name')
+                {
+                    return Yii::t('Default', self::EVERYONE_GROUP_NAME);
+                }
                 if ($attributeName == 'group')
                 {
                     return null;
@@ -187,6 +191,10 @@
             }
             if ($this->isSuperAdministrators)
             {
+                if ($attributeName == 'name')
+                {
+                    return Yii::t('Default', self::SUPER_ADMINISTRATORS_GROUP_NAME);
+                }
                 if ($attributeName == 'rights')
                 {
                     throw new NotSupportedException();

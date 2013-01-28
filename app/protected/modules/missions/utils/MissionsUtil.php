@@ -181,5 +181,27 @@
             $rules->addUser($userToReceiveMessage);
             NotificationsUtil::submit($message, $rules);
         }
+
+        /**
+         * Given a Mission and the User that created the new comment
+         * return the people on the mission to send new notification to
+         * @param Mission $mission
+         * @param User $user
+         * @return Array $peopleToSendNotification
+         */
+        public static function resolvePeopleToSendNotificationToOnNewComment(Mission $mission, User $user)
+        {
+            assert('$mission->id > 0');
+            $peopleToSendNotification = array();
+            if ($user->getClassId('Item') != $mission->owner->getClassId('Item'))
+            {
+                $peopleToSendNotification[] = $mission->owner;
+            }
+            if ($user->getClassId('Item') != $mission->takenByUser->getClassId('Item'))
+            {
+                $peopleToSendNotification[] = $mission->takenByUser;
+            }
+            return $peopleToSendNotification;
+        }
     }
 ?>

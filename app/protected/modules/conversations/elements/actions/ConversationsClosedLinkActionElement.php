@@ -24,23 +24,18 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /**
-     * This form is used for mapping a default value for an attribute during an import.  If the row does not have a
-     * value for the mapped attribute, then an alternative default value can be specified and used.  This form has
-     * one attribute $defaultValue that gets its rules directly from the attribute on the model that is specified.
-     */
-    class DefaultValueModelAttributeMappingRuleForm extends DefaultModelAttributeMappingRuleForm
+    class ConversationsClosedLinkActionElement extends EditLinkActionElement
     {
-        public $defaultValue;
-
-        public function attributeLabels()
+        protected function getDefaultLabel()
         {
-            return array('defaultValue'   => Zurmo::t('ImportModule', 'Default Value'));
+            return Yii::t('Default', 'Closed');
         }
 
-        public static function getAttributeName()
+        protected function getDefaultRoute()
         {
-            return 'defaultValue';
+            return Yii::app()->createUrl(
+                $this->moduleId . '/' . $this->controllerId . '/list/',
+                array('type' => ConversationsSearchDataProviderMetadataAdapter::LIST_TYPE_CLOSED));
         }
     }
 ?>
