@@ -195,6 +195,21 @@
                 AuditEvent::
                 logAuditEvent('UsersModule', UsersModule::AUDIT_EVENT_USER_PASSWORD_CHANGED, $this->username, $this);
             }
+            if ( Right::DENY == $this->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB) ||
+                Right::DENY == $this->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_MOBILE) ||
+                Right::DENY == $this->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API))
+            {                                        
+                $isActive = false;              
+            }            
+            else
+            { 
+                $isActive = true;                              
+            }             
+            if($this->isActive != $isActive)
+            {
+               $this->unrestrictedSet('isActive', $isActive);   
+               $this->save();
+            } 
             return $saved;
         }
 
@@ -217,7 +232,7 @@
             {
                 Yii::app()->languageHelper->setActive($this->language);
             }
-            parent::afterSave();
+            parent::afterSave();                       
         }
 
         /**
@@ -228,7 +243,7 @@
         protected function beforeSave()
         {
             if (parent::beforeSave())
-            {
+            {                                            
                 if (isset($this->originalAttributeValues['role']) && $this->originalAttributeValues['role'][1] > 0)
                 {
                     ReadPermissionsOptimizationUtil::userBeingRemovedFromRole($this, Role::getById($this->originalAttributeValues['role'][1]));
@@ -619,7 +634,8 @@
                     'language',
                     'timeZone',
                     'username',
-                    'serializedAvatarData'
+                    'serializedAvatarData',
+                    'isActive'
                 ),
                 'relations' => array(
                     'currency'         => array(RedBeanModel::HAS_ONE,             'Currency'),
@@ -650,7 +666,9 @@
                     array('username', 'match',   'pattern' => '/^[^A-Z]+$/', // Not Coding Standard
                                                'message' => 'Username must be lowercase.'),
                     array('username', 'length',  'max'   => 64),
-                    array('serializedAvatarData',   'type',  'type' => 'string')
+                    array('serializedAvatarData',   'type',  'type' => 'string'),
+                    array('isActive', 'readOnly'),
+                    array('isActive', 'boolean')
                 ),
                 'elements' => array(
                 ),
