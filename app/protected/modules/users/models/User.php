@@ -663,13 +663,13 @@
                 ),
                 'defaultSortAttribute' => 'lastName',
                 'noExport' => array(
-                    'hash'
+                    'hash'               
                 ),
                 'noApiExport' => array(
-                    'hash'
+                    'hash'              
                 ),
                 'noAudit' => array(
-                    'serializedAvatarData',
+                    'serializedAvatarData',                    
                 ),
             );
             return $metadata;
