@@ -64,7 +64,7 @@ $(window).ready(function(){
             appChromeHeight = 80 + $('#FooterView').outerHeight(true);
             if ( wrapperDivHeight < viewportHeight  ){
                 bufferHeight = viewportHeight - appChromeHeight;
-                $('.AppContainer').height(  bufferHeight   );
+                $('.AppContainer').css('min-height', bufferHeight);
             }
         //rest of app
         } else {
@@ -72,7 +72,7 @@ $(window).ready(function(){
             appChromeHeight = recentlyViewedHeight + $('#MenuView').outerHeight(true) + $('#HeaderView').outerHeight(true) + $('#FooterView').outerHeight(true);
             if ( wrapperDivHeight < viewportHeight  ){
                 bufferHeight = viewportHeight - appChromeHeight;
-                $('#RecentlyViewedView').height( $('#RecentlyViewedView').height() + bufferHeight   );
+                $('#RecentlyViewedView').css('min-height', $('#RecentlyViewedView').height() + bufferHeight);
             }
         }
     }
@@ -150,15 +150,19 @@ $(window).ready(function(){
 /*
  * this function takes care of the save/cancel buttons' position in long forms, ie. edit account.
  */
+var windowTop, diff;
 
 function dockFloatingBar(){
-    var windowTop, diff;
-    windowTop = $(window).scrollTop();
-    diff = $(document).height() - $(window).height() - 100; //100px is to dock it before scrolling all the way to tht bottom
-    if( windowTop > diff ) {
-        $('#float-bar .view-toolbar-container').addClass('dock');
-    } else {
-        $('#float-bar .view-toolbar-container').removeClass('dock');
+    if ($('.float-bar').find('.disable-float-bar').length == 0) {
+        windowTop = $(window).scrollTop();
+        diff = $(document).height() - $(window).height() - 100; //100px is to dock it before scrolling all the way to the bottom
+        if( windowTop > diff ) {
+            $('.float-bar .view-toolbar-container').addClass('dock');
+        } else {
+            if( $('.wrapper').height() > $('.AppNavigation').height() ) {
+                $('.float-bar .view-toolbar-container').removeClass('dock');
+            }
+        }
     }
 }
 
