@@ -141,9 +141,14 @@
         */
         public function handleImports($event)
         {
+            //Clears file cache so that everything is clean.
+            if (isset($_GET['clearCache']) && $_GET['clearCache'] == 1)
+            {
+                GeneralCache::forgetEntry('filesClassMap');
+            }
             try
             {
-                $filesToInclude = GeneralCache::getEntry('filesToInclude');
+                Yii::$classMap = GeneralCache::getEntry('filesClassMap');
             }
             catch (NotFoundException $e)
             {
@@ -155,11 +160,11 @@
                 {
                     $filesToInclude[$totalFilesToIncludeFromModules + $key] = $file;
                 }
-                GeneralCache::cacheEntry('filesToInclude', $filesToInclude);
-            }
-            foreach ($filesToInclude as $file)
-            {
-                Yii::import($file);
+                foreach ($filesToInclude as $file)
+                {
+                    Yii::import($file);
+                }
+                GeneralCache::cacheEntry('filesClassMap', Yii::$classMap);
             }
         }
 
@@ -452,13 +457,13 @@
         public function handleLoadActivitiesObserver($event)
         {
             $activitiesObserver = new ActivitiesObserver();
-            $activitiesObserver->init(); //runs init();
+            $activitiesObserver->init();
         }
 
         public function handleLoadConversationsObserver($event)
         {
             $conversationsObserver = new ConversationsObserver();
-            $conversationsObserver->init(); //runs init();
+            $conversationsObserver->init();
         }
 
         public function handleLoadGamification($event)
