@@ -32,7 +32,7 @@
             return self::getSubset(null, null, null, "name = '$name'");
         }
 
-        protected function untranslatedAttributeLabels()
+        protected static function untranslatedAttributeLabels()
         {
             return array_merge(parent::untranslatedAttributeLabels(),
                 array(
