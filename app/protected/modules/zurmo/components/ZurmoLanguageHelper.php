@@ -30,7 +30,7 @@
     class ZurmoLanguageHelper extends CApplicationComponent
     {
         /**
-         * The base language as defined by the config file. This language cannot be inactivated.
+         * The base language as defined by the config file. This language cannot be deactivated.
          * @var string
          */
         protected $baseLanguage;
@@ -96,7 +96,7 @@
         public function getSupportedLanguagesData($localDisplay = false)
         {
             $data = array();
-            foreach (Yii::app()->params['supportedLanguages'] as $language => $name)
+            foreach (ZurmoTranslationServerUtil::getAvailableLanguages() as $language => $name)
             {
                 if ($localDisplay)
                 {
@@ -187,10 +187,32 @@
         }
 
         /**
+         * Save given MetaData for the given language code
+         */
+        public function setActiveLanguageMetaData($languageCode, $metaData)
+        {
+            ZurmoConfigurationUtil::setByModuleName(
+                'ZurmoModule',
+                'languageMetaData-' . $languageCode,
+                $metaData);
+        }
+
+        /**
+         * Returns local stored MetaData for given language code
+         */
+        public function getActiveLanguageMetaData($languageCode)
+        {
+            return ZurmoConfigurationUtil::getByModuleName(
+                'ZurmoModule',
+                'languageMetaData-' . $languageCode
+            );
+        }
+
+        /**
          * A language that is the base language or currently selected as a user's default language, cannot be removed.
          * @return true if the specified language can be removed.
          */
-        public function canInactivateLanguage($language)
+        public function canDeactivateLanguage($language)
         {
             assert('is_string($language)');
             if ($language == $this->baseLanguage || $this->isLanguageADefaultLanguageForAnyUsers($language))
@@ -225,6 +247,116 @@
         {
             assert('is_array($activeLanguages)');
             ZurmoConfigurationUtil::setByModuleName('ZurmoModule', 'activeLanguages', $activeLanguages);
+        }
+
+        /**
+         * Activates a language
+         */
+        public function activateLanguage($languageCode)
+        {
+            $activeLanguages = $this->getActiveLanguages();
+            // Check if the language is already active
+            if (in_array($languageCode, $activeLanguages))
+            {
+                return true;
+            }
+
+            $supportedLanguages = $this->getSupportedLanguagesData();
+            // Check if the language is supported
+            if (!array_key_exists($languageCode, $supportedLanguages))
+            {
+                throw new NotFoundException(Zurmo::t('ZurmoModule', 'Language not supported.'));
+            }
+
+            $translationUrl = ZurmoTranslationServerUtil::getPoFileUrl($languageCode);
+
+            // Check if the po file exists
+            $headers = get_headers($translationUrl);
+            list($version,$status_code,$msg) = explode(' ', $headers[0], 3);
+            if ($status_code != 200)
+            {
+                throw new NotFoundException(Zurmo::t('ZurmoModule', 'Translation not available.'));
+            }
+
+            if (ZurmoMessageSourceUtil::importPoFile($languageCode, $translationUrl))
+            {
+                $activeLanguages[] = $languageCode;
+                $this->setActiveLanguages($activeLanguages);
+                $metaData = array(
+                    'activationDate' => time(),
+                    'lastUpdate'     => time()
+                );
+                $this->setActiveLanguageMetaData($languageCode, $metaData);
+
+                return true;
+            }
+
+            throw new FailedServiceException(Zurmo::t('ZurmoModule', 'Unexpected error. Please try again later.'));
+        }
+
+        /**
+         * Updates a language
+         */
+        public function updateLanguage($languageCode)
+        {
+            $activeLanguages = $this->getActiveLanguages();
+            // Check if the language is already active
+            if (!in_array($languageCode, $activeLanguages))
+            {
+                throw new NotFoundException(Zurmo::t('ZurmoModule', 'Language already active.'));
+            }
+
+            $supportedLanguages = $this->getSupportedLanguagesData();
+            // Check if the language is supported
+            if (!array_key_exists($languageCode, $supportedLanguages))
+            {
+                throw new NotFoundException(Zurmo::t('ZurmoModule', 'Language not supported.'));
+            }
+
+            $translationUrl = ZurmoTranslationServerUtil::getPoFileUrl($languageCode);
+
+            // Check if the po file exists
+            $headers = get_headers($translationUrl);
+            list($version,$status_code,$msg) = explode(' ', $headers[0], 3);
+            if ($status_code != 200)
+            {
+                throw new NotFoundException(Zurmo::t('ZurmoModule', 'Translation not available.'));
+            }
+
+            if (ZurmoMessageSourceUtil::importPoFile($languageCode, $translationUrl))
+            {
+                $metaData = $this->getActiveLanguageMetaData($languageCode);
+                $metaData['lastUpdate'] = time();
+                $this->setActiveLanguageMetaData($languageCode, $metaData);
+
+                return true;
+            }
+
+            throw new FailedServiceException(Zurmo::t('ZurmoModule', 'Unexpected error. Please try again later.'));
+        }
+
+        public function deactivateLanguage($languageCode)
+        {
+            $activeLanguages = $this->getActiveLanguages();
+            // Check if the language is already active
+            if (!in_array($languageCode, $activeLanguages))
+            {
+                return true;
+            }
+
+            foreach ($activeLanguages as $key => $activeLanguageCode)
+            {
+                if ($activeLanguageCode == $languageCode)
+                {
+                    unset($activeLanguages[$key]);
+                }
+            }
+            $this->setActiveLanguages($activeLanguages);
+
+            $metaData = array();
+            $this->setActiveLanguageMetaData($languageCode, $metaData);
+
+            return true;
         }
 
         /**

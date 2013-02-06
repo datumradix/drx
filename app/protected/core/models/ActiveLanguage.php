@@ -24,17 +24,28 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class LanguageTitleBarConfigurationListView extends GridView
+    class ActiveLanguage extends RedBeanModel
     {
-        protected $cssClasses =  array( 'AdministrativeArea' , 'TableOfContentsView' );
-
-        public function __construct(
-            $controllerId,
-            $moduleId,
-            $messageBoxContent = null)
+        public static function getDefaultMetadata()
         {
-            parent::__construct(1, 1);
-            $this->setView(new LanguagesCollectionView($controllerId, $moduleId, $messageBoxContent), 0, 0);
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'code',
+                    'name',
+                    'nativeName',
+                    'activationDatetime',
+                    'lastUpdateDatetime'
+                ),
+                'rules' => array(
+                    array('code, name, nativeName, activationDatetime', 'required'),
+                    array('code, name, nativeName', 'type', 'type' => 'string'),
+                    array('activationDatetime, lastUpdateDatetime', 'type', 'type' => 'date'),
+                    array('code', 'length',  'min'  => 2, 'max' => 5),
+                    array('name, nativeName', 'length',  'min'  => 2, 'max' => 64),
+                )
+            );
+            return $metadata;
         }
     }
 ?>
