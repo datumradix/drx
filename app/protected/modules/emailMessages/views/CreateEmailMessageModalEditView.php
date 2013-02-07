@@ -47,6 +47,9 @@
                     'toolbar' => array(
                         'elements' => array(
                             array('type'  => 'SaveButton', 'label' => Yii::t('Default', 'Send')),
+                            array('type'  => 'CancelLink',
+                                  'label' => Yii::t('Default', 'Discard and Close'),
+                                  'htmlOptions' => array('onclick' => '$(\'.ui-dialog-titlebar-close\').click(); return false;')),
                         ),
                     ),
                     'derivedAttributeTypes' => array(
