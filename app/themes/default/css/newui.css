@@ -1,6 +1,9 @@
 * {
   margin: 0;
   padding: 0;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .border-box,
 .modal-view-toolbar a,
@@ -4963,9 +4966,9 @@ section {
 #globalSearchInput {
   font-style: italic;
   color: #999;
-  height: 23px;
+  height: 25px;
   text-indent: 10px;
-  line-height: 23px;
+  line-height: 25px;
   width: 300px;
   border: 1px solid #d5d4d4;
   border-left: none;
@@ -5357,7 +5360,7 @@ section {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dcdcdc', endColorstr='#e3e3e3', GradientType=0);
   border-top: 1px solid #F9F9FA;
   padding: 20px 5px;
-  width: 160px;
+  width: 168px;
 }
 #RecentlyViewedView h3 {
   color: #666;
@@ -6980,7 +6983,8 @@ div.wide.form label.hasCheckBox {
   background: gold;
   position: absolute;
   left: 0;
-  top: -3px;
+  margin-top: -3px;
+  margin-left: -6px;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   -ms-border-radius: 50%;
@@ -7926,7 +7930,6 @@ div.wide.form label.hasCheckBox {
 .toolbar-mbmenu .options-menu > li > a {
   padding-left: 10px;
   text-align: center;
-  width: 60px;
   color: #666 !important;
   border-top: 1px solid #e7e7e7;
   border-left: 1px solid #d7d7d7;
@@ -15057,6 +15060,45 @@ a.user-link {
 }
 .outbound-settings label {
   margin-bottom: 5px;
+}
+/*zen mode editing screen*/
+#ModalView {
+  height: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#modalContainer {
+  width: 100%;
+  height: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#CreateEmailMessageModalEditView {
+  height: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#CreateEmailMessageModalEditView .wide.form {
+  height: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#CreateEmailMessageModalEditView form {
+  height: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#CreateEmailMessageModalEditView form > div {
+  max-width: 45%;
+  margin: 0 auto;
+}
+#CreateEmailMessageModalEditView .redactor_editor {
+  min-height: 350px;
 }
 @media screen and (min-width: 1600px) {
   .AppContainer {

@@ -59,8 +59,8 @@
         {
             assert('is_string($containerId)');
             assert('is_string($title)');
-            assert('$height == "auto" || is_int($height)');
-            assert('is_int($width)');
+            //assert('$height == "auto" || is_int($height)');
+            //assert('is_int($width)');
             assert('is_string($position) || is_array($position)');
             return array(
                     'beforeSend' => static::getAjaxBeforeSendOptionForModalLinkContent($title, $containerId, $height, $width, $position),
@@ -71,17 +71,10 @@
         {
             assert('is_string($containerId)');
             assert('is_string($title)');
-            assert('$height == "auto" || is_int($height)');
-            assert('is_int($width)');
+            assert('is_set($height)');
+            assert('is_set($width)');
             assert('is_string($position) || is_array($position)');
-            if ($height == 'auto')
-            {
-                $heightContent = "'auto'";
-            }
-            else
-            {
-                $heightContent = $height;
-            }
+            
             if (is_array($position))
             {
                 $position = CJSON::encode($position);
@@ -90,21 +83,43 @@
             {
                 $position = '" . $position . "';
             }
+            
+            $xHeight = ModalView::getModalHeight($height);
+            $xWidth  = ModalView::getModalWidth($width);
+            
             // Begin Not Coding Standard
             return "js:function(){jQuery('#" . $containerId . "').html('');" .
-                                    "makeLargeLoadingSpinner('" . $containerId . "');" .
-                                    "window.scrollTo(0, 0);" .
-                                    "var modalWidth = $width;
-                                     var modalHeight = $heightContent;
-                                     if (modalWidth === '100%'){
-                                         modalWidth = jQuery(window).width();
-                                     }
-                                     if (modalHeight === '100%'){
-                                         modalHeight = jQuery(window).height();
-                                     }" .
-                                    "jQuery('#" . $containerId . "').dialog({'title':\"" . CJavaScript::quote($title) . "\",'autoOpen':true," .
-                                    "'modal':true,'height':modalHeight,'width':modalWidth, 'position':" . $position . "}); return true;}";
+                                    "makeLargeLoadingSpinner('" . $containerId . "');
+                                     window.scrollTo(0, 0);
+                                     jQuery('#" . $containerId . "').dialog({'title':\"" . CJavaScript::quote($title) . "\",'autoOpen':true," .
+                                    "'modal':true,'height':".$xHeight.",'width':".$xWidth.", 'position':" . $position . "}); return true;}";
+                                  
             // End Not Coding Standard
+        }
+        
+        
+        public static function getModalHeight($height)
+        {
+            assert('is_set($height)');
+            if ($height == '100%')
+            {
+                $height = 'jQuery(window).height()';
+            }
+            else if ($height == 'auto')
+            {
+                $height = "'auto'";
+            }
+            return $height;
+        }
+        
+        public static function getModalWidth($width)
+        {
+            assert('is_set($width)');
+            if ($width == '100%')
+            {
+                $width = 'jQuery(window).width()';
+            }
+            return $width;
         }
     }
 ?>

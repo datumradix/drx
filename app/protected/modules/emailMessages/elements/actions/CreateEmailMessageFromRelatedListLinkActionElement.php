@@ -52,8 +52,8 @@
             return ModalView::getAjaxOptionsForModalLink(
                                     Yii::t('Default', 'Compose Email'),
                                     'modalContainer',
-                                    "'100%'",
-                                    "'100%'",
+                                    '100%',
+                                    '100%',
                                     array( 'my' => 'top', 'at' => 'top', 'of' => '.ZurmoDefaultPageView'));
         }
 
