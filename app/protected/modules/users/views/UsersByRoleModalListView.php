@@ -24,22 +24,19 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class AuditEventsModalListView extends ModalListView
+    class UsersByRoleModalListView extends UsersModalListView
     {
-        const AUDIT_EVENTS_MODAL_LIST_ACTION_ID = 'auditEventsModalList';
-
-        public function __construct($controllerId, $moduleId, $modelClassName, $dataProvider, $gridIdSuffix = null)
-        {
-            parent::__construct($controllerId, $moduleId, self::AUDIT_EVENTS_MODAL_LIST_ACTION_ID,
-                                                $modelClassName, null, $dataProvider, $gridIdSuffix);
-        }
-
         public static function getDefaultMetadata()
         {
             $metadata = array(
                 'global' => array(
                     'derivedAttributeTypes' => array(
-                        'AuditEvent',
+                        'FullName',
+                    ),
+                    'nonPlaceableAttributeNames' => array(
+                        'hash',
+                        'newPassword',
+                        'newPassword_repeat',
                     ),
                     'panels' => array(
                         array(
@@ -48,37 +45,27 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'dateTime', 'type' => 'DateTime',
-                                                      'htmlOptions' => array('nowrap' => 'nowrap')),
+                                                array('attributeName' => 'null', 'type' => 'FullName', 'isLink' => true),
                                             ),
                                         ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'user', 'type' => 'User'),
+                                                array('attributeName' => 'username', 'type' => 'Text'),
                                             ),
                                         ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'AuditEvent'),
-                                            ),
-                                        ),
-                                    )
+                                    ),
                                 ),
                             ),
                         ),
                     ),
                 ),
-
             );
             return $metadata;
+        }
+
+        public static function getDesignerRulesType()
+        {
+            return null;
         }
     }
 ?>
