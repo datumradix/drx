@@ -24,49 +24,28 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class RedBeanModelsTest extends BaseTest
+    /**
+     * Action bar view for the report search and list user interface. Provides buttons like export and update
+     */
+    class SecuredActionBarForReportsSearchAndListView extends SecuredActionBarForSearchAndListView
     {
-        const USERS = 5;
-
-        private $usernames;
-
-        public function setUp()
+        /**
+         * @return array
+         */
+        public static function getDefaultMetadata()
         {
-            if (!isset($this->usernames))
-            {
-                $this->usernames = TestHelpers::makeUniqueRandomUsernames(RedBeanModelsTest::USERS);
-            }
-            foreach ($this->usernames as $username)
-            {
-                $user = new User();
-                $user->username           = $username;
-                $user->title->value       = 'Mr.';
-                $user->firstName          = $username;
-                $user->lastName           = $username;
-                $user->setPassword(strtolower($username));
-                $this->assertTrue($user->save());
-            }
-        }
-
-        public function tearDown()
-        {
-            foreach ($this->usernames as $username)
-            {
-                $user = User::getByUsername($username);
-                $user->delete();
-            }
-        }
-
-        public function testCreateAndIterateLazyModels()
-        {
-            $users = new RedBeanModels('User');
-            $this->assertEquals(count($this->usernames), $users->count());
-            foreach ($users as $user)
-            {
-                $this->assertTrue(in_array($user->username, $this->usernames));
-                $this->assertEquals($user->username, $user->firstName);
-                $this->assertEquals($user->username, $user->lastName);
-            }
+            $metadata = array(
+                'global' => array(
+                    'toolbar' => array(
+                        'elements' => array(
+                            array('type'  => 'CreateLink',
+                                'htmlOptions' => array('class' => 'icon-create'),
+                            ),
+                        ),
+                    ),
+                ),
+            );
+            return $metadata;
         }
     }
 ?>
