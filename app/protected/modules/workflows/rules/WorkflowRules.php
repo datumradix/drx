@@ -25,34 +25,14 @@
      ********************************************************************************/
 
     /**
-     * View for selecting a type of report to create
+     * Base class of workflow rules that assist with workflow management.  Extend this class to make
+     * a set of WorkflowRules that is for a specific module or a combination of modules and/or models.
      */
-    class ReportWizardTypeView extends WizardTypeView
+    abstract class WorkflowRules extends ModelToComponentRules
     {
-        /**
-         * @return string
-         */
-        public function getTitle()
+        public static function getRulesName()
         {
-            return Zurmo::t('ReportsModule', 'Report Wizard');
-        }
-
-        /**
-         * @return array
-         */
-        protected function getTypeData()
-        {
-            $categories = array();
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Rows and Columns Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_ROWS_AND_COLUMNS // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Summation Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_SUMMATION // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Matrix Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_MATRIX// Not Coding Standard
-                                            );
-            return $categories;
+            return 'WorkflowRules';
         }
     }
 ?>

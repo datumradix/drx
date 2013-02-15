@@ -25,34 +25,39 @@
      ********************************************************************************/
 
     /**
-     * View for selecting a type of report to create
+     * Base class for working with the workflow wizard
      */
-    class ReportWizardTypeView extends WizardTypeView
+    abstract class WorkflowWizardView extends WizardView
     {
+        public static function getControllerId()
+        {
+            return 'workflows';
+        }
+
         /**
          * @return string
          */
         public function getTitle()
         {
-            return Zurmo::t('ReportsModule', 'Report Wizard');
+            return Zurmo::t('WorkflowsModule', 'Workflow Wizard');
         }
 
         /**
-         * @return array
+         * @return string
          */
-        protected function getTypeData()
+        protected static function getStartingValidationScenario()
         {
-            $categories = array();
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Rows and Columns Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_ROWS_AND_COLUMNS // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Summation Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_SUMMATION // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Matrix Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_MATRIX// Not Coding Standard
-                                            );
-            return $categories;
+            return WorkflowWizardForm::MODULE_VALIDATION_SCENARIO;
+        }
+
+        protected function registerScripts()
+        {
+            parent::registerScripts();
+            Yii::app()->getClientScript()->registerCoreScript('treeview');
+            Yii::app()->clientScript->registerScriptFile(
+                Yii::app()->getAssetManager()->publish(
+                    Yii::getPathOfAlias('application.modules.workflows.views.assets')) . '/WorkflowUtils.js');
+            $this->registerClickFlowScript();
         }
     }
 ?>
