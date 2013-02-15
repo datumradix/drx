@@ -25,34 +25,13 @@
      ********************************************************************************/
 
     /**
-     * View for selecting a type of report to create
+     * View for displaying a tree view widget for certain tree type and based on the workflow type
      */
-    class ReportWizardTypeView extends WizardTypeView
+    class WorkflowRelationsAndAttributesTreeView extends WizardModelRelationsAndAttributesTreeView
     {
-        /**
-         * @return string
-         */
-        public function getTitle()
+        public static function getControllerId()
         {
-            return Zurmo::t('ReportsModule', 'Report Wizard');
-        }
-
-        /**
-         * @return array
-         */
-        protected function getTypeData()
-        {
-            $categories = array();
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Rows and Columns Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_ROWS_AND_COLUMNS // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Summation Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_SUMMATION // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Matrix Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_MATRIX// Not Coding Standard
-                                            );
-            return $categories;
+            return 'workflows';
         }
     }
 ?>
