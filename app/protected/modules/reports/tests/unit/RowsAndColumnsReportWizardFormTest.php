@@ -25,34 +25,47 @@
      ********************************************************************************/
 
     /**
-     * Help with working with sticky report results.  This is needed when using runtime filters
-     */
-    class StickyReportUtil extends StickyUtil
+    * Test ReportWizardForm validation functions.
+    */
+    class RowsAndColumnsReportWizardFormTest extends ZurmoBaseTest
     {
-        /**
-         * @param Report $report
-         * @param array $stickyData
-         */
-        public static function resolveStickyDataToReport(Report $report, array $stickyData)
+        public static function setUpBeforeClass()
         {
-            if(!isset($stickyData[ComponentForReportForm::TYPE_FILTERS]))
-            {
-                return;
-            }
-            $filters         = $report->getFilters();
-            foreach($stickyData[ComponentForReportForm::TYPE_FILTERS] as $filterKey => $filterData)
-            {
-                if(isset($filters[$filterKey]))
-                {
-                    if($filterData['operator'] == OperatorRules::TYPE_IS_NULL ||
-                       $filterData['operator'] == OperatorRules::TYPE_IS_NOT_NULL)
-                    {
-                        $filterData['value']       = null;
-                        $filterData['secondValue'] = null;
-                    }
-                    $filters[$filterKey]->setAttributes($filterData);
-                }
-            }
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
         }
+        
+        public function testValidateFilters()
+        {
+            $rowsAndColumnsReportWizardForm          = new RowsAndColumnsReportWizardForm();                  
+            $filter                                  = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem',
+                                                                           Report::TYPE_ROWS_AND_COLUMNS);
+            $filter->attributeIndexOrDerivedType     = 'string';
+            $filter->operator                        = OperatorRules::TYPE_EQUALS;
+            $filter->value                           = 'Zurmo';
+            $rowsAndColumnsReportWizardForm->filters = array($filter);
+            
+            $rowsAndColumnsReportWizardForm->validateFilters();           
+        }
+        
+        public function testValidateFiltersStructure()
+        {
+        }
+        
+        public function testValidateOrderBys()
+        {
+        }
+        
+        public function testValidateDisplayAttributes()
+        {
+        }        
+        
+        public function testValidateDrillDownDisplayAttributes()
+        {
+        }
+
+        public function testValidateGroupBys()
+        {
+        }        
     }
-?>
+?>    
