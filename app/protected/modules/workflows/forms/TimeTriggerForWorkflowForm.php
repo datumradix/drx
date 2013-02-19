@@ -25,34 +25,32 @@
      ********************************************************************************/
 
     /**
-     * View for selecting a type of report to create
+     * Component form for a time trigger definition
      */
-    class ReportWizardTypeView extends WizardTypeView
+    class TimeTriggerForWorkflowForm extends TriggerForWorkflowForm
     {
         /**
-         * @return string
+         * @var integer.  Example: Account name is xyz for 1 hour.  The duration seconds would be set to 3600
          */
-        public function getTitle()
-        {
-            return Zurmo::t('ReportsModule', 'Report Wizard');
-        }
+        public $durationSeconds;
 
         /**
          * @return array
+         * @throws NotSupportedException if the attributeIndexOrDerivedType has not been populated yet
          */
-        protected function getTypeData()
+        public function getOperatorValuesAndLabels()
         {
-            $categories = array();
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Rows and Columns Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_ROWS_AND_COLUMNS // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Summation Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_SUMMATION // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Matrix Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_MATRIX// Not Coding Standard
-                                            );
-            return $categories;
+            if($this->attributeIndexOrDerivedType == null)
+            {
+                throw new NotSupportedException();
+            }
+            $type = $this->getAvailableOperatorsType();
+            $data = array();
+            ModelAttributeToOperatorTypeUtil::resolveOperatorsToIncludeByType($data, $type);
+            $data[OperatorRules::TYPE_DOES_NOT_CHANGE] = OperatorRules::getTranslatedTypeLabel(OperatorRules::TYPE_DOES_NOT_CHANGE);
+            $data[OperatorRules::TYPE_IS_EMPTY]      = OperatorRules::getTranslatedTypeLabel(OperatorRules::TYPE_IS_EMPTY);
+            $data[OperatorRules::TYPE_IS_NOT_EMPTY]  = OperatorRules::getTranslatedTypeLabel(OperatorRules::TYPE_IS_NOT_EMPTY);
+            return $data;
         }
     }
 ?>

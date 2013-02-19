@@ -25,34 +25,19 @@
      ********************************************************************************/
 
     /**
-     * View for selecting a type of report to create
+     * Helper functionality for finding the type to be used for creating a WorkflowActionAttributeForm
+     * associated with a model's attribute
      */
-    class ReportWizardTypeView extends WizardTypeView
+    class ModelAttributeToWorkflowActionAttributeFormTypeUtil
     {
         /**
+         * @param $model
+         * @param $attributeName
          * @return string
          */
-        public function getTitle()
+        public static function getType($model, $attributeName)
         {
-            return Zurmo::t('ReportsModule', 'Report Wizard');
-        }
-
-        /**
-         * @return array
-         */
-        protected function getTypeData()
-        {
-            $categories = array();
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Rows and Columns Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_ROWS_AND_COLUMNS // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Summation Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_SUMMATION // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Matrix Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_MATRIX// Not Coding Standard
-                                            );
-            return $categories;
+            return ModelAttributeToMixedTypeUtil::getType($model, $attributeName);
         }
     }
 ?>

@@ -25,34 +25,18 @@
      ********************************************************************************/
 
     /**
-     * View for selecting a type of report to create
+     * Helper class to build workflow attribute forms
      */
-    class ReportWizardTypeView extends WizardTypeView
+    class WorkflowActionAttributeFormFactory extends ConfigurableMetadataModel
     {
-        /**
-         * @return string
-         */
-        public function getTitle()
+        public static function make($resolvedModelClassName, $resolvedAttributeName)
         {
-            return Zurmo::t('ReportsModule', 'Report Wizard');
-        }
-
-        /**
-         * @return array
-         */
-        protected function getTypeData()
-        {
-            $categories = array();
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Rows and Columns Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_ROWS_AND_COLUMNS // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Summation Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_SUMMATION // Not Coding Standard
-                                            );
-            $categories['clearCache'][] = array('titleLabel'          => Zurmo::t('ReportsModule', 'Matrix Report'),
-                                                'route'               => 'reports/default/create?type=' . Report::TYPE_MATRIX// Not Coding Standard
-                                            );
-            return $categories;
+            assert('is_string($resolvedModelClassName)');
+            assert('is_string($resolvedAttributeName)');
+            $model = new $resolvedModelClassName(false); //todo: once performance3 is done, the method call can use just the modelClassName
+            $type  = ModelAttributeToWorkflowActionAttributeFormTypeUtil::getType($model, $resolvedAttributeName);
+            $formClassName = $type . 'WorkflowActionAttributeForm';
+            return new $formClassName($model, $resolvedAttributeName);
         }
     }
 ?>
