@@ -29,7 +29,7 @@
      */
     class EmailArchivingJob extends BaseJob
     {
-        public static $jobOwnerUserModel;
+        protected $jobOwnerUserModel;
 
         /**
          * @returns Translated label that describes this job type.
@@ -69,7 +69,7 @@
          */
         public function run()
         {
-            self::$jobOwnerUserModel = Yii::app()->user->userModel;
+            $this->jobOwnerUserModel = Yii::app()->user->userModel;
             if (Yii::app()->imap->connect())
             {
                 $lastImapCheckTime     = EmailMessagesModule::getLastImapDropboxCheckTime();
@@ -90,7 +90,7 @@
                 {
                    foreach ($messages as $message)
                    {
-                       Yii::app()->user->userModel = self::$jobOwnerUserModel;
+                       Yii::app()->user->userModel = $this->jobOwnerUserModel;
                        $lastMessageCreatedTime = strtotime($message->createdDate);
                        if (strtotime($message->createdDate) > strtotime($lastCheckTime))
                        {
@@ -98,7 +98,7 @@
                        }
                        $this->saveEmailMessage($message);
                    }
-                   Yii::app()->user->userModel = self::$jobOwnerUserModel;
+                   Yii::app()->user->userModel = $this->jobOwnerUserModel;
                    Yii::app()->imap->expungeMessages();
                    if ($lastCheckTime != '')
                    {
@@ -253,12 +253,11 @@
             }
             catch (CException $e)
             {
-                // User not found, or few users share same primary email address,
-                // so inform user about issue and continue with next email.
+                // User not found, so inform user about issue and continue with next email.
                 $this->resolveMessageSubjectAndContentAndSendSystemMessage('OwnerNotExist', $message);
                 return false;
             }
-            $emailSenderOrRecepientEmailNotFoundInSystem = false;
+            $emailSenderOrRecipientEmailNotFoundInSystem = false;
             Yii::app()->user->userModel = $emailOwner;
             $userCanAccessContacts = RightsUtil::canUserAccessModule('ContactsModule', Yii::app()->user->userModel);
             $userCanAccessLeads    = RightsUtil::canUserAccessModule('LeadsModule',    Yii::app()->user->userModel);
@@ -286,11 +285,11 @@
 
                 if (empty($sender->personOrAccount) || $sender->personOrAccount->id <= 0)
                 {
-                    $emailSenderOrRecepientEmailNotFoundInSystem = true;
+                    $emailSenderOrRecipientEmailNotFoundInSystem = true;
                 }
             }
 
-            Yii::app()->user->userModel = self::$jobOwnerUserModel;
+            Yii::app()->user->userModel = $this->jobOwnerUserModel;
             $recipientsInfo = EmailArchivingUtil::resolveEmailRecipientsFromEmailMessage($message);
             if (!$recipientsInfo)
             {
@@ -308,24 +307,32 @@
             $emailMessage->content     = $emailContent;
             $emailMessage->sender      = $sender;
 
+            $emailRecipientNotFoundInSystem = true;
             foreach ($recipientsInfo as $recipientInfo)
             {
                 $recipient = $this->createEmailMessageRecipient($recipientInfo, $userCanAccessContacts,
-                                 $userCanAccessLeads, $userCanAccessAccounts, $userCanAccessUsers);
+                    $userCanAccessLeads, $userCanAccessAccounts, $userCanAccessUsers);
                 $emailMessage->recipients->add($recipient);
                 // Check if at least one recipient email can't be found in Contacts, Leads, Account and User emails
                 // so we will save email message in EmailFolder::TYPE_ARCHIVED_UNMATCHED folder, and user will
                 // be able to match emails with items(Contacts, Accounts...) emails in systems
-                if (empty($recipient->personOrAccount) || $recipient->personOrAccount->id <= 0)
+                if (!(empty($recipient->personOrAccount) || $recipient->personOrAccount->id <= 0))
                 {
-                    $emailSenderOrRecepientEmailNotFoundInSystem = true;
+                    $emailRecipientNotFoundInSystem = false;
+                    break;
                 }
             }
 
-            $box                       = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
-            if ($emailSenderOrRecepientEmailNotFoundInSystem)
+            // Override $emailSenderOrRecipientEmailNotFoundInSystem only if there are no errors
+            if ($emailSenderOrRecipientEmailNotFoundInSystem == false)
             {
-                $emailMessage->folder      = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_ARCHIVED_UNMATCHED);
+                $emailSenderOrRecipientEmailNotFoundInSystem = $emailRecipientNotFoundInSystem;
+            }
+
+            $box                       = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
+            if ($emailSenderOrRecipientEmailNotFoundInSystem)
+            {
+                $emailMessage->folder  = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_ARCHIVED_UNMATCHED);
                 $notificationMessage                    = new NotificationMessage();
                 $notificationMessage->htmlContent       = Zurmo::t('EmailMessagesModule', 'At least one archived email message does ' .
                                                                  'not match any records in the system. ' .
