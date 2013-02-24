@@ -131,7 +131,7 @@
          */
         public static function getGlobalSearchFormClassName()
         {
-            return 'UsersSearchForm';
+            return 'ReportsSearchForm';
         }
 
         /**
