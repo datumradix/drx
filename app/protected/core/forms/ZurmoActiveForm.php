@@ -257,7 +257,6 @@
             }
 
             $options['attributes'] = array_values($this->attributes);
-
             if ($this->summaryID !== null)
             {
                 $options['summaryID'] = $this->summaryID;
@@ -298,6 +297,11 @@
             {
                 $cs->registerScript(__CLASS__. '#' . $id, "\$('#$id').yiiactiveform($options);");
             }
+        }
+
+        public function getAttributes()
+        {
+            return $this->attributes;
         }
 
         /**
