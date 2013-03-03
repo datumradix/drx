@@ -24,17 +24,46 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ConversationLatestListViewColumnAdapter extends AddressListViewColumnAdapter
+    /**
+     * Form to help manage the mashable inbox
+     */
+    class MashableInboxForm extends CFormModel
     {
-        public function renderGridViewData()
+        /**
+         * Value to be used to signal that the filtering is for all models and not a specific one.
+         * @var string
+         */
+        const  FILTERED_BY_ALL = 'all';
+
+        const  FILTERED_BY_UNREAD = 'unread';
+
+        public $searchTerm;
+
+        public $filteredBy = self::FILTERED_BY_ALL;
+
+        public $optionForModel;
+
+        public $selectedIds;
+
+        public $massAction;
+
+        /**
+         * Models that implement the CombinedInboxInterface and the current user has
+         * rights to see, this array contains the model class names as the indexes and the translated model labels
+         * as the values.
+         * @var array
+         */
+        public $mashableModelClassNamesAndDisplayLabels;
+
+
+        public function rules()
         {
             return array(
-                'name'        => 'subject',
-                'header'      => Zurmo::t('Core', 'Subject'),
-                'htmlOptions' => array(),
-                'sortable'    => false,
-                'type'        => 'raw',
-                'value'       => 'ConversationsUtil::renderSubjectAndLatestForDisplayView($data)',
+                array('searchTerm',          'type',    'type' => 'string'),
+                array('filteredBy',          'type',    'type' => 'string'),
+                array('optionForModel',      'type',    'type' => 'string'),
+                array('selectedIds',         'type',    'type' => 'string'),
+                array('massAction',          'type',    'type' => 'string'),
             );
         }
     }
