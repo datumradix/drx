@@ -24,16 +24,14 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ConversationsListView extends SecuredListView
+    class MashableInboxListView extends ListView
     {
+        protected $rowsAreSelectable = true;
 
         public static function getDefaultMetadata()
         {
             $metadata = array(
                 'global' => array(
-                    'derivedAttributeTypes' => array(
-                        'ConversationLatest',
-                    ),
                     'panels' => array(
                         array(
                             'rows' => array(
@@ -41,7 +39,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'ConversationLatest'),
+                                                array('attributeName' => 'null', 'type' => 'MashableInboxSummary'),
                                             ),
                                         ),
                                     )
@@ -55,34 +53,49 @@
             return $metadata;
         }
 
-        /**
-         * Override so the edit link does not show.
-         * (non-PHPdoc)
-         * @see SecuredListView::getCGridViewLastColumn()
-         */
         protected function getCGridViewLastColumn()
         {
             return array();
         }
 
+        /**
+         * Overrides the parent implementation to prefix the value of selectable checkBox with modelClassName
+         */
+        protected function getCGridViewFirstColumn()
+        {
+            $checked = 'in_array($data->id, array(' . implode(',', $this->selectedIds) . '))'; // Not Coding Standard
+            $checkBoxHtmlOptions = array();
+            $firstColumn = array(
+                    'class'               => 'CheckBoxColumn',
+                    'checked'             => $checked,
+                    'id'                  => $this->gridId . $this->gridIdSuffix . '-rowSelector', // Always specify this as -rowSelector.
+                    'checkBoxHtmlOptions' => $checkBoxHtmlOptions,
+                    'value'               => 'get_class($data). "_" . $data->id',
+                );
+            return $firstColumn;
+        }
+
         protected function getCGridViewParams()
         {
             $gridViewParams = parent::getCGridViewParams();
-            $gridViewParams['rowCssClassExpression'] = 'ConversationsListView::resolveRowCssClasses($this, $row, $data)';
+            $gridViewParams['rowHtmlOptionsExpression'] = 'MashableInboxListView::resolveRowHtmlOptionsExpression($this, $row, $data)';
             return $gridViewParams;
         }
 
-        public static function resolveRowCssClasses($grid, $row, $data)
+        public static function resolveRowHtmlOptionsExpression($grid, $row, $data)
         {
-            if (is_array($grid->rowCssClass) && ($n = count($grid->rowCssClass)) > 0)
+            $mashableUtilRules  = MashableUtil::createMashableInboxRulesByModel(get_class($data));
+            $hasReadLatest      = $mashableUtilRules->hasUserReadLatest($data->id);
+            $unread             = null;
+            if (!$hasReadLatest)
             {
-                $content = $grid->rowCssClass[$row%$n];
-                if (!ConversationsUtil::hasUserReadConversationLatest($data, Yii::app()->user->userModel))
-                {
-                    $content .= ' unread';
-                }
-                return $content;
+                $unread = ' unread';
             }
+            $params =
+                array(
+                    "class"=>get_class($data) . $unread
+                );
+            return $params;
         }
     }
 ?>

@@ -24,18 +24,44 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ConversationLatestListViewColumnAdapter extends AddressListViewColumnAdapter
+    /**
+     * Display the details of an MashableInbox.
+     */
+    class MashableInboxSummaryElement extends Element implements DerivedElementInterface
     {
-        public function renderGridViewData()
+        protected function renderEditable()
         {
-            return array(
-                'name'        => 'subject',
-                'header'      => Zurmo::t('Core', 'Subject'),
-                'htmlOptions' => array(),
-                'sortable'    => false,
-                'type'        => 'raw',
-                'value'       => 'ConversationsUtil::renderSubjectAndLatestForDisplayView($data)',
-            );
+            throw NotSupportedException();
+        }
+
+        protected function renderControlEditable()
+        {
+            throw NotSupportedException();
+        }
+
+        protected function renderControlNonEditable()
+        {
+            throw NotSupportedException();
+        }
+
+        protected function renderLabel()
+        {
+            return Zurmo::t('MashableInboxModule', 'Combined Inbox');
+        }
+
+        public static function getDisplayName()
+        {
+            return Zurmo::t('MashableInboxModule', 'Summary');
+        }
+
+        /**
+         * Get the attributeNames of attributes used in
+         * the derived element.
+         * @return array of model attributeNames used.
+         */
+        public static function getModelAttributeNames()
+        {
+            return array();
         }
     }
 ?>
