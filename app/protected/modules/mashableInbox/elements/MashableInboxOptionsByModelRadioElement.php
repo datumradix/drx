@@ -24,18 +24,45 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ConversationLatestListViewColumnAdapter extends AddressListViewColumnAdapter
+    class MashableInboxOptionsByModelRadioElement extends Element
     {
-        public function renderGridViewData()
+
+        private $getArray;
+
+        public function __construct($model, $attribute, $form = null, array $params = array(), $getArray = array()) {
+            parent::__construct($model, $attribute, $form, $params);
+            $this->getArray = $getArray;
+        }
+
+        protected function renderControlEditable()
         {
-            return array(
-                'name'        => 'subject',
-                'header'      => Zurmo::t('Core', 'Subject'),
-                'htmlOptions' => array(),
-                'sortable'    => false,
-                'type'        => 'raw',
-                'value'       => 'ConversationsUtil::renderSubjectAndLatestForDisplayView($data)',
+            $content = $this->form->radioButtonList(
+                $this->model,
+                $this->attribute,
+                $this->getArray,
+                $this->getEditableHtmlOptions()
             );
+            if (empty($this->getArray))
+            {
+                return null;
+            }
+            return ZurmoHtml::tag('strong', array(), Zurmo::t('MashableInboxModule', 'View') . ':' ) . $content;
+        }
+
+        protected function renderControlNonEditable()
+        {
+            throw new NotImplementedException();
+        }
+
+        public function getEditableHtmlOptions()
+        {
+            $htmlOptions = array(
+                'name'      => $this->getEditableInputName(),
+                'id'        => $this->getEditableInputId(),
+                'separator' => '',
+                'template'  => '{input}{label}',
+            );
+            return $htmlOptions;
         }
     }
 ?>
