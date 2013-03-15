@@ -24,19 +24,23 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class UserRedBeanModelAttributeValueToExportValueAdapter extends RedBeanModelAttributeValueToExportValueAdapter
+    /**
+     * Inform user that some email address are not matching any account's or person's emails in system
+     */
+    class EmailMessageArchivingEmailAddressNotMatchingNotificationRules extends NotificationRules
     {
-        public function resolveData(& $data)
+        protected $critical    = false;
+
+        protected $allowDuplicates = false;
+
+        public static function getDisplayName()
         {
-            assert('$this->model->{$this->attribute} instanceof User');
-            if ($this->model->{$this->attribute}->id > 0)
-            {
-                $data[$this->model->getAttributeLabel($this->attribute)] = $this->model->{$this->attribute}->username;
-            }
-            else
-            {
-                $data[$this->model->getAttributeLabel($this->attribute)] = null;
-            }
+            return Zurmo::t('EmailMessagesModule', 'Match archived emails');
+        }
+
+        public static function getType()
+        {
+            return 'EmailMessageArchivingEmailAddressNotMatching';
         }
     }
 ?>

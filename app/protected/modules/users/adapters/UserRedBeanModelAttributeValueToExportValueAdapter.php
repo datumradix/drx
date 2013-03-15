@@ -24,11 +24,19 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class LeadStateStaticDropDownForReportElement extends ContactStateStaticDropDownForReportElement
+    class UserRedBeanModelAttributeValueToExportValueAdapter extends RedBeanModelAttributeValueToExportValueAdapter
     {
-        public function getDropDownArray()
+        public function resolveData(& $data)
         {
-            return LeadsUtil::getLeadStateDataFromStartingStateKeyedByIdAndLabelByLanguage(Yii::app()->language);
+            assert('$this->model->{$this->attribute} instanceof User');
+            if ($this->model->{$this->attribute}->id > 0)
+            {
+                $data[] = strval($this->model->{$this->attribute});
+            }
+            else
+            {
+                $data[] = null;
+            }
         }
     }
 ?>

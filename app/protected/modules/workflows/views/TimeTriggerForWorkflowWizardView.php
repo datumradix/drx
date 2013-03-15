@@ -57,7 +57,7 @@
         {
             parent::registerScripts();
             $script = '
-                $(".remove-dynamic-attribute-row-link.' . TimeTriggerForWorkflowForm::getType() . '").live("click", function(){
+                $(".remove-dynamic-row-link.' . TimeTriggerForWorkflowForm::getType() . '").live("click", function(){
                     $(this).parent().remove();
                     $("#ByTimeWorkflowWizardForm_timeTriggerAttribute").val("");
                     return false;
@@ -89,8 +89,8 @@
         {
             $content  = '<div>'; //todo: is this div necessary?
             $content .= $this->renderZeroComponentsContentAndWrapper();
-            $content .= $this->renderAttributeSelectorContentAndWrapper();
             $content .= $this->renderTimeTriggerContentAndWrapper();
+            $content .= $this->renderAttributeSelectorContentAndWrapper();
             $content .= '</div>';
             $this->registerScripts();
             return $content;
@@ -99,7 +99,7 @@
         /**
          * @return string
          */
-        protected static function getZeroComponentsClassName()
+        public static function getZeroComponentsClassName()
         {
             return 'NoTimeTrigger';
         }
@@ -119,9 +119,10 @@
 
         protected function renderAttributeSelectorContentAndWrapper()
         {
-            $element                   = new TimeTriggerAttributeStaticDropDownElement($this->model,
-                                         'timeTriggerAttribute', $this->form, array('addBlank' => true));
-            $attributeSelectorContent  = $element->render();
+            $element                    = new TimeTriggerAttributeStaticDropDownElement($this->model,
+                                          'timeTriggerAttribute', $this->form, array('addBlank' => true));
+            $element->editableTemplate  = '{content}{error}';
+            $attributeSelectorContent   = $element->render();
             return ZurmoHtml::tag('div', array('class' => 'time-trigger-attribute-selector-container'),
                                          $attributeSelectorContent);
         }
@@ -137,7 +138,7 @@
                 $view                = new AttributeRowForWorkflowComponentView($adapter,
                                        1, $inputPrefixData, $this->model->timeTriggerAttribute,
                                        false, true, $componentType);
-                $timeTriggerContent  = $view->render();
+                $timeTriggerContent  = ZurmoHtml::tag('div', array('class' => 'dynamic-rows'), '<ul>'.$view->render().'</ul>');
             }
             else
             {

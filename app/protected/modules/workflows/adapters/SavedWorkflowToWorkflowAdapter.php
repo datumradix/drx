@@ -37,6 +37,7 @@
             $workflow->setModuleClassName($savedWorkflow->moduleClassName);
             $workflow->setName($savedWorkflow->name);
             $workflow->setType($savedWorkflow->type);
+            $workflow->setTriggerOn($savedWorkflow->triggerOn);
             if($savedWorkflow->serializedData != null)
             {
                 $unserializedData = unserialize($savedWorkflow->serializedData);
@@ -45,9 +46,11 @@
                     $workflow->setTriggersStructure($unserializedData['triggersStructure']);
                 }
                 self::makeComponentFormAndPopulateWorkflowFromData(
-                        $unserializedData[ComponentForWorkflowForm::TYPE_TRIGGERS], $workflow, 'Trigger');
-                self::makeComponentFormAndPopulateWorkflowFromData(
-                        $unserializedData[ComponentForWorkflowForm::TYPE_ACTIONS],  $workflow, 'Action');
+                            $unserializedData[ComponentForWorkflowForm::TYPE_TRIGGERS], $workflow, 'Trigger');
+                self::makeActionForWorkflowFormAndPopulateWorkflowFromData(
+                            $unserializedData[ComponentForWorkflowForm::TYPE_ACTIONS],  $workflow);
+                self::makeEmailAlertForWorkflowFormAndPopulateWorkflowFromData(
+                    $unserializedData[ComponentForWorkflowForm::TYPE_EMAIL_ALERTS],  $workflow);
                 if(isset($unserializedData['timeTrigger']))
                 {
                     $moduleClassName = $workflow->getModuleClassName();
@@ -67,13 +70,16 @@
             $savedWorkflow->description     = $workflow->getDescription();
             $savedWorkflow->moduleClassName = $workflow->getModuleClassName();
             $savedWorkflow->name            = $workflow->getName();
+            $savedWorkflow->triggerOn       = $workflow->getTriggerOn();
             $savedWorkflow->type            = $workflow->getType();
             $data = array();
             $data['triggersStructure']      = $workflow->getTriggersStructure();
             $data[ComponentForWorkflowForm::TYPE_TRIGGERS]                     =
                   self::makeArrayFromComponentFormsAttributesData($workflow->getTriggers());
             $data[ComponentForWorkflowForm::TYPE_ACTIONS]                      =
-                  self::makeArrayFromComponentFormsAttributesData($workflow->getActions());
+                  self::makeArrayFromActionForWorkflowFormAttributesData($workflow->getActions());
+            $data[ComponentForWorkflowForm::TYPE_EMAIL_ALERTS]                      =
+                self::makeArrayFromEmailAlertForWorkflowFormAttributesData($workflow->getEmailAlerts());
             if($workflow->getTimeTrigger() != null)
             {
                 $data['timeTrigger'] = self::makeArrayFromTimeTriggerForWorkflowFormAttributesData(
@@ -106,6 +112,49 @@
             return $data;
         }
 
+        protected static function makeArrayFromActionForWorkflowFormAttributesData(Array $componentFormsData)
+        {
+            $data = array();
+            foreach($componentFormsData as $key => $actionForWorkflowForm)
+            {
+                foreach($actionForWorkflowForm->getAttributes() as $attribute => $value)
+                {
+
+                    $data[$key][$attribute] = $value;
+                }
+                foreach($actionForWorkflowForm->getActionAttributes() as $actionAttribute => $workflowActionAttributeForm)
+                {
+                    foreach($workflowActionAttributeForm->getAttributes() as $attribute => $value)
+                    {
+                        $data[$key][ActionForWorkflowForm::ACTION_ATTRIBUTES][$actionAttribute][$attribute] = $value;
+                    }
+                }
+            }
+            return $data;
+        }
+
+        protected static function makeArrayFromEmailAlertForWorkflowFormAttributesData(Array $componentFormsData)
+        {
+            $data = array();
+            foreach($componentFormsData as $key => $emailAlertForWorkflowForm)
+            {
+                foreach($emailAlertForWorkflowForm->getAttributes() as $attribute => $value)
+                {
+                    $data[$key][$attribute] = $value;
+                }
+                foreach($emailAlertForWorkflowForm->getEmailAlertRecipients() as
+                        $emailAlertRecipientKey => $workflowEmailAlertRecipientForm)
+                {
+                    foreach($workflowEmailAlertRecipientForm->getAttributes() as $attribute => $value)
+                    {
+                        $data[$key][EmailAlertForWorkflowForm::EMAIL_ALERT_RECIPIENTS]
+                             [$emailAlertRecipientKey][$attribute] = $value;
+                    }
+                }
+            }
+            return $data;
+        }
+
         protected static function makeComponentFormAndPopulateWorkflowFromData($componentFormsData, $workflow, $componentPrefix)
         {
             $moduleClassName    = $workflow->getModuleClassName();
@@ -118,6 +167,29 @@
                                                           $workflow->getType());
                 $component->setAttributes($componentFormData);
                 $workflow->{$addMethodName}($component);
+            }
+        }
+
+        protected static function makeActionForWorkflowFormAndPopulateWorkflowFromData($componentFormsData, $workflow)
+        {
+            $moduleClassName    = $workflow->getModuleClassName();
+            foreach($componentFormsData as $componentFormData)
+            {
+                $component      = new ActionForWorkflowForm($moduleClassName::getPrimaryModelName(), $workflow->getType());
+                $component->setAttributes($componentFormData);
+                $workflow->addAction($component);
+            }
+        }
+
+        protected static function makeEmailAlertForWorkflowFormAndPopulateWorkflowFromData($componentFormsData, $workflow)
+        {
+            $moduleClassName    = $workflow->getModuleClassName();
+            foreach($componentFormsData as $componentFormData)
+            {
+                $component      = new EmailAlertForWorkflowForm($moduleClassName::getPrimaryModelName(),
+                                  $workflow->getType());
+                $component->setAttributes($componentFormData);
+                $workflow->addEmailAlert($component);
             }
         }
     }

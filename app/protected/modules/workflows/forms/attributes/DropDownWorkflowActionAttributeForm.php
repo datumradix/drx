@@ -27,13 +27,18 @@
     /**
      * Form to work with dropDown attributes
      */
-    class DropDownWorkflowActionAttributeForm extends WorkflowActionAttributeForm
+    class DropDownWorkflowActionAttributeForm extends CustomFieldWorkflowActionAttributeForm
     {
         /**
          * DropDowns can be dynamically set based on a distance from the existing value.  If the existing value is the
          * first item in the drop down, and the step is 2, then it will set as the 3rd value in the drop down list.
          */
         const TYPE_DYNAMIC_STEP_FORWARD_OR_BACKWARDS = 'DynamicStepForwardOrBackwards';
+
+        public function getValueElementType()
+        {
+            return 'MixedDropDownTypesForWorkflowActionAttribute';
+        }
 
         /**
          * Value can either be a string or if dynamic step, then it is an integer
@@ -51,12 +56,24 @@
                 }
                 else
                 {
-                    $validator = CValidator::createValidator('type', $this, 'value', array('type' => 'integer'));
+                    $validator = CValidator::createValidator('type', $this, 'alternateValue', array('type' => 'integer'));
+                    $validator->allowEmpty = false;
                     $validator->validate($this);
                     return !$this->hasErrors();
                 }
             }
             return false;
+        }
+
+        protected function makeTypeValuesAndLabels($isCreatingNewModel, $isRequired)
+        {
+            $data                           = array();
+            $data[static::TYPE_STATIC]                         = Zurmo::t('WorkflowModule', 'As');
+            if(!$isCreatingNewModel)
+            {
+                $data[self::TYPE_DYNAMIC_STEP_FORWARD_OR_BACKWARDS] = Zurmo::t('WorkflowModule', 'Step Forward or Backward');
+            }
+            return $data;
         }
     }
 ?>

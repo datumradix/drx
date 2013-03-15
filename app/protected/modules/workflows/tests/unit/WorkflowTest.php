@@ -84,9 +84,10 @@
          */
         public function testSetAndGetWorkflow()
         {
-            $timeTrigger = new TimeTriggerForWorkflowForm();
-            $action      = new ActionForWorkflowForm('WorkflowModelTestItem');
-            $trigger     = new TriggerForWorkflowForm();
+            $timeTrigger = new TimeTriggerForWorkflowForm('WorkflowsTestModule', 'WorkflowModelTestItem', Workflow::TYPE_ON_SAVE);
+            $action      = new ActionForWorkflowForm('WorkflowModelTestItem', Workflow::TYPE_ON_SAVE);
+            $emailAlert  = new EmailAlertForWorkflowForm('WorkflowModelTestItem', Workflow::TYPE_ON_SAVE);
+            $trigger     = new TriggerForWorkflowForm('WorkflowsTestModule', 'WorkflowModelTestItem', Workflow::TYPE_ON_SAVE);
             $workflow = new Workflow();
             $workflow->setModuleClassName('SomeModule');
             $workflow->setDescription('a description');
@@ -94,21 +95,26 @@
             $workflow->setTimeTriggerAttribute('something');
             $workflow->setId(5);
             $workflow->setName('my workflow rule');
+            $workflow->setTriggerOn(Workflow::TRIGGER_ON_NEW);
             $workflow->setType(Workflow::TYPE_ON_SAVE);
             $workflow->setTimeTrigger($timeTrigger);
             $workflow->addAction($action);
 
-            $this->assertEquals('SomeModule',           $workflow->getModuleClassName());
-            $this->assertEquals('a description',        $workflow->getDescription());
-            $this->assertEquals('1 AND 2',              $workflow->getTriggersStructure());
-            $this->assertEquals('something',            $workflow->getTimeTriggerAttribute());
-            $this->assertEquals(5,                      $workflow->getId());
-            $this->assertEquals('my workflow rule',     $workflow->getName());
-            $this->assertEquals(Workflow::TYPE_ON_SAVE, $workflow->getType());
-            $this->assertEquals($timeTrigger,           $workflow->getTimeTrigger());
+            $this->assertEquals('SomeModule',             $workflow->getModuleClassName());
+            $this->assertEquals('a description',          $workflow->getDescription());
+            $this->assertEquals('1 AND 2',                $workflow->getTriggersStructure());
+            $this->assertEquals('something',              $workflow->getTimeTriggerAttribute());
+            $this->assertEquals(5,                        $workflow->getId());
+            $this->assertEquals('my workflow rule',       $workflow->getName());
+            $this->assertEquals(Workflow::TRIGGER_ON_NEW, $workflow->getTriggerOne());
+            $this->assertEquals(Workflow::TYPE_ON_SAVE,   $workflow->getType());
+            $this->assertEquals($timeTrigger,             $workflow->getTimeTrigger());
             $actions = $workflow->getActions();
             $this->assertEquals($action,                $actions[0]);
             $this->assertCount(1,                       $actions);
+            $emailAlerts = $workflow->getEmailAlerts();
+            $this->assertEquals($emailAlert,            $emailAlerts[0]);
+            $this->assertCount(1,                       $emailAlerts);
             $triggers = $workflow->getTriggers();
             $this->assertEquals($trigger,               $triggers[0]);
             $this->assertCount(1,                       $triggers);
@@ -116,6 +122,11 @@
             $workflow->removeAllActions();
             $actions = $workflow->getActions();
             $this->assertCount(0,                       $actions);
+
+            $workflow->removeAllEmailAlerts();
+            $actions = $workflow->getEmailAlerts();
+            $this->assertCount(0,                       $emailAlerts);
+
 
             $workflow->removeAllTriggers();
             $triggers = $workflow->getTriggers();

@@ -25,19 +25,24 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Leads module.
+     * Class used to show a list of all available groups
      */
-    class LeadsWorkflowRules extends ContactsWorkflowRules
+    class AllGroupsStaticDropDownElement extends StaticDropDownFormElement
     {
-        /**
-         * @return array
-         */
-        public static function getDefaultMetadata()
+        public function getIdForSelectInput()
         {
-            $metadata = array();
-            $metadata['Contact']['triggerValueElementTypes']
-                                                   ['state'] = 'LeadStateStaticDropDownForWorkflow';
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            return $this->getEditableInputId($this->attribute);
+        }
+
+        public function getDropDownArray()
+        {
+            $groups     = Group::getAll();
+            $groupsData = array();
+            foreach ($groups as $group)
+            {
+                $groupsData[$group->id] = strval($group);
+            }
+            return $groupsData;
         }
     }
 ?>

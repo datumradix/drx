@@ -27,14 +27,26 @@
     /**
      * Form to work with multi-select drop downs
      */
-    class MultiSelectDropDownWorkflowActionAttributeForm extends WorkflowActionAttributeForm
+    class MultiSelectDropDownWorkflowActionAttributeForm extends CustomFieldWorkflowActionAttributeForm
     {
+        public function getValueElementType()
+        {
+            return 'MultiSelectStaticDropDownForWorkflow';
+        }
+
         /**
          * Override to make sure the value attribute is set as an array.
          */
         public function rules()
         {
             return array_merge(parent::rules(), array(array('value', 'type', 'type' => 'array')));
+        }
+
+        protected function makeTypeValuesAndLabels($isCreatingNewModel, $isRequired)
+        {
+            $data                           = array();
+            $data[static::TYPE_STATIC]      = Zurmo::t('WorkflowModule', 'As');
+            return $data;
         }
     }
 ?>

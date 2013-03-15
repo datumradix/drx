@@ -24,28 +24,44 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class ReportWizardFormTest extends ZurmoBaseTest
+    class WorkflowEmailAlertRecipientFormTest extends ZurmoBaseTest
     {
-        /*public function testValidation()
-        {
-            $this->fail(); //todo: test various validation scenarios, including required on/off for spot currency
-        }*/
-        
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
             SecurityTestHelper::createSuperAdmin();
-            $super = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
+            UserTestHelper::createBasicUser('bobby');
         }
-        
-        /**
-         * Test valid Model
-         */        
-        public function testValidateForModule()
+
+        public function setup()
         {
-            $form = new ReportWizardForm();  
-            $form->moduleClassName   = 'Accounts';                      
+            parent::setUp();
+            Yii::app()->user->userModel = User::getByUsername('super');
         }
+
+
+        public function testStringifiedModelForValue()
+        {
+             $form = new StaticUserWorkflowEmailAlertRecipientForm('ReportModelTestItem', Workflow::TYPE_ON_SAVE);
+             $form->userId = Yii::app()->user->userModel->id;
+             $this->assertEquals('Clark Kent', $form->stringifiedModelForValue);
+
+             //Now switch userId, and the stringifiedModelForValue should clear out.
+             $bobby = User::getByUsername('bobby');
+             $form->userId = $bobby->id;
+             $this->assertEquals('bobby bobbyson', $form->stringifiedModelForValue);
+             //test setting via setAttributes, it should ignore it.
+             $form->setAttributes(array('stringifiedModelForValue' => 'should not set'));
+             $this->assertEquals('bobby bobbyson', $form->stringifiedModelForValue);
+        }
+
+        public function test()
+        {
+            //todo: each subForm return value of getTypeValuesAndLabels to get complete coverage
+            //todo test validation of each subform based on specific validations for each subform
+            //getTypeValuesAndLabels($isCreatingNewModel, $isRequired)
+            $this->fail();
+        }
+
     }
 ?>

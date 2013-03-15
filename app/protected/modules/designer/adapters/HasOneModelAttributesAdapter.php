@@ -25,22 +25,28 @@
      ********************************************************************************/
 
     /**
-     * Inform user that export process is completed, and that user can download exported file.
+     * Adapter to set attributes from a related model.  For example on the opportunities module, you have a
+     * related account.  The related account attribute would utilize this adapter
      */
-    class EmailMessageArchivingEmailAddressNotMachingNotificationRules extends JobsManagerAccessNotificationRules
+    class HasOneModelAttributesAdapter extends ModelAttributesAdapter
     {
-        protected $critical    = false;
-
-        protected $allowDuplicates = false;
-
-        public static function getDisplayName()
+        public function setAttributeMetadataFromForm(AttributeForm $attributeForm)
         {
-            return Zurmo::t('EmailMessagesModule', 'Match archived emails');
-        }
-
-        public static function getType()
-        {
-            return 'EmailMessageArchivingEmailAddressNotMaching';
+            assert('$attributeForm instanceof HasOneModelAttributeForm');
+            $modelClassName              = get_class($this->model);
+            $attributeName               = $attributeForm->attributeName;
+            $attributeLabels             = $attributeForm->attributeLabels;
+            $elementType                 = $attributeForm->getAttributeTypeName();
+            $isRequired                  = (boolean)$attributeForm->isRequired;
+            $isAudited                   = (boolean)$attributeForm->isAudited;
+            ModelMetadataUtil::addOrUpdateRelation($modelClassName,
+                $attributeName,
+                $attributeLabels,
+                $elementType,
+                $isRequired,
+                $isAudited,
+                $attributeForm->getHasOneModelClassName());
+            $this->resolveDatabaseSchemaForModel($modelClassName);
         }
     }
 ?>

@@ -165,6 +165,7 @@
         {
             //Registered to make sure things work when debug mode is on. Otherwise this is missing.
             Yii::app()->getClientScript()->registerCoreScript('bbq');
+            $this->registerOperatorOnLoadAndOnChangeScript();
         }
 
         protected function registerCss()
@@ -240,6 +241,11 @@
                 });
             ";
             return $script;
+        }
+
+        protected function registerOperatorOnLoadAndOnChangeScript()
+        {
+            OperatorStaticDropDownElement::registerOnLoadAndOnChangeScript();
         }
     }
 ?>

@@ -113,6 +113,7 @@
             $formModel->description          = $this->workflow->getDescription();
             $formModel->moduleClassName      = $this->workflow->getModuleClassName();
             $formModel->name                 = $this->workflow->getName();
+            $formModel->triggerOn            = $this->workflow->getTriggerOn();
             $formModel->type                 = $this->workflow->getType();
             $formModel->triggersStructure    = $this->workflow->getTriggersStructure();
             $formModel->timeTriggerAttribute = $this->workflow->getTimeTriggerAttribute();
@@ -123,6 +124,7 @@
             $formModel->timeTrigger       = $this->workflow->getTimeTrigger();
             $formModel->triggers          = $this->workflow->getTriggers();
             $formModel->actions           = $this->workflow->getActions();
+            $formModel->emailAlerts       = $this->workflow->getEmailAlerts();
         }
     }
 ?>

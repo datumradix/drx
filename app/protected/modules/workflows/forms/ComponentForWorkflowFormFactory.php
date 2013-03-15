@@ -52,9 +52,13 @@
             {
                 return new TriggerForWorkflowForm($moduleClassName, $modelClassName, $type);
             }
-            elseif($componentType == ComponentForWorkflowForm::TYPE_ACTION)
+            elseif($componentType == ComponentForWorkflowForm::TYPE_ACTIONS)
             {
-                return new ActionForWorkflowForm($modelClassName);
+                return new ActionForWorkflowForm($modelClassName, $type);
+            }
+            elseif($componentType == ComponentForWorkflowForm::TYPE_EMAIL_ALERTS)
+            {
+                return new EmailAlertForWorkflowForm($modelClassName, $type);
             }
             else
             {

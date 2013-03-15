@@ -77,6 +77,26 @@
         }
 
         /**
+         * Override and implement in children.
+         * @return string of class name
+         * @throws NotImplementedException
+         */
+        public static function getZeroComponentsClassName()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /**
+         * @param string $componentType
+         * @return string
+         */
+        public static function resolveRowCounterInputId($componentType)
+        {
+            return $componentType . 'RowCounter';
+        }
+
+        /**
          * @param WizardForm $model
          * @param WizardActiveForm $form
          * @param bool $hideView
@@ -162,12 +182,12 @@
          */
         protected function renderNextPageLinkContent()
         {
-            $params = array();
+            $params                = array();
             $params['label']       = Zurmo::t('ReportsModule', 'Next');
             $params['htmlOptions'] = array('id' => static::getNextPageLinkId(),
                                            'onclick' => 'js:$(this).addClass("attachLoadingTarget");');
-            $searchElement = new SaveButtonActionElement(null, null, null, $params);
-            return $searchElement->render();
+            $element               = new SaveButtonActionElement(null, null, null, $params);
+            return $element->render();
         }
 
         /**

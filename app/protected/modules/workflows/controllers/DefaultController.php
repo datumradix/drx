@@ -37,7 +37,11 @@
                         self::getRightsFilterPath() . ' + selectType',
                         'moduleClassName' => 'WorkflowsModule',
                         'rightName' => WorkflowsModule::RIGHT_CREATE_WORKFLOWS,
-                   )
+                   ),
+                   array(
+                       ZurmoModuleController::ZERO_MODELS_CHECK_FILTER_PATH . ' + list, index',
+                       'controller' => $this,
+                   ),
                 )
             );
         }
@@ -231,7 +235,7 @@
                                                       (int)$rowNumber, $inputPrefixData, $attribute,
                                                       (bool)$trackableStructurePosition, true, $treeType);
             $content               = $view->render();
-            $view->renderAddAttributeErrorSettingsScript($form, $wizardFormClassName, get_class($model), $inputPrefixData);
+            $form->renderAddAttributeErrorSettingsScript($view::getFormId());
             Yii::app()->getClientScript()->setToAjaxMode();
             Yii::app()->getClientScript()->render($content);
             echo $content;
@@ -284,11 +288,90 @@
                                                   1, $inputPrefixData, $attributeIndexOrDerivedType,
                                                   false, true, $componentType);
             $content               = $view->render();
-            $view->renderAddAttributeErrorSettingsScript($form, $wizardFormClassName, get_class($model), $inputPrefixData);
+            $form->renderAddAttributeErrorSettingsScript($view::getFormId());
             Yii::app()->getClientScript()->setToAjaxMode();
             Yii::app()->getClientScript()->render($content);
             echo $content;
         }
+
+        public function actionChangeActionType($moduleClassName, $type)
+        {
+            $content = ZurmoHtml::dropDownList(ActionsForWorkflowWizardView::ACTION_TYPE_RELATION_NAME,
+                null, ActionsForWorkflowWizardView::resolveTypeRelationDataAndLabels(
+                    $moduleClassName, $moduleClassName::getPrimaryModelName(), $type));
+            echo $content;
+        }
+
+        public function actionChangeActionTypeRelatedModel($moduleClassName, $type, $relation)
+        {
+            $content = ZurmoHtml::dropDownList(ActionsForWorkflowWizardView::ACTION_TYPE_RELATED_MODEL_RELATION_NAME,
+                                               null, ActionsForWorkflowWizardView::resolveTypeRelatedModelRelationDataAndLabels(
+                                               $moduleClassName, $moduleClassName::getPrimaryModelName(), $type, $relation));
+            echo $content;
+        }
+
+        public function actionAddAction($moduleClassName, $type, $actionType, $rowNumber, $relation = null, $relatedModelRelation = null)
+        {
+            $form                        = new WizardActiveForm();
+            $form->enableAjaxValidation  = true; //ensures error validation populates correctly
+            $wizardFormClassName         = WorkflowToWizardFormAdapter::getFormClassNameByType($type);
+            $model                       = ComponentForWorkflowFormFactory::makeByComponentType($moduleClassName,
+                                           $moduleClassName::getPrimaryModelName(), $type, ComponentForWorkflowForm::TYPE_ACTIONS);
+            $model->type                 = $actionType;
+            $model->relation             = $relation;
+            $model->relatedModelRelation = $relatedModelRelation;
+            $inputPrefixData             = array($wizardFormClassName, ComponentForWorkflowForm::TYPE_ACTIONS, (int)$rowNumber);
+            $view                        = new ActionRowForWorkflowComponentView($model, (int)$rowNumber,
+                                           $inputPrefixData, $form);
+            $content                     = $view->render();
+            $form->renderAddAttributeErrorSettingsScript($view::getFormId());
+            Yii::app()->getClientScript()->setToAjaxMode();
+            Yii::app()->getClientScript()->render($content);
+            echo $content;
+        }
+
+        public function actionAddEmailAlert($moduleClassName, $type, $rowNumber)
+        {
+            $form                        = new WizardActiveForm();
+            $form->enableAjaxValidation  = true; //ensures error validation populates correctly
+            $rowCounterInputId           = ComponentForWorkflowWizardView::
+                                           resolveRowCounterInputId(ComponentForWorkflowForm::TYPE_EMAIL_ALERTS);
+            $wizardFormClassName         = WorkflowToWizardFormAdapter::getFormClassNameByType($type);
+            $model                       = ComponentForWorkflowFormFactory::makeByComponentType($moduleClassName,
+                                           $moduleClassName::getPrimaryModelName(), $type, ComponentForWorkflowForm::TYPE_EMAIL_ALERTS);
+            $inputPrefixData             = array($wizardFormClassName, ComponentForWorkflowForm::TYPE_EMAIL_ALERTS, (int)$rowNumber);
+            $view                        = new EmailAlertRowForWorkflowComponentView($model, (int)$rowNumber,
+                                           $inputPrefixData, $form,
+                                           WorkflowToWizardFormAdapter::getFormClassNameByType($type), $rowCounterInputId);
+            $content                     = $view->render();
+            $form->renderAddAttributeErrorSettingsScript($view::getFormId());
+            Yii::app()->getClientScript()->setToAjaxMode();
+            Yii::app()->getClientScript()->render($content);
+            echo $content;
+        }
+
+        public function actionAddEmailAlertRecipient($moduleClassName, $type, $recipientType, $rowNumber, $recipientRowNumber)
+        {
+            $form                        = new WizardActiveForm();
+            $form->enableAjaxValidation  = true; //ensures error validation populates correctly
+            $wizardFormClassName         = WorkflowToWizardFormAdapter::getFormClassNameByType($type);
+            $model                       = WorkflowEmailAlertRecipientFormFactory::make($recipientType,
+                                           $moduleClassName::getPrimaryModelName(), $type);
+            $inputPrefixData             = array($wizardFormClassName, ComponentForWorkflowForm::TYPE_EMAIL_ALERTS,
+                                           (int)$rowNumber, EmailAlertForWorkflowForm::TYPE_EMAIL_ALERT_RECIPIENTS,
+                                           $recipientRowNumber);
+            $adapter                     = new WorkflowEmailAlertRecipientToElementAdapter($model, $form,
+                                           $recipientType, $inputPrefixData);
+            $view                        = new EmailAlertRecipientRowForWorkflowComponentView($adapter,
+                                           (int)$recipientRowNumber, $inputPrefixData);
+            $content                     = $view->render();
+            $form->renderAddAttributeErrorSettingsScript($view::getFormId());
+            Yii::app()->getClientScript()->setToAjaxMode();
+            Yii::app()->getClientScript()->render($content);
+            echo $content;
+        }
+
+
 
         protected function resolveCanCurrentUserAccessWorkflows()
         {

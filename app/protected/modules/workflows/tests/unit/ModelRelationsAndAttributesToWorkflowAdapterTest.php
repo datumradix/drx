@@ -1091,12 +1091,12 @@
             $model              = new WorkflowModelTestItem();
             $rules              = new WorkflowsTestWorkflowRules();
             $adapter            = new ModelRelationsAndAttributesToWorkflowAdapter($model, $rules, Workflow::TYPE_ON_SAVE);
-            $this->assertEquals('ContactStateStaticDropDownForWorkflow', $adapter->getTriggerValueElementType('likeContactState'));
+            $this->assertEquals('AllContactStatesStaticDropDownForWizardModel', $adapter->getTriggerValueElementType('likeContactState'));
 
             $model              = new WorkflowModelTestItem();
             $rules              = new WorkflowsAlternateStateTestWorkflowRules();
             $adapter            = new ModelRelationsAndAttributesToWorkflowAdapter($model, $rules, Workflow::TYPE_ON_SAVE);
-            $this->assertEquals('LeadStateStaticDropDownForWorkflow', $adapter->getTriggerValueElementType('likeContactState'));
+            $this->assertEquals('AllContactStatesStaticDropDownForWizardModel', $adapter->getTriggerValueElementType('likeContactState'));
         }
 
         /**
@@ -1192,6 +1192,7 @@
             $this->assertEquals(ModelAttributeToOperatorTypeUtil::AVAILABLE_OPERATORS_TYPE_DROPDOWN,
                                 $adapter->getAvailableOperatorsType('likeContactState'));
 //todo: go through file and make sure each one that has like 32, is actually confirming all 32, not just 24 for example.
+            //todo: add getSelectableRelationsDataForEmailAlertRecipientModelRelation similar to existing
         }
     }
 ?>

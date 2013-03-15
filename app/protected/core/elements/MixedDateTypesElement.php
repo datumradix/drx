@@ -108,20 +108,30 @@
             if (!in_array($this->getValueType(), $valueTypesRequiringFirstDateInput))
             {
                 $startingDivStyleFirstDate = "display:none;";
+                $firstDateDisabled         = 'disabled';
+            }
+            else
+            {
+                $firstDateDisabled         = null;
             }
             if (!in_array($this->getValueType(), $valueTypesRequiringSecondDateInput))
             {
                 $startingDivStyleSecondDate = "display:none;";
+                $secondDateDisabled         = 'disabled';
+            }
+            else
+            {
+                $secondDateDisabled = null;
             }
             $content  = ZurmoHtml::tag('span', array('id'    => $firstDateSpanAreaId,
                                                      'class' => 'first-date-area',
                                                      'style' => $startingDivStyleFirstDate),
-                                                     $this->renderEditableFirstDateContent());
+                                                     $this->renderEditableFirstDateContent($firstDateDisabled));
             $content .= ZurmoHtml::tag('span', array('id'    => $secondDateSpanAreaId,
                                                      'class' => 'second-date-area',
                                                      'style' => $startingDivStyleSecondDate),
                                                      ZurmoHtml::Tag('span', array('class' => 'dynamic-and-for-mixed'), Zurmo::t('Core', 'and')) .
-                                                     $this->renderEditableSecondDateContent());
+                                                     $this->renderEditableSecondDateContent($secondDateDisabled));
             return $content;
         }
 
@@ -133,9 +143,9 @@
                                                  $this->getEditableValueTypeHtmlOptions());
         }
 
-        protected function renderEditableFirstDateContent()
+        protected function renderEditableFirstDateContent($disabled = null)
         {
-            $themePath = Yii::app()->baseUrl . '/themes/' . Yii::app()->theme->name;
+            assert('$disabled === null || $disabled = "disabled"');
             $cClipWidget = new CClipWidget();
             $cClipWidget->beginClip("EditableDateElement");
             $cClipWidget->widget('application.core.widgets.ZurmoJuiDatePicker', array(
@@ -145,16 +155,16 @@
                 'htmlOptions'         => array(
                     'id'              => $this->getValueFirstDateEditableInputId(),
                     'name'            => $this->getValueFirstDateEditableInputName(),
-                )
+                    'disabled'        => $disabled,
             ));
             $cClipWidget->endClip();
             $content =  $cClipWidget->getController()->clips['EditableDateElement'];
             return      ZurmoHtml::tag('div', array('class' => 'has-date-select'), $content);
         }
 
-        protected function renderEditableSecondDateContent()
+        protected function renderEditableSecondDateContent($disabled = null)
         {
-            $themePath = Yii::app()->baseUrl . '/themes/' . Yii::app()->theme->name;
+            assert('$disabled === null || $disabled = "disabled"');
             $cClipWidget = new CClipWidget();
             $cClipWidget->beginClip("EditableDateElement");
             $cClipWidget->widget('application.core.widgets.ZurmoJuiDatePicker', array(
@@ -164,7 +174,7 @@
                 'htmlOptions'         => array(
                     'id'              => $this->getValueSecondDateEditableInputId(),
                     'name'            => $this->getValueSecondDateEditableInputName(),
-                )
+                    'disabled'        => $disabled,
             ));
             $cClipWidget->endClip();
             $content = $cClipWidget->getController()->clips['EditableDateElement'];
