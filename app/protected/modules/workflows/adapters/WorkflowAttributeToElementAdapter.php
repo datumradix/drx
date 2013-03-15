@@ -73,7 +73,7 @@
                                                   'durationSeconds', $this->form, $params);
             $durationElement->editableTemplate  = '{content}{error}'; //todo: remove brs just here for now so we can pick from dd in ui
             $durationContent                    = '<BR><BR><BR>' .$durationElement->render();
-            self::resolveDivWrapperForContent($durationContent, $content, 'dynamic-attribute-duration');
+            self::resolveDivWrapperForContent($durationContent, $content, 'dynamic-row-duration');
             return $content;
         }
 
@@ -118,7 +118,7 @@
                 }
                 elseif($valueElement instanceof MixedDateTypesElement)
                 {
-                    $valueElement->editableTemplate = '<div class="dynamic-attribute-operator">{valueType}</div>' .
+                    $valueElement->editableTemplate = '<div class="dynamic-row-operator">{valueType}</div>' .
                                                       '<div class="value-data has-date-inputs">' .
                                                       '<div class="first-value-area">{content}{error}</div></div>';
                 }
@@ -127,7 +127,8 @@
                     $startingDivStyleFirstValue     = null;
                     if (in_array($this->model->getOperator(), array(OperatorRules::TYPE_IS_NULL, OperatorRules::TYPE_IS_NOT_NULL)))
                     {
-                        $startingDivStyleFirstValue = "display:none;";
+                        $startingDivStyleFirstValue         = "display:none;";
+                        $valueElement->params['disabled']   = 'disabled';
                     }
                     $valueElement->editableTemplate = '<div class="value-data"><div class="first-value-area" style="' .
                                                       $startingDivStyleFirstValue . '">{content}{error}</div></div>';
@@ -139,8 +140,8 @@
                 throw new NotSupportedException();
             }
             $content                                = $this->renderAttributeIndexOrDerivedType();
-            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-attribute-label');
-            self::resolveDivWrapperForContent($operatorContent,                $content, 'dynamic-attribute-operator');
+            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-row-label');
+            self::resolveDivWrapperForContent($operatorContent,                $content, 'dynamic-row-operator');
             $content                               .= $valueContent;
             return $content;
         }
@@ -152,8 +153,8 @@
         {
             $groupByAxisElement = null; //todo: become a edit link and change the name of this from groupby to something else
             $content                                  = 'fxithis'.$this->renderAttributeIndexOrDerivedType();
-            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-attribute-label');
-            self::resolveDivWrapperForContent($groupByAxisElement,             $content, 'dynamic-attribute-field');
+            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-row-label');
+            self::resolveDivWrapperForContent($groupByAxisElement,             $content, 'dynamic-row-field');
             return $content;
         }
     }

@@ -103,7 +103,7 @@
                 }
                 elseif($valueElement instanceof MixedDateTypesElement)
                 {
-                    $valueElement->editableTemplate = '<div class="dynamic-attribute-operator">{valueType}</div>' .
+                    $valueElement->editableTemplate = '<div class="dynamic-row-operator">{valueType}</div>' .
                                                       '<div class="value-data has-date-inputs">' .
                                                       '<div class="first-value-area">{content}{error}</div></div>';
                 }
@@ -112,7 +112,8 @@
                     $startingDivStyleFirstValue     = null;
                     if (in_array($this->model->getOperator(), array(OperatorRules::TYPE_IS_NULL, OperatorRules::TYPE_IS_NOT_NULL)))
                     {
-                        $startingDivStyleFirstValue = "display:none;";
+                        $startingDivStyleFirstValue         = "display:none;";
+                        $valueElement->params['disabled']   = 'disabled';
                     }
                     $valueElement->editableTemplate = '<div class="value-data"><div class="first-value-area" style="' .
                                                       $startingDivStyleFirstValue . '">{content}{error}</div></div>';
@@ -124,8 +125,8 @@
                 throw new NotSupportedException();
             }
             $content                                = $this->renderAttributeIndexOrDerivedType();
-            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-attribute-label');
-            self::resolveDivWrapperForContent($operatorContent,                $content, 'dynamic-attribute-operator');
+            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-row-label');
+            self::resolveDivWrapperForContent($operatorContent,                $content, 'dynamic-row-operator');
             $content                               .= $valueContent;
             if($this->showAvailableRuntimeFilter)
             {
@@ -162,8 +163,8 @@
                 $groupByAxisElement                   = null;
             }
             $content                                  = $this->renderAttributeIndexOrDerivedType();
-            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-attribute-label');
-            self::resolveDivWrapperForContent($groupByAxisElement,             $content, 'dynamic-attribute-field');
+            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-row-label');
+            self::resolveDivWrapperForContent($groupByAxisElement,             $content, 'dynamic-row-field');
             return $content;
         }
 
@@ -184,8 +185,8 @@
             $directionElement->editableTemplate = '{content}{error}';
             $directionElement                   = $directionElement->render();
             $content                            = $this->renderAttributeIndexOrDerivedType();
-            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-attribute-label');
-            self::resolveDivWrapperForContent($directionElement,               $content, 'dynamic-attribute-field');
+            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-row-label');
+            self::resolveDivWrapperForContent($directionElement,               $content, 'dynamic-row-field');
             return $content;
         }
 
@@ -199,8 +200,8 @@
             $displayLabelElement->editableTemplate = '{content}{error}';
             $displayLabelElement                   = $displayLabelElement->render();
             $content                               = $this->renderAttributeIndexOrDerivedType();
-            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-attribute-label');
-            self::resolveDivWrapperForContent($displayLabelElement,            $content, 'dynamic-attribute-field');
+            self::resolveDivWrapperForContent($this->model->getDisplayLabel(), $content, 'dynamic-row-label');
+            self::resolveDivWrapperForContent($displayLabelElement,            $content, 'dynamic-row-field');
             return $content;
         }
 

@@ -51,12 +51,53 @@
          */
         protected function renderNextPageLinkContent()
         {
-            $params = array();
+            $params                = array();
             $params['label']       = Zurmo::t('WorkflowsModule', 'Next');
             $params['htmlOptions'] = array('id' => static::getNextPageLinkId(),
                                            'onclick' => 'js:$(this).addClass("attachLoadingTarget");');
-            $searchElement = new SaveButtonActionElement(null, null, null, $params);
-            return $searchElement->render();
+            $element               = new SaveButtonActionElement(null, null, null, $params);
+            return $element->render();
+        }
+
+        /**
+         * @param array $items
+         * @return string
+         */
+        protected function getNonSortableListContent(Array $items)
+        {
+            $content = null;
+            foreach($items as $item)
+            {
+                $content .= ZurmoHtml::tag('li', array(), $item['content']);
+            }
+            return ZurmoHtml::tag('ul', array(), $content);
+        }
+
+        /**
+         * @param array $items
+         * @param string $componentType
+         * @return string
+         */
+        protected function getSortableListContent(Array $items, $componentType)
+        {
+            //unless we refactor getTreeType to getComponentType... but that requires a bigger refactor
+            $cClipWidget = new CClipWidget();
+            $cClipWidget->beginClip($componentType . 'WorkflowComponentSortable');
+            $cClipWidget->widget('application.core.widgets.JuiSortable', array(
+                'items' => $items,
+                'itemTemplate' => '<li>content</li>',
+                'htmlOptions' =>
+                array(
+                    'id'    => $componentType . 'attributeRowsUl',
+                    'class' => 'sortable',
+                ),
+                'options' => array(
+                    'placeholder' => 'ui-state-highlight',
+                ),
+                'showEmptyList' => false
+            ));
+            $cClipWidget->endClip();
+            return $cClipWidget->getController()->clips[$componentType . 'WorkflowComponentSortable'];
         }
     }
 ?>

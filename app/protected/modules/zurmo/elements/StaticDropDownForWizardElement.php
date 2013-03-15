@@ -25,19 +25,33 @@
      ********************************************************************************/
 
     /**
-     * Report rules to be used with the Leads module.
+     * Element used by filters or triggers that can morph between a single select and a multi-select.
      */
-    class LeadsReportRules extends ContactsReportRules
+    class StaticDropDownForWizardElement extends DataFromFormStaticDropDownFormElement
     {
         /**
+         * @return string
+         */
+        protected function getDataAndLabelsModelPropertyName()
+        {
+            return 'getCustomFieldDataAndLabels';
+        }
+
+        /**
+         * The class is set to flexible-drop-down so this can be used by the operator to signal that the select input
+         * can change to a multi-select or back.
          * @return array
          */
-        public static function getDefaultMetadata()
+        protected function getEditableHtmlOptions()
         {
-            $metadata = array();
-            $metadata['Contact']['filterValueElementTypes']
-                                                   ['state'] = 'LeadStateStaticDropDownForReport';
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            $htmlOptions                 = parent::getEditableHtmlOptions();
+            $htmlOptions['class']        = 'flexible-drop-down';
+            if(property_exists($this->model, 'operator') && $this->model->operator == 'oneOf')
+            {
+                $htmlOptions['multiple']  = true;
+                $htmlOptions['class']    .= ' multiple ignore-style';
+            }
+            return $htmlOptions;
         }
     }
 ?>

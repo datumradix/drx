@@ -61,6 +61,33 @@
                 Yii::app()->getAssetManager()->publish(
                     Yii::getPathOfAlias('application.core.elements.assets')) . '/SelectInputUtils.js', CClientScript::POS_END);
             $this->registerClickFlowScript();
+            $this->registerModuleClassNameChangeScript();
+        }
+
+        protected function registerModuleClassNameChangeScript()
+        {
+            $moduleClassNameId = get_class($this->model) .  '[moduleClassName]';
+            Yii::app()->clientScript->registerScript('moduleForWorkflowChangeScript', "
+                $('input:radio[name=\"" . $moduleClassNameId . "\"]').live('change', function()
+                    {
+                        $('#TriggersForWorkflowWizardView').find('.dynamic-rows').find('ul').find('li').remove();
+                        $('#TriggersTreeArea').html('');
+                        $('." . TriggersForWorkflowWizardView::getZeroComponentsClassName() . "').show();
+                        rebuildWorkflowTriggersAttributeRowNumbersAndStructureInput('TriggersForWorkflowWizardView');
+                        $('#ActionsForWorkflowWizardView').find('.dynamic-rows').find('ul').find('li').remove();
+                        $('#actionType option:selected').removeAttr('selected');
+                        $('." . ActionsForWorkflowWizardView::getZeroComponentsClassName() . "').show();
+                        rebuildWorkflowActionRowNumbers('ActionsForWorkflowWizardView');
+                        $('#EmailAlertsForWorkflowWizardView').find('.alert-rows').find('ul').find('li').remove();
+                        $('." . EmailAlertsForWorkflowWizardView::getZeroComponentsClassName() . "').show();
+                        " . $this->registerModuleClassNameChangeScriptExtraPart() . "
+                    }
+                );
+            ");
+        }
+
+        protected function registerModuleClassNameChangeScriptExtraPart()
+        {
         }
     }
 ?>

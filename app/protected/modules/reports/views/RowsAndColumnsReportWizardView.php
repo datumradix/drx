@@ -119,6 +119,7 @@
                 $('#" . FiltersForReportWizardView::getPreviousPageLinkId() . "').bind('click', function()
                     {
                         $('#" . static::getValidationScenarioInputId() . "').val('" . ReportWizardForm::MODULE_VALIDATION_SCENARIO . "');
+                        $('#" . WizardActiveForm::makeErrorsSummaryId(static::getFormId()) . "').hide();
                         $('#ModuleForReportWizardView').show();
                         $('#FiltersForReportWizardView').hide();
                         return false;
@@ -152,6 +153,14 @@
                     }
                 );
             ");
+        }
+
+        protected function registerModuleClassNameChangeScriptExtraPart()
+        {
+            return  "   $('#OrderBysForReportWizardView').find('.dynamic-rows').find('ul').find('li').remove();
+                        $('#OrderBysTreeArea').html('');
+                        $('." . OrderBysForReportWizardView::getZeroComponentsClassName() . "').show();
+                    ";
         }
     }
 ?>

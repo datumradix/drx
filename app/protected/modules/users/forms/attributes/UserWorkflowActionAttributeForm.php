@@ -29,11 +29,18 @@
      */
     class UserWorkflowActionAttributeForm extends WorkflowActionAttributeForm
     {
-        const TYPE_DYNAMIC_CREATED_BY_USER   = 'DynamicCreatedByUser';
+        const TYPE_DYNAMIC_CREATED_BY_USER          = 'DynamicCreatedByUser';
 
-        const TYPE_DYNAMIC_MODIFIED_BY_USER  = 'DynamicModifiedByUser';
+        const TYPE_DYNAMIC_MODIFIED_BY_USER         = 'DynamicModifiedByUser';
 
-        const TYPE_DYNAMIC_TRIGGERED_BY_USER = 'DynamicTriggeredByUser';
+        const TYPE_DYNAMIC_TRIGGERED_BY_USER        = 'DynamicTriggeredByUser';
+
+        const TYPE_DYNAMIC_OWNER_OF_TRIGGERED_MODEL = 'OwnerOfTriggeredModel';
+
+        public function getValueElementType()
+        {
+            return 'UserNameId';
+        }
 
         /**
          * Value can either be date or if dynamic, then it is an integer
@@ -45,7 +52,8 @@
             {
                 if($this->type == self::TYPE_STATIC)
                 {
-                    $validator = CValidator::createValidator('type', $this, 'value', array('type' => 'integer'));
+                    $validator             = CValidator::createValidator('type', $this, 'value', array('type' => 'integer'));
+                    $validator->allowEmpty = false;
                     $validator->validate($this);
                     return !$this->hasErrors();
                 }
@@ -60,6 +68,33 @@
                 }
             }
             return false;
+        }
+
+        public function getStringifiedModelForValue()
+        {
+            return 'does this work?'; //todo: replace with logic if we can.
+        }
+
+        protected function makeTypeValuesAndLabels($isCreatingNewModel, $isRequired)
+        {
+            $data                      = array();
+            $data[static::TYPE_STATIC] = Zurmo::t('WorkflowModule', 'As');
+            if($isCreatingNewModel)
+            {
+                $modelClassName            = $this->modelClassName;
+                $model                     = new $modelClassName(false);//todo: performance3 once done fix to static
+                if($model instanceof OwnedSecurableItem)
+                {
+                    $data[self::TYPE_DYNAMIC_OWNER_OF_TRIGGERED_MODEL] = Zurmo::t('WorkflowModule', 'As user who owned triggered record');
+                }
+            }
+            else
+            {
+                $data[self::TYPE_DYNAMIC_CREATED_BY_USER]   = Zurmo::t('WorkflowModule', 'As user who created record');
+                $data[self::TYPE_DYNAMIC_MODIFIED_BY_USER]  = Zurmo::t('WorkflowModule', 'As user who last modified record');
+                $data[self::TYPE_DYNAMIC_TRIGGERED_BY_USER] = Zurmo::t('WorkflowModule', 'As user who triggered action');
+            }
+            return $data;
         }
     }
 ?>

@@ -33,6 +33,20 @@
 
         const TYPE_DYNAMIC_FROM_EXISTING_DATE = 'DynamicFromExistingDate';
 
+        public function getDynamicTypeValueDropDownArray()
+        {
+            $data       = array();
+            WorkflowUtil::resolveNegativeDurationAsDistanceFromPointData($data, false);
+            $data[0]    = Zurmo::t('WorkflowsModule', '0 days');
+            WorkflowUtil::resolvePositiveDurationAsDistanceFromPointData($data, false);
+            return $data;
+        }
+
+        public function getValueElementType()
+        {
+            return 'MixedDateTypesForWorkflowActionAttribute';
+        }
+
         /**
          * Value can either be date or if dynamic, then it is an integer
          * @return bool
@@ -49,12 +63,25 @@
                 }
                 else
                 {
-                    $validator = CValidator::createValidator('type', $this, 'value', array('type' => 'integer'));
+                    $validator             = CValidator::createValidator('TypeValidator', $this, 'alternateValue', array('type' => 'integer'));
+                    $validator->allowEmpty = false;
                     $validator->validate($this);
                     return !$this->hasErrors();
                 }
             }
             return false;
+        }
+
+        protected function makeTypeValuesAndLabels($isCreatingNewModel, $isRequired)
+        {
+            $data                                            = array();
+            $data[static::TYPE_STATIC]                       = Zurmo::t('WorkflowModule', 'Specifically on');
+            $data[self::TYPE_DYNAMIC_FROM_TRIGGERED_DATE]    = Zurmo::t('WorkflowModule', 'Dynamically From Triggered Date');
+            if(!$isCreatingNewModel)
+            {
+                $data[self::TYPE_DYNAMIC_FROM_EXISTING_DATE] = Zurmo::t('WorkflowModule', 'Dynamically From Existing Date');
+            }
+            return $data;
         }
     }
 ?>

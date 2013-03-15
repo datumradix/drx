@@ -29,7 +29,13 @@
      */
     abstract class WorkflowActionAttributeForm extends ConfigurableMetadataModel
     {
-        const TYPE_STATIC = 'Static';
+        const TYPE_STATIC      = 'Static';
+
+        const TYPE_STATIC_NULL = 'StaticNull';
+
+        abstract public function getValueElementType();
+
+        abstract protected function makeTypeValuesAndLabels($isCreatingNewModel, $isRequired);
 
         /**
          * @var string Static for example, Can also be Dynamic as well as other types specified by children
@@ -46,7 +52,7 @@
          * interface
          * @var string
          */
-        public $stringifiedModelForValue;
+        protected $stringifiedModelForValue;
 
         /**
          * @var boolean if the attribute should have a value whether static or dynamic. In the user interface this surfaces
@@ -70,6 +76,12 @@
         protected $modelAttributeName;
 
         /**
+         * An example could be Primary Address >> Street 1
+         * @var string
+         */
+        protected $displayLabel;
+
+        /**
          * @return string - If the class name is BooleanWorkflowActionAttributeForm,
          * then 'Boolean' will be returned.
          */
@@ -89,6 +101,32 @@
         }
 
         /**
+         * Method needed so the validation routines can properly interact with the alternateValue and properly
+         * set the correct errors.
+         * @return mixed
+         */
+        public function getAlternateValue()
+        {
+            return $this->value;
+        }
+
+        public function getDisplayLabel()
+        {
+            return $this->displayLabel;
+        }
+
+        public function getStringifiedModelForValue()
+        {
+            return $this->stringifiedModelForValue;
+        }
+
+        public function setDisplayLabel($displayLabel)
+        {
+            assert('is_string($displayLabel)');
+            $this->displayLabel = $displayLabel;
+        }
+
+        /**
          * Override to properly handle retrieving rule information from the model for the attribute name.
          */
         public function rules()
@@ -98,7 +136,6 @@
                 array('type',                     'required'),
                 array('value',                    'safe'),
                 array('value',                    'validateValue'),
-                array('stringifiedModelForValue', 'type', 'type' => 'string'),
                 array('shouldSetValue',           'boolean'),
             ));
             $applicableRules = ModelAttributeRulesToWorkflowActionAttributeUtil::
@@ -111,7 +148,7 @@
 
         public function attributeLabels()
         {
-            return array();
+            return array('alternateValue' => Zurmo::t('Core', 'Value'));
         }
 
         /**
@@ -125,12 +162,20 @@
                 $this->addError('value', Zurmo::t('WorkflowsModule', 'Value cannot be blank.'));
                 return false;
             }
-            if($this->value != null && !$this->shouldSetValue)
-            {
-                $this->addError('value', Zurmo::t('WorkflowsModule', 'Value should not be set.'));
-                return false;
-            }
             return true;
+        }
+
+        /**
+         * @param bool $isCreatingNewModel
+         * @param bool $isRequired Is the attribute required or not. Some types are not available if the attribute is
+         * required.
+         * @return array
+         */
+        public function getTypeValuesAndLabels($isCreatingNewModel, $isRequired)
+        {
+            assert('is_bool($isCreatingNewModel)');
+            assert('is_bool($isRequired)');
+            return $this->makeTypeValuesAndLabels($isCreatingNewModel, $isRequired);
         }
     }
 ?>
