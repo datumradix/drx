@@ -264,6 +264,9 @@
                     ),
                 ),
             ),
+            'userInterface' => array(
+                'class' => 'application.extensions.userinterface.UserInterface',
+            ),
             'widgetFactory' => array(
                 'widgets' => array(
                     'EJuiDateTimePicker' => array(

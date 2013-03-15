@@ -24,29 +24,10 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    // This is the configuration for zurmoc console application.
-    // Any writable CConsoleApplication properties can be configured here.
-    $common_config = CMap::mergeArray(
-        require('main.php'),
-        array(
-            'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-            'name' => 'Zurmo Console Application',
-        )
-    );
-    $common_config['import'][] = 'application.core.utils.UpgradeUtil.php';
-    //Utilize a custom begin request behavior class.
-    $common_config['behaviors']['onBeginRequest'] = array(
-        'class' => 'application.modules.zurmo.components.CommandBeginRequestBehavior'
-    );
-
-    //Turn off gamification
-    $common_config['components']['gamificationObserver']['enabled'] = false;
-    //Not applicable for console applications.
-    unset($common_config['defaultController']);
-    //Not applicable for console applications.
-    unset($common_config['controllerMap']);
-    //Not applicable for console applications.
-    unset($common_config['userInterface']);
-
-    return $common_config
+    /**
+     * View to display to users upon login.  Shows information such as tips, helpful links and ideas of what to do.
+     */
+    class MobileWelcomeView extends WelcomeView
+    {
+    }
 ?>
