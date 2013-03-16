@@ -66,7 +66,12 @@
                          OperatorRules::TYPE_BETWEEN,
                          OperatorRules::TYPE_STARTS_WITH,
                          OperatorRules::TYPE_ENDS_WITH,
-                         OperatorRules::TYPE_CONTAINS);
+                         OperatorRules::TYPE_CONTAINS,
+                         OperatorRules::TYPE_BECOMES,
+                         OperatorRules::TYPE_WAS,
+                         OperatorRules::TYPE_BECOMES_ONE_OF,
+                         OperatorRules::TYPE_WAS_ONE_OF,
+                        );
         }
 
         public static function getValueTypesRequiringSecondInput()
