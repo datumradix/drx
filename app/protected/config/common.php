@@ -334,6 +334,7 @@
             'opportunities',
             'reports',
             'rssReader',
+            'workflows',
             'socialItems',
             'tasks',
             'zurmo' => array(
