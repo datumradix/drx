@@ -130,5 +130,10 @@
         {
             return true;
         }
+
+        public static function canHaveWorkflow()
+        {
+            return true;
+        }
     }
 ?>
