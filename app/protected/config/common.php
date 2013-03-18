@@ -286,6 +286,9 @@
                     ),
                 ),
             ),
+            'workflowsObserver' => array(
+                'class' => 'application.modules.workflow.observers.WorkflowsObserver',
+            ),
             'phpThumbnail' => array(
                 'class'=>'ext.EPhpThumb.EPhpThumb'
             ),
@@ -334,6 +337,7 @@
             'opportunities',
             'reports',
             'rssReader',
+            'workflows',
             'socialItems',
             'tasks',
             'zurmo' => array(
