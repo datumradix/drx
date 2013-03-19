@@ -25,9 +25,11 @@
      ********************************************************************************/
 
     /**
-     * CustomFields search form.
+     * Implemented by wizard component forms for example, that then allow the validation to understand the real
+     * row key whether from a saved model or from a posted array.
      */
-    class CustomFieldsSearchForm extends SearchForm
+    interface RowKeyInterface
     {
+        public function getRowKey();
     }
 ?>

@@ -117,6 +117,12 @@
             }
         }
 
+        protected static function getMixedInModelClassNames()
+        {
+            return array('Person');
+        }
+
+
         protected function linkBeans()
         {
             // Link the beans up the inheritance hierarchy, skipping
@@ -413,15 +419,15 @@
             return true;
         }
 
-        protected function untranslatedAttributeLabels()
+        protected static function translatedAttributeLabels($language)
         {
-            return array_merge(parent::untranslatedAttributeLabels(),
+            return array_merge(parent::translatedAttributeLabels($language),
                 array(
-                    'fullName' => 'Name',
-                    'timeZone' => 'Time Zone',
-                    'title'    => 'Salutation',
-                    'primaryEmail' => 'Email',
-                    'primaryAddress' => 'Address',
+                    'fullName' =>       Zurmo::t('ZurmoModule', 'Name',       array(), null, $language),
+                    'timeZone' =>       Zurmo::t('UsersModule', 'Time Zone',  array(), null, $language),
+                    'title'    =>       Zurmo::t('ZurmoModule', 'Salutation', array(), null, $language),
+                    'primaryEmail' =>   Zurmo::t('ZurmoModule', 'Email',      array(), null, $language),
+                    'primaryAddress' => Zurmo::t('ZurmoModule', 'Address',    array(), null, $language),
                 )
             );
         }

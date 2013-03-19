@@ -26,15 +26,6 @@
 
     class SavedWorkflow extends Item
     {
-        public function __toString()
-        {
-            if (trim($this->name) == '')
-            {
-                return Yii::t('Default', '(Unnamed)');
-            }
-            return $this->name;
-        }
-
         public static function getByName($name)
         {
             assert('is_string($name) && $name != ""');
@@ -52,20 +43,24 @@
             $metadata[__CLASS__] = array(
                 'members' => array(
                     'description',
+                    'isActive',
                     'moduleClassName',
                     'name',
+                    'order',
                     'serializedData',
                     'triggerOn',
                     'type'
                 ),
                 'rules' => array(
                     array('description',         'type',   'type' => 'string'),
+                    array('isActive',            'boolean'),
                     array('moduleClassName',     'required'),
                     array('moduleClassName',     'type',   'type' => 'string'),
                     array('moduleClassName',     'length', 'max'  => 64),
                     array('name',                'required'),
                     array('name',                'type',   'type' => 'string'),
                     array('name',                'length', 'max'  => 64),
+                    array('order',               'type',    'type' => 'integer'),
                     array('serializedData',      'required'),
                     array('serializedData',      'type', 'type' => 'string'),
                     array('type',       		 'required'),
@@ -87,6 +82,20 @@
         public static function getModuleClassName()
         {
             return 'WorkflowsModule';
+        }
+
+        public function __toString()
+        {
+            if (trim($this->name) == '')
+            {
+                return Yii::t('Default', '(Unnamed)');
+            }
+            return $this->name;
+        }
+
+        public function getActiveByModuleClassNameAndIsNewModel($moduleClassName, $isNewModel)
+        {
+            return array();
         }
     }
 ?>

@@ -105,11 +105,11 @@
             return $metadata;
         }
 
-        protected function untranslatedAttributeLabels()
+        protected static function translatedAttributeLabels($language)
         {
-            return array_merge(parent::untranslatedAttributeLabels(),
+            return array_merge(parent::translatedAttributeLabels($language),
                 array(
-                    'occurredOnDateTime'       => 'Occurred On',
+                    'occurredOnDateTime'       => Zurmo::t('NotesModule', 'Occurred On', array(), null, $language),
                 )
             );
         }

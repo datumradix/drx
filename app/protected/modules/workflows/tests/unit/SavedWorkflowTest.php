@@ -46,5 +46,12 @@
             $this->assertEquals('some type',                   $savedWorkflow->type);
             $this->assertEquals(serialize(array('something')), $savedWorkflow->serializedData);
         }
+
+        public function testGetActiveByModuleClassNameAndIsNewModel()
+        {
+            //todo:
+            //getActiveByModuleClassNameAndIsNewModel($moduleClassName, $isNewModel)
+            $this->fail();
+        }
     }
 ?>

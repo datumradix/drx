@@ -27,7 +27,7 @@
     /**
      * Helper class for working with SavedWorkflow objects
      */
-    class SavedWorkflowUtil
+    class SavedWorkflowsUtil
     {
         /**
          * Given an array of moduleClassNames, construct the searchAttributeData
@@ -76,6 +76,74 @@
             $searchAttributeData['structure'] .=  "(" . $clauseStructure . ")";
             return $searchAttributeData;
         }
-    }
 
+        /**
+         * Resolve the correct order for a savedWorkflow. If it is a new savedWorkflow then set the order to max
+         * plus 1.  'Max' is a calculation of the existing workflows that are for the specific moduleClassName.
+         * If the workflow is an existing workflow, then if moduleClassName has changed, the 'max' plus 1 should be
+         * used.  Otherwise if it is new and the moduleClassName has not changed, then leave it alone
+         * @param SavedWorkflow $savedWorkflow
+         * @throws NotSupportedException if the moduleClassName has not been defined yet
+         */
+        public static function resolveOrder(SavedWorkflow $savedWorkflow)
+        {
+            if($savedWorkflow->moduleClassName == null)
+            {
+                throw new NotSupportedException();
+            }
+            $q   = DatabaseCompatibilityUtil::getQuote();
+            $sql = "select max({$q}order{$q}) maxorder from " . SavedWorkflow::getTableName('SavedWorkflow');
+            $sql .= " where moduleclassname = '" . $savedWorkflow->moduleClassName . "'";
+            if($savedWorkflow->id < 0 || array_key_exists('moduleClassName', $savedWorkflow->originalAttributeValues))
+            {
+                $maxOrder             = R::getCell($sql);
+                $savedWorkflow->order = (int)$maxOrder +  1;
+            }
+        }
+
+        /**
+         * Given a RedBeanModel, query workflow rules and process any beforeSave triggers for either on-save or
+         * by-time workflows.  Called from @see WokflowsObserver->processWorkflowBeforeSave
+         * @param Item $model
+         * @throws NotSupportedException if the workflow type is not valid
+         */
+        public static function resolveBeforeSaveByModel(Item $model)
+        {
+            $savedWorkflows = SavedWorkflow::getActiveByModuleClassNameAndIsNewModel(
+                                             $model::getModuleClassName(), $model->isNewModel);
+            foreach($savedWorkflows as $savedWorkflow)
+            {
+                $workflow = SavedWorkflowToWorkflowAdapter::makeWorkflowBySavedWorkflow($savedWorkflow);
+                if(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model))
+                {
+                    if($workflow->getType() == Workflow::TYPE_BY_TIME)
+                    {
+                       // $byTimeWorkflowInQueue = new ByTimeWorkflowInQueue();
+                       // $byTimeWorkflowInQueue->processDateTime = 'xxx';
+                    }
+                    elseif($workflow->getType() == Workflow::TYPE_ON_SAVE)
+                    {
+                        WorkflowActionsUtil::processBeforeSave($workflow, $model);
+                        $model->addWorkflowToProcessAfterSave($workflow);
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
+                }
+            }
+        }
+
+        /**
+         * Given a RedBeanModel, process afterSave email messages.
+         * @param Item $model
+         */
+        public static function resolveAfterSaveByModel(Item $model)
+        {
+            foreach($model->getWorkflowsToProcessAfterSave() as $workflow)
+            {
+                WorkflowEmailMessagesUtil::processAfterSave($workflow, $model);
+            }
+        }
+    }
 ?>

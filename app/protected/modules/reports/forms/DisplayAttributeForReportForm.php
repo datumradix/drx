@@ -90,10 +90,11 @@
          * @param string $moduleClassName
          * @param string $modelClassName
          * @param string $reportType
+         * @param int $rowKey
          */
-        public function __construct($moduleClassName, $modelClassName, $reportType)
+        public function __construct($moduleClassName, $modelClassName, $reportType, $rowKey = 0)
         {
-            parent::__construct($moduleClassName, $modelClassName, $reportType);
+            parent::__construct($moduleClassName, $modelClassName, $reportType, $rowKey);
             $this->columnAliasName = self::COLUMN_ALIAS_PREFIX . static::$count++;
         }
         /**
@@ -142,7 +143,7 @@
          */
         public static function resetCount()
         {
-            self::$count = 0;
+            static::$count = 0;
         }
 
         /**
