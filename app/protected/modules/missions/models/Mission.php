@@ -136,11 +136,11 @@
             return $metadata;
         }
 
-        protected function untranslatedAttributeLabels()
+        protected static function translatedAttributeLabels($language)
         {
-            return array_merge(parent::untranslatedAttributeLabels(),
+            return array_merge(parent::translatedAttributeLabels($language),
                 array(
-                    'dueDateTime'       => 'Due On',
+                    'dueDateTime'       => Zurmo::t('TasksModule', 'Due On', array(), null, $language),
                 )
             );
         }

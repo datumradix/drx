@@ -173,7 +173,6 @@
         /**
          * @expectedException PartialRightsForReportSecurityException
          **/
-
         public function testPartialRightsForReportSecurityExceptionThrown()
         {
             Yii::app()->user->userModel = User::getByUsername('nobody');
@@ -184,7 +183,6 @@
             $filtersStructure   = '';
             $filters            = array();
             $reportDataProvider->resolveFiltersForVariableStates($filters, $filtersStructure);
-            $this->fail();
         }
 
         public function testResolveFiltersForVariableStatesWithOneDisplayAttributeAndOneFilterForANonSuperUserWhoCanSeeOneState()
@@ -251,7 +249,6 @@
             $this->assertEquals(OperatorRules::TYPE_ONE_OF,         $filters[2]->operator);
             $this->assertEquals($stateAdapter->getStateIds(),       $filters[2]->value);
             $this->assertEquals('1 and (2 and 3)', $filtersStructure);
-
         }
     }
 ?>

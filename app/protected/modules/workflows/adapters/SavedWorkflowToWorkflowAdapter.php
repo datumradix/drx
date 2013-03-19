@@ -34,8 +34,10 @@
                 $workflow->setId((int)$savedWorkflow->id);
             }
             $workflow->setDescription($savedWorkflow->description);
+            $workflow->setIsActive((bool)$savedWorkflow->isActive);
             $workflow->setModuleClassName($savedWorkflow->moduleClassName);
             $workflow->setName($savedWorkflow->name);
+            $workflow->setOrder((int)$savedWorkflow->order);
             $workflow->setType($savedWorkflow->type);
             $workflow->setTriggerOn($savedWorkflow->triggerOn);
             if($savedWorkflow->serializedData != null)
@@ -68,8 +70,10 @@
         public static function resolveWorkflowToSavedWorkflow(Workflow $workflow, SavedWorkflow $savedWorkflow)
         {
             $savedWorkflow->description     = $workflow->getDescription();
+            $savedWorkflow->isActive        = $workflow->getIsActive();
             $savedWorkflow->moduleClassName = $workflow->getModuleClassName();
             $savedWorkflow->name            = $workflow->getName();
+            $savedWorkflow->order           = $workflow->getOrder();
             $savedWorkflow->triggerOn       = $workflow->getTriggerOn();
             $savedWorkflow->type            = $workflow->getType();
             $data = array();
@@ -160,36 +164,43 @@
             $moduleClassName    = $workflow->getModuleClassName();
             $addMethodName      = 'add' . $componentPrefix;
             $componentClassName = $componentPrefix . 'ForWorkflowForm';
+            $rowKey             = 0;
             foreach($componentFormsData as $componentFormData)
             {
                 $component      = new $componentClassName($moduleClassName,
                                                           $moduleClassName::getPrimaryModelName(),
-                                                          $workflow->getType());
+                                                          $workflow->getType(), $rowKey);
                 $component->setAttributes($componentFormData);
                 $workflow->{$addMethodName}($component);
+                $rowKey ++;
             }
         }
 
         protected static function makeActionForWorkflowFormAndPopulateWorkflowFromData($componentFormsData, $workflow)
         {
             $moduleClassName    = $workflow->getModuleClassName();
+            $rowKey             = 0;
             foreach($componentFormsData as $componentFormData)
             {
-                $component      = new ActionForWorkflowForm($moduleClassName::getPrimaryModelName(), $workflow->getType());
+                $component      = new ActionForWorkflowForm($moduleClassName::getPrimaryModelName(),
+                                                            $workflow->getType(), $rowKey);
                 $component->setAttributes($componentFormData);
                 $workflow->addAction($component);
+                $rowKey ++;
             }
         }
 
         protected static function makeEmailAlertForWorkflowFormAndPopulateWorkflowFromData($componentFormsData, $workflow)
         {
             $moduleClassName    = $workflow->getModuleClassName();
+            $rowKey             = 0;
             foreach($componentFormsData as $componentFormData)
             {
                 $component      = new EmailAlertForWorkflowForm($moduleClassName::getPrimaryModelName(),
-                                  $workflow->getType());
+                                                                $workflow->getType(), $rowKey);
                 $component->setAttributes($componentFormData);
                 $workflow->addEmailAlert($component);
+                $rowKey ++;
             }
         }
     }
