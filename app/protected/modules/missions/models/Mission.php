@@ -28,7 +28,7 @@
      * Class for creating Mission models.  A mission is similar to a task except a user can only have one mission at
      * a time and a mission cannot be assigned.  A user must take a mission.
      */
-    class Mission extends OwnedSecurableItem implements MashableActivityInterface
+    class Mission extends OwnedSecurableItem implements MashableActivityInterface, MashableInboxInterface
     {
         const STATUS_AVAILABLE = 1;
 
@@ -45,6 +45,11 @@
         private $sendTakenByUserUnreadCommentNotification = false;
 
         public static function getMashableActivityRulesType()
+        {
+            return 'Mission';
+        }
+
+        public static function getMashableInboxRulesType()
         {
             return 'Mission';
         }
@@ -123,7 +128,7 @@
                     'latestDateTime'    => 'DateTime',
                     'reward'            => 'TextArea',
                 ),
-                'defaultSortAttribute' => 'subject',
+                'defaultSortAttribute' => 'description',
                 'noAudit' => array(
                     'description',
                     'dueDateTime',
