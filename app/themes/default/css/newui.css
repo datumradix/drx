@@ -5796,7 +5796,6 @@ body > .ui-autocomplete {
 /*=Inner toolbar*/
 .float-bar {
   width: 100%;
-  float: left;
   position: relative;
   height: 40px;
   display: block;
@@ -11007,7 +11006,7 @@ table.configuration-list td:last-child a .z-label:before {
 }
 /*Currency*/
 #currency-collection-form {
-  padding-bottom: 10px !important;
+  padding-bottom: 5px !important;
 }
 #currency-collection-form .portlet-toolbar {
   position: relative;
@@ -15811,7 +15810,6 @@ a.user-link {
   max-height: 600px;
   overflow: auto;
   margin-top: 10px;
-  z-index: 10;
 }
 .hasTree .big-spinner {
   position: relative;
@@ -15824,7 +15822,6 @@ a.user-link {
   padding-left: 15px;
   margin-top: 10px;
   position: relative;
-  z-index: 5;
 }
 .dynamic-droppable-area .ui-droppable {
   float: left;

@@ -24,30 +24,43 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /*
-        These tests test when there is a class that does not utilize a bean in the hierarchy.
-    */
-
-    class RedBeanClassesWithoutBeansTest extends BaseTest
+    /**
+     * Used in conjunction with ReportModelTestItem11 to test reporting with owned model attributes
+     */
+    class ReportModelTestItem10 extends OwnedSecurableItem
     {
-        public function testGetCanHaveBean()
+        public static function getDefaultMetadata()
         {
-            $this->assertTrue(A::getCanHaveBean());
-            $this->assertFalse(NoBean::getCanHaveBean());
-            $this->assertTrue(ExtendsNoBean::getCanHaveBean());
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'date',
+                    'integer',
+                ),
+                'relations' => array(
+                    'currencyValue'         => array(RedBeanModel::HAS_ONE,  'CurrencyValue',    RedBeanModel::OWNED),
+                    'reportModelTestItem11' => array(RedBeanModel::HAS_MANY, 'ReportModelTestItem11', RedBeanModel::OWNED),
+                ),
+                'rules' => array(
+                    array('date',      'type', 'type' => 'date'),
+                    array('integer',   'type',    'type' => 'integer'),
+                ),
+                'elements' => array(
+                    'currencyValue'   => 'CurrencyValue',
+                    'date'            => 'Date',
+                ),
+            );
+            return $metadata;
         }
 
-        public function testGetColumnNameByAttribute()
+        public static function isTypeDeletable()
         {
-            $a              = new A();
-            $columnName     = A::getColumnNameByAttribute('name');
-            $this->assertEquals('name', $columnName);
-            $extendedNoBean = new ExtendsNoBean();
-            $columnName     = ExtendsNoBean::getColumnNameByAttribute('name');
-            $this->assertEquals('name', $columnName);
-            $aaa            = new AAA();
-            $columnName     = AAA::getColumnNameByAttribute('noBean');
-            $this->assertEquals('redbeanmodel_id', $columnName);
+            return true;
+        }
+
+        public static function getModuleClassName()
+        {
+            return 'ReportsTestModule';
         }
     }
 ?>
