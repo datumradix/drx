@@ -35,9 +35,11 @@
         public static function makeOnSaveWorkflowAndTriggerWithoutValueType($attributeIndexOrDerivedType, $operator,
                                                                             $value,
                                                                             $moduleClassName = 'WorkflowsTestModule',
-                                                                            $modelClassName = 'WorkflowModelTestItem')
+                                                                            $modelClassName  = 'WorkflowModelTestItem',
+                                                                            $secondValue     = null)
         {
             assert('is_string($attributeIndexOrDerivedType)');
+            assert('is_string($operator)');
             assert('is_string($moduleClassName)');
             assert('is_string($modelClassName)');
             $workflow = new Workflow();
@@ -46,10 +48,34 @@
             $trigger = new TriggerForWorkflowForm($moduleClassName, $modelClassName, $workflow->getType());
             $trigger->attributeIndexOrDerivedType = $attributeIndexOrDerivedType;
             $trigger->value                       = $value;
+            $trigger->secondValue                 = $secondValue;
             $trigger->operator                    = $operator;
             $workflow->addTrigger($trigger);
             return $workflow;
         }
+
+        public static function makeOnSaveWorkflowAndTriggerForDateOrDateTime($attributeIndexOrDerivedType, $valueType,
+                                                                            $value,
+                                                                            $moduleClassName = 'WorkflowsTestModule',
+                                                                            $modelClassName  = 'WorkflowModelTestItem',
+                                                                            $secondValue     = null)
+        {
+            assert('is_string($attributeIndexOrDerivedType)');
+            assert('is_string($valueType)');
+            assert('is_string($moduleClassName)');
+            assert('is_string($modelClassName)');
+            $workflow = new Workflow();
+            $workflow->setType(Workflow::TYPE_ON_SAVE);
+            $workflow->setTriggersStructure('1');
+            $trigger = new TriggerForWorkflowForm($moduleClassName, $modelClassName, $workflow->getType());
+            $trigger->attributeIndexOrDerivedType = $attributeIndexOrDerivedType;
+            $trigger->valueType                   = $valueType;
+            $trigger->value                       = $value;
+            $trigger->secondValue                 = $secondValue;
+            $workflow->addTrigger($trigger);
+            return $workflow;
+        }
+
 
         public static function saveAndReloadModel(RedBeanModel $model)
         {
