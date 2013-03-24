@@ -24,30 +24,48 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /*
-        These tests test when there is a class that does not utilize a bean in the hierarchy.
-    */
-
-    class RedBeanClassesWithoutBeansTest extends BaseTest
+    /**
+     * Used in conjunction with ReportModelTestItem10 to test reporting with owned model attributes
+     */
+    class ReportModelTestItem11 extends OwnedModel
     {
-        public function testGetCanHaveBean()
+        public static function getModuleClassName()
         {
-            $this->assertTrue(A::getCanHaveBean());
-            $this->assertFalse(NoBean::getCanHaveBean());
-            $this->assertTrue(ExtendsNoBean::getCanHaveBean());
+            return 'ReportsTestModule';
         }
 
-        public function testGetColumnNameByAttribute()
+        public static function canSaveMetadata()
         {
-            $a              = new A();
-            $columnName     = A::getColumnNameByAttribute('name');
-            $this->assertEquals('name', $columnName);
-            $extendedNoBean = new ExtendsNoBean();
-            $columnName     = ExtendsNoBean::getColumnNameByAttribute('name');
-            $this->assertEquals('name', $columnName);
-            $aaa            = new AAA();
-            $columnName     = AAA::getColumnNameByAttribute('noBean');
-            $this->assertEquals('redbeanmodel_id', $columnName);
+            return true;
+        }
+
+        public static function getDefaultMetadata()
+        {
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'date',
+                    'integer',
+                ),
+                'relations' => array(
+                    'amount'         => array(RedBeanModel::HAS_ONE, 'CurrencyValue',    RedBeanModel::OWNED,
+                                              RedBeanModel::LINK_TYPE_SPECIFIC, 'amount')
+                ),
+                'rules' => array(
+                    array('date',     'type',    'type' => 'date'),
+                    array('integer',  'type',    'type' => 'integer'),
+                ),
+                'elements' => array(
+                    'date'   => 'Date',
+                    'amount' => 'CurrencyValue',
+                ),
+            );
+            return $metadata;
+        }
+
+        public static function isTypeDeletable()
+        {
+            return true;
         }
     }
 ?>

@@ -24,30 +24,29 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    /*
-        These tests test when there is a class that does not utilize a bean in the hierarchy.
-    */
-
-    class RedBeanClassesWithoutBeansTest extends BaseTest
+    class CalculatedNumberForReportListViewColumnAdapter extends TextListViewColumnAdapter
     {
-        public function testGetCanHaveBean()
+        public static function resolveValue($attribute, ReportResultsRowData $data)
         {
-            $this->assertTrue(A::getCanHaveBean());
-            $this->assertFalse(NoBean::getCanHaveBean());
-            $this->assertTrue(ExtendsNoBean::getCanHaveBean());
+            list($notUsed, $displayAttributeKey) = explode(ReportResultsRowData::ATTRIBUTE_NAME_PREFIX, $attribute);
+            $displayAttributes = $data->getDisplayAttributes();
+            $metadata          = CalculatedDerivedAttributeMetadata::
+                                 getByNameAndModelClassName($displayAttributes[$displayAttributeKey]->getResolvedAttribute(),
+                                 $displayAttributes[$displayAttributeKey]->getResolvedAttributeModelClassName());
+            return CalculatedNumberUtil::calculateByFormulaAndModel($metadata->getFormula(), $data->getModel($attribute));
         }
 
-        public function testGetColumnNameByAttribute()
+        /**
+         * @return array
+         */
+        public function renderGridViewData()
         {
-            $a              = new A();
-            $columnName     = A::getColumnNameByAttribute('name');
-            $this->assertEquals('name', $columnName);
-            $extendedNoBean = new ExtendsNoBean();
-            $columnName     = ExtendsNoBean::getColumnNameByAttribute('name');
-            $this->assertEquals('name', $columnName);
-            $aaa            = new AAA();
-            $columnName     = AAA::getColumnNameByAttribute('noBean');
-            $this->assertEquals('redbeanmodel_id', $columnName);
+            return array(
+                'name'     => $this->attribute,
+                'value'    => 'CalculatedNumberForReportListViewColumnAdapter::resolveValue("' . $this->attribute . '", $data)',
+                'type'     => 'raw',
+                'sortable' => false,
+            );
         }
     }
 ?>
