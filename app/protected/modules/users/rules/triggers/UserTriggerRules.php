@@ -25,9 +25,9 @@
      ********************************************************************************/
 
     /**
-     * Class to help evaluate checkBox  (boolean) triggers against model values
+     * Class to help evaluate User triggers against model values.
      */
-    class CheckBoxTriggerRules extends TriggerRules
+    class UserTriggerRules extends TriggerRules
     {
         public function evaluateBeforeSave(RedBeanModel $model, $attribute)
         {
@@ -35,7 +35,13 @@
             {
 
                 case OperatorRules::TYPE_EQUALS:
-                    if(static::sanitize($model->$attribute) === static::sanitize($this->trigger->value))
+                    if($model->{$attribute}->id === $this->trigger->value)
+                    {
+                        return true;
+                    }
+                    break;
+                case OperatorRules::TYPE_DOES_NOT_EQUAL:
+                    if($model->{$attribute}->id !== $this->trigger->value)
                     {
                         return true;
                     }
@@ -54,15 +60,27 @@
                     break;
                 case OperatorRules::TYPE_BECOMES:
                     if(array_key_exists($attribute, $model->originalAttributeValues) &&
-                        static::sanitize($model->$attribute) === static::sanitize($this->trigger->value))
+                        $model->{$attribute}->id === $this->trigger->value)
                     {
                         return true;
                     }
                     break;
                 case OperatorRules::TYPE_WAS:
                     if(array_key_exists($attribute, $model->originalAttributeValues) &&
-                        static::sanitize($model->originalAttributeValues[$attribute]) ===
-                        static::sanitize($this->trigger->value))
+                        $model->originalAttributeValues[$attribute][1] ===
+                        $this->trigger->value)
+                    {
+                        return true;
+                    }
+                    break;
+                case OperatorRules::TYPE_IS_EMPTY:
+                    if(!($model->{$attribute}->id > 0))
+                    {
+                        return true;
+                    }
+                    break;
+                case OperatorRules::TYPE_IS_NOT_EMPTY:
+                    if($model->{$attribute}->id > 0)
                     {
                         return true;
                     }
@@ -71,15 +89,6 @@
                     throw new NotSupportedException();
             }
             return false;
-        }
-
-        /**
-         * @param $value
-         * @return mixed
-         */
-        protected function sanitize($value)
-        {
-            return (bool)$value;
         }
     }
 ?>

@@ -25,44 +25,75 @@
      ********************************************************************************/
 
     /**
-     * Class to help evaluate checkBox  (boolean) triggers against model values
+     * Class to help evaluate date triggers against model values.
      */
-    class CheckBoxTriggerRules extends TriggerRules
+    class DateTriggerRules extends TriggerRules
     {
         public function evaluateBeforeSave(RedBeanModel $model, $attribute)
         {
-            switch($this->trigger->getOperator())
+            switch($this->trigger->valueType)
             {
 
-                case OperatorRules::TYPE_EQUALS:
-                    if(static::sanitize($model->$attribute) === static::sanitize($this->trigger->value))
+                case MixedDateTypesSearchFormAttributeMappingRules::TYPE_AFTER:
+                    if(static::sanitize($model->$attribute) > static::sanitizeTriggerValue($this->trigger->value))
                     {
                         return true;
                     }
                     break;
-                case OperatorRules::TYPE_CHANGES:
+                case MixedDateTypesSearchFormAttributeMappingRules::TYPE_BEFORE:
+                    if(static::sanitize($model->$attribute) < static::sanitizeTriggerValue($this->trigger->value))
+                    {
+                        return true;
+                    }
+                    break;
+                case MixedDateTypesSearchFormAttributeMappingRules::TYPE_ON:
+                if(static::sanitize($model->$attribute) === static::sanitizeTriggerValue($this->trigger->value))
+                {
+                    return true;
+                }
+                    break;
+                case MixedDateTypesSearchFormAttributeMappingRules::TYPE_BETWEEN:
+                    if(static::sanitize($model->$attribute) > static::sanitizeTriggerValue($this->trigger->value) &&
+                       static::sanitize($model->$attribute) < static::sanitizeTriggerValue($this->trigger->secondValue))
+                    {
+                        return true;
+                    }
+                    break;
+                case MixedDateTypesSearchFormAttributeMappingRules::TYPE_IS_EMPTY:
+                    if(DateTimeUtil::isDateValueNull($model, $attribute))
+                    {
+                        return true;
+                    }
+                    break;
+                case MixedDateTypesSearchFormAttributeMappingRules::TYPE_IS_NOT_EMPTY:
+                    if(!DateTimeUtil::isDateValueNull($model, $attribute))
+                    {
+                        return true;
+                    }
+                    break;
+                case MixedDateTypesSearchFormAttributeMappingRules::TYPE_CHANGES:
                     if(array_key_exists($attribute, $model->originalAttributeValues))
                     {
                         return true;
                     }
                     break;
-                case OperatorRules::TYPE_DOES_NOT_CHANGE:
+                case MixedDateTypesSearchFormAttributeMappingRules::TYPE_DOES_NOT_CHANGE:
                     if(!array_key_exists($attribute, $model->originalAttributeValues))
                     {
                         return true;
                     }
                     break;
-                case OperatorRules::TYPE_BECOMES:
+                case MixedDateTypesSearchFormAttributeMappingRules::TYPE_BECOMES_ON:
                     if(array_key_exists($attribute, $model->originalAttributeValues) &&
-                        static::sanitize($model->$attribute) === static::sanitize($this->trigger->value))
+                        static::sanitize($model->$attribute) === static::sanitizeTriggerValue($this->trigger->value))
                     {
                         return true;
                     }
                     break;
-                case OperatorRules::TYPE_WAS:
+                case MixedDateTypesSearchFormAttributeMappingRules::TYPE_WAS:
                     if(array_key_exists($attribute, $model->originalAttributeValues) &&
                         static::sanitize($model->originalAttributeValues[$attribute]) ===
-                        static::sanitize($this->trigger->value))
+                            static::sanitizeTriggerValue($this->trigger->value))
                     {
                         return true;
                     }
@@ -73,13 +104,14 @@
             return false;
         }
 
-        /**
-         * @param $value
-         * @return mixed
-         */
         protected function sanitize($value)
         {
-            return (bool)$value;
+            return strtotime($value);
+        }
+
+        protected function sanitizeTriggerValue($value)
+        {
+            return strtotime($value);
         }
     }
 ?>
