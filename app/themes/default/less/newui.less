@@ -97,10 +97,13 @@ footer, header, hgroup, menu, nav, section {
 }
 
 /*=Login*/
+#LoginPageView{
+    padding-top:30px;
+}
 #LoginView{
     min-width:900px;
     height:100%;
-    margin:30px;
+    margin:0 30px 30px 30px;
     .b-shadow(0 0 12px 5px rgba(153, 153, 153, 0.3)); /*999*/
     .radius(5px);
     padding:0;
@@ -115,23 +118,16 @@ footer, header, hgroup, menu, nav, section {
             left:6px;
         }
     }
-    #login-box{
-        float:left;
-        width:500px;
-        margin:-100px auto 0 -250px;
-        height:200px;
-        position:relative;
-        top:40%;
-        left:50%;
-    }
-    #LoginLogo{
-        .box-sizing();
-        height:100%;
-        width:50%;
-        padding-right:10px;
-        float:left;
-        background: url(../images/ZurmoLogo.png) 56px 35px no-repeat;
-    }
+}
+
+#login-box{
+    float:left;
+    width:500px;
+    margin:-100px auto 0 -250px;
+    height:200px;
+    position:relative;
+    top:40%;
+    left:50%;
     .form{
         width:50%;
         float:right;
@@ -174,6 +170,14 @@ footer, header, hgroup, menu, nav, section {
     .error{
         margin-bottom: 40px !important;
     }
+}
+#LoginLogo{
+    .box-sizing();
+    height:100%;
+    width:50%;
+    padding-right:10px;
+    float:left;
+    background: url(../images/ZurmoLogo.png) 56px 35px no-repeat;
 }
 
 #Login{
@@ -798,6 +802,10 @@ body > .ui-autocomplete{
 }
 
 /*=Left Sidebar*/
+.nav em{
+    display: none;
+}
+
 .AppNavigation{
     width:170px;
     float:left;
@@ -844,6 +852,9 @@ body > .ui-autocomplete{
 #MenuView .nav{
     li{
         .clearfix();
+    }
+    em{
+        display:none;
     }
 }
 
@@ -973,7 +984,6 @@ body > .ui-autocomplete{
         }
         em{
             z-index:9999;
-            position:absolute;
             .box-sizing();
             width:24px;
             height:24px;
@@ -997,20 +1007,20 @@ body > .ui-autocomplete{
 @recentlyViewedIconSize : 24px;
 
 #RecentlyViewedView {
-	/*deafult for if an icon doesnt exist*/
-	li{
-	    em:before{
-                content: "z";
-            }
-	}
-	li.type-ConversationsModule{
-	    em{
-                padding-top:3px;
-                padding-right:3px;
-            }
-            em:before{
-                content: "b";
-            }
+    /*deafult for if an icon doesnt exist*/
+    li{
+        em:before{
+            content: "z";
+        }
+    }
+    li.type-ConversationsModule{
+        em{
+            padding-top:3px;
+            padding-right:3px;
+        }
+        em:before{
+            content: "b";
+        }
     }
     li.type-UsersModule{
         em:before{
@@ -1525,6 +1535,7 @@ form,
     display:inline-block;
     margin-left:10px;
     .smaller();
+    .t-shadow(0 1px 0 #fff);
     span{
         margin-left:70px;
     }
@@ -1792,7 +1803,7 @@ td.empty{
         border-left: 1px solid #d7d7d7;
         border-right:1px solid #d7d7d7;
         border-bottom:1px solid #bababa;
-        color:#656565;
+        //color:#656565;
         display:inline-block;
         .t-shadow( rgba(255, 255, 255, 0.8) 0px 1px);
         .smaller();
@@ -1837,7 +1848,7 @@ td.empty{
     }
 }
 
-body div.form-toolbar{
+body div.view-toolbar-container{
     a.simple-link:not(.z-button){
         background:none !important;
         background-image:none !important;
@@ -1845,7 +1856,6 @@ body div.form-toolbar{
         .radius(~"0 !important");
         padding:0  !important;
         border: none !important;
-        margin:!important;
         text-decoration:underline;
         font-weight:normal;
         &:hover{
@@ -1892,6 +1902,7 @@ a.simple-link{
 .portlet-toolbar{
     a.simple-link{
         background:none !important;
+        margin-left: 10px;
     }
 }
 
@@ -4000,6 +4011,50 @@ div.hasHalfs{
                 top:1px;
                 margin-left:5px;
             }
+        }
+    }
+    .latest-activity-toolbar,
+    .filter-portlet-model-bar{
+        .smaller();
+        padding-left:8px;
+        white-space:nowrap;
+        label{
+            cursor:pointer;
+            border:none;
+            background:none;
+            font-size:11px !important;
+            padding:3px;
+            margin:0 3px;
+        }
+        label:hover{
+            color:#FFF;
+            .radius(3px) !important;
+            border:none;
+        }
+        input[type="radio"], input[type="checkbox"]{
+            visibility:hidden;
+            display:none;
+        }
+        .ui-state-active{
+            color:#FFF;
+            .radius(3px) !important;
+            border:none;
+        }
+        .ui-button-text{
+            padding:0;
+            margin:0;
+        }
+    }
+    .filter-portlet-model-bar{
+        border-bottom:1px solid #DFDFDF;
+        overflow: hidden;
+        height: 40px;
+        line-height: 40px;
+        #gradient > .vertical(#f6f6f6, #ededed);
+        .b-shadow(inset 0 1px 0 0 #ffffff);
+        position:relative;
+        label{
+            margin:0 3px 0 0;
         }
     }
     .items{
