@@ -128,7 +128,6 @@
             $settingsMenuItems        = MenuUtil::getOrderedAccessibleHeaderMenuForCurrentUser();
             $userMenuItems            = static::getAndResolveUserMenuItemsForHeader();
             $shortcutsCreateMenuItems = MenuUtil::getAccessibleShortcutsCreateMenuByCurrentUser();
-            $notificationsUrl         = Yii::app()->createUrl('notifications/default/recentNotifcations');
             $moduleNamesAndLabels     = GlobalSearchUtil::
                                         getGlobalSearchScopingModuleNamesAndLabelsDataByUser(Yii::app()->user->userModel);
             $sourceUrl                = Yii::app()->createUrl('zurmo/default/globalSearchAutoComplete');
@@ -136,7 +135,7 @@
                                         $moduleNamesAndLabels);
             $applicationName          = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'applicationName');
             return new HeaderView($controller->getId(), $controller->getModule()->getId(), $settingsMenuItems,
-                                  $userMenuItems, $shortcutsCreateMenuItems, $notificationsUrl,
+                                  $userMenuItems, $shortcutsCreateMenuItems,
                                   $moduleNamesAndLabels, $sourceUrl, $applicationName);
         }
 
