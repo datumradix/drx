@@ -286,6 +286,9 @@
                     ),
                 ),
             ),
+            'workflowsObserver' => array(
+                'class' => 'application.modules.workflow.observers.WorkflowsObserver',
+            ),
         ),
         'controllerMap' => array(
             'min' => 'application.extensions.minscript.controllers.ExtMinScriptController',
@@ -334,6 +337,7 @@
             'opportunities',
             'reports',
             'rssReader',
+            'workflows',
             'socialItems',
             'tasks',
             'zurmo' => array(
