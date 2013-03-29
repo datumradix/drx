@@ -149,9 +149,7 @@
                                                                 "class" => "model-tag " . strtolower($mashableInboxRules->getModelClassName())
                                                             ),
                                                             ZurmoHtml::tag('span', array(), $mashableInboxRules->getModelClassName()));
-
-            $content  = self::resolveContentTemplate($summaryContentTemplate, $data);
-            $content .= $spanForTag;
+            $content = ZurmoHtml::tag('div', array('class' => 'inbox-item'), $spanForTag . self::resolveContentTemplate($summaryContentTemplate, $data));
             return $content;
         }
 
