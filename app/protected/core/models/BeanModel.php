@@ -271,8 +271,8 @@
         }
 
         /**
-         * Returns the opposing relation name of a derived relation
-         * defined by the extending class's getMetadata() method.
+         * @param string $relationName
+         * @return boolean true if the relation is a derived relation
          */
         public static function isADerivedRelationViaCastedUpModel($relationName)
         {
@@ -315,6 +315,23 @@
             assert("self::isADerivedRelationViaCastedUpModel('$relationName')");
             $derivedRelations = static::getDerivedRelationNameToTypeModelClassNameAndOppposingRelationForModel();
             return $derivedRelations[$relationName][2];
+        }
+
+        /**
+         * @param $relation
+         * @return null|string
+         */
+        public static function getInferredRelationModelClassNamesForRelation($relation)
+        {
+            assert('is_string($relation)');
+            $metadata   = static::getMetadata();
+            foreach ($metadata as $modelClassName => $modelClassMetadata)
+            {
+                if (isset($metadata[$modelClassName][$relation . 'ModelClassNames']))
+                {
+                    return $metadata[$modelClassName][$relation . 'ModelClassNames'];
+                }
+            }
         }
 
         /**
