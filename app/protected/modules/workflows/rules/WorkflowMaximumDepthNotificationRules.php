@@ -24,11 +24,35 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class WorkflowDocumentationTest extends WorkflowBaseTest
+    /**
+     * Class used to define notification when a workflow process hits the maximum depth processing.
+     */
+    class WorkflowMaximumDepthNotificationRules extends NotificationRules
     {
-        public function testAWorkflowProcess()
+        public static function getType()
         {
-            //todo: write a full set of tests to document workflow
+            return 'WorkflowMaximumDepth';
+        }
+
+        public static function getDisplayName()
+        {
+            return Zurmo::t('WorkflowsModule', 'Maximum depth reached for workflow processing.');
+        }
+
+        /**
+         * Any user who has access to the workflows module is added to receive a
+         * notification.
+         */
+        protected function loadUsers()
+        {
+            foreach (User::getAll() as $user)
+            {
+                if ($user->getEffectiveRight('WorkflowsModule', WorkflowsModule::RIGHT_ACCESS_WORKFLOWS) ==
+                    Right::ALLOW)
+                {
+                    $this->addUser($user);
+                }
+            }
         }
     }
 ?>

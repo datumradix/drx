@@ -69,6 +69,8 @@
                 }
                 catch (NotFoundException $e)
                 {
+                    WorkflowUtil::handleProcessingException($e,
+                        'application.modules.workflows.jobs.ByTimeWorkflowInQueueJob.run');
                 }
                 $byTimeWorkflowInQueue->delete();
             }
@@ -97,7 +99,7 @@
             {
                 return;
             }
-            $workflow->setTimeTriggerRequireChangeToProcessToTrue();
+            $workflow->setTimeTriggerRequireChangeToProcessToFalse();
             if(WorkflowTriggersUtil::areTriggersTrueOnByTimeWorkflowQueueJob($workflow, $model))
             {
                 WorkflowActionsUtil::processOnByTimeWorkflowInQueueJob($workflow, $model, Yii::app()->user->userModel);

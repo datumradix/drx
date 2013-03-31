@@ -24,11 +24,30 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class WorkflowDocumentationTest extends WorkflowBaseTest
+    class WorkflowCreateLinkActionElement extends CreateLinkActionElement
     {
-        public function testAWorkflowProcess()
+        public function getActionType()
         {
-            //todo: write a full set of tests to document workflow
+            return 'Create';
+        }
+
+        protected function getDefaultLabel()
+        {
+            return Zurmo::t('Core', 'Create');
+        }
+
+        protected function getDefaultRoute()
+        {
+            $params = array();
+            if (Yii::app()->request->getParam('redirectUrl') != null)
+            {
+                $params = array_merge($params, array('redirectUrl' => Yii::app()->request->getParam('redirectUrl')));
+            }
+            elseif ($this->getRedirectUrl() != null)
+            {
+                $params = array_merge($params, array('redirectUrl' => $this->getRedirectUrl()));
+            }
+            return Yii::app()->createUrl($this->moduleId . '/default/create/', $params);
         }
     }
 ?>

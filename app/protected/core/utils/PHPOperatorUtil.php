@@ -24,11 +24,21 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class WorkflowDocumentationTest extends WorkflowBaseTest
+    /**
+     * Helper class to provider PHP operators and validate
+     * accurate usage of operator types
+     */
+    class PHPOperatorUtil
     {
-        public function testAWorkflowProcess()
+        /**
+         * For now use the same method that SQL structure checks use since it works the same way
+         * @param $structure
+         * @param $clauseCount
+         * @return null | string if error message
+         */
+        public static function resolveValidationForATemplateSqlStatementAndReturnErrorMessage($structure, $clauseCount)
         {
-            //todo: write a full set of tests to document workflow
+            return SQLOperatorUtil::resolveValidationForATemplateSqlStatementAndReturnErrorMessage($structure, $clauseCount);
         }
     }
 ?>

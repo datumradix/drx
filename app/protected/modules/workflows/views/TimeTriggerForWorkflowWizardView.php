@@ -89,7 +89,7 @@
          */
         protected function renderFormContent()
         {
-            $content  = '<div>'; //todo: is this div necessary?
+            $content  = '<div>';
             $content .= $this->renderZeroComponentsContentAndWrapper();
             $content .= $this->renderAttributeSelectorContentAndWrapper();
             $content .= $this->renderTimeTriggerContentAndWrapper();

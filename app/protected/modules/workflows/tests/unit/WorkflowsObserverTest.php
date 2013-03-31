@@ -24,11 +24,17 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class WorkflowDocumentationTest extends WorkflowBaseTest
+    class WorkflowsObserverTest extends WorkflowBaseTest
     {
-        public function testAWorkflowProcess()
+        public function testProcessWorkflowAfterSave()
         {
-            //todo: write a full set of tests to document workflow
+            $model    = new WorkflowModelTestItem();
+            $event    = new CEvent($model);
+            $observer = new WorkflowsObserver();
+            $observer->setDepth(25);
+            $this->assertEquals(0, count(Notification::getAll()));
+            $observer->processWorkflowAfterSave($event);
+            $this->assertEquals(1, count(Notification::getAll()));
         }
     }
 ?>
