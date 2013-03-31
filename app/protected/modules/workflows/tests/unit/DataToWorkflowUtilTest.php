@@ -31,6 +31,7 @@
             parent::setUpBeforeClass();
             ContactsModule::loadStartingData();
             UserTestHelper::createBasicUser('bobby');
+            Currency::getAll(); //Ensure USD is present
         }
 
         public function testResolveOnSaveWorkflowByWizardPostData()
@@ -46,7 +47,7 @@
                                                       'moduleClassName'   => 'WorkflowsTestModule');
             DataToWorkflowUtil::resolveWorkflowByWizardPostData($workflow, $data, 'OnSaveWorkflowWizardForm');
             $this->assertEquals('someDescription',         $workflow->getDescription());
-            $this->assertTrue('isActive',                  $workflow->getIsActive());
+            $this->assertTrue($workflow->getIsActive());
             $this->assertEquals('someName',                $workflow->getName());
             $this->assertEquals(Workflow::TRIGGER_ON_NEW,  $workflow->getTriggerOn());
             $this->assertEquals('1 AND 2',                 $workflow->getTriggersStructure());
@@ -63,33 +64,12 @@
                                                       'triggersStructure' => '1 AND 2',
                                                       'moduleClassName'   => 'WorkflowsTestModule');
             DataToWorkflowUtil::resolveWorkflowByWizardPostData($workflow, $data, 'OnSaveWorkflowWizardForm');
-            $this->assertFalse('isActive',                  $workflow->getIsActive());
+            $this->assertFalse($workflow->getIsActive());
 
-        }
-
-        public function testResolveByTimeWorkflowByWizardPostData()
-        {
-         //todO: switch to byTime, and check timeTriggerAttribute... make sure that works
-            /**
-            $workflow = new Workflow();
-            $workflow->setType(Workflow::TYPE_ON_SAVE);
-            $data   = array();
-            $data['OnSaveWorkflowWizardForm'] = array('description'       => 'someDescription',
-                'name'              => 'someName',
-                'triggerOn'         => Workflow::TRIGGER_ON_NEW,
-                'triggersStructure' => '1 AND 2',
-                'moduleClassName'   => 'WorkflowsTestModule');
-            DataToWorkflowUtil::resolveWorkflowByWizardPostData($workflow, $data, 'OnSaveWorkflowWizardForm');
-            $this->assertEquals('someDescription',     $workflow->getDescription());
-            $this->assertEquals('someName',            $workflow->getName());
-            $this->assertEquals(Workflow::TRIGGER_ON_NEW,  $workflow->getTriggerOn());
-            $this->assertEquals('1 AND 2',             $workflow->getTriggersStructure());
-            $this->assertEquals('WorkflowsTestModule', $workflow->getModuleClassName());
-         * **/
         }
 
         /**
-         * @depends testResolveByTimeWorkflowByWizardPostData
+         * @depends testResolveOnSaveWorkflowByWizardPostData
          */
         public function testResolveTriggers()
         {
@@ -971,7 +951,7 @@
             $this->assertEquals(2,                           $emailMessageRecipients[7]->audienceType);
             $this->assertEquals(5,                           $emailMessageRecipients[7]->roleId);
             $this->assertTrue($emailMessageRecipients[8] instanceof DynamicTriggeredByUserWorkflowEmailMessageRecipientForm);
-            $this->assertEquals('DynamictriggeredByUser',      $emailMessageRecipients[8]->type);
+            $this->assertEquals('DynamicTriggeredByUser',      $emailMessageRecipients[8]->type);
             $this->assertEquals(3,                           $emailMessageRecipients[8]->audienceType);
             $this->assertTrue($emailMessageRecipients[9] instanceof StaticUserWorkflowEmailMessageRecipientForm);
             $this->assertEquals('StaticUser',                $emailMessageRecipients[9]->type);

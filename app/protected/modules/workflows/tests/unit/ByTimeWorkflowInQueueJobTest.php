@@ -26,9 +26,26 @@
 
     class ByTimeWorkflowInQueueJobTest extends WorkflowBaseTest
     {
-        //todo: test job. test use of chagneRequiredToProcess, make sure that carries through
-        //todo: test that time triggers do evaluate and work ok and actions/messages are processed properly.
-        //focus on coverage not integration testing.
-        //todo: test if a queue item relates to a workflow that was deleted. make sure exception handling is ok
+        public function testRun()
+        {
+            $model       = WorkflowTestHelper::createWorkflowModelTestItem('Green', '514');
+            $timeTrigger = array('attributeIndexOrDerivedType' => 'string',
+                                 'operator'                    => OperatorRules::TYPE_EQUALS,
+                                 'value'                       => '514',
+                                 'durationSeconds'             => '333');
+            $actions     = array(array('type' => ActionForWorkflowForm::TYPE_UPDATE_SELF,
+                                       ActionForWorkflowForm::ACTION_ATTRIBUTES =>
+                                            array('string' => array('shouldSetValue'    => '1',
+                                                  'type'   => WorkflowActionAttributeForm::TYPE_STATIC,
+                                                  'value'  => 'jason'))));
+            $savedWorkflow         = WorkflowTestHelper::createByTimeSavedWorkflow($timeTrigger, array(), $actions);
+            WorkflowTestHelper::createExpiredByTimeWorkflowInQueue($model, $savedWorkflow);
+
+            $this->assertEquals(1, count(ByTimeWorkflowInQueue::getAll()));
+            $job = new ByTimeWorkflowInQueueJob();
+            $this->assertTrue($job->run());
+            $this->assertEquals(0, count(ByTimeWorkflowInQueue::getAll()));
+            $this->assertEquals('jason', $model->string);
+        }
     }
 ?>
