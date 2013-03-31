@@ -24,31 +24,26 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class MashableInboxModule extends Module
+    class QQ extends Q
     {
-        public function getDependencies()
-        {
-            return array();
-        }
-
         public static function getDefaultMetadata()
         {
-            $metadata = array();
-            $metadata['global'] = array(
-                'tabMenuItems' => array(
-                    array(
-                        'label'               => Zurmo::t('MashableInboxModule', 'Inbox'),
-                        'url'                 => array('/mashableInbox/default'),
-                        'dynamicLabelContent' => 'eval:MashableUtil::renderUnreadCountForDynamicLabelContent()'
-                    ),
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'relations' => array(
+                    'q'           => array(RedBeanModel::HAS_ONE,  'Q'),
+                    'qRequired'   => array(RedBeanModel::HAS_ONE,  'Q', RedBeanModel::NOT_OWNED,
+                                           RedBeanModel::LINK_TYPE_SPECIFIC, 'eRequired'),
+                    'qUnique'     => array(RedBeanModel::HAS_ONE,  'Q', RedBeanModel::NOT_OWNED,
+                                           RedBeanModel::LINK_TYPE_SPECIFIC, 'eUnique'),
+                    'qMany'       => array(RedBeanModel::HAS_MANY, 'Q')
+                ),
+                'rules' => array(
+                    array('qRequired',    'required'),
+                    array('qUnique',      'unique'),
                 ),
             );
             return $metadata;
-        }
-
-        protected static function getSingularModuleLabel($language)
-        {
-            return Zurmo::t('MashableInboxModule', 'Inbox', array(), null, $language);
         }
     }
 ?>

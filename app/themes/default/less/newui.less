@@ -1161,7 +1161,7 @@ body > .ui-autocomplete{
     position: relative;
     height: 40px;
     display: block;
-	z-index: 0;
+	z-index: 10;
     .view-toolbar-container{
         z-index:222222;
         position:fixed !important;
@@ -1724,6 +1724,7 @@ td.empty{
         line-height: 135%;
         text-indent: 0;
         padding: 4px;
+	    word-break: normal;
     }
     select.multiple {
         padding: 4px 4px 4px 6px;
@@ -2058,30 +2059,6 @@ div.wide.form{
     .smaller();
 }
 
-.model-tag{
-    display: inline-block;
-    font-weight:400;
-    .smaller();
-    float: left;
-    margin-right: 5px;
-    margin-top: 1px;
-    span{
-        .radius(3px);
-        color:#fff;
-        padding:2px 4px;
-        line-height: 1;
-    }
-    &.mission span{
-        #gradient > .vertical(#1ABC9C, #16A085 ); //green
-    }
-    &.conversation span{
-        #gradient > .vertical(#34495E, #2C3E50 ); //dark
-    }
-    &.notification span{
-        #gradient > .vertical(#9B59B6, #8E44AD ); //purple
-    }
-}
-
 .last-comment{
     font-weight: 400;
     color:#666;
@@ -2295,18 +2272,6 @@ div.wide.form{
     .SecuredListView();
 }
 
-#MashableInboxActionBarForViews{
-    .view-toolbar ul:first-child > li > a {
-        border-left: none;
-    }
-    .search-view-0{
-        padding:0 15px 15px 15px;
-        .box-sizing();
-    }
-    .list-view-items-summary-clone{
-        margin-top:5px;
-    }
-}
 .filters-bar{
     .filter-portlet-model-bar();
     border: none;
@@ -3968,6 +3933,19 @@ div.hasHalfs{
     line-height:28px;
 }
 
+.LatestActivitiesForPortletView{
+	position: relative;
+	> div{
+		position: relative;
+		z-index: 1;
+	}
+	.toolbar-mbmenu {
+		position: absolute;
+		top: -35px;
+		z-index: 10;
+	}
+}
+
 .LatestActivitiesListView,
 .LatestActivitiesView{
     form{
@@ -4682,4 +4660,5 @@ div.hasHalfs{
 @import 'thread-view.less';
 @import 'email.less';
 @import 'reports.less';
+@import 'inbox.less';
 @import 'media-queries.less';
