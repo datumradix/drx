@@ -24,31 +24,11 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class MashableInboxModule extends Module
+    class Q extends A
     {
-        public function getDependencies()
+        public static function getSortAttributesByAttribute($attribute)
         {
-            return array();
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'tabMenuItems' => array(
-                    array(
-                        'label'               => Zurmo::t('MashableInboxModule', 'Inbox'),
-                        'url'                 => array('/mashableInbox/default'),
-                        'dynamicLabelContent' => 'eval:MashableUtil::renderUnreadCountForDynamicLabelContent()'
-                    ),
-                ),
-            );
-            return $metadata;
-        }
-
-        protected static function getSingularModuleLabel($language)
-        {
-            return Zurmo::t('MashableInboxModule', 'Inbox', array(), null, $language);
+            return array($attribute, 'junk', 'uniqueRequiredEmail');
         }
     }
 ?>
