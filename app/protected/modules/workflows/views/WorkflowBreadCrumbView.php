@@ -24,11 +24,17 @@
      * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
      ********************************************************************************/
 
-    class LeadStateStaticDropDownForWizardModelElement extends ContactStateStaticDropDownForWizardModelElement
+    /**
+     * View that renders workflows module breadcrumb content
+     */
+    class WorkflowBreadCrumbView extends BreadCrumbView
     {
-        public function getDropDownArray()
+        /**
+         * @return string
+         */
+        protected function getHomeLinkLabel()
         {
-            return LeadsUtil::getLeadStateDataFromStartingStateKeyedByIdAndLabelByLanguage(Yii::app()->language);
+            return Zurmo::t('WorkflowsModule', 'Workflows');
         }
     }
 ?>
