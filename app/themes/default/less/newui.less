@@ -1723,7 +1723,7 @@ td.empty{
         line-height: 24px;
         height:26px;
         .b-shadow(0 0 1px 1px rgba(153, 153, 153, 0.3));
-        .ie-shadow(#999999, 1, 15);
+        //.ie-shadow(#999999, 1, 15);
         width:100%;
         .box-sizing();
     }
@@ -1734,6 +1734,7 @@ td.empty{
         line-height: 135%;
         text-indent: 0;
         padding: 4px;
+	    word-break: normal;
     }
     select.multiple {
         padding: 4px 4px 4px 6px;
@@ -1907,6 +1908,7 @@ a.simple-link{
 
 /*=Popup Modals*/
 .ui-dialog{
+	width: 75%;
     overflow: visible;
     padding:0 !important;
     margin:0 !important;
