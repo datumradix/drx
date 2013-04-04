@@ -95,6 +95,7 @@
                     'account'          => array(RedBeanModel::HAS_ONE,   'Account'),
                     'industry'         => array(RedBeanModel::HAS_ONE,   'OwnedCustomField', RedBeanModel::OWNED,
                                                 RedBeanModel::LINK_TYPE_SPECIFIC, 'industry'),
+                    'products'         => array(RedBeanModel::MANY_MANY, 'Product'),
                     'opportunities'    => array(RedBeanModel::MANY_MANY, 'Opportunity'),
                     'secondaryAddress' => array(RedBeanModel::HAS_ONE,   'Address',          RedBeanModel::OWNED,
                                                 RedBeanModel::LINK_TYPE_SPECIFIC, 'secondaryAddress'),

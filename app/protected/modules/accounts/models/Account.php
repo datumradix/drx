@@ -31,6 +31,7 @@
             return self::getByNameOrEquivalent('name', $name);
         }
 
+        }
         public function __toString()
         {
             try
@@ -93,6 +94,7 @@
                     'accounts'         => array(RedBeanModel::HAS_MANY,             'Account'),
                     'billingAddress'   => array(RedBeanModel::HAS_ONE,              'Address',          RedBeanModel::OWNED,
                                                 RedBeanModel::LINK_TYPE_SPECIFIC, 'billingAddress'),
+                    'products'         => array(RedBeanModel::HAS_MANY,             'Product'),
                     'contacts'         => array(RedBeanModel::HAS_MANY,             'Contact'),
                     'industry'         => array(RedBeanModel::HAS_ONE,              'OwnedCustomField', RedBeanModel::OWNED,
                                                 RedBeanModel::LINK_TYPE_SPECIFIC, 'industry'),

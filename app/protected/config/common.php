@@ -340,6 +340,8 @@
             'notifications',
             'opportunities',
             'reports',
+            'products',
+            'productTemplates',
             'rssReader',
             'workflows',
             'socialItems',
