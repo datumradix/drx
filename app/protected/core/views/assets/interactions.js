@@ -52,7 +52,7 @@ $(window).ready(function(){
         var recentlyViewedHeight = 0;
 
         if($(window).width() > 960 ){
-        	console.log('resizing white area');
+        	//console.log('resizing white area');
         	//if login
          	if ( $('#LoginPageView').length > 0 ) {
              	appChromeHeight = 40 + $('#FooterView').outerHeight(true);
@@ -735,3 +735,36 @@ Autogrow textfields from https://github.com/rumpl/jquery.autogrow
         return this;
     };
 }(jQuery));
+
+
+// query string related functions
+$.extend({
+    getUrlVars: function() {
+        var vars = [], hash;
+        var q = document.URL.split('?')[1];
+        if(q != undefined){
+            q = q.split('&');
+            for(var i = 0; i < q.length; i++){
+                hash = q[i].split('=');
+                vars.push(hash[1]);
+                vars[hash[0]] = hash[1];
+            }
+        }
+        return vars;
+    },
+    getUrlVar: function(name) {
+        return $.getUrlVars()[name];
+    },
+    hasActiveAjaxRequests: function() {
+        return ($.active > 0);
+    }
+});
+
+// TODO: @Shoaibi: Medium: Ask Nabeel/Sergio on extending buttonset widget to add this functionality before _create
+function createButtonSetIfNotAlreadyExist(qualifier, classFlag) {
+    classFlag = typeof classFlag !== 'undefined' ? classFlag : 'ui-buttonset';
+    if ($(qualifier).hasClass(classFlag)) {
+        return false;
+    }
+    $(qualifier).buttonset();
+}

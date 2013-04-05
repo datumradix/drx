@@ -128,6 +128,7 @@
                             }
                             var data = '' + actionId + '=' + '&selectAll=' + selectAll + '&ajax=&' + pageVarName + '=1';
                             url = $.param.querystring(options.url, data);
+                            url += '" . $this->resolveAdditionalQueryStringData() ."';
                             window.location.href = url;
                             return false;
                         }
@@ -188,6 +189,11 @@
                         );
                     ");
             }
+        }
+
+        protected function resolveAdditionalQueryStringData()
+        {
+            return null;
         }
 
         protected function registerMenuScripts()
@@ -272,20 +278,14 @@
 
         protected function getListViewGridId()
         {
-            if (!isset($this->params['listViewGridId']))
-            {
-                throw new NotSupportedException();
-            }
-            return $this->params['listViewGridId'];
+            // TODO: @Shoaibi/@Jason: Low: Create a common parent for Element and ActionElement, put this there.
+            return ArrayUtil::getArrayValueWithExceptionIfNotFound($this->params, 'listViewGridId');
         }
 
         protected function getPageVarName()
         {
-            if (!isset($this->params['pageVarName']))
-            {
-                throw new NotSupportedException();
-            }
-            return $this->params['pageVarName'];
+            // TODO: @Shoaibi/@Jason: Low: Create a common parent for Element and ActionElement, put this there.
+            return ArrayUtil::getArrayValueWithExceptionIfNotFound($this->params, 'pageVarName');
         }
 
         protected function getDefaultRoute()
