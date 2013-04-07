@@ -1,0 +1,197 @@
+/*Upload Files Box (in selected account, in Note)*/
+.file-upload-box{
+	.box-sizing();
+	padding-left:0;
+	margin:0 !important;
+    width: 100%;
+    > .ui-widget{
+        width:100%;
+    }
+	div{
+		margin-left:0 !important;	
+	}
+	.fileinput-button{
+		width:100%;
+	}
+	.ui-icon-plusthick{	
+		++.z-button;
+		padding:0 5px;
+		&:after{
+			content:"Y";
+			.symbly(20px);
+		}
+	}
+}
+
+.add-label{
+    font-weight:normal !important;
+}
+
+.show-file-upload-box{
+    position: relative;
+    bottom:-18px;
+    z-index: 5;
+    font-weight: normal;
+    .smaller();
+}
+
+#CommentInlineEditForModelView{
+    .fileupload-content{
+        width: 100%;
+        td.name{
+            padding:5px 0 0 0 !important;
+        }
+    }
+}
+
+.files{
+    font-size: 11px;
+    margin-top:5px;
+    float: left !important;
+    td{
+        padding:2px 0 !important;
+        vertical-align: middle;
+        font-weight: 400 !important;
+    }
+    .ui-state-error td{
+        color: #CC0000;
+        font-weight: bold;
+    }
+}
+
+.file-size{
+    font-size: 10px;
+    margin-left: 5px;
+    color:#999;
+}
+
+
+.template-upload{
+    .name{
+        position:relative;
+    }
+    .z-spinner{
+        position:relative;
+        float:left;
+        display: block;
+        margin-top:-1px;
+    }
+}
+
+.upload-actions{
+    //display: none;
+    float: right;
+    .icon-delete{
+        background:none;
+        border:none;
+        cursor: pointer;
+        //++.themeColor;
+        line-height: 16px;
+        margin-top: -2px;
+        span{
+            display: none;
+        }
+    }
+    .icon-delete:before{
+        margin:0;
+        top:0;
+        cursor: pointer;
+        .opacity(25);
+    }
+    .icon-delete:hover:before{
+        .opacity(100);
+    }
+    button.start,
+    button.cancel{
+        cursor: pointer;
+        border: none;
+        .radius(4px);
+        margin: 0 0 0 4px;
+        color: #fff;
+        font-weight: normal;
+        background:none;
+        &:hover{
+            .b-shadow(0 0 1px 0 #333);
+        }
+        span{
+            display:none;
+            padding:2px;
+            font-size: 10px !important;
+            line-height: 1;
+        }
+        .ui-button-text{
+            display:block;
+            .radius(4px);
+            span{
+                display:block;
+                padding:1px;
+            }
+        }
+    }
+    button.start span{
+        #gradient > .vertical(#97c43d, #6fa82d );
+    }
+    button.cancel span{
+        #gradient > .vertical(#c43d53, #a82d31 );
+    }
+}
+
+.addfileinput-button {
+	position: relative;
+	overflow: hidden;
+	float: left;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 11px;
+    font-weight: normal;
+    padding: 2px 0;
+    span{
+        cursor: pointer;
+        .zButton;
+        .b-shadow(0 0 2px 0 rgba(153, 153, 153, 0.15));
+        .symbly(36px);
+        font-size: 24px;
+        padding: 0 6px !important;
+        margin:0 5px 0 0 !important;
+        position: relative;
+        top: 2px;
+        background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
+    }
+    input {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        border: solid red;
+        border-width: 0 0 100px 200px;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        -moz-transform: translate(-300px, 0) scale(4);
+        direction: ltr;
+        cursor: pointer;
+        height: 30px;
+        width: auto;
+    }
+}
+
+.fileupload-buttonbar{
+    position:relative;
+}
+
+.max-upload-size{
+    .field-description();
+    margin: 9px 0 0 10px;
+}
+
+.ImportWizardView {
+    .files{
+        margin-top:15px;
+    }
+    .fileinput-button input {
+    	-moz-transform: translate(-500px, 0) scale(6);
+    }
+}
+
+.fileupload-buttonbar .btn, .fileupload-buttonbar .toggle {
+	margin-bottom: 5px;
+}
