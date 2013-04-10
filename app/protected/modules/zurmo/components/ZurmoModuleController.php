@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -155,7 +165,6 @@
             assert('$stickySearchKey == null || is_string($stickySearchKey)');
             $modelClassName        = $this->getModelName();
             $searchFormClassName   = static::getSearchFormClassName();
-            $pageSize              = null;
             $model                 = new $modelClassName(false);
             if ($searchFormClassName != null)
             {
@@ -167,13 +176,13 @@
             }
             $stateMetadataAdapterClassName = $this->getModule()->getStateMetadataAdapterClassName();
             $dataProvider                  = $this->getDataProviderByResolvingSelectAllFromGet(
-                                             $searchForm, $pageSize, Yii::app()->user->userModel->id,
+                                             $searchForm, null, Yii::app()->user->userModel->id,
                                              $stateMetadataAdapterClassName, $stickySearchKey);
             if (!$dataProvider)
             {
                 $idsToExport = array_filter(explode(",", trim($_GET['selectedIds'], " ,"))); // Not Coding Standard
             }
-            $totalItems = $this->getSelectedRecordCountByResolvingSelectAllFromGet($dataProvider, false);
+            $totalItems = static::getSelectedRecordCountByResolvingSelectAllFromGet($dataProvider, false);
             $headerData = array();
             $data       = array();
             if ($totalItems > 0)
@@ -183,6 +192,7 @@
                     // Output csv file directly to user browser
                     if ($dataProvider)
                     {
+                        $dataProvider->getPagination()->setPageSize($totalItems);
                         $modelsToExport = $dataProvider->getData();
                         if(count($modelsToExport) > 0)
                         {
@@ -232,6 +242,7 @@
                 {
                     if ($dataProvider)
                     {
+                        $dataProvider->getPagination()->setPageSize($totalItems);
                         $serializedData = serialize($dataProvider);
                     }
                     else
@@ -244,7 +255,7 @@
                     $exportItem->isCompleted     = 0;
                     $exportItem->exportFileType  = 'csv';
                     $exportItem->exportFileName  = $this->getModule()->getName();
-                    $exportItem->modelClassName = $modelClassName;
+                    $exportItem->modelClassName  = $modelClassName;
                     $exportItem->serializedData  = $serializedData;
                     $exportItem->save();
                     $exportItem->forget();
