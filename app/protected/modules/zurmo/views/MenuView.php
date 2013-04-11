@@ -49,8 +49,8 @@
             assert('is_int($showCount)');
             $this->items = $items;
             $this->useMinimalDynamicLabelMbMenu = $useMinimalDynamicLabelMbMenu;
-            $this->cssClasses = $this->resolveMenuClassForNoHiddenItems();
             $this->showCount  = $showCount;
+            $this->cssClasses = $this->resolveMenuClassForNoHiddenItems();
         }
 
         /**
@@ -76,7 +76,9 @@
             $cClipWidget = new CClipWidget();
             $cClipWidget->beginClip("Tabs");
             $cClipWidget->widget($widgetPath, array(
-                'items' => static::resolveForHiddenItems($this->items, $this->showCount)
+                'items'         => static::resolveForHiddenItems($this->items, $this->showCount),
+                'labelPrefix'   => 'em',
+                'linkPrefix'    => 'span',
             ));
             $cClipWidget->endClip();
             $content  = $cClipWidget->getController()->clips['Tabs'];

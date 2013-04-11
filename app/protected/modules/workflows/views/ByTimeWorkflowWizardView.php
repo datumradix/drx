@@ -123,7 +123,7 @@
                             $('#' + rowData.row.toString() + ' .toggle-me').toggle();
                             $('#' + rowData.row.toString() + ' .edit-dynamic-row-link').toggle();
                             $('#' + rowData.row.toString()).siblings().show();
-                            $('#actionsNextLink').show();
+                            $('#actionsNextLink').parent().parent().show();
                         }
 
                         if(linkId == '" . GeneralDataForWorkflowWizardView::getNextPageLinkId() . "')
@@ -249,10 +249,13 @@
                                  $("input:radio[name=\"ByTimeWorkflowWizardForm[moduleClassName]\"]:checked").val()',
                 'url'     =>  $url,
                 'beforeSend' => 'js:function(){
+                console.log("sending");
                         //$("#' . $inputDivId . '").html("<span class=\"loading z-spinner\"></span>");
                         //attachLoadingSpinner("' . $inputDivId . '", true, "dark");
                         }',
                 'success' => 'js:function(data){
+                                console.log("receiving");
+
                                 $(".' . TimeTriggerForWorkflowWizardView::getZeroComponentsClassName() . '").hide();
                                 $("#time-trigger-container").show();
                                 $("#' . $inputDivId . ' ul").html(data);
@@ -262,7 +265,8 @@
             {
                 if($('#" . $id . "').val() == '')
                 {
-                    $('#" . $inputDivId . "').html('');
+                    $('#" . $inputDivId . " ul').html('');
+                    $('.". TimeTriggerForWorkflowWizardView::getZeroComponentsClassName() . "').show();
                 }
                 else
                 {
