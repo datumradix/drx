@@ -34,7 +34,37 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ZurmoDataProviderBaseTest extends DataProviderBaseTest
+    /**
+     * Filter used by controllers to ascertain whether
+     * the the user interface is resolved to mobile or not.  If it is then it should not allow the user to continue to
+     * the view because administrative views are not enabled for mobile.
+     */
+    class AdminViewMobileCheckControllerFilter extends CFilter
     {
+        public $moduleClassName;
+
+        public $rightName;
+
+        protected function preFilter($filterChain)
+        {
+            if (!Yii::app()->userInterface->isResolvedToMobile())
+            {
+                return true;
+            }
+            static::processMobileAccessFailure();
+            Yii::app()->end(0, false);
+        }
+
+        protected static function processMobileAccessFailure()
+        {
+            static::renderMobileAccessFailureContent();
+        }
+
+        protected static function renderMobileAccessFailureContent()
+        {
+            $messageView = new AccessFailureView(Zurmo::t('Zurmo', 'This page is not available in mobile mode.'));
+            $view        = new AccessFailurePageView($messageView);
+            echo $view->render();
+        }
     }
 ?>

@@ -558,7 +558,7 @@
             $this->assertNotEquals($resolvedContent, $content);
             $this->assertEquals($compareContent, $resolvedContent);
             $this->assertEmpty($this->invalidTags);
-            }
+        }
 
         /**
          * @depends testPrimaryEmailMergeTag
@@ -588,7 +588,7 @@
                                                 '[[PRIMARY^ADDRESS__STATE]] [[PRIMARY^ADDRESS__POSTAL^CODE]] ' .
                                                 '[[PRIMARY^ADDRESS__COUNTRY]]';
             $compareContent                 = 'address: SomeStreet1, SomeStreet2, SomeCity, SomeState, 1111, SomeCountry' .
-                                                ' SomeStreet1 SomeStreet2 SomeCity SomeState 1111 SomeCountry';
+                                            ' SomeStreet1 SomeStreet2 SomeCity SomeState 1111 SomeCountry';
             $mergeTagsUtil                  = MergeTagsUtilFactory::make(EmailTemplate::TYPE_CONTACT, null, $content);
             $this->assertTrue($mergeTagsUtil instanceof MergeTagsUtil);
             $this->assertTrue($mergeTagsUtil instanceof ContactMergeTagsUtil);

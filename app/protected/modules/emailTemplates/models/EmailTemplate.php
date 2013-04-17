@@ -52,10 +52,10 @@
 
         public static function getTypeDropDownArray()
         {
-             return array(
-                 self::TYPE_WORKFLOW     => Zurmo::t('WorkflowsModule', 'Workflow'),
-                 self::TYPE_CONTACT      => Zurmo::t('ContactsModule',  'Contact'),
-             );
+            return array(
+                self::TYPE_WORKFLOW     => Zurmo::t('WorkflowsModule', 'Workflow'),
+                self::TYPE_CONTACT      => Zurmo::t('ContactsModule',  'Contact'),
+            );
         }
 
         public static function renderNonEditableTypeStringContent($type)
@@ -111,7 +111,7 @@
                     array('type',                       'required'),
                     array('type',                       'type',    'type' => 'integer'),
                     array('type',                       'numerical', 'min' => self::TYPE_WORKFLOW,
-                                                                     'max' => self::TYPE_CONTACT),
+                        'max' => self::TYPE_CONTACT),
                     array('modelClassName',             'required'),
                     array('modelClassName',             'type',   'type' => 'string'),
                     array('modelClassName',             'length', 'max' => 64),
@@ -202,9 +202,9 @@
                         foreach ($invalidTags as $tag)
                         {
                             $errorMessage = EmailTemplateHtmlAndTextContentElement::renderModelAttributeLabel($attribute) .
-                                            ': Invalid MergeTag({mergeTag}) used.';
+                                ': Invalid MergeTag({mergeTag}) used.';
                             $this->addError($attribute, Zurmo::t('EmailTemplatesModule', $errorMessage,
-                                                        array('{mergeTag}' => $tag)));
+                                array('{mergeTag}' => $tag)));
                         }
                     }
                     else
@@ -253,6 +253,11 @@
         public static function getGamificationRulesType()
         {
             return 'EmailTemplateGamification';
+        }
+
+        public static function hasReadPermissionsOptimization()
+        {
+            return true;
         }
 
         protected static function translatedAttributeLabels($language)

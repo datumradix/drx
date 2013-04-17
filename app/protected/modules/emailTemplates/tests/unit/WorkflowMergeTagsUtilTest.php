@@ -232,10 +232,10 @@
             self::$emailTemplate->tagCloud->values->add($tagCustomFieldValue4);
 
             self::$content                                      = 'Current: [[STRING]] [[FIRST^NAME]] [[LAST^NAME]] ' .
-                                                                    '[[PHONE]] Old: [[WAS%STRING]] [[WAS%FIRST^NAME]] ' .
-                                                                    '[[WAS%LAST^NAME]] [[WAS%PHONE]]';
+                '[[PHONE]] Old: [[WAS%STRING]] [[WAS%FIRST^NAME]] ' .
+                '[[WAS%LAST^NAME]] [[WAS%PHONE]]';
             self::$compareContent                               = 'Current: def Jane Bond 66778899 Old: abc James ' .
-                                                                    'Jackson 1122334455';
+                'Jackson 1122334455';
         }
 
         public static function tearDownAfterClass()
@@ -252,7 +252,7 @@
             parent::setUp();
             Yii::app()->user->userModel                     = self::$super;
             $this->mergeTagsUtil                            = MergeTagsUtilFactory::make(EmailTemplate::TYPE_WORKFLOW,
-                                                                                                    null, self::$content);
+                null, self::$content);
             $this->invalidTags                              = array();
         }
 

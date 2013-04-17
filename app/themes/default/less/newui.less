@@ -1705,9 +1705,10 @@ form,
 
 .xhtml-validation-info,
 .performance-info{
-	text-align: right;
+	text-align: left;
 	margin:0 3% 15px 3%;
 	font-style: italic;
+	.smaller();
 }
 
 #credit-link{
@@ -2167,6 +2168,20 @@ a.simple-link{
 }
 
 /*=Popup Modals*/
+
+/*
+@-webkit-keyframes growDialog {
+	to { -webkit-transform:scale(1, 1) }
+}
+*/
+.openingModal{
+	-o-animation: growDialog 0.25s;
+	-ms-animation: growDialog 0.25s;
+	-moz-animation: growDialog 0.25s;
+	-webkit-animation: growDialog 0.25s;
+	animation: growDialog 0.25s;
+}
+
 .ui-dialog{
 	min-width: 600px;
 	max-width: 50%;
@@ -2721,6 +2736,10 @@ div.wide.form{
 	}
 	#clear-search-linkmodal{
 		margin-left:10px;
+		color: #fff;
+		padding: 3px;
+		.radius(3px);
+		.smaller();
 	}
 	.items{
 		border: none;
