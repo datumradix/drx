@@ -108,7 +108,9 @@
                                 ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'imapHost'));
             $this->assertEquals(Yii::app()->params['emailTestAccounts']['dropboxImapSettings']['imapUsername'],
                                 ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'imapUsername'));
-            $this->assertEquals(Yii::app()->params['emailTestAccounts']['dropboxImapSettings']['imapPassword'],
+            //$this->assertEquals(Yii::app()->params['emailTestAccounts']['dropboxImapSettings']['imapPassword'],
+            //                    ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'imapPassword'));
+            $this->assertFalse(Yii::app()->params['emailTestAccounts']['dropboxImapSettings']['imapPassword'] ==
                                 ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'imapPassword'));
             $this->assertEquals(Yii::app()->params['emailTestAccounts']['dropboxImapSettings']['imapPort'],
                                 ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'imapPort'));
