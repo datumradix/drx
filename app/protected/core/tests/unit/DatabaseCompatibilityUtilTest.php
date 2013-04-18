@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     class DatabaseCompatibilityUtilTest extends BaseTest
@@ -52,6 +62,12 @@
             $this->testDatabasePassword          = Yii::app()->db->password;
             $this->superUserPassword = 'super';
             $this->databaseBackupTestFile = INSTANCE_ROOT . '/protected/runtime/databaseBackupTest.sql';
+        }
+
+        public static function setUpBeforeClass()
+        {
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
         }
 
         public function setup()
@@ -399,7 +415,7 @@
                                                                                              $this->temporaryDatabaseUsername,
                                                                                              $this->temporaryDatabasePassword,
                                                                                              $this->temporaryDatabasePort);
-            $this->assertGreaterThan(0, $maxSpRecursionDepth);
+            $this->assertGreaterThanOrEqual(0, $maxSpRecursionDepth);
         }
 
         public function testGetDatabaseThreadStackValue()
@@ -575,9 +591,15 @@
 
         public function testGetTableRowsCountTotal()
         {
-            R::exec("create table temptesttable (temptable_id int(11) unsigned not null)");
-            $tableRowsCountTotal = DatabaseCompatibilityUtil::getTableRowsCountTotal();
-            $this->assertGreaterThan(0, $tableRowsCountTotal);
+            if (RedBeanDatabase::getDatabaseType() == 'mysql')
+            {
+                $tableRowsCountTotal = DatabaseCompatibilityUtil::getTableRowsCountTotal();
+                R::exec("create table temptesttable (temptable_id int(11) unsigned not null)");
+                R::exec("insert into temptesttable (temptable_id) values (2)");
+                R::exec("insert into temptesttable (temptable_id) values (9)");
+                $tableRowsCountTotalAfterQuery = DatabaseCompatibilityUtil::getTableRowsCountTotal();
+                $this->assertEquals(2, $tableRowsCountTotalAfterQuery - $tableRowsCountTotal);
+            }
         }
 
         /**
@@ -702,6 +724,28 @@
                     // Do nothing
                 }
             }
+        }
+
+        public function testMakeTimeZoneAdjustmentContent()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $this->assertNull(DatabaseCompatibilityUtil::makeTimeZoneAdjustmentContent());
+            $tempTimeZone                         = Yii::app()->user->userModel->timeZone;
+
+            Yii::app()->user->userModel->timeZone = 'America/Chicago';
+            //Deal with daylight savings time.
+            $timeZoneObject  = new DateTimeZone(Yii::app()->user->userModel->timeZone);
+            $offsetInSeconds = $timeZoneObject->getOffset(new DateTime());
+            $this->assertTrue($offsetInSeconds == -18000 || $offsetInSeconds == -21600);
+
+            $compareContent                       = ' - INTERVAL ' . abs($offsetInSeconds) . ' SECOND';
+            $this->assertEquals($compareContent, DatabaseCompatibilityUtil::makeTimeZoneAdjustmentContent());
+
+            Yii::app()->user->userModel->timeZone = 'Asia/Tokyo';
+            $compareContent                       = ' + INTERVAL 32400 SECOND';
+            $this->assertEquals($compareContent, DatabaseCompatibilityUtil::makeTimeZoneAdjustmentContent());
+
+            Yii::app()->user->userModel->timeZone = $tempTimeZone;
         }
     }
 ?>

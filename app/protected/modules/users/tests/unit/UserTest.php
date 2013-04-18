@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     class UserTest extends ZurmoBaseTest
@@ -36,6 +46,46 @@
         {
             parent::setUp();
             Yii::app()->user->userModel = User::getByUsername('super');
+        }
+
+        public function testEmailUniquenessValidation()
+        {
+            $user = User::getByUsername('super');
+            Yii::app()->user->userModel = $user;
+
+            $user = new User();
+            $user->username = 'usera';
+            $user->lastName = 'UserA';
+            $user->setPassword('myuser');
+            $emailAddress = 'userA@example.com';
+            $user->primaryEmail->emailAddress = $emailAddress;
+            $saved = $user->save();
+            $this->assertTrue($saved);
+
+            $user2 = new User();
+            $user2->username = 'userb';
+            $user2->lastName = 'UserB';
+            $user2->setPassword('myuser');
+            $emailAddress = 'userA@example.com';
+            $user2->primaryEmail->emailAddress = $emailAddress;
+            $saved = $user2->save();
+            $this->assertFalse($saved);
+
+            $validationErrors = $user2->getErrors();
+            $this->assertTrue(count($validationErrors) > 0);
+
+            // Todo: fix array keys below
+            $this->assertTrue(isset($validationErrors['primaryEmail']));
+            $this->assertTrue(isset($validationErrors['primaryEmail']['emailAddress']));
+            $this->assertEquals('Email address already exists in system.', $validationErrors['primaryEmail']['emailAddress'][0]);
+
+            // Try to save user without email address
+            $user3 = new User();
+            $user3->username = 'userc';
+            $user3->lastName = 'UserC';
+            $user3->setPassword('myuser');
+            $saved = $user3->save();
+            $this->assertTrue($saved);
         }
 
         public function testSetTitleValuesAndRetrieveTitleValuesFromUser()
@@ -552,6 +602,7 @@
             $user->manager                    = User::getByUsername('bill');
             $user->setPassword('Senhor');
             $user->groups->add($group);
+            $user->save();
             $this->assertTrue($user->save());
 
             $titleId          = $user->title->id;
@@ -1006,6 +1057,55 @@
                     md5(strtolower(trim($emailAddress))) .
                     "?s=250&amp;d=identicon&amp;r=g"; // Not Coding Standard
             $this->assertContains($avatarUrl, $user->getAvatarImage(2500));
+            unset($user);
+        }
+
+        /**
+         * @expectedException NotSupportedException
+         */
+        public function testDeleteLastUserInSuperAdministratorsGroup()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+
+            $superAdminGroup = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
+            //At this point the super administrator is part of this group
+            $this->assertEquals(1, $superAdminGroup->users->count());
+
+            //Now try to delete super user, It should not work
+            $this->assertFalse(Yii::app()->user->userModel->delete());
+            $this->fail();
+        }
+
+        /*
+        * test for checking isActive attribute
+        */
+        public function testIsActiveOnUserSave()
+        {
+            $user = new User();
+            $user->username           = 'activeuser';
+            $user->title->value       = 'Mr.';
+            $user->firstName          = 'My';
+            $user->lastName           = 'activeuserson';
+            $user->setPassword('myuser');
+            $this->assertTrue($user->save());
+            unset($user);
+
+            $user = User::getByUsername('activeuser');
+            $this->assertEquals(1, $user->isActive);
+            unset($user);
+
+            //Change the user's status to inactive and confirm the changes in rights and isActive attribute.
+            $user = User::getByUsername('activeuser');
+            $user->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB, RIGHT::DENY);
+            $this->assertTrue($user->save());
+            $this->assertEquals(0, $user->isActive);
+            unset($user);
+
+            //Now change the user's status back to active.
+            $user = User::getByUsername('activeuser');
+            $user->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB, RIGHT::ALLOW);
+            $this->assertTrue($user->save());
+            $this->assertEquals(1, $user->isActive);
             unset($user);
         }
     }

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -66,13 +76,12 @@
 
             //Change email settings
             $this->resetGetArray();
-            $this->resetPostArray();
             $this->setPostArray(array('EmailSmtpConfigurationForm' => array(
                                     'host'                              => 'abc',
                                     'port'                              => '565',
                                     'username'                          => 'myuser',
                                     'password'                          => 'apassword',
-                                    'security'                          => '',
+                                    'security'                          => 'ssl',
                                     'userIdOfUserToSendNotificationsAs' => $super2->id)));
             $this->runControllerWithRedirectExceptionAndGetContent('emailMessages/default/configurationEditOutbound');
             $this->assertEquals('Email configuration saved successfully.', Yii::app()->user->getFlash('notification'));
@@ -94,7 +103,6 @@
 
             //Change email settings
             $this->resetGetArray();
-            $this->resetPostArray();
             $this->setPostArray(array('EmailArchivingConfigurationForm' => array(
                                     'imapHost'                          => 'mail.example.com',
                                     'imapUsername'                      => 'test@example.com',
@@ -107,10 +115,48 @@
 
             $this->assertEquals('mail.example.com',     Yii::app()->imap->imapHost);
             $this->assertEquals('test@example.com',     Yii::app()->imap->imapUsername);
-            $this->assertEquals('abcd',                 Yii::app()->imap->imapPassword);
-            $this->assertEquals('143',                  Yii::app()->imap->imapPort);
-            $this->assertEquals('0',                    Yii::app()->imap->imapSSL);
-            $this->assertEquals('INBOX',                Yii::app()->imap->imapFolder);
+            $this->assertEquals('abcd',     Yii::app()->imap->imapPassword);
+            $this->assertEquals('143',     Yii::app()->imap->imapPort);
+            $this->assertEquals('0',     Yii::app()->imap->imapSSL);
+            $this->assertEquals('INBOX',     Yii::app()->imap->imapFolder);
+        }
+
+        public function testSuperUserModifyEmailArchivingConfigurationImapWithValidation()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            //checking with blank values for required fields
+            $this->resetGetArray();
+            $this->setPostArray(array('EmailArchivingConfigurationForm' => array(
+                                    'imapHost'                          => '',
+                                    'imapUsername'                      => '',
+                                    'imapPassword'                      => '',
+                                    'imapPort'                          => '',
+                                    'imapSSL'                           => '0',
+                                    'imapFolder'                        => '')));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('emailMessages/default/configurationEditArchiving');
+            $this->assertFalse(strpos($content, 'Host cannot be blank.') === false);
+            $this->assertFalse(strpos($content, 'Username cannot be blank.') === false);
+            $this->assertFalse(strpos($content, 'Password cannot be blank.') === false);
+            $this->assertFalse(strpos($content, 'Port cannot be blank.') === false);
+            $this->assertFalse(strpos($content, 'Folder cannot be blank.') === false);
+        }
+
+        public function testSuperUserModifyEmailSMTPConfigurationOutboundWithValidation()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $super2 = User::getByUsername('super2');
+
+            //checking with blank values for required fields
+            $this->resetGetArray();
+            $this->setPostArray(array('EmailSmtpConfigurationForm' => array(
+                                    'host'                              => '',
+                                    'port'                              => '',
+                                    'username'                          => 'myuser',
+                                    'password'                          => 'apassword',
+                                    'userIdOfUserToSendNotificationsAs' => $super2->id)));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('emailMessages/default/configurationEditOutbound');
+            $this->assertFalse(strpos($content, 'Host cannot be blank.') === false);
+            $this->assertFalse(strpos($content, 'Port cannot be blank.') === false);
         }
     }
 ?>

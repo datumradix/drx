@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     class ConversationDetailsView extends SecuredDetailsView
@@ -54,10 +64,20 @@
         protected function renderRightSideContent($form = null)
         {
             assert('$form == null');
-            $content  = '<div id="right-side-edit-view-panel"><div class="buffer"><div>';
+            $content  = '<div class="right-side-edit-view-panel" class="thred-info"><div class="buffer">';
+            $content .= $this->renderConversationOpenCloseElement();
+            $content .= '<div>';
+            $content .= $this->renderConversationRelatedToAndAttachmentsContent();
             $content .= "<h3>".Zurmo::t('ConversationsModule', 'Participants') . '</h3>';
             $content .= $this->renderConversationParticipantsContent();
             $content .= '</div></div></div>';
+            return $content;
+        }
+
+        protected function renderConversationOpenCloseElement()
+        {
+            $element = new ConversationOpenCloseElement($this->model, 'isClosed');
+            $content = $element->render();
             return $content;
         }
 
@@ -88,6 +108,21 @@
             return $content;
         }
 
+        protected function renderConversationRelatedToAndAttachmentsContent()
+        {
+            $element  = new ConversationItemsElement($this->model, 'null');
+            $element->nonEditableTemplate = '<td colspan="{colspan}">{content}</td>';
+            $contentForTable = $element->render();
+            if ($this->model->files->count() > 0)
+            {
+                $element  = new FilesElement($this->model, 'null');
+                $element->nonEditableTemplate = '<td colspan="{colspan}" class="conversation-related-Attachments">{content}</td>';
+                $contentForTable .= $element->render();
+            }
+            $content = ZurmoHtml::tag('table', array('class' => 'thred-details'), $contentForTable);
+            return $content;
+        }
+
         protected function renderConversationContent()
         {
             $userUrl  = Yii::app()->createUrl('/users/default/details', array('id' => $this->model->createdByUser->id));
@@ -111,16 +146,6 @@
             $date = '<span class="comment-details"><strong>'. DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
                                               $this->model->createdDateTime, 'long', null) . '</strong></span>';
             $content .= $date;
-            if ($this->model->files->count() > 0)
-            {
-                $element  = new FilesElement($this->model, 'null');
-                $element->nonEditableTemplate = '<div>{content}</div>';
-                $content .= '<div><strong>' . Zurmo::t('ConversationsModule', 'Attachments'). '</strong></div>';
-                $content .= $element->render();
-            }
-            $element  = new ConversationItemsElement($this->model, 'null');
-            $element->nonEditableTemplate = '<div>{content}</div>';
-            $content .= $element->render();
             $content .= '</div>';
             return ZurmoHtml::tag('div', array('id' => 'ModelDetailsSummaryView'), $content);
         }
@@ -154,7 +179,12 @@
             $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
                                                       $urlParameters, $uniquePageId);
             $content      .= $inlineView->render();
-            return ZurmoHtml::tag('div', array('id' => 'CommentInlineEditForModelView'), $content);
+            $htmlOptions = array('id' => 'CommentInlineEditForModelView');
+            if ($this->model->isClosed)
+            {
+                $htmlOptions['style'] = 'display: none;';
+            }
+            return ZurmoHtml::tag('div', $htmlOptions, $content);
         }
 
         protected function getPortletDetailsUrl()
