@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -46,52 +56,47 @@
             return $link . $details;
         }
 
-        /**
-         * Given a mission and a user, mark ownerHasReadLatest true if the user is the owner, if the user is the takenByUser
-         * then mark the takenByUserHasReadLatest as true, otherwise do nothing.
-         * @param Mission $mission
-         * @param User $user
-         */
         public static function markUserHasReadLatest(Mission $mission, User $user)
         {
-            assert('$mission->id > 0');
-            assert('$user->id > 0');
-            $save = false;
-            if ($user == $mission->owner)
-            {
-                if (!$mission->ownerHasReadLatest)
-                {
-                    $mission->ownerHasReadLatest = true;
-                    $save                        = true;
-                }
-            }
-            elseif ($user == $mission->takenByUser)
-            {
-                if (!$mission->takenByUserHasReadLatest)
-                {
-                    $mission->takenByUserHasReadLatest = true;
-                    $save                               = true;
-                }
-            }
-            if ($save)
-            {
-                $mission->save();
-            }
+            $mashableUtilRules  = MashableUtil::createMashableInboxRulesByModel('Mission');
+            $hasReadLatest      = $mashableUtilRules->markUserAsHavingReadLatestModel($mission, $user);
+            return $hasReadLatest;
+        }
+
+        public static function markUserHasUnreadLatest(Mission $mission, User $user)
+        {
+            $mashableUtilRules  = MashableUtil::createMashableInboxRulesByModel('Mission');
+            $hasReadLatest      = $mashableUtilRules->markUserAsHavingUnreadLatestModel($mission, $user);
+            return $hasReadLatest;
         }
 
         public static function hasUserReadMissionLatest(Mission $mission, User $user)
         {
-            assert('$mission->id > 0');
-            assert('$user->id > 0');
-            if ($user->isSame($mission->owner))
+            $mashableUtilRules  = MashableUtil::createMashableInboxRulesByModel('Mission');
+            $hasReadLatest      = $mashableUtilRules->hasUserReadLatest($mission, $user);
+            return $hasReadLatest;
+        }
+
+        public static function markAllUserHasReadLatestExceptOwnerAndTakenBy(Mission $mission)
+        {
+            $users = User::getAll();
+            foreach ($users as $user)
             {
-                return $mission->ownerHasReadLatest;
+                if ($user->getClassId('Item') !== $mission->owner->getClassId('Item') &&
+                           $user->getClassId('Item') !== $mission->takenByUser->getClassId('Item') )
+                {
+                    static::markUserHasReadLatest($mission, $user);
+                }
             }
-            elseif ($user == $mission->takenByUser)
+        }
+
+        public static function markAllUserHasUnreadLatest(Mission $mission)
+        {
+            $users = static::resolvePeopleToSendNotificationToOnNewMission($mission);
+            foreach ($users as $user)
             {
-                return $mission->takenByUserHasReadLatest;
+                static::markUserHasUnreadLatest($mission, $user);
             }
-            return false;
         }
 
         public static function makeActiveActionElementType($type)
@@ -158,7 +163,7 @@
             $message->htmlContent         = $messageContent;
             $url                          = Yii::app()->createAbsoluteUrl('missions/default/details/',
                                                                 array('id' => $missionId));
-            $message->htmlContent        .= '-' . ZurmoHtml::link(Zurmo::t('MissionsModule', 'Click Here'), $url);
+            $message->htmlContent        .= '-' . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
             $rules                        = new MissionStatusChangeNotificationRules();
             $rules->addUser($userToReceiveMessage);
             $rules->setAllowDuplicates(true);
@@ -176,10 +181,105 @@
             assert('$userToReceiveMessage->id > 0');
             $message                      = new NotificationMessage();
             $url                          = Yii::app()->createAbsoluteUrl('missions/default/list/');
-            $message->htmlContent         = ZurmoHtml::link(Zurmo::t('MissionsModule', 'Click Here'), $url);
+            $message->htmlContent         = ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
             $rules                        = new MissionUnreadCommentNotificationRules();
             $rules->addUser($userToReceiveMessage);
             NotificationsUtil::submit($message, $rules);
+        }
+
+        public static function makeAndSubmitNewMissionNotificationMessage(Mission $mission)
+        {
+            $recipients = array();
+            $peopleToSendNotification = static::resolvePeopleToSendNotificationToOnNewMission($mission);
+            foreach ($peopleToSendNotification as $person)
+            {
+                if ($person->primaryEmail->emailAddress != null &&
+                    !UserConfigurationFormAdapter::resolveAndGetValue($person, 'turnOffEmailNotifications'))
+                {
+                    $recipients[] = $person;
+                }
+            }
+            EmailNotificationUtil::resolveAndSendEmail($mission->owner,
+                                                 $recipients,
+                                                 static::getEmailSubject($mission),
+                                                 static::getEmailContent($mission));
+        }
+
+        public static function getEmailContent(Mission $mission)
+        {
+            $emailContent  = new EmailMessageContent();
+            $url           = CommentsUtil::getUrlToEmail($mission);
+            $textContent   = Zurmo::t('MissionsModule', "Hello, {lineBreak}There is a new mission. " .
+                                    "Be the first one to start it and get this great reward: {reward}." .
+                                    "{lineBreak}{lineBreak} {url}",
+                                    array('{lineBreak}' => "\n",
+                                          '{reward}'    => $mission->reward,
+                                          '{url}'       => ZurmoHtml::link($url, $url)
+                                        ));
+            $emailContent->textContent  = $emailContent->htmlContent  = EmailNotificationUtil::
+                                                resolveNotificationTextTemplate($textContent);
+            $htmlContent = Zurmo::t('MissionsModule', "Hello, {lineBreak}There is a new {url}. " .
+                                    "Be the first one to start it and get this great reward: {reward}.",
+                               array('{lineBreak}'      => "<br/>",
+                                     '{strongStartTag}' => '<strong>',
+                                     '{strongEndTag}'   => '</strong>',
+                                     '{reward}'         => $mission->reward,
+                                     '{url}'            => ZurmoHtml::link($mission->getModelLabelByTypeAndLanguage(
+                                                                'SingularLowerCase'), $url)
+                                   ));
+            $emailContent->htmlContent  = EmailNotificationUtil::resolveNotificationHtmlTemplate($htmlContent);
+            return $emailContent;
+        }
+
+        public static function getEmailSubject(Mission $mission)
+        {
+            return Zurmo::t('MissionsModule', 'New mission');
+        }
+
+        public static function resolvePeopleToSendNotificationToOnNewMission(Mission $mission)
+        {
+            $users = User::getAll();
+            $people = array();
+            foreach ($users as $user)
+            {
+                if ($user->getClassId('Item') != $mission->owner->getClassId('Item'))
+                {
+                    $people[] = $user;
+                }
+            }
+            return $people;
+        }
+
+        /**
+         * Given a Mission and the User that created the new comment
+         * return the people on the mission to send new notification to
+         * @param Mission $mission
+         * @param User $user
+         * @return Array $peopleToSendNotification
+         */
+        public static function resolvePeopleToSendNotificationToOnNewComment(Mission $mission, User $user)
+        {
+            $usersToSendNotification = User::getAll();
+            $peopleToSendNotification = array();
+            foreach ($usersToSendNotification as $userToSendNotification)
+            {
+                if ($userToSendNotification->getClassId('Item') != $user->getClassId('Item'))
+                {
+                    if ($mission->takenByUser->id > 0)
+                    {
+                        if ($userToSendNotification->getClassId('Item') == $mission->owner->getClassId('Item') ||
+                           $userToSendNotification->getClassId('Item') == $mission->takenByUser->getClassId('Item') )
+                        {
+                            $peopleToSendNotification[] = $userToSendNotification;
+                        }
+                    }
+                    else
+                    {
+                        $peopleToSendNotification[] = $userToSendNotification;
+                    }
+                }
+            }
+            return $peopleToSendNotification;
         }
     }
 ?>

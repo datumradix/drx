@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -237,15 +247,7 @@
                                      'relatedModelRelationName'   => 'comments',
                                      'redirectUrl'                => 'someRedirect'));
             $this->setPostArray(array('Comment'          => array('description' => 'a ValidComment Name 2')));
-            try
-            {
-                $content = $this->runControllerWithRedirectExceptionAndGetContent('comments/default/inlineCreateSave');
-                $this->fail();
-            }
-            catch (AccessDeniedSecurityException $e)
-            {
-                //success.
-            }
+            $content = $this->runControllerWithAccessDeniedSecurityExceptionAndGetContent('comments/default/inlineCreateSave');
 
             //Add mary as a participant.
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
@@ -364,14 +366,14 @@
             $portlets     = Portlet::getAll();
             foreach ($portlets as $portlet)
             {
-                if ($portlet->viewType == 'AccountLatestActivtiesForPortlet')
+                if ($portlet->viewType == 'AccountLatestActivitiesForPortlet')
                 {
                     $portletToUse = $portlet;
                     break;
                 }
             }
             $this->assertNotNull($portletToUse);
-            $this->assertEquals('AccountLatestActivtiesForPortletView', get_class($portletToUse->getView()));
+            $this->assertEquals('AccountLatestActivitiesForPortletView', get_class($portletToUse->getView()));
 
             //Load the portlet details for latest activity
             $getData = array('id' => $superAccountId,
@@ -419,6 +421,10 @@
             $this->assertfalse(strpos($content, 'Conversations') === false);
             $this->setGetArray(array(
                 'type' => ConversationsSearchDataProviderMetadataAdapter::LIST_TYPE_PARTICIPANT));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('conversations/default/list');
+            $this->assertfalse(strpos($content, 'Conversations') === false);
+            $this->setGetArray(array(
+                'type' => ConversationsSearchDataProviderMetadataAdapter::LIST_TYPE_CLOSED));
             $content = $this->runControllerWithNoExceptionsAndGetContent('conversations/default/list');
             $this->assertfalse(strpos($content, 'Conversations') === false);
         }
@@ -481,6 +487,87 @@
                                      'relatedModelRelationName' => 'comments'));
             $super   = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $content = $this->runControllerWithNoExceptionsAndGetContent('comments/default/ajaxListForRelatedModel');
+        }
+
+        /**
+         * @depends testCommentsAjaxListForRelatedModel
+         */
+        public function testClosingConversations()
+        {
+            if (!SECURITY_OPTIMIZED) //bug prevents this from running correctly
+            {
+                return;
+            }
+            $super                      = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $conversation               = new Conversation();
+            $conversation->owner        = $super;
+            $conversation->subject      = "Test closed";
+            $conversation->description  = "This is just to make the isClosed column in conversations table";
+            $conversation->save();
+            $conversations              = Conversation::getAll();
+            $this->assertEquals(2, count($conversations));
+            $this->assertEquals($super->id, $conversations[0]->owner->id);
+            //Conversation is opened
+            $this->assertEquals(0, $conversations[0]->resolveIsClosedForNull());
+            $this->setGetArray(array('id' => $conversations[0]->id));
+            $this->runControllerWithNoExceptionsAndGetContent('conversations/default/changeIsClosed');
+            //Conversation is closed
+            $this->assertEquals(1, $conversations[0]->resolveIsClosedForNull());
+            $this->setGetArray(array('id' => $conversations[0]->id));
+            $this->runControllerWithNoExceptionsAndGetContent('conversations/default/changeIsClosed');
+            //Conversation is Re-opened
+            $this->assertEquals(0, $conversations[0]->resolveIsClosedForNull());
+        }
+
+        /**
+         * @depends testClosingConversations
+         */
+        public function testSendEmailInNewComment()
+        {
+            if (!SECURITY_OPTIMIZED) //bug prevents this from running correctly
+            {
+                return;
+            }
+            $super                                  = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $steven                                 = User::getByUsername('steven');
+            $sally                                  = User::getByUsername('sally');
+            $mary                                   = User::getByUsername('mary');
+            $conversations                          = Conversation::getAll();
+            $this->assertEquals(2, count($conversations));
+            $this->assertEquals(0, $conversations[0]->comments->count());
+            foreach (EmailMessage::getAll() as $emailMessage)
+            {
+                $emailMessage->delete();
+            }
+            $initalQueued                           = 0;
+            $conversation                           = $conversations[0];
+            $conversationParticipant                = new ConversationParticipant();
+            $conversationParticipant->person        = $steven;
+            $conversation->conversationParticipants->add($conversationParticipant);
+            $conversationParticipant                = new ConversationParticipant();
+            $conversationParticipant->person        = $sally;
+            $conversation->conversationParticipants->add($conversationParticipant);
+            $conversationParticipant                = new ConversationParticipant();
+            $conversationParticipant->person        = $mary;
+            $conversation->conversationParticipants->add($conversationParticipant);
+            UserConfigurationFormAdapter::setValue($mary, true, 'turnOffEmailNotifications');
+            //Save a new comment
+            $this->setGetArray(array('relatedModelId'             => $conversation->id,
+                                     'relatedModelClassName'      => 'Conversation',
+                                     'relatedModelRelationName'   => 'comments',
+                                     'redirectUrl'                => 'someRedirect'));
+            $this->setPostArray(array('Comment'          => array('description' => 'a ValidComment Name')));
+            $content = $this->runControllerWithRedirectExceptionAndGetContent('comments/default/inlineCreateSave');
+            $this->assertEquals(1, $conversation->comments->count());
+            $this->assertEquals($initalQueued + 1, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            $emailMessages                          = EmailMessage::getAll();
+            $emailMessage                           = $emailMessages[$initalQueued];
+            $this->assertEquals(2, count($emailMessage->recipients));
+            $this->assertContains('conversation', $emailMessage->subject);
+            $this->assertContains(strval($conversation), $emailMessage->subject);
+            $this->assertContains(strval($conversation->comments[0]), $emailMessage->content->htmlContent);
+            $this->assertContains(strval($conversation->comments[0]), $emailMessage->content->textContent);
         }
     }
 ?>

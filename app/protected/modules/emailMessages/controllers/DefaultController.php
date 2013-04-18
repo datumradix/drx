@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -32,10 +42,16 @@
         const USER_EMAIL_CONFIGURATION_FILTER_PATH =
               'application.modules.emailMessages.controllers.filters.UserEmailConfigurationCheckControllerFilter';
 
+        const EMAIL_MESSAGES_REQUIRING_ARCHIVING_CONFIGURATION_FILTER_PATH =
+              'application.modules.emailMessages.controllers.filters.EmailMessagesRequiringArchivingCheckControllerFilter';
+
         public function filters()
         {
             $moduleClassName = get_class($this->getModule());
             return array(
+                array(
+                    ZurmoBaseController::ADMIN_VIEW_MOBILE_CHECK_FILTER_PATH . ' + configurationEdit, configurationEditOutbound, configurationEditArchiving',
+                ),
                 array(
                     ZurmoBaseController::RIGHTS_FILTER_PATH . ' + configurationEdit, configurationEditOutbound, configurationEditArchiving',
                     'moduleClassName' => $moduleClassName,
@@ -47,6 +63,9 @@
                     'rightName' => $moduleClassName::getCreateRight(),
                 ),
                 array(self::USER_EMAIL_CONFIGURATION_FILTER_PATH . ' + createEmailMessage',
+                     'controller' => $this,
+                ),
+                array(self::EMAIL_MESSAGES_REQUIRING_ARCHIVING_CONFIGURATION_FILTER_PATH . ' + matchingList' ,
                      'controller' => $this,
                 )
             );
@@ -145,6 +164,8 @@
                     $configurationForm->password        = $_POST['UserEmailConfigurationForm']['outboundPassword'];
                     $configurationForm->security        = $_POST['UserEmailConfigurationForm']['outboundSecurity'];
                     $configurationForm->aTestToAddress  = $_POST['UserEmailConfigurationForm']['aTestToAddress'];
+                    $fromNameToSendMessagesFrom         = $_POST['UserEmailConfigurationForm']['fromName'];
+                    $fromAddressToSendMessagesFrom      = $_POST['UserEmailConfigurationForm']['fromAddress'];
                 }
                 if ($configurationForm->aTestToAddress != null)
                 {
@@ -154,10 +175,21 @@
                     $emailHelper->outboundUsername = $configurationForm->username;
                     $emailHelper->outboundPassword = $configurationForm->password;
                     $emailHelper->outboundSecurity = $configurationForm->security;
-                    $userToSendMessagesFrom        = User::getById((int)$configurationForm->userIdOfUserToSendNotificationsAs);
-
-                    $emailMessage = EmailMessageHelper::sendTestEmail($emailHelper, $userToSendMessagesFrom,
+                    if (isset($fromNameToSendMessagesFrom) && isset($fromAddressToSendMessagesFrom))
+                    {
+                        $from = array(
+                            'name'      => $fromNameToSendMessagesFrom,
+                            'address'   => $fromAddressToSendMessagesFrom
+                        );
+                        $emailMessage = EmailMessageHelper::sendTestEmail($emailHelper, $from,
                                                                       $configurationForm->aTestToAddress);
+                    }
+                    else
+                    {
+                        $userToSendMessagesFrom        = User::getById((int)$configurationForm->userIdOfUserToSendNotificationsAs);
+                        $emailMessage = EmailMessageHelper::sendTestEmailFromUser($emailHelper, $userToSendMessagesFrom,
+                                                                      $configurationForm->aTestToAddress);
+                    }
                     $messageContent  = null;
                     if (!$emailMessage->hasSendError())
                     {
@@ -334,11 +366,7 @@
                     $contact = new Contact();
                     $contact->setAttributes($_POST[$type][$emailMessageId]);
                     $contact->validate();
-                    $errorData = array();
-                    foreach ($contact->getErrors() as $attribute => $errors)
-                    {
-                            $errorData[ZurmoHtml::activeId($contact, $attribute)] = $errors;
-                    }
+                    $errorData = ZurmoActiveForm::makeErrorsDataAndResolveForOwnedModelAttributes($contact);
                     echo CJSON::encode($errorData);
                     Yii::app()->end(0, false);
                 }
@@ -514,11 +542,7 @@
                 }
                 else
                 {
-                    $errorData = array();
-                    foreach ($emailMessageForm->getErrors() as $attribute => $errors)
-                    {
-                            $errorData[ZurmoHtml::activeId($emailMessageForm, $attribute)] = $errors;
-                    }
+                    $errorData = ZurmoActiveForm::makeErrorsDataAndResolveForOwnedModelAttributes($emailMessageForm);
                     echo CJSON::encode($errorData);
                 }
                 Yii::app()->end(false);

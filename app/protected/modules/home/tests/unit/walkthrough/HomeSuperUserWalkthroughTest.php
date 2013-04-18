@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -236,12 +246,12 @@
             $this->resetGetArray();
             $this->resetPostArray();
             $this->runControllerWithNoExceptionsAndGetContent('home/default');
-                                    
+
             //task sorting issue
             //check whether tasks portlet render or not
             $this->assertTrue($portlets[1][4]->id > 0);
             $this->assertEquals('TasksMyList', $portlets[1][4]->viewType);
-            
+
             //to sort task list
             $this->setGetArray(array(
                 'Task_sort'      => 'name',
@@ -249,7 +259,38 @@
                 'uniqueLayoutId' => $uniqueLayoutId,
             ));
             $this->resetPostArray();
-            $this->runControllerWithNoExceptionsAndGetContent('home/defaultPortlet/modalConfigSave');  
+            $this->runControllerWithNoExceptionsAndGetContent('home/default');
+
+            //to sort task list after portlet has been edited
+            $this->resetGetArray();
+            $this->setGetArray(array(
+                'Task_sort'      => 'dueDateTime',
+                'portletId'      => $portlets[1][4]->id,
+                'uniqueLayoutId' => $uniqueLayoutId,
+                'ajax'           => 'list-view' . $uniqueLayoutId . '_' . $portlets[1][4]->id
+            ));
+            $this->runControllerWithNoExceptionsAndGetContent('home/default');
+        }
+
+        /**
+         * Strange it fails in ui but passes in the test. It should fail in both ways.
+         */
+        public function testSuperUserDateSorting()
+        {
+/**
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $superDashboard = Dashboard::getByLayoutIdAndUser(Dashboard::DEFAULT_USER_LAYOUT_ID, $super);
+            $uniqueLayoutId = 'HomeDashboard' . $superDashboard->layoutId;
+            $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition($uniqueLayoutId, $super->id, array());
+
+            $this->setGetArray(array(
+                'Task_sort'      => 'date',
+                'portletId'      => $portlets[1][4]->id,
+                'uniqueLayoutId' => $uniqueLayoutId,
+                'ajax'           => 'list-view' . $uniqueLayoutId . '_' . $portlets[1][4]->id
+            ));
+            $this->runControllerWithNoExceptionsAndGetContent('home/default');
+*/
         }
     }
 ?>

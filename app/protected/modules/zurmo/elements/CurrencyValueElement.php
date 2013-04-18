@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -33,7 +43,7 @@
             /**
          * Renders the editable currency attribute. Also renders a currency id selector if there is more
          * than one currency. If there is only one currency, then show a display only currency code with
-         * a hidden input for the currency id.
+         * a hidden input for the currency id. //todo: only showing hidden currency id
          * @return A string containing the element's content
          */
         protected function renderControlEditable()
@@ -46,7 +56,7 @@
             //need to somehow override to pass not to default to currency
             $activeCurrenciesElement   = new CurrencyIdForAModelsRelatedCurrencyValueDropDownElement(
                                                                 $this->model, $this->attribute, $this->form, $params);
-            $activeCurrenciesElement->editableTemplate = '{content}{error}';
+            $activeCurrenciesElement->editableTemplate = '{content}';
             $content  = '<div class="hasParallelFields">';
             $content .= ZurmoHtml::tag('div', array('class' => 'quarter'), $activeCurrenciesElement->render());
             $content .= ZurmoHtml::tag('div', array('class' => 'threeQuarters'),
@@ -59,13 +69,15 @@
         protected function renderEditableValueTextField($model, $form, $inputNameIdPrefix, $attribute)
         {
             //need to override a resolveValue to NOT default to 0 if not specifically null
+            $id =  $this->getEditableInputId($inputNameIdPrefix, $attribute);
             $htmlOptions = array(
                 'name' =>  $this->getEditableInputName($inputNameIdPrefix, $attribute),
-                'id'   =>  $this->getEditableInputId($inputNameIdPrefix, $attribute),
+                'id'   => $id,
                 'value' => $this->resolveAndGetEditableValue($model, $attribute),
             );
             $textField = $form->textField($model, $attribute, $htmlOptions);
-            $error     = $form->error    ($model, $attribute);
+            $error     = $form->error    ($model, $attribute, array('inputID' => $id), true, true,
+                                          $this->renderScopedErrorId($inputNameIdPrefix, $attribute));
             return $textField . $error;
         }
 

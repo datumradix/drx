@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -55,22 +65,18 @@
                 $models = User::getSubset($joinTablesAdapter, null, null, $where, null);
             }
 
-            if (count($models) == 0)
+            if (count($models) == 1)
             {
-                throw new NotFoundException();
-            }
-            elseif (count($models) > 1)
-            {
-                return NotSupportedException();
+                return $models[0];
             }
             else
             {
-                return $models[0];
+                throw new NotFoundException();
             }
         }
 
         /**
-         * Get informations from email message, for example sender, recipient, subject...
+         * Get information from email message, for example sender, recipient, subject...
          * It is quite different for forwarded messages, because we need to parse email
          * body to get those information.
          * @param ImapMessage $emailMessage
@@ -120,26 +126,28 @@
                 $emailRecipients = array(
                     array(
                         'email' => $emailMessage->fromEmail,
-                        'name'  => $emailMessage->fromName
+                        'name'  => $emailMessage->fromName,
+                        'type'  => EmailMessageRecipient::TYPE_TO
                     )
                 );
             }
             else
             {
                 // Zurmo user sent email, so recipients are in 'To' and 'CC' fields
-                $emailRecipients = $emailMessage->to;
-
                 foreach ($emailMessage->to as $key => $value)
                 {
+                    $emailMessage->to[$key]['type'] = EmailMessageRecipient::TYPE_TO;
                     if ($value['email'] == Yii::app()->imap->imapUsername)
                     {
                         unset($emailMessage->to[$key]);
                     }
                 }
+                $emailRecipients = $emailMessage->to;
                 if (!empty($emailMessage->cc))
                 {
                     foreach ($emailMessage->cc as $key => $value)
                     {
+                        $emailMessage->cc[$key]['type'] = EmailMessageRecipient::TYPE_CC;
                         if ($value['email'] == Yii::app()->imap->imapUsername)
                         {
                             unset($emailMessage->cc[$key]);
@@ -213,12 +221,10 @@
             $userCanAccessContacts = RightsUtil::canUserAccessModule('ContactsModule', $user);
             $userCanAccessLeads    = RightsUtil::canUserAccessModule('LeadsModule',    $user);
             $userCanAccessAccounts = RightsUtil::canUserAccessModule('AccountsModule', $user);
-            $userCanAccessUsers    = RightsUtil::canUserAccessModule('UsersModule',    $user);
             return self::getPersonsAndAccountsByEmailAddress($emailAddress,
-                                                                 $userCanAccessContacts,
-                                                                 $userCanAccessLeads,
-                                                                 $userCanAccessAccounts,
-                                                                 $userCanAccessUsers);
+                                                             $userCanAccessContacts,
+                                                             $userCanAccessLeads,
+                                                             $userCanAccessAccounts);
         }
 
         /**
@@ -227,20 +233,17 @@
          * @param boolean $userCanAccessContacts
          * @param boolean $userCanAccessLeads
          * @param boolean $userCanAccessAccounts
-         * @param boolean $userCanAccessUsers
          * @return Contact || Account || User || NULL || array of objects
          */
         public static function getPersonsAndAccountsByEmailAddress($emailAddress,
                                                                    $userCanAccessContacts  = false,
                                                                    $userCanAccessLeads     = false,
-                                                                   $userCanAccessAccounts  = false,
-                                                                   $userCanAccessUsers     = false)
+                                                                   $userCanAccessAccounts  = false)
         {
             assert('is_string($emailAddress)');
             assert('is_bool($userCanAccessContacts)');
             assert('is_bool($userCanAccessLeads)');
             assert('is_bool($userCanAccessAccounts)');
-            assert('is_bool($userCanAccessUsers)');
             $personsAndAccounts    = array();
             if ($userCanAccessContacts || $userCanAccessLeads)
             {
@@ -254,11 +257,10 @@
                 $personsAndAccounts = array_merge($personsAndAccounts,
                                                   AccountSearch::getAccountsByAnyEmailAddress($emailAddress, 1));
             }
-            if ($userCanAccessUsers)
-            {
-                $personsAndAccounts = array_merge($personsAndAccounts,
-                                                  UserSearch::getUsersByEmailAddress($emailAddress));
-            }
+
+            $personsAndAccounts = array_merge($personsAndAccounts,
+                                              UserSearch::getUsersByEmailAddress($emailAddress));
+
             return $personsAndAccounts;
         }
 
@@ -268,20 +270,18 @@
          * @param boolean $userCanAccessContacts
          * @param boolean $userCanAccessLeads
          * @param boolean $userCanAccessAccounts
-         * @param boolean $userCanAccessUsers
          * @return Contact || Account || User || NULL
          */
         public static function resolvePersonOrAccountByEmailAddress($emailAddress,
                                                                       $userCanAccessContacts = false,
                                                                       $userCanAccessLeads = false,
-                                                                      $userCanAccessAccounts = false,
-                                                                      $userCanAccessUsers = false)
+                                                                      $userCanAccessAccounts = false)
         {
             assert('is_string($emailAddress)');
             assert('is_bool($userCanAccessContacts)');
             assert('is_bool($userCanAccessLeads)');
             assert('is_bool($userCanAccessAccounts)');
-            assert('is_bool($userCanAccessUsers)');
+
             $personOrAccount   = null;
             $contactsOrLeads   = array();
             if ($userCanAccessContacts || $userCanAccessLeads)
@@ -310,11 +310,7 @@
                 }
                 else
                 {
-                    $users = array();
-                    if ($userCanAccessUsers)
-                    {
-                        $users = UserSearch::getUsersByEmailAddress($emailAddress);
-                    }
+                    $users = UserSearch::getUsersByEmailAddress($emailAddress);
                     if (count($users))
                     {
                         $personOrAccount = $users[0];
@@ -322,6 +318,16 @@
                 }
             }
             return $personOrAccount;
+        }
+
+        /**
+         *
+         * Convert $message->subject from any mime encoded  to UTF8
+         * @param EmailMessage $message
+         */
+        public static function resolveSanitizeFromImapToUtf8(EmailMessage $message)
+        {
+            $message->subject = imap_utf8($message->subject);
         }
     }
 ?>

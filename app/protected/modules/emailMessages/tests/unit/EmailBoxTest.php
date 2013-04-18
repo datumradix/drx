@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2012 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU General Public License version 3 as published by the
@@ -20,8 +20,18 @@
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     class EmailBoxTest extends ZurmoBaseTest
@@ -302,6 +312,31 @@
             Yii::app()->user->userModel = $jane;
             $this->assertEquals(1, $jane->emailBoxes->count());
             $this->assertEquals($jane->emailBoxes->offsetGet(0), $boxes[1]);
+
+            // Check if only one default email box is created for user
+            $super                      = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $jimmy = UserTestHelper::createBasicUser('jimmy');
+            $saved = $jimmy->save();
+            $this->assertTrue($saved);
+            Yii::app()->user->userModel = $jimmy;
+
+            $jimmysId = $jimmy->id;
+            $this->assertTrue($jimmysId > 0);
+            $this->assertTrue($jimmy->emailBoxes->count() == 0);
+            EmailBoxUtil::getDefaultEmailBoxByUser($jimmy);
+            //still doesn't show from the user side, because it was added via the other side.
+            $this->assertTrue($jimmy->emailBoxes->count() == 0);
+            $jimmysId = $jimmy->id;
+            $jimmy->forget();
+            $jimmy    = User::getById($jimmysId);
+            //now we forgot and re-retrieved so it should still show
+            $this->assertTrue($jimmy->emailBoxes->count() == 1);
+            EmailBoxUtil::getDefaultEmailBoxByUser($jimmy); // This command shouldn't create new box
+            $boxes = EmailBox::getAll();
+            // Note that two new boxes are created for use jimmy instead one.
+            // Probably because $jimmy->emailBoxes->count() return 0
+            $this->assertEquals(3, count($boxes));
         }
     }
 ?>

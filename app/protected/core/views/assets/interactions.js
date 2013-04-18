@@ -1,5 +1,39 @@
-$(window).ready(function(){
+/*********************************************************************************
+ * Zurmo is a customer relationship management program developed by
+ * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+ *
+ * Zurmo is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ *
+ * Zurmo is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ *
+ * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+ * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+ *
+ * The interactive user interfaces in original and modified versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the Zurmo
+ * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+ * feasible for technical reasons, the Appropriate Legal Notices must display the words
+ * "Copyright Zurmo Inc. 2013. All rights reserved".
+ ********************************************************************************/
 
+$(window).ready(function(){
     //main menu flyouts or mbmenu releacment
     $('.nav:not(.user-menu-item) > .parent').live({
         mouseenter: function() {
@@ -24,11 +58,6 @@ $(window).ready(function(){
             }
         }
     );
-    /*
-    $('body > div').click(function(){
-        $('.nav-open').removeClass('nav-open');
-    });
-    */
 
     //Main nav hover
      $('#MenuView a, #RecentlyViewedView a').hover(
@@ -44,6 +73,14 @@ $(window).ready(function(){
         }
     );
 
+    //Main nav toggle hidden items
+    $('.toggle-hidden-nav-items').click(
+        function(){
+            $('.hidden-nav-item').slideToggle(200);
+            $(this).toggleClass('point-up');
+        }
+    );
+
     function resizeWhiteArea(){
         /*Resizes the app to fill the browser's window case smaller'*/
         var viewportHeight = $(window).height();
@@ -51,20 +88,19 @@ $(window).ready(function(){
         var appChromeHeight = 0;
         var bufferHeight = 0;
         var recentlyViewedHeight = 0;
-
         //if login
         if ( $('#LoginPageView').length > 0 ) {
             appChromeHeight = 40 + $('#FooterView').outerHeight(true);
             if ( wrapperDivHeight < viewportHeight  ){
                 bufferHeight = viewportHeight - appChromeHeight;
-                $('#LoginView').height(  bufferHeight   );
+                $('#LoginView').css('min-height',  bufferHeight);
             }
-           //if admin area
+        //if admin area
         } else if ( $('.AdministrativeArea').length > 0 ) {
             appChromeHeight = 80 + $('#FooterView').outerHeight(true);
             if ( wrapperDivHeight < viewportHeight  ){
                 bufferHeight = viewportHeight - appChromeHeight;
-                $('.AppContainer').height(  bufferHeight   );
+                $('.AppContainer').css('min-height',  bufferHeight);
             }
         //rest of app
         } else {
@@ -72,16 +108,20 @@ $(window).ready(function(){
             appChromeHeight = recentlyViewedHeight + $('#MenuView').outerHeight(true) + $('#HeaderView').outerHeight(true) + $('#FooterView').outerHeight(true);
             if ( wrapperDivHeight < viewportHeight  ){
                 bufferHeight = viewportHeight - appChromeHeight;
-                $('#RecentlyViewedView').height( $('#RecentlyViewedView').height() + bufferHeight   );
+                if ($('#RecentlyViewedView').length > 0){
+                    $('#RecentlyViewedView').css('min-height', $('#RecentlyViewedView').height() + bufferHeight);
+                } else {
+                    $('.AppContent').css('min-height', $('.AppContainer').height() + 30);
+                }
             }
         }
     }
 
-    resizeWhiteArea();
     $(window).resize(function(){
-      //console.log('resizing');
       resizeWhiteArea();
     });
+
+    resizeWhiteArea();
 
     /*Autogrow text areas*/
     $('textarea').autogrow();
@@ -128,38 +168,35 @@ $(window).ready(function(){
 
 
     /*Spinner*/
-   $( '.loading', '#stickyListLoadingArea' ).spin({
-        lines : 9, // The number of lines to draw
-        length : 3, // The length of each line
-        width : 2, // The line thickness
-        radius : 4, // The radius of the inner circle
-        rotate : 0, // The rotation offset
-        color : '#999', // #rgb or #rrggbb
-        speed : 2, // Rounds per second
-        trail : 100, // Afterglow percentage
-        shadow : false, // Whether to render a shadow
-        hwaccel : false, // Whether to use hardware acceleration
-        className : 'spinner', // The CSS class to assign to the spinner
-        zIndsex : 2e9, // The z-index (defaults to 2000000000)
-        top : 0, // Top position relative to parent in px
-        left : 0 // Left position relative to parent in px
-    });
-
+   var style = {
+        lines : 9,
+        length : 3,
+        width : 2,
+        radius : 4,
+        color : 'dark',
+        speed : 2,
+        trail : 100,
+        top : 0,
+        left : 0
+    };
+    resolveSpinner(true, '#stickyListLoadingArea', style, '.loading');
 });
 
 /*
  * this function takes care of the save/cancel buttons' position in long forms, ie. edit account.
  */
+var windowTop, diff;
 
 function dockFloatingBar(){
     if ($('.float-bar').find('.disable-float-bar').length == 0) {
-        var windowTop, diff;
         windowTop = $(window).scrollTop();
-        diff = $(document).height() - $(window).height() - 100; //100px is to dock it before scrolling all the way to tht bottom
+        diff = $(document).height() - $(window).height() - 100; //100px is to dock it before scrolling all the way to the bottom
         if( windowTop > diff ) {
             $('.float-bar .view-toolbar-container').addClass('dock');
         } else {
-            $('.float-bar .view-toolbar-container').removeClass('dock');
+            if( $('.wrapper').height() > $('.AppNavigation').height() ) {
+                $('.float-bar .view-toolbar-container').removeClass('dock');
+            }
         }
     }
 }
@@ -213,23 +250,54 @@ function onAjaxSubmitRelatedListAction(confirmTitle, gridId){
         return false;
     }
     $('#' + gridId).addClass("loading");
-    makeSmallLoadingSpinner(gridId);
+    makeSmallLoadingSpinner(true, '#' + gridId);
     return true;
 }
 
 /*
 * Spinner Functions
+* @state (Bool) true/false, activate/deactivate the spinner.
+* @domObject (String), the object's seletor where the spinner runs inside it. The CSS selector (with . or #).
+* @styleObject (Object) key-value pairs for the spinner's styles.
+* @spinnerClassName (String) Optional, used mostly for the Big-Spinners. The CSS selector for the actuall spinner (with . or #).
 */
 
-function attachLoadingSpinner( id, state, color ){
-    var color;
+function resolveSpinner(state, domObject, styleObject, spinnerClassName){
+
+    if(spinnerClassName === undefined){
+        spinnerClassName = '.z-spinner';
+    }
+
+    if(state === true){
+        $( spinnerClassName, domObject).spin({
+            lines     : styleObject.lines  || 9,      // The number of lines to draw
+            length    : styleObject.length || 2.3,    // The length of each line
+            width     : styleObject.width  || 1.7,    // The line thickness
+            radius    : styleObject.radius || 3,      // The radius of the inner circle
+            rotate    : 0,                            // The rotation offset
+            color     : styleObject.color  || '#fff', // #rgb or #rrggbb
+            speed     : styleObject.speed  || 2.5,    // Rounds per second
+            trail     : styleObject.trail  || 37,     // Afterglow percentage
+            shadow    : false,                        // Whether to render a shadow
+            hwaccel   : true,                         // Whether to use hardware acceleration
+            className : 'spinner',                    // The CSS class to assign to the spinner
+            zIndex    : 2e9,                          // The z-index (defaults to 2000000000)
+            top       : styleObject.top    || 0,      // Top position relative to parent in px
+            left      : styleObject.left   || 0       // Left position relative to parent in px
+        });
+    } else {
+        $( spinnerClassName, domObject).spin(false);
+    }
+}
+
+function attachLoadingSpinnerForLanguageActivation( id, state, color ){
     if ( color === 'dark' ){
         color = '#999';
     } else {
         color = '#fff';
     }
     if ( state === true ){
-        $( '.z-spinner', '#' + id ).spin({
+        $( '.z-spinner', id ).spin({
             lines : 9, // The number of lines to draw
             length : 2.3, // The length of each line
             width : 1.7, // The line thickness
@@ -239,104 +307,98 @@ function attachLoadingSpinner( id, state, color ){
             speed : 2.5, // Rounds per second
             trail : 37, // Afterglow percentage
             shadow : false, // Whether to render a shadow
-            hwaccel : false, // Whether to use hardware acceleration
+            hwaccel : true, // Whether to use hardware acceleration
             className : 'spinner', // The CSS class to assign to the spinner
             zIndex : 2e9, // The z-index (defaults to 2000000000)
             top : 4, // Top position relative to parent in px
             left : 0 // Left position relative to parent in px
         });
     } else {
-        $( '.z-spinner', '#' + id ).spin(false);
+        $( '.z-spinner', id ).spin(false);
     }
 }
 
-function makeSmallLoadingSpinner(id, color){
-    var color;
-    if ( color === 'dark' ){
-        color = '#999';
-    } else {
-        color = '#fff';
-    }
-    $( '.z-spinner', '#' + id ).spin({
-        lines : 11, // The number of lines to draw
-        length : 4, // The length of each line
-        width : 2, // The line thickness
-        radius : 4, // The radius of the inner circle
-        rotate : 0, // The rotation offset
-        color : color, // #rgb or #rrggbb
-        speed : 1.5, // Rounds per second
-        trail : 35, // Afterglow percentage
-        shadow : false, // Whether to render a shadow
-        hwaccel : false, // Whether to use hardware acceleration
-        className : 'spinner', // The CSS class to assign to the spinner
-        zIndsex : 2e9, // The z-index (defaults to 2000000000)
-        top : 0, // Top position relative to parent in px
-        left : 0 // Left position relative to parent in px
-    });
+/*
+* @shade (String) HEX color (with #) or 'dark', default value is #FFF (white).
+*/
+
+function makeOrRemoveLoadingSpinner(state, context, shade){
+    var style = {
+        lines : 9,
+        length : 2.3,
+        width : 1.7,
+        radius : 3,
+        color : ( shade === 'dark' ) ? '#999' : '#fff',
+        speed : 2.5,
+        trail : 37,
+        top : 4,
+        left : 0
+    };
+    resolveSpinner(state, context, style);
 }
 
-function makeLargeLoadingSpinner(id){
-    $('#' + id).append('<span class="big-spinner"></span>');
-    $('.big-spinner', '#' + id).spin({
-        lines : 10, // The number of lines to draw
-        length : 8, // The length of each line
-        width : 5, // The line thickness
-        radius : 8, // The radius of the inner circle
-        rotate : 0, // The rotation offset
-        color : '#CCCCCC', // #rgb or #rrggbb
-        speed : 2.5, // Rounds per second
-        trail : 37, // Afterglow percentage
-        shadow : false, // Whether to render a shadow
-        hwaccel : false, // Whether to use hardware acceleration
-        className : 'spinner', // The CSS class to assign to the spinner
-        zIndex : 2e9, // The z-index (defaults to 2000000000)
-        top : 0, // Top position relative to parent in px
-        left : 0 // Left position relative to parent in px
-    });
+function makeSmallLoadingSpinner(state, context){
+    var style = {
+        lines  : 11,
+        length : 4,
+        width  : 2,
+        radius : 4,
+        color  : '#FFFFFF',
+        speed  : 1.5,
+        trail  : 35,
+        top    : 0,
+        left   : 0
+    };
+    resolveSpinner(true, context, style);
 }
 
-function makeToggableSpinner(context, state){
-    if ( state === true ){
-        $( '.z-spinner', context ).spin({
-            lines : 10, // The number of lines to draw
-            length : 3, // The length of each line
-            width : 2, // The line thickness
-            radius : 4, // The radius of the inner circle
-            rotate : 0, // The rotation offset
-            color : '#999', // #rgb or #rrggbb
-            speed : 2.5, // Rounds per second
-            trail : 100, // Afterglow percentage
-            shadow : false, // Whether to render a shadow
-            hwaccel : false, // Whether to use hardware acceleration
-            className : 'spinner', // The CSS class to assign to the spinner
-            zIndsex : 2e9, // The z-index (defaults to 2000000000)
-            top : 0, // Top position relative to parent in px
-            left : 0 // Left position relative to parent in px
-        });
-    } else {
-        $( '.z-spinner', context ).spin(false);
+function makeLargeLoadingSpinner(state, context){
+    if($(context).find('.big-spinner').length === 0){
+        $(context).append('<span class="big-spinner"></span>');
     }
+    var style = {
+        lines  : 10,
+        length : 6,
+        width  : 4,
+        radius : 7,
+        color  : '#CCCCCC',
+        speed  : 2.6,
+        trail  : 37,
+        top    : 0,
+        left   : 0
+    };
+    resolveSpinner(state, context, style, '.big-spinner');
+}
+
+function makeOrRemoveTogglableSpinner(state, context){
+    var style = {
+        lines  : 10,
+        length : 3,
+        width  : 2,
+        radius : 4,
+        color  : '#999999',
+        speed  : 2.5,
+        trail  : 100,
+        top    : 0,
+        left   : 0
+    };
+    resolveSpinner(state, context, style);
 }
 
 
 //Graceful handling of ajax processing. If there is a server generated error,
 //it can be displayed in an alert or dialog box
-function processAjaxSuccessUpdateHtmlOrShowDataOnFailure(dataOrHtml, updateId)
-{
-    try
-    {
+function processAjaxSuccessUpdateHtmlOrShowDataOnFailure(dataOrHtml, updateId){
+    try{
         jsonData = jQuery.parseJSON(dataOrHtml);
-        $('#FlashMessageBar').jnotifyAddMessage(
-            {
+        $('#FlashMessageBar').jnotifyAddMessage({
                  text: jsonData.message,
                  permanent: false,
                  showIcon: true,
                  type: jsonData.messageType
              }
         );
-    }
-    catch (e)
-    {
+    } catch (e){
         $('#' + updateId).html(dataOrHtml);
     }
 }
@@ -679,15 +741,16 @@ Autogrow textfields from https://github.com/rumpl/jquery.autogrow
             var $this = $(this),
                 minHeight = $this.height(),
                 shadow = $('<div></div>').css({
-                    position:   'absolute',
-                    top: -10000,
-                    left: -10000,
-                    width: $(this).width(),
-                    fontSize: $this.css('fontSize'),
-                    fontFamily: $this.css('fontFamily'),
-                    lineHeight: $this.css('lineHeight'),
-                    resize: 'none'
-                }).addClass('shadow').appendTo(document.body),
+                    position   :   'absolute',
+                    top        : -50000,
+                    left       : -50000,
+                    visibility : 'hidden',
+                    width      : $(this).width(),
+                    fontSize   : $this.css('fontSize'),
+                    fontFamily : $this.css('fontFamily'),
+                    lineHeight : $this.css('lineHeight'),
+                    resize     : 'none'
+                }).addClass('shadow').appendTo($(this).parent()),
                 update = function () {
                     var t = this;
                     setTimeout(function () {
@@ -695,21 +758,54 @@ Autogrow textfields from https://github.com/rumpl/jquery.autogrow
                                 .replace(/>/g, '&gt;')
                                 .replace(/&/g, '&amp;')
                                 .replace(/\n/g, '<br/>&nbsp;');
-
                         if ($.trim(val) === '') {
                             val = 'a';
                         }
-
                         shadow.html(val);
-                        $(t).css('height', Math.max(shadow[0].offsetHeight + 15, minHeight));
+                        $(t).height(Math.max(shadow[0].offsetHeight + 15, minHeight));
                     }, 0);
                 };
-
             $this.change(update).keyup(update).keydown(update).focus(update);
             update.apply(this);
         });
-
         return this;
     };
-
 }(jQuery));
+
+// query string related functions
+$.extend({
+    getUrlVars: function() {
+        var vars = [], hash;
+        var q = document.URL.split('?')[1];
+        if(q != undefined){
+            q = q.split('&');
+            for(var i = 0; i < q.length; i++){
+                hash = q[i].split('=');
+                vars.push(hash[1]);
+                vars[hash[0]] = hash[1];
+            }
+        }
+        return vars;
+    },
+    getUrlVar: function(name) {
+        return $.getUrlVars()[name];
+    },
+    hasActiveAjaxRequests: function() {
+        return ($.active > 0);
+    }
+});
+
+// TODO: @Shoaibi: Medium: Ask Nabeel/Sergio on extending buttonset widget to add this functionality before _create
+function createButtonSetIfNotAlreadyExist(qualifier, classFlag) {
+    classFlag = typeof classFlag !== 'undefined' ? classFlag : 'ui-buttonset';
+    if ($(qualifier).hasClass(classFlag)) {
+        return false;
+    }
+    $(qualifier).buttonset();
+}
+
+function isValidUrl(url)
+{
+    var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+    return pattern.test(url);
+}
