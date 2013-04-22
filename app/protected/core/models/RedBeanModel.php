@@ -145,6 +145,7 @@
             'defaultCalculatedDate'  => 'RedBeanModelDefaultCalculatedDateValidator',
             'readOnly'               => 'RedBeanModelReadOnlyValidator',
             'dateTimeDefault'        => 'RedBeanModelDateTimeDefaultValueValidator',
+            'probability'            => 'RedBeanModelProbabilityValidator',
         );
 
         /**
@@ -1466,6 +1467,25 @@
             foreach ($this->validators as $validator)
             {
                 if ($validator instanceof RedBeanModelReadOnlyValidator)
+                {
+                    if (in_array($attributeName, $validator->attributes, true))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Returns true if the attribute is formattted as probability
+         */
+        public function isAttributeFormattedAsProbability($attributeName)
+        {
+            assert("\$this->isAttribute(\"$attributeName\")");
+            foreach ($this->validators as $validator)
+            {
+                if ($validator instanceof RedBeanModelProbabilityValidator)
                 {
                     if (in_array($attributeName, $validator->attributes, true))
                     {
