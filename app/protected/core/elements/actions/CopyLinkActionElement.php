@@ -34,12 +34,30 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    define('MAJOR_VERSION', 1);                           // Update for marketing purposes.
-    define('MINOR_VERSION', 5);                           // Update when functionality changes.
-    define('PATCH_VERSION', 13);                          // Update when fixes are made that does not change functionality.
-    define('REPO_ID',       '$Revision$'); // Updated by Mercurial. Numbers like 3650 have no meaning across
-                                                          // clones. This tells us the actual changeset that is universally
-                                                          // meaningful.
+    class CopyLinkActionElement extends LinkActionElement
+    {
+        public function getActionType()
+        {
+            return 'Create';
+        }
 
-    define('VERSION', join('.', array(MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION)) . ' (' . substr(REPO_ID, strlen('$Revision: '), -2) . ')');
+        protected function getDefaultLabel()
+        {
+            return Zurmo::t('Core', 'Clone');
+        }
+
+        protected function getDefaultRoute()
+        {
+            $params = array('id' => $this->modelId);
+            if (Yii::app()->request->getParam('redirectUrl') != null)
+            {
+                $params = array_merge($params, array('redirectUrl' => Yii::app()->request->getParam('redirectUrl')));
+            }
+            elseif ($this->getRedirectUrl() != null)
+            {
+                $params = array_merge($params, array('redirectUrl' => $this->getRedirectUrl()));
+            }
+            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/copy/', $params);
+        }
+    }
 ?>
