@@ -34,45 +34,35 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class OpportunitiesModuleForm extends GlobalSearchEnabledModuleForm
+    class ActivityCopyModelUtilTest extends ZurmoBaseTest
     {
-        public $stageToProbabilityMapping;
-
-        public function rules()
+        public static function setUpBeforeClass()
         {
-            return array_merge(parent::rules(), array(
-                array('stageToProbabilityMapping', 'validateStageToProbabilityMapping'),
-            ));
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            AccountTestHelper::createAccountByNameForOwner('anAccount', $super);
         }
 
-        public function attributeLabels()
+        public function testCopy()
         {
-            return array_merge(parent::attributeLabels(), array(
-                'stageToProbabilityMapping' => Zurmo::t('OpportunitiesModule', 'Probability Mapping'),
-            ));
-        }
-
-        public function validateStageToProbabilityMapping()
-        {
-            $validator = new RedBeanModelTypeValidator();
-            $validator->type = 'integer';
-            $valid     = true;
-            if(!is_array($this->stageToProbabilityMapping))
-            {
-                $this->addError('stageToProbabilityMapping', Zurmo::t('Core', '{attribute} must be {type}.',
-                                array('{type}' => 'integer')));
-                $valid = false;
-            }
-            foreach($this->stageToProbabilityMapping as $probability)
-            {
-                if(!$validator->validateValue($probability))
-                {
-                    $this->addError('stageToProbabilityMapping',
-                                    Zurmo::t('OpportunitiesModule', 'Mapped Probabilities must be integers'));
-                    $valid = false;
-                }
-            }
-            return $valid;
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $accounts                   = Account::getByName('anAccount');
+            $task                       = new Task();
+            $task->name                 = 'My Task';
+            $task->owner                = Yii::app()->user->userModel;
+            $task->completedDateTime    = '0000-00-00 00:00:00';
+            $task->activityItems->add($accounts[0]);
+            $saved = $task->save();
+            $this->assertTrue($saved);
+            $taskId = $task->id;
+            $task->forget();
+            unset($task);
+            $task       = Task::getById($taskId);
+            $copyToTask = new Task();
+            ActivityCopyModelUtil::copy($task, $copyToTask);
+            $this->assertEquals('My Task', $copyToTask->name);
+            $this->assertEquals(1, $copyToTask->activityItems->count());
         }
     }
-?>

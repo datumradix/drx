@@ -34,45 +34,30 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class OpportunitiesModuleForm extends GlobalSearchEnabledModuleForm
+    class CopyLinkActionElement extends LinkActionElement
     {
-        public $stageToProbabilityMapping;
-
-        public function rules()
+        public function getActionType()
         {
-            return array_merge(parent::rules(), array(
-                array('stageToProbabilityMapping', 'validateStageToProbabilityMapping'),
-            ));
+            return 'Create';
         }
 
-        public function attributeLabels()
+        protected function getDefaultLabel()
         {
-            return array_merge(parent::attributeLabels(), array(
-                'stageToProbabilityMapping' => Zurmo::t('OpportunitiesModule', 'Probability Mapping'),
-            ));
+            return Zurmo::t('Core', 'Clone');
         }
 
-        public function validateStageToProbabilityMapping()
+        protected function getDefaultRoute()
         {
-            $validator = new RedBeanModelTypeValidator();
-            $validator->type = 'integer';
-            $valid     = true;
-            if(!is_array($this->stageToProbabilityMapping))
+            $params = array('id' => $this->modelId);
+            if (Yii::app()->request->getParam('redirectUrl') != null)
             {
-                $this->addError('stageToProbabilityMapping', Zurmo::t('Core', '{attribute} must be {type}.',
-                                array('{type}' => 'integer')));
-                $valid = false;
+                $params = array_merge($params, array('redirectUrl' => Yii::app()->request->getParam('redirectUrl')));
             }
-            foreach($this->stageToProbabilityMapping as $probability)
+            elseif ($this->getRedirectUrl() != null)
             {
-                if(!$validator->validateValue($probability))
-                {
-                    $this->addError('stageToProbabilityMapping',
-                                    Zurmo::t('OpportunitiesModule', 'Mapped Probabilities must be integers'));
-                    $valid = false;
-                }
+                $params = array_merge($params, array('redirectUrl' => $this->getRedirectUrl()));
             }
-            return $valid;
+            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/copy/', $params);
         }
     }
 ?>

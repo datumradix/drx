@@ -9922,18 +9922,6 @@ div.hasHalfs .twoThirds {
 .LatestActivitiesListView form,
 .LatestActivitiesView form {
   position: relative;
-  zoom: 1;
-}
-.LatestActivitiesListView form:before,
-.LatestActivitiesView form:before {
-  content: "";
-  display: table;
-}
-.LatestActivitiesListView form:after,
-.LatestActivitiesView form:after {
-  content: "";
-  display: table;
-  clear: both;
 }
 .LatestActivitiesListView .latest-activity-toolbar,
 .LatestActivitiesView .latest-activity-toolbar {
@@ -15536,6 +15524,10 @@ a.dashboard-link .z-label {
 }
 #ConversationEditView textarea {
   line-height: 130%;
+}
+#ConversationEditView .right-side-edit-view-panel {
+  display: inline-block;
+  float: none;
 }
 .single-coloumn-details-view.AppContent,
 #ConversationDetailsView.AppContent,
