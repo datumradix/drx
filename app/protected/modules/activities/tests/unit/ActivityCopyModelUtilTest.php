@@ -34,12 +34,35 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    define('MAJOR_VERSION', 1);                           // Update for marketing purposes.
-    define('MINOR_VERSION', 5);                           // Update when functionality changes.
-    define('PATCH_VERSION', 13);                          // Update when fixes are made that does not change functionality.
-    define('REPO_ID',       '$Revision$'); // Updated by Mercurial. Numbers like 3650 have no meaning across
-                                                          // clones. This tells us the actual changeset that is universally
-                                                          // meaningful.
+    class ActivityCopyModelUtilTest extends ZurmoBaseTest
+    {
+        public static function setUpBeforeClass()
+        {
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            AccountTestHelper::createAccountByNameForOwner('anAccount', $super);
+        }
 
-    define('VERSION', join('.', array(MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION)) . ' (' . substr(REPO_ID, strlen('$Revision: '), -2) . ')');
-?>
+        public function testCopy()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $accounts                   = Account::getByName('anAccount');
+            $task                       = new Task();
+            $task->name                 = 'My Task';
+            $task->owner                = Yii::app()->user->userModel;
+            $task->completedDateTime    = '0000-00-00 00:00:00';
+            $task->activityItems->add($accounts[0]);
+            $saved = $task->save();
+            $this->assertTrue($saved);
+            $taskId = $task->id;
+            $task->forget();
+            unset($task);
+            $task       = Task::getById($taskId);
+            $copyToTask = new Task();
+            ActivityCopyModelUtil::copy($task, $copyToTask);
+            $this->assertEquals('My Task', $copyToTask->name);
+            $this->assertEquals(1, $copyToTask->activityItems->count());
+        }
+    }

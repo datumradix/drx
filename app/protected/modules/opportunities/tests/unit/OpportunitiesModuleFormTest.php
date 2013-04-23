@@ -34,12 +34,28 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    define('MAJOR_VERSION', 1);                           // Update for marketing purposes.
-    define('MINOR_VERSION', 5);                           // Update when functionality changes.
-    define('PATCH_VERSION', 13);                          // Update when fixes are made that does not change functionality.
-    define('REPO_ID',       '$Revision$'); // Updated by Mercurial. Numbers like 3650 have no meaning across
-                                                          // clones. This tells us the actual changeset that is universally
-                                                          // meaningful.
+    class OpportunitiesModuleFormTest extends ZurmoBaseTest
+    {
+        public static function setUpBeforeClass()
+        {
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+        }
 
-    define('VERSION', join('.', array(MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION)) . ' (' . substr(REPO_ID, strlen('$Revision: '), -2) . ')');
+        public function testValidateStageToProbabilityMapping()
+        {
+            $form      = new OpportunitiesModuleForm();
+            $form->stageToProbabilityMapping = array('a' => 'a');
+            $validated = $form->validateStageToProbabilityMapping();
+            $this->assertFalse($validated);
+            $compareErrors = array('stageToProbabilityMapping' => array('Mapped Probabilities must be integers'));
+            $this->assertEquals($compareErrors, $form->getErrors());
+
+            $form->stageToProbabilityMapping = array('a' => '55', 'b' => 65, 'c' => 0);
+            $form->clearErrors();
+            $validated = $form->validateStageToProbabilityMapping();
+            $this->assertTrue($validated);
+            $this->assertEquals(0, count($form->getErrors()));
+        }
+    }
 ?>
