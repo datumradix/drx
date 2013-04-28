@@ -163,15 +163,20 @@
         /**
          * Formats the url to the po file for the specified language
          */
-        public static function getPoFileUrl($languageCode)
+        public static function getPoFileUrl($languageCode, $release=null, $project='zurmo')
         {
+            if ($release===null)
+            {
+                $release = self::getReleaseVersion();
+            }
+
             $availableLanguages = self::getavailableLanguages();
             if (!empty($availableLanguages) && isset($availableLanguages[$languageCode]))
             {
                 $urlPattern = self::getUrlPattern();
                 $searchArray = array(
-                    '%project'  => 'zurmo',
-                    '%release'  => self::getReleaseVersion(),
+                    '%project'  => $project,
+                    '%release'  => $release,
                     '%language' => $languageCode
                 );
 
