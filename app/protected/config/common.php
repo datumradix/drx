@@ -114,6 +114,10 @@
             'messages' => array(
                 'class' => 'application.core.components.ZurmoMessageSource',
             ),
+            // Override of Yii's framework messages
+            'coreMessages' => array(
+                'class' => 'application.core.components.ZurmoMessageSource',
+            ),
             'minScript' => array(
                 'class' => 'application.core.components.ZurmoExtMinScript',
                 'groupMap' => array(
