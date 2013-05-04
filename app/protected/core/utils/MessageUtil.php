@@ -495,10 +495,11 @@
     function getSecurableModuleRightsPoliciesAndAuditEventLabels($moduleClassName)
     {
         assert('is_string($moduleClassName)');
-        $rightsNames     = $moduleClassName::getTranslatedRightsLabels();
+        //$rightsNames     = $moduleClassName::getTranslatedRightsLabels();
         $policiesNames   = $moduleClassName::getTranslatedPolicyLabels();
         $auditEventNames = $moduleClassName::getAuditEventNames();
-        $labelsData      = array_merge($rightsNames, $policiesNames);
+        //$labelsData      = array_merge($rightsNames, $policiesNames);
+        $labelsData      = $policiesNames;
         return             array_merge($labelsData, $auditEventNames);
     }
 
