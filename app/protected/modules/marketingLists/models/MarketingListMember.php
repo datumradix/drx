@@ -43,6 +43,7 @@
 
         /**
          * Returns the display name for plural of the model class.
+         * @param null | string $language
          * @return dynamic label name based on module.
          */
         protected static function getPluralLabel($language = null)
@@ -65,8 +66,8 @@
                     'unsubscribed',
                 ),
                 'relations' => array(
-                    'contact'       => array(RedBeanModel::HAS_ONE,                 'Contact'),
-                    'marketingList' => array(RedBeanModel::HAS_ONE,                 'MarketingList'),
+                    'contact'               => array(RedBeanModel::HAS_ONE, 'Contact', RedBeanModel::NOT_OWNED),
+                    'marketingList'         => array(RedBeanModel::HAS_ONE, 'MarketingList' , RedBeanModel::NOT_OWNED),
                 ),
                 'rules' => array(
                     array('createdDateTime',       'required'),
@@ -119,12 +120,17 @@
 
         public function onCreated()
         {
+            parent::onCreated();
             $this->unrestrictedSet('createdDateTime',  DateTimeUtil::convertTimestampToDbFormatDateTime(time()));
             $this->unrestrictedSet('modifiedDateTime', DateTimeUtil::convertTimestampToDbFormatDateTime(time()));
         }
 
         public function beforeSave()
         {
+            if (!parent::beforeSave())
+            {
+                return false;
+            }
             if ($this->id < 0 || (isset($this->originalAttributeValues['unsubscribed']) &&
                                             $this->originalAttributeValues['unsubscribed'] != $this->unsubscribed))
             {
@@ -133,15 +139,23 @@
                 {
                     $operation = Autoresponder::OPERATION_UNSUBSCRIBE;
                 }
-                AutoresponderItem::registerAutoresponderItemsByAutoresponderOperation($operation, $this->marketingList->id, $this->contact);
+                AutoresponderItem::registerAutoresponderItemsByAutoresponderOperation($operation,
+                                                                                        $this->marketingList->id,
+                                                                                        $this->contact);
             }
+            $this->modifiedDateTime     = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
             return true;
         }
 
         public function beforeDelete()
         {
-            $operation = Autoresponder::OPERATION_REMOVE;
-            AutoresponderItem::registerAutoresponderItemsByAutoresponderOperation($operation, $this->marketingList->id, $this->contact);
+            if (!parent::beforeDelete())
+            {
+                return false;
+            }
+            AutoresponderItem::registerAutoresponderItemsByAutoresponderOperation(Autoresponder::OPERATION_REMOVE,
+                                                                                            $this->marketingList->id,
+                                                                                            $this->contact);
             return true;
         }
     }
