@@ -34,26 +34,36 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMemberUnsubscribeLinkActionElement extends MarketingListMemberLinkActionElement
+    /**
+     * Helper class for working with autoresponders views.
+     */
+    class AutorespondersUtil
     {
-        public static function shouldRenderByRowModel($model)
+        public static function makeSearchAttributeData($marketingListId)
         {
-            return ($model->unsubscribed == false);
+            assert('is_int($marketingListId)');
+            $searchAttributeData            = array();
+            $searchAttributeData['clauses'] = array(
+                                                    1 => array(
+                                                        'attributeName'        => 'marketingList',
+                                                        'relatedAttributeName' => 'id',
+                                                        'operatorType'         => 'equals',
+                                                        'value'                => $marketingListId,
+                                                    ),
+                                                );
+            $searchAttributeData['structure'] = 1;
+            return array(array('Autoresponder' => $searchAttributeData));
         }
 
-        public function getActionType()
+        public static function makeSortAttributeData()
         {
-            return 'Edit';
+            $sortAttribute = RedBeanModelDataProvider::getSortAttributeName('Autoresponder');
+            return array('Autoresponder' => $sortAttribute);
         }
 
-        protected function getDefaultLabel()
+        public static function getIsSortDescending()
         {
-            return Zurmo::t('MarketingListsModule', 'Unsubscribe');
-        }
-
-        protected function getActionId()
-        {
-            return 'toggleUnsubscribed';
+            return false;
         }
     }
 ?>
