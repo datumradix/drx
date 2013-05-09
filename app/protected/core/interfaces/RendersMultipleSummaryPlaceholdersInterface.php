@@ -34,26 +34,12 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMemberDeleteLinkActionElement extends MarketingListMemberLinkActionElement
+    /**
+     * A listview class should implement this interface if
+     * it needs to manually specify the path to summary clone div
+     */
+    interface RendersMultipleSummaryPlaceholdersInterface
     {
-        public static function shouldRenderByRowModel($model)
-        {
-            return true;
-        }
-
-        public function getActionType()
-        {
-            return 'Delete';
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('MarketingListsModule', 'Delete');
-        }
-
-        protected function getActionId()
-        {
-            return 'delete';
-        }
+        public static function getSummaryCloneQueryPath();
     }
 ?>

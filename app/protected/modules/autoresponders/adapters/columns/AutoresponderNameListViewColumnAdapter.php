@@ -34,12 +34,25 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    // TODO: @Shoaibi: Critical: Is this used anywhere?
-    class SelectReportModalListView extends ModalListView
+    class AutoresponderNameListViewColumnAdapter extends TextListViewColumnAdapter
     {
-        public static function getDefaultMetadata()
+        public function renderGridViewData()
         {
-          // todo: add the metadata for reports
+            $className  = get_class($this);
+            $value      = $className . '::resolveNameWithRedirectURl($data->name, $data->id, "' .
+                                                                                        $this->view->redirectUrl . '")';
+            return array(
+                'name'  => 'Name',
+                'value' => $value,
+                'type'  => 'raw',
+            );
+        }
+
+        public static function resolveNameWithRedirectURl($name, $id, $redirectUrl)
+        {
+            $url = Yii::app()->createUrl('/autoresponders/default/details',
+                                                                array('id' => $id, 'redirectUrl' => $redirectUrl));
+            return ZurmoHtml::link($name, $url);
         }
     }
 ?>
