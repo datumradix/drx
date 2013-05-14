@@ -43,12 +43,20 @@
 
         protected $moduleId;
 
-        public function __construct($controllerId, $moduleId)
+	/**
+         * Used to identify the active action for the action bar elements
+         * @var mixed null or string
+         */
+        protected $activeActionElementType;
+
+        public function __construct($controllerId, $moduleId, $activeActionElementType = null)
         {
             assert('is_string($controllerId)');
             assert('is_string($moduleId)');
+	    assert('$activeActionElementType == null || is_string($activeActionElementType)');
             $this->controllerId              = $controllerId;
             $this->moduleId                  = $moduleId;
+	    $this->activeActionElementType   = $activeActionElementType;
         }
 
         protected function renderContent()
@@ -78,6 +86,15 @@
                 ),
             );
             return $metadata;
+        }
+
+	protected function resolveActionElementInformationDuringRender(& $elementInformation)
+        {
+            parent::resolveActionElementInformationDuringRender($elementInformation);
+            if ($elementInformation['type'] == $this->activeActionElementType)
+            {
+                $elementInformation['htmlOptions']['class'] .= ' active';
+            }
         }
     }
 ?>
