@@ -35,59 +35,38 @@
      ********************************************************************************/
 
     /**
-     * Represents a message source that stores translated messages in database.
-     *
-     * The ZurmoMessageSource::installSchema() method must be called to create
-     * the tables with required indexes
+     * Form to work with a triggered users for an email message recipient
      */
-    class ZurmoMessageSource extends CDbMessageSource
+    class DynamicTriggeredModelWorkflowEmailMessageRecipientForm extends WorkflowEmailMessageRecipientForm
     {
-        const CACHE_KEY_PREFIX = 'ZurmoMessageSource';
-
         /**
-         * Override of the parent method using RedBean. Tries to get messages from cache first before going to database
-         * @param string $category
-         * @param string $languageCode
-         * @return array $messages
+         * @return string
          */
-        protected function loadMessagesFromDb($category, $languageCode)
+        public static function getTypeLabel()
         {
-            assert('is_string($category)');
-            assert('is_string($languageCode)');
-            try
-            {
-                $messages = GeneralCache::getEntry(self::CACHE_KEY_PREFIX);
-            }
-            catch (NotFoundException $e)
-            {
-                $messages = $this->loadMessagesFromDbIgnoringCache($category, $languageCode);
-                GeneralCache::cacheEntry(self::CACHE_KEY_PREFIX, $messages);
-            }
-            return $messages;
+            $params = LabelUtil::getTranslationParamsForAllModules();
+            return Zurmo::t('WorkflowsModule',
+                            'The triggered ContactsModuleSingularLowerCaseLabel or LeadsModuleSingularLowerCaseLabel', $params);
         }
 
         /**
-         * @param $category
-         * @param $languageCode
+         * @param RedBeanModel $model
+         * @param User $triggeredByUser
          * @return array
          */
-        protected function loadMessagesFromDbIgnoringCache($category, $languageCode)
+        public function makeRecipients(RedBeanModel $model, User $triggeredByUser)
         {
-            assert('is_string($category)');
-            assert('is_string($languageCode)');
-            $sourceTableName   = RedBeanModel::getTableName('MessageSource');
-            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('MessageTranslation');
-            $joinTablesAdapter->addFromTableAndGetAliasName($sourceTableName, "{$sourceTableName}_id");
-            $where             =  " messagesource.`category` = '$category' AND"
-                                . " messagetranslation.`language` = '$languageCode' ";
-
-            $beans    = MessageTranslation::getSubset($joinTablesAdapter, null, null, $where);
-            $messages = array();
-            foreach ($beans as $bean)
+            $recipients = array();
+            if ($model instanceof Contact && $model->primaryEmail->emailAddress !== null)
             {
-                $messages[$bean->messagesource->source] = $bean->translation;
+                $recipient                  = new EmailMessageRecipient();
+                $recipient->toAddress       = $model->primaryEmail->emailAddress;
+                $recipient->toName          = strval($model);
+                $recipient->type            = $this->audienceType;
+                $recipient->personOrAccount = $model;
+                $recipients[]               = $recipient;
             }
-            return $messages;
+            return $recipients;
         }
     }
 ?>
