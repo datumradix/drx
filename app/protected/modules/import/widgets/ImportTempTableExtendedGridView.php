@@ -35,27 +35,47 @@
      ********************************************************************************/
 
     /**
-     * Data analysis specific to text area type attributes. Handles checking if a value is too large.
+     * Extends the yii CGridView to provide additional functionality.
+     * @see CGridView class
      */
-    class TextAreaTruncateSqlAttributeValueDataAnalyzer extends TruncateSqlAttributeValueDataAnalyzer
+    class ImportTempTableExtendedGridView extends ExtendedGridView
     {
-        /**
-         * @param string $columnName
-         */
-        protected static function resolvColumnNameSqlLengthFunction($columnName)
+        public $expandableRows = false;
+
+        public function renderTableBody()
         {
-            assert('is_string($columnName)');
-            return DatabaseCompatibilityUtil::length($columnName);
+            $data = $this->dataProvider->getData();
+            $n    = count($data);
+            echo "<tbody>\n";
+
+            if ($n > 0)
+            {
+                for ($row = 0; $row < $n; ++$row)
+                {
+                    $this->renderTableRow($row);
+                    if ($this->expandableRows)
+                    {
+                        $this->renderExpandableRow($this->dataProvider->data[$row]->getId());
+                    }
+                }
+            }
+            else
+            {
+                echo '<tr><td colspan="' . count($this->columns) . '" class="empty">';
+                $this->renderEmptyText();
+                echo "</td></tr>\n";
+            }
+            echo "</tbody>\n";
         }
 
         /**
-         * @see TruncateSqlAttributeValueDataAnalyzer::resolveMaxLength()
+         * @param $id
          */
-        protected function resolveMaxLength($modelClassName, $attributeName)
+        protected function renderExpandableRow($id)
         {
-            assert('is_string($modelClassName)');
-            assert('is_string($attributeName)');
-            return 65000;
+            echo '<tr style="display:none;"><td class="hasDrillDownContent" colspan="' . (count($this->columns)) . '">';
+            echo '<div class="drillDownContent" id="drillDownContentFor-' . $id . '"></div>';
+            echo "</td></tr>\n";
         }
     }
 ?>
