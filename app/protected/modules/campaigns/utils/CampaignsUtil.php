@@ -34,7 +34,33 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class CampaignMergeTagsValidator extends AutoresponderMergeTagsValidator
+    /**
+     * Helper class for working with campaigns
+     */
+    abstract class CampaignsUtil
     {
+        public static function markProcessedCampaignsAsCompleted($pageSize = null)
+        {
+            $processingCampaigns = Campaign::getByStatus(Campaign::STATUS_PROCESSING, $pageSize);
+            foreach ($processingCampaigns as $processingCampaign)
+            {
+                if (static::areAllCampaignItemsProcessed($processingCampaign->id))
+                {
+                    $processingCampaign->status = Campaign::STATUS_COMPLETED;
+                    if (!$processingCampaign->save())
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        protected static function areAllCampaignItemsProcessed($campaignId)
+        {
+            // TODO: @Shoaibi/@Jason: Critical: Should we account for campaigns that are in processing but no items? Items won't be generated against those anyway.
+            $unprocessedCampaignItems = CampaignItem::getByProcessedAndCampaignId(CampaignItem::NOT_PROCESSED, $campaignId);
+            return (count($unprocessedCampaignItems) == 0);
+        }
     }
 ?>
