@@ -34,7 +34,38 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class CampaignMergeTagsValidator extends AutoresponderMergeTagsValidator
+    /**
+     * A job for create campaign items for campaigns
+     */
+    class CampaignGenerateDueCampaignItemsJob extends BaseJob
     {
+        /**
+         * @returns Translated label that describes this job type.
+         */
+        public static function getDisplayName()
+        {
+           return Zurmo::t('CampaignsModule', 'Generate campaign items');
+        }
+
+        /**
+         * @return The type of the NotificationRules
+         */
+        public static function getType()
+        {
+            return 'CampaignGenerateDueCampaignItemsJob';
+        }
+
+        public static function getRecommendedRunFrequencyContent()
+        {
+            return Zurmo::t('JobsManagerModule', 'Every hour');
+        }
+
+        /**
+         * @see BaseJob::run()
+         */
+        public function run()
+        {
+            return CampaignItemsUtil::generateCampaignItemsForDueCampaigns();
+        }
     }
 ?>

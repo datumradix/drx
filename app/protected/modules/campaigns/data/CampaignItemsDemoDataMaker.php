@@ -34,7 +34,43 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class CampaignMergeTagsValidator extends AutoresponderMergeTagsValidator
+    /**
+     * Class that builds demo campaignItems.
+     */
+    class CampaignItemsDemoDataMaker extends DemoDataMaker
     {
+        protected $ratioToLoad = 3;
+
+        public static function getDependencies()
+        {
+            return array('contacts');
+        }
+
+        public function makeAll(& $demoDataHelper)
+        {
+            assert('$demoDataHelper instanceof DemoDataHelper');
+            assert('$demoDataHelper->isSetRange("Contact")');
+            assert('$demoDataHelper->isSetRange("Campaign")');
+
+            $items = array();
+            for ($i = 0; $i < $this->resolveQuantityToLoad(); $i++)
+            {
+                $item                   = new CampaignItem();
+                $item->campaign         = $demoDataHelper->getRandomByModelName('Campaign');
+                $item->contact          = $demoDataHelper->getRandomByModelName('Contact');
+                $this->populateModel($item);
+                $saved                  = $item->unrestrictedSave();
+                assert('$saved');
+                $items[]                = $item->id;
+            }
+            $demoDataHelper->setRangeByModelName('CampaignItem', $items[0], $items[count($items)-1]);
+        }
+
+        public function populateModel(& $model)
+        {
+            assert('$model instanceof CampaignItem');
+            parent::populateModel($model);
+            $model->processed       = (rand() % 2);
+        }
     }
 ?>
