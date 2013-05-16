@@ -35,54 +35,19 @@
      ********************************************************************************/
 
     /**
-     * Base class for Batch analyzers. These type of analyzers loop over all the rows using the data provider instead
-     * of doing one sql query on all the rows at once like the Sql analyzer.
-     * @see SqlAttributeValueDataAnalyzer
+     * Factory class for making SanitizerUtil objects.
      */
-    abstract class BatchAttributeValueDataAnalyzer extends AttributeValueDataAnalyzer
+    class ImportSanitizerUtilFactory
     {
-        /**
-         * For each row's column value, perform the analysis.
-         * @param mixed $value
-         */
-        abstract protected function analyzeByValue($value);
-
-        /**
-         * After analysis is complete, this method is used to determine the appropriate messages to create.
-         */
-        abstract protected function makeMessages();
-
-        /**
-         * Given a data provider and a column name, process over all the rows and analyze the column specified by
-         * column name.  After the data is processed any messages required are made and added to the messages array.
-         * @param object $dataProvider
-         * @param string $columnName
-         */
-        protected function processAndMakeMessage(AnalyzerSupportedDataProvider $dataProvider, $columnName)
+        public static function make($attributeValueSanitizerUtilType, $modelClassName, $attributeName, $columnName, $columnMappingData)
         {
+            assert('is_string($attributeValueSanitizerUtilType)');
+            assert('is_string($modelClassName)');
+            assert('is_string($attributeName) || $attributeName == null');
             assert('is_string($columnName)');
-            $page           = 0;
-            $itemsProcessed = 0;
-            $totalItemCount =  $dataProvider->getTotalItemCount(true);
-            $dataProvider->getPagination()->setCurrentPage($page);
-            while (null != $data = $dataProvider->getData(true))
-            {
-                foreach ($data as $rowData)
-                {
-                    $this->analyzeByValue($rowData->$columnName);
-                    $itemsProcessed++;
-                }
-                if ($itemsProcessed < $totalItemCount)
-                {
-                    $page++;
-                    $dataProvider->getPagination()->setCurrentPage($page);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            $this->makeMessages();
+            assert('$columnMappingData == null || is_array($columnMappingData)');
+            $sanitizerUtilClassName = $attributeValueSanitizerUtilType . 'SanitizerUtil';
+            return new $sanitizerUtilClassName($modelClassName, $attributeName, $columnName, $columnMappingData);
         }
     }
 ?>

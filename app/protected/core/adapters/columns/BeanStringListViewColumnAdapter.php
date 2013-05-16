@@ -34,14 +34,13 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Data analyzer for contact state values that are before the starting state. This means it is a lead value.
-     */
-    class LeadStateBatchAttributeValueDataAnalyzer extends ContactStateBatchAttributeValueDataAnalyzer
+    class BeanStringListViewColumnAdapter extends ListViewColumnAdapter
     {
-        protected function resolveStates()
+        public function renderGridViewData()
         {
-            return LeadsUtil::getLeadStateDataFromStartingStateOnAndKeyedById();
+            return array(
+                'name' => $this->attribute,
+            );
         }
     }
 ?>
