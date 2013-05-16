@@ -34,7 +34,18 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class CampaignMergeTagsValidator extends AutoresponderMergeTagsValidator
+    /**
+     * Progress bar and steps for the matrix report wizard
+     */
+    class MatrixReportStepsAndProgressBarForWizardView extends StepsAndProgressBarForWizardView
     {
+        protected function getSpanLabels()
+        {
+            return array(Zurmo::t('Core', 'Module'),
+                         Zurmo::t('ReportingModule', 'Filters'),
+                         Zurmo::t('ReportingModule', 'Groupings'),
+                         Zurmo::t('ReportingModule', 'Columns'),
+                         Zurmo::t('ReportingModule', 'General'));
+        }
     }
 ?>

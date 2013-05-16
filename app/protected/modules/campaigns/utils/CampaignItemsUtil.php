@@ -34,7 +34,51 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class CampaignMergeTagsValidator extends AutoresponderMergeTagsValidator
+    /**
+     * Helper class for working with campaignItem
+     */
+    abstract class CampaignItemsUtil extends AutoresponderAndCampaignItemsUtil
     {
+        public static function generateCampaignItemsForDueCampaigns($pageSize = null)
+        {
+            // TODO: @Shoaibi/@Jason: Critical: We could have a throttle here too.
+            $dueCampaigns   = Campaign::getByStatusAndSendingTime(Campaign::STATUS_ACTIVE, time(), $pageSize);
+            foreach ($dueCampaigns as $dueCampaign)
+            {
+                if (static::generateCampaignItems($dueCampaign))
+                {
+                    $dueCampaign->status = Campaign::STATUS_PROCESSING;
+                    if (!$dueCampaign->save())
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        protected static function generateCampaignItems($campaign)
+        {
+            $contacts = array();
+            if ($campaign->type == Campaign::TYPE_MARKETING_LIST)
+            {
+                foreach ($campaign->marketingList->marketingListMembers as $member)
+                {
+                    $contacts[] = $member->contact;
+                }
+            }
+            else
+            {
+                // TODO: @Shoaibi: Medium: Figure out a way to find contacts for second type
+            }
+            if (!empty($contacts))
+            {
+                return CampaignItem::registerCampaignItemsByCampaign($campaign, $contacts);
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 ?>

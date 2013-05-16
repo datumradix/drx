@@ -34,7 +34,38 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class CampaignMergeTagsValidator extends AutoresponderMergeTagsValidator
+    /**
+     * Base View for showing a  progress bar and 'steps' in that progress bar. For use with a wizard view such as reporting
+     * or workflow.
+     */
+    abstract class StepsAndProgressBarForWizardView extends MetadataView
     {
+        /**
+         * @return array
+         */
+        abstract protected function getSpanLabels();
+
+        public function isUniqueToAPage()
+        {
+            return true;
+        }
+
+        protected function renderContent()
+        {
+            $content = ZurmoHtml::tag('div', array('class' => 'progress-bar'), '');
+            $content = ZurmoHtml::tag('div', array('class' => 'progress-back'), $content);
+            $spanContent = $this->getSpanContent();
+            return ZurmoHtml::tag('div', array('class' => 'progress'), $content . $spanContent);
+        }
+
+        protected function getSpanContent()
+        {
+            $content = null;
+            foreach($this->getSpanLabels() as $label)
+            {
+                $content .= ZurmoHtml::tag('div', array(), $label);
+            }
+            return $content;
+        }
     }
 ?>
