@@ -34,49 +34,25 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class AccountsListView extends StarredListView
+    class StarredModelDataProvider extends RedBeanModelDataProvider
     {
-        public static function getDefaultMetadata()
+        protected function resolveExtraSql(RedBeanModelJoinTablesQueryAdapter &$joinTablesAdapter, &$where)
         {
-            $metadata = array(
-                'global' => array(
-                    'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'type', 'type' => 'DropDown'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'owner', 'type' => 'User'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-
-            );
-            return $metadata;
+            if ($where != '')
+            {
+                $where .= ' and ';
+            }
+            $user                   = Yii::app()->user->userModel;
+            $quote                  = DatabaseCompatibilityUtil::getQuote();
+            $starredTableName       = StarredUtil::getStarredTableName($this->modelClassName);
+            $extraOnQueryPart       = "and {$quote}{$starredTableName}{$quote}.{$quote}user_id{$quote} = {$user->id}";
+            $starredTableAliasName  = $joinTablesAdapter->addLeftTableAndGetAliasName(
+                                                        $starredTableName,
+                                                        'id',
+                                                        null,
+                                                        'model_id',
+                                                        $extraOnQueryPart);
+            $where                 .= "{$quote}$starredTableAliasName{$quote}.{$quote}user_id{$quote} = {$user->id}";
         }
     }
 ?>
