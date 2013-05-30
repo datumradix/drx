@@ -34,65 +34,22 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Base class used for wrapping model detail views into a portlet ready view.
-     *
-     */
-    abstract class DetailsForPortletView extends ConfigurableMetadataView implements PortletViewInterface
+    class ProductTemplatesMassDeleteView extends MassDeleteView
     {
-        protected $params;
-
-        protected $controllerId;
-
-        protected $moduleId;
-
-        protected $model;
-
-        protected $uniqueLayoutId;
-
-        protected $viewData;
-
-        public function __construct($viewData, $params, $uniqueLayoutId)
+        protected function renderOperationDescriptionContent()
         {
-            assert('isset($params["controllerId"])');
-            assert('isset($params["relationModuleId"])');
-            assert('isset($params["relationModel"])');
-            $this->viewData       = $viewData;
-            $this->params         = $params;
-            $this->controllerId   = $params["controllerId"];
-            $this->moduleId       = $params["relationModuleId"];
-            $this->model          = $params["relationModel"];
-            $this->uniqueLayoutId = $uniqueLayoutId;
+            $highlight = ZurmoHtml::tag('em', array(), Zurmo::t('Core', 'Mass Delete is not reversable.'));
+            $message  = ZurmoHtml::tag('strong', array(), $highlight) .
+                        '<br />' . '<strong>' . $this->selectedRecordCount . '</strong>&#160;' .
+                        Zurmo::t('ProductTemplatesModule', 'Catalog Item|Catalog Items',
+                        array_merge(array($this->selectedRecordCount), LabelUtil::getTranslationParamsForAllModules())) .
+                        ' ' . Zurmo::t('Core', 'selected for removal.');
+            return ZurmoHtml::wrapLabel($message, 'operation-description');
         }
 
-        public static function getDefaultMetadata()
+        public static function getDesignerRulesType()
         {
-            return array(
-                'perUser' => array(
-                    'title' => null,
-                ),
-            );
-        }
-
-        public function renderContent()
-        {
-            $viewClassName = $this->getDetailsViewClassName();
-            $view = new $viewClassName('Details', $this->controllerId, $this->moduleId, $this->model);
-            return $view->render();
-        }
-
-        public static function canUserConfigure()
-        {
-            return false;
-        }
-
-        /**
-         * What kind of PortletRules this view follows
-         * @return PortletRulesType as string.
-         */
-        public static function getPortletRulesType()
-        {
-            return 'ModelDetails';
+            return null;
         }
     }
 ?>

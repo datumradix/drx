@@ -34,28 +34,30 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class EmailTemplateControllerUtil extends ZurmoControllerUtil
+    class RedactorElement extends Element
     {
-        protected function afterSuccessfulSave($model)
+        protected function renderControlNonEditable()
         {
-            $filesIds = Yii::app()->request->getPost('filesIds');
-            if (is_array($filesIds) && !empty($filesIds))
-            {
-                foreach ($filesIds as $filesId)
-                {
-                    $file   = FileModel::getById($filesId);
-                    $model->files->add($file);
-                }
-                if ($model->save())
-                {
-                    return $model;
-                }
-                else
-                {
-                    throw new FailedToSaveModelException();
-                }
-            }
-            return $model;
+            assert('$this->attribute != null');
+            return $this->model->{$this->attribute};
+        }
+
+        protected function renderControlEditable()
+        {
+            assert('$this->attribute != null');
+            $id                      = $this->getEditableInputId();
+            $htmlOptions             = array();
+            $htmlOptions['id']       = $id;
+            $htmlOptions['name']     = $this->getEditableInputName();
+            $cClipWidget             = new CClipWidget();
+            $cClipWidget->beginClip("Redactor");
+            $cClipWidget->widget('application.core.widgets.Redactor', array(
+                                        'htmlOptions' => $htmlOptions,
+                                        'content'     => $this->model->{$this->attribute},
+                                ));
+            $cClipWidget->endClip();
+            $content                 = $cClipWidget->getController()->clips['Redactor'];
+            return $content;
         }
     }
 ?>
