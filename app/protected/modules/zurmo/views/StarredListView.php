@@ -34,49 +34,37 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class AccountsListView extends StarredListView
+    class StarredListView extends SecuredListView
     {
-        public static function getDefaultMetadata()
-        {
-            $metadata = array(
-                'global' => array(
-                    'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'type', 'type' => 'DropDown'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'owner', 'type' => 'User'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
+        /**
+         * Get the meta data and merge with standard CGridView column elements
+         * to create a column array that fits the CGridView columns API
+         */
+         protected function getCGridViewColumns()
+         {
+            $columns        = parent::getCGridViewColumns();
+            if ($this->rowsAreSelectable)
+            {
+                $firstColumn = array_shift($columns);
+             }
+            array_unshift($columns, $this->getCGridViewStarColumn());
+            if ($this->rowsAreSelectable)
+            {
+                array_unshift($columns, $firstColumn);
+            }
+            return $columns;
+        }
 
-            );
-            return $metadata;
+        protected function getCGridViewStarColumn()
+        {
+            $starred = 'StarredUtil::isModelStarred($data)';
+            $checkBoxHtmlOptions = array();
+            $firstColumn = array(
+                    'class'     => 'DataColumn',
+                    'value'     => array('StarredUtil','renderToggleStarStatusLink'),
+                    'id'        => $this->gridId . $this->gridIdSuffix . '_columnStar',
+                );
+            return $firstColumn;
         }
     }
 ?>
