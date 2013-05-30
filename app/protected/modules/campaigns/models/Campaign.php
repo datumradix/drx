@@ -62,6 +62,7 @@
 
         public static function getStatusDropDownArray()
         {
+            // TODO: @Shoaibi: Critical: Add Tests to cover:
             return array(
                 static::STATUS_INCOMPLETE   => Zurmo::t('CampaignsModule', 'Incomplete'),
                 static::STATUS_PAUSED       => Zurmo::t('CampaignsModule', 'Paused'),
@@ -191,11 +192,9 @@
                     array('status',                 'numerical',  'min'  => static::STATUS_INCOMPLETE,
                                                                                     'max' => static::STATUS_COMPLETED),
                     array('supportsRichText',       'required'),
-                    array('supportsRichText',       'type',    'type' => 'integer'),
-                    array('supportsRichText',       'numerical',  'min'  => 0, 'max' => 1),
+                    array('supportsRichText',       'boolean'),
                     array('sendNow',                'required'),
-                    array('sendNow',                'type',    'type' => 'integer'),
-                    array('sendNow',                'numerical',  'min'  => 0, 'max' => 1),
+                    array('sendNow',                'boolean'),
                     array('sendingDateTime',        'type', 'type' => 'datetime'),
                     array('sendingDateTime',        'validateSendDateTimeAgainstSendNow'),
                     array('fromName',                'required'),
@@ -214,13 +213,13 @@
                     array('textContent',            'AtLeastOneContentAreaRequiredValidator'),
                     array('htmlContent',            'CampaignMergeTagsValidator', 'except' => 'autoBuildDatabase'),
                     array('textContent',            'CampaignMergeTagsValidator', 'except' => 'autoBuildDatabase'),
-                    array('enableTracking',         'type',    'type' => 'integer'),
-                    array('enableTracking',         'numerical', 'min' => 0, 'max' => 1),
-                    array('enableTracking',         'default', 'value' => 0),
+                    array('enableTracking',         'boolean'),
+                    array('enableTracking',         'default', 'value' => false),
                 ),
                 'relations' => array(
                     'campaignItems'     => array(RedBeanModel::HAS_MANY, 'CampaignItem'),
                     'marketingList'     => array(RedBeanModel::HAS_ONE, 'MarketingList', RedBeanModel::NOT_OWNED),
+                    'files'             => array(RedBeanModel::HAS_MANY,  'FileModel', RedBeanModel::OWNED)
                 ),
                 'elements' => array(
                     'htmlContent'                   => 'TextArea',
