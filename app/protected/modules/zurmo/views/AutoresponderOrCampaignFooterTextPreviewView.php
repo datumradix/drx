@@ -34,48 +34,27 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Class used for displaying the overall performance metrics for the marketing dashboard
-     */
-    class MarketingOverallMetricsView extends MarketingMetricsView
+    class AutoresponderOrCampaignFooterTextPreviewView extends View
     {
-        protected $formModelClassName = 'MarketingOverallMetricsForm';
+        protected $isHtmlContent;
 
-        /**
-         * The view's module class name.
-         */
-        public static function getModuleClassName()
+        protected  $placeholderContent;
+
+        public function __construct($isHtmlContent, $content)
         {
-            return 'MarketingModule';
+            $this->isHtmlContent = $isHtmlContent;
+            $this->placeholderContent = $content;
         }
 
-        /**
-         * @return string
-         */
-        public function getTitle()
+        protected function renderContent()
         {
-            $title  = Zurmo::t('MarketingModule', 'Marketing Dashboard');
-            return $title;
-        }
-
-        /**
-         * @return string
-         */
-        public function renderContent()
-        {
-            $content  = ZurmoHtml::tag('h3', array(), Zurmo::t('MarketingModule', 'What is going on with Marketing?'));
-            $content .= $this->renderConfigureElementsContent();
-            $content  = ZurmoHtml::tag('div', array('class' => 'left-column full-width metrics-details'), $content);
-            $content .= $this->renderMetricsWrapperContent();
+            $content        = null;
+            EmailMessageActivityUtil::resolveFooterPlaceholders($content, $this->placeholderContent, 0,
+                                                                    0, 0, 'AutoresponderItem', $this->isHtmlContent);
+            $content        = ZurmoHtml::tag('div', array('id' => 'footer-preview-modal-content',
+                                                            'class' => 'footer-preview-modal'),
+                                                    $content);
             return $content;
-        }
-
-        /**
-         * @return MarketingOverallMetricsConfigView
-         */
-        public function getConfigurationView()
-        {
-            return new MarketingOverallMetricsConfigView($this->resolveForm(), $this->params);
         }
     }
 ?>

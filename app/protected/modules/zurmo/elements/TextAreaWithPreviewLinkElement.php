@@ -35,47 +35,27 @@
      ********************************************************************************/
 
     /**
-     * Class used for displaying the overall performance metrics for the marketing dashboard
+     * Display the text area input box with Preview Link.
      */
-    class MarketingOverallMetricsView extends MarketingMetricsView
+    class TextAreaWithPreviewLinkElement extends TextAreaElement
     {
-        protected $formModelClassName = 'MarketingOverallMetricsForm';
-
         /**
-         * The view's module class name.
+         * Render A text area with X rows and Y columns.
          */
-        public static function getModuleClassName()
+        protected function renderControlEditable()
         {
-            return 'MarketingModule';
-        }
-
-        /**
-         * @return string
-         */
-        public function getTitle()
-        {
-            $title  = Zurmo::t('MarketingModule', 'Marketing Dashboard');
-            return $title;
-        }
-
-        /**
-         * @return string
-         */
-        public function renderContent()
-        {
-            $content  = ZurmoHtml::tag('h3', array(), Zurmo::t('MarketingModule', 'What is going on with Marketing?'));
-            $content .= $this->renderConfigureElementsContent();
-            $content  = ZurmoHtml::tag('div', array('class' => 'left-column full-width metrics-details'), $content);
-            $content .= $this->renderMetricsWrapperContent();
+            $content                 = parent::renderControlEditable();
+            $selector                = '$("#' . $this->getEditableInputId() . '").parent().find("div.shadow").html()';
+            $previewElementParams    = array('isHtmlContent' => 0,
+                                                'inputId' => $this->getEditableInputId(),
+                                                'selector' => $selector);
+            $previewElementParams    = CMap::mergeArray($this->params,$previewElementParams);
+            $controllerId            = Yii::app()->controller->id;
+            $moduleId                = Yii::app()->controller->module->id;
+            $previewElement          = new AutoresponderOrCampaignFooterTextPreviewElement($controllerId, $moduleId,
+                                                                            $this->model->Id, $previewElementParams);
+            $content                .= $previewElement->render();
             return $content;
-        }
-
-        /**
-         * @return MarketingOverallMetricsConfigView
-         */
-        public function getConfigurationView()
-        {
-            return new MarketingOverallMetricsConfigView($this->resolveForm(), $this->params);
         }
     }
 ?>
