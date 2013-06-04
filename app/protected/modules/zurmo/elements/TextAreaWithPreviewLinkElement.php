@@ -35,18 +35,27 @@
      ********************************************************************************/
 
     /**
-     * Helper class for working with tracking
+     * Display the text area input box with Preview Link.
      */
-    abstract class TrackingUtil extends BaseControlUserConfigUtil
+    class TextAreaWithPreviewLinkElement extends TextAreaElement
     {
-        // TODO: @Shoaibi: Tests
-        const CONFIG_MODULE_NAME        = 'TrackingModule';
-
-        const CONFIG_KEY                = 'UserIdOfUserToRunTrackingAs';
-
-        public static function getUserToRunAs($setOnMissing = true)
+        /**
+         * Render A text area with X rows and Y columns.
+         */
+        protected function renderControlEditable()
         {
-            return parent::getUserToRunAs($setOnMissing);
+            $content                 = parent::renderControlEditable();
+            $selector                = '$("#' . $this->getEditableInputId() . '").parent().find("div.shadow").html()';
+            $previewElementParams    = array('isHtmlContent' => 0,
+                                                'inputId' => $this->getEditableInputId(),
+                                                'selector' => $selector);
+            $previewElementParams    = CMap::mergeArray($this->params,$previewElementParams);
+            $controllerId            = Yii::app()->controller->id;
+            $moduleId                = Yii::app()->controller->module->id;
+            $previewElement          = new AutoresponderOrCampaignFooterTextPreviewElement($controllerId, $moduleId,
+                                                                            $this->model->Id, $previewElementParams);
+            $content                .= $previewElement->render();
+            return $content;
         }
     }
 ?>
