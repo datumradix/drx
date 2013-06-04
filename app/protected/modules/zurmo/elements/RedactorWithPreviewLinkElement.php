@@ -34,18 +34,22 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Helper class for working with tracking
-     */
-    abstract class ContactWebFormsUserConfigUtil extends BaseControlUserConfigUtil
+    class RedactorWithPreviewLinkElement extends RedactorElement
     {
-        const CONFIG_MODULE_NAME        = 'ContactWebFormsModule';
-
-        const CONFIG_KEY                = 'UserIdOfUserToRunContactWebFormAs';
-
-        public static function getUserToRunAs($setOnMissing = true)
+        protected function renderControlEditable()
         {
-            return parent::getUserToRunAs($setOnMissing);
+            $content                 = parent::renderControlEditable();
+            $selector                = '$(".redactor_editor").html()';
+            $previewElementParams    = array('isHtmlContent' => 1,
+                                                'inputId' => $this->getEditableInputId(),
+                                                'selector' => $selector);
+            $previewElementParams    = CMap::mergeArray($this->params,$previewElementParams);
+            $controllerId            = Yii::app()->controller->id;
+            $moduleId                = Yii::app()->controller->module->id;
+            $previewElement          = new AutoresponderOrCampaignFooterTextPreviewElement($controllerId, $moduleId,
+                                                                            $this->model->Id, $previewElementParams);
+            $content                .= $previewElement->render();
+            return $content;
         }
     }
 ?>

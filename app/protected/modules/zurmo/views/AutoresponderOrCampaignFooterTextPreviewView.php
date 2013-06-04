@@ -34,28 +34,26 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    // TODO: @Shoaibi/@Jason: Critical: Not Used.
-    /**
-     * When processing tracking, the user that processes them must be a super administrator to ensure the
-     * tracking requests can be properly processed.
-     */
-    class UserToRunTrackingAsElement extends SuperAdministratorToUseElement
+    class AutoresponderOrCampaignFooterTextPreviewView extends View
     {
-        /**
-         * @return string
-         */
-        protected static function renderTooltipContent()
+        protected $isHtmlContent;
+
+        protected  $placeholderContent;
+
+        public function __construct($isHtmlContent, $content)
         {
+            $this->isHtmlContent = $isHtmlContent;
+            $this->placeholderContent = $content;
         }
 
-        protected function renderLabel()
+        protected function renderContent()
         {
-            $title       = Zurmo::t('TrackingModule', 'Tracking requests must be processed as a super administrator user.');
-            $content     = parent::renderLabel();
-            $content    .= ZurmoHtml::tag('span', array('id' => 'run-tracking-from-user-tooltip',
-                                                        'class' => 'tooltip', 'title' => $title), '?');
-            $qtip = new ZurmoTip(array('options' => array('position' => array('my' => 'bottom right', 'at' => 'top left'))));
-            $qtip->addQTip("#run-tracking-from-user-tooltip");
+            $content        = null;
+            EmailMessageActivityUtil::resolveFooterPlaceholders($content, $this->placeholderContent, 0,
+                                                                    0, 0, 'AutoresponderItem', $this->isHtmlContent);
+            $content        = ZurmoHtml::tag('div', array('id' => 'footer-preview-modal-content',
+                                                            'class' => 'footer-preview-modal'),
+                                                    $content);
             return $content;
         }
     }
