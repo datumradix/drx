@@ -31,9 +31,14 @@
             return array();
         }
 
+        public function beforeAction($action)
+        {
+            Yii::app()->user->userModel = BaseActionControlUserConfigUtil::getUserToRunAs();
+            return parent::beforeAction($action);
+        }
+
         public function actionForm($id)
         {
-            Yii::app()->user->userModel = ContactWebFormsUserConfigUtil::getUserToRunAs();
             Yii::app()->getClientScript()->setIsolationMode();
             $contactWebForm = static::getModelAndCatchNotFoundAndDisplayError('ContactWebForm', intval($id));
             $metadata       = static::getMetadataByWebForm($contactWebForm);
@@ -56,9 +61,8 @@
             if (isset($_POST[$postVariableName]) && isset($contact->id) && intval($contact->id) > 0)
             {
                 static::resolveContactWebFormEntry($contactWebForm, $contact);
-                $responseData                        = array();
-                $responseData['redirectUrl']         = $contactWebForm->redirectUrl;
-                echo CJSON::encode($responseData);
+                $callback = Yii::app()->getRequest()->getQuery('callback');
+                echo $callback . "('" . $contactWebForm->redirectUrl . "');";
                 Yii::app()->end(0, false);
             }
             $rawXHtml                                = $view->render();
@@ -75,6 +79,7 @@
         {
             if (isset($_POST['ajax']) && $_POST['ajax'] == 'edit-form')
             {
+                $callback       = Yii::app()->getRequest()->getQuery('callback');
                 $contact        = new Contact();
                 $contact->setAttributes($_POST['Contact']);
                 $contact->state = $contactWebForm->defaultState;
@@ -82,12 +87,12 @@
                 static::resolveContactWebFormEntry($contactWebForm, $contact);
                 if ($contact->validate())
                 {
-                    echo CJSON::encode(array());
+                    echo $callback . '(' . CJSON::encode(array()) . ');';
                 }
                 else
                 {
                     $errorData = ZurmoActiveForm::makeErrorsDataAndResolveForOwnedModelAttributes($contact);
-                    echo CJSON::encode($errorData);
+                    echo $callback . '(' . CJSON::encode($errorData) . ');';
                 }
                 Yii::app()->end(0, false);
             }
@@ -133,7 +138,6 @@
 
         public function actionSourceFiles($id)
         {
-            Yii::app()->user->userModel = ContactWebFormsUserConfigUtil::getUserToRunAs();
             $formContentUrl          = Yii::app()->createAbsoluteUrl('contacts/external/form/', array('id' => $id));
             $renderFormFileUrl       = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.core.views.assets') .
                                        DIRECTORY_SEPARATOR . 'renderExternalForm.js');
@@ -143,10 +147,9 @@
                                        DIRECTORY_SEPARATOR . 'renderExternalForm.js');
             }
             $renderFormFileUrl      = Yii::app()->getRequest()->getHostInfo() . $renderFormFileUrl;
-
             $jsOutput               = "var formContentUrl = '" . $formContentUrl . "';";
             $jsOutput              .= "var externalFormScriptElement = document.createElement('script');
-                                       externalFormScriptElement.src  = '" . $renderFormFileUrl . "';
+                                       externalFormScriptElement.src = '" . $renderFormFileUrl . "';
                                        document.getElementsByTagName('head')[0].appendChild(externalFormScriptElement);";
             header("content-type: application/javascript");
             echo $jsOutput;
