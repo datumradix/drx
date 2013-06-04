@@ -221,7 +221,7 @@
             $totalCampaigns     = Campaign::getAll();
             $this->assertNotEmpty($totalCampaigns);
             $this->assertCount(2, $totalCampaigns);
-            $dueActiveCampaigns = Campaign::getByStatusAndSendingTime(Campaign::STATUS_ACTIVE, time());
+            $dueActiveCampaigns = Campaign::getByStatusAndSendingTime(Campaign::STATUS_ACTIVE, time() + 100);
             $this->assertNotEmpty($dueActiveCampaigns);
             $this->assertCount(1, $dueActiveCampaigns);
             $campaign = $dueActiveCampaigns[0];
