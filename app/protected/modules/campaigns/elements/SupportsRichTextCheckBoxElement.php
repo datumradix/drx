@@ -34,40 +34,22 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Zurmo specific view for details view.
-     * Used to manipulate elements for a form layout
-     * based on rights/permissions of the current user
-     */
-    abstract class SecuredDetailsView extends DetailsView
+    class SupportsRichTextCheckBoxElement extends CheckBoxElement
     {
-        /**
-         * Override to handle security/access resolution on specific elements.
-         */
-        protected function resolveElementInformationDuringFormLayoutRender(& $elementInformation)
+        protected function renderLabel()
         {
-            FormLayoutSecurityUtil::resolveElementForNonEditableRender(
-                $this->model, $elementInformation, Yii::app()->user->userModel);
-        }
-
-        protected function shouldRenderToolBarElement($element, $elementInformation)
-        {
-            assert('$element instanceof ActionElement');
-            assert('is_array($elementInformation)');
-            if (!parent::shouldRenderToolBarElement($element, $elementInformation))
+            if ($this->form === null)
             {
-                return false;
+                return $this->getFormattedAttributeLabel();
             }
-            return ActionSecurityUtil::canCurrentUserPerformAction($element->getActionType(), $this->model);
-        }
-
-        protected function renderAfterFormLayoutForDetailsContent()
-        {
-            $content                            = parent::renderAfterFormLayoutForDetailsContent();
-            $ownedSecurableItemDetailsContent   = OwnedSecurableItemDetailsViewUtil::renderAfterFormLayoutForDetailsContent(
-                $this->getModel(),
-                $content);
-            return $ownedSecurableItemDetailsContent;
+            $title      = Zurmo::t('Campaign', 'When checked, email will be sent in both text and HTML format.  Uncheck to only send text emails');
+            $content    = Zurmo::t('ZurmoModule', 'Support HTML');
+            $content   .= ZurmoHtml::tag('span', array('id' => 'support-rich-text-tooltip',
+                                                        'class' => 'tooltip',
+                                                        'title' => $title), '?');
+            $enableTrackingTip     = new ZurmoTip();
+            $enableTrackingTip->addQTip("#support-rich-text-tooltip");
+            return $content;
         }
     }
 ?>
