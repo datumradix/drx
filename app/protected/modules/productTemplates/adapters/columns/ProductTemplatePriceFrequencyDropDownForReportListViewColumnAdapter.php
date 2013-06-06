@@ -28,13 +28,11 @@
     {
         public function renderGridViewData()
         {
-            $frequencyDropdownData = ProductTemplateElementUtil::getProductTemplatePriceFrequencyDropdownArray();
-            $key = ReportResultsRowData::resolveKeyByAttributeName($this->attribute);
-            return array(
-                'name'  => $this->attribute,
-                'value'  => $frequencyDropdownData['$data->{' . $this->attribute . '}'],
-                'type'  => 'raw',
-            );
+                return array(
+                    'name'  => $this->attribute,
+                    'value' => 'ProductTemplateElementUtil::renderProductTemplateListViewAttributeForReports($data, "' . $this->attribute . '")',
+                    'type'  => 'raw',
+                );
         }
     }
 ?>
