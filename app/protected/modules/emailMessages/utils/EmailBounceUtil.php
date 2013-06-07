@@ -35,13 +35,34 @@
      ********************************************************************************/
 
     /**
-     * Edit and details view for the email global configuration view.
+     * Helper class for working with Email Bounce Messages.
      */
-    class EmailArchivingConfigurationEditAndDetailsView extends ImapConfigurationEditAndDetailsView
+    class EmailBounceUtil
     {
-        protected static function getPanelTitle()
+        public static function resolveCustomHeadersFromTextBody($headerTags, $textBody)
         {
-            return Zurmo::t('EmailMessagesModule', 'Email Archiving Configuration (IMAP)');
+            $headers    = array();
+            foreach ($headerTags as $headerTag)
+            {
+                $value = static::resolveHeaderTagValueFromTextBody($headerTag, $textBody);
+                if ($value === false)
+                {
+                    return false;
+                }
+                $headers[$headerTag]    = $value;
+            }
+            return $headers;
+        }
+
+        protected static function resolveHeaderTagValueFromTextBody($headerTag, $textBody)
+        {
+            $regex = '/' . $headerTag . ': ([\w\d]+)/is';
+            preg_match($regex , $textBody, $match);
+            if (isset($match[1]))
+            {
+                return $match[1];
+            }
+            return false;
         }
     }
 ?>

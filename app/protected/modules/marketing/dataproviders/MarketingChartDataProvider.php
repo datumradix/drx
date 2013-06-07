@@ -131,7 +131,7 @@
                                     'displayLabel' => $displayLabel);
                 }
             }
-            elseif($groupBy == MarketingOverallMetricsForm::GROUPING_TYPE_MONTH)
+            elseif ($groupBy == MarketingOverallMetricsForm::GROUPING_TYPE_MONTH)
             {
                 foreach (DateTimeUtil::
                         getMonthStartAndEndDatesBetweenTwoDatesInARange($beginDate, $endDate) as $beginMonthDate => $endMonthDate)

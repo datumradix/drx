@@ -34,14 +34,23 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Edit and details view for the email global configuration view.
-     */
-    class EmailArchivingConfigurationEditAndDetailsView extends ImapConfigurationEditAndDetailsView
+    class MarketingListsExternalActionsPreviewView extends SplashView
     {
-        protected static function getPanelTitle()
+        /**
+         * @return null|string
+         */
+        protected function getIconName()
         {
-            return Zurmo::t('EmailMessagesModule', 'Email Archiving Configuration (IMAP)');
+            return 'Warning';
+        }
+
+        /**
+         * @return string
+         */
+        protected function getMessageContent()
+        {
+            return Zurmo::t('MarketingListsModule', '<h2>Not so fast!</h2><div class="large-icon"></div>' .
+            '<p>Access denied due to preview mode being active.</p>');
         }
     }
 ?>

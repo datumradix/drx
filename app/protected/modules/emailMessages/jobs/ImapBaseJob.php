@@ -35,51 +35,76 @@
      ********************************************************************************/
 
     /**
-     * A job for processing campaign messages that are not sent immediately when triggered
+     * A job for processing emails over imap
      */
-    class CampaignQueueMessagesInOutboxJob extends AutoresponderOrCampaignBaseJob
+    abstract class ImapBaseJob extends BaseJob
     {
+        protected $imapManager;
+
+        abstract protected function resolveImapObject();
+        abstract protected function getLastImapDropboxCheckTime();
+        abstract protected function setLastImapDropboxCheckTime($time);
+        abstract protected function processMessage(ImapMessage $message);
+
         /**
-         * @returns Translated label that describes this job type.
-         */
-        public static function getDisplayName()
+        * @returns the threshold for how long a job is allowed to run. This is the 'threshold'. If a job
+        * is running longer than the threshold, the monitor job might take action on it since it would be
+        * considered 'stuck'.
+        */
+        public static function getRunTimeThresholdInSeconds()
         {
-           return Zurmo::t('CampaignsModule', 'Process campaign messages');
+            return 300;
         }
 
         /**
+         *
+         * (non-PHPdoc)
          * @see BaseJob::run()
          */
         public function run()
         {
-            $batchSize = $this->resolveBatchSize();
-            $campaignItemsToProcess    = CampaignItem::getByProcessedAndStatusAndSendOnDateTime(
-                                                                                        0,
-                                                                                        Campaign::STATUS_ACTIVE,
-                                                                                        time(),
-                                                                                        $batchSize);
-            foreach ($campaignItemsToProcess as $campaignItem)
+            $this->resolveImapObject();
+            if ($this->imapManager->connect())
             {
-                try
+                $lastImapCheckTime     = $this->getLastImapDropboxCheckTime();
+                if (isset($lastImapCheckTime) && $lastImapCheckTime != '')
                 {
-                    $this->processCampaignItemInQueue($campaignItem);
+                   $criteria = "SINCE \"{$lastImapCheckTime}\" UNDELETED";
+                   $lastImapCheckTimeStamp = strtotime($lastImapCheckTime);
                 }
-                catch (NotFoundException $e)
+                else
                 {
-                    return $campaignItem->delete();
+                    $criteria = "ALL UNDELETED";
+                    $lastImapCheckTimeStamp = 0;
                 }
-                catch (NotSupportedException $e)
-                {
-                    $this->errorMessage = $e->getMessage();
-                    return false;
-                }
-            }
-            return true;
-        }
+                $messages = $this->imapManager->getMessages($criteria, $lastImapCheckTimeStamp);
 
-        protected function processCampaignItemInQueue(CampaignItem $campaignItem)
-        {
-            CampaignItemsUtil::processDueItem($campaignItem);
+                $lastCheckTime = null;
+                if (count($messages))
+                {
+                   foreach ($messages as $message)
+                   {
+                       $lastMessageCreatedTime = strtotime($message->createdDate);
+                       if (strtotime($message->createdDate) > strtotime($lastCheckTime))
+                       {
+                           $lastCheckTime = $message->createdDate;
+                       }
+                       $this->processMessage($message);
+                   }
+                   $this->imapManager->expungeMessages();
+                   if ($lastCheckTime != '')
+                   {
+                       $this->setLastImapDropboxCheckTime($lastCheckTime);
+                   }
+                }
+                return true;
+            }
+            else
+            {
+                $messageContent     = Zurmo::t('EmailMessagesModule', 'Failed to connect to mailbox');
+                $this->errorMessage = $messageContent;
+                return false;
+            }
         }
     }
 ?>

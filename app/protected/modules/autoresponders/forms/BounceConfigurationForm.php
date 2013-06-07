@@ -35,13 +35,27 @@
      ********************************************************************************/
 
     /**
-     * Edit and details view for the email global configuration view.
+     * Form to all editing and viewing of bounce configuration values in the user interface.
      */
-    class EmailArchivingConfigurationEditAndDetailsView extends ImapConfigurationEditAndDetailsView
+    class BounceConfigurationForm extends ImapConfigurationForm
     {
-        protected static function getPanelTitle()
+        public $returnPath;
+
+        public function rules()
         {
-            return Zurmo::t('EmailMessagesModule', 'Email Archiving Configuration (IMAP)');
+            return CMap::mergeArray(parent::rules(), array(
+                array('returnPath',     'required'),
+                array('returnPath',     'length',    'min'  => 1, 'max' => 64),
+                array('returnPath',     'type', 'type' => 'string'),
+                array('returnPath',     'email'),
+            ));
+        }
+
+        public function attributeLabels()
+        {
+            return CMap::mergeArray(parent::attributeLabels(), array(
+                'returnPath'                           => Zurmo::t('ZurmoModule', 'Return Path'),
+            ));
         }
     }
 ?>

@@ -34,14 +34,17 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Edit and details view for the email global configuration view.
-     */
-    class EmailArchivingConfigurationEditAndDetailsView extends ImapConfigurationEditAndDetailsView
+    class MarketingListsExternalActionsPageView extends ZurmoPageView
     {
-        protected static function getPanelTitle()
+        public function __construct(CController $controller, SplashView $splashView)
         {
-            return Zurmo::t('EmailMessagesModule', 'Email Archiving Configuration (IMAP)');
+            $applicationName    = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'applicationName');
+            $header             = new HeaderLinksView(array(), array(), $applicationName);
+            $gridView           = new GridView(3, 1);
+            $gridView->setView($header, 0, 0);
+            $gridView->setView($splashView, 1, 0);
+            $gridView->setView(new FooterView(false), 2, 0);
+            parent::__construct($gridView);
         }
     }
 ?>
