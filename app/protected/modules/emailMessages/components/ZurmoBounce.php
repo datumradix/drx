@@ -35,13 +35,38 @@
      ********************************************************************************/
 
     /**
-     * Edit and details view for the email global configuration view.
+     * Helper class to manage access to IMAP server for bounces
      */
-    class EmailArchivingConfigurationEditAndDetailsView extends ImapConfigurationEditAndDetailsView
+    class ZurmoBounce extends ZurmoImap
     {
-        protected static function getPanelTitle()
+        /*
+         * Return Path
+         */
+        public $returnPath;
+
+        /**
+        * Contains array of settings to load during initialization from the configuration table.
+        * @see loadInboundSettings
+        * @var array
+        */
+        protected $settingsToLoad = array(
+            'bounceImapHost',
+            'bounceImapUsername',
+            'bounceImapPassword',
+            'bounceImapPort',
+            'bounceImapSSL',
+            'bounceImapFolder',
+            'bounceReturnPath',
+        );
+
+        protected function resolveAttributeNameFromSettingsKey($key)
         {
-            return Zurmo::t('EmailMessagesModule', 'Email Archiving Configuration (IMAP)');
+            return lcfirst(substr($key, strlen('bounce')));
+        }
+
+        protected function resolvePasswordKeyName()
+        {
+            return 'bounceImapPassword';
         }
     }
 ?>

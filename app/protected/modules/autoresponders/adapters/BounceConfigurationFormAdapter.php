@@ -35,36 +35,57 @@
      ********************************************************************************/
 
     /**
-     * Class to adapt email archiving configuration values into a configuration form.
+     * Class to adapt bounce configuration values into a configuration form.
      * Saves global values from a configuration form.
      */
-    class EmailArchivingConfigurationFormAdapter
+    class BounceConfigurationFormAdapter
     {
-        // TODO: @Ivica: Critical: Test
+        const CONFIG_MODULE_NAME    = 'EmailMessagesModule';
+
         public static function makeFormFromGlobalConfiguration()
         {
-            $form                                    = new EmailArchivingConfigurationForm();
-            $form->imapHost                          = Yii::app()->imap->imapHost;
-            $form->imapUsername                      = Yii::app()->imap->imapUsername;
-            $form->imapPassword                      = Yii::app()->imap->imapPassword;
-            $form->imapPort                          = Yii::app()->imap->imapPort;
-            $form->imapSSL                           = Yii::app()->imap->imapSSL;
-            $form->imapFolder                        = Yii::app()->imap->imapFolder;
+            $form                                    = new BounceConfigurationForm();
+            $form->imapHost                          = static::getConfigForKey('bounceImapHost');
+            $form->imapUsername                      = static::getConfigForKey('bounceImapUsername');
+            $form->imapPassword                      = static::getConfigForKey('bounceImapPassword');
+            $form->imapPort                          = static::getConfigForKey('bounceImapPort');
+            $form->imapSSL                           = static::getConfigForKey('bounceImapSSL');
+            $form->imapFolder                        = static::getConfigForKey('bounceImapFolder');
+            $form->returnPath                        = static::getConfigForKey('bounceReturnPath');
             return $form;
         }
 
         /**
          * Given a ImapConfigurationForm, save the configuration global values.
          */
-        public static function setConfigurationFromForm(EmailArchivingConfigurationForm $form)
+        public static function setConfigurationFromForm(BounceConfigurationForm $form)
         {
-            Yii::app()->imap->imapHost                 = $form->imapHost;
-            Yii::app()->imap->imapUsername             = $form->imapUsername;
-            Yii::app()->imap->imapPassword             = $form->imapPassword;
-            Yii::app()->imap->imapPort                 = $form->imapPort;
-            Yii::app()->imap->imapSSL                  = $form->imapSSL;
-            Yii::app()->imap->imapFolder               = $form->imapFolder;
-            Yii::app()->imap->setInboundSettings();
+            static::setConfigForKey('bounceImapHost',     $form->imapHost);
+            static::setConfigForKey('bounceImapUsername', $form->imapUsername);
+            static::setConfigForKey('bounceImapPassword', $form->imapPassword);
+            static::setConfigForKey('bounceImapPort',     $form->imapPort);
+            static::setConfigForKey('bounceImapSSL',      $form->imapSSL);
+            static::setConfigForKey('bounceImapFolder',   $form->imapFolder);
+            static::setConfigForKey('bounceReturnPath',   $form->returnPath);
+        }
+
+        protected static function getConfigForKey($key)
+        {
+            $value = ZurmoConfigurationUtil::getByModuleName(static::CONFIG_MODULE_NAME, $key);
+            if ($key == 'bounceImapPassword')
+            {
+                $value = ZurmoPasswordSecurityUtil::decrypt($value);
+            }
+            return $value;
+        }
+
+        protected static function setConfigForKey($key, $value)
+        {
+            if ($key == 'bounceImapPassword')
+            {
+                $value = ZurmoPasswordSecurityUtil::encrypt($value);
+            }
+            ZurmoConfigurationUtil::setByModuleName(static::CONFIG_MODULE_NAME, $key, $value);
         }
     }
 ?>
