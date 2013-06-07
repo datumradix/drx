@@ -84,6 +84,7 @@
                     array('latestDateTime',         'type', 'type' => 'datetime'),
                     array('type',                   'required'),
                     array('type',                   'type', 'type' => 'integer'),
+                    array('type',                   'numerical'),
                     array('quantity',               'required'),
                     array('quantity',               'type', 'type' => 'integer'),
                     array('quantity',               'numerical', 'integerOnly' => true),
