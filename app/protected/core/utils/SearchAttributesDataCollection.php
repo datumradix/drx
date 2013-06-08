@@ -92,6 +92,11 @@
             }
         }
 
+        public function getFilterByStarred()
+        {
+            return SearchUtil::getFilterByStarredFromGetArray(get_class($this->model));
+        }
+
         public function hasKanbanBoard()
         {
             if ($this->model->getKanbanBoard() == null)
@@ -192,6 +197,11 @@
             }
 
             return $sortDescending;
+        }
+
+        public function resolveFilterByStarredFromSourceData()
+        {
+            SearchUtil::resolveFilterByStarredFromGetArray($this->model, get_class($this->model));
         }
     }
 ?>
