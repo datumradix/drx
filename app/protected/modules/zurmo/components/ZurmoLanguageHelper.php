@@ -171,7 +171,7 @@
          */
         public function flushModuleLabelTranslationParameters()
         {
-            foreach (Yii::app()->params['supportedLanguages'] as $language => $notUsed)
+            foreach (ZurmoTranslationServerUtil::getAvailableLanguages() as $language)
             {
                 GeneralCache::forgetEntry('moduleLabelTranslationParameters' . $language);
             }
