@@ -38,9 +38,8 @@
     {
         protected function getDropDownArray()
         {
-            $availableLocales = Yii::app()->languageHelper->getSelectableLocaleIds();
             $dropDownArray = array('' => Zurmo::t('ZurmoModule', 'Same as language'));
-            foreach ($availableLocales as $locale)
+            foreach (ZurmoLocale::getSelectableLocaleIds() as $locale)
             {
                 $dropDownArray[$locale] = Yii::app()->locale->getLocaleDisplayName($locale) . '(' . $locale . ') ';
             }
