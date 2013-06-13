@@ -39,10 +39,32 @@
      */
     class TimeTriggerForWorkflowForm extends TriggerForWorkflowForm
     {
+        const DURATION_SIGN_POSITIVE = 'Positive';
+
+        const DURATION_SIGN_NEGATIVE = 'Negative';
+
+        const DURATION_TYPE_DAY      = 'Day';
+
+        const DURATION_TYPE_WEEK     = 'Week';
+
+        const DURATION_TYPE_MONTH    = 'Month';
+
+        const DURATION_TYPE_YEAR     = 'Year';
+
         /**
-         * @var integer.  Example: Account name is xyz for 1 hour.  The duration seconds would be set to 3600
+         * @var integer.
          */
-        public $durationSeconds;
+        public $durationInterval;
+
+        /**
+         * @var string
+         */
+        public $durationSign = self::DURATION_SIGN_POSITIVE;
+
+        /**
+         * @var string
+         */
+        public $durationType = self::DURATION_TYPE_DAY;
 
         /**
          * @return string component type
@@ -53,12 +75,40 @@
         }
 
         /**
+         * @param integer $initialTimeStamp
+         * @return integer of duration seconds based on durationInterval, durationSign, and durationType
+         */
+        public function resolveNewTimeStampForDuration($initialTimeStamp)
+        {
+            if($this->durationInterval == 0)
+            {
+                return 0;
+            }
+            $dateTime = DateTime::createFromFormat('U', (int)$initialTimeStamp, new DateTimeZone(Yii::app()->timeZoneHelper->getForCurrentUser()));
+            if($this->durationSign == self::DURATION_SIGN_NEGATIVE)
+            {
+                $dateTime->modify('-' . $this->durationInterval . ' ' . $this->durationType); // Not Coding Standard
+            }
+            else
+            {
+                $dateTime->modify('+' . $this->durationInterval . ' ' . $this->durationType); // Not Coding Standard
+            }
+            return $dateTime->getTimestamp();
+        }
+
+        /**
          * @return array
          */
         public function rules()
         {
             return array_merge(parent::rules(), array(
-                array('durationSeconds', 'type', 'type' => 'integer'),
+                array('durationInterval', 'type', 'type' => 'integer'),
+                array('durationInterval', 'numerical', 'min' => 0),
+                array('durationInterval', 'required'),
+                array('durationSign',    'type', 'type' => 'string'),
+                array('durationSign',    'required'),
+                array('durationType',    'type', 'type' => 'string'),
+                array('durationType',    'required'),
             ));
         }
 
@@ -111,7 +161,6 @@
             {
                 return $this->makeDurationValuesAndLabels(true, false, false, true);
             }
-
             return $data;
             ModelAttributeToWorkflowOperatorTypeUtil::resolveOperatorsToIncludeByType($data, $type);
             $data[OperatorRules::TYPE_DOES_NOT_CHANGE] = OperatorRules::getTranslatedTypeLabel(OperatorRules::TYPE_DOES_NOT_CHANGE);
