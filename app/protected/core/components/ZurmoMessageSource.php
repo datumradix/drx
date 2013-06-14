@@ -119,36 +119,5 @@
             assert('is_string($languageCode)');
             return self::CACHE_KEY_PREFIX . '.messages.' . $category . '.' . $languageCode;
         }
-
-        public function translate($category,$message,$language=null)
-        {
-            if($language===null)
-            {
-                $language=Yii::app()->getLanguage();
-            }
-            if($this->forceTranslation || $language!==$this->getLanguage())
-            {
-                $translation = $this->translateMessage(
-                    $category,
-                    $message,
-                    $language
-                );
-
-                if ($translation == $message)
-                {
-                    $translation = $this->translateMessage(
-                        'Default',
-                        $message,
-                        $language
-                    );
-                }
-
-                return $translation;
-            }
-            else
-            {
-                return $message;
-            }
-        }
     }
 ?>
