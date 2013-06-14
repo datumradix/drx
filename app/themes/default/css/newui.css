@@ -283,7 +283,8 @@ a.ModalGameNotification a,
 .kanban-card > div,
 .webform-embed-code textarea,
 #business-card-buttons > div,
-#business-card-buttons a {
+#business-card-buttons a,
+.mini-button {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -14229,7 +14230,7 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 .AttributeEditView .sortable .remove-sortable-item-link {
   position: absolute;
   left: 3px;
-  top: 3px;
+  line-height: 1;
   z-index: 100;
 }
 .AttributeEditView .sortable .remove-sortable-item-link span {
@@ -14248,6 +14249,9 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   -o-text-shadow: 0 1px 0 #ffffff;
   -ms-text-shadow: 0 1px 0 #ffffff;
   text-shadow: 0 1px 0 #ffffff;
+  line-height: 1;
+  position: relative;
+  top: 1px;
 }
 .AttributeEditView form div table td {
   padding-left: 0 !important;
@@ -15677,6 +15681,7 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   width: 310px !important;
 }
 a.close-ModalGameNotification.simple-link {
+  text-decoration: underline !important;
   background: none !important;
   margin-right: 10px;
   margin-left: -35px;
@@ -18090,8 +18095,18 @@ a.user-link {
 }
 .autoresponder-combined-content .spinner,
 .email-template-combined-content .spinner {
-  left: 50% !important;
-  top: 50% !important;
+  margin: 100px 0 0 50%;
+  left: 0 !important;
+  top: 0 !important;
+}
+.email-template-content {
+  /*
+	.spinner{
+		margin: 15% 0 0 50%;
+		left: 0 !important;
+		top: 0 !important;
+	}*/
+
 }
 .email-template-content .big-spinner {
   position: absolute;
@@ -18102,10 +18117,6 @@ a.user-link {
   height: 100%;
   background: rgba(255, 255, 255, 0.8);
   margin: 0;
-}
-.email-template-content .spinner {
-  left: 50% !important;
-  top: 50% !important;
 }
 .tabs-nav {
   border-bottom: 1px solid #dfdfdf;
@@ -19138,19 +19149,31 @@ a + .autoresponder-stats {
   -ms-box-shadow: inset 0 5px 15px 2px rgba(0, 0, 0, 0.4), 0 1px 0 0 #FFF;
   box-shadow: inset 0 5px 15px 2px rgba(0, 0, 0, 0.4), 0 1px 0 0 #FFF;
 }
+.sliding-panel {
+  display: none;
+  width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+}
 .business-card {
-  padding-right: 50px;
+  display: block;
+}
+.business-card .gravatar {
+  margin-right: 12px;
 }
 .business-card h2 {
   line-height: 100%;
   padding-bottom: 15px;
+  display: inline-block;
 }
 .business-card h2 .salutation {
   font-weight: normal;
   font-size: 80%;
   margin-right: 5px;
 }
-.business-card h3 {
+.business-card h3.position {
   line-height: 140%;
   font-weight: normal;
   color: #545454 !important;
@@ -19158,16 +19181,19 @@ a + .autoresponder-stats {
 .business-card h4 {
   color: #545454 !important;
   line-height: 150%;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
   font-size: 14px;
 }
 .business-card .contact-details {
+  clear: left;
   color: #111;
   font-size: 14px;
   color: #666;
   margin-bottom: 7px;
+  margin-top: 10px;
 }
 .business-card .contact-details > a {
+  margin-top: 5px;
   margin-right: 20px;
   color: #333;
 }
@@ -19206,6 +19232,31 @@ a + .autoresponder-stats {
   padding-right: 3px;
   color: #111;
 }
+.business-card .demographic-details {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: right;
+}
+.business-card .demographic-details .sex {
+  width: 30px;
+  height: 62px;
+  display: block;
+  text-indent: -9999px;
+  text-align: left;
+  margin-top: 0;
+  line-height: 1;
+}
+.business-card .demographic-details .male {
+  background: url(../images/people.png) right top no-repeat;
+}
+.business-card .demographic-details span {
+  margin-top: 13px;
+  font-weight: bold;
+  display: block;
+  float: right;
+  line-height: 150%;
+}
 #_business-card-buttons {
   position: absolute;
   right: 5px;
@@ -19232,6 +19283,7 @@ a + .autoresponder-stats {
   display: none;
 }
 #business-card-buttons {
+  display: none !important;
   display: inline-block;
   font-size: 11px;
 }
@@ -19329,6 +19381,128 @@ a + .autoresponder-stats {
 }
 #business-card-buttons .active i {
   color: #97c43d;
+}
+.social-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  text-indent: -9999px;
+  margin-right: 4px;
+}
+.social-icon:hover {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0 0 7px 0 #999999;
+  -moz-box-shadow: 0 0 7px 0 #999999;
+  -o-box-shadow: 0 0 7px 0 #999999;
+  -ms-box-shadow: 0 0 7px 0 #999999;
+  box-shadow: 0 0 7px 0 #999999;
+}
+.icon-twitter {
+  background: url(../images/social-icons/twitter.png) center center no-repeat;
+}
+.icon-facebook {
+  background: url(../images/social-icons/facebook.png) left top no-repeat;
+}
+.icon-linkedin {
+  background: url(../images/social-icons/linkedin.png) left top no-repeat;
+}
+.rapleaf-data {
+  display: none;
+}
+.rapleaf-data h3 {
+  margin-bottom: 10px;
+  margin-top: 30px;
+}
+.rapleaf-data ul {
+  list-style: none;
+}
+.rapleaf-data li {
+  font-weight: bold;
+  margin-bottom: 3px;
+  color: #666;
+}
+.rapleaf-data li span {
+  font-weight: normal;
+  margin-left: 5px;
+  border: 1px solid #ccc;
+  background: #eaeaea;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 11px;
+  color: #323232;
+}
+.rapleaf-data .complex-data li {
+  line-height: 200%;
+  width: 33.3%;
+  float: left;
+}
+.rapleaf-data .simple-data li {
+  float: left;
+  width: auto;
+  margin-bottom: 7px;
+}
+.rapleaf-data .simple-data span {
+  margin: 0 5px 0 0;
+}
+.rapleaf-data .half {
+  float: left;
+  width: 49%;
+}
+.rapleaf-data .half + .half {
+  margin-left: 2%;
+}
+div.special-pager {
+  margin-bottom: 0 !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+}
+div.special-pager .next span {
+  text-indent: 0 !important;
+  font-size: 11px;
+  padding: 5px 0 5px 0 !important;
+}
+div.special-pager .next a:after,
+div.special-pager .hidden.next:after {
+  display: none !important;
+}
+.mini-button {
+  display: inline-block;
+  border: 1px solid #b7b7b7;
+  border-top-color: #e7e7e7;
+  border-left-color: #d7d7d7;
+  border-right-color: #d7d7d7;
+  border-radius: 4px;
+  background: url(../images/view-toolbar-gradient-darker.png) left bottom repeat-x;
+  -webkit-box-shadow: inset 0 0 1px 1px #efefef;
+  -moz-box-shadow: inset 0 0 1px 1px #efefef;
+  -o-box-shadow: inset 0 0 1px 1px #efefef;
+  -ms-box-shadow: inset 0 0 1px 1px #efefef;
+  box-shadow: inset 0 0 1px 1px #efefef;
+  color: #545454;
+  text-shadow: #fff 0 1px 0;
+  position: relative;
+  margin-left: 10px;
+  top: -2px;
+}
+.mini-button span {
+  color: #545454;
+  display: block;
+  line-height: 22px;
+  padding: 0 6px 0 28px;
+  background: url(../images/rapleaf.png) 4px center no-repeat;
+}
+.mini-button span + span {
+  display: none;
+  line-height: 22px;
 }
 /*********************************************************************************
  * Zurmo is a customer relationship management program developed by
