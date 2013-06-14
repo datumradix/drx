@@ -35,13 +35,9 @@
      ********************************************************************************/
 
     /**
-     * Element for displaying the autoresponder seconds from operation options.
+     * Display the duration derived attributes including the sign, type, and duration in seconds
      */
-    class AutoresponderSecondsFromOperationElement extends StaticDropDownFormElement
+    class TimeTriggerDurationElement extends DurationElement
     {
-        protected function getDropDownArray()
-        {
-            return Autoresponder::getIntervalDropDownArray();
-        }
     }
 ?>

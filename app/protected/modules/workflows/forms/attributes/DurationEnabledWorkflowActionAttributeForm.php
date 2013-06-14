@@ -35,17 +35,55 @@
      ********************************************************************************/
 
     /**
-     * Class used by an email message in workflow to show the duration data. For example send the email message
-     * 4 hours after the workflow runs
+     * Form to work with duration enabled attributes
      */
-    class EmailMessageSendAfterDurationStaticDropDownElement extends DataFromFormStaticDropDownFormElement
+    abstract class DurationEnabledWorkflowActionAttributeForm extends WorkflowActionAttributeForm
     {
         /**
-         * @return string
+         * @var integer.
          */
-        protected function getDataAndLabelsModelPropertyName()
+        public $durationInterval;
+
+        /**
+         * @var string
+         */
+        public $durationSign = TimeDurationUtil::DURATION_SIGN_POSITIVE;
+
+        /**
+         * @var string
+         */
+        public $durationType = TimeDurationUtil::DURATION_TYPE_DAY;
+
+        /**
+         * @return array
+         */
+        public function rules()
         {
-            return 'getSendAfterDurationValuesAndLabels';
+            return array_merge(parent::rules(), array(
+                array('durationInterval', 'type', 'type' => 'integer'),
+                array('durationInterval', 'numerical', 'min' => 0),
+                array('durationSign',     'type', 'type' => 'string'),
+                array('durationType',     'type', 'type' => 'string'),
+            ));
+        }
+
+        /**
+         * @return array
+         */
+        public function attributeLabels()
+        {
+            return array_merge(parent::attributeLabels(), array('durationInterval' => Zurmo::t('Core', 'Interval')));
+        }
+
+        /**
+         * @param integer $initialTimeStamp
+         * @return integer timestamp based on durationInterval, durationSign, and durationType
+         */
+        public function resolveNewTimeStampForDuration($initialTimeStamp)
+        {
+            assert('is_int($initialTimeStamp)');
+            return TimeDurationUtil::resolveNewTimeStampForDuration($initialTimeStamp, (int)$this->durationInterval,
+                $this->durationSign, $this->durationType);
         }
     }
 ?>
