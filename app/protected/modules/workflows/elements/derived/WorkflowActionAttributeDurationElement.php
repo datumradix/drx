@@ -35,13 +35,24 @@
      ********************************************************************************/
 
     /**
-     * Element for displaying the autoresponder seconds from operation options.
+     * Display the duration derived attributes including the sign, type, and duration in seconds
      */
-    class AutoresponderSecondsFromOperationElement extends StaticDropDownFormElement
+    class WorkflowActionAttributeDurationElement extends DurationElement
     {
-        protected function getDropDownArray()
+        protected function getDurationTypeDropDownArray()
         {
-            return Autoresponder::getIntervalDropDownArray();
+            if($this->model->getFormType() == 'Date')
+            {
+                return TimeDurationUtil::getDateOnlyValueAndLabels();
+            }
+            elseif($this->model->getFormType() == 'DateTime')
+            {
+                return TimeDurationUtil::getValueAndLabels();
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
         }
     }
 ?>
