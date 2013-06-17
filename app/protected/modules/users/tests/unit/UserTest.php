@@ -1108,5 +1108,33 @@
             $this->assertEquals(1, $user->isActive);
             unset($user);
         }
+
+        public function testGetLastDateTimePasswordWasChanged()
+        {
+            $user = new User();
+            $user->username           = 'changepassworduser';
+            $user->title->value       = 'Mr.';
+            $user->firstName          = 'My';
+            $user->lastName           = 'changepassworduser';
+            $user->setPassword('myuser');
+            $this->assertTrue($user->save());
+
+            $user = User::getByUsername('changepassworduser');
+            $this->assertLessThan(
+                    10,
+                    time() - DateTimeUtil::convertDbFormatDateTimeToTimestamp($user->getLastDateTimePasswordWasChanged()));
+
+            $auditEvent = new AuditEvent();
+            $auditEvent->dateTime       = DateTimeUtil
+                        ::convertTimestampToDbFormatDateTime(strtotime('2013-01-01'));
+            $auditEvent->moduleName     = 'UsersModule';
+            $auditEvent->eventName      = UsersModule::AUDIT_EVENT_USER_PASSWORD_CHANGED;
+            $auditEvent->user           = Yii::app()->user->userModel;
+            $auditEvent->modelClassName = get_class($user);
+            $auditEvent->modelId        = $user->id;
+            $auditEvent->serializedData = serialize(null);
+            $this->assertTrue($auditEvent->save());
+            $this->assertEquals('2013-01-01 00:00:00', $user->getLastDateTimePasswordWasChanged());
+        }
     }
 ?>
