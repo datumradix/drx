@@ -62,6 +62,8 @@
                                                         'on'   => 'createUser, changePassword'),
                 array('newPassword',        'validatePasswordStrength',
                                                         'on'   => 'createUser, changePassword'),
+                array('newPassword',        'validatePasswordIsNew',
+                                                        'on'   => 'changePassword'),
                 array('newPassword_repeat', 'type',     'type' => 'string'),
                 array('newPassword_repeat', 'required', 'on'   => 'createUser, changePassword'),
             );
@@ -81,6 +83,17 @@
             if ($this->getScenario() === 'createUser' || $this->getScenario() === 'changePassword')
             {
                 $this->model->setPassword((string)$this->newPassword);
+            }
+        }
+
+        public function validatePasswordIsNew($attribute, $params)
+        {
+            $oldHash = $this->model->hash;
+
+            if (User::encryptPassword($this->$attribute) == $oldHash)
+            {
+                $this->addError('newPassword',
+                    Zurmo::t('UsersModule', 'Your new password is the same as the old one.'));
             }
         }
 

@@ -295,5 +295,15 @@
         {
             return Zurmo::t('UsersModule', 'Users', array(), null, $language);
         }
+
+        public static function getEffectivePolicyPasswordExpiryDays(User $user)
+        {
+            $policies = PoliciesUtil::getAllModulePoliciesDataByPermitable($user);
+            if(isset($policies['UsersModule']['POLICY_PASSWORD_EXPIRES']['effective']) &&
+               $policies['UsersModule']['POLICY_PASSWORD_EXPIRES']['effective'])
+            {
+                return $policies['UsersModule']['POLICY_PASSWORD_EXPIRY_DAYS']['effective'];
+            }
+        }
     }
 ?>

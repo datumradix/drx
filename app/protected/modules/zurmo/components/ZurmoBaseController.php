@@ -42,6 +42,8 @@
 
         const ADMIN_VIEW_MOBILE_CHECK_FILTER_PATH = 'application.modules.zurmo.controllers.filters.AdminViewMobileCheckControllerFilter';
 
+        const PASSWORD_EXPIRED_CHECK_FILTER_PATH = 'application.modules.zurmo.controllers.filters.PasswordExpiredCheckControllerFilter';
+
         public function filters()
         {
             $moduleClassName = $this->resolveModuleClassNameForFilters();
@@ -64,6 +66,9 @@
                         'rightName' => $moduleClassName::getDeleteRight(),
                 );
             }
+            $filters[] = array(
+                self::PASSWORD_EXPIRED_CHECK_FILTER_PATH . ' - login, logout',
+            );
             $filters[] = array(
                 self::getRightsFilterPath() . ' + massEdit, massEditProgressSave',
                 'moduleClassName' => 'ZurmoModule',

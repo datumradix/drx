@@ -841,5 +841,15 @@
             }
             return parent::getSortAttributesByAttribute($attribute);
         }
+
+        public function getLastDateTimePasswordWasChanged()
+        {
+            $sql = "select datetime from auditevent where modelid = {$this->id}
+                    AND eventname = 'User Password Changed' AND modelclassname = 'User'
+                    order by id desc limit 1";
+            $cols     = R::getCol($sql);
+            $dateTime = $cols[0];
+            return $dateTime;
+        }
     }
 ?>
