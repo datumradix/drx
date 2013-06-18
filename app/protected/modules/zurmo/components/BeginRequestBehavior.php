@@ -97,6 +97,7 @@
                     $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadLanguage'));
                     $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadTimeZone'));
                     $owner->attachEventHandler('onBeginRequest', array($this, 'handleUserTimeZoneConfirmed'));
+                    $owner->attachEventHandler('onBeginRequest', array($this, 'handlePasswordExpired'));
                     $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadActivitiesObserver'));
                     $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadConversationsObserver'));
                     $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
@@ -292,6 +293,60 @@
                 {
                     $url = Yii::app()->createUrl('users/default/confirmTimeZone');
                     Yii::app()->request->redirect($url);
+                }
+            }
+        }
+
+        /**
+         * Called if installed, and logged in.
+         * @param CEvent $event
+         */
+        public function handlePasswordExpired($event)
+        {
+            if (!Yii::app()->user->isGuest)
+            {
+                $redirectUrl                 = Yii::app()->createUrl(
+                                                    'users/default/changePassword',
+                                                    array('id' => Yii::app()->user->id));
+                $user                        = Yii::app()->user->userModel;
+                $passwordLastChangesDateTime = $user->getLastDateTimePasswordWasChanged();
+                $timeSinceLastPasswordChange = time() - DateTimeUtil::convertDbFormatDateTimeToTimestamp($passwordLastChangesDateTime);
+                $daysSinceLastPasswordChange = floor($timeSinceLastPasswordChange / 86400);
+                $passwordHasExpired          = (UsersModule::getEffectivePolicyPasswordExpiryDays($user) > 0) &&
+                                               ($daysSinceLastPasswordChange >= UsersModule::getEffectivePolicyPasswordExpiryDays($user));
+                if(Yii::app()->request->isAjaxRequest  &&
+                   $passwordHasExpired &&
+                   Yii::app()->getRequest()->getUrl() != $redirectUrl)
+                {
+                    $messageView = new AccessFailureView(
+                                Zurmo::t('ZurmoModule', 'Please change your password.')
+                            );
+                    $view        = new AjaxPageView($messageView);
+                    echo $messageView->render();
+                    Yii::app()->end(0, false);
+                }
+                $allowedPasswordExpiredBypassUrls = array (
+                    Yii::app()->createUrl('users/default/changePassword'),
+                    Yii::app()->createUrl('min/serve'),
+                    Yii::app()->createUrl('zurmo/default/logout'),
+                );
+                $reqestedUrl = Yii::app()->getRequest()->getUrl();
+                $isUrlAllowedToByPass = false;
+                foreach ($allowedPasswordExpiredBypassUrls as $url)
+                {
+                    if (strpos($reqestedUrl, $url) === 0)
+                    {
+                        $isUrlAllowedToByPass = true;
+                    }
+                }
+                if (!$isUrlAllowedToByPass && $passwordHasExpired)
+                {
+                    Yii::app()->user->setFlash(
+                        'notification',
+                        Zurmo::t('ZurmoModule',
+                                 'Your password isn\'t changed for more than {daysPassed} days. Please change it now.',
+                                 array('{daysPassed}' => $daysSinceLastPasswordChange)));
+                    Yii::app()->request->redirect($redirectUrl);
                 }
             }
         }
