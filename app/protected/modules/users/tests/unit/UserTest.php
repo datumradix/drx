@@ -744,6 +744,10 @@
             // and so wont use it in validating, so the non-strong password wont be validated as
             // invalid until the next save.
             $this->assertEquals(SECURITY_OPTIMIZED, $billPasswordForm->save());
+            $bill->forget();
+            $bill             = User::getByUsername('abcdefg');
+            $billPasswordForm = new UserPasswordForm($bill);
+            $billPasswordForm->setScenario('changePassword');
             $_FAKEPOST = array(
                 'UserPasswordForm' => array(
                     'newPassword'        => 'abcdefg',
@@ -757,6 +761,7 @@
                 'newPassword' => array(
                     'The password must have at least one uppercase letter',
                     'The password must have at least one number and one letter',
+                    'Your new password is the same as the old one.',
                 ),
             );
             $this->assertEquals($errors, $billPasswordForm->getErrors());
