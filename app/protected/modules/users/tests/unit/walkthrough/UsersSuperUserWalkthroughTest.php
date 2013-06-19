@@ -477,43 +477,5 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/emailConfiguration');
             $this->assertContains('abc email signature', $content);
         }
-
-        public function testSuperUserPasswordExpiryDays()
-        {
-            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
-            $this->runControllerWithNoExceptionsAndGetContent     ('accounts/default/index');
-            $this->assertNull(UsersModule::getEffectivePolicyPasswordExpiryDays($super));
-
-            $super->setPolicy('UsersModule', UsersModule::POLICY_PASSWORD_EXPIRES, Policy::YES);
-            $super->setPolicy('UsersModule', UsersModule::POLICY_PASSWORD_EXPIRY_DAYS, 1);
-            $super->save();
-            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
-            $this->runControllerWithNoExceptionsAndGetContent     ('accounts/default/index');
-            $this->assertEquals(1, UsersModule::getEffectivePolicyPasswordExpiryDays($super));
-
-            $auditEvent = new AuditEvent();
-            $auditEvent->dateTime       = DateTimeUtil
-                        ::convertTimestampToDbFormatDateTime(time() - 24 * 60 * 60);
-            $auditEvent->moduleName     = 'UsersModule';
-            $auditEvent->eventName      = UsersModule::AUDIT_EVENT_USER_PASSWORD_CHANGED;
-            $auditEvent->user           = $super;
-            $auditEvent->modelClassName = get_class($super);
-            $auditEvent->modelId        = $super->id;
-            $auditEvent->serializedData = serialize(null);
-            $this->assertTrue($auditEvent->save());
-            $this->runControllerWithRedirectExceptionAndGetContent('accounts/default/index');
-
-            $auditEvent = new AuditEvent();
-            $auditEvent->dateTime       = DateTimeUtil
-                        ::convertTimestampToDbFormatDateTime(time() - 23 * 60 * 60);
-            $auditEvent->moduleName     = 'UsersModule';
-            $auditEvent->eventName      = UsersModule::AUDIT_EVENT_USER_PASSWORD_CHANGED;
-            $auditEvent->user           = $super;
-            $auditEvent->modelClassName = get_class($super);
-            $auditEvent->modelId        = $super->id;
-            $auditEvent->serializedData = serialize(null);
-            $this->assertTrue($auditEvent->save());
-            $this->runControllerWithNoExceptionsAndGetContent     ('accounts/default/index');
-        }
     }
 ?>

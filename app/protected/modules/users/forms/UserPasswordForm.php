@@ -41,6 +41,7 @@
     {
         public $newPassword;
         public $newPassword_repeat;
+        private $oldHash;
 
         protected static function getRedBeanModelClassName()
         {
@@ -50,6 +51,7 @@
         public function __construct(User $model)
         {
             $this->model = $model;
+            $this->oldHash = $this->model->hash;
         }
 
         public function rules()
@@ -88,9 +90,7 @@
 
         public function validatePasswordIsNew($attribute, $params)
         {
-            $oldHash = $this->model->hash;
-
-            if (User::encryptPassword($this->$attribute) == $oldHash)
+            if (User::encryptPassword($this->$attribute) == $this->oldHash)
             {
                 $this->addError('newPassword',
                     Zurmo::t('UsersModule', 'Your new password is the same as the old one.'));
