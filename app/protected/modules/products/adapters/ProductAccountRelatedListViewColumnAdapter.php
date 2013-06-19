@@ -33,65 +33,17 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
-
     /**
-     * Some localization in Jquery UI does not match the
-     * Yii localization.
-     *
+     * Column adapter for account for product list in portlet
      */
-    class YiiToJqueryUIDatePickerLocalization
+    class ProductAccountRelatedListViewColumnAdapter extends TextListViewColumnAdapter
     {
-        /**
-         * Use this function when mapping to JQuery UI DatePickers
-         */
-        public static function getLanguage()
+        public function renderGridViewData()
         {
-            $language = Yii::app()->getLanguage();
-            if ($language == 'en' || $language == 'en_us')
-            {
-                return;
-            }
-            if ($language == 'nb')
-            {
-                return 'no';
-            }
-            return $language;
-        }
-
-        /**
-         * Use this function when mapping the localized date format to
-         * the JQuery UI DatePicker date format
-         * @return string Jquery UI DatePicker date format
-         */
-        public static function resolveDateFormat($dateFormat)
-        {
-            $patterns = array(
-                '/[M]{1}/',
-                '/[y]{2}/',
-            );
-            $replacements = array(
-                'm',
-                'y',
-            );
-            return preg_replace($patterns, $replacements, $dateFormat);
-        }
-
-        /**
-         * Use this function when mapping the localized time format to
-         * the JQuery UI DatePicker time format
-         * @return string Jquery UI DatePicker time format
-         */
-        public static function resolveTimeFormat($timeFormat)
-        {
-            $patterns = array(
-                '/[H]/',
-                '/[a]{1}/',
-            );
-            $replacements = array(
-                'h',
-                'tt',
-            );
-            return preg_replace($patterns, $replacements, $timeFormat);
+            return array(
+                    'name'  => $this->attribute,
+                    'value' => 'strval($data->' . $this->attribute . '->name)'
+                );
         }
     }
 ?>
