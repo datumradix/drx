@@ -99,7 +99,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'MarketingListMemberNameAndStatus'),
+                                                array('attributeName' => 'null', 'type' => 'MarketingListMemberNameAndStatus', 'isLink' => true),
                                             ),
                                         ),
                                     ),
