@@ -92,7 +92,7 @@
                 return          ZurmoHtml::tag('h1', array(), $content);
             }
         }
-        
+
         /**
          * used for customizing label in UI
          */
@@ -100,4 +100,22 @@
         {
             return strtolower(preg_replace('/[^\da-z]/i', '', Yii::app()->label));
         }
+
+        public static function uncamelize($string ) {
+            $string[0] = strtolower($string[0]);
+            $uncamelizeFunction = create_function('$c', 'return "_" . strtolower($c[1]);');
+            return preg_replace_callback( '/([A-Z])/', $uncamelizeFunction, $string);
+        }
+
+        public static function camelize($string, $capitaliseFirstCharacter = false )
+        {
+            if ($capitaliseFirstCharacter)
+            {
+                $string[0] = strtoupper($string[0]);
+            }
+            $camelizeFunction = create_function('$character', 'return strtoupper($character[1]);');
+            return preg_replace_callback('/' . preg_quote(MergeTagsUtil::CAPITAL_DELIMITER) . '([a-z])/',
+                                                                                    $camelizeFunction, $string);
+        }
     }
+?>
