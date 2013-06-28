@@ -1024,8 +1024,7 @@ body.blue .portlet-toolbar .icon-create:hover,
 body.blue .portlet-toolbar a:hover,
 body.blue .portlet-toolbar .icon-create:before,
 body.blue #filter-latest-activities-link:hover,
-body.blue .badge-message h3,
-body.blue #marketing-list-member-select-contact-or-report-form a.close-flyout:hover {
+body.blue .badge-message h3 {
   color: #7cb830 !important;
 }
 body.blue #InstallAccessFailurePageView a,
@@ -1599,8 +1598,7 @@ body.brown .portlet-toolbar .icon-create:hover,
 body.brown .portlet-toolbar a:hover,
 body.brown .portlet-toolbar .icon-create:before,
 body.brown #filter-latest-activities-link:hover,
-body.brown .badge-message h3,
-body.brown #marketing-list-member-select-contact-or-report-form a.close-flyout:hover {
+body.brown .badge-message h3 {
   color: #b88f30 !important;
 }
 body.brown #InstallAccessFailurePageView a,
@@ -2174,8 +2172,7 @@ body.lime .portlet-toolbar .icon-create:hover,
 body.lime .portlet-toolbar a:hover,
 body.lime .portlet-toolbar .icon-create:before,
 body.lime #filter-latest-activities-link:hover,
-body.lime .badge-message h3,
-body.lime #marketing-list-member-select-contact-or-report-form a.close-flyout:hover {
+body.lime .badge-message h3 {
   color: #bcc98e !important;
 }
 body.lime #InstallAccessFailurePageView a,
@@ -2749,8 +2746,7 @@ body.cherry .portlet-toolbar .icon-create:hover,
 body.cherry .portlet-toolbar a:hover,
 body.cherry .portlet-toolbar .icon-create:before,
 body.cherry #filter-latest-activities-link:hover,
-body.cherry .badge-message h3,
-body.cherry #marketing-list-member-select-contact-or-report-form a.close-flyout:hover {
+body.cherry .badge-message h3 {
   color: #933140 !important;
 }
 body.cherry #InstallAccessFailurePageView a,
@@ -3324,8 +3320,7 @@ body.turquoise .portlet-toolbar .icon-create:hover,
 body.turquoise .portlet-toolbar a:hover,
 body.turquoise .portlet-toolbar .icon-create:before,
 body.turquoise #filter-latest-activities-link:hover,
-body.turquoise .badge-message h3,
-body.turquoise #marketing-list-member-select-contact-or-report-form a.close-flyout:hover {
+body.turquoise .badge-message h3 {
   color: #44bbcc !important;
 }
 body.turquoise #InstallAccessFailurePageView a,
@@ -3899,8 +3894,7 @@ body.violet .portlet-toolbar .icon-create:hover,
 body.violet .portlet-toolbar a:hover,
 body.violet .portlet-toolbar .icon-create:before,
 body.violet #filter-latest-activities-link:hover,
-body.violet .badge-message h3,
-body.violet #marketing-list-member-select-contact-or-report-form a.close-flyout:hover {
+body.violet .badge-message h3 {
   color: #91a1dc !important;
 }
 body.violet #InstallAccessFailurePageView a,
@@ -4474,8 +4468,7 @@ body.honey .portlet-toolbar .icon-create:hover,
 body.honey .portlet-toolbar a:hover,
 body.honey .portlet-toolbar .icon-create:before,
 body.honey #filter-latest-activities-link:hover,
-body.honey .badge-message h3,
-body.honey #marketing-list-member-select-contact-or-report-form a.close-flyout:hover {
+body.honey .badge-message h3 {
   color: #abbc42 !important;
 }
 body.honey #InstallAccessFailurePageView a,
@@ -7397,6 +7390,19 @@ td {
 		scroll,
 		scroll;
 }
+#list-view .icon-empty:before {
+  content: 'C';
+  font-weight: normal;
+  font-size: 45px;
+  font-family: "ZurmoGamificationSymblyReguRg";
+  padding: 0 0 0 0;
+  margin: 0 6px 0 -30px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  vertical-align: middle;
+  position: relative;
+}
 .items {
   width: 100%;
   border: 1px solid #dfdfdf;
@@ -7492,6 +7498,10 @@ td {
 .stacked-list td div.checkbox-column ~ div {
   padding-left: 25px;
 }
+.stacked-list td .star-column {
+  margin: -6px 15px 0 0 !important;
+  float: right;
+}
 .stacked-list td > div {
   margin: 0 0 2px 0;
 }
@@ -7545,6 +7555,12 @@ tr.even {
 .checkbox-column .hasCheckBox {
   margin: -4px auto 0 auto;
 }
+.star-column {
+  width: 20px;
+  text-align: center;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
 .button-column {
   width: 35px;
   text-align: center;
@@ -7557,6 +7573,39 @@ tr.even {
   font-size: 24px;
   font-family: "ZurmoGamificationSymblyReguRg";
   visibility: hidden;
+}
+.icon-star {
+  font-weight: normal;
+  font-size: 26px;
+  font-family: "ZurmoGamificationSymblyReguRg";
+  color: #ccc !important;
+  -webkit-text-shadow: 0 0 1px #333333;
+  -moz-text-shadow: 0 0 1px #333333;
+  -o-text-shadow: 0 0 1px #333333;
+  -ms-text-shadow: 0 0 1px #333333;
+  text-shadow: 0 0 1px #333333;
+  top: -1px;
+  position: relative;
+  line-height: 1;
+}
+.icon-star:hover,
+.icon-star.starred {
+  color: #ffef42 !important;
+}
+#list-view_columnStar {
+  line-height: 1;
+  width: 20px;
+  text-align: center;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+#list-view_columnStar .icon-star {
+  top: 0;
+  left: -2px;
+}
+.juiportlet-widget-head .icon-star {
+  top: 1px;
+  margin-left: 5px;
 }
 .juiportlet-widget .empty {
   padding: 5px 0 10px 0;
