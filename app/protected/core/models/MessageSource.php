@@ -50,7 +50,13 @@
                     array('category',           'length',  'min'  => 1, 'max' => 30),
                     array('source',             'required'),
                     array('source',             'type', 'type' => 'blob')
-                )
+                ),
+                'indexes' => array(
+                    'sourceCategory' => array(
+                        'members'   => array('category', 'source(767)'),
+                        'unique'    => true,
+                    ),
+                ),
             );
             return $metadata;
         }
