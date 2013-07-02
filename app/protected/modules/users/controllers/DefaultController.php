@@ -494,6 +494,13 @@
                     Yii::app()->user->setFlash('notification',
                         Zurmo::t('UsersModule', 'User email configuration saved successfully.')
                     );
+
+                    $refurl = Yii::app()->request->getParam('refurl');
+                    if(!empty($refurl) )
+                    {
+                        $url     = base64_decode($refurl);
+                        $this->redirect($url);
+                    }
                     $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
                 }
             }
