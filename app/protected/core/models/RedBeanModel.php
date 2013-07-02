@@ -1071,6 +1071,14 @@
                             assert('ctype_lower($relationName{0})');
                         }
                     }
+                    if (isset($metadata[$modelClassName]['indexes']))
+                    {
+                        assert('is_array($metadata[$modelClassName]["indexes"])');
+                        foreach ($metadata[$modelClassName]["indexes"] as $indexName => $notUsed)
+                        {
+                            assert('ctype_lower($indexName{0})');
+                        }
+                    }
                     if (isset($metadata[$modelClassName]['rules']))
                     {
                         assert('is_array($metadata[$modelClassName]["rules"])');
@@ -1873,7 +1881,7 @@
                                 $relationAndOwns       = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
                                 $relatedModelClassName = $relationAndOwns[$relationName][1];
                                 $linkName = strtolower($relationName);
-                                if (strtolower($linkName) == strtolower($relatedModelClassName) ||
+                                if (strtolower($linkName) == strtolower($relatedModelClassName) &&
                                     static::getRelationLinkType($relationName) == self::LINK_TYPE_ASSUMPTIVE)
                                 {
                                     $linkName = null;
@@ -1908,12 +1916,15 @@
                                     {
                                         ZurmoRedBeanLinkManager::link($bean, $relatedBean, $linkName);
                                     }
+                                    /*
+                                     * // TODO: @Shoaibi/@Jason: Critical: We don't need this anymore.
                                     if (!RedBeanDatabase::isFrozen())
                                     {
                                         $tableName  = self::getTableName(static::getAttributeModelClassName($relationName));
                                         $columnName = self::getForeignKeyName(get_class($this), $relationName);
                                         RedBeanColumnTypeOptimizer::optimize($tableName, $columnName, 'id');
                                     }
+                                    */
                                 }
                             }
                         }
@@ -3096,6 +3107,11 @@
         public static function isCacheable()
         {
             return true;
+        }
+
+        public static function getYiiValidatorsToRedBeanValidators()
+        {
+            return static::$yiiValidatorsToRedBeanValidators;
         }
     }
 ?>
