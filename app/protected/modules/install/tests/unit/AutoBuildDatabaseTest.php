@@ -78,7 +78,7 @@
             Yii::app()->user->userModel = $super;
             $messageLogger              = new MessageLogger();
             $beforeRowCount             = DatabaseCompatibilityUtil::getTableRowsCountTotal();
-            InstallUtil::autoBuildDatabase($messageLogger);
+            AutoBuildOptimizedInstallUtil::autoBuildDatabase($messageLogger);
 
             $afterRowCount              = DatabaseCompatibilityUtil::getTableRowsCountTotal();
             //There are only 1 extra rows that are not being removed during the autobuild process.
@@ -109,7 +109,7 @@
                     if (isset($meta[$model]['rules']))
                     {
                         $tableName      = RedBeanModel::getTableName($model);
-                        $columns = R::$writer->getColumns($tableName);
+                        $columns = ZurmoRedBean::$writer->getColumns($tableName);
                         foreach ($meta[$model]['rules'] as $rule)
                         {
                             if (is_array($rule) && count($rule) >= 3)
@@ -241,14 +241,14 @@
             Yii::app()->user->userModel = $super;
             $messageLogger              = new MessageLogger();
             $beforeRowCount             = DatabaseCompatibilityUtil::getTableRowsCountTotal();
-            InstallUtil::autoBuildDatabase($messageLogger);
+            AutoBuildOptimizedInstallUtil::autoBuildDatabase($messageLogger);
 
             $afterRowCount              = DatabaseCompatibilityUtil::getTableRowsCountTotal();
             $this->assertEquals($beforeRowCount, $afterRowCount);
 
             //Check Account fields
             $tableName = RedBeanModel::getTableName('Account');
-            $columns   = R::$writer->getColumns($tableName);
+            $columns   = ZurmoRedBean::$writer->getColumns($tableName);
 
             $this->assertEquals('text',             $columns['newfield']);
             $this->assertEquals('varchar(128)',     $columns['string128']);
@@ -282,7 +282,7 @@
                 }
             }
             Account::setMetadata($metadata);
-            InstallUtil::autoBuildDatabase($messageLogger);
+            AutoBuildOptimizedInstallUtil::autoBuildDatabase($messageLogger);
 
             RedBeanModel::forgetAll();
             $modifiedAccount = Account::getById($account->id);
@@ -291,7 +291,7 @@
 
             //Check Account fields
             $tableName = RedBeanModel::getTableName('Account');
-            $columns   = R::$writer->getColumns($tableName);
+            $columns   = ZurmoRedBean::$writer->getColumns($tableName);
             $this->assertEquals('varchar(128)',     $columns['string128']);
         }
 
