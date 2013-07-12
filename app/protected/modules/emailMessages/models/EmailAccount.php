@@ -71,7 +71,7 @@
                 throw new NotSupportedException();
             }
             assert('is_string($name)');
-            $bean = R::findOne(EmailAccount::getTableName('EmailAccount'),
+            $bean = ZurmoRedBean::findOne(EmailAccount::getTableName('EmailAccount'),
                                "_user_id = ? AND name = ?", array($user->id, $name));
             assert('$bean === false || $bean instanceof RedBean_OODBBean');
             if ($bean === false)
@@ -135,7 +135,8 @@
                     'outboundSecurity',
                 ),
                 'relations' => array(
-                    'messages' => array(RedBeanModel::HAS_MANY, 'EmailMessage'),
+                    // TODO: @Shoaibi: Critical: not owned? this has to be link type specific.
+                    'messages' => array(RedBeanModel::HAS_MANY, 'EmailMessage'),//, RedBeanModel::NOT_OWNED, RedBeanModel::LINK_TYPE_SPECIFIC, 'account'),
                     'user'     => array(RedBeanModel::HAS_ONE,  'User'),
                 ),
                 'rules'     => array(

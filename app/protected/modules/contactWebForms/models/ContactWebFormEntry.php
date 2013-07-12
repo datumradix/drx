@@ -103,7 +103,9 @@
                 ),
                 'relations' => array(
                     'contact'            => array(RedBeanModel::HAS_ONE, 'Contact'),
-                    'contactWebForm'     => array(RedBeanModel::HAS_ONE, 'ContactWebForm'),
+                    // TODO: @Shoaibi/@Jason: Critical: Old Autobuild fails, BeanModel:663, demo data fails, remove this exception.
+                    'contactWebForm'     => array(RedBeanModel::HAS_ONE, 'ContactWebForm', RedBeanModel::NOT_OWNED),
+                                                                        //RedBeanModel::LINK_TYPE_SPECIFIC, 'entries'),
                 ),
                 'rules' => array(
                     array('serializedData',    'type', 'type' => 'string'),
@@ -152,7 +154,7 @@
             $modelClassName = get_called_class();
             $tableName      = self::getTableName($modelClassName);
             $columnName     = self::getColumnNameByAttribute('hashIndex');
-            $beans          = R::find($tableName, "$columnName = '$hashIndex'");
+            $beans          = ZurmoRedBean::find($tableName, "$columnName = '$hashIndex'");
             assert('count($beans) <= 1');
             if (count($beans) == 0)
             {
