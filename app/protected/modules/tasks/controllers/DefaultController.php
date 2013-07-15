@@ -48,5 +48,41 @@
                 throw new NotSupportedException();
             }
         }
+
+        public function actionDetails($id, $redirectUrl = null)
+        {
+            $modelClassName    = $this->getModule()->getPrimaryModelName();
+            $activity = static::getModelAndCatchNotFoundAndDisplayError($modelClassName, intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($activity);
+            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($activity), get_class($this->getModule())), $activity);
+            $pageViewClassName = $this->getPageViewClassName();
+            $detailsView       = new TaskDetailsView('Details', $this->getId(), $this->getModule()->getId(), $activity);
+            $view              = new $pageViewClassName(ZurmoDefaultViewUtil::
+                                         makeStandardViewForCurrentUser($this,$detailsView));
+            echo $view->render();
+        }
+
+        /**
+         * Create comment via ajax for task
+         * @param type $id
+         * @param string $uniquePageId
+         */
+        public function actionInlineCreateCommentFromAjax($id, $uniquePageId)
+        {
+            $comment       = new Comment();
+            $redirectUrl   = Yii::app()->createUrl('/tasks/default/inlineCreateCommentFromAjax',
+                                                    array('id'           => $id,
+                                                          'uniquePageId' => $uniquePageId));
+            $urlParameters = array('relatedModelId'           => (int)$id,
+                                   'relatedModelClassName'    => 'Task',
+                                   'relatedModelRelationName' => 'comments',
+                                   'redirectUrl'              => $redirectUrl); //After save, the url to go to.
+            $uniquePageId  = 'CommentInlineEditForModelView';
+            echo             ZurmoHtml::tag('h2', array(), Zurmo::t('CovnersationsModule', 'Add Comment'));
+            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
+                                                       $urlParameters, $uniquePageId);
+            $view          = new AjaxPageView($inlineView);
+            echo $view->render();
+        }
     }
 ?>
