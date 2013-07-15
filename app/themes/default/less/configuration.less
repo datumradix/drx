@@ -911,6 +911,15 @@ table.configuration-list{
     }
 }
 
+#import-temp-table-list-view{
+	table{
+		border-bottom: 1px solid #CCCCCC;
+		td{
+			padding: 10px 5px 10px 15px;
+		}
+	}
+}
+
 #ImportWizardDataAnalysisCompleteView{
     > div{
         margin:0;
@@ -1041,9 +1050,21 @@ table.configuration-list{
 
 #ImportErrorsListView{
     margin-bottom:15px;
-    > #list-view{
-        .b-shadow(none);
+	#list-view{
+        .b-shadow(none) !important;
+		.unstyle-panel();
     }
+	.items{
+	//	background: #fff;
+		table-layout: fixed;
+	}
+	tr{
+		td:first-child, th:first-child{
+			width: 35px !important;
+			//text-align: center;
+			//table-layout: fixed;
+		}
+	}
 }
 
 /*Theme Chooser*/

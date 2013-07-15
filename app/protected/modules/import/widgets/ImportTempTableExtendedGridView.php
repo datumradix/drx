@@ -4,7 +4,7 @@
      * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU Affero General Public License version 3 as published by the
+     * the terms of the GNU General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,10 +12,10 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU Affero General Public License along with
+     * You should have received a copy of the GNU General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
@@ -25,9 +25,9 @@
      *
      * The interactive user interfaces in original and modified versions
      * of this program must display Appropriate Legal Notices, as required under
-     * Section 5 of the GNU Affero General Public License version 3.
+     * Section 5 of the GNU General Public License version 3.
      *
-     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * In accordance with Section 7(b) of the GNU General Public License version 3,
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
@@ -35,40 +35,47 @@
      ********************************************************************************/
 
     /**
-     * Data analyzer for attributes that are a contact state.
+     * Extends the yii CGridView to provide additional functionality.
+     * @see CGridView class
      */
-    class ContactStateSqlAttributeValueDataAnalyzer extends SqlAttributeValueDataAnalyzer
-                                                implements DataAnalyzerInterface
+    class ImportTempTableExtendedGridView extends ExtendedGridView
     {
-        public function runAndMakeMessages(AnalyzerSupportedDataProvider $dataProvider, $columnName)
+        public $expandableRows = false;
+
+        public function renderTableBody()
         {
-            assert('is_string($columnName)');
-            $dropDownValues  = $this->resolveStates();
-            $dropDownValues  = ArrayUtil::resolveArrayToLowerCase($dropDownValues);
-            $data            = $dataProvider->getCountDataByGroupByColumnName($columnName);
-            $count           = 0;
-            foreach ($data as $valueCountData)
+            $data = $this->dataProvider->getData();
+            $n    = count($data);
+            echo "<tbody>\n";
+
+            if ($n > 0)
             {
-                if ($valueCountData[$columnName] == null)
+                for ($row = 0; $row < $n; ++$row)
                 {
-                    continue;
-                }
-                if (!in_array(strtolower($valueCountData[$columnName]), $dropDownValues))
-                {
-                    $count++;
+                    $this->renderTableRow($row);
+                    if ($this->expandableRows)
+                    {
+                        $this->renderExpandableRow($this->dataProvider->data[$row]->getId());
+                    }
                 }
             }
-            if ($count > 0)
+            else
             {
-                $label   = '{count} value(s) are not valid. ';
-                $label  .= 'Rows that have these values will be skipped during import.';
-                $this->addMessage(Zurmo::t('ContactsModule', $label, array('{count}' => $count)));
+                echo '<tr><td colspan="' . count($this->columns) . '" class="empty">';
+                $this->renderEmptyText();
+                echo "</td></tr>\n";
             }
+            echo "</tbody>\n";
         }
 
-        protected function resolveStates()
+        /**
+         * @param $id
+         */
+        protected function renderExpandableRow($id)
         {
-            return ContactsUtil::getContactStateDataFromStartingStateOnAndKeyedById();
+            echo '<tr style="display:none;"><td class="hasDrillDownContent" colspan="' . (count($this->columns)) . '">';
+            echo '<div class="drillDownContent" id="drillDownContentFor-' . $id . '"></div>';
+            echo "</td></tr>\n";
         }
     }
 ?>
