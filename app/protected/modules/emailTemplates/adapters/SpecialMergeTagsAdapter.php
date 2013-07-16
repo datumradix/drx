@@ -34,55 +34,52 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class AutoresponderOrCampaignMailFooterContentUtil
+    /*
+     * This class is responsible from converting special merge tags to relevant attribute values.
+     */
+    class SpecialMergeTagsAdapter
     {
-        const CONFIG_KEY_PLAIN                      = 'AutoresponderOrCampaignFooterPlainText';
+        // TODO: @Shoaibi: Critical: Tests
+        protected static $specialAttributesResolver = array (
+                                'modelUrl'      => 'resolveModelUrlByModel',
+                                'companyName'   => 'resolveCompanyName',
+                                'currentYear'   => 'resolveCurrentYear',
+                                'lastYear'      => 'resolveLastYear',
+                                );
 
-        const CONFIG_KEY_RICH_TEXT                  = 'AutoresponderOrCampaignFooterRichText';
-
-        const CONFIG_MODULE_NAME                    = 'AutorespondersModule';
-
-        const UNSUBSCRIBE_URL_PLACEHOLDER           = '{{UNSUBSCRIBE_URL}}';
-
-        const MANAGE_SUBSCRIPTIONS_URL_PLACEHOLDER  = '{{MANAGE_SUBSCRIPTIONS_URL}}';
-
-        public static function getContentByType($isHtmlContent, $returnDefault = true)
+        public static function isSpecialMergeTag($attributeName, $timeQualifier)
         {
-            $key        = static::resolveConfigKeyByContentType($isHtmlContent);
-            $content    = ZurmoConfigurationUtil::getByModuleName(static::CONFIG_MODULE_NAME, $key);
-            if (empty($content) && $returnDefault)
-            {
-                $content = static::resolveDefaultValue($isHtmlContent);
-            }
-            return $content;
+            return (empty($timeQualifier) && array_key_exists($attributeName, static::$specialAttributesResolver));
         }
 
-        public static function setContentByType($content, $isHtmlContent)
+        public static function resolve($attributeName, $model = null)
         {
-            $key        = static::resolveConfigKeyByContentType($isHtmlContent);
-            ZurmoConfigurationUtil::setByModuleName(static::CONFIG_MODULE_NAME, $key, $content);
+            $methodName = static::$specialAttributesResolver[$attributeName];
+            return static::$methodName($model);
         }
 
-        protected static function resolveConfigKeyByContentType($isHtmlContent)
+        // individual resolvers
+        protected static function resolveModelUrlByModel($model)
         {
-            if ($isHtmlContent)
-            {
-                return static::CONFIG_KEY_RICH_TEXT;
-            }
-            else
-            {
-                return static::CONFIG_KEY_PLAIN;
-            }
+            $modelClassName     = get_class($model);
+            $moduleClassName    = $modelClassName::getModuleClassName();
+            $moduleId           = $moduleClassName::getDirectoryName();
+            return Yii::app()->createAbsoluteUrl('/' . $moduleId . '/default/details/', array('id' => $model->id));
         }
 
-        protected static function resolveDefaultValue($isHtmlContent)
+        protected static function resolveCompanyName()
         {
-            $unsubscribeUrlPlaceHolder          = static::UNSUBSCRIBE_URL_PLACEHOLDER;
-            $manageSubscriptionsUrlPlaceHolder  = static::MANAGE_SUBSCRIPTIONS_URL_PLACEHOLDER;
-            StringUtil::prependNewLine($unsubscribeUrlPlaceHolder, $isHtmlContent);
-            StringUtil::prependNewLine($manageSubscriptionsUrlPlaceHolder, $isHtmlContent);
-            $content     = $unsubscribeUrlPlaceHolder . $manageSubscriptionsUrlPlaceHolder;
-            return $content;
+            return ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'applicationName');
+        }
+
+        protected static function resolveCurrentYear()
+        {
+            return date('Y');
+        }
+
+        protected static function resolveLastYear()
+        {
+            return date('Y') - 1 ;
         }
     }
 ?>
