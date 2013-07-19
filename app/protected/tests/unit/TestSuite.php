@@ -123,14 +123,14 @@
                     echo "Temp directory: " . sys_get_temp_dir() . "\n\n"; // Not Coding Standard
                     exit;
                 }
-                InstallUtil::connectToDatabaseWithConnectionString(Yii::app()->db->connectionString,
+                AutoBuildOptimizedInstallUtil::connectToDatabaseWithConnectionString(Yii::app()->db->connectionString,
                                                                    Yii::app()->db->username,
                                                                    Yii::app()->db->password);
                 echo "Auto building database schema...\n";
-                InstallUtil::dropAllTables();
-                Yii::app()->user->userModel = InstallUtil::createSuperUser('super', 'super');
+                AutoBuildOptimizedInstallUtil::dropAllTables();
+                Yii::app()->user->userModel = AutoBuildOptimizedInstallUtil::createSuperUser('super', 'super');
                 $messageLogger = new MessageLogger();
-                InstallUtil::autoBuildDatabase($messageLogger);
+                AutoBuildOptimizedInstallUtil::autoBuildDatabase($messageLogger);
                 $messageLogger->printMessages();
                 ReadPermissionsOptimizationUtil::rebuild();
                 assert('RedBeanDatabase::isSetup()');
@@ -140,6 +140,7 @@
                 $success = preg_match("/;dbname=([^;]+)/", Yii::app()->db->connectionString, $matches); // Not Coding Standard
                 assert('$success == 1');
                 $databaseName = $matches[1];
+
                 $systemOutput = system('mysqldump -u' . Yii::app()->db->username .
                                        ' -p' . Yii::app()->db->password .
                                        ' ' . $databaseName            .
@@ -148,7 +149,7 @@
                 {
                     echo 'Dumping schema using system command. Output: ' . $systemOutput . "\n\n";
                 }
-                InstallUtil::close();
+                AutoBuildOptimizedInstallUtil::close();
                 echo "Database closed.\n";
                 assert('!RedBeanDatabase::isSetup()');
             }
