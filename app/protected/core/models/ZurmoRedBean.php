@@ -34,13 +34,11 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    $basePath  =  Yii::app()->getBasePath();
-    require_once("$basePath/../../redbean/rb.php");
-
-    /**
-     * A criteria for use with RedbeanModelDataProvider.
-     */
-    class RedBeanModelDbCriteria extends CDbCriteria
+    class ZurmoRedBean extends R
     {
+        protected static function getRedBeanSetupClassName()
+        {
+            return 'ZurmoRedBeanSetup';
+        }
     }
 ?>
