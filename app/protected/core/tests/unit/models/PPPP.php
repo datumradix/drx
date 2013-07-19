@@ -40,7 +40,7 @@
         {
             assert('is_string($name)');
             assert('$name != ""');
-            $bean = R::findOne('pppp', "name = '$name'");
+            $bean = ZurmoRedBean::findOne('pppp', "name = '$name'");
             assert('$bean === false || $bean instanceof RedBean_OODBBean');
             if ($bean === false)
             {

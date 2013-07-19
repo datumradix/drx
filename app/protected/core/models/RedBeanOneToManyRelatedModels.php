@@ -99,7 +99,7 @@
             $tableName = RedBeanModel::getTableName($modelClassName);
             if (is_string($sqlOrBean))
             {
-                $this->relatedBeansAndModels = array_values($beans = R::find($tableName, $sqlOrBean));
+                $this->relatedBeansAndModels = array_values($beans = ZurmoRedBean::find($tableName, $sqlOrBean));
             }
             else
             {
@@ -115,7 +115,7 @@
                             $values['id']    = $this->bean->id;
                             $values['type']  = $this->bean->getMeta('type');
 
-                            $this->relatedBeansAndModels = array_values(R::find( $tableName,
+                            $this->relatedBeansAndModels = array_values(ZurmoRedBean::find( $tableName,
                                                                     strtolower($this->linkName) . '_id = :id AND ' .
                                                                     strtolower($this->linkName) . '_type = :type',
                                                                     $values));
@@ -124,7 +124,7 @@
                         {
                             $relatedIds                  = ZurmoRedBeanLinkManager::getKeys($this->bean, $tableName,
                                                                                             $this->resolveLinkNameForCasing());
-                            $this->relatedBeansAndModels = array_values(R::batch($tableName, $relatedIds));
+                            $this->relatedBeansAndModels = array_values(ZurmoRedBean::batch($tableName, $relatedIds));
                         }
                     }
                     else
@@ -157,7 +157,7 @@
                 {
                     if ($this->bean->id == null)
                     {
-                        R::store($this->bean);
+                        ZurmoRedBean::store($this->bean);
                     }
                     $polyIdFieldName          = strtolower($this->linkName) . '_id';
                     $polyTypeFieldName        = strtolower($this->linkName) . '_type';
@@ -171,7 +171,10 @@
                 }
                 else
                 {
+                    // TODO: @Shoaibi/@Jason: Critical: This adds the non-prefix version of column
                     ZurmoRedBeanLinkManager::link($bean, $this->bean, $this->resolveLinkNameForCasing());
+                    /*
+                     // TODO: @Shoaibi/@Jason: Critical: We don't need this anymore.
                     if (!RedBeanDatabase::isFrozen())
                     {
                         $tableName        = RedBeanModel::getTableName($this->modelClassName);
@@ -180,8 +183,9 @@
                                             resolveColumnPrefix($this->resolveLinkNameForCasing()) . $columnName;
                         RedBeanColumnTypeOptimizer::optimize($tableName, $columnName, 'id');
                     }
+                    */
                 }
-                R::store($bean);
+                ZurmoRedBean::store($bean);
             }
             $this->deferredRelateBeans = array();
             $tableName = RedBeanModel::getTableName($this->relatedModelClassName);
@@ -190,11 +194,11 @@
                 if (!$this->owns)
                 {
                     ZurmoRedBeanLinkManager::breakLink($bean, $tableName, $this->resolveLinkNameForCasing());
-                    R::store($bean);
+                    ZurmoRedBean::store($bean);
                 }
                 else
                 {
-                    R::trash($bean);
+                    ZurmoRedBean::trash($bean);
                 }
             }
             $this->deferredUnrelateBeans = array();
