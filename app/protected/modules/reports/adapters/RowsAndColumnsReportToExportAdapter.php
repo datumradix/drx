@@ -35,36 +35,9 @@
      ********************************************************************************/
 
     /**
-     * Report rules to be used with the ReportModelTestItems.  Rules are module based and should store the rules
-     * for all the module's models.
+     * Helper class used to convert RowsAndColumnsReport models into arrays
      */
-    class ReportsTestReportRules extends SecuredReportRules
-    {
-        public static function getDefaultMetadata()
-        {
-            $metadata = array(
-                'ReportModelTestItem' => array(
-                    'relationsReportedAsAttributes' =>
-                        array('reportedAsAttribute',
-                              'likeContactState'),
-                    'relationsReportedAsAttributesSortAttributes' =>
-                        array('reportedAsAttribute' => 'name', 'likeContactState'    => 'name'),
-                    'relationsReportedAsAttributesGroupByAttributes' =>
-                        array('reportedAsAttribute' => 'name', 'likeContactState'    => 'id'),
-                    'relationsReportedAsAttributesRawValueAttributes' =>
-                        array('reportedAsAttribute' => 'name', 'likeContactState'    => 'id'),
-                    'nonReportable' =>
-                        array('nonReportable',
-                              'nonReportable2'),
-                    'derivedAttributeTypes' =>
-                        array('FullName'),
-                    'availableOperatorsTypes' =>
-                        array('likeContactState' => ModelAttributeToReportOperatorTypeUtil::AVAILABLE_OPERATORS_TYPE_DROPDOWN),
-                    'filterValueElementTypes' =>
-                        array('likeContactState' => 'AllContactStatesStaticDropDownForWizardModel'),
-                ),                
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
-        }
+    class RowsAndColumnsReportToExportAdapter extends ReportToExportAdapter
+    {        
     }
 ?>
