@@ -121,11 +121,19 @@
          */
         public function getLinkString($attributeString, $attribute)
         {
-            $string  = 'ZurmoHtml::link(';
-            $string .=  $attributeString . ', ';
-            $string .= 'ReportResultsGridUtil::makeUrlForLink("' . $attribute . '", $data)';
-            $string .= ', array("target" => "new"))';
+            $shouldRenderMultipleLinks = $this->getShouldRenderMultipleLinksByReportDataProvider($this->dataProvider);
+            $string = 'ReportResultsGridUtil::makeStringForLinkOrLinks("' . 
+                            $attribute . '", $data, "' . $shouldRenderMultipleLinks . '", ' . $attributeString . ')';            
             return $string;
+        }
+        
+        protected function getShouldRenderMultipleLinksByReportDataProvider(ReportDataProvider $dataProvider)
+        {           
+            if ($dataProvider instanceof RowsAndColumnsReportDataProvider)
+            {
+                return false;
+            }
+            return true;
         }
 
         /**
@@ -339,7 +347,7 @@
         protected function resolveParamsForColumnElement(DisplayAttributeForReportForm $displayAttribute)
         {
             $params  = array();
-            if ($displayAttribute->isALinkableAttribute() == 'name')
+            if ($displayAttribute->isALinkableAttribute())
             {
                 $params['isLink'] = true;
             }
@@ -394,7 +402,7 @@
         }
 
         /**
-         * Override in child as neededs
+         * Override in child as needed
          */
         protected function getLeadingHeaders()
         {

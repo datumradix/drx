@@ -35,36 +35,45 @@
      ********************************************************************************/
 
     /**
-     * Report rules to be used with the ReportModelTestItems.  Rules are module based and should store the rules
-     * for all the module's models.
+     * @see ExplicitReadWriteModelPermissionsElement.  
+     * Used so when creating a report the default settings can be resolver«d
      */
-    class ReportsTestReportRules extends SecuredReportRules
+    class ReportExplicitReadWriteModelPermissionsElement extends ExplicitReadWriteModelPermissionsElement    
     {
-        public static function getDefaultMetadata()
+
+        protected function resolveSelectedType()
         {
-            $metadata = array(
-                'ReportModelTestItem' => array(
-                    'relationsReportedAsAttributes' =>
-                        array('reportedAsAttribute',
-                              'likeContactState'),
-                    'relationsReportedAsAttributesSortAttributes' =>
-                        array('reportedAsAttribute' => 'name', 'likeContactState'    => 'name'),
-                    'relationsReportedAsAttributesGroupByAttributes' =>
-                        array('reportedAsAttribute' => 'name', 'likeContactState'    => 'id'),
-                    'relationsReportedAsAttributesRawValueAttributes' =>
-                        array('reportedAsAttribute' => 'name', 'likeContactState'    => 'id'),
-                    'nonReportable' =>
-                        array('nonReportable',
-                              'nonReportable2'),
-                    'derivedAttributeTypes' =>
-                        array('FullName'),
-                    'availableOperatorsTypes' =>
-                        array('likeContactState' => ModelAttributeToReportOperatorTypeUtil::AVAILABLE_OPERATORS_TYPE_DROPDOWN),
-                    'filterValueElementTypes' =>
-                        array('likeContactState' => 'AllContactStatesStaticDropDownForWizardModel'),
-                ),                
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            $resolveSelectedType = parent::resolveSelectedType();
+            if ($resolveSelectedType === null)
+            {
+                $selectedType = UserConfigurationFormAdapter::resolveAndGetDefaultPermissionSetting(
+                                                                                        Yii::app()->user->userModel);
+                echo $selectedType;
+                return $this->resolveUserPermissionConfigurationToPermissionType($selectedType);
+            }
+            return $resolveSelectedType;
         }
+        
+        protected function resolveUserPermissionConfigurationToPermissionType($selectedType)
+        {
+            assert('is_int($selectedType)');
+            assert('$selectedType >= UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_OWNER');
+            assert('$selectedType <= UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_EVERYONE');
+            $userConfigPermissionTypes          = UserConfigurationForm::getAllDefaultPermissionTypes();
+            $explicitReadWritePermissionTypes   = parent::getPermissionTypes();
+            return array_search($userConfigPermissionTypes[$selectedType], $explicitReadWritePermissionTypes);
+        }
+        
+        protected function resolveSelectedGroup()
+        {            
+            $resolvedSelectedGroup = parent::resolveSelectedGroup();
+            if ($resolvedSelectedGroup === null)
+            {
+                return UserConfigurationFormAdapter::resolveAndGetValue(Yii::app()->user->userModel,
+                'defaultPermissionGroupSetting', false);
+            }
+            return $resolvedSelectedGroup;            
+        }
+
     }
 ?>

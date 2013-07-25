@@ -52,8 +52,7 @@
                 return null;
             }
             $moduleClassName = self::resolveModuleClassName($attribute, $data);
-            return Yii::app()->createUrl('/' . $moduleClassName::getDirectoryName() . '/default/details',
-                                         array('id' => $data->getModel($attribute)->id));
+            return static::makeUrl($data->getModel($attribute)->id, $moduleClassName);            
         }
 
         protected static function resolveModuleClassName($attribute, ReportResultsRowData $data)
@@ -68,5 +67,64 @@
                 return $data->getModel($attribute)->getModuleClassName();
             }
         }
-    }
+        
+        public static function makeStringForLinkOrLinks($attribute, ReportResultsRowData $data, 
+                                                        $shouldRenderMultipleLinks, $attributeString)
+        {
+            assert('is_string($attribute)');
+            if (null == $model = $data->getModel($attribute))
+            {
+                return null;
+            }            
+            $modelClassName  = get_class($data->getModel($attribute));
+            return static::makeStringForMultipleLinks($attributeString, $modelClassName, $shouldRenderMultipleLinks);            
+        }
+        
+        public static function makeStringForMultipleLinks($value, $modelClassName, $shouldRenderMultipleLinks = true)
+        {
+            assert('is_string($modelClassName)');                                                
+            $models          = $modelClassName::getByName(strval($value));            
+            if (count($models) <= 1 || !$shouldRenderMultipleLinks)
+            {
+                $url = static::makeUrl($models[0]->id, $models[0]->getModuleClassName());
+                return ZurmoHtml::link($value, $url, array("target" => "new"));
+            }
+            else                
+            {                
+                $qtipContent = null;
+                $count       = 1;
+                foreach ($models as $model)
+                {
+                    $id              = $model->id;
+                    $moduleClassName = $model->getModuleClassName();
+                    $url             = static::makeUrl($id, $model->getModuleClassName());
+                    $qtipContent    .= ZurmoHtml::link('Link' . $count++, $url, array("target" => "new")) . '<br />';                                        
+                }
+                $content     = $value;
+                $content    .= '<span id="report-multiple-link-' .
+                                $moduleClassName . "-" . $id . '" class="tooltip">' . count($models) . '</span>';
+                $options     = array('content' =>
+                                     array(
+                                        'title' => $value,                                                                                    
+                                        'text'  => $qtipContent,
+                                     ),
+                                     'hide' => array('event' => 'click'),
+                                     'show' => array('event' => 'click', 'solo' => true),
+                                     'adjust' =>
+                                        array('screen' => true),                                     
+                                     'style'  => array('width' => array('max' => 600)));
+                $qtip        = new ZurmoTip();
+                $qtip->addQTip("#report-multiple-link-" . $moduleClassName . "-" . $id, $options);
+                return $content;    
+            }
+        }
+        
+        protected static function makeUrl($id, $moduleClassName)
+        {
+            assert('is_int($id)');
+            assert('is_string($moduleClassName)');                                    
+            return Yii::app()->createUrl('/' . $moduleClassName::getDirectoryName() . '/default/details',
+                                         array('id' => $id));
+        }
+    }                
 ?>
