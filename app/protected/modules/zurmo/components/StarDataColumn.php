@@ -34,53 +34,49 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Form to help manage the mashable inbox
-     */
-    class MashableInboxForm extends CFormModel
+    class StarDataColumn extends DataColumn
     {
-        /**
-         * Value to be used to signal that the filtering is for all models and not a specific one.
-         * @var string
-         */
-        const  FILTERED_BY_ALL = 'all';
-
-        const  FILTERED_BY_UNREAD = 'unread';
-
-        /**
-         * True to scope data by starred only
-         * @var boolean
-         */
-        public $filterByStarred;
-
-        public $searchTerm;
-
-        public $filteredBy = self::FILTERED_BY_ALL;
-
-        public $optionForModel;
-
-        public $selectedIds;
-
-        public $massAction;
-
-        /**
-         * Models that implement the CombinedInboxInterface and the current user has
-         * rights to see, this array contains the model class names as the indexes and the translated model labels
-         * as the values.
-         * @var array
-         */
-        public $mashableModelClassNamesAndDisplayLabels;
-
-        public function rules()
+        protected function renderHeaderCellContent()
         {
-            return array(
-                array('filterByStarred',     'boolean'),
-                array('searchTerm',          'type',    'type' => 'string'),
-                array('filteredBy',          'type',    'type' => 'string'),
-                array('optionForModel',      'type',    'type' => 'string'),
-                array('selectedIds',         'type',    'type' => 'string'),
-                array('massAction',          'type',    'type' => 'string'),
-            );
+            if ($this->grid->dataProvider instanceof StarredModelDataProvider)
+            {
+                echo $this->renderStarredFilterHidenField($this->grid->dataProvider->getModelClassName(), 1);
+            }
+            elseif ($this->grid->dataProvider instanceof RedBeanModelDataProvider)
+            {
+                echo $this->renderStarredFilterHidenField($this->grid->dataProvider->getModelClassName(), 0);
+            }
+        }
+
+        protected function renderStarredFilterHidenField($modelClassName, $isFilteredByStarred)
+        {
+            $class = $isFilteredByStarred ? 'starred' : 'unstarred';
+            $url   = Yii::app()->controller->createUrl('');
+            $link  = ZurmoHtml::ajaxLink(
+                        'w',
+                        '',
+                        array(),
+                        array('class'       => 'icon-star ' . $class,
+                              'id'          => 'starDataColumn_filterByStarred',
+                              'onclick'     => $this->getAjaxSubmitScript($modelClassName, $isFilteredByStarred),
+                              'namespace'   => 'starDataColumn',));
+            return $link;
+        }
+
+        private function getAjaxSubmitScript($modelClassName, $isFilteredByStarred)
+        {
+            $id               = $this->grid->id;
+            $url              = Yii::app()->controller->createUrl('', array('modelClassName' => $modelClassName));
+            $ajaxSubmitScript = "
+                var newVal = (parseInt($('.search-form_filterByStarred').val())+1)% 2;
+                if(isNaN(newVal))
+                {
+                    newVal = 1;
+                }
+                $('.search-form_filterByStarred').val(newVal);
+                $('#{$id}').yiiGridView('update', {url: '{$url}', data: $('#search-form').serialize()});
+                ";
+            return $ajaxSubmitScript;
         }
     }
 ?>
