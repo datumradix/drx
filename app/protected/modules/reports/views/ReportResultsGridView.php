@@ -121,11 +121,19 @@
          */
         public function getLinkString($attributeString, $attribute)
         {
-            $string  = 'ZurmoHtml::link(';
-            $string .=  $attributeString . ', ';
-            $string .= 'ReportResultsGridUtil::makeUrlForLink("' . $attribute . '", $data)';
-            $string .= ', array("target" => "new"))';
+            $shouldRenderMultipleLinks = $this->getShouldRenderMultipleLinksByReportDataProvider($this->dataProvider);
+            $string = 'ReportResultsGridUtil::makeStringForLinkOrLinks("' . 
+                            $attribute . '", $data, "' . $shouldRenderMultipleLinks . '", ' . $attributeString . ')';            
             return $string;
+        }
+        
+        protected function getShouldRenderMultipleLinksByReportDataProvider(ReportDataProvider $dataProvider)
+        {           
+            if ($dataProvider instanceof RowsAndColumnsReportDataProvider)
+            {
+                return false;
+            }
+            return true;
         }
 
         /**
@@ -295,6 +303,7 @@
                 );
                 array_push($columns, $firstColumn);
             }
+            $grandTotals = $this->dataProvider->runQueryAndGrandTotalsData();
             foreach ($this->dataProvider->resolveDisplayAttributes() as $key => $displayAttribute)
             {
                 if (!$displayAttribute->queryOnly)
@@ -308,6 +317,10 @@
                     if (!isset($column['class']))
                     {
                         $column['class'] = 'DataColumn';
+                    }                   
+                    if (isset($grandTotals[$displayAttribute->columnAliasName]))
+                    {                                                                        
+                        $column['footer'] = $columnAdapter->renderValue($grandTotals[$displayAttribute->columnAliasName]);
                     }
                     array_push($columns, $column);
                 }
@@ -339,7 +352,7 @@
         protected function resolveParamsForColumnElement(DisplayAttributeForReportForm $displayAttribute)
         {
             $params  = array();
-            if ($displayAttribute->isALinkableAttribute() == 'name')
+            if ($displayAttribute->isALinkableAttribute())
             {
                 $params['isLink'] = true;
             }
@@ -394,7 +407,7 @@
         }
 
         /**
-         * Override in child as neededs
+         * Override in child as needed
          */
         protected function getLeadingHeaders()
         {

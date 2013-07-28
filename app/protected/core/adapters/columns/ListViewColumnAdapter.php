@@ -65,6 +65,11 @@
         {
             throw new NotImplementedException();
         }
+        
+        public function renderValue($value)
+        {
+            throw NotImplementedException();
+        }
 
         /**
          * True/False, if true will

@@ -34,25 +34,18 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class DecimalListViewColumnAdapter extends TextListViewColumnAdapter
+    /**
+     * Report rules to be used with the ReportModelTestItems.  Rules are module based and should store the rules
+     * for all the module's models.
+     */
+    class ReportsTest2ReportRules extends SecuredReportRules
     {
-        public function renderGridViewData()
+        public static function getDefaultMetadata()
         {
-            return array(
-                'name'  => $this->attribute,
-                'value' => 'DecimalListViewColumnAdapter::renderNonEditableStatically($data, "' . $this->attribute . '")',
-                'type'  => 'raw',
+            $metadata = array(
+                'ReportModelTestItem2' => array()
             );
-        }
-
-        public static function renderNonEditableStatically($model, $attribute)
-        {
-            return Yii::app()->numberFormatter->formatDecimal((float)$model->{$attribute});
-        }
-        
-        public function renderValue($value) 
-        {
-            return Yii::app()->numberFormatter->formatDecimal((float)$value);
+            return array_merge(parent::getDefaultMetadata(), $metadata);
         }
     }
 ?>

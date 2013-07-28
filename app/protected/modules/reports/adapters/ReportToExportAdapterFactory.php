@@ -34,25 +34,25 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class DecimalListViewColumnAdapter extends TextListViewColumnAdapter
-    {
-        public function renderGridViewData()
-        {
-            return array(
-                'name'  => $this->attribute,
-                'value' => 'DecimalListViewColumnAdapter::renderNonEditableStatically($data, "' . $this->attribute . '")',
-                'type'  => 'raw',
-            );
-        }
-
-        public static function renderNonEditableStatically($model, $attribute)
-        {
-            return Yii::app()->numberFormatter->formatDecimal((float)$model->{$attribute});
-        }
-        
-        public function renderValue($value) 
-        {
-            return Yii::app()->numberFormatter->formatDecimal((float)$value);
+    /**
+     * Helper class to make ReportToExportAdapter object
+     */
+    class ReportToExportAdapterFactory
+    {        
+        public static function createReportToExportAdapter(
+                                    Report $report, 
+                                    ReportDataProvider $dataProvider)
+        {            
+            $dataProviderClassName = get_class($dataProvider);
+            if ($dataProviderClassName == 'SummationDrillDownReportDataProvider')
+            {
+                $className = 'SummationDrillDownReportToExportAdapter';                
+            }
+            else
+            {
+                $className  = $report->getType() . 'ReportToExportAdapter';
+            }
+            return new $className($dataProvider, $report);
         }
     }
 ?>

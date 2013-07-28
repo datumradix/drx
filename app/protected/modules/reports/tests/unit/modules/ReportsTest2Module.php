@@ -34,25 +34,56 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class DecimalListViewColumnAdapter extends TextListViewColumnAdapter
+    class ReportsTest2Module extends SecurableModule
     {
-        public function renderGridViewData()
+        const RIGHT_ACCESS_REPORTS_TESTS = 'Access Reports Test Tab';
+
+        public function getDependencies()
         {
             return array(
-                'name'  => $this->attribute,
-                'value' => 'DecimalListViewColumnAdapter::renderNonEditableStatically($data, "' . $this->attribute . '")',
-                'type'  => 'raw',
             );
         }
 
-        public static function renderNonEditableStatically($model, $attribute)
+        public static function getDefaultMetadata()
         {
-            return Yii::app()->numberFormatter->formatDecimal((float)$model->{$attribute});
+            $metadata = array();
+            $metadata['global'] = array(
+                'tabMenuItems' => array(
+                ),
+                'designerMenuItems' => array(
+                ),
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                //globalSearchAttributeNames is used by A model.
+                'globalSearchAttributeNames' => array('a', 'name')
+            );
+            return $metadata;
         }
-        
-        public function renderValue($value) 
+
+        public static function getPrimaryModelName()
         {
-            return Yii::app()->numberFormatter->formatDecimal((float)$value);
+            return 'ReportModelTestItem2';
+        }
+
+        public static function getGlobalSearchFormClassName()
+        {
+            return 'ReportModelTestItem2';
+        }
+
+        public static function hasPermissions()
+        {
+            return true;
+        }
+
+        protected static function getSingularModuleLabel($language)
+        {
+            return 'Reports Test2';
+        }
+
+        protected static function getPluralModuleLabel($language)
+        {
+            return 'Reports Test2s';
         }
     }
 ?>
