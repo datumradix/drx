@@ -34,25 +34,10 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class DecimalListViewColumnAdapter extends TextListViewColumnAdapter
-    {
-        public function renderGridViewData()
-        {
-            return array(
-                'name'  => $this->attribute,
-                'value' => array($this, 'renderDataCellContent'),
-                'type'  => 'raw',
-            );
-        }
-                
-        public function renderDataCellContent($data, $row) 
-        {                      
-            echo $this->renderValue($data->{$this->attribute});
-        }
-        
-        public function renderValue($value) 
-        {
-            return Yii::app()->numberFormatter->formatDecimal((float)$value);
-        }
+    /**
+     * Helper class used to convert RowsAndColumnsReport models into arrays
+     */
+    class SummationDrillDownReportToExportAdapter extends ReportToExportAdapter
+    {        
     }
 ?>
