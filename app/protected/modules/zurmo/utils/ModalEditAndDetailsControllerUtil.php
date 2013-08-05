@@ -35,22 +35,29 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Helper class to render modal edit and detail view called from a model controller.
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class ModalEditAndDetailsControllerUtil
     {
-        /**
-         * @return array
-         */
-        public static function getDefaultMetadata()
+        public static function setAjaxModeAndRenderModalEditAndDetailsView($controller, $modalEditAndDetailsView, $model, $renderType)
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            Yii::app()->getClientScript()->setToAjaxMode();
+            return static::renderModalEditAndDetailsView($controller, $modalEditAndDetailsView, $model, $renderType);
+        }
+
+        /**
+         * @return rendered content from view as string.
+         */
+        protected static function renderModalEditAndDetailsView($controller, $modalEditAndDetailsView, $model, $renderType)
+        {
+            $editAndDetailsView  = new $modalEditAndDetailsView(
+                                                    $renderType,
+                                                    $controller->getId(),
+                                                    $controller->getModule()->getId(),
+                                                    $model
+                                                );
+            $view                = new ModalView($controller, $editAndDetailsView);
+            return $view->render();
         }
     }
 ?>

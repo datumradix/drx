@@ -35,22 +35,40 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Helper class for ModalEditAndDetailsViews.
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class RelatedModalEditAndDetailsLinkProvider extends ModalEditAndDetailsLinkProvider
     {
-        /**
-         * @return array
-         */
-        public static function getDefaultMetadata()
+        protected $relationAttributeName;
+
+        protected $relationModelId;
+
+        protected $relationModuleId;
+
+        protected $redirectUrl;
+
+        protected $modalId;
+
+        protected $portletId;
+
+        protected $uniqueLayoutId;
+
+        function __construct($relationAttributeName, $relationModelId, $relationModuleId, $redirectUrl, $modalId,
+                                $portletId, $uniqueLayoutId)
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            $this->relationAttributeName = $relationAttributeName;
+            $this->relationModelId       = $relationModelId;
+            $this->relationModuleId      = $relationModuleId;
+            $this->redirectUrl           = $redirectUrl;
+            $this->modalId               = $modalId;
+            $this->portletId             = $portletId;
+            $this->uniqueLayoutId        = $uniqueLayoutId;
         }
+
+        public function getAttribute($attribute)
+        {
+            return $this->$attribute;
+        }
+
     }
 ?>

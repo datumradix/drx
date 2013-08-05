@@ -34,23 +34,74 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Workflow rules to be used with the Tasks module.
-     */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class ViewFromRelatedModalLinkActionElement extends RelatedModalLinkActionElement
     {
-        /**
-         * @return array
-         */
-        public static function getDefaultMetadata()
+
+        protected function getDefaultLabel()
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
+            $params = LabelUtil::getTranslationParamsForAllModules();
+            $title = Zurmo::t('Core', 'View', $params);
+            return $title;
+        }
+
+        protected function getDefaultRoute()
+        {
+            $params = array_merge(array('id' => $this->modelId), $this->getViewLinkUrlParams());
+            return Yii::app()->createUrl($this->getRouteModuleId() . '/' .
+                        $this->controllerId . '/modalViewFromRelation', $params);
+        }
+
+        protected function getRouteModuleId()
+        {
+            if (!isset($this->params['routeModuleId']))
+            {
+                return array();
+            }
+            return $this->params['routeModuleId'];
+        }
+
+        public function getActionType()
+        {
+            return 'View';
+        }
+
+        protected function getViewLinkUrlParams()
+        {
+            return array(
+                'modalTransferInformation' => $this->getModalTransferInformation(),
             );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+        }
+
+        protected function getModalTransferInformation()
+        {
+            return array_merge(array(
+                    'modalId'           => $this->getModalContainerId(),
+                    'portletId'         => $this->getPortletId(),
+                    'uniqueLayoutId'    => $this->getUniqueLayoutId()
+            ), $this->getRouteParameters());
+        }
+
+        protected function getModalContainerId()
+        {
+            return ModalLinkActionElement::RELATED_MODAL_CONTAINER_PREFIX . '-view-task';
+        }
+
+        protected function getPortletId()
+        {
+            if (!isset($this->params['portletId']))
+            {
+                return array();
+            }
+            return $this->params['portletId'];
+        }
+
+        protected function getUniqueLayoutId()
+        {
+            if (!isset($this->params['uniqueLayoutId']))
+            {
+                return array();
+            }
+            return $this->params['uniqueLayoutId'];
         }
     }
 ?>
