@@ -35,22 +35,54 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Class utilized by 'select' modal popup of user in the task detail view
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class TaskSelectFromRelatedListModalListLinkProvider extends SelectFromRelatedEditModalListLinkProvider
     {
         /**
-         * @return array
+         * Attribute to be updated
+         * @var string
          */
-        public static function getDefaultMetadata()
+        protected $attribute;
+
+        /**
+         * Source model id
+         * @var string
+         */
+        protected $sourceModelId;
+
+        /**
+         * sourceIdFieldName and sourceNameFieldId are needed to know
+         * which fields in the parent form to populate data with
+         * upon selecting a row in the listview
+         *
+         */
+        public function __construct($sourceIdFieldId, $sourceNameFieldId, $attribute, $modelId, $modalId = ModelElement::MODAL_CONTAINER_PREFIX)
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            assert('is_string($sourceIdFieldId)');
+            assert('is_string($sourceNameFieldId)');
+            assert('is_string($attribute)');
+            $this->sourceIdFieldId   = $sourceIdFieldId;
+            $this->sourceNameFieldId = $sourceNameFieldId;
+            $this->modalId           = $modalId;
+            $this->attribute         = $attribute;
+            $this->sourceModelId     = $modelId;
+        }
+
+        /**
+         * @param string $attributeString
+         * @return string
+         */
+        public function getLinkString($attributeString)
+        {
+            $url     = Yii::app()->createUrl('tasks/default/updateRelatedUsersViaAjax', array('id' => $this->sourceModelId));
+            $errorInProcess = CJavaScript::quote(Zurmo::t('Core', 'There was an error processing your request'));
+            $string  = 'ZurmoHtml::link(';
+            $string .= $attributeString . ', ';
+            $string .= '"javascript:transferUserModalValues(\"#'. $this->modalId . '\", " . CJavaScript::encode(array(\'' . $this->sourceIdFieldId . '\' => $data->id, \'' . $this->sourceNameFieldId . '\' => strval(' . $attributeString . ')))';
+            $string .= '. ",\'' . $url . '\',\'' . $this->attribute . '\', \'' . $errorInProcess . '\');"';
+            $string .= ')';
+            return $string;
         }
     }
 ?>

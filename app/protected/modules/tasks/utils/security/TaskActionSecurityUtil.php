@@ -35,22 +35,43 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Helper class for working with action security classes
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class TaskActionSecurityUtil extends ActionSecurityUtil
     {
         /**
-         * @return array
+         * Resolve a link to a related model.  Used by @see ListView
+         * for each row of a list for example.  If the current user can Permission::READ
+         * the related model, then check if the current user has RIGHT_ACCESS_ to
+         * the model's related module.  If current user has access then
+         * return link, otherwise return text.  If current user cannot Permission::READ
+         * then return null.
+         * @param $model
+         * @param $moduleClassName
+         * @param $linkContent
+         * @return null|string
          */
-        public static function getDefaultMetadata()
+        public static function resolveViewLinkToModelForCurrentUser(
+            $model,
+            $moduleClassName,
+            $linkContent)
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            assert('$model instanceof Item');
+            assert('is_string($moduleClassName)');
+            assert('is_string($linkContent)');
+            if ($model->id <= 0)
+            {
+                return null;
+            }
+            if (!ActionSecurityUtil::canCurrentUserPerformAction('Details', $model))
+            {
+                return null;
+            }
+            if (RightsUtil::canUserAccessModule($moduleClassName, Yii::app()->user->userModel))
+            {
+                return $linkContent;
+            }
+            return null;
         }
     }
 ?>

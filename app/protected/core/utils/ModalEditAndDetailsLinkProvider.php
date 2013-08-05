@@ -35,22 +35,10 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Helper class for ModalEditAndDetailsViews.
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    abstract class ModalEditAndDetailsLinkProvider
     {
-        /**
-         * @return array
-         */
-        public static function getDefaultMetadata()
-        {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
-        }
+        
     }
 ?>

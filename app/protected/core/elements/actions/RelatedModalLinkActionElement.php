@@ -34,23 +34,8 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Workflow rules to be used with the Tasks module.
-     */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    abstract class RelatedModalLinkActionElement extends ModalLinkActionElement
     {
-        /**
-         * @return array
-         */
-        public static function getDefaultMetadata()
-        {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
-        }
+        
     }
 ?>

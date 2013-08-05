@@ -35,22 +35,40 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * A class for notification subscriber. A subscriber can be owner, requestedByUser,
+     * user that can comment on owned model and creation of the owned model
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class NotificationSubscriber extends OwnedModel
     {
-        /**
-         * @return array
-         */
         public static function getDefaultMetadata()
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'hasReadLatest'
+                ),
+                'relations' => array(
+                    'person'      => array(RedBeanModel::HAS_ONE, 'Item', RedBeanModel::NOT_OWNED,
+                                                RedBeanModel::LINK_TYPE_SPECIFIC, 'person'),
+                ),
+                'rules' => array(
+                    array('hasReadLatest', 'type', 'type' => 'boolean')
+                ),
+                'defaultSortAttribute' => '',
+                'customFields' => array(
+                ),
             );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            return $metadata;
+        }
+
+        protected static function translatedAttributeLabels($language)
+        {
+            return array_merge(parent::translatedAttributeLabels($language),
+                array(
+                    'hasReadLatest' => Zurmo::t('NotificationsModule', 'Has Read Latest',  array(), null, $language),
+                    'person'        => Zurmo::t('NotificationsModule', 'Subscriber',  array(), null, $language)
+                )
+            );
         }
     }
 ?>

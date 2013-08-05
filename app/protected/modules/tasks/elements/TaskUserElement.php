@@ -35,22 +35,60 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Display the user selection. This is a
+     * combination of a type-ahead input text field
+     * and a selection button which renders a modal list view
+     * to search on user.  Also includes a hidden input for the user
+     * id. On selection of user, task is updated
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class TaskUserElement extends UserElement
     {
+        protected static $modalActionId = 'ownerModalListForTask';
+
+        /**
+         * Gets modal javascript file base path
+         */
+        protected static function getModalJavascriptFileBasePath()
+        {
+            return 'application.modules.tasks.elements.assets';
+        }
+
+        /**
+         * Resolve input text box with select link content
+         * @return string
+         */
+        protected function resolveInputTextBoxWithSelectLinkContent()
+        {
+            $inputContent  = $this->renderTextField($this->getIdForHiddenField());
+            $inputContent .= $this->renderSelectLink();
+            return $inputContent;
+        }
+
         /**
          * @return array
          */
-        public static function getDefaultMetadata()
+        protected function getModalTransferInformation()
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
+            return array_merge(array(
+                    'sourceIdFieldId'   => $this->getIdForHiddenField(),
+                    'sourceNameFieldId' => $this->getIdForTextField(),
+                    'modalId'           => $this->getModalContainerId(),
+                    'attribute'         => $this->attribute
+            ), $this->resolveSourceModelIdForModalTransferInformation());
+        }
+
+        /**
+         * Register script file for handling link on items in modal window
+         */
+        protected static function registerModalScriptFile()
+        {
+            $cs = Yii::app()->getClientScript();
+            $cs->registerScriptFile(
+                Yii::app()->getAssetManager()->publish(
+                    Yii::getPathOfAlias(static::getModalJavascriptFileBasePath())
+                    ) . '/TaskUtils.js',
+                CClientScript::POS_END
             );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
         }
     }
 ?>
