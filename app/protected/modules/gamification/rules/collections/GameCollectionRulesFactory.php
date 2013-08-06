@@ -35,49 +35,16 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Helper class to make GameCollection objects
      */
-    class GamificationModule extends Module
+    class GameCollectionRulesFactory
     {
-        public function getDependencies()
+        public static function createByType($type)
         {
-            return array('configuration', 'zurmo');
-        }
-
-        public function getRootModelNames()
-        {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification',
-                         'GameCoin', 'GameCollection');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => "eval:Zurmo::t('GamificationModule', 'Leaderboard')",
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 2,
-                        ),
-                ),
-            );
-            return $metadata;
-        }
-
-        public static function getDemoDataMakerClassNames()
-        {
-            return array('GamificationDemoDataMaker');
-        }
-
-        protected static function getSingularModuleLabel($language)
-        {
-            return Zurmo::t('GamificationModule', 'Gamification', array(), null, $language);
-        }
-
-        protected static function getPluralModuleLabel($language)
-        {
-            return static::getSingularModuleLabel($language);
+            assert('$type !== null');
+            assert('is_string($type) && $type != ""');
+            $className = $type . 'GameCollectionRules';
+            return new $className();
         }
     }
 ?>
