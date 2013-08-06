@@ -34,50 +34,14 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Module for managing the gamification of Zurmo
-     */
-    class GamificationModule extends Module
+    class GameRewardsSearchForm extends SavedDynamicSearchForm
     {
-        public function getDependencies()
+        /**
+         * @return string|void
+         */
+        protected static function getRedBeanModelClassName()
         {
-            return array('configuration', 'zurmo');
-        }
-
-        public function getRootModelNames()
-        {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification',
-                         'GameCoin', 'GameCollection');
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => "eval:Zurmo::t('GamificationModule', 'Leaderboard')",
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 2,
-                        ),
-                ),
-            );
-            return $metadata;
-        }
-
-        public static function getDemoDataMakerClassNames()
-        {
-            return array('GamificationDemoDataMaker');
-        }
-
-        protected static function getSingularModuleLabel($language)
-        {
-            return Zurmo::t('GamificationModule', 'Gamification', array(), null, $language);
-        }
-
-        protected static function getPluralModuleLabel($language)
-        {
-            return static::getSingularModuleLabel($language);
+            return 'GameReward';
         }
     }
 ?>
