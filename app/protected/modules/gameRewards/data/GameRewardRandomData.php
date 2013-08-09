@@ -35,48 +35,20 @@
      ********************************************************************************/
 
     /**
-     * Displays a date/time localized
-     * display.
+     * Game Reward related array of random seed data parts.
      */
-    class DateTimeElement extends Element
-    {
-        /**
-         * Render a datetime JUI widget
-         * @return The element's content as a string.
-         */
-        protected function renderControlEditable()
-        {
-            $value     = DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                            $this->model->{$this->attribute});
-            $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("EditableDateTimeElement");
-            $cClipWidget->widget('application.core.widgets.ZurmoJuiDateTimePicker', array(
-                'attribute'  => $this->attribute,
-                'value'      => $value,
-                'htmlOptions' => array(
-                    'id'              => $this->getEditableInputId(),
-                    'name'            => $this->getEditableInputName(),
-                    'disabled'        => $this->getDisabledValue(),
-                )
-            ));
-            $cClipWidget->endClip();
-            $content = $cClipWidget->getController()->clips['EditableDateTimeElement'];
-            return ZurmoHtml::tag('div', array('class' => 'has-date-select'), $content);
-        }
-
-        /**
-         * Renders the attribute from the model.
-         * @return The element's content.
-         */
-        protected function renderControlNonEditable()
-        {
-            if ($this->model->{$this->attribute} != null)
-            {
-                $content = DateTimeUtil::
-                           convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                               $this->model->{$this->attribute});
-                return ZurmoHtml::encode($content);
-            }
-        }
-    }
+    return array(
+        'names' => array(
+            'Coffeeshop $10 Gift card',
+            '1 extra vacation day',
+            'Lunch from Marianos',
+            'Dinner with the boss',
+            'Riverboat cruise',
+            '4 hours of Yacht time',
+            'First class flight upgrade',
+            '$500 gift card',
+            '2 Tickets to the basketball game',
+            '50 inch Flat-screen TV',
+        )
+    );
 ?>

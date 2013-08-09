@@ -35,48 +35,19 @@
      ********************************************************************************/
 
     /**
-     * Displays a date/time localized
-     * display.
+     * Element stubbed.  PersonCastedAsItemListViewColumnAdapter is used when a person which is saved as an item
+     * needs to be casted to either a user or contact
      */
-    class DateTimeElement extends Element
+    class PersonCastedAsItemElement extends TextElement
     {
-        /**
-         * Render a datetime JUI widget
-         * @return The element's content as a string.
-         */
         protected function renderControlEditable()
         {
-            $value     = DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                            $this->model->{$this->attribute});
-            $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("EditableDateTimeElement");
-            $cClipWidget->widget('application.core.widgets.ZurmoJuiDateTimePicker', array(
-                'attribute'  => $this->attribute,
-                'value'      => $value,
-                'htmlOptions' => array(
-                    'id'              => $this->getEditableInputId(),
-                    'name'            => $this->getEditableInputName(),
-                    'disabled'        => $this->getDisabledValue(),
-                )
-            ));
-            $cClipWidget->endClip();
-            $content = $cClipWidget->getController()->clips['EditableDateTimeElement'];
-            return ZurmoHtml::tag('div', array('class' => 'has-date-select'), $content);
+            throw new NotImplementedException();
         }
 
-        /**
-         * Renders the attribute from the model.
-         * @return The element's content.
-         */
         protected function renderControlNonEditable()
         {
-            if ($this->model->{$this->attribute} != null)
-            {
-                $content = DateTimeUtil::
-                           convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                               $this->model->{$this->attribute});
-                return ZurmoHtml::encode($content);
-            }
+            throw new NotImplementedException();
         }
     }
 ?>

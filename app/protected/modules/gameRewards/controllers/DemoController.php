@@ -34,49 +34,26 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Displays a date/time localized
-     * display.
-     */
-    class DateTimeElement extends Element
+    Yii::import('application.modules.gameRewards.controllers.DefaultController', true);
+    class GameRewardsDemoController extends GameRewardsDefaultController
     {
         /**
-         * Render a datetime JUI widget
-         * @return The element's content as a string.
+         * Special method to load each type of game notification.  New badge, badge grade change, and level up.
          */
-        protected function renderControlEditable()
+        public function actionLoadTransaction($id)
         {
-            $value     = DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                            $this->model->{$this->attribute});
-            $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("EditableDateTimeElement");
-            $cClipWidget->widget('application.core.widgets.ZurmoJuiDateTimePicker', array(
-                'attribute'  => $this->attribute,
-                'value'      => $value,
-                'htmlOptions' => array(
-                    'id'              => $this->getEditableInputId(),
-                    'name'            => $this->getEditableInputName(),
-                    'disabled'        => $this->getDisabledValue(),
-                )
-            ));
-            $cClipWidget->endClip();
-            $content = $cClipWidget->getController()->clips['EditableDateTimeElement'];
-            return ZurmoHtml::tag('div', array('class' => 'has-date-select'), $content);
-        }
-
-        /**
-         * Renders the attribute from the model.
-         * @return The element's content.
-         */
-        protected function renderControlNonEditable()
-        {
-            if ($this->model->{$this->attribute} != null)
+            if (Yii::app()->user->userModel->username != 'super')
             {
-                $content = DateTimeUtil::
-                           convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                               $this->model->{$this->attribute});
-                return ZurmoHtml::encode($content);
+                throw new NotSupportedException();
             }
+            $gameReward                      = GameReward::getById($id);
+            $gameRewardTransaction           = new GameRewardTransaction();
+            $gameRewardTransaction->quantity = 1;
+            $gameRewardTransaction->person   = Yii::app()->user->userModel;
+
+            $gameReward->transactions->add($gameRewardTransaction);
+            $gameReward->save();
+            echo "Demo data has been loaded. Go back to the application.";
         }
     }
 ?>

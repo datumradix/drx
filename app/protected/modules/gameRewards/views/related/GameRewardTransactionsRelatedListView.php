@@ -34,50 +34,68 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Module for managing the gamification of Zurmo
-     */
-    class GamificationModule extends Module
+    abstract class GameRewardTransactionsRelatedListView extends SecuredRelatedListView
     {
-        public function getDependencies()
-        {
-            return array('configuration', 'zurmo');
-        }
-
-        public function getRootModelNames()
-        {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification',
-                         'GameCoin', 'GameCollection');
-        }
-
         public static function getDefaultMetadata()
         {
-            $metadata = array();
-            $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
+            $metadata = array(
+                'perUser' => array(
+                    'title' => "eval:Zurmo::t('GameRewardsModule', 'Transactions')",
+                ),
+                'global' => array(
+                    'gridViewType' => RelatedListView::GRID_VIEW_TYPE_NORMAL,
+                    'panels' => array(
                         array(
-                            'label' => "eval:Zurmo::t('GamificationModule', 'Leaderboard')",
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 2,
+                            'rows' => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'person', 'type' => 'PersonCastedAsItem'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'quantity', 'type' => 'Integer'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'redemptionDateTime', 'type' => 'DateTime'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                            ),
                         ),
+                    ),
                 ),
             );
             return $metadata;
         }
 
-        public static function getDemoDataMakerClassNames()
+        public static function getModuleClassName()
         {
-            return array('GamificationDemoDataMaker');
+            return 'GameRewardsModule';
         }
 
-        protected static function getSingularModuleLabel($language)
+        public function getModelClassName()
         {
-            return Zurmo::t('GamificationModule', 'Gamification', array(), null, $language);
+            return 'GameRewardTransaction';
         }
 
-        protected static function getPluralModuleLabel($language)
+        protected function getEmptyText()
         {
-            return static::getSingularModuleLabel($language);
+            $moduleLabel     = Zurmo::t('GameRewardsModule', 'Transactions');
+            return Zurmo::t('Core', 'No {moduleLabelPluralLowerCase} found', array('{moduleLabelPluralLowerCase}' => $moduleLabel));
         }
     }
 ?>

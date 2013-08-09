@@ -35,48 +35,52 @@
      ********************************************************************************/
 
     /**
-     * Displays a date/time localized
-     * display.
+     * Class that builds demo game rewards and transactions.
      */
-    class DateTimeElement extends Element
+    class GameRewardsDemoDataMaker extends DemoDataMaker
     {
-        /**
-         * Render a datetime JUI widget
-         * @return The element's content as a string.
-         */
-        protected function renderControlEditable()
+        public static function getDependencies()
         {
-            $value     = DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                            $this->model->{$this->attribute});
-            $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("EditableDateTimeElement");
-            $cClipWidget->widget('application.core.widgets.ZurmoJuiDateTimePicker', array(
-                'attribute'  => $this->attribute,
-                'value'      => $value,
-                'htmlOptions' => array(
-                    'id'              => $this->getEditableInputId(),
-                    'name'            => $this->getEditableInputName(),
-                    'disabled'        => $this->getDisabledValue(),
-                )
-            ));
-            $cClipWidget->endClip();
-            $content = $cClipWidget->getController()->clips['EditableDateTimeElement'];
-            return ZurmoHtml::tag('div', array('class' => 'has-date-select'), $content);
+            return array('users');
         }
 
-        /**
-         * Renders the attribute from the model.
-         * @return The element's content.
-         */
-        protected function renderControlNonEditable()
+        public function makeAll(& $demoDataHelper)
         {
-            if ($this->model->{$this->attribute} != null)
+            assert('$demoDataHelper instanceof DemoDataHelper');
+            assert('$demoDataHelper->isSetRange("User")');
+
+            $gameRewards = array();
+            $gameRewardRandomData = ZurmoRandomDataUtil::getRandomDataByModuleAndModelClassNames('GameRewardsModule', 'GameReward');
+            for ($i = 0; $i < 10; $i++)
             {
-                $content = DateTimeUtil::
-                           convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                               $this->model->{$this->attribute});
-                return ZurmoHtml::encode($content);
+                $gameReward           = new GameReward();
+                $gameReward->name     = $gameRewardRandomData['names'][$i];
+                $gameReward->owner    = $demoDataHelper->getRandomByModelName('User');
+                $gameReward->cost     = mt_rand(1,10);
+                $gameReward->quantity = mt_rand(1,20);
+
+                for ($j = 0; $j < 5; $j++)
+                {
+                    $gameRewardTransaction           = new GameRewardTransaction();
+                    $gameRewardTransaction->person   = $demoDataHelper->getRandomByModelName('User');
+                    $gameRewardTransaction->quantity = mt_rand(1,3);
+                    $gameReward->transactions->add($gameRewardTransaction);
+                }
+                $saved = $gameReward->save();
+                if(!$saved)
+                {
+                    echo "<pre>";
+                    print_r($gameReward->getErrors());
+                    echo "</pre>";
+                    throw new FailedToSaveModelException();
+                }
+                $gameReward = GameReward::getById($gameReward->id);
+                ReadPermissionsOptimizationUtil::
+                    securableItemGivenPermissionsForGroup($gameReward, Group::getByName(Group::EVERYONE_GROUP_NAME));
+                $gameReward->save();
+                $gameRewards[] = $gameReward->id;
             }
+            $demoDataHelper->setRangeByModelName('GameReward', $gameRewards[0], $gameRewards[count($gameRewards)-1]);
         }
     }
 ?>
