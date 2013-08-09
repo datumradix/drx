@@ -35,48 +35,22 @@
      ********************************************************************************/
 
     /**
-     * Displays a date/time localized
-     * display.
+     * Class for showing a message and create link when there are no game rewards visible to the logged in user when
+     * going to the game rewards list view.
      */
-    class DateTimeElement extends Element
+    class GameRewardsZeroModelsYetView extends ZeroModelsYetView
     {
-        /**
-         * Render a datetime JUI widget
-         * @return The element's content as a string.
-         */
-        protected function renderControlEditable()
+        protected function getCreateLinkDisplayLabel()
         {
-            $value     = DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                            $this->model->{$this->attribute});
-            $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("EditableDateTimeElement");
-            $cClipWidget->widget('application.core.widgets.ZurmoJuiDateTimePicker', array(
-                'attribute'  => $this->attribute,
-                'value'      => $value,
-                'htmlOptions' => array(
-                    'id'              => $this->getEditableInputId(),
-                    'name'            => $this->getEditableInputName(),
-                    'disabled'        => $this->getDisabledValue(),
-                )
-            ));
-            $cClipWidget->endClip();
-            $content = $cClipWidget->getController()->clips['EditableDateTimeElement'];
-            return ZurmoHtml::tag('div', array('class' => 'has-date-select'), $content);
+            return Zurmo::t('GameRewardsModule', 'Create Game Reward');
         }
 
-        /**
-         * Renders the attribute from the model.
-         * @return The element's content.
-         */
-        protected function renderControlNonEditable()
+        protected function getMessageContent()
         {
-            if ($this->model->{$this->attribute} != null)
-            {
-                $content = DateTimeUtil::
-                           convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                               $this->model->{$this->attribute});
-                return ZurmoHtml::encode($content);
-            }
+            return Zurmo::t('GameRewardsModule', '<h2>"For every disciplined effort there is a multiple reward.' .
+                                     '"</h2><i>- Jim Rohn</i></i><div class="large-icon"></div><p>Reward your users ' .
+                                     'for their discipline in adopting and using the system by creating gifts they ' .
+                                     'can redeem with their points."</p>');
         }
     }
 ?>

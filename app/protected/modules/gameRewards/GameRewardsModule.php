@@ -35,10 +35,12 @@
      ********************************************************************************/
 
     /**
-     * Module for managing the gamification of Zurmo
+     * Module for managing game rewards
      */
-    class GamificationModule extends Module
+    class GameRewardsModule extends SecurableModule
     {
+        const RIGHT_ACCESS_GAME_REWARDS = 'Access Game Rewards Tab';
+
         public function getDependencies()
         {
             return array('configuration', 'zurmo');
@@ -46,20 +48,31 @@
 
         public function getRootModelNames()
         {
-            return array('GameScore', 'GamePoint', 'GameLevel', 'GamePointTransaction', 'GameBadge', 'GameNotification',
-                         'GameCoin', 'GameCollection');
+            return array('GameReward', 'GameRewardTransaction');
+        }
+
+        public static function getTranslatedRightsLabels()
+        {
+            $labels                                  = array();
+            $labels[self::RIGHT_ACCESS_GAME_REWARDS] = Zurmo::t('GameRewardsModule', 'Access Game Rewards Tab');
+            return $labels;
         }
 
         public static function getDefaultMetadata()
         {
             $metadata = array();
             $metadata['global'] = array(
-                'userHeaderMenuItems' => array(
-                        array(
-                            'label' => "eval:Zurmo::t('GamificationModule', 'Leaderboard')",
-                            'url' => array('/gamification/default/leaderboard'),
-                            'order' => 2,
-                        ),
+                'configureMenuItems' => array(
+                    array(
+                        'category'         => ZurmoModule::ADMINISTRATION_CATEGORY_GENERAL,
+                        'titleLabel'       => "eval:Zurmo::t('GameRewardsModule', 'Game Rewards')",
+                        'descriptionLabel' => "eval:Zurmo::t('GameRewardsModule', 'Manage Game Rewards')",
+                        'route'            => '/gameRewards/default',
+                        'right'            => self::RIGHT_ACCESS_GAME_REWARDS,
+                    ),
+                ),
+                'globalSearchAttributeNames' => array(
+                    'name',
                 ),
             );
             return $metadata;
@@ -67,17 +80,42 @@
 
         public static function getDemoDataMakerClassNames()
         {
-            return array('GamificationDemoDataMaker');
+            return array('GameRewardsDemoDataMaker');
+        }
+
+        public static function getPrimaryModelName()
+        {
+            return 'GameReward';
+        }
+
+        public static function getAccessRight()
+        {
+            return self::RIGHT_ACCESS_GAME_REWARDS;
+        }
+
+        public static function getGlobalSearchFormClassName()
+        {
+            return 'GameRewardsSearchForm';
+        }
+
+        public static function hasPermissions()
+        {
+            return true;
         }
 
         protected static function getSingularModuleLabel($language)
         {
-            return Zurmo::t('GamificationModule', 'Gamification', array(), null, $language);
+            return Zurmo::t('GamificationModule', 'Game Reward', array(), null, $language);
         }
 
         protected static function getPluralModuleLabel($language)
         {
-            return static::getSingularModuleLabel($language);
+            return Zurmo::t('GamificationModule', 'Game Rewards', array(), null, $language);
+        }
+
+        public static function modelsAreNeverGloballySearched()
+        {
+            return true;
         }
     }
 ?>

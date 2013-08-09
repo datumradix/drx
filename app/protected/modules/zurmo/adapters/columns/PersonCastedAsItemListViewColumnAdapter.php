@@ -34,49 +34,35 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Displays a date/time localized
-     * display.
-     */
-    class DateTimeElement extends Element
+    class PersonCastedAsItemListViewColumnAdapter extends TextListViewColumnAdapter
     {
-        /**
-         * Render a datetime JUI widget
-         * @return The element's content as a string.
-         */
-        protected function renderControlEditable()
+        public function renderGridViewData()
         {
-            $value     = DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                            $this->model->{$this->attribute});
-            $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("EditableDateTimeElement");
-            $cClipWidget->widget('application.core.widgets.ZurmoJuiDateTimePicker', array(
-                'attribute'  => $this->attribute,
-                'value'      => $value,
-                'htmlOptions' => array(
-                    'id'              => $this->getEditableInputId(),
-                    'name'            => $this->getEditableInputName(),
-                    'disabled'        => $this->getDisabledValue(),
-                )
-            ));
-            $cClipWidget->endClip();
-            $content = $cClipWidget->getController()->clips['EditableDateTimeElement'];
-            return ZurmoHtml::tag('div', array('class' => 'has-date-select'), $content);
+            return array(
+                'name'     => $this->attribute,
+                'value'    => 'PersonCastedAsItemListViewColumnAdapter::resolveAsUserOrContact($data->' . $this->attribute . ')',
+                'type'     => 'raw',
+                'sortable' => false,
+            );
         }
 
-        /**
-         * Renders the attribute from the model.
-         * @return The element's content.
-         */
-        protected function renderControlNonEditable()
+        public static function resolveAsUserOrContact(Item $item)
         {
-            if ($this->model->{$this->attribute} != null)
+            foreach (array('Contact', 'User') as $modelClassName)
             {
-                $content = DateTimeUtil::
-                           convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                               $this->model->{$this->attribute});
-                return ZurmoHtml::encode($content);
+                try
+                {
+                    $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem($modelClassName);
+                    $model = $item->castDown(array($modelDerivationPathToItem));
+                    $moduleClassName = $modelClassName::getModuleClassName();
+                    $linkRoute = '/' . $moduleClassName::getDirectoryName() . '/default/details';
+                    return ActionSecurityUtil::resolveLinkToModelForCurrentUser(strval($model), $model, $moduleClassName, $linkRoute);
+                }
+                catch (NotFoundException $e)
+                {
+                }
             }
+            throw new NotSupportedException();
         }
     }
 ?>

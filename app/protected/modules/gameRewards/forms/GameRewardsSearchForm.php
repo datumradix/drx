@@ -34,49 +34,14 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Displays a date/time localized
-     * display.
-     */
-    class DateTimeElement extends Element
+    class GameRewardsSearchForm extends SavedDynamicSearchForm
     {
         /**
-         * Render a datetime JUI widget
-         * @return The element's content as a string.
+         * @return string|void
          */
-        protected function renderControlEditable()
+        protected static function getRedBeanModelClassName()
         {
-            $value     = DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                            $this->model->{$this->attribute});
-            $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("EditableDateTimeElement");
-            $cClipWidget->widget('application.core.widgets.ZurmoJuiDateTimePicker', array(
-                'attribute'  => $this->attribute,
-                'value'      => $value,
-                'htmlOptions' => array(
-                    'id'              => $this->getEditableInputId(),
-                    'name'            => $this->getEditableInputName(),
-                    'disabled'        => $this->getDisabledValue(),
-                )
-            ));
-            $cClipWidget->endClip();
-            $content = $cClipWidget->getController()->clips['EditableDateTimeElement'];
-            return ZurmoHtml::tag('div', array('class' => 'has-date-select'), $content);
-        }
-
-        /**
-         * Renders the attribute from the model.
-         * @return The element's content.
-         */
-        protected function renderControlNonEditable()
-        {
-            if ($this->model->{$this->attribute} != null)
-            {
-                $content = DateTimeUtil::
-                           convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                               $this->model->{$this->attribute});
-                return ZurmoHtml::encode($content);
-            }
+            return 'GameReward';
         }
     }
 ?>
