@@ -34,25 +34,44 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class DecimalListViewColumnAdapter extends TextListViewColumnAdapter
+    /**
+     * @see ExplicitReadWriteModelPermissionsElement.  
+     * Used so when creating a report the default settings can be resolver«d
+     */
+    class ReportExplicitReadWriteModelPermissionsElement extends ExplicitReadWriteModelPermissionsElement    
     {
-        public function renderGridViewData()
+        protected function resolveSelectedType()
         {
-            return array(
-                'name'  => $this->attribute,
-                'value' => array($this, 'renderDataCellContent'),
-                'type'  => 'raw',
-            );
-        }
-                
-        public function renderDataCellContent($data, $row) 
-        {                      
-            echo $this->renderValue($data->{$this->attribute});
+            $resolveSelectedType = parent::resolveSelectedType();
+            if ($resolveSelectedType === null)
+            {
+                $selectedType = UserConfigurationFormAdapter::resolveAndGetDefaultPermissionSetting(
+                                                                    Yii::app()->user->userModel);
+                return $this->resolveUserPermissionConfigurationToPermissionType($selectedType);
+            }
+            return $resolveSelectedType;
         }
         
-        public function renderValue($value) 
+        protected function resolveUserPermissionConfigurationToPermissionType($selectedType)
         {
-            return Yii::app()->numberFormatter->formatDecimal((float)$value);
+            assert('is_int($selectedType)');
+            assert('$selectedType >= UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_OWNER');
+            assert('$selectedType <= UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_EVERYONE');
+            $userConfigPermissionTypes          = UserConfigurationForm::getAllDefaultPermissionTypes();
+            $explicitReadWritePermissionTypes   = parent::getPermissionTypes();
+            return array_search($userConfigPermissionTypes[$selectedType], $explicitReadWritePermissionTypes);
         }
+        
+        protected function resolveSelectedGroup()
+        {            
+            $resolvedSelectedGroup = parent::resolveSelectedGroup();
+            if ($resolvedSelectedGroup === null)
+            {
+                return UserConfigurationFormAdapter::resolveAndGetValue(Yii::app()->user->userModel,
+                            'defaultPermissionGroupSetting', false);
+            }
+            return $resolvedSelectedGroup;            
+        }
+
     }
 ?>

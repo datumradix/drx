@@ -34,25 +34,38 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class DecimalListViewColumnAdapter extends TextListViewColumnAdapter
-    {
-        public function renderGridViewData()
+    class ReportResultsGridUtilTest extends ZurmoBaseTest
+    {               
+        public $user;
+        
+        public static function setUpBeforeClass()
         {
-            return array(
-                'name'  => $this->attribute,
-                'value' => array($this, 'renderDataCellContent'),
-                'type'  => 'raw',
-            );
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();            
+            ContactsModule::loadStartingData();
+        }
+
+        public function setup()
+        {
+            parent::setUp();
+            $this->user = User::getByUsername('super');
+            Yii::app()->user->userModel = $this->user;
         }
                 
-        public function renderDataCellContent($data, $row) 
-        {                      
-            echo $this->renderValue($data->{$this->attribute});
-        }
-        
-        public function renderValue($value) 
+        public function testMakeStringForMultipleLinks()
         {
-            return Yii::app()->numberFormatter->formatDecimal((float)$value);
+            $account1 = AccountTestHelper::createAccountByNameForOwner('account1', $this->user);
+            $result   = ReportResultsGridUtil::makeStringForMultipleLinks('account1', 'Account', 'AccountsModule');
+            $this->assertContains   ('a target="new"', $result);
+            $this->assertNotContains('tooltip',        $result);
+            
+            $account2 = AccountTestHelper::createAccountByNameForOwner('account1', $this->user);            
+            $result   = ReportResultsGridUtil::makeStringForMultipleLinks('account1', 'Account', 'AccountsModule');
+            $this->assertContains('<span class="tooltip">2</span>', $result);
+            
+            $result   = ReportResultsGridUtil::makeStringForMultipleLinks('account1', 'Account', 'AccountsModule', false);
+            $this->assertContains   ('a target="new"', $result);
+            $this->assertNotContains('tooltip',        $result);
         }
     }
 ?>
