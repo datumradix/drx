@@ -46,7 +46,7 @@
         {
             assert('is_string($username)');
             assert('$username != ""');
-            $bean = R::findOne('_user', "username = :username ", array(':username' => $username));
+            $bean = ZurmoRedBean::findOne('_user', "username = :username ", array(':username' => $username));
             assert('$bean === false || $bean instanceof RedBean_OODBBean');
             if ($bean === false)
             {
@@ -92,7 +92,7 @@
             $tableName = self::getTableName($modelClassName);
             if ($bean === null)
             {
-                $personBean = R::dispense($tableName);
+                $personBean = ZurmoRedBean::dispense($tableName);
             }
             else
             {
@@ -116,19 +116,7 @@
             return parent::unrestrictedDelete();
         }
 
-        /**
-         * Override to handle Person mixin.  When the Person is the baseModelClassName, we should ignore trying to
-         * resolve the column.  Otherwise a phantom person_id is created on CustomFieldsModel.
-         */
-        protected static function resolveMixinsOnSaveForEnsuringColumnsAreCorrectlyFormed($baseModelClassName, $modelClassName)
-        {
-            if ($baseModelClassName != 'Person')
-            {
-                parent::resolveMixinsOnSaveForEnsuringColumnsAreCorrectlyFormed($baseModelClassName, $modelClassName);
-            }
-        }
-
-        protected static function getMixedInModelClassNames()
+        public static function getMixedInModelClassNames()
         {
             return array('Person');
         }
@@ -149,23 +137,12 @@
                 if ($baseBean !== null)
                 {
                     ZurmoRedBeanLinkManager::link($bean, $baseBean);
-                    if (!RedBeanDatabase::isFrozen())
-                    {
-                        $tableName  = self::getTableName(get_class($this));
-                        $columnName = 'person_id';
-                        RedBeanColumnTypeOptimizer::optimize($tableName, $columnName, 'id');
-                    }
                 }
                 $baseBean = $bean;
             }
             $userBean   = $this->modelClassNameToBean['User'];
             $personBean = $this->modelClassNameToBean['Person'];
             ZurmoRedBeanLinkManager::link($userBean, $personBean);
-            if (!RedBeanDatabase::isFrozen())
-            {
-                $tableName  = self::getTableName(get_class($this));
-                RedBeanColumnTypeOptimizer::optimize($tableName, 'person_id', 'id');
-            }
         }
 
         // Because no functionality is mixed in, because this is
