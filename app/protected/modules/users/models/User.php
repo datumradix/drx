@@ -46,7 +46,7 @@
         {
             assert('is_string($username)');
             assert('$username != ""');
-            $bean = R::findOne('_user', "username = :username ", array(':username' => $username));
+            $bean = ZurmoRedBean::findOne('_user', "username = :username ", array(':username' => $username));
             assert('$bean === false || $bean instanceof RedBean_OODBBean');
             if ($bean === false)
             {
@@ -92,7 +92,7 @@
             $tableName = self::getTableName($modelClassName);
             if ($bean === null)
             {
-                $personBean = R::dispense($tableName);
+                $personBean = ZurmoRedBean::dispense($tableName);
             }
             else
             {
@@ -116,19 +116,7 @@
             return parent::unrestrictedDelete();
         }
 
-        /**
-         * Override to handle Person mixin.  When the Person is the baseModelClassName, we should ignore trying to
-         * resolve the column.  Otherwise a phantom person_id is created on CustomFieldsModel.
-         */
-        protected static function resolveMixinsOnSaveForEnsuringColumnsAreCorrectlyFormed($baseModelClassName, $modelClassName)
-        {
-            if ($baseModelClassName != 'Person')
-            {
-                parent::resolveMixinsOnSaveForEnsuringColumnsAreCorrectlyFormed($baseModelClassName, $modelClassName);
-            }
-        }
-
-        protected static function getMixedInModelClassNames()
+        public static function getMixedInModelClassNames()
         {
             return array('Person');
         }
@@ -149,23 +137,12 @@
                 if ($baseBean !== null)
                 {
                     ZurmoRedBeanLinkManager::link($bean, $baseBean);
-                    if (!RedBeanDatabase::isFrozen())
-                    {
-                        $tableName  = self::getTableName(get_class($this));
-                        $columnName = 'person_id';
-                        RedBeanColumnTypeOptimizer::optimize($tableName, $columnName, 'id');
-                    }
                 }
                 $baseBean = $bean;
             }
             $userBean   = $this->modelClassNameToBean['User'];
             $personBean = $this->modelClassNameToBean['Person'];
             ZurmoRedBeanLinkManager::link($userBean, $personBean);
-            if (!RedBeanDatabase::isFrozen())
-            {
-                $tableName  = self::getTableName(get_class($this));
-                RedBeanColumnTypeOptimizer::optimize($tableName, 'person_id', 'id');
-            }
         }
 
         // Because no functionality is mixed in, because this is
@@ -461,22 +438,30 @@
             assert('is_string($rightName)');
             assert('$moduleName != ""');
             assert('$rightName  != ""');
+                $identifier = $this->id . $moduleName . $rightName . 'ActualRight';
                 if (!SECURITY_OPTIMIZED)
                 {
                     // The slow way will remain here as documentation
                     // for what the optimized way is doing.
-                    if (Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME)->contains($this))
+                    try
                     {
-                        $actualRight = Right::ALLOW;
+                        return RightsCache::getEntry($identifier);
                     }
-                    else
+                    catch (NotFoundException $e)
                     {
-                        $actualRight = parent::getActualRight($moduleName, $rightName);
+                        if (Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME)->contains($this))
+                        {
+                            $actualRight = Right::ALLOW;
+                        }
+                        else
+                        {
+                            $actualRight = parent::getActualRight($moduleName, $rightName);
+                        }
+                        RightsCache::cacheEntry($identifier, $actualRight);
                     }
                 }
                 else
                 {
-                    $identifier = $this->id . $moduleName . $rightName . 'ActualRight';
                     try
                     {
                         return RightsCache::getEntry($identifier);

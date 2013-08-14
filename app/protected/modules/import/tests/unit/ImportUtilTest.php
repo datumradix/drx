@@ -122,7 +122,7 @@
             $this->assertEquals('Dartmouth Financial Services', $testModels[1]->name);
 
             //Clear out data in table
-            R::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
+            ZurmoRedBean::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
 
             //Re-freeze if needed.
             if ($freezeWhenComplete)
@@ -132,29 +132,8 @@
         }
 
         /**
-         * @depends testImportNameAndRelatedNameWithApostrophes
-         */
-        public function testSetDataAnalyzerMessagesDataToImport()
-        {
-            $import = new Import();
-            ImportUtil::setDataAnalyzerMessagesDataToImport($import, array('a' => 'b'));
-            $unserializedData = unserialize($import->serializedData);
-            $this->assertEquals(array('a' => 'b'), $unserializedData['dataAnalyzerMessagesData']);
-
-            //Test that setting it again wipes out the old value
-            ImportUtil::setDataAnalyzerMessagesDataToImport($import, array('d' => 'e'));
-            $unserializedData = unserialize($import->serializedData);
-            $this->assertEquals(array('d' => 'e'), $unserializedData['dataAnalyzerMessagesData']);
-
-            //Test that setting it with merge = true, merges with the existing value.
-            ImportUtil::setDataAnalyzerMessagesDataToImport($import, array('k' => 'j'), true);
-            $unserializedData = unserialize($import->serializedData);
-            $this->assertEquals(array('d' => 'e', 'k' => 'j'), $unserializedData['dataAnalyzerMessagesData']);
-        }
-
-        /**
          * Test tag cloud and multi-select attribute import.
-         * @depends testSetDataAnalyzerMessagesDataToImport
+         * @depends testImportNameAndRelatedNameWithApostrophes
          */
         public function testSetDataAnalyzerMultiSelectAndTagCloudImport()
         {
@@ -182,14 +161,12 @@
 
             $this->assertEquals(6, ImportDatabaseUtil::getCount($import->getTempTableName())); // includes header rows.
 
-            $multiDropDownInstructionsData    = array('MultiSelectDropDown' =>
-                                                        array(DropDownSanitizerUtil::ADD_MISSING_VALUE =>
+            $multiDropDownInstructionsData    = array(CustomFieldsInstructionData::ADD_MISSING_VALUES =>
                                                               array('Multi 5', 'Multi 4'),
-                                                              DropDownSanitizerUtil::MAP_MISSING_VALUES => array()));
-            $tagCloudInstructionsData         = array('MultiSelectDropDown' =>
-                                                        array(DropDownSanitizerUtil::ADD_MISSING_VALUE =>
+                                                              CustomFieldsInstructionData::MAP_MISSING_VALUES => array());
+            $tagCloudInstructionsData         = array(CustomFieldsInstructionData::ADD_MISSING_VALUES =>
                                                               array('Cloud 5', 'Cloud 4'),
-                                                              DropDownSanitizerUtil::MAP_MISSING_VALUES => array()));
+                                                              CustomFieldsInstructionData::MAP_MISSING_VALUES => array());
             $mappingData = array(
                 'column_0'   => ImportMappingUtil::makeStringColumnMappingData      ('string'),
                 'column_1'   => ImportMappingUtil::makeStringColumnMappingData      ('lastName'),
@@ -280,7 +257,7 @@
             $this->assertEquals(0, count($beansWithErrors));
 
             //Clear out data in table
-            R::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
+            ZurmoRedBean::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
 
             //Re-freeze if needed.
             if ($freezeWhenComplete)
@@ -379,7 +356,7 @@
             $this->assertEquals(0, count($beansWithErrors));
 
             //Clear out data in table
-            R::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
+            ZurmoRedBean::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
 
             //Re-freeze if needed.
             if ($freezeWhenComplete)
@@ -480,7 +457,7 @@
             $this->assertEquals('USD', $testModels[0]->currencyValue->currency->code);
 
             //Clear out data in table
-            R::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
+            ZurmoRedBean::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
 
             //Re-freeze if needed.
             if ($freezeWhenComplete)
@@ -569,21 +546,21 @@
 
             //Confirm the messages are as expected.
             $compareMessages = array(
-                'ImportModelTestItem - Last name specified is too long.',
+                'ImportModelTestItem - Last Name specified is too long.',
                 'ImportModelTestItem - Last Name - Last Name cannot be blank.',
             );
-            $this->assertEquals($compareMessages, unserialize(current($beansWithErrors)->serializedmessages));
+            $this->assertEquals($compareMessages, unserialize(current($beansWithErrors)->serializedMessages));
 
             $compareMessages = array(
                 'ImportModelTestItem - String This field is required and neither a value nor a default value was specified.',
-                'ImportModelTestItem - A full name value is required but missing.',
+                'ImportModelTestItem - Full name value required, but missing.',
                 'ImportModelTestItem - Last Name - Last Name cannot be blank.',
                 'ImportModelTestItem - String - String cannot be blank.',
             );
-            $this->assertEquals($compareMessages, unserialize(next($beansWithErrors)->serializedmessages));
+            $this->assertEquals($compareMessages, unserialize(next($beansWithErrors)->serializedMessages));
 
             //Clear out data in table
-            R::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
+            ZurmoRedBean::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
 
             //Re-freeze if needed.
             if ($freezeWhenComplete)
@@ -662,7 +639,7 @@
             }
 
             //Clear out data in table
-            R::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
+            ZurmoRedBean::exec("delete from " . ImportModelTestItem::getTableName('ImportModelTestItem'));
 
             //Now test with read/write permissions being set.
             $explicitReadWriteModelPermissions = new ExplicitReadWriteModelPermissions();
