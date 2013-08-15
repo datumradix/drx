@@ -35,84 +35,70 @@
      ********************************************************************************/
 
     /**
-     * Abstract class used to convert report models into arrays
+     * Helper class used to convert summationReport models into arrays
      */
-    abstract class ReportToExportAdapter
-    {
-                
-        protected $dataProvider;
-        
-        protected $dataForExport;
-        
-        protected $headerData;
-        
-        protected $data;
-                
-        protected $report;
-                
-        public function __construct(ReportDataProvider $dataProvider, Report $report)
-        {
-            $this->dataProvider         = $dataProvider;
-            $this->report               = $report;
-            $this->dataForExport        = ExportUtil::getDataForExport($this->dataProvider);
-            $this->makeData();
-        }
-        
-        public function getData()
-        {                    
-            return $this->data;
-        }
-
-        public function getHeaderData()
-        {                                       
-            return $this->headerData;
-        }
-
-        /**
-         * Override if needed to adapt the way data is made for export
-         */
+    class SummationReportToExportAdapter extends ReportToExportAdapter
+    {        
         protected function makeData()
         {                        
-            foreach ($this->dataForExport as $reportResultsRowData)
+            if($this->rowsAreExpandable())
             {
+                $this->makeDataWithExpandableRows();
+            }
+            else 
+            {
+                parent::makeData();
+            }
+        }
+        
+        protected function rowsAreExpandable()
+        {
+            if (count($this->dataProvider->getReport()->getDrillDownDisplayAttributes()) > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        
+        protected function makeDataWithExpandableRows()
+        {            
+            foreach ($this->dataForExport as $reportResultsRowData)
+            {                
                 $data             = array();
                 $this->headerData = array();                
                 foreach ($reportResultsRowData->getDisplayAttributes() as $key => $displayAttribute)
-                {                        
+                {                                    
                     $resolvedAttributeName = $displayAttribute->resolveAttributeNameForGridViewColumn($key);                    
                     $className             = $this->resolveExportClassNameForReportToExportValueAdapter($displayAttribute);
                     $params                = array();
                     $this->resolveParamsForCurrencyTypes($displayAttribute, $params);
                     $adapter = new $className($reportResultsRowData, $resolvedAttributeName, $params);
                     $adapter->resolveData($data);
-                    $adapter->resolveHeaderData($this->headerData);                        
+                    $adapter->resolveHeaderData($this->headerData);                                            
+                }                                
+                $this->data[] = $data;                                
+                $report = clone($this->report);                    
+                $report->resolveGroupBysAsFilters($reportResultsRowData->getDataParamsForDrillDownAjaxCall());                
+                $this->resolveDrillDownDetailsData($report);
+            }            
+        }
+        
+        protected function resolveDrillDownDetailsData($report)
+        {            
+            $pageSize               = Yii::app()->pagination->resolveActiveForCurrentUserByType(
+                                            'reportResultsSubListPageSize', $report->getModuleClassName());
+            $dataProvider           = ReportDataProviderFactory::makeForSummationDrillDown($report, $pageSize);
+            $reportToExportAdapter  = ReportToExportAdapterFactory::createReportToExportAdapter($report, $dataProvider);                        
+            $drillDownHeaderData    = $reportToExportAdapter->getHeaderData();                          
+            $drillDownData          = $reportToExportAdapter->getData();       
+            $this->data[]           = array_merge(array(null), $drillDownHeaderData);            
+            if (!empty($drillDownData))
+            {
+                foreach ($drillDownData as $row)
+                {
+                    $this->data[] = array_merge(array(null), $row);
                 }
-                $this->data[] = $data;                
             }
         }
-                                       
-        protected function resolveExportClassNameForReportToExportValueAdapter(DisplayAttributeForReportForm $displayAttribute)
-        {
-            $displayElementType = $displayAttribute->getDisplayElementType();
-            if (@class_exists($displayElementType . 'ForReportToExportValueAdapter'))
-            {
-                return $displayElementType . 'ForReportToExportValueAdapter';
-            }
-            else
-            {
-                return $displayElementType . 'RedBeanModelAttributeValueToExportValueAdapter';
-            }
-        }
-
-        protected function resolveParamsForCurrencyTypes(DisplayAttributeForReportForm $displayAttribute, & $params)
-        {
-            assert('is_array($params)');
-            if ($displayAttribute->isATypeOfCurrencyValue())
-            {
-                $params['currencyValueConversionType'] = $this->report->getCurrencyConversionType();
-                $params['spotConversionCurrencyCode']  = $this->report->getSpotConversionCurrencyCode();
-                $params['fromBaseToSpotRate']          = $this->report->getFromBaseToSpotRate();
-            }
-        }                
     }
 ?>
