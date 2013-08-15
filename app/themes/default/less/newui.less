@@ -1352,22 +1352,6 @@ body > .ui-autocomplete{
 	}
 }
 
-.unread-count{
-	display: inline-block;
-	margin-left: 8px;
-	.radius(50%);
-	width:16px;
-	height:16px;
-	line-height: 15px;
-	text-align: center;
-	color: #545454;
-	.t-shadow(none);
-	font-size:9px;
-	font-weight: bold !important;
-	#gradient > .vertical( #fff, #dfdfdf );
-	border:1px solid #dfdfdf;
-}
-
 form,
 .ActionBarForSecurityTreeListView,
 #ActionBarForDesignerModuleView,
@@ -1421,10 +1405,12 @@ form,
 	ul{
 		list-style:none;
 	}
-	.parent > ul{
-		margin-top:0;
-		++.headerDropDown;
-		left:auto;
+	.parent{
+		> ul{
+			margin-top:0;
+			++.headerDropDown;
+			left:auto;
+		}
 	}
 	> a:first-child{
 		border-left:none;
@@ -1450,6 +1436,7 @@ form,
 #ActionBarSearchAndListView{
 	.view-toolbar{
 		margin-top:0;
+
 	}
 }
 
@@ -1725,7 +1712,7 @@ form,
 	top:0;
 }
 
-.icon-conversation:before{
+.icon-conversation > a:before{
 	content:"O";
 	.view-toolbar-icons();
 	top:-1px;
@@ -1737,7 +1724,7 @@ form,
 	top:-1px;
 }
 
-.icon-mission:before,
+.icon-mission > a:before,
 .icon-missions-available:before{
 	content:"Q";
 	.view-toolbar-icons();
@@ -1750,13 +1737,13 @@ form,
 	top:-2px;
 }
 
-.icon-notification:before{
+.icon-notification > a:before{
 	content:'\00A5';
 	.view-toolbar-icons();
 	top:-2px;
 }
 
-.icon-combined:before{
+.icon-combined > a:before{
 	content:'\00A7';
 	.view-toolbar-icons(26px);
 	top:-2px;
