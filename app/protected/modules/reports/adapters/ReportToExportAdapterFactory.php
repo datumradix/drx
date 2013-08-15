@@ -35,51 +35,24 @@
      ********************************************************************************/
 
     /**
-     * Class for working with a calculated currency value and displaying it in a report results grid
+     * Helper class to make ReportToExportAdapter object
      */
-    class CalculatedCurrencyValueForReportListViewColumnAdapter extends ForReportListViewColumnAdapter
-    {
-        /**
-         * @return array
-         * @throws NotSupportedException if the currencyValueConversionType is invalid or null
-         */
-        public function renderGridViewData()
+    class ReportToExportAdapterFactory
+    {        
+        public static function createReportToExportAdapter(
+                                    Report $report, 
+                                    ReportDataProvider $dataProvider)
         {            
-            return array(
-                'name'  => $this->attribute,
-                'value' => array($this, 'renderDataCellContent'),
-                'type'  => 'raw',
-            );
-        }
-        
-        public function renderDataCellContent($data, $row) 
-        {                      
-           return $this->renderValue($data->{$this->attribute});
-        }
-        
-        public function renderValue($value) 
-        {                        
-            if ($this->getCurrencyValueConversionType() == Report::CURRENCY_CONVERSION_TYPE_ACTUAL)
+            $dataProviderClassName = get_class($dataProvider);
+            if ($dataProviderClassName == 'SummationDrillDownReportDataProvider')
             {
-                $value  = Yii::app()->numberFormatter->formatDecimal((float)$value);
-            }
-            elseif ($this->getCurrencyValueConversionType() == Report::CURRENCY_CONVERSION_TYPE_BASE)
-            {
-                //Assumes base conversion is done using sql math
-                $value  = Yii::app()->numberFormatter->formatCurrency((float)$value, Yii::app()->currencyHelper->getBaseCode());                
-            }
-            elseif ($this->getCurrencyValueConversionType() == Report::CURRENCY_CONVERSION_TYPE_SPOT)
-            {
-                //Assumes base conversion is done using sql math
-                $value  = Yii::app()->numberFormatter->formatCurrency(
-                                (float)$value * $this->getFromBaseToSpotRate(), 
-                                $this->getSpotConversionCurrencyCode());                
+                $className = 'SummationDrillDownReportToExportAdapter';                
             }
             else
             {
-                throw new NotSupportedException();
+                $className  = $report->getType() . 'ReportToExportAdapter';
             }
-            return $value;
+            return new $className($dataProvider, $report);
         }
     }
 ?>

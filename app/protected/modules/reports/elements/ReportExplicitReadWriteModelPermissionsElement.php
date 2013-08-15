@@ -35,51 +35,43 @@
      ********************************************************************************/
 
     /**
-     * Class for working with a calculated currency value and displaying it in a report results grid
+     * @see ExplicitReadWriteModelPermissionsElement.  
+     * Used so when creating a report the default settings can be resolver«d
      */
-    class CalculatedCurrencyValueForReportListViewColumnAdapter extends ForReportListViewColumnAdapter
+    class ReportExplicitReadWriteModelPermissionsElement extends ExplicitReadWriteModelPermissionsElement    
     {
-        /**
-         * @return array
-         * @throws NotSupportedException if the currencyValueConversionType is invalid or null
-         */
-        public function renderGridViewData()
+        protected function resolveSelectedType()
+        {
+            $resolveSelectedType = parent::resolveSelectedType();
+            if ($resolveSelectedType === null)
+            {
+                $selectedType = UserConfigurationFormAdapter::resolveAndGetDefaultPermissionSetting(
+                                                                    Yii::app()->user->userModel);
+                return $this->resolveUserPermissionConfigurationToPermissionType($selectedType);
+            }
+            return $resolveSelectedType;
+        }
+        
+        protected function resolveUserPermissionConfigurationToPermissionType($selectedType)
+        {
+            assert('is_int($selectedType)');
+            assert('$selectedType >= UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_OWNER');
+            assert('$selectedType <= UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_EVERYONE');
+            $userConfigPermissionTypes          = UserConfigurationForm::getAllDefaultPermissionTypes();
+            $explicitReadWritePermissionTypes   = parent::getPermissionTypes();
+            return array_search($userConfigPermissionTypes[$selectedType], $explicitReadWritePermissionTypes);
+        }
+        
+        protected function resolveSelectedGroup()
         {            
-            return array(
-                'name'  => $this->attribute,
-                'value' => array($this, 'renderDataCellContent'),
-                'type'  => 'raw',
-            );
+            $resolvedSelectedGroup = parent::resolveSelectedGroup();
+            if ($resolvedSelectedGroup === null)
+            {
+                return UserConfigurationFormAdapter::resolveAndGetValue(Yii::app()->user->userModel,
+                            'defaultPermissionGroupSetting', false);
+            }
+            return $resolvedSelectedGroup;            
         }
-        
-        public function renderDataCellContent($data, $row) 
-        {                      
-           return $this->renderValue($data->{$this->attribute});
-        }
-        
-        public function renderValue($value) 
-        {                        
-            if ($this->getCurrencyValueConversionType() == Report::CURRENCY_CONVERSION_TYPE_ACTUAL)
-            {
-                $value  = Yii::app()->numberFormatter->formatDecimal((float)$value);
-            }
-            elseif ($this->getCurrencyValueConversionType() == Report::CURRENCY_CONVERSION_TYPE_BASE)
-            {
-                //Assumes base conversion is done using sql math
-                $value  = Yii::app()->numberFormatter->formatCurrency((float)$value, Yii::app()->currencyHelper->getBaseCode());                
-            }
-            elseif ($this->getCurrencyValueConversionType() == Report::CURRENCY_CONVERSION_TYPE_SPOT)
-            {
-                //Assumes base conversion is done using sql math
-                $value  = Yii::app()->numberFormatter->formatCurrency(
-                                (float)$value * $this->getFromBaseToSpotRate(), 
-                                $this->getSpotConversionCurrencyCode());                
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-            return $value;
-        }
+
     }
 ?>

@@ -34,52 +34,56 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Class for working with a calculated currency value and displaying it in a report results grid
-     */
-    class CalculatedCurrencyValueForReportListViewColumnAdapter extends ForReportListViewColumnAdapter
+    class ReportsTest2Module extends SecurableModule
     {
-        /**
-         * @return array
-         * @throws NotSupportedException if the currencyValueConversionType is invalid or null
-         */
-        public function renderGridViewData()
-        {            
+        const RIGHT_ACCESS_REPORTS_TESTS = 'Access Reports Test Tab';
+
+        public function getDependencies()
+        {
             return array(
-                'name'  => $this->attribute,
-                'value' => array($this, 'renderDataCellContent'),
-                'type'  => 'raw',
             );
         }
-        
-        public function renderDataCellContent($data, $row) 
-        {                      
-           return $this->renderValue($data->{$this->attribute});
+
+        public static function getDefaultMetadata()
+        {
+            $metadata = array();
+            $metadata['global'] = array(
+                'tabMenuItems' => array(
+                ),
+                'designerMenuItems' => array(
+                ),
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+                //globalSearchAttributeNames is used by A model.
+                'globalSearchAttributeNames' => array('a', 'name')
+            );
+            return $metadata;
         }
-        
-        public function renderValue($value) 
-        {                        
-            if ($this->getCurrencyValueConversionType() == Report::CURRENCY_CONVERSION_TYPE_ACTUAL)
-            {
-                $value  = Yii::app()->numberFormatter->formatDecimal((float)$value);
-            }
-            elseif ($this->getCurrencyValueConversionType() == Report::CURRENCY_CONVERSION_TYPE_BASE)
-            {
-                //Assumes base conversion is done using sql math
-                $value  = Yii::app()->numberFormatter->formatCurrency((float)$value, Yii::app()->currencyHelper->getBaseCode());                
-            }
-            elseif ($this->getCurrencyValueConversionType() == Report::CURRENCY_CONVERSION_TYPE_SPOT)
-            {
-                //Assumes base conversion is done using sql math
-                $value  = Yii::app()->numberFormatter->formatCurrency(
-                                (float)$value * $this->getFromBaseToSpotRate(), 
-                                $this->getSpotConversionCurrencyCode());                
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-            return $value;
+
+        public static function getPrimaryModelName()
+        {
+            return 'ReportModelTestItem2';
+        }
+
+        public static function getGlobalSearchFormClassName()
+        {
+            return 'ReportModelTestItem2';
+        }
+
+        public static function hasPermissions()
+        {
+            return true;
+        }
+
+        protected static function getSingularModuleLabel($language)
+        {
+            return 'Reports Test2';
+        }
+
+        protected static function getPluralModuleLabel($language)
+        {
+            return 'Reports Test2s';
         }
     }
 ?>
