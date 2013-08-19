@@ -75,7 +75,6 @@
             $owner->detachEventHandler('onBeginRequest', array(Yii::app()->request, 'validateCsrfToken'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleImports'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleSetupDatabaseConnection'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleCheckAutoBuildCompleted'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleDisableGamification'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleInitApiRequest'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleBeginApiRequest'));
@@ -120,7 +119,6 @@
         protected function attachNonApiRequestBehaviorsForInstalledApplication(CComponent $owner)
         {
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleSetupDatabaseConnection'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleCheckAutoBuildCompleted'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleBeginRequest'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleClearCache'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadLanguage'));
@@ -224,15 +222,6 @@
             if (!$instanceFoldersServiceHelper->runCheckAndGetIfSuccessful())
             {
                 echo $instanceFoldersServiceHelper->getMessage();
-                Yii::app()->end(0, false);
-            }
-        }
-
-        public function handleCheckAutoBuildCompleted($event)
-        {
-            if (!RedBeanDatabaseBuilderUtil::isAutoBuildStateValid())
-            {
-                echo Zurmo::t('ZurmoModule', 'Database upgrade not completed. Please try again later.');
                 Yii::app()->end(0, false);
             }
         }
@@ -425,7 +414,7 @@
         {
             $basePath       = Yii::app()->getBasePath();
             require_once("$basePath/../../redbean/rb.php");
-            $redBeanVersion =  R::getVersion();
+            $redBeanVersion =  ZurmoRedBean::getVersion();
             $yiiVersion     =  YiiBase::getVersion();
             if ( $redBeanVersion != Yii::app()->params['redBeanVersion'])
             {
@@ -465,14 +454,7 @@
             RedBeanDatabase::setup(Yii::app()->db->connectionString,
                                    Yii::app()->db->username,
                                    Yii::app()->db->password);
-            if (Yii::app()->isApplicationInstalled())
-            {
-                if (!FORCE_NO_FREEZE)
-                {
-                    RedBeanDatabase::freeze();
-                }
-            }
-            else
+            if (!Yii::app()->isApplicationInstalled())
             {
                 throw new NotSupportedException();
             }
