@@ -47,13 +47,13 @@
         public static function getUsernames()
         {
             $sql = 'select username from ' . User::getTableName('User');
-            return R::getCol($sql);
+            return ZurmoRedBean::getCol($sql);
         }
 
         public static function getUserIds()
         {
             $sql = 'select id from ' . User::getTableName('User');
-            return R::getCol($sql);
+            return ZurmoRedBean::getCol($sql);
         }
 
         public static function getUserExternalSystemIds()
@@ -62,7 +62,7 @@
             RedBeanColumnTypeOptimizer::
             externalIdColumn(User::getTableName('User'), $columnName);
             $sql = 'select ' . $columnName . ' from ' . User::getTableName('User');
-            return R::getCol($sql);
+            return ZurmoRedBean::getCol($sql);
         }
 
         /**
