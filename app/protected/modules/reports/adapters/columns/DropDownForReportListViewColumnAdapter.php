@@ -34,16 +34,30 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * ZurmoUrlManager.
-     */
-    class ZurmoUrlManager
+    class DropDownForReportListViewColumnAdapter extends DropDownListViewColumnAdapter
     {
-        public static function getPositionOfPathInUrl($keyword)
+        public function renderGridViewData()
         {
-            $requestedUrl = Yii::app()->getRequest()->getUrl();
-            $position = strpos(trim($requestedUrl, '/'), trim($keyword, '/'));
-            return $position;
+            return array(
+                'name'   => $this->attribute,
+                'value'  => array($this, 'renderDataCellContent'),
+                'type'   => 'raw',
+            );
         }
+        
+        public function renderDataCellContent($data, $row) 
+        {                              
+            if (is_null($data->{$this->attribute}->value))
+            {
+                $value = Zurmo::t('ReportsModule', '(Null)');
+            }
+            else
+            {
+                $value = CustomFieldDataUtil::getTranslatedLabelByValue($data->{$this->attribute}->data, 
+                                                                        (string) $data->{$this->attribute}, 
+                                                                        Yii::app()->language);
+            }
+            return $value;
+        }                
     }
 ?>
