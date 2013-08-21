@@ -589,7 +589,10 @@
                         {
                             throw new FailedFileUploadException($e->getMessage());
                         }
-
+                        catch (TooManyColumnsFailedException $e)
+                        {
+                            throw new FailedFileUploadException($e->getMessage());
+                        }
                         $fileUploadData = array(
                             'name' => $uploadedFile->getName(),
                             'type' => $uploadedFile->getType(),
