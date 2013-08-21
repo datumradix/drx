@@ -33,24 +33,20 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
-
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Kanban view for tasks related to lead
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class TasksForLeadKanbanView extends TasksForRelatedKanbanView
     {
-        /**
-         * @return array
-         */
-        public static function getDefaultMetadata()
+        protected function getRelationAttributeName()
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            return 'Contact';
+        }
+
+        protected function getKanbanBoardTitle()
+        {
+            $contact = $this->params['relationModel'];
+            return $contact->firstName . ' ' . $contact->lastName;
         }
     }
 ?>

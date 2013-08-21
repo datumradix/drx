@@ -35,22 +35,17 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Displays the comments list for task along with input text area
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class TaskCommentsElement extends CommentsElement
     {
         /**
-         * @return array
+         * Gets formatted attribute label
+         * @return string
          */
-        public static function getDefaultMetadata()
+        protected function getFormattedAttributeLabel()
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            return '<h3>' . Zurmo::t('ConversationsModule', 'Activity') . '</h3>';
         }
     }
 ?>

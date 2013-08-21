@@ -33,24 +33,34 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
-
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Reject button in kanban view for the task
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class TaskRejectLinkActionElement extends LinkActionElement
     {
-        /**
-         * @return array
-         */
-        public static function getDefaultMetadata()
+        public function render()
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
-            );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            return ZurmoHtml::link($this->resolveLabelAndWrap(), '#', $this->resolveHtmlOptionsForRendering());
+        }
+
+        protected function getDefaultRoute()
+        {
+            return $this->params['route'];
+        }
+
+        public function getActionType()
+        {
+            return 'Edit';
+        }
+
+        protected function getDefaultLabel()
+        {
+            return Zurmo::t('Core', 'Reject');
+        }
+
+        protected function resolveHtmlOptionsForRendering()
+        {
+            return array('class' => 'task-reject-action');
         }
     }
 ?>

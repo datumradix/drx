@@ -35,22 +35,41 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Displays a date/time localized
+     * display.
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class TaskAjaxDateTimeElement extends DateTimeElement
     {
         /**
+         * Resolve datepicker options
          * @return array
          */
-        public static function getDefaultMetadata()
+        protected function resolveDatePickerOptions()
         {
-            $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers')
-                    ),
+            return array(
+                'onClose' => 'js:function (dateText)
+                              {
+                                    $.ajax({
+                                                type: "GET",
+                                                url: "' . $this->resolveUpdateTimeStampUrl() . '",
+                                                data: {
+                                                    dateTime: dateText
+                                                },
+                                                success: function(data){
+
+                                                }
+                                              });
+                              }'
             );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+        }
+
+        /**
+         * Resolves url to update timestamp
+         * @return string
+         */
+        protected function resolveUpdateTimeStampUrl()
+        {
+            return Yii::app()->createUrl('tasks/default/updateDueDateTimeViaAjax', array('id' => $this->model->id));
         }
     }
 ?>
