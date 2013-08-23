@@ -264,7 +264,7 @@
                 echo "</thead>\n";
             }
         }
-                
+
         protected function renderTableColumnGroup()
         {
             if(!empty($this->tableColumnGroup))
