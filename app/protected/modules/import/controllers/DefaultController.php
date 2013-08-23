@@ -668,6 +668,11 @@
             }
         }
 
+        /**
+         * @param Import $import
+         * @param bool $firstRowIsHeaderRow
+         * @return ImportDataProvider
+         */
         protected function makeDataProviderForSampleRow($import, $firstRowIsHeaderRow)
         {
             assert('$import instanceof Import');
