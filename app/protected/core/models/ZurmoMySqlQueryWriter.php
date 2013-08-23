@@ -34,13 +34,55 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    $basePath  =  Yii::app()->getBasePath();
-    require_once("$basePath/../../redbean/rb.php");
-
-    /**
-     * A criteria for use with RedbeanModelDataProvider.
-     */
-    class RedBeanModelDbCriteria extends CDbCriteria
+    class ZurmoMySqlQueryWriter extends RedBean_QueryWriter_MySQL
     {
+        public function doesTableExist($tableName)
+        {
+            $result     = $this->adapter->get("SHOW TABLES LIKE '$tableName'");
+            return (count($result) > 0);
+        }
+        public function getColumnsWithDetails($tableName)
+        {
+            $columns    = array();
+            $tableName  = $this->safeTable($tableName);
+            $columnsRaw = $this->adapter->get("DESCRIBE $tableName");
+            foreach ($columnsRaw as $r) {
+                $columns[$r['Field']]   =   $r;
+            }
+            return $columns;
+        }
+
+        public function getIndexes($tableName)
+        {
+            $indexes    = array();
+            $tableName  = $this->safeTable($tableName);
+            $indexesRaw = $this->adapter->get("SHOW KEYS FROM $tableName");
+            foreach ($indexesRaw as $index)
+            {
+                $indexName  = $index['Key_name'];
+                $column     = $index['Column_name'];
+                $unique     = (!(bool)$index['Non_unique']);
+                $indexes[$indexName]['unique']  = $unique;
+                if (isset($indexes[$indexName]['columns']))
+                {
+                    $indexes[$indexName]['columns'][] = $column;
+                }
+                else
+                {
+                    $indexes[$indexName]['columns'] = array($column);
+                }
+            }
+            return $indexes;
+        }
+
+        /**
+         * Drops a table by the given table name.
+         * @param string $tableName
+         */
+        public function dropTableByTableName($tableName)
+        {
+            $tableName = strtolower($tableName);
+            $this->adapter->exec("drop table if exists $tableName");
+        }
     }
 ?>
