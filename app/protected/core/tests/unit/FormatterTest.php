@@ -34,62 +34,23 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Module to manage exports
-     */
-    class ExportModule extends SecurableModule
-    {
-        const RIGHT_ACCESS_EXPORT = 'Access Export Tool';
-
-        /**
-         * Used to determine if data will be exported directly in browser
-         * or to be exported via asynchronous via background job.
-         * @var int
-         */
-        public static $asynchronusThreshold = 1000;
-
-        /**
-         * Page size for asynchronus paging when processing export
-         * @var int
-         */
-        public static $asynchronousPageSize  = 500;
-
-        /**
-         * How many total models to process in a given export job run
-         * @var int
-         */
-        public static $asynchronousMaximumModelsToProcess = 2500;
-
-        public static function getTranslatedRightsLabels()
-        {
-            $labels                                    = array();
-            $labels[self::RIGHT_ACCESS_EXPORT]  = Zurmo::t('ExportModule', 'Access Export Tool');
-            return $labels;
+    class FormatterTest extends BaseTest
+    {                        
+        private $formatter;
+        
+        public function setup() {
+            parent::setup();
+            $this->formatter = new Formatter();
         }
 
-        public function getDependencies()
-        {
-           return array('zurmo');
-        }
-
-        public function getRootModelNames()
-        {
-            return array('ExportItem', 'ExportFileModel');
-        }
-
-        public static function getAccessRight()
-        {
-            return self::RIGHT_ACCESS_EXPORT;
-        }
-
-        protected static function getSingularModuleLabel($language)
-        {
-            return Zurmo::t('ExportModule', 'Export', array(), null, $language);
-        }
-
-        protected static function getPluralModuleLabel($language)
-        {
-            return Zurmo::t('ExportModule', 'Exports', array(), null, $language);
+        public function testFormatDecimal()
+        {                                                                           
+            $this->assertEquals('1,234.56789',  $this->formatter->formatDecimal(1234.56789));
+            $this->assertEquals('1.23456789',   $this->formatter->formatDecimal(1.23456789));
+            $this->assertEquals('12,345,678.9', $this->formatter->formatDecimal(12345678.9));
+            $this->assertEquals('123.40000',    $this->formatter->formatDecimal(123.40000));
+            $this->assertEquals('123.0',        $this->formatter->formatDecimal(123));
+            $this->assertEquals('0.123456789',  $this->formatter->formatDecimal(0.123456789));                        
         }
     }
 ?>

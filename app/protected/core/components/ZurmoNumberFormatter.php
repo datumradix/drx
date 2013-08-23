@@ -33,63 +33,29 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
-
-    /**
-     * Module to manage exports
-     */
-    class ExportModule extends SecurableModule
-    {
-        const RIGHT_ACCESS_EXPORT = 'Access Export Tool';
-
-        /**
-         * Used to determine if data will be exported directly in browser
-         * or to be exported via asynchronous via background job.
-         * @var int
-         */
-        public static $asynchronusThreshold = 1000;
-
-        /**
-         * Page size for asynchronus paging when processing export
-         * @var int
-         */
-        public static $asynchronousPageSize  = 500;
-
-        /**
-         * How many total models to process in a given export job run
-         * @var int
-         */
-        public static $asynchronousMaximumModelsToProcess = 2500;
-
-        public static function getTranslatedRightsLabels()
-        {
-            $labels                                    = array();
-            $labels[self::RIGHT_ACCESS_EXPORT]  = Zurmo::t('ExportModule', 'Access Export Tool');
-            return $labels;
-        }
-
-        public function getDependencies()
-        {
-           return array('zurmo');
-        }
-
-        public function getRootModelNames()
-        {
-            return array('ExportItem', 'ExportFileModel');
-        }
-
-        public static function getAccessRight()
-        {
-            return self::RIGHT_ACCESS_EXPORT;
-        }
-
-        protected static function getSingularModuleLabel($language)
-        {
-            return Zurmo::t('ExportModule', 'Export', array(), null, $language);
-        }
-
-        protected static function getPluralModuleLabel($language)
-        {
-            return Zurmo::t('ExportModule', 'Exports', array(), null, $language);
-        }
+    
+    class ZurmoNumberFormatter extends CNumberFormatter
+    {        
+       
+	/**
+	 * Override to make the format decimal part the same as the passed value
+	 * @param mixed $value the number to be formatted
+	 * @return string the formatting result.
+	 */
+	public function formatDecimal($value)
+	{
+            $decimalFormat = "#,##0.";
+            $pos = strpos($value, '.');
+            if ($pos > 0)
+            {   
+                for ($i=0; $i < strlen($value) - $pos - 2; $i++)
+                {
+                    $decimalFormat .= "#";
+                }
+                $decimalFormat .= "0";
+            }
+            return $this->format($decimalFormat,$value);
+	}
+	
     }
 ?>
