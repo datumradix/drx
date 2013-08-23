@@ -57,7 +57,8 @@
                     'i'  => array(RedBeanModel::HAS_MANY_BELONGS_TO, 'I'),
                 ),
                 'rules' => array(
-                    array('kMember', 'safe'),
+                    array('kMember',      'type', 'type' => 'string'),
+                    array('kMember',      'length', 'max' => 255),
                 ),
             );
             return $metadata;

@@ -40,7 +40,7 @@
         {
             assert('is_string($name)');
             assert('$name != ""');
-            $bean = R::findOne('ppp', "name = '$name'");
+            $bean = ZurmoRedBean::findOne('ppp', "name = '$name'");
             assert('$bean === false || $bean instanceof RedBean_OODBBean');
             if ($bean === false)
             {
@@ -65,6 +65,13 @@
                     array('name',          'required'),
                     array('name',          'type',     'type' => 'string'),
                     array('name',          'length',  'min'  => 3, 'max' => 64),
+                ),
+                'relations' => array(
+                    'p'     => array(RedBeanModel::HAS_ONE, 'P'),
+                    'p1'    => array(RedBeanModel::HAS_ONE, 'P', RedBeanModel::NOT_OWNED,
+                                    RedBeanModel::LINK_TYPE_SPECIFIC, 'ppp1Link'),
+                    'p2'    => array(RedBeanModel::HAS_ONE, 'P', RedBeanModel::NOT_OWNED,
+                                    RedBeanModel::LINK_TYPE_SPECIFIC, 'ppp2Link'),
                 ),
             );
             return $metadata;
