@@ -41,6 +41,15 @@
      */
     class RedBeanModelPolyOneToManyTest extends BaseTest
     {
+        public static function getDependentTestModelClassNames()
+        {
+            return array('TestPolyOneToManyOneSide',
+                            'TestPolyOneToManyOneSideTwo',
+                            'TestPolyOneToManyPolySide',
+                            'TestPolyOneToManyPolySideOwned'
+                        );
+        }
+
         public function testPolyOneToManyNotOwned()
         {
             $polySide = new TestPolyOneToManyPolySide();
@@ -84,7 +93,7 @@
             $this->assertEquals($polySide2Id, $oneSide2->polysTwo[0]->id);
 
             //do a direct sql to get the row for polySide
-            $row = R::getRow('select * from testpolyonetomanypolyside');
+            $row = ZurmoRedBean::getRow('select * from testpolyonetomanypolyside');
             $this->assertTrue(!isset($row['testpolyonetomanyoneside_id']));
             $this->assertTrue(!isset($row['testpolyonetomanyonesidetwo_id']));
             //Confirm the poly type and poly id columns are there.
