@@ -82,7 +82,7 @@
                     " where {$quote}marketinglistmember{$quote}.{$quote}unsubscribed{$quote} != 1 and " .
                     "{$quote}marketinglistmember{$quote}.{$quote}marketinglist_id{$quote} = " .
                     $campaign->marketingList->id . " and {$quote}campaignitem{$quote}.{$quote}id{$quote} IS NULL limit " . $pageSize; // Not Coding Standard
-            $ids = R::getCol($sql);
+            $ids = ZurmoRedBean::getCol($sql);
             foreach ($ids as $contactId)
             {
                 $contacts[] = Contact::getById((int)$contactId);

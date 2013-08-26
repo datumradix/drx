@@ -34,10 +34,26 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    define('IS_LINUX', PHP_OS == 'Linux');
-    define('IS_WINNT', PHP_OS == 'WINNT');
-    // $cwd is set in TestSuite.php so that it is the
-    // real cwd when the script is run as a symlink.
-    define('COMMON_ROOT',   realpath(dirname(__FILE__) . '/../..'));
-    define('INSTANCE_ROOT', realpath($cwd . '/../../..'));
+    class Wukka extends RedBeanModel
+    {
+        public static function getDefaultMetadata()
+        {
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'integer',
+                    'string',
+                    'prop',
+                ),
+                'rules' => array(
+                    array('integer', 'type',      'type' => 'integer'),
+                    array('integer', 'numerical', 'min' => 1, 'max' => 255),
+                    array('string',   'type', 'type' => 'string'),
+                    array('string',   'length', 'max' => 255),
+                    array('prop',       'type', 'type' => 'datetime'),
+                ),
+            );
+            return $metadata;
+        }
+    }
 ?>

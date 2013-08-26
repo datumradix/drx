@@ -79,7 +79,7 @@
         protected static function createTable($modelStarredTableName)
         {
             assert('is_string($modelStarredTableName) && $modelStarredTableName  != ""');
-            R::exec("create table if not exists {$modelStarredTableName} (
+            ZurmoRedBean::exec("create table if not exists {$modelStarredTableName} (
                         id int(11)         unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT ,
                         user_id int(11)     unsigned NOT NULL,
                         model_id int(11)    unsigned NOT NULL
@@ -117,7 +117,7 @@
             }
             $tableName = static::getStarredTableName($modelClassName);
             $sql       = "INSERT INTO {$tableName} VALUES (null, :userId, :modelId);";
-            R::exec($sql, array(
+            ZurmoRedBean::exec($sql, array(
                 ':userId'  => $userId,
                 ':modelId' => $modelId,
             ));
@@ -142,7 +142,7 @@
             }
             $tableName = static::getStarredTableName($modelClassName);
             $sql       = "DELETE FROM {$tableName} WHERE user_id = :userId AND model_id = :modelId;";
-            R::exec($sql, array(
+            ZurmoRedBean::exec($sql, array(
                 ':userId'  => $userId,
                 ':modelId' => $modelId,
             ));
@@ -163,8 +163,8 @@
             }
             $tableName = static::getStarredTableName($modelClassName);
             $sql       = "SELECT id FROM {$tableName} WHERE user_id = :userId AND model_id = :modelId;";
-            $rows      = R::getAll($sql,
-                                   $values = array(
+            $rows      = ZurmoRedBean::getAll($sql,
+                                   $values=array(
                                     ':userId'    => $userId,
                                     ':modelId'   => $modelId,
                                    ));
@@ -184,7 +184,7 @@
             }
             $tableName = static::getStarredTableName($modelClassName);
             $sql       = "DELETE FROM {$tableName} WHERE model_id = :modelId;";
-            R::exec($sql, array(
+            ZurmoRedBean::exec($sql, array(
                 ':modelId' => $model->id,
             ));
         }
