@@ -151,7 +151,8 @@
                     'textContent'                   => 'TextArea',
                 ),
                 'relations' => array(
-                    'files'                         => array(RedBeanModel::HAS_MANY,  'FileModel', RedBeanModel::OWNED),
+                    'files'                         => array(static::HAS_MANY,  'FileModel', static::OWNED,
+                                                            static::LINK_TYPE_POLYMORPHIC, 'relatedModel'),
                 ),
             );
             return $metadata;

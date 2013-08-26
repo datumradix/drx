@@ -34,13 +34,54 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    $basePath  =  Yii::app()->getBasePath();
-    require_once("$basePath/../../redbean/rb.php");
-
     /**
-     * A criteria for use with RedbeanModelDataProvider.
+     * Adapter class to generate index definition when provided with indexName and indexMetadata
      */
-    class RedBeanModelDbCriteria extends CDbCriteria
+    abstract class RedBeanModelMemberIndexMetadataAdapter
     {
+        const MAX_INDEX_NAME_LENGTH = 40;
+
+        /**
+         * Provided indexName and metadata is resolved to match the requirements of schema definition
+         * @param array $indexMetadata passed by reference, array containing index definition
+         * @return bool whether or not we were able to resolve index correctly
+         */
+        public static function resolve(array & $indexMetadata)
+        {
+            if (empty($indexMetadata['members']) || !is_array($indexMetadata['members']))
+            {
+                return false;
+            }
+            $unique         = false;
+            if (isset($indexMetadata['unique']))
+            {
+                $unique = $indexMetadata['unique'];
+            }
+            $indexMembers   = $indexMetadata['members'];
+            $indexMembers   = array_map(function($indexMember)
+                                        {
+                                            return RedBeanModelMemberToColumnNameUtil::resolve($indexMember);
+                                        }, $indexMembers);
+            $indexMetadata  = array(
+                                    'columns'   => $indexMembers,
+                                    'unique'    => $unique,
+                                );
+            return true;
+        }
+
+        /**
+         * Resolved a random index name
+         * @return string
+         */
+        public static function resolveRandomIndexName($indexName, $unique = false)
+        {
+            $prefix = null;
+            if ($unique)
+            {
+                $prefix = 'unique_';
+            }
+            $indexName          = $prefix . substr(strrev($indexName), 0, static::MAX_INDEX_NAME_LENGTH);
+            return strval($indexName);
+        }
     }
 ?>

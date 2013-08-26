@@ -34,25 +34,55 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    require_once('testRoots.php');
-    require_once('TestConfigFileUtils.php');
+    class ZurmoMySqlQueryWriter extends RedBean_QueryWriter_MySQL
+    {
+        public function doesTableExist($tableName)
+        {
+            $result     = $this->adapter->get("SHOW TABLES LIKE '$tableName'");
+            return (count($result) > 0);
+        }
+        public function getColumnsWithDetails($tableName)
+        {
+            $columns    = array();
+            $tableName  = $this->safeTable($tableName);
+            $columnsRaw = $this->adapter->get("DESCRIBE $tableName");
+            foreach ($columnsRaw as $r) {
+                $columns[$r['Field']]   =   $r;
+            }
+            return $columns;
+        }
 
-    TestConfigFileUtils::configureConfigFiles();
+        public function getIndexes($tableName)
+        {
+            $indexes    = array();
+            $tableName  = $this->safeTable($tableName);
+            $indexesRaw = $this->adapter->get("SHOW KEYS FROM $tableName");
+            foreach ($indexesRaw as $index)
+            {
+                $indexName  = $index['Key_name'];
+                $column     = $index['Column_name'];
+                $unique     = (!(bool)$index['Non_unique']);
+                $indexes[$indexName]['unique']  = $unique;
+                if (isset($indexes[$indexName]['columns']))
+                {
+                    $indexes[$indexName]['columns'][] = $column;
+                }
+                else
+                {
+                    $indexes[$indexName]['columns'] = array($column);
+                }
+            }
+            return $indexes;
+        }
 
-    $debug          = INSTANCE_ROOT . '/protected/config/debugTest.php';
-
-    $yiit   = COMMON_ROOT   . "/../yii/framework/yiit.php";
-    $config = INSTANCE_ROOT . "/protected/config/test.php";
-
-    require_once(COMMON_ROOT   . "/version.php");
-    require_once(COMMON_ROOT   . "/protected/modules/install/utils/InstallUtil.php");
-    require_once(COMMON_ROOT   . "/protected/core/utils/ZurmoPasswordSecurityUtil.php");
-    InstallUtil::setZurmoTokenAndWriteToPerInstanceFile(INSTANCE_ROOT, 'perInstanceTest.php');
-    ZurmoPasswordSecurityUtil::setPasswordSaltAndWriteToPerInstanceFile(INSTANCE_ROOT, 'perInstanceTest.php');
-
-    require_once($debug);
-    require_once($yiit);
-    require_once(COMMON_ROOT . '/protected/core/components/WebApplication.php');
-    require_once(COMMON_ROOT . '/protected/tests/WebTestApplication.php');
-    Yii::createApplication('WebTestApplication', $config);
+        /**
+         * Drops a table by the given table name.
+         * @param string $tableName
+         */
+        public function dropTableByTableName($tableName)
+        {
+            $tableName = strtolower($tableName);
+            $this->adapter->exec("drop table if exists $tableName");
+        }
+    }
 ?>
