@@ -64,7 +64,7 @@
             $account->account = null;
             $saved = $account->save();
             $this->assertTrue($saved);
-            $count = R::getCell('select count(*) from account');
+            $count = ZurmoRedBean::getCell('select count(*) from account');
             $this->assertEquals(1, $count);
             Account::setMetadata($oldMetadata);
             $this->assertTrue($account->delete());
@@ -105,7 +105,7 @@
         }
 
         /**
-         * This test can be used by any frozen running test to test out boolean values in the database, that they
+         * This test can be used by any test to test out boolean values in the database, that they
          * save and change correctly.
          * @depends testCreateAndGetAccountById
          */
