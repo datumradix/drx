@@ -140,7 +140,14 @@
             }
             elseif ($dataProviderOrIdsToExport instanceOf ReportDataProvider)
             {
-                $this->processReportDataProviderExport($exportItem, $dataProviderOrIdsToExport);
+                if ($dataProviderOrIdsToExport instanceOf MatrixReportDataProvider)
+                {
+                    $this->processMatrixReportDataProviderExport($exportItem, $dataProviderOrIdsToExport);
+                }
+                else
+                {
+                    $this->processReportDataProviderExport($exportItem, $dataProviderOrIdsToExport);
+                }
             }
             else
             {
@@ -210,9 +217,9 @@
                                                     ($exportItem->exportFileModel->id < 0)))
             {
                 $this->addMemoryMarkerMessageAfterPageIsProcessed($startingMemoryUsage);
-                $startingMemoryUsage = memory_get_usage();               
-                $offset              = $offset + $this->getAsynchronousPageSize();                
-                if($this->hasReachedMaximumProcessingCount())
+                $startingMemoryUsage = memory_get_usage();
+                $offset              = $offset + $this->getAsynchronousPageSize();
+                if ($this->hasReachedMaximumProcessingCount())
                 {
                     $this->addMaxmimumProcessingCountMessage($exportItem);
                     $exportCompleted = false;
@@ -220,7 +227,7 @@
                 }
             }
             $content         = ExportItemToCsvFileUtil::export($data, $headerData);
-            if($exportItem->exportFileModel->id > 0)
+            if ($exportItem->exportFileModel->id > 0)
             {
                 $exportFileModel = $this->updateExportFileModelByExportItem($content, $exportItem);
             }
@@ -228,7 +235,7 @@
             {
                 $exportFileModel = $this->makeExportFileModelByContent($content, $exportItem->exportFileName);
             }
-            if(!$exportCompleted)
+            if (!$exportCompleted)
             {
                 $this->processInProgressExportItem($exportItem, $exportFileModel, $offset);
             }
@@ -236,6 +243,17 @@
             {
                 $this->processCompletedExportItem($exportItem, $exportFileModel);
             }
+        }
+
+        protected function processMatrixReportDataProviderExport(ExportItem $exportItem, MatrixReportDataProvider $dataProvider)
+        {
+            $reportToExportAdapter  = ReportToExportAdapterFactory::
+                                            createReportToExportAdapter($dataProvider->getReport(), $dataProvider);
+            $headerData             = $reportToExportAdapter->getHeaderData();
+            $data                   = $reportToExportAdapter->getData();
+            $content                = ExportItemToCsvFileUtil::export($data, $headerData);
+            $exportFileModel        = $this->makeExportFileModelByContent($content, $exportItem->exportFileName);
+            $this->processCompletedExportItem($exportItem, $exportFileModel);
         }
 
         /**
@@ -411,15 +429,15 @@
             }
             return false;
         }
-        
+
         protected function processReportExportPage(ReportDataProvider $dataProvider, $offset, & $headerData, & $data, $resolveForHeader)
         {
             assert('is_int($offset)');
-            assert('is_bool($resolveForHeader)');                  
+            assert('is_bool($resolveForHeader)');
             $dataProvider->offset   = $offset;
             $reportToExportAdapter  = ReportToExportAdapterFactory::
-                createReportToExportAdapter($dataProvider->getReport(), $dataProvider);                                    
-            $rows = $reportToExportAdapter->getData();     
+                createReportToExportAdapter($dataProvider->getReport(), $dataProvider);
+            $rows = $reportToExportAdapter->getData();
             $rowsCount = count($rows);
             $this->totalModelsProcessed = $this->totalModelsProcessed + $rowsCount;
             if (count($headerData) == 0 && $resolveForHeader)
@@ -450,7 +468,7 @@
          */
         protected function processExportModels(array $models, & $headerData, & $data, $resolveForHeader = true)
         {
-            foreach($models as $model)
+            foreach ($models as $model)
             {
                 $canRead = ControllerSecurityUtil::doesCurrentUserHavePermissionOnSecurableItem($model, Permission::READ);
                 if ($canRead)

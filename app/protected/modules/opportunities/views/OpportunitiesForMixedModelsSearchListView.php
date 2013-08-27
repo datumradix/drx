@@ -34,43 +34,15 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Class used for the dashboard, selectable by users to display a list of their tasks or filtered any way.
-     */
-    class TasksMyListView extends SecuredMyListView
+    class OpportunitiesForMixedModelsSearchListView extends SecuredListView
     {
-        protected function getSortAttributeForDataProvider()
-        {
-            return 'dueDateTime';
-        }
-
         public static function getDefaultMetadata()
         {
             $metadata = array(
-                'perUser' => array(
-                    'title' => "eval:Zurmo::t('TasksModule', 'My Open TasksModulePluralLabel', LabelUtil::getTranslationParamsForAllModules())",
-                    'searchAttributes' => array('ownedItemsOnly' => true, 'completed' => false),
-                ),
                 'global' => array(
-                    'derivedAttributeTypes' => array(
-                        'CloseTaskCheckBox',
-                    ),
-                    'nonPlaceableAttributeNames' => array(
-                        'latestDateTime',
-                    ),
-                    'gridViewType' => RelatedListView::GRID_VIEW_TYPE_STACKED,
                     'panels' => array(
                         array(
                             'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'CloseTaskCheckBox'),
-                                            ),
-                                        ),
-                                    )
-                                ),
                                 array('cells' =>
                                     array(
                                         array(
@@ -84,7 +56,25 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'dueDateTime', 'type' => 'DateTime'),
+                                                array('attributeName' => 'account', 'type' => 'Account', 'isLink' => true),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'amount', 'type' => 'CurrencyValue'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'owner', 'type' => 'User'),
                                             ),
                                         ),
                                     )
@@ -93,35 +83,25 @@
                         ),
                     ),
                 ),
+
             );
             return $metadata;
         }
 
-        public static function getModuleClassName()
+        protected function resolveExtraParamsForKanbanBoard()
         {
-            return 'TasksModule';
+            return array('cardColumns' => $this->getCardColumns());
         }
 
-        public static function getDisplayDescription()
+        protected function getCardColumns()
         {
-            return Zurmo::t('TasksModule', 'My Open TasksModulePluralLabel', LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        public static function getPortletDescription()
-        {
-            return Zurmo::t('TasksModule', 'Easily access your own TasksModulePluralLabel', LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        protected function getSearchModel()
-        {
-            $modelClassName = $this->modelClassName;
-            $model = new $modelClassName(false);
-            return new TasksSearchForm($model);
-        }
-
-        protected static function getConfigViewClassName()
-        {
-            return 'TasksMyListConfigView';
+            return array('closedDate' =>   array('value'  => 'DateTimeUtil::resolveValueForDateLocaleFormattedDisplay($data->closeDate)',
+                                                 'class'  => 'closing-date'),
+                         'amount'  =>      array('value'  => 'Yii::app()->numberFormatter->formatCurrency($data->amount->value, $data->amount->currency->code)',
+                                                 'class'  => 'opportunity-amount'),
+                         'name'         => array('value'  => $this->getLinkString('$data->name', 'name'), 'class' => 'opportunity-name'),
+                         'account'      => array('value'  => $this->getRelatedLinkString('$data->account', 'account', 'accounts'),
+                                                 'class'  => 'account-name'));
         }
     }
 ?>

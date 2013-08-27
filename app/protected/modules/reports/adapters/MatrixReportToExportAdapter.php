@@ -39,6 +39,14 @@
      */
     class MatrixReportToExportAdapter extends ReportToExportAdapter
     {
+        public function __construct(ReportDataProvider $dataProvider, Report $report)
+        {
+            $this->dataProvider     = $dataProvider;
+            $this->report           = $report;
+            $this->dataForExport    = $dataProvider->getData();
+            $this->makeData();
+        }
+
         protected function makeData()
         {
             $data                      = array();
@@ -78,7 +86,7 @@
                                                 $displayAttribute);
                             $adapter       = new $className($reportResultsRowData, $column, $params);
                             $adapter->resolveData($line);
-                            if($attributeKey < $matrixColumnCount)
+                            if ($attributeKey < $matrixColumnCount)
                             {
                                 $oldHeaderCount = count($temporaryHeader);
                                 $adapter->resolveHeaderData($temporaryHeader);

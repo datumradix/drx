@@ -34,31 +34,15 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Class used for the dashboard, selectable by users to display a list of their tasks or filtered any way.
-     */
-    class TasksMyListView extends SecuredMyListView
+    class ContactsForMixedModelsSearchListView extends SecuredListView
     {
-        protected function getSortAttributeForDataProvider()
-        {
-            return 'dueDateTime';
-        }
-
         public static function getDefaultMetadata()
         {
             $metadata = array(
-                'perUser' => array(
-                    'title' => "eval:Zurmo::t('TasksModule', 'My Open TasksModulePluralLabel', LabelUtil::getTranslationParamsForAllModules())",
-                    'searchAttributes' => array('ownedItemsOnly' => true, 'completed' => false),
-                ),
                 'global' => array(
                     'derivedAttributeTypes' => array(
-                        'CloseTaskCheckBox',
+                        'FullName',
                     ),
-                    'nonPlaceableAttributeNames' => array(
-                        'latestDateTime',
-                    ),
-                    'gridViewType' => RelatedListView::GRID_VIEW_TYPE_STACKED,
                     'panels' => array(
                         array(
                             'rows' => array(
@@ -66,7 +50,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'CloseTaskCheckBox'),
+                                                array('attributeName' => 'null', 'type' => 'FullName', 'isLink' => true),
                                             ),
                                         ),
                                     )
@@ -75,7 +59,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
+                                                array('attributeName' => 'account', 'type' => 'Account', 'isLink' => true),
                                             ),
                                         ),
                                     )
@@ -84,7 +68,16 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'dueDateTime', 'type' => 'DateTime'),
+                                                array('attributeName' => 'state', 'type' => 'ContactState'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'owner', 'type' => 'User'),
                                             ),
                                         ),
                                     )
@@ -93,35 +86,9 @@
                         ),
                     ),
                 ),
+
             );
             return $metadata;
-        }
-
-        public static function getModuleClassName()
-        {
-            return 'TasksModule';
-        }
-
-        public static function getDisplayDescription()
-        {
-            return Zurmo::t('TasksModule', 'My Open TasksModulePluralLabel', LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        public static function getPortletDescription()
-        {
-            return Zurmo::t('TasksModule', 'Easily access your own TasksModulePluralLabel', LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        protected function getSearchModel()
-        {
-            $modelClassName = $this->modelClassName;
-            $model = new $modelClassName(false);
-            return new TasksSearchForm($model);
-        }
-
-        protected static function getConfigViewClassName()
-        {
-            return 'TasksMyListConfigView';
         }
     }
 ?>
