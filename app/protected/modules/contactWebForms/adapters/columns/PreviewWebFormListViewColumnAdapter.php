@@ -34,50 +34,20 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ContactWebFormsListView extends SecuredListView
+    class PreviewWebFormListViewColumnAdapter extends TextListViewColumnAdapter
     {
-        public function __construct($controllerId, $moduleId, $modelClassName, $dataProvider, $selectedIds,
-                                    $gridIdSuffix           = null,
-                                    $gridViewPagerParams    = array(),
-                                    $listAttributesSelector = null,
-                                    $kanbanBoard            = null)
+        /**
+         * @return array
+         */
+        public function renderGridViewData()
         {
-            parent::__construct($controllerId, $moduleId, $modelClassName, $dataProvider, $selectedIds,
-                                $gridIdSuffix, $gridViewPagerParams, $listAttributesSelector, $kanbanBoard);
-            $this->setRowsAreSelectable(false);
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array(
-                'global' => array(
-                    'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'Action', 'type' => 'PreviewWebForm', 'isLink' => true),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
+            return array(
+                'name'  => $this->attribute,
+                'value' => 'strval(ZurmoHtml::link(Zurmo::t("ContactWebFormsModule", "Preview"),
+                            Yii::app()->createUrl("contactWebForms/default/previewForm", array("id"=>$data->id)),
+                            array("target" => "_blank")))',
+                'type'  => 'raw',
             );
-            return $metadata;
         }
     }
 ?>
