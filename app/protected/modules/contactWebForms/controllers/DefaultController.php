@@ -151,5 +151,16 @@
             $contactWebForm->delete();
             $this->redirect(array($this->getId() . '/index'));
         }
+
+        public function actionPreviewForm($id)
+        {
+            $contactWebForm = static::getModelAndCatchNotFoundAndDisplayError('ContactWebForm', intval($id));
+            $content        = '<!DOCTYPE html>' .
+                '<!--[if IE 8]><html class="ie8" lang="en"><![endif]-->' .
+                '<!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->' .
+                '<html lang="en"><head><title>Zurmo External Form - Preview</title></head>' .
+                '<body>' . ContactWebFormsUtil::getEmbedScript($id) . '</body></html>';
+            echo $content;
+        }
     }
 ?>
