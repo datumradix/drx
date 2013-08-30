@@ -47,11 +47,7 @@
             $metadata = array(
                 'global' => array(
                     'toolbar' => array(
-                        'elements' => array(
-                            array('type'          => 'MashableInboxCreate',
-                                  'htmlOptions'   => array('class' => 'icon-create'),
-                            ),
-                        ),
+                        'elements' => array(),
                     ),
                 ),
             );
@@ -76,11 +72,88 @@
 
         protected function renderContent()
         {
-            $content  = '<div class="view-toolbar-container clearfix"><div class="view-toolbar">';
+
+            $content = '<nav class="pillbox clearfix">
+                            <div class="default-button">
+                                <a href="#" class="button-action">
+                                    <i class="icon-ww"></i>
+                                    <span class="button-label">Combined</span>
+                                    <span class="unread-count">10</span>
+                                </a>
+                            </div>
+
+                            <div class="split-button">
+                                <a href="#" class="button-action">
+                                    <i class="icon-ww"></i>
+                                    <span class="button-label">Conversations</span>
+                                    <span class="unread-count">10</span>
+                                </a>
+                                <a href="#" class="button-trigger">
+                                    <i class="icon-trigger"></i>
+                                </a>
+                                <ul class="button-actions">
+                                    <li><a href="#">List</a></li>
+                                    <li><a href="#">Create</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="split-button">
+                                <a href="#" class="button-action">
+                                    <i class="icon-ww"></i>
+                                    <span class="button-label">Missions</span>
+                                    <span class="unread-count">10</span>
+                                </a>
+                                <a href="#" class="button-trigger">
+                                    <i class="icon-trigger"></i>
+                                </a>
+                                <ul class="button-actions">
+                                    <li><a href="#">List</a></li>
+                                    <li><a href="#">Create</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="default-button">
+                                <a href="#" class="button-action">
+                                    <i class="icon-ww"></i>
+                                    <span class="button-label">Notifications</span>
+                                    <span class="unread-count">10</span>
+                                </a>
+                            </div>
+
+                            <div class="split-button">
+                                <a href="#" class="button-action">
+                                    <i class="icon-ww"></i>
+                                    <span class="button-label">Options</span>
+                                </a>
+                                <a href="#" class="button-trigger">
+                                    <i class="icon-trigger"></i>
+                                </a>
+                                <ul class="button-actions">
+                                    <li><a href="#">List</a></li>
+                                    <li><a href="#">Create</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">Separated link</a></li>
+                                </ul>
+                            </div>
+                        </nav>
+
+                        <script>
+                            $(".button-trigger").click(
+                                function(){
+                                    $(".button-actions", $(this).parent()).show().addClass("stay-open");
+                                }
+                            );
+                        </script>
+                        ';
+
+
+
+            $content .= '<nav class="pillbox clearfix">';
             $content .= $this->renderActionElementBar(false);
             $content .= $this->renderMashableInboxModelsToolbar();
             $content .= $this->renderMassActionElement();
-            $content .= '</div></div>';
+            $content .= '</nav>';
             $content .= $this->renderMashableInboxForm();
             $content .= $this->listView->render();
             return $content;
@@ -162,11 +235,18 @@
                 $activeClass = "active";
             }
             $unreadCount           = MashableUtil::getUnreadCountMashableInboxForCurrentUser();
-            $url                   = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/list');
             $label                 = Zurmo::t('MashableInboxModule', 'Combined');
-            $span                  = ZurmoHtml::tag('span', array("class" => "unread-count"), $unreadCount);
-            $zLabel                = ZurmoHtml::tag('span', array("class" => "z-label"), $label . $span);
-            $content               = ZurmoHtml::link($zLabel, $url, array('class' => 'icon-combined ' . $activeClass));
+            $params   = array('label'           => $label,
+                              'modelClassName'  => null,
+                              'unread'          => $unreadCount,
+                              'htmlOptions'     => array('class' => $activeClass),
+                              'iconClass'       => 'icon-combined');
+            $element  = new MashableInboxModelActionElement($this->controllerId, 
+                                                            $this->moduleId, 
+                                                            null, 
+                                                            $params);
+            $content  = $element->render();
+
             $combinedInboxesModels = MashableUtil::getModelDataForCurrentUserByInterfaceName('MashableInboxInterface');
             foreach ($combinedInboxesModels as $modelClassName => $modelLabel)
             {
@@ -175,13 +255,16 @@
                 {
                     $activeClass = "active";
                 }
-                $unreadCount = MashableUtil::getUnreadCountForCurrentUserByModelClassName($modelClassName);
-                $url         = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/list',
-                                                     array('modelClassName' => $modelClassName));
-                $span        = ZurmoHtml::tag('span', array("class" => "unread-count"), $unreadCount);
-                $zLabel      = ZurmoHtml::tag('span', array("class" => "z-label"), $modelLabel . $span);
-                $content    .= ZurmoHtml::link($zLabel, $url, array('class' => 'icon-' . strtolower($modelClassName) . ' '  . $activeClass));
+                $unreadCount = MashableUtil::getUnreadCountForCurrentUserByModelClassName($modelClassName);                
+                $params   = array('label'           => $modelLabel,
+                                  'modelClassName'  => $modelClassName,
+                                  'htmlOptions'     => array('class' => $activeClass),
+                                  'unread'          => $unreadCount,
+                                  'iconClass'      => 'icon-' . strtolower($modelClassName));
+                $element  = new MashableInboxModelActionElement($this->controllerId, $this->moduleId, null, $params);
+                $content .= $element->render();
             }
+
             return $content;
         }
 

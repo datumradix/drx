@@ -983,15 +983,26 @@ body.blue a.active-tab,
 body.blue .edit-autoresponder-link {
   color: #282a76;
 }
+body.blue #MashableInboxActionBarForViews .nav > li > a:hover,
+body.blue #MashableInboxActionBarForViews .nav > li > a:active,
+body.blue #MashableInboxActionBarForViews a:hover .unread-count,
+body.blue #MashableInboxActionBarForViews a:active .unread-count,
 body.blue #notifications-flyout .single-notification h4,
-body.blue .view-toolbar a:hover,
-body.blue .view-toolbar a:active,
-body.blue .view-toolbar a.active,
-body.blue .view-toolbar a.active span,
+body.blue .view-toolbar > a:hover,
+body.blue .view-toolbar > a:active,
+body.blue .view-toolbar > a:hover:before,
+body.blue .view-toolbar > a:active:before,
+body.blue .view-toolbar > a:hover span,
+body.blue .view-toolbar > a:active span,
+body.blue .view-toolbar .active,
+body.blue .view-toolbar .active > a span,
+body.blue .view-toolbar .active > a:before,
+body.blue .view-toolbar .nav > li > a:hover,
+body.blue .view-toolbar .nav > li > a:active,
 body.blue .portlet-toolbar .icon-delete:before,
 body.blue .portlet-toolbar .icon-edit:before,
 body.blue .mini-pillbox a:hover,
-body.blue .mini-pillbox a.active,
+body.blue .mini-pillbox .active,
 body.blue #StickyListMenu > li > a:hover > span,
 body.blue .addfileinput-button:hover span .pager a:hover:before,
 body.blue .pager a:hover:after,
@@ -1542,15 +1553,26 @@ body.brown a.active-tab,
 body.brown .edit-autoresponder-link {
   color: #547980;
 }
+body.brown #MashableInboxActionBarForViews .nav > li > a:hover,
+body.brown #MashableInboxActionBarForViews .nav > li > a:active,
+body.brown #MashableInboxActionBarForViews a:hover .unread-count,
+body.brown #MashableInboxActionBarForViews a:active .unread-count,
 body.brown #notifications-flyout .single-notification h4,
-body.brown .view-toolbar a:hover,
-body.brown .view-toolbar a:active,
-body.brown .view-toolbar a.active,
-body.brown .view-toolbar a.active span,
+body.brown .view-toolbar > a:hover,
+body.brown .view-toolbar > a:active,
+body.brown .view-toolbar > a:hover:before,
+body.brown .view-toolbar > a:active:before,
+body.brown .view-toolbar > a:hover span,
+body.brown .view-toolbar > a:active span,
+body.brown .view-toolbar .active,
+body.brown .view-toolbar .active > a span,
+body.brown .view-toolbar .active > a:before,
+body.brown .view-toolbar .nav > li > a:hover,
+body.brown .view-toolbar .nav > li > a:active,
 body.brown .portlet-toolbar .icon-delete:before,
 body.brown .portlet-toolbar .icon-edit:before,
 body.brown .mini-pillbox a:hover,
-body.brown .mini-pillbox a.active,
+body.brown .mini-pillbox .active,
 body.brown #StickyListMenu > li > a:hover > span,
 body.brown .addfileinput-button:hover span .pager a:hover:before,
 body.brown .pager a:hover:after,
@@ -2101,15 +2123,26 @@ body.lime a.active-tab,
 body.lime .edit-autoresponder-link {
   color: #2b434f;
 }
+body.lime #MashableInboxActionBarForViews .nav > li > a:hover,
+body.lime #MashableInboxActionBarForViews .nav > li > a:active,
+body.lime #MashableInboxActionBarForViews a:hover .unread-count,
+body.lime #MashableInboxActionBarForViews a:active .unread-count,
 body.lime #notifications-flyout .single-notification h4,
-body.lime .view-toolbar a:hover,
-body.lime .view-toolbar a:active,
-body.lime .view-toolbar a.active,
-body.lime .view-toolbar a.active span,
+body.lime .view-toolbar > a:hover,
+body.lime .view-toolbar > a:active,
+body.lime .view-toolbar > a:hover:before,
+body.lime .view-toolbar > a:active:before,
+body.lime .view-toolbar > a:hover span,
+body.lime .view-toolbar > a:active span,
+body.lime .view-toolbar .active,
+body.lime .view-toolbar .active > a span,
+body.lime .view-toolbar .active > a:before,
+body.lime .view-toolbar .nav > li > a:hover,
+body.lime .view-toolbar .nav > li > a:active,
 body.lime .portlet-toolbar .icon-delete:before,
 body.lime .portlet-toolbar .icon-edit:before,
 body.lime .mini-pillbox a:hover,
-body.lime .mini-pillbox a.active,
+body.lime .mini-pillbox .active,
 body.lime #StickyListMenu > li > a:hover > span,
 body.lime .addfileinput-button:hover span .pager a:hover:before,
 body.lime .pager a:hover:after,
@@ -2660,15 +2693,26 @@ body.cherry a.active-tab,
 body.cherry .edit-autoresponder-link {
   color: #6c8092;
 }
+body.cherry #MashableInboxActionBarForViews .nav > li > a:hover,
+body.cherry #MashableInboxActionBarForViews .nav > li > a:active,
+body.cherry #MashableInboxActionBarForViews a:hover .unread-count,
+body.cherry #MashableInboxActionBarForViews a:active .unread-count,
 body.cherry #notifications-flyout .single-notification h4,
-body.cherry .view-toolbar a:hover,
-body.cherry .view-toolbar a:active,
-body.cherry .view-toolbar a.active,
-body.cherry .view-toolbar a.active span,
+body.cherry .view-toolbar > a:hover,
+body.cherry .view-toolbar > a:active,
+body.cherry .view-toolbar > a:hover:before,
+body.cherry .view-toolbar > a:active:before,
+body.cherry .view-toolbar > a:hover span,
+body.cherry .view-toolbar > a:active span,
+body.cherry .view-toolbar .active,
+body.cherry .view-toolbar .active > a span,
+body.cherry .view-toolbar .active > a:before,
+body.cherry .view-toolbar .nav > li > a:hover,
+body.cherry .view-toolbar .nav > li > a:active,
 body.cherry .portlet-toolbar .icon-delete:before,
 body.cherry .portlet-toolbar .icon-edit:before,
 body.cherry .mini-pillbox a:hover,
-body.cherry .mini-pillbox a.active,
+body.cherry .mini-pillbox .active,
 body.cherry #StickyListMenu > li > a:hover > span,
 body.cherry .addfileinput-button:hover span .pager a:hover:before,
 body.cherry .pager a:hover:after,
@@ -3219,15 +3263,26 @@ body.turquoise a.active-tab,
 body.turquoise .edit-autoresponder-link {
   color: #447799;
 }
+body.turquoise #MashableInboxActionBarForViews .nav > li > a:hover,
+body.turquoise #MashableInboxActionBarForViews .nav > li > a:active,
+body.turquoise #MashableInboxActionBarForViews a:hover .unread-count,
+body.turquoise #MashableInboxActionBarForViews a:active .unread-count,
 body.turquoise #notifications-flyout .single-notification h4,
-body.turquoise .view-toolbar a:hover,
-body.turquoise .view-toolbar a:active,
-body.turquoise .view-toolbar a.active,
-body.turquoise .view-toolbar a.active span,
+body.turquoise .view-toolbar > a:hover,
+body.turquoise .view-toolbar > a:active,
+body.turquoise .view-toolbar > a:hover:before,
+body.turquoise .view-toolbar > a:active:before,
+body.turquoise .view-toolbar > a:hover span,
+body.turquoise .view-toolbar > a:active span,
+body.turquoise .view-toolbar .active,
+body.turquoise .view-toolbar .active > a span,
+body.turquoise .view-toolbar .active > a:before,
+body.turquoise .view-toolbar .nav > li > a:hover,
+body.turquoise .view-toolbar .nav > li > a:active,
 body.turquoise .portlet-toolbar .icon-delete:before,
 body.turquoise .portlet-toolbar .icon-edit:before,
 body.turquoise .mini-pillbox a:hover,
-body.turquoise .mini-pillbox a.active,
+body.turquoise .mini-pillbox .active,
 body.turquoise #StickyListMenu > li > a:hover > span,
 body.turquoise .addfileinput-button:hover span .pager a:hover:before,
 body.turquoise .pager a:hover:after,
@@ -3778,15 +3833,26 @@ body.violet a.active-tab,
 body.violet .edit-autoresponder-link {
   color: #4a3970;
 }
+body.violet #MashableInboxActionBarForViews .nav > li > a:hover,
+body.violet #MashableInboxActionBarForViews .nav > li > a:active,
+body.violet #MashableInboxActionBarForViews a:hover .unread-count,
+body.violet #MashableInboxActionBarForViews a:active .unread-count,
 body.violet #notifications-flyout .single-notification h4,
-body.violet .view-toolbar a:hover,
-body.violet .view-toolbar a:active,
-body.violet .view-toolbar a.active,
-body.violet .view-toolbar a.active span,
+body.violet .view-toolbar > a:hover,
+body.violet .view-toolbar > a:active,
+body.violet .view-toolbar > a:hover:before,
+body.violet .view-toolbar > a:active:before,
+body.violet .view-toolbar > a:hover span,
+body.violet .view-toolbar > a:active span,
+body.violet .view-toolbar .active,
+body.violet .view-toolbar .active > a span,
+body.violet .view-toolbar .active > a:before,
+body.violet .view-toolbar .nav > li > a:hover,
+body.violet .view-toolbar .nav > li > a:active,
 body.violet .portlet-toolbar .icon-delete:before,
 body.violet .portlet-toolbar .icon-edit:before,
 body.violet .mini-pillbox a:hover,
-body.violet .mini-pillbox a.active,
+body.violet .mini-pillbox .active,
 body.violet #StickyListMenu > li > a:hover > span,
 body.violet .addfileinput-button:hover span .pager a:hover:before,
 body.violet .pager a:hover:after,
@@ -4337,15 +4403,26 @@ body.honey a.active-tab,
 body.honey .edit-autoresponder-link {
   color: #46201c;
 }
+body.honey #MashableInboxActionBarForViews .nav > li > a:hover,
+body.honey #MashableInboxActionBarForViews .nav > li > a:active,
+body.honey #MashableInboxActionBarForViews a:hover .unread-count,
+body.honey #MashableInboxActionBarForViews a:active .unread-count,
 body.honey #notifications-flyout .single-notification h4,
-body.honey .view-toolbar a:hover,
-body.honey .view-toolbar a:active,
-body.honey .view-toolbar a.active,
-body.honey .view-toolbar a.active span,
+body.honey .view-toolbar > a:hover,
+body.honey .view-toolbar > a:active,
+body.honey .view-toolbar > a:hover:before,
+body.honey .view-toolbar > a:active:before,
+body.honey .view-toolbar > a:hover span,
+body.honey .view-toolbar > a:active span,
+body.honey .view-toolbar .active,
+body.honey .view-toolbar .active > a span,
+body.honey .view-toolbar .active > a:before,
+body.honey .view-toolbar .nav > li > a:hover,
+body.honey .view-toolbar .nav > li > a:active,
 body.honey .portlet-toolbar .icon-delete:before,
 body.honey .portlet-toolbar .icon-edit:before,
 body.honey .mini-pillbox a:hover,
-body.honey .mini-pillbox a.active,
+body.honey .mini-pillbox .active,
 body.honey #StickyListMenu > li > a:hover > span,
 body.honey .addfileinput-button:hover span .pager a:hover:before,
 body.honey .pager a:hover:after,
@@ -6246,36 +6323,6 @@ body > .ui-autocomplete {
 .juiportlet-widget-head .view-toolbar {
   margin-bottom: 0;
 }
-.unread-count {
-  display: inline-block;
-  margin-left: 8px;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  -ms-border-radius: 50%;
-  -o-border-radius: 50%;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  line-height: 15px;
-  text-align: center;
-  color: #545454;
-  -webkit-text-shadow: none;
-  -moz-text-shadow: none;
-  -o-text-shadow: none;
-  -ms-text-shadow: none;
-  text-shadow: none;
-  font-size: 9px;
-  font-weight: bold !important;
-  background-color: #dfdfdf;
-  background-repeat: repeat-x;
-  background-image: -moz-linear-gradient(top, #ffffff, #dfdfdf);
-  background-image: -ms-linear-gradient(top, #ffffff, #dfdfdf);
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #dfdfdf));
-  background-image: -webkit-linear-gradient(top, #ffffff, #dfdfdf);
-  background-image: -o-linear-gradient(top, #ffffff, #dfdfdf);
-  background-image: linear-gradient(top, #ffffff, #dfdfdf);
-  border: 1px solid #dfdfdf;
-}
 form .view-toolbar-container,
 .ActionBarForSecurityTreeListView .view-toolbar-container,
 #ActionBarForDesignerModuleView .view-toolbar-container,
@@ -6445,7 +6492,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6454,16 +6500,12 @@ form .view-toolbar-container,
   content: "!";
   top: -2px;
 }
-#MarketingCreateLinkActionElement .parent > a:before,
-#MarketingListAddSubscriberLinkActionElement .parent > a:before,
-#MashableInboxCreateDropdown .parent > a:before,
 .icon-create:before {
   content: "Y";
   font-weight: normal;
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6477,7 +6519,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6494,7 +6535,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6512,7 +6552,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6521,14 +6560,12 @@ form .view-toolbar-container,
   top: -2px;
   margin: 0;
 }
-.icon-marketing-dashboard:before,
-#ChangeDashboardsMenu .parent > a:before {
+.icon-marketing-dashboard:before {
   content: "/";
   font-weight: normal;
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6536,15 +6573,12 @@ form .view-toolbar-container,
   position: relative;
   top: -2px;
 }
-#ExportLinkActionElement .parent > a:before,
-#ListViewExportActionMenu .parent > a:before,
 .icon-export:before {
   content: "(";
   font-weight: normal;
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6552,14 +6586,12 @@ form .view-toolbar-container,
   position: relative;
   top: -2px;
 }
-#ListViewDetailsActionMenu .parent > a:before,
 .icon-details:before {
   content: 'T';
   font-weight: normal;
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6567,15 +6599,12 @@ form .view-toolbar-container,
   position: relative;
   top: -2px;
 }
-#MashableInboxMassActionMenu .parent > a:before,
-#ListViewOptionsActionMenu .parent > a:before,
 .icon-options:before {
   content: "n";
   font-weight: normal;
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6591,7 +6620,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6606,7 +6634,6 @@ form .view-toolbar-container,
   font-size: 22px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6620,7 +6647,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6634,7 +6660,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6648,7 +6673,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6662,7 +6686,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6676,7 +6699,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6690,7 +6712,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6704,7 +6725,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6718,7 +6738,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6732,7 +6751,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6746,7 +6764,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6760,7 +6777,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6774,7 +6790,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6788,7 +6803,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6802,7 +6816,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6816,7 +6829,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6830,7 +6842,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6845,7 +6856,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6859,7 +6869,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6867,13 +6876,12 @@ form .view-toolbar-container,
   position: relative;
   top: 0;
 }
-.icon-conversation:before {
+.icon-conversation > a:before {
   content: "O";
   font-weight: normal;
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6887,7 +6895,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6895,14 +6902,13 @@ form .view-toolbar-container,
   position: relative;
   top: -1px;
 }
-.icon-mission:before,
+.icon-mission > a:before,
 .icon-missions-available:before {
   content: "Q";
   font-weight: normal;
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6916,7 +6922,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6924,13 +6929,12 @@ form .view-toolbar-container,
   position: relative;
   top: -2px;
 }
-.icon-notification:before {
+.icon-notification:after {
   content: '\00A5';
   font-weight: normal;
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6938,13 +6942,12 @@ form .view-toolbar-container,
   position: relative;
   top: -2px;
 }
-.icon-combined:before {
+.icon-combined > a:before {
   content: '\00A7';
   font-weight: normal;
   font-size: 26px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6958,7 +6961,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6972,7 +6974,6 @@ form .view-toolbar-container,
   font-size: 28px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -6986,7 +6987,6 @@ form .view-toolbar-container,
   font-size: 22px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7000,7 +7000,6 @@ form .view-toolbar-container,
   font-size: 25px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7014,7 +7013,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7028,7 +7026,6 @@ form .view-toolbar-container,
   font-size: 25px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7042,7 +7039,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7056,7 +7052,6 @@ form .view-toolbar-container,
   font-size: 27px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7070,7 +7065,6 @@ form .view-toolbar-container,
   font-size: 26px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7084,7 +7078,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7098,7 +7091,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7112,7 +7104,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7125,7 +7116,6 @@ form .view-toolbar-container,
   font-size: 26px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7138,7 +7128,6 @@ form .view-toolbar-container,
   font-size: 26px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7152,7 +7141,6 @@ form .view-toolbar-container,
   font-size: 28px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7166,7 +7154,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7180,7 +7167,6 @@ form .view-toolbar-container,
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7515,7 +7501,6 @@ td.empty {
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7528,7 +7513,6 @@ td.empty {
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7745,7 +7729,6 @@ td.empty {
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7761,7 +7744,6 @@ td.empty {
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7777,7 +7759,6 @@ td.empty {
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -7802,7 +7783,6 @@ body div.form-toolbar a.simple-link:not(.z-button) {
   border-radius: 0 !important;
   padding: 0  !important;
   border: none !important;
-  margin: !important;
   text-decoration: underline;
   font-weight: normal;
 }
@@ -9730,7 +9710,6 @@ div.wide.form label.hasCheckBox {
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11451,7 +11430,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11464,7 +11442,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11492,7 +11469,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11505,7 +11481,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11518,7 +11493,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11531,7 +11505,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11544,7 +11517,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11557,7 +11529,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11570,7 +11541,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11583,7 +11553,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11596,7 +11565,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -11623,7 +11591,6 @@ div.hasHalfs > div input {
   font-size: 45px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -12536,7 +12503,6 @@ table.configuration-list td:last-child a .z-label:before {
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -15271,7 +15237,6 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -15285,7 +15250,6 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -15299,7 +15263,6 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
   font-size: 24px;
   font-family: "zurmo_gamification_symbly_rRg";
   padding: 0 0 0 0;
-  margin: 0 6px 0 -30px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -18343,6 +18306,68 @@ a.user-link {
 #MashableInboxActionBarForViews #MashableInboxForm_searchTerm {
   width: 204px;
 }
+#MashableInboxActionBarForViews .nav > li:first-child:before {
+  margin: 0;
+}
+#MashableInboxActionBarForViews .nav > li:first-child > a {
+  color: #656565;
+  font-weight: bold;
+  text-shadow: #fff 0 1px 0;
+  padding: 0 10px 0 40px;
+  line-height: 30px;
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  border-left: 1px solid #bababa;
+}
+#MashableInboxActionBarForViews .nav > li:first-child > a:after {
+  margin-left: 6px;
+}
+#MashableInboxActionBarForViews .icon-conversation,
+#MashableInboxActionBarForViews .icon-mission {
+  position: relative;
+}
+#MashableInboxActionBarForViews .icon-conversation ul,
+#MashableInboxActionBarForViews .icon-mission ul {
+  width: 100%;
+  left: 0;
+  right: 0;
+  top: 31px;
+}
+.unread-count {
+  display: inline-block;
+  margin-left: 6px;
+  margin-top: -2px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  line-height: 15px;
+  text-align: center;
+  color: #545454;
+  -webkit-text-shadow: none;
+  -moz-text-shadow: none;
+  -o-text-shadow: none;
+  -ms-text-shadow: none;
+  text-shadow: none;
+  font-size: 9px;
+  font-weight: bold !important;
+  background-color: #dfdfdf;
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(top, #ffffff, #dfdfdf);
+  background-image: -ms-linear-gradient(top, #ffffff, #dfdfdf);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #dfdfdf));
+  background-image: -webkit-linear-gradient(top, #ffffff, #dfdfdf);
+  background-image: -o-linear-gradient(top, #ffffff, #dfdfdf);
+  background-image: linear-gradient(top, #ffffff, #dfdfdf);
+  border: 1px solid #dfdfdf;
+}
+.unread-count:hover {
+  color: inherit;
+}
 .inbox-item {
   position: relative;
 }
@@ -20145,6 +20170,313 @@ div.special-pager .hidden.next:after {
 }
 .mini-button .show {
   display: block;
+}
+.pillbox-icon {
+  color: #656565;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-weight: normal;
+  font-size: 24px;
+  font-family: "zurmo_gamification_symbly_rRg";
+  padding: 0;
+  margin: 0 3px 0 0;
+  vertical-align: middle;
+  position: relative;
+}
+.pillbox {
+  position: relative;
+  z-index: 9999;
+  font-size: 11px;
+  border: 1px solid #b7b7b7;
+  border-top-color: #e7e7e7;
+  border-left-color: #d7d7d7;
+  border-right-color: #d7d7d7;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  margin: 0 0 30px 0;
+  -webkit-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.12);
+  -moz-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.12);
+  -o-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.12);
+  -ms-box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.12);
+  box-shadow: 0 0 9px 5px rgba(153, 153, 153, 0.12);
+  background: url(../images/view-toolbar-gradient.png) left bottom repeat-x;
+  display: inline-block;
+  /*
+	.icon-ww{
+		color: #656565;
+		.box-sizing();
+		.symbly(24px);
+		padding:0;
+		margin:0;
+		vertical-align:middle;
+		position:relative;
+		top:-2px;
+		&:after{
+			content: "n";
+		}
+	}
+*/
+
+}
+.pillbox .split-button:last-child .button-trigger {
+  -webkit-border-radius: 0 4px 4px 0;
+  -moz-border-radius: 0 4px 4px 0;
+  -ms-border-radius: 0 4px 4px 0;
+  -o-border-radius: 0 4px 4px 0;
+  border-radius: 0 4px 4px 0;
+}
+.pillbox .split-button,
+.pillbox .default-button {
+  cursor: pointer;
+  position: relative;
+  padding: 0 0 0 5px;
+  display: inline-block;
+  float: left;
+}
+.pillbox .split-button + .default-button,
+.pillbox .default-button + .default-button,
+.pillbox .split-button + .split-button,
+.pillbox .default-button + .split-button {
+  border-left: 1px solid #bababa;
+}
+.pillbox .split-button i,
+.pillbox .default-button i {
+  font-style: normal;
+  line-height: 30px;
+  margin-right: 3px;
+}
+.pillbox .split-button .button-label,
+.pillbox .default-button .button-label {
+  font-weight: bold;
+  padding: 0;
+  line-height: 30px;
+  display: inline-block;
+  white-space: nowrap;
+}
+.pillbox .split-button .unread-count,
+.pillbox .default-button .unread-count {
+  margin-left: 3px;
+}
+.pillbox .split-button .button-action-trigger:hover span,
+.pillbox .default-button .button-action-trigger:hover span,
+.pillbox .split-button .button-action:hover span,
+.pillbox .default-button .button-action:hover span,
+.pillbox .split-button .button-action-trigger:hover i,
+.pillbox .default-button .button-action-trigger:hover i,
+.pillbox .split-button .button-action:hover i,
+.pillbox .default-button .button-action:hover i {
+  color: #7cb830;
+}
+.pillbox .split-button .button-action-trigger,
+.pillbox .default-button .button-action-trigger,
+.pillbox .split-button .button-trigger,
+.pillbox .default-button .button-trigger {
+  display: inline-block;
+  line-height: 30px;
+  margin-left: 2px;
+  padding-right: 4px;
+  text-align: center;
+}
+.pillbox .split-button .button-action-trigger:hover,
+.pillbox .default-button .button-action-trigger:hover,
+.pillbox .split-button .button-trigger:hover,
+.pillbox .default-button .button-trigger:hover {
+  background-color: #ffffff ;
+  background-repeat: no-repeat ;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(50%, #dddddd), to(#ffffff)) ;
+  background-image: -webkit-linear-gradient(#ffffff, #dddddd 50%, #ffffff) ;
+  background-image: -moz-linear-gradient(top, #ffffff, #dddddd 50%, #ffffff) ;
+  background-image: -ms-linear-gradient(#ffffff, #dddddd 50%, #ffffff) ;
+  background-image: -o-linear-gradient(#ffffff, #dddddd 50%, #ffffff) ;
+  background-image: linear-gradient(#ffffff, #dddddd 50%, #ffffff) ;
+  border-left: 1px solid #e7e7e7;
+}
+.pillbox .split-button .button-action-trigger:hover i,
+.pillbox .default-button .button-action-trigger:hover i,
+.pillbox .split-button .button-trigger:hover i,
+.pillbox .default-button .button-trigger:hover i {
+  color: #7cb830;
+  -webkit-text-shadow: 0 0 8px #7cb830;
+  -moz-text-shadow: 0 0 8px #7cb830;
+  -o-text-shadow: 0 0 8px #7cb830;
+  -ms-text-shadow: 0 0 8px #7cb830;
+  text-shadow: 0 0 8px #7cb830;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+  border-left: none;
+}
+.pillbox .split-button .button-action-trigger:hover + .button-actions,
+.pillbox .default-button .button-action-trigger:hover + .button-actions,
+.pillbox .split-button .button-trigger:hover + .button-actions,
+.pillbox .default-button .button-trigger:hover + .button-actions {
+  display: block;
+}
+.pillbox .split-button .button-action-trigger .icon-trigger,
+.pillbox .default-button .button-action-trigger .icon-trigger,
+.pillbox .split-button .button-trigger .icon-trigger,
+.pillbox .default-button .button-trigger .icon-trigger {
+  color: #656565;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-weight: normal;
+  font-size: 14px;
+  font-family: "zurmo_gamification_symbly_rRg";
+  margin: 0 0 0 0;
+  vertical-align: middle;
+  position: relative;
+  line-height: 1;
+  padding: 2px 4px 2px 5px;
+  border-left: 1px solid #e7e7e7;
+  -webkit-box-shadow: inset 1px 0 0 0 #ffffff;
+  -moz-box-shadow: inset 1px 0 0 0 #ffffff;
+  -o-box-shadow: inset 1px 0 0 0 #ffffff;
+  -ms-box-shadow: inset 1px 0 0 0 #ffffff;
+  box-shadow: inset 1px 0 0 0 #ffffff;
+  -webkit-text-shadow: 0 2px 0 #ffffff;
+  -moz-text-shadow: 0 2px 0 #ffffff;
+  -o-text-shadow: 0 2px 0 #ffffff;
+  -ms-text-shadow: 0 2px 0 #ffffff;
+  text-shadow: 0 2px 0 #ffffff;
+}
+.pillbox .split-button .button-action-trigger .icon-trigger:after,
+.pillbox .default-button .button-action-trigger .icon-trigger:after,
+.pillbox .split-button .button-trigger .icon-trigger:after,
+.pillbox .default-button .button-trigger .icon-trigger:after {
+  content: "÷";
+}
+.pillbox .split-button .button-action-trigger:hover,
+.pillbox .default-button .button-action-trigger:hover {
+  background: none;
+  border-left: none;
+}
+.pillbox .split-button .button-action-trigger:hover i,
+.pillbox .default-button .button-action-trigger:hover i {
+  color: #7cb830;
+  -webkit-text-shadow: none;
+  -moz-text-shadow: none;
+  -o-text-shadow: none;
+  -ms-text-shadow: none;
+  text-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+  border-left: none;
+}
+.pillbox .default-button {
+  padding: 0 5px 0 5px;
+}
+.pillbox i[class^="icon"] {
+  color: #656565;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-weight: normal;
+  font-size: 24px;
+  font-family: "zurmo_gamification_symbly_rRg";
+  padding: 0;
+  margin: 0 3px 0 0;
+  vertical-align: middle;
+  position: relative;
+}
+.pillbox .button-actions {
+  display: none;
+  list-style: none;
+  position: absolute;
+  top: 38px;
+  right: -10px;
+  min-width: 100px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+  white-space: nowrap;
+  border: 1px solid #444;
+  background: #252525;
+  -webkit-box-shadow: 0 0 10px 2px rgba(53, 53, 53, 0.5);
+  -moz-box-shadow: 0 0 10px 2px rgba(53, 53, 53, 0.5);
+  -o-box-shadow: 0 0 10px 2px rgba(53, 53, 53, 0.5);
+  -ms-box-shadow: 0 0 10px 2px rgba(53, 53, 53, 0.5);
+  box-shadow: 0 0 10px 2px rgba(53, 53, 53, 0.5);
+}
+.pillbox .button-actions:hover,
+.pillbox .button-actions.stayOpen {
+  display: block;
+}
+.pillbox .button-actions:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -15px;
+  right: 15px;
+  width: 80%;
+  height: 15px;
+  background: url(../images/tip.png) right bottom no-repeat;
+}
+.pillbox .button-actions li {
+  line-height: 100%;
+}
+.pillbox .button-actions li:first-child {
+  border-top: none;
+}
+.pillbox .button-actions li:last-child {
+  border-bottom: none;
+}
+.pillbox .button-actions .divider {
+  border-top: 1px solid #181818;
+  border-bottom: 1px solid #323232;
+  margin: 5px 5px;
+}
+.pillbox .button-actions a {
+  color: #EFEFEF;
+  font-size: 11px;
+  font-weight: normal;
+  display: block;
+  padding: 6px 10px 6px 10px;
+  margin: 1px;
+  -webkit-text-shadow: none;
+  -moz-text-shadow: none;
+  -o-text-shadow: none;
+  -ms-text-shadow: none;
+  text-shadow: none;
+}
+.pillbox .button-actions a:hover {
+  color: #fff;
+  background-color: #537b20;
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(top, #7cb830, #537b20);
+  background-image: -ms-linear-gradient(top, #7cb830, #537b20);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #7cb830), color-stop(100%, #537b20));
+  background-image: -webkit-linear-gradient(top, #7cb830, #537b20);
+  background-image: -o-linear-gradient(top, #7cb830, #537b20);
+  background-image: linear-gradient(top, #7cb830, #537b20);
+}
+.button-action-trigger .icon-options:after {
+  margin: 0 !important;
+  color: #656565;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-weight: normal;
+  font-size: 24px;
+  font-family: "zurmo_gamification_symbly_rRg";
+  padding: 0;
+  margin: 0 3px 0 0;
+  vertical-align: middle;
+  position: relative;
+}
+.button-action-trigger .icon-trigger {
+  border-left: none !important;
 }
 /*********************************************************************************
  * Zurmo is a customer relationship management program developed by
