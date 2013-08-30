@@ -34,11 +34,11 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class SelectMarketingListForContactFromRelatedListAjaxLinkActionElement extends SelectFromRelatedListAjaxLinkActionElement
+    /**
+     * Helper class for ModalEditAndDetailsViews.
+     */
+    abstract class ModalEditAndDetailsLinkProvider
     {
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('Core', 'Subscribe to List');
-        }
+        
     }
 ?>
