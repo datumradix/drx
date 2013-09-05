@@ -35,55 +35,34 @@
      ********************************************************************************/
 
     /**
-     * View for showing a list of ByTimeWorkflowInQueue models
+     * Search form for handling in queue (message queue and by time queue) workflow searches
      */
-    class ByTimeWorkflowInQueuesListView extends SecuredListView
+    abstract class WorkflownQueuesSearchForm extends SearchForm
     {
-        /**
-         * Override to remove action buttons.
-         */
-        protected function getCGridViewLastColumn()
-        {
-            return array();
-        }
+        const ANY_MIXED_ATTRIBUTES_MODEL_ITEM_ID_NAME    = 'anyMixedAttributesModelItemId';
+
+        const ANY_MIXED_ATTRIBUTES_MODEL_CLASS_NAME_NAME = 'anyMixedAttributesModelClassName';
 
         /**
-         * @return array
+         * String of model's item id to scope the search by
+         * @var string
          */
-        public static function getDefaultMetadata()
+        public  $anyMixedAttributesModelItemId;
+
+        /**
+         * String of model class name to scope the search by
+         * @var string
+         */
+        public  $anyMixedAttributesModelClassName;
+
+        public function getAnyMixedAttributesModelItemId()
         {
-            $metadata = array(
-                'global' => array(
-                    'nonPlaceableAttributeNames' => array(
-                        'serializedData',
-                    ),
-                    'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                array(
-                                    array(
-                                        'elements' => array(
-                                            array('attributeName' => 'null', 'type' => 'ByTimeWorkflowInQueueSummary'),
-                                        ),
-                                    ),
-                                )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'processDateTime', 'type' => 'DateTime'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            );
-            return $metadata;
+            return $this->anyMixedAttributesModelItemId;
+        }
+
+        public function getAnyMixedAttributesModelClassName()
+        {
+            return $this->anyMixedAttributesModelClassName;
         }
     }
 ?>
