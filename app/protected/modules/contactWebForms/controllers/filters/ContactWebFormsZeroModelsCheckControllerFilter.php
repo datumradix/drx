@@ -34,33 +34,49 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class PortletUtil
+    /**
+     * Filter used by contactWebForm controllers to ascertain if any contactWebForm exist yet
+     */
+    class ContactWebFormsZeroModelsCheckControllerFilter extends ZeroModelsCheckControllerFilter
     {
-        public static function renderAddPortletsContent(Array $sortablePortlets)
+
+
+        public $activeActionElementType;
+
+        public $breadcrumbLinks;
+
+        protected function resolveMessageControllerId()
         {
-            $content = '<ul class="available-portlets">';
-            //Sort by title
-            ksort($sortablePortlets);
-            foreach ($sortablePortlets as $title => $data)
-            {
-                $onClick = 'js:$("#ModalView").html("");
-                               $(this).makeLargeLoadingSpinner(true, "#ModalView");
-                               $("#ModalView").addClass("attachLoadingTarget");
-                               $("#ModalView").addClass("loading");
-                               $("#ModalView").addClass("loading-ajax-submit");
-                               window.location.href="' . $data['url'] . '"';
-                $content .= '<li>';
-                $link     = ZurmoHtml::link($data['title'], null, array('onclick' => $onClick));
-                $icon     = '<span class="' . $data['portletRules']->resolveIconName() . '"></span>';
-                $content .= ZurmoHtml::tag('h3', array(), $icon . $link );
-                $button   = ZurmoHtml::link(ZurmoHtml::tag('span', array(), Zurmo::t('HomeModule', 'Add Portlet')),
-                    null, array('onclick' => $onClick, 'class' => 'mini-button'));
-                $description = $data['portletRules']->getDescription();
-                $content .= ZurmoHtml::tag('div', array('class' => 'clearfix'), $description . $button );
-                $content .= '</li>';
-            }
-            $content .= '</ul>';
-            return $content;
+            return 'default';
+        }
+
+        protected function resolveMessageModuleId()
+        {
+            return 'contactWebForms';
+        }
+
+        protected function getMessageViewClassName()
+        {
+            return $this->controller->getModule()->getPluralCamelCasedName() . 'ZeroModelsYetView';
+        }
+
+        protected function resolveAndRenderView(View $messageView)
+        {
+            $gridViewId              = 'notUsed';
+            $pageVar                 = 'notUsed';
+            $listModel               = new ContactWebForm(false);
+            $actionBarView           = new SecuredActionBarForContactWebFormsSearchAndListView(
+                                        'default',
+                                        'contactWebForms',
+                                        $listModel,
+                                        $gridViewId,
+                                        $pageVar,
+                                        false, $this->activeActionElementType);
+            $mixedView               = new ActionBarAndZeroModelsYetView($actionBarView, $messageView);
+            $view                    = new ContactWebFormsPageView(ZurmoDefaultAdminViewUtil::
+                                       makeViewWithBreadcrumbsForCurrentUser(
+                                       $this->controller, $mixedView, $this->breadcrumbLinks, 'ContactWebFormsBreadCrumbView'));
+            echo $view->render();
         }
     }
 ?>
