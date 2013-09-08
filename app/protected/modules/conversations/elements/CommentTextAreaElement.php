@@ -34,38 +34,18 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class EmailAddressInformationRedBeanModelAttributeValueToExportValueAdapter extends RedBeanModelAttributeValueToExportValueAdapter
+    /**
+     * Display the comment text area input box.
+     */
+    class CommentTextAreaElement extends TextAreaElement
     {
         /**
-         * @param array $data
+         * Override to convert url to link
+         * @return The element's content.
          */
-        public function resolveData(& $data)
+        protected function renderControlNonEditable()
         {
-            assert('$this->model->{$this->attribute} instanceof Email');
-            $email = $this->model->{$this->attribute};
-            if ($email->id > 0)
-            {
-                $data[] = $email->emailAddress;
-                $data[] = (bool) $email->isInvalid;
-                $data[] = (bool) $email->optOut;
-            }
-            else
-            {
-                $data[] = null;
-                $data[] = null;
-                $data[] = null;
-            }
-        }
-
-        /**
-         * Resolve the header data for the attribute.
-         * @param array $headerData
-         */
-        public function resolveHeaderData(& $headerData)
-        {
-            $headerData[] = $this->getLabel() . ' - ' . Zurmo::t('ZurmoModule', 'Email Address');
-            $headerData[] = $this->getLabel() . ' - ' . Zurmo::t('ZurmoModule', 'Is Invalid');
-            $headerData[] = $this->getLabel() . ' - ' . Zurmo::t('ZurmoModule', 'Opt Out');
+            return TextUtil::textWithUrlToTextWithLink($this->model->{$this->attribute});
         }
     }
 ?>
