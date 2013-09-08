@@ -34,33 +34,18 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class PortletUtil
+    /**
+     * Display the comment text area input box.
+     */
+    class CommentTextAreaElement extends TextAreaElement
     {
-        public static function renderAddPortletsContent(Array $sortablePortlets)
+        /**
+         * Override to convert url to link
+         * @return The element's content.
+         */
+        protected function renderControlNonEditable()
         {
-            $content = '<ul class="available-portlets">';
-            //Sort by title
-            ksort($sortablePortlets);
-            foreach ($sortablePortlets as $title => $data)
-            {
-                $onClick = 'js:$("#ModalView").html("");
-                               $(this).makeLargeLoadingSpinner(true, "#ModalView");
-                               $("#ModalView").addClass("attachLoadingTarget");
-                               $("#ModalView").addClass("loading");
-                               $("#ModalView").addClass("loading-ajax-submit");
-                               window.location.href="' . $data['url'] . '"';
-                $content .= '<li>';
-                $link     = ZurmoHtml::link($data['title'], null, array('onclick' => $onClick));
-                $icon     = '<span class="' . $data['portletRules']->resolveIconName() . '"></span>';
-                $content .= ZurmoHtml::tag('h3', array(), $icon . $link );
-                $button   = ZurmoHtml::link(ZurmoHtml::tag('span', array(), Zurmo::t('HomeModule', 'Add Portlet')),
-                    null, array('onclick' => $onClick, 'class' => 'mini-button'));
-                $description = $data['portletRules']->getDescription();
-                $content .= ZurmoHtml::tag('div', array('class' => 'clearfix'), $description . $button );
-                $content .= '</li>';
-            }
-            $content .= '</ul>';
-            return $content;
+            return TextUtil::textWithUrlToTextWithLink($this->model->{$this->attribute});
         }
     }
 ?>
