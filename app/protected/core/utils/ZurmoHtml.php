@@ -665,6 +665,20 @@ EOD;
             }
         }
 
+        public static function ajaxButton($label,$url,$ajaxOptions=array(),$htmlOptions=array())
+        {
+            $ajaxOptions['url']=$url;
+            $htmlOptions['ajax']=$ajaxOptions;
+            return static::button($label,$htmlOptions);
+        }
+
+        public static function ajaxSubmitButton($label,$url,$ajaxOptions=array(),$htmlOptions=array())
+        {
+            $ajaxOptions['type']='POST';
+            $htmlOptions['type']='submit';
+            return self::ajaxButton($label,$url,$ajaxOptions,$htmlOptions);
+        }
+        
         public static function wrapAndRenderContinuumButtonContent($content)
         {
             $clearFixContent = ZurmoHtml::tag('div', array('class' => 'clearfix'), $content);
