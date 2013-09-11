@@ -35,23 +35,10 @@
      ********************************************************************************/
 
     /**
-     * Class used by an autoresponder to show the duration data. For example send the first autoresponder 4 hours after
-     * someone subscribves
+     * Helper class for ModalEditAndDetailsViews.
      */
-    class AutoresponderFromOperationDurationElement extends DurationElement
+    abstract class ModalEditAndDetailsLinkProvider
     {
-        protected $intervalAttributeName = 'fromOperationDurationInterval';
-
-        protected $signAttributeName     = null;
-
-        protected $typeAttributeName     = 'fromOperationDurationType';
-
-        protected function renderControlNonEditable()
-        {
-            $dropDownArray = $this->getDurationTypeDropDownArray();
-            $content  = $this->model->{$this->intervalAttributeName} . ' ';
-            $content .= $dropDownArray[$this->model->{$this->typeAttributeName}];
-            return $content;
-        }
+        
     }
 ?>

@@ -34,29 +34,14 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class InstallUtilMiscTest extends ZurmoBaseTest
+    /**
+     * Element for displaying the autoresponder seconds from operation options.
+     */
+    class AutoresponderSecondsFromOperationElement extends StaticDropDownFormElement
     {
-        public static function setUpBeforeClass()
+        protected function getDropDownArray()
         {
-            parent::setUpBeforeClass();
-            SecurityTestHelper::createSuperAdmin();
-            $super = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
-        }
-
-        /**
-         * test create system user
-         */
-        public function testCreateSystemUser()
-        {
-            $user = InstallUtil::createSystemUser('testsystemuser', 'test');
-            $id   = $user->id;
-            $user->forget();
-            unset($user);
-            $user = User::getById($id);
-            $this->assertTrue((bool)$user->isSystemUser);
-            $this->assertTrue((bool)$user->hideFromSelecting);
-            $this->assertTrue((bool)$user->hideFromLeaderboard);
+            return Autoresponder::getIntervalDropDownArray();
         }
     }
 ?>

@@ -34,28 +34,12 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    abstract class CampaignsRelatedListView extends SecuredRelatedListView
+    class ProjectsModalListView extends ModalListView
     {
         public static function getDefaultMetadata()
         {
             $metadata = array(
-                'perUser' => array(
-                    'title' => "eval:Zurmo::t('CampaignsModule', 'Campaigns')",
-                ),
                 'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array(  'type'            => 'CreateFromRelatedListLink',
-                                    'routeModuleId'   => 'eval:$this->moduleId',
-                                    'routeParameters' => 'eval:$this->getCreateLinkRouteParameters()'),
-                        ),
-                    ),
-                    'rowMenu' => array(
-                        'elements' => array(
-                            array('type'                      => 'EditLink'),
-                        ),
-                    ),
-                    'gridViewType' => RelatedListView::GRID_VIEW_TYPE_STACKED,
                     'panels' => array(
                         array(
                             'rows' => array(
@@ -74,11 +58,6 @@
                 ),
             );
             return $metadata;
-        }
-
-        public static function getModuleClassName()
-        {
-            return 'CampaignsModule';
         }
     }
 ?>

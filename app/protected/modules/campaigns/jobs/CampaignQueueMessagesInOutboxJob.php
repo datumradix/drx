@@ -99,9 +99,8 @@
          * Not pretty, but gets the job done. Solves memory leak problem.
          * @param CampaignItem $campaignItem
          */
-        protected function runGarbageCollection($campaignItem)
+        protected function runGarbageCollection(CampaignItem $campaignItem)
         {
-            assert('$campaignItem instanceof CampaignItem');
             $campaignItem->campaign->marketingList->forgetValidators();
             $campaignItem->campaign->forgetValidators();
             $this->modelIdentifiersForForgottenValidators[$campaignItem->campaign->marketingList->getModelIdentifier()] = true;
