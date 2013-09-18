@@ -34,27 +34,35 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMemberSelectContactOrLeadAutoCompleteElement extends MarketingListMemberSelectAutoCompleteBaseElement
+    /**
+     * Form to edit and view the global marketing configuration values in the user interface.
+     */
+    class MarketingConfigurationForm extends ConfigurationForm
     {
-        protected function getSelectType()
+        public $autoresponderOrCampaignBatchSize;
+        public $autoresponderOrCampaignFooterPlainText;
+        public $autoresponderOrCampaignFooterRichText;
+
+        public function rules()
         {
-            return 'contact';
+            return array(
+                array('autoresponderOrCampaignBatchSize',       'required'),
+                array('autoresponderOrCampaignBatchSize',       'type',      'type' => 'integer'),
+                array('autoresponderOrCampaignBatchSize',       'numerical', 'min' => 1),
+                array('autoresponderOrCampaignFooterPlainText', 'required'),
+                array('autoresponderOrCampaignFooterPlainText', 'type',    'type' => 'string'),
+                array('autoresponderOrCampaignFooterRichText',  'required'),
+                array('autoresponderOrCampaignFooterRichText',  'type',    'type' => 'string'),
+            );
         }
 
-        protected function getSource()
+        public function attributeLabels()
         {
-            return Yii::app()->createUrl('/contacts/variableContactState/autoCompleteAllContacts');
-        }
-
-        protected function getSourceUrlForSelectLink()
-        {
-            return '/contacts/variableContactState/modalListAllContacts';
-        }
-
-        protected function getModalTitleForSelectingModel()
-        {
-            return  Zurmo::t('MarketingListsModule', 'From ContactsModulePluralLabel/LeadsModulePluralLabel',
-                                LabelUtil::getTranslationParamsForAllModules());
+            return array(
+                'autoresponderOrCampaignBatchSize'       => Zurmo::t('ZurmoModule', 'Autoresponder/Campaign batch size'),
+                'autoresponderOrCampaignFooterPlainText' => Zurmo::t('ZurmoModule', 'Autoresponder/Campaign Footer(Plain Text)'),
+                'autoresponderOrCampaignFooterRichText'  => Zurmo::t('ZurmoModule', 'Autoresponder/Campaign Footer(Rich Text)'),
+            );
         }
     }
 ?>
