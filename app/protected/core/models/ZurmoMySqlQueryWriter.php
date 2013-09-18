@@ -34,41 +34,55 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class BeginRequestTestBehavior extends BeginRequestBehavior
+    class ZurmoMySqlQueryWriter extends RedBean_QueryWriter_MySQL
     {
-        public function attach($owner)
+        public function doesTableExist($tableName)
         {
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleApplicationCache'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleImports'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
+            $result     = $this->adapter->get("SHOW TABLES LIKE '$tableName'");
+            return (count($result) > 0);
+        }
+        public function getColumnsWithDetails($tableName)
+        {
+            $columns    = array();
+            $tableName  = $this->safeTable($tableName);
+            $columnsRaw = $this->adapter->get("DESCRIBE $tableName");
+            foreach ($columnsRaw as $r) {
+                $columns[$r['Field']]   =   $r;
+            }
+            return $columns;
+        }
+
+        public function getIndexes($tableName)
+        {
+            $indexes    = array();
+            $tableName  = $this->safeTable($tableName);
+            $indexesRaw = $this->adapter->get("SHOW KEYS FROM $tableName");
+            foreach ($indexesRaw as $index)
+            {
+                $indexName  = $index['Key_name'];
+                $column     = $index['Column_name'];
+                $unique     = (!(bool)$index['Non_unique']);
+                $indexes[$indexName]['unique']  = $unique;
+                if (isset($indexes[$indexName]['columns']))
+                {
+                    $indexes[$indexName]['columns'][] = $column;
+                }
+                else
+                {
+                    $indexes[$indexName]['columns'] = array($column);
+                }
+            }
+            return $indexes;
         }
 
         /**
-        * Import all files that need to be included(for lazy loading)
-        * @param $event
-        */
-        public function handleImports($event)
+         * Drops a table by the given table name.
+         * @param string $tableName
+         */
+        public function dropTableByTableName($tableName)
         {
-            try
-            {
-                $filesToInclude = GeneralCache::getEntry('filesToIncludeForTests');
-            }
-            catch (NotFoundException $e)
-            {
-                $filesToInclude   = FileUtil::getFilesFromDir(Yii::app()->basePath . '/modules', Yii::app()->basePath . '/modules', 'application.modules', true);
-                $filesToIncludeFromFramework = FileUtil::getFilesFromDir(Yii::app()->basePath . '/core', Yii::app()->basePath . '/core', 'application.core', true);
-                $totalFilesToIncludeFromModules = count($filesToInclude);
-
-                foreach ($filesToIncludeFromFramework as $key => $file)
-                {
-                    $filesToInclude[$totalFilesToIncludeFromModules + $key] = $file;
-                }
-                GeneralCache::cacheEntry('filesToIncludeForTests', $filesToInclude);
-            }
-            foreach ($filesToInclude as $file)
-            {
-                Yii::import($file);
-            }
+            $tableName = strtolower($tableName);
+            $this->adapter->exec("drop table if exists $tableName");
         }
     }
 ?>

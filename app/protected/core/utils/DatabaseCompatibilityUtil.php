@@ -68,18 +68,9 @@
             }
         }
 
-        /**
-         * Drops the named table.
-         */
-        public static function dropTable($tableName)
-        {
-            assert('is_string($tableName) && $tableName != ""');
-            R::exec("drop table $tableName;");
-        }
-
         public static function escape($value)
         {
-            return R::$adapter->escape($value);
+            return ZurmoRedBean::$adapter->escape($value);
         }
 
         /**
@@ -88,27 +79,7 @@
         public static function getAllTableNames()
         {
             assert('RedBeanDatabase::isSetup()');
-            if (RedBeanDatabase::getDatabaseType() == 'sqlite')
-            {
-                return R::getCol('select name from sqlite_master where type = \'table\' order by name;');
-            }
-            elseif (RedBeanDatabase::getDatabaseType() == 'pgsql')
-            {
-                return R::getCol("
-                    select relname from pg_catalog.pg_class
-                         left join pg_catalog.pg_namespace n on n.oid = pg_catalog.pg_class.relnamespace
-                    where pg_catalog.pg_class.relkind in ('r', '') and
-                          n.nspname <> 'pg_catalog'               and
-                          n.nspname <> 'information_schema'       and
-                          n.nspname !~ '^pg_toast'                and
-                          pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid)
-                    order by lower(relname);
-                ");
-            }
-            else
-            {
-                return R::getCol('show tables;');
-            }
+            return ZurmoRedBean::$writer->getTables();
         }
 
         /**
@@ -339,7 +310,7 @@
                     {
                         $quotedRow = array_map(array('DatabaseCompatibilityUtil', 'escape'), $row);
                         $sql .= "('" . implode("','", $quotedRow). "')"; // Not Coding Standard
-                        R::exec($sql);
+                        ZurmoRedBean::exec($sql);
                         $counter = 0;
                     }
                     else
@@ -361,7 +332,7 @@
             if ($counter > 0)
             {
                 $sql = trim($sql, ','); // Not Coding Standard
-                R::exec($sql);
+                ZurmoRedBean::exec($sql);
             }
         }
 
@@ -417,7 +388,7 @@
                 throw new NotSupportedException();
             }
 
-            $row = R::getRow("SHOW VARIABLES LIKE 'max_allowed_packet'");
+            $row = ZurmoRedBean::getRow("SHOW VARIABLES LIKE 'max_allowed_packet'");
 
             if (isset($row['Value']))
             {
@@ -954,11 +925,10 @@
             {
                 case 'mysql':
                     $result = true;
-                    if (($connection = @mysql_connect($host . ':' . $port, $rootUsername, $rootPassword))                               === false ||
+                    if (($connection = @mysql_connect($host . ':' . $port, $rootUsername, $rootPassword)) === false             ||
                     // The === 666 is to execute this command ignoring whether it fails.
-                    @mysql_query("drop user `$username`", $connection) === 666                                  ||
-                    @mysql_query("grant all on `$databaseName`.* to `$username`",        $connection) === false ||
-                    @mysql_query("set password for `$username` = password('$password')", $connection) === false)
+                        ($userDropped = @mysql_query("drop user `$username`", $connection)) === 666                             ||
+                        ($userCreated = @mysql_query("grant all on `$databaseName`.* to `$username`@'$host' IDENTIFIED BY '$password'", $connection)) === false)
                     {
                         $result = array(mysql_errno(), mysql_error());
                     }
@@ -976,17 +946,10 @@
             {
                 throw new NotSupportedException();
             }
-            $databaseName = RedBeanDatabase::getDatabaseNameFromDsnString(Yii::app()->db->connectionString);
-            $sql       = "show tables";
             $totalCount = 0;
-            $rows       = R::getAll($sql);
-            $columnName = 'Tables_in_' . $databaseName;
-            foreach ($rows as $row)
+            foreach (static::getAllTableNames() as $tableName)
             {
-                $tableName  = $row[$columnName];
-                $tableSql   = "select count(*) count from " . $tableName;
-                $row        = R::getRow($tableSql);
-                $totalCount = $totalCount + $row['count'];
+                $totalCount += ZurmoRedBean::$writer->count($tableName);
             }
             return $totalCount;
         }
@@ -1096,12 +1059,9 @@
             $databaseColumnType = '';
             if (RedBeanDatabase::getDatabaseType() == 'mysql')
             {
-                if (isset($length) && $length > 0 && $length < 255)
+                if (in_array($hintType, array('tinyint', 'smallint', 'mediumint', 'bigint')))
                 {
-                    if ($hintType == 'string')
-                    {
-                        $databaseColumnType = "VARCHAR({$length})";
-                    }
+                    $databaseColumnType = strtoupper($hintType) . '(11)';
                 }
                 else
                 {
@@ -1114,7 +1074,7 @@
                             $databaseColumnType = "LONGBLOB";
                             break;
                         case 'boolean':
-                            $databaseColumnType = "TINYINT(1)";
+                            $databaseColumnType = "TINYINT(1) UNSIGNED";
                             break;
                         case 'date':
                             $databaseColumnType = "DATE";
@@ -1123,7 +1083,15 @@
                             $databaseColumnType = "DATETIME";
                             break;
                         case 'string':
-                            $databaseColumnType = "VARCHAR(255)";
+                            if (!isset($length))
+                            {
+                                $length = 255;
+                            }
+                            if ($length < 0 || $length > 255)
+                            {
+                                break;
+                            }
+                            $databaseColumnType = "VARCHAR($length)";
                             break;
                         case 'text':
                             $databaseColumnType = "TEXT";
@@ -1133,6 +1101,15 @@
                             break;
                         case 'id':
                             $databaseColumnType = "INT(11) UNSIGNED";
+                            break;
+                        case 'integer':
+                            $databaseColumnType = "INT(11)";
+                            break;
+                        case 'float':
+                            $databaseColumnType = "DOUBLE";
+                            break;
+                        case 'time':
+                            $databaseColumnType = "TIME";
                             break;
                     }
                 }
@@ -1170,6 +1147,55 @@
                 return;
             }
             return $content . 'INTERVAL ' . abs($offsetInSeconds) . ' SECOND';
+        }
+
+        public static function resolveIntegerMaxAllowedValuesByType($signed = false)
+        {
+            if (RedBeanDatabase::getDatabaseType() == 'mysql')
+            {
+                $intMaxValuesAllows = array('tinyint'   => pow(2, 8),
+                                            'smallint'  => pow(2, 16),
+                                            'mediumint' => pow(2, 24),
+                                            'integer'   => pow(2, 32),
+                                            'bigint'    => pow(2, 64));
+                if ($signed)
+                {
+                    $intMaxValuesAllows = array('tinyint'   => pow(2, 7),
+                                                'smallint'  => pow(2, 15),
+                                                'mediumint' => pow(2, 23),
+                                                'integer'   => pow(2, 31),
+                                                'bigint'    => pow(2, 63));
+                }
+                return $intMaxValuesAllows;
+            }
+            throw new NotSupportedException();
+        }
+
+        public static function resolveCollationByHintType($hint)
+        {
+            if (RedBeanDatabase::getDatabaseType() == 'mysql')
+            {
+                if (in_array($hint, array('string', 'text', 'longtext', 'email', 'url')))
+                {
+                    return 'COLLATE utf8_unicode_ci';
+                }
+                return null;
+            }
+            throw new NotSupportedException();
+        }
+
+        public static function resolveUnsignedByHintType($hint, $assumeSigned = false)
+        {
+            if (RedBeanDatabase::getDatabaseType() == 'mysql')
+            {
+                $integerHintTypes = array_keys(static::resolveIntegerMaxAllowedValuesByType());
+                if (in_array($hint, $integerHintTypes) && !$assumeSigned)
+                {
+                    return "UNSIGNED";
+                }
+                return null;
+            }
+            throw new NotSupportedException();
         }
     }
 ?>
