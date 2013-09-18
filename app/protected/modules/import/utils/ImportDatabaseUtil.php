@@ -42,9 +42,11 @@
         /**
          * Given a file resource, convert the file into a database table based on the table name provided.
          * Assumes the file is a csv.
-         * @param resource $fileHandle
+         * @param object $fileHandle
          * @param string $tableName
-         * @return true on success.
+         * @param string $delimiter
+         * @param string $enclosure
+         * @return bool
          */
 
         /**
@@ -70,7 +72,7 @@
                 RedBeanDatabase::unfreeze();
                 $freezeWhenComplete = true;
             }
-            R::exec("drop table if exists $tableName");
+            ZurmoRedBean::$writer->dropTableByTableName($tableName);
             $columns = self::optimizeTableImportColumnsAndGetColumnNames($fileHandle, $tableName, $delimiter, $enclosure);
             rewind($fileHandle);
             self::convertCsvIntoRowsInTable($fileHandle, $tableName, $delimiter, $enclosure, $columns);
@@ -84,7 +86,7 @@
 
         public static function optimizeTableNonImportColumns($tableName)
         {
-            $bean                 = R::dispense($tableName);
+            $bean         = ZurmoRedBean::dispense($tableName);
             $bean->analysisStatus = '2147483647'; //Creates an integer todo: optimize to status SET
             $bean->status         = '2147483647'; //Creates an integer todo: optimize to status SET
             while (strlen($bean->serializedAnalysisMessages) < '1024')
@@ -95,8 +97,8 @@
             {
                 $bean->serializedMessages .= chr(rand(ord('a'), ord('z')));
             }
-            R::store($bean);
-            R::trash($bean);
+            ZurmoRedBean::store($bean);
+            ZurmoRedBean::trash($bean);
         }
 
         protected static function optimizeTableImportColumnsAndGetColumnNames($fileHandle, $tableName, $delimiter, $enclosure)
@@ -108,6 +110,7 @@
             assert('$enclosure != null && is_string($enclosure)');
             $maxValues = array();
             $columns   = array();
+
             while (($data = fgetcsv($fileHandle, 0, $delimiter, $enclosure)) !== false)
             {
                 if (count($data) > 1 || (count($data) == 1 && trim($data['0']) != ''))
@@ -121,18 +124,23 @@
                     }
                 }
             }
+            if(count($maxValues) > 99)
+            {
+                throw new TooManyColumnsFailedException(
+                            Zurmo::t('ImportModule', 'The file has too many columns. The maximum is 100'));
+            }
             if (count($maxValues) > 0)
             {
-                $newBean = R::dispense($tableName);
+                $newBean = ZurmoRedBean::dispense($tableName);
                 foreach ($maxValues as $columnId => $value)
                 {
                     $columnName = 'column_' . $columnId;
                     $newBean->{$columnName} = str_repeat(' ', strlen($value));
                     $columns[] = $columnName;
                 }
-                R::store($newBean);
-                R::trash($newBean);
-                R::wipe($tableName);
+                ZurmoRedBean::store($newBean);
+                ZurmoRedBean::trash($newBean);
+                ZurmoRedBean::$writer->wipe($tableName);
             }
             return $columns;
         }
@@ -179,16 +187,6 @@
         }
 
         /**
-         * Drops a table by the given table name.
-         * @param string $tableName
-         */
-        public static function dropTableByTableName($tableName)
-        {
-            assert('$tableName == strtolower($tableName)');
-            R::exec("drop table if exists $tableName");
-        }
-
-        /**
          * Gets the count of how many columns there are in a table minus the initial 'id' column.
          * @param string $tableName
          * @return integer
@@ -210,7 +208,7 @@
             $sql = 'select * from ' . $tableName;
             try
             {
-                $data = R::getRow($sql);
+                $data = ZurmoRedBean::getRow($sql);
             }
             catch (RedBean_Exception_SQL $e)
             {
@@ -244,8 +242,8 @@
             {
                 $sql .= " offset $offset";
             }
-            $ids   = R::getCol($sql);
-            return R::batch ($tableName, $ids);
+            $ids   = ZurmoRedBean::getCol($sql);
+            return ZurmoRedBean::batch ($tableName, $ids);
         }
 
         /**
@@ -261,7 +259,7 @@
             {
                 $sql .= ' where ' . $where;
             }
-            $count = R::getCell($sql);
+            $count = ZurmoRedBean::getCell($sql);
             if ($count === null)
             {
                 $count = 0;
@@ -284,14 +282,14 @@
             assert('is_int($status)');
             assert('is_string($serializedMessages) || $serializedMessages == null');
 
-            $bean = R::findOne($tableName, "id = :id", array('id' => $id));
+            $bean = ZurmoRedBean::findOne($tableName, "id = :id", array('id' => $id));
             if ($bean == null)
             {
                 throw new NotFoundException();
             }
             $bean->status             = $status;
             $bean->serializedMessages = $serializedMessages;
-            R::store($bean);
+            ZurmoRedBean::store($bean);
         }
 
         /**
