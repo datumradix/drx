@@ -1,0 +1,264 @@
+<?php
+    /*********************************************************************************
+     * Zurmo is a customer relationship management program developed by
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     *
+     * Zurmo is free software; you can redistribute it and/or modify it under
+     * the terms of the GNU Affero General Public License version 3 as published by the
+     * Free Software Foundation with the addition of the following permission added
+     * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+     * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
+     * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+     *
+     * Zurmo is distributed in the hope that it will be useful, but WITHOUT
+     * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+     * details.
+     *
+     * You should have received a copy of the GNU Affero General Public License along with
+     * this program; if not, see http://www.gnu.org/licenses or write to the Free
+     * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+     * 02110-1301 USA.
+     *
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     ********************************************************************************/
+
+    /**
+     * Helper class for working with import data tables.
+     */
+    class ImportDatabaseUtil
+    {
+        /**
+         * Given a file resource, convert the file into a database table based on the table name provided.
+         * Assumes the file is a csv.
+         * @param object $fileHandle
+         * @param string $tableName
+         * @param string $delimiter
+         * @param string $enclosure
+         * @return bool
+         */
+        public static function makeDatabaseTableByFileHandleAndTableName($fileHandle, $tableName, $delimiter = ',', // Not Coding Standard
+                                                                         $enclosure = "'")
+        {
+            assert('gettype($fileHandle) == "resource"');
+            assert('is_string($tableName)');
+            assert('$tableName == strtolower($tableName)');
+            assert('$delimiter != null && is_string($delimiter)');
+            assert('$enclosure != null && is_string($enclosure)');
+            $freezeWhenComplete = false;
+            if (RedBeanDatabase::isFrozen())
+            {
+                RedBeanDatabase::unfreeze();
+                $freezeWhenComplete = true;
+            }
+            ZurmoRedBean::$writer->dropTableByTableName($tableName);
+            $columns = static::optimizeTableImportColumnsAndGetColumnNames($fileHandle, $tableName, $delimiter, $enclosure);
+            rewind($fileHandle);
+            static::convertCsvIntoRowsInTable($fileHandle, $tableName, $delimiter, $enclosure, $columns);
+            static::optimizeTableNonImportColumns($tableName);
+            if ($freezeWhenComplete)
+            {
+                RedBeanDatabase::freeze();
+            }
+            return true;
+        }
+
+        public static function optimizeTableNonImportColumns($tableName)
+        {
+            $bean         = ZurmoRedBean::dispense($tableName);
+            $bean->analysisStatus = '2147483647'; //Creates an integer todo: optimize to status SET
+            $bean->status         = '2147483647'; //Creates an integer todo: optimize to status SET
+            while (strlen($bean->serializedAnalysisMessages) < '1024')
+            {
+                $bean->serializedAnalysisMessages .= chr(rand(ord('a'), ord('z')));
+            }
+            while (strlen($bean->serializedMessages) < '1024')
+            {
+                $bean->serializedMessages .= chr(rand(ord('a'), ord('z')));
+            }
+            ZurmoRedBean::store($bean);
+            ZurmoRedBean::trash($bean);
+        }
+
+        protected static function optimizeTableImportColumnsAndGetColumnNames($fileHandle, $tableName, $delimiter, $enclosure)
+        {
+            assert('gettype($fileHandle) == "resource"');
+            assert('is_string($tableName)');
+            assert('$tableName == strtolower($tableName)');
+            assert('$delimiter != null && is_string($delimiter)');
+            assert('$enclosure != null && is_string($enclosure)');
+            $maxValues = array();
+            $columns   = array();
+
+            while (($data = fgetcsv($fileHandle, 0, $delimiter, $enclosure)) !== false)
+            {
+                if (count($data) > 1 || (count($data) == 1 && trim($data['0']) != ''))
+                {
+                    foreach ($data as $k => $v)
+                    {
+                        if (!isset($maxValues[$k]) || strlen($maxValues[$k]) < strlen($v))
+                        {
+                            $maxValues[$k] = $v;
+                        }
+                    }
+                }
+            }
+            if(count($maxValues) > 99)
+            {
+                throw new TooManyColumnsFailedException(
+                            Zurmo::t('ImportModule', 'The file has too many columns. The maximum is 100'));
+            }
+            if (count($maxValues) > 0)
+            {
+                $newBean = ZurmoRedBean::dispense($tableName);
+                foreach ($maxValues as $columnId => $value)
+                {
+                    $columnName = 'column_' . $columnId;
+                    $newBean->{$columnName} = str_repeat(' ', strlen($value));
+                    $columns[] = $columnName;
+                }
+                ZurmoRedBean::store($newBean);
+                ZurmoRedBean::trash($newBean);
+                ZurmoRedBean::$writer->wipe($tableName);
+            }
+            return $columns;
+        }
+
+        protected static function convertCsvIntoRowsInTable($fileHandle, $tableName, $delimiter, $enclosure, $columns)
+        {
+            assert('gettype($fileHandle) == "resource"');
+            assert('is_string($tableName)');
+            assert('$tableName == strtolower($tableName)');
+            assert('$delimiter != null && is_string($delimiter)');
+            assert('$enclosure != null && is_string($enclosure)');
+            assert('is_array($columns)');
+            $bulkQuantity    = 500;
+            $importArray     = array();
+            while (($data = fgetcsv($fileHandle, 0, $delimiter, $enclosure)) !== false)
+            {
+                if (count($data) > 1 || (count($data) == 1 && trim($data['0']) != ''))
+                {
+                    foreach ($data as $k => $v)
+                    {
+                        //Convert characterser to UTF-8
+                        $currentCharset = mb_detect_encoding($v, $other_charsets = 'UTF-8, UTF-7, ASCII, CP1252, EUC-JP, SJIS, eucJP-win, SJIS-win, JIS, ISO-2022-JP');
+                        if (!empty($currentCharset) && $currentCharset != "UTF-8")
+                        {
+                            $data[$k] = mb_convert_encoding($v, "UTF-8");
+                        }
+                    }
+                    $importArray[] = $data;
+                }
+                if (count($importArray) > $bulkQuantity)
+                {
+                    DatabaseCompatibilityUtil::bulkInsert($tableName, $importArray, $columns, $bulkQuantity);
+                    $importArray = array();
+                }
+            }
+            if (count($importArray) > $bulkQuantity)
+            {
+                throw new NotSupportedException();
+            }
+            if (count($importArray) > 0)
+            {
+                DatabaseCompatibilityUtil::bulkInsert($tableName, $importArray, $columns, $bulkQuantity);
+            }
+        }
+
+        /**
+         * Given a table name, count, and offset get an array of beans.
+         * @param string $tableName
+         * @param integer $count
+         * @param integer $offset
+         * @return array of RedBean_OODBBean beans.
+         */
+        public static function getSubset($tableName, $where = null, $count = null, $offset = null)
+        {
+            assert('is_string($tableName)');
+            assert('$offset  === null || is_integer($offset)  && $offset  >= 0');
+            assert('$offset  === null || is_integer($count)   && $count   >= 1');
+            $sql = 'select id from ' . $tableName;
+            if ($where != null)
+            {
+                $sql .= ' where ' . $where;
+            }
+            if ($count !== null)
+            {
+                $sql .= " limit $count";
+            }
+            if ($offset !== null)
+            {
+                $sql .= " offset $offset";
+            }
+            $ids   = ZurmoRedBean::getCol($sql);
+            return ZurmoRedBean::batch ($tableName, $ids);
+        }
+
+        /**
+         * Get the row count in a given table.
+         * @param string $tableName
+         * @return integer
+         */
+        public static function getCount($tableName, $where = null)
+        {
+            $sql = 'select count(*) count from ' . $tableName;
+
+            if ($where != null)
+            {
+                $sql .= ' where ' . $where;
+            }
+            $count = ZurmoRedBean::getCell($sql);
+            if ($count === null)
+            {
+                $count = 0;
+            }
+            return $count;
+        }
+
+        /**
+         * Update the row in the table with status and message information after the row is attempted or successfully
+         * imported.
+         * @param string         $tableName
+         * @param integer        $id
+         * @param integer        $status
+         * @param string or null $serializedMessages
+         */
+        public static function updateRowAfterProcessing($tableName, $id, $status, $serializedMessages)
+        {
+            assert('is_string($tableName)');
+            assert('is_int($id)');
+            assert('is_int($status)');
+            assert('is_string($serializedMessages) || $serializedMessages == null');
+
+            $bean = ZurmoRedBean::findOne($tableName, "id = :id", array('id' => $id));
+            if ($bean == null)
+            {
+                throw new NotFoundException();
+            }
+            $bean->status             = $status;
+            $bean->serializedMessages = $serializedMessages;
+            ZurmoRedBean::store($bean);
+        }
+
+        /**
+         * For the temporary import tables, some of the columns are reserved and not used by any of the import data
+         * coming from a csv.
+         * @return array of column names.
+         */
+        public static function getReservedColumnNames()
+        {
+            return array('analysisStatus', 'id', 'serializedAnalysisMessages', 'serializedMessages', 'status');
+        }
+    }
+?>
