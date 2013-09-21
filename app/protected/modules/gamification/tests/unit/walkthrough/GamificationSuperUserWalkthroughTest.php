@@ -81,7 +81,7 @@
             //Level up notification
             $gameNotification           = new GameNotification();
             $gameNotification->user     = $super;
-            $gameNotification->setLevelChangeByNextLevelValue(2);
+            $gameNotification->setLevelChangeByNextLevelValue(2, 5);
             $saved                      = $gameNotification->save();
             $this->assertTrue($saved);
 
@@ -118,6 +118,16 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
             $this->assertFalse(strpos($content, 'ModalGameNotification0') === false);
             $this->assertFalse(strpos($content, 'ModalGameNotification1') === false);
+        }
+
+        public function testCollectRandomCoin()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $gameCoin = GameCoin::resolveByPerson($super);
+            $this->assertEquals(0, $gameCoin->value);
+            $this->runControllerWithNoExceptionsAndGetContent('gamification/default/collectRandomCoin', true);
+            $gameCoin = GameCoin::resolveByPerson($super);
+            $this->assertEquals(1, $gameCoin->value);
         }
     }
 ?>

@@ -47,9 +47,10 @@
                 throw new NotSupportedException();
             }
             //Level up notification
+            $coinsValue = GameCoinRules::getCoinsByLevel(2);
             $gameNotification           = new GameNotification();
             $gameNotification->user     = Yii::app()->user->userModel;
-            $gameNotification->setLevelChangeByNextLevelValue(2);
+            $gameNotification->setLevelChangeByNextLevelValue(2, $coinsValue);
             $saved                      = $gameNotification->save();
 
             //New badge notification
