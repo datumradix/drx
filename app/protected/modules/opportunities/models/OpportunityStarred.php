@@ -34,13 +34,48 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    $basePath  =  Yii::app()->getBasePath();
-    require_once("$basePath/../../redbean/rb.php");
-
-    /**
-     * A criteria for use with RedbeanModelDataProvider.
-     */
-    class RedBeanModelDbCriteria extends CDbCriteria
+    class OpportunityStarred extends BaseStarredModel
     {
+        public static function getDefaultMetadata()
+        {
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'relations' => array(
+                    static::getRelationName()     => array(static::HAS_ONE,  static::getRelatedModelClassName()),
+                ),
+                'indexes' => static::getIndexesDefinition(),
+            );
+            return $metadata;
+        }
+
+        public static function getModuleClassName()
+        {
+            return 'OpportunitiesModule';
+        }
+
+        /**
+         * Returns the display name for the model class.
+         * @param null | string $language
+         * @return dynamic label name based on module.
+         */
+        protected static function getLabel($language = null)
+        {
+            return Zurmo::t('OpportunitiesModule', 'Opportunity Starred', array(), null, $language);
+        }
+
+        /**
+         * Returns the display name for plural of the model class.
+         * @param null | string $language
+         * @return dynamic label name based on module.
+         */
+        protected static function getPluralLabel($language = null)
+        {
+            return Zurmo::t('OpportunitiesModule', 'Opportunities Starred', array(), null, $language);
+        }
+
+        protected static function getRelationName()
+        {
+            return 'opportunity';
+        }
     }
 ?>

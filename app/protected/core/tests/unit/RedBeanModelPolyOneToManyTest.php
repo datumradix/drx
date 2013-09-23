@@ -41,6 +41,15 @@
      */
     class RedBeanModelPolyOneToManyTest extends BaseTest
     {
+        public static function getDependentTestModelClassNames()
+        {
+            return array('TestPolyOneToManyOneSide',
+                            'TestPolyOneToManyOneSideTwo',
+                            'TestPolyOneToManyPolySide',
+                            'TestPolyOneToManyPolySideOwned'
+                        );
+        }
+
         public function testPolyOneToManyNotOwned()
         {
             $polySide = new TestPolyOneToManyPolySide();
@@ -84,7 +93,7 @@
             $this->assertEquals($polySide2Id, $oneSide2->polysTwo[0]->id);
 
             //do a direct sql to get the row for polySide
-            $row = R::getRow('select * from testpolyonetomanypolyside');
+            $row = ZurmoRedBean::getRow('select * from testpolyonetomanypolyside');
             $this->assertTrue(!isset($row['testpolyonetomanyoneside_id']));
             $this->assertTrue(!isset($row['testpolyonetomanyonesidetwo_id']));
             //Confirm the poly type and poly id columns are there.
@@ -116,14 +125,12 @@
             $this->assertEquals(1, $oneSide->polys->count());
             $this->assertEquals($polySide3Id, $oneSide->polys[0]->id);
 
+            // TODO: @Shoaibi: Critical: This probably fails because polys is also owned.
             //test delete the oneSide, polySide should remain
             $this->assertEquals(3, count(TestPolyOneToManyPolySide::getAll()));
             $this->assertTrue($oneSide->delete());
             $this->assertEquals(3, count(TestPolyOneToManyPolySide::getAll()));
-            foreach (TestPolyOneToManyPolySide::getAll() as $poly)
-            {
-               $poly->delete();
-            }
+            TestPolyOneToManyPolySide::deleteAll();
             $this->assertEquals(0, count(TestPolyOneToManyPolySide::getAll()));
         }
 
