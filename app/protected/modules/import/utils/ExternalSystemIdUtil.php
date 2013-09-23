@@ -55,8 +55,8 @@
             assert('$externalSystemId == null || is_string($externalSystemId)');
             $columnName = self::EXTERNAL_SYSTEM_ID_COLUMN_NAME;
             $tableName  = $model::getTableName(get_class($model));
-            RedBeanColumnTypeOptimizer::externalIdColumn($tableName, $columnName);
-            R::exec("update " . $tableName . " set $columnName = '" . $externalSystemId . "' where id = " . $model->id);
+            //RedBeanColumnTypeOptimizer::externalIdColumn($tableName, $columnName);
+            ZurmoRedBean::exec("update " . $tableName . " set $columnName = '" . $externalSystemId . "' where id = " . $model->id);
         }
     }
 ?>
