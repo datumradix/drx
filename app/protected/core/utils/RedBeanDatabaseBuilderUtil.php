@@ -588,6 +588,7 @@
                     case 'UsernameLengthValidator':
                     case 'ValidateTimeZone':
                     case 'AtLeastOneContentAreaRequiredValidator':
+                    case 'StripDummyHtmlContentFromOtherwiseEmptyFieldValidator':
                         break;
 
                     case 'RedBeanModelTypeValidator':
