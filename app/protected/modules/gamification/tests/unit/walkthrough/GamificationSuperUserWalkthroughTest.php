@@ -53,21 +53,17 @@
         public function testSuperUserAllDefaultControllerActions()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
-
             //Test all default controller actions that do not require any POST/GET variables to be passed.
             //This does not include portlet controller actions.
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
             $this->assertfalse(strpos($content, 'Leaderboard') === false);
-            $this->setGetArray(array(
-                'type' => GamePointUtil::LEADERBOARD_TYPE_WEEKLY));
+            $this->setGetArray(array('type' => GamePointUtil::LEADERBOARD_TYPE_WEEKLY));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
             $this->assertfalse(strpos($content, 'Leaderboard') === false);
-            $this->setGetArray(array(
-                'type' => GamePointUtil::LEADERBOARD_TYPE_MONTHLY));
+            $this->setGetArray(array('type' => GamePointUtil::LEADERBOARD_TYPE_MONTHLY));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
             $this->assertfalse(strpos($content, 'Leaderboard') === false);
-            $this->setGetArray(array(
-                'type' => GamePointUtil::LEADERBOARD_TYPE_OVERALL));
+            $this->setGetArray(array('type' => GamePointUtil::LEADERBOARD_TYPE_OVERALL));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
             $this->assertfalse(strpos($content, 'Leaderboard') === false);
         }
@@ -85,7 +81,7 @@
             //Level up notification
             $gameNotification           = new GameNotification();
             $gameNotification->user     = $super;
-            $gameNotification->setLevelChangeByNextLevelValue(2);
+            $gameNotification->setLevelChangeByNextLevelValue(2, 5);
             $saved                      = $gameNotification->save();
             $this->assertTrue($saved);
 
@@ -122,6 +118,52 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
             $this->assertFalse(strpos($content, 'ModalGameNotification0') === false);
             $this->assertFalse(strpos($content, 'ModalGameNotification1') === false);
+        }
+
+        public function testCollectRandomCoin()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $gameCoin = GameCoin::resolveByPerson($super);
+            $this->assertEquals(0, $gameCoin->value);
+            $this->runControllerWithNoExceptionsAndGetContent('gamification/default/collectRandomCoin', true);
+            $gameCoin = GameCoin::resolveByPerson($super);
+            $this->assertEquals(1, $gameCoin->value);
+        }
+        
+        public function testRefreshGameDashboardCoinContainer()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $gameCoin = GameCoin::resolveByPerson($super);
+            $this->assertEquals(1, $gameCoin->value);
+            $this->setGetArray(array('id' => $gameCoin->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/refreshGameDashboardCoinContainer');
+            $this->assertfalse(strpos($content, '1 coin') === false);
+        }
+        
+        public function testRedeemCollection()
+        {
+            $user = UserTestHelper::createBasicUser('Steven');
+            $gameCollection      = new GameCollection();
+            $gameCollection->person    = $user;
+            $gameCollection->type      = 'Butterflies';
+            $itemsData = array('RedemptionItem' => 0,
+                                 'Items' => array(
+                                    'AniseSwallowtail'  => 0,
+                                    'Buckeye'           => 0,
+                                    'Monarch'           => 0,
+                                    'PaintedLady'       => 0,
+                                    'Queen'             => 0));
+            $gameCollection->serializedData = serialize($itemsData);
+            $this->assertTrue($gameCollection->save());
+            $id = $gameCollection->id;
+            unset($gameCollection);
+            $gameCollection = GameCollection::getById($id);
+            $this->assertEquals('Butterflies', $gameCollection->type);
+            $this->assertEquals($user,         $gameCollection->person);
+            $this->assertEquals($itemsData, unserialize($gameCollection->serializedData));
+            $this->setGetArray(array('id' => $gameCollection->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/redeemCollection');
+            $this->assertfalse(strpos($content, 'Butterflies Collection') === false);
         }
     }
 ?>

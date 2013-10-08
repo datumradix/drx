@@ -73,7 +73,7 @@
             try
             {
                 $originalUser               = Yii::app()->user->userModel;
-                Yii::app()->user->userModel = BaseJobControlUserConfigUtil::getUserToRunAs();
+                Yii::app()->user->userModel = BaseControlUserConfigUtil::getUserToRunAs();
                 foreach (WorkflowMessageInQueue::getModelsToProcess(self::$pageSize) as $workflowMessageInQueue)
                 {
                     try
@@ -131,7 +131,9 @@
             {
                 return;
             }
-            WorkflowEmailMessagesUtil::processOnWorkflowMessageInQueueJob($workflow, $model,
+            $emailMessageForWorkflowForm = WorkflowEmailMessagesUtil::
+                                       makeEmailMessageForWorkflowFormByQueueModelAndWorkflow($workflowMessageInQueue, $workflow);
+            WorkflowEmailMessagesUtil::processOnWorkflowMessageInQueueJob($emailMessageForWorkflowForm, $model,
                                        self::resolveTriggeredByUser($workflowMessageInQueue));
         }
 

@@ -50,8 +50,19 @@
 
         const MERGED_MENU_ID                            = 'settings-header-menu';
 
+        const USER_GAME_DASHBOARD_WRAPPER_ID            = 'header-game-dashboard-link-wrapper';
+
+        const USER_GAME_DASHBOARD_LINK_ID               = 'header-game-dashboard-link';
+
+        const MODAL_CONTAINER_PREFIX                    = 'modalContainer';
+
         const MERGE_USER_AND_SETTINGS_MENU_IF_MOBILE    = true;
 
+        /**
+         * @param array $settingsMenuItems
+         * @param array $userMenuItems
+         * @param string $applicationName
+         */
         public function __construct($settingsMenuItems, $userMenuItems, $applicationName)
         {
             assert('is_array($settingsMenuItems)');
@@ -106,10 +117,16 @@
 
         protected static function renderHeaderMenus($userMenuItems, $settingsMenuItems)
         {
-            $userMenuItemsWithTopLevel = static::resolveUserMenuItemsWithTopLevelItem($userMenuItems);
+            $userMenuItemsWithTopLevel     = static::resolveUserMenuItemsWithTopLevelItem($userMenuItems);
             $settingsMenuItemsWithTopLevel = static::resolveSettingsMenuItemsWithTopLevelItem($settingsMenuItems);
-            return static::renderHeaderMenuContent($userMenuItemsWithTopLevel, self::USER_MENU_ID) .
-                static::renderHeaderMenuContent($settingsMenuItemsWithTopLevel, self::SETTINGS_MENU_ID);
+            $content = null;
+            if (Yii::app()->userInterface->isMobile() === false)
+            {
+                $content .= static::renderHeaderGameDashboardContent();
+            }
+            $content     .= static::renderHeaderMenuContent($settingsMenuItemsWithTopLevel, self::SETTINGS_MENU_ID);
+            $content     .= static::renderHeaderMenuContent($userMenuItemsWithTopLevel, self::USER_MENU_ID);
+            return $content;
         }
 
         protected static function resolveUserMenuItemsWithTopLevelItem($menuItems)
@@ -161,6 +178,31 @@
             ));
             $cClipWidget->endClip();
             return $cClipWidget->getController()->clips['headerMenu'];
+        }
+
+        protected static function renderHeaderGameDashboardContent()
+        {
+            $id      = static::USER_GAME_DASHBOARD_LINK_ID;
+            $url     = Yii::app()->createUrl('users/default/gameDashboard/',
+                                             array('id' => Yii::app()->user->userModel->id));
+            $content = ZurmoHtml::ajaxLink('¿', $url, static::resolveAjaxOptionsForGameDashboardModel($id),
+                array(
+                    'id' => $id,
+                )
+            );
+            return ZurmoHtml::tag('div', array('id' => static::USER_GAME_DASHBOARD_WRAPPER_ID,
+                   'class' => 'user-menu-item'), $content);
+        }
+
+        protected static function resolveAjaxOptionsForGameDashboardModel($id)
+        {
+            $title = Zurmo::t('GamificationModule', 'User Game Dashboard');
+            return   ModalView::getAjaxOptionsForModalLink($title, static::getModalContainerId($id));
+        }
+
+        protected static function getModalContainerId($id)
+        {
+            return self::MODAL_CONTAINER_PREFIX . '-' . $id;
         }
     }
 ?>

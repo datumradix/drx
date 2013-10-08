@@ -189,18 +189,18 @@
             $this->assertTrue($gameLevel->id > 0);
             $this->assertEquals(2, $gameLevel->value);
 
-            //test user at general level 15 with 100 000 points, so there is nowhere to move up to (No game notification created)
-            $gamePoint->value = 100000;
+            //test user at general level 50 with 700 000 points, so there is nowhere to move up to (No game notification created)
+            $gamePoint->value = 700000;
             $this->assertTrue($gamePoint->save());
-            $gameLevel->value = 15;
+            $gameLevel->value = 50;
             $this->assertTrue($gameLevel->save());
             Yii::app()->gameHelper->resolveLevelChange();
             $this->assertEquals(2, count(GameNotification::getAllByUser($billy)));
             $gamePoint = GamePoint::resolveToGetByTypeAndPerson(GamePoint::TYPE_USER_ADOPTION, $billy);
-            $this->assertEquals(100000, $gamePoint->value);
+            $this->assertEquals(700000, $gamePoint->value);
             $gameLevel = GameLevel::resolveByTypeAndPerson(GameLevel::TYPE_GENERAL, $billy);
             $this->assertTrue($gameLevel->id > 0);
-            $this->assertEquals(15, $gameLevel->value);
+            $this->assertEquals(50, $gameLevel->value);
         }
 
         /**
@@ -214,7 +214,7 @@
             $this->assertEquals(2, count(GameNotification::getAllByUser($billy)));
 
             $gamePoint2 = GamePoint::resolveToGetByTypeAndPerson(GamePoint::TYPE_USER_ADOPTION, $billy);
-            $this->assertEquals(100000, $gamePoint2->value);
+            $this->assertEquals(700000, $gamePoint2->value);
 
             //test user at general level 0 where they dont have enough points to move up (No game notification created)
             $gamePoint = new GamePoint();
@@ -230,7 +230,7 @@
             $this->assertTrue($gameLevel->id < 0);
             $this->assertEquals(1, $gameLevel->value);
             $gamePoint2 = GamePoint::resolveToGetByTypeAndPerson(GamePoint::TYPE_USER_ADOPTION, $billy);
-            $this->assertEquals(100000, $gamePoint2->value);
+            $this->assertEquals(700000, $gamePoint2->value);
 
             //test user at general level 0 where they do have enough points to move up (No game notification created)
             $gamePoint->value = 105;
@@ -243,7 +243,7 @@
             $this->assertTrue($gameLevel->id > 0);
             $this->assertEquals(1, $gameLevel->value);
             $gamePoint2 = GamePoint::resolveToGetByTypeAndPerson(GamePoint::TYPE_USER_ADOPTION, $billy);
-            $this->assertEquals(100100, $gamePoint2->value);
+            $this->assertEquals(700100, $gamePoint2->value);
 
             //test user at general level 1 where they dont have enough points to move up (No game notification created)
             $gamePoint->value = 150;
@@ -256,7 +256,7 @@
             $this->assertTrue($gameLevel->id > 0);
             $this->assertEquals(1, $gameLevel->value);
             $gamePoint2 = GamePoint::resolveToGetByTypeAndPerson(GamePoint::TYPE_USER_ADOPTION, $billy);
-            $this->assertEquals(100100, $gamePoint2->value);
+            $this->assertEquals(700100, $gamePoint2->value);
 
             //test user at general level 1 where they do have enough points to move up (No game notification created)
             $gamePoint->value = 250;
@@ -269,22 +269,22 @@
             $this->assertTrue($gameLevel->id > 0);
             $this->assertEquals(2, $gameLevel->value);
             $gamePoint2 = GamePoint::resolveToGetByTypeAndPerson(GamePoint::TYPE_USER_ADOPTION, $billy);
-            $this->assertEquals(100210, $gamePoint2->value);
+            $this->assertEquals(700210, $gamePoint2->value);
 
-            //test user at general level 15 with 100 000 points, so there is nowhere to move up to (No game notification created)
-            $gamePoint->value = 100000;
+            //test user at general level 50 with 700 000 points, so there is nowhere to move up to (No game notification created)
+            $gamePoint->value = 700000;
             $this->assertTrue($gamePoint->save());
             $gameLevel->value = 7;
             $this->assertTrue($gameLevel->save());
             Yii::app()->gameHelper->resolveLevelChange();
             $this->assertEquals(2, count(GameNotification::getAllByUser($billy)));
             $gamePoint = GamePoint::resolveToGetByTypeAndPerson(GamePoint::TYPE_NEW_BUSINESS, $billy);
-            $this->assertEquals(100000, $gamePoint->value);
+            $this->assertEquals(700000, $gamePoint->value);
             $gameLevel = GameLevel::resolveByTypeAndPerson(GameLevel::TYPE_NEW_BUSINESS, $billy);
             $this->assertTrue($gameLevel->id > 0);
             $this->assertEquals(7, $gameLevel->value);
             $gamePoint2 = GamePoint::resolveToGetByTypeAndPerson(GamePoint::TYPE_USER_ADOPTION, $billy);
-            $this->assertEquals(100210, $gamePoint2->value);
+            $this->assertEquals(700210, $gamePoint2->value);
         }
 
         /**
@@ -345,6 +345,48 @@
             $this->assertEquals(500, $gamePoint->value);
             $this->assertTrue($gameLevel->id > 0);
             $this->assertEquals(3, $gameLevel->value);
+        }
+
+        public function testResolveNewCollectionItems()
+        {
+            $bool = GameCollection::shouldReceiveCollectionItem();
+            if ($bool) 
+            {
+                Yii::app()->user->userModel      = User::getByUsername('super');
+                $availableTypes = GameCollection::getAvailableTypes();
+                $compareData    = array('Butterflies','Frogs');
+                $this->assertEquals($compareData, $availableTypes);
+                $randomKey      = array_rand($availableTypes, 1);
+                $this->assertTrue($randomKey === 0 || $randomKey === 1);
+                $collection     = GameCollection::resolveByTypeAndPerson($availableTypes[$randomKey], Yii::app()->user->userModel);
+                $itemsData      = $collection->getItemsData();
+                $randomKey      = array_rand($itemsData, 1);
+                if ($randomKey == 0)
+                {
+                    $compareData = array('AniseSwallowtail' => 0,
+                                         'Buckeye'          => 0,
+                                         'Monarch'          => 0,
+                                         'PaintedLady'      => 0,
+                                         'Queen'            => 0);
+                    $this->assertTrue($randomKey == 'AniseSwallowtail' || $randomKey == 'Buckeye' || 
+                                      $randomKey == 'Monarch' || $randomKey == 'PaintedLady' || $randomKey == 'Queen');
+                }
+                else
+                {
+                    $compareData = array('Goliath'          => 0,
+                                         'NorthernLeopard'  => 0,
+                                         'OrnateHorned'     => 0,
+                                         'Tree'             => 0,
+                                         'Wood'             => 0);
+                    $this->assertTrue($randomKey == 'Goliath' || $randomKey == 'NorthernLeopard' || 
+                                      $randomKey == 'OrnateHorned' || $randomKey == 'Tree' || $randomKey == 'Wood');
+                }
+                $compareData[$randomKey] = $compareData[$randomKey] + 1;                     
+                $itemsData[$randomKey] = $itemsData[$randomKey] + 1;
+                $collection->setItemsData($itemsData);
+                $collection->save();      
+                $this->assertEquals($compareData, $collection->getItemsData()); 
+            }
         }
     }
 ?>

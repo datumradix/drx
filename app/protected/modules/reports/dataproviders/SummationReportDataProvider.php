@@ -39,6 +39,8 @@
      */
     class SummationReportDataProvider extends ReportDataProvider
     {
+        protected $haveGrandTotals = true;
+
         /**
          * Resolved to include the groupBys as query only display attributes, and mark all display attributes that are
          * also groupBys as used by the drillDown.
@@ -225,7 +227,7 @@
                                      ReportDataProviderToAmChartMakerAdapter::resolveFirstSeriesDisplayLabelName(1)
                                         =>
                                      $this->getDisplayAttributeByAttribute($this->report->getChart()->firstSeries)->
-                                     resolveValueAsLabelForHeaderCell($firstSeriesDataValue));
+                                     resolveValueAsLabelForHeaderCell($firstSeriesDataValue, true));
             }
             return new ReportDataProviderToAmChartMakerAdapter($this->report, $chartData);
         }
@@ -250,14 +252,14 @@
                 $chartData[$firstSeriesDataValue] = array(
                                                     ReportDataProviderToAmChartMakerAdapter::resolveFirstSeriesDisplayLabelName(1) =>
                                                     $this->getDisplayAttributeByAttribute($this->report->getChart()->firstSeries)->
-                                                    resolveValueAsLabelForHeaderCell($firstSeriesDataValue));
+                                                    resolveValueAsLabelForHeaderCell($firstSeriesDataValue, true));
                 $secondSeriesDataValue            = $data->resolveRawValueByDisplayAttributeKey($secondSeriesDisplayAttributeKey);
                 if (!isset($secondSeriesValueData[$secondSeriesDataValue]))
                 {
                     $secondSeriesValueData[$secondSeriesDataValue]      = $secondSeriesValueCount;
                     $secondSeriesDisplayLabels[$secondSeriesValueCount] = $this->getDisplayAttributeByAttribute(
                                                                           $this->report->getChart()->secondSeries)->
-                                                                          resolveValueAsLabelForHeaderCell($secondSeriesDataValue);
+                                                                          resolveValueAsLabelForHeaderCell($secondSeriesDataValue, true);
                     $secondSeriesValueCount++;
                 }
             }

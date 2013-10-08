@@ -210,6 +210,7 @@
                 'defaultSortAttribute' => 'type',
                 'noAudit' => array(
                     'type',
+                    'value',
                     'person',
                 ),
             );
@@ -223,6 +224,7 @@
 
         /**
          * Add specified value.
+         * @param int $value
          */
         public function addValue($value)
         {
