@@ -64,7 +64,7 @@
                             'DryFruit'          => Zurmo::t('GamificationModule', 'DryFruit'),
                             'Fruit'          => Zurmo::t('GamificationModule', 'Fruit'),
                             'Spices'      => Zurmo::t('GamificationModule', 'Spices'),
-                            'Vegtables'            => Zurmo::t('GamificationModule', 'Vegtables'),
+                            'Vegetables'            => Zurmo::t('GamificationModule', 'Vegetables'),
             );
         }
 
@@ -77,7 +77,7 @@
                             'DryFruit'          => 10,
                             'Fruit'          => 10,
                             'Spices'      => 3,
-                            'Vegtables'            => 6,
+                            'Vegetables'            => 6,
             );
         }
 
@@ -94,7 +94,7 @@
          * @see hasCollectionRedemptionItem
          * @return bool
          */
-        public static function getCollectionRedemptionItemType()
+        public static function getCollectionLogoType()
         {
             return 'Pasta';
         }
@@ -103,7 +103,7 @@
          * @see hasCollectionRedemptionItem
          * @return bool
          */
-        public static function getCollectionRedemptionItemLabel()
+        public static function getCollectionLogoLabel()
         {
             return Zurmo::t('GamificationModule', 'Pasta');
         }
