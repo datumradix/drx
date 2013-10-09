@@ -354,6 +354,7 @@
             'emailMessages',
             'emailTemplates',
             'export',
+            'gameRewards',
             'gamification',
             'home',
             'import',

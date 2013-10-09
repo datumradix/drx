@@ -506,7 +506,8 @@ footer, header, hgroup, menu, nav, section {
 }
 
 #user-header-menu,
-#settings-header-menu{
+#settings-header-menu,
+#header-game-dashboard-link-wrapper{
 	position: relative;
 	z-index: 100;
 	float:left;
@@ -603,6 +604,16 @@ footer, header, hgroup, menu, nav, section {
 		display: none;
 	}
 }
+
+#header-game-dashboard-link-wrapper{
+	a{
+		.symbly(22px);
+		color: #ddd;
+		line-height: 41px;
+		display: block;
+	}
+}
+
 
 #GlobalSearchAndShortcutsCreateMenuView{
 	height:40px;
@@ -1227,9 +1238,9 @@ body > .ui-autocomplete{
 			width:100% !important;
 		}
 		.panel{
-			width:70%;
-			float:left;
-			position: relative;
+			//width:70%;
+			//float:left;
+			//position: relative;
 		}
 		.juiportlet-widget,
 		.details-table{
@@ -5423,4 +5434,5 @@ div.hasHalfs{
 @import 'kanban.less';
 @import 'webforms.less';
 @import 'business-card.less';
+@import 'game-dashboard.less';
 @import 'media-queries.less';
