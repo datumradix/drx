@@ -102,8 +102,9 @@
          */
         public function saveModelFromPost($postData, $model, & $savedSuccessfully, & $modelToStringValue, $returnOnValidate = false)
         {
-            $sanitizedPostData                 = PostUtil::sanitizePostByDesignerTypeForSavingModel(
-                                                 $model, $postData);
+            $dataSanitizerClassName             = $this->getDataSanitizerUtilClassName();
+            $sanitizedPostData                  = $dataSanitizerClassName::sanitizePostByDesignerTypeForSavingModel(
+                                                                                                    $model, $postData);
             return $this->saveModelFromSanitizedData($sanitizedPostData, $model, $savedSuccessfully, $modelToStringValue, $returnOnValidate);
         }
 
@@ -120,13 +121,14 @@
             //post method above, not sure how this is coming in from API.
             $explicitReadWriteModelPermissions = static::resolveAndMakeExplicitReadWriteModelPermissions($sanitizedData,
                                                                                                          $model);
-            $readyToUseData                    = ExplicitReadWriteModelPermissionsUtil::
-                                                 removeIfExistsFromPostData($sanitizedData);
+            $readyToUseData                     = ExplicitReadWriteModelPermissionsUtil::
+                                                    removeIfExistsFromPostData($sanitizedData);
 
-            $sanitizedOwnerData            = PostUtil::sanitizePostDataToJustHavingElementForSavingModel(
-                                                 $readyToUseData, 'owner');
-            $sanitizedDataWithoutOwner     = PostUtil::
-                                                 removeElementFromPostDataForSavingModel($readyToUseData, 'owner');
+            $dataSanitizerClassName             = $this->getDataSanitizerUtilClassName();
+            $sanitizedOwnerData                 = $dataSanitizerClassName::sanitizePostDataToJustHavingElementForSavingModel(
+                                                                                        $readyToUseData, 'owner');
+            $sanitizedDataWithoutOwner          = $dataSanitizerClassName::removeElementFromPostDataForSavingModel(
+                                                                                        $readyToUseData, 'owner');
             $model->setAttributes($sanitizedDataWithoutOwner);
             $this->afterSetAttributesDuringSave($model, $explicitReadWriteModelPermissions);
             if ($explicitReadWriteModelPermissions instanceof ExplicitReadWriteModelPermissions)
@@ -213,6 +215,11 @@
                 echo CJSON::encode($errorData);
                 Yii::app()->end(0, false);
             }
+        }
+
+        protected function getDataSanitizerUtilClassName()
+        {
+            return 'PostUtil';
         }
     }
 ?>
