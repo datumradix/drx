@@ -34,64 +34,19 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class GameRewardsRedeemListView extends SecuredListView
+    /**
+     * Class defining rules for Project gamification behavior.
+     */
+    class ProjectGamificationRules extends GamificationRules
     {
-        public static function getDefaultMetadata()
+        public static function getPointTypesAndValuesForCreateModel()
         {
-            $metadata = array(
-                'global' => array(
-                    'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'GameRewardRedeemSummary'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            );
-            return $metadata;
+            return array(GamePoint::TYPE_COMMUNICATION => 10);
         }
 
-        public function getRowsAreSelectable()
+        public static function getPointTypesAndValuesForUpdateModel()
         {
-            return false;
-        }
-
-        public function getAvailableCoinsForCurrentUser()
-        {
-            $gameCoin = GameCoin::resolveByPerson(Yii::app()->user->userModel);
-            return (int)$gameCoin->value;
-        }
-
-        protected static function getPagerCssClass()
-        {
-            return 'pager horizontal';
-        }
-
-        protected function getCGridViewPagerParams()
-        {
-            return array(
-                'firstPageLabel'   => '<span>first</span>',
-                'prevPageLabel'    => '<span>previous</span>',
-                'nextPageLabel'    => '<span>next</span>',
-                'lastPageLabel'    => '<span>last</span>',
-                'class'            => 'SimpleListLinkPager',
-                'paginationParams' => GetUtil::getData(),
-                'route'            => 'default/redeemList',
-            );
-        }
-
-        protected function getCGridViewLastColumn()
-        {
-            return array();
+            return array(GamePoint::TYPE_TIME_MANAGEMENT => 10);
         }
     }
 ?>

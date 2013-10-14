@@ -34,64 +34,20 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class GameRewardsRedeemListView extends SecuredListView
+    /**
+     * Class for defining the badge associated with searching projects
+     */
+    class SearchProjectsGameBadgeRules extends SearchModelsGameBadgeRules
     {
-        public static function getDefaultMetadata()
+        public static function getPassiveDisplayLabel($value)
         {
-            $metadata = array(
-                'global' => array(
-                    'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'GameRewardRedeemSummary'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            );
-            return $metadata;
+            return Zurmo::t('ProjectsModule', '{n} ProjectsModuleSingularLabel search completed|{n} ProjectsModuleSingularLabel searches completed',
+                          array_merge(array($value), LabelUtil::getTranslationParamsForAllModules()));
         }
 
-        public function getRowsAreSelectable()
+        public static function badgeGradeUserShouldHaveByPointsAndScores($userPointsByType, $userScoresByType)
         {
-            return false;
-        }
-
-        public function getAvailableCoinsForCurrentUser()
-        {
-            $gameCoin = GameCoin::resolveByPerson(Yii::app()->user->userModel);
-            return (int)$gameCoin->value;
-        }
-
-        protected static function getPagerCssClass()
-        {
-            return 'pager horizontal';
-        }
-
-        protected function getCGridViewPagerParams()
-        {
-            return array(
-                'firstPageLabel'   => '<span>first</span>',
-                'prevPageLabel'    => '<span>previous</span>',
-                'nextPageLabel'    => '<span>next</span>',
-                'lastPageLabel'    => '<span>last</span>',
-                'class'            => 'SimpleListLinkPager',
-                'paginationParams' => GetUtil::getData(),
-                'route'            => 'default/redeemList',
-            );
-        }
-
-        protected function getCGridViewLastColumn()
-        {
-            return array();
+            return static::badgeGradeUserShouldHaveByPointsAndScoresByModelClassName($userPointsByType, $userScoresByType, 'Project');
         }
     }
 ?>
