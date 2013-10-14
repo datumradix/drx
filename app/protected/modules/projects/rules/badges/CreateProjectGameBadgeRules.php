@@ -34,64 +34,51 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class GameRewardsRedeemListView extends SecuredListView
+    /**
+     * Class for defining the badge associated with creating a new project
+     */
+    class CreateProjectGameBadgeRules extends GameBadgeRules
     {
-        public static function getDefaultMetadata()
+        public static $valuesIndexedByGrade = array(
+            1  => 1,
+            2  => 5,
+            3  => 10,
+            4  => 25,
+            5  => 50,
+            6  => 75,
+            7  => 100,
+            8  => 125,
+            9  => 150,
+            10 => 175,
+            11 => 200,
+            12 => 225,
+            13 => 250
+        );
+
+        /**
+         * @param $value
+         * @return string
+         */
+        public static function getPassiveDisplayLabel($value)
         {
-            $metadata = array(
-                'global' => array(
-                    'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'GameRewardRedeemSummary'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            );
-            return $metadata;
+            return Zurmo::t('ProjectsModule', '{n} ProjectsModuleSingularLabel created|{n} ProjectsModulePluralLabel created',
+                          array_merge(array($value), LabelUtil::getTranslationParamsForAllModules()));
         }
 
-        public function getRowsAreSelectable()
+        /**
+         * @param array $userPointsByType
+         * @param array $userScoresByType
+         * @return int
+         */
+        public static function badgeGradeUserShouldHaveByPointsAndScores($userPointsByType, $userScoresByType)
         {
-            return false;
-        }
-
-        public function getAvailableCoinsForCurrentUser()
-        {
-            $gameCoin = GameCoin::resolveByPerson(Yii::app()->user->userModel);
-            return (int)$gameCoin->value;
-        }
-
-        protected static function getPagerCssClass()
-        {
-            return 'pager horizontal';
-        }
-
-        protected function getCGridViewPagerParams()
-        {
-            return array(
-                'firstPageLabel'   => '<span>first</span>',
-                'prevPageLabel'    => '<span>previous</span>',
-                'nextPageLabel'    => '<span>next</span>',
-                'lastPageLabel'    => '<span>last</span>',
-                'class'            => 'SimpleListLinkPager',
-                'paginationParams' => GetUtil::getData(),
-                'route'            => 'default/redeemList',
-            );
-        }
-
-        protected function getCGridViewLastColumn()
-        {
-            return array();
+            assert('is_array($userPointsByType)');
+            assert('is_array($userScoresByType)');
+            if (isset($userScoresByType['CreateProject']))
+            {
+                return static::getBadgeGradeByValue((int)$userScoresByType['CreateProject']->value);
+            }
+            return 0;
         }
     }
 ?>
