@@ -34,18 +34,17 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
     /**
-     * Status dropdown element for project
+     * Action element which renders create link on clicking of which opens a modal window
      */
-    class ProjectStatusDropDownElement extends ConstantBasedStaticDropDownFormElement
+    class CreateTaskFromRelatedKanbanModalLinkActionElement extends CreateFromRelatedModalLinkActionElement
     {
-        protected static $attributeName = 'status';
-
         /**
-         * @return array
+         * Gets default label
+         * @return string
          */
-        protected static function resolveDropDownArray()
+        protected function getDefaultLabel()
         {
-            return Project::getStatusDropDownArray();
+            return Zurmo::t('TasksModule', 'Create Task');
         }
     }
 ?>
