@@ -210,9 +210,8 @@
          */
         protected function resolveActiveFormAjaxValidationOptions()
         {
-            $id = Yii::app()->request->getParam('id', null);
-            $getData        = GetUtil::getData();
-            $sourceId       = null;
+            $id       = Yii::app()->request->getParam('id');
+            $sourceId = null;
             if(GetUtil::resolveParamFromRequest('modalTransferInformation') != null)
             {
                 $relationAttributeName   = GetUtil::resolveModalTransferInformationParamFromRequest('relationAttributeName');

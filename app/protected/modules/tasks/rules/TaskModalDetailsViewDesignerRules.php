@@ -33,41 +33,56 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
-    /**
-     * Action element which renders create link on clicking of which opens a modal window
-     */
-    class CreateTaskFromRelatedKanbanModalLinkActionElement extends CreateFromRelatedModalLinkActionElement
+
+    class TaskModalDetailsViewDesignerRules extends EditViewDesignerRules
     {
-        /**
-         * Gets default label
-         * @return string
-         */
-        protected function getDefaultLabel()
+        public function allowEditInLayoutTool()
         {
-            return Zurmo::t('TasksModule', 'Create Task');
+            return true;
         }
 
-        public function render()
+        public function getDisplayName()
         {
-            $content  = ZurmoHtml::openTag('div', array('class' => 'default-button'));
-            $content .= parent::render();
-            $content .= ZurmoHtml::closeTag('div');
-            return $content;
+            return Zurmo::t('TasksModule', 'Modal Details View');
         }
 
-        protected function getHtmlOptions()
+        public function maxCellsPerRow()
         {
-            return array('class' => 'button-action');
+            return 1;
         }
 
-        protected function resolveLabelAndWrap()
+        public function canConfigureLayoutPanelsType()
         {
-            if ($this->wrapLabel())
-            {
-                $content = ZurmoHtml::tag('i', array('class' => 'icon-create'), '');
-                return $content . ZurmoHtml::wrapLabel($this->getLabel(), 'button-label');
-            }
-            return $this->getLabel();
+            return false;
+        }
+
+        public function getSavableMetadataRules()
+        {
+            return array(
+                'ProjectAsProjectTask'
+            );
+        }
+
+        public function getNonPlaceableLayoutAttributeNames()
+        {
+            return array(
+                'id'
+            );
+        }
+
+        public function canAddPanels()
+        {
+            return false;
+        }
+
+        public function canMovePanels()
+        {
+            return false;
+        }
+
+        public function canRemovePanels()
+        {
+            return false;
         }
     }
 ?>
