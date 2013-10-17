@@ -381,10 +381,12 @@
         public static function resolveViewAjaxOptionsForSelectingModel()
         {
             $title = self::getModalTitleForViewTask();
-            return   ModalView::getAjaxOptionsForModalLink($title, self::getViewModalContainerId());
+            return   ModalView::getAjaxOptionsForModalLink($title, self::getViewModalContainerId(), 'auto', 600,
+                     'center top+25', $class = "'task-dialog'");
         }
 
         /**
+         * Utilized by shortcut menu
          * @return string
          */
         public static function renderModalContainer()
@@ -393,21 +395,22 @@
         }
 
         /**
+         * Utilized by home page task portlet and related task portlets
          * @return string
          */
         public static function renderViewModalContainer()
         {
             return ZurmoHtml::tag('div', array('id' => self::getViewModalContainerId()), '');
         }
-
         /**
-         * Resolves ajax options for selecting model
+         * @param $renderType
          * @return array
          */
         public static function resolveAjaxOptionsForEditModel($renderType)
         {
             $title = self::getModalTitleForCreateTask($renderType);
-            return   ModalView::getAjaxOptionsForModalLink($title, self::getModalContainerId());
+            return   ModalView::getAjaxOptionsForModalLink($title, self::getModalContainerId(), 'auto', 600,
+                     'center top+25', $class = "'task-dialog'");
         }
 
         /**

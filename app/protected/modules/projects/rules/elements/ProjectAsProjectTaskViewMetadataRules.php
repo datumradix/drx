@@ -33,41 +33,17 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
-    /**
-     * Action element which renders create link on clicking of which opens a modal window
-     */
-    class CreateTaskFromRelatedKanbanModalLinkActionElement extends CreateFromRelatedModalLinkActionElement
+
+    class ProjectAsProjectTaskViewMetadataRules
     {
-        /**
-         * Gets default label
-         * @return string
-         */
-        protected function getDefaultLabel()
+        public static function resolveElementMetadata($elementInformation, & $elementMetadata)
         {
-            return Zurmo::t('TasksModule', 'Create Task');
-        }
-
-        public function render()
-        {
-            $content  = ZurmoHtml::openTag('div', array('class' => 'default-button'));
-            $content .= parent::render();
-            $content .= ZurmoHtml::closeTag('div');
-            return $content;
-        }
-
-        protected function getHtmlOptions()
-        {
-            return array('class' => 'button-action');
-        }
-
-        protected function resolveLabelAndWrap()
-        {
-            if ($this->wrapLabel())
+            $elementclassname = $elementInformation['type'] . 'Element';
+            if ($elementclassname == 'ProjectElement' ||
+                is_subclass_of($elementclassname, 'ProjectElement'))
             {
-                $content = ZurmoHtml::tag('i', array('class' => 'icon-create'), '');
-                return $content . ZurmoHtml::wrapLabel($this->getLabel(), 'button-label');
+                $elementMetadata['type']     = 'ProjectForTask';
             }
-            return $this->getLabel();
         }
     }
 ?>

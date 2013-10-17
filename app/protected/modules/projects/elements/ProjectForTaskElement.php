@@ -33,41 +33,18 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
+
     /**
-     * Action element which renders create link on clicking of which opens a modal window
+     * Override to only show noneditable if the project is connected on the task
      */
-    class CreateTaskFromRelatedKanbanModalLinkActionElement extends CreateFromRelatedModalLinkActionElement
+    class ProjectForTaskElement extends ModelElement
     {
-        /**
-         * Gets default label
-         * @return string
-         */
-        protected function getDefaultLabel()
+        protected function renderNonEditable()
         {
-            return Zurmo::t('TasksModule', 'Create Task');
-        }
-
-        public function render()
-        {
-            $content  = ZurmoHtml::openTag('div', array('class' => 'default-button'));
-            $content .= parent::render();
-            $content .= ZurmoHtml::closeTag('div');
-            return $content;
-        }
-
-        protected function getHtmlOptions()
-        {
-            return array('class' => 'button-action');
-        }
-
-        protected function resolveLabelAndWrap()
-        {
-            if ($this->wrapLabel())
+            if($this->model->project->id > 0)
             {
-                $content = ZurmoHtml::tag('i', array('class' => 'icon-create'), '');
-                return $content . ZurmoHtml::wrapLabel($this->getLabel(), 'button-label');
+                return parent::renderNonEditable();
             }
-            return $this->getLabel();
         }
     }
 ?>

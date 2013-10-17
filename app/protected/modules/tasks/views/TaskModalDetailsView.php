@@ -35,9 +35,9 @@
      ********************************************************************************/
 
     /**
-     * Details view for the task
+     * Modal window for viewing a task
      */
-    class TaskDetailsView extends SecuredDetailsView
+    class TaskModalDetailsView extends SecuredDetailsView
     {
         public static function getDefaultMetadata()
         {
@@ -53,15 +53,23 @@
                     'derivedAttributeTypes' => array(
                         'ActivityItems',
                         'DerivedExplicitReadWriteModelPermissions',
-                        //todO: more to add here and in nonplacbles
                     ),
                     'nonPlaceableAttributeNames' => array(
-                        'latestDateTime'
+                        'latestDateTime',
                     ),
-                    'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_FIRST, //todo: non changable in designer
+                    'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_FIRST,
                     'panels' => array(
                         array(
                             'rows' => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => null, 'type' => 'Null'),
+                                            ),
+                                        ),
+                                    )
+                                ),
                             ),
                         ),
                         array(
@@ -70,11 +78,26 @@
                                     array(
                                         array(
                                             'elements' => array(
+                                                array('attributeName' => 'null', 'type' => 'ActivityItems'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'project', 'type' => 'ProjectForTask'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
                                                 array('attributeName' => 'null',
                                                     'type' => 'DerivedExplicitReadWriteModelPermissions'),
-                                                //todo: no real reason to show this or project. by default show nothing?
-                                                //todo: i guess show activity item if NOT related to project. we could filter out? hmm
-                                                //todo: do we need 2 different versions of TaskDetailsView children?
                                             ),
                                         ),
                                     )
@@ -344,6 +367,7 @@
          */
         protected function registerEditInPlaceScript() //todo: maybe remove this if we don't use it
         {
+            /**
             $taskCheckItemUrl     = Yii::app()->createUrl('tasks/taskCheckItems/updateNameViaAjax');
             $updateDesctiptionUrl = Yii::app()->createUrl('tasks/default/updateDescriptionViaAjax');
             Yii::app()->clientScript->registerScriptFile(
@@ -367,6 +391,12 @@
                                                     });';
             Yii::app()->getClientScript()->registerScript('editableScript', $script, ClientScript::POS_END);
             Yii::app()->getClientScript()->registerScript('editableTextAreaScript', $scriptTextArea, ClientScript::POS_END);
+             * **/
+        }
+
+        public static function getDesignerRulesType()
+        {
+            return 'TaskModalDetailsView';
         }
     }
 ?>
