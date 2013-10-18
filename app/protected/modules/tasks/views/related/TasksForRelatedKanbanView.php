@@ -62,8 +62,8 @@
                             array('type'            => 'CreateTaskFromRelatedKanbanModalLink',
                                   'routeModuleId'   => 'eval:$this->moduleId',
                                   'routeParameters' => 'eval:$this->getCreateLinkRouteParameters()',
-                                  'ajaxOptions'     => 'eval:TasksUtil::resolveAjaxOptionsForEditModel("Create")',
-                                  'uniqueLayoutId'  => 'eval:$this->uniqueLayoutId',
+                                  'ajaxOptions'     => 'eval:TasksUtil::resolveAjaxOptionsForModalView("Create", $this->getGridViewId())',
+                                  'sourceKanbanBoardId' => 'eval:$this->getGridViewId()',
                                   'modalContainerId'=> 'eval:TasksUtil::getModalContainerId()'
                             ),
 
@@ -124,23 +124,11 @@
             $cClipWidget->widget($this->getGridViewWidgetPath(), $this->getCGridViewParams());
             $cClipWidget->endClip();
             $content     = $this->renderKanbanViewTitleWithActionBars();
-            $content    .= TasksUtil::renderViewModalContainer();
-            //Check for zero count
-            if($this->getDataProvider()->getTotalItemCount() > 0)
+            $content    .= $cClipWidget->getController()->clips['ListView'] . "\n";
+            if ($this->getRowsAreSelectable())
             {
-                $content    .= $cClipWidget->getController()->clips['ListView'] . "\n";
-                if ($this->getRowsAreSelectable())
-                {
-                    $content .= ZurmoHtml::hiddenField($this->gridId . $this->gridIdSuffix .
-                                                        '-selectedIds', implode(",", $this->selectedIds)) . "\n"; // Not Coding Standard
-                }
-            }
-            else
-            {
-                $zeroModelView = new ZeroTasksForRelatedModelYetView($this->controllerId,
-                                                                     $this->moduleId, 'Task',
-                                                                     get_class($this->params['relationModel']));
-                $content .= $zeroModelView->render();
+                $content .= ZurmoHtml::hiddenField($this->gridId . $this->gridIdSuffix .
+                                                    '-selectedIds', implode(",", $this->selectedIds)) . "\n"; // Not Coding Standard
             }
             $content .= $this->renderScripts();
             return $content;
@@ -161,14 +149,14 @@
         protected function getCardColumns()
         {
             return array(
-                'name'   => array('value'  => $this->getLinkString('$data->name', 'name'), 'class' => 'task-name'),
-                'status' => array('value' => 'TasksUtil::resolveActionButtonForTaskByStatus(intval($data->status), "' .
-                                           $this->controllerId . '", "' . $this->moduleId . '", $data->id)',
-                                  'class' => 'task-status'),
+                'name'   => array('value'   => $this->getLinkString('$data->name', 'name'), 'class' => 'task-name'),
+                'status' => array('value'   => 'TasksUtil::resolveActionButtonForTaskByStatus(intval($data->status), "' .
+                                               $this->controllerId . '", "' . $this->moduleId . '", $data->id)',
+                                               'class' => 'task-status'),
                 'subscribe' => array('value' => array('TasksUtil', 'getKanbanSubscriptionLink'),
-                                     'class' => 'task-subscription'),
+                                                'class' => 'task-subscription'),
                 'completionBar' => array('value' => 'TasksUtil::renderCompletionProgressBarContent($data)',
-                                         'class' => 'task-completion')
+                                                    'class' => 'task-completion')
             );
         }
 
@@ -234,9 +222,11 @@
          */
         public function resolveLinkString($data, $row)
         {
-            $taskUtil    = new TasksUtil();
-            $content     = $taskUtil->getLinkForViewModal($data, $row, $this->controllerId,
-                                                          $this->moduleId, $this->getActionModuleClassName());
+            $content     = TasksUtil::getModalDetailsLink($data,
+                                                          $this->controllerId,
+                                                          $this->moduleId,
+                                                          $this->getActionModuleClassName(),
+                                                          $this->getGridViewId());
             return $content;
         }
 
@@ -324,16 +314,6 @@
         }
 
         /**
-         * Override to pass the sourceId
-         * @return type
-         */
-        protected function getCreateLinkRouteParameters()
-        {
-            return array_merge( array('sourceId' => $this->getGridViewId()),
-                                parent::getCreateLinkRouteParameters());
-        }
-
-        /**
          * Renders kanban view with action bars
          * @return string
          */
@@ -383,6 +363,17 @@
         public static function getDesignerRulesType()
         {
             return null;
+        }
+
+        /**
+         * Renders the zero model view when there is no data.
+         */
+        public function getEmptyText()
+        {
+            $zeroModelView = new ZeroTasksForRelatedModelYetView($this->controllerId,
+                                                                     $this->moduleId, 'Task',
+                                                                     get_class($this->params['relationModel']));
+            return $zeroModelView->render();
         }
     }
 ?>

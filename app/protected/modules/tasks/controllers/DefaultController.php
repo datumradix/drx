@@ -68,7 +68,7 @@
                                                     $activity);
             TasksUtil::markUserHasReadLatest($activity, Yii::app()->user->userModel);
             $pageViewClassName = $this->getPageViewClassName();
-            $detailsView       = new TaskDetailsView('Details', $this->getId(), $this->getModule()->getId(), $activity);
+            $detailsView       = new TaskModalDetailsView('Details', $this->getId(), $this->getModule()->getId(), $activity);
             $view              = new $pageViewClassName(ZurmoDefaultViewUtil::
                                          makeStandardViewForCurrentUser($this,$detailsView));
             echo $view->render();
@@ -228,14 +228,16 @@
 
         /**
          * Create task from related view
+         * @param null $relationAttributeName
+         * @param null $relationModelId
+         * @param null $relationModuleId
          */
-        public function actionModalCreateFromRelation()
+        public function actionModalCreateFromRelation($relationAttributeName = null, $relationModelId = null,
+                                                      $relationModuleId = null)
         {
             $task  = new Task();
-            $task  = $this->resolveNewModelByRelationInformation($task,
-                                                                  $_GET['modalTransferInformation']['relationAttributeName'],
-                                                                  (int)$_GET['modalTransferInformation']['relationModelId'],
-                                                                  $_GET['modalTransferInformation']['relationModuleId']);
+            $task  = $this->resolveNewModelByRelationInformation($task, $relationAttributeName,
+                     (int)$relationModelId, $relationModuleId);
             $this->processTaskEdit($task);
         }
 
@@ -256,17 +258,15 @@
          * @param string $portletId
          * @param string $uniqueLayoutId
          */
-        public function actionModalSaveFromRelation($relationAttributeName, $relationModelId, $relationModuleId,
-                                                    $portletId, $uniqueLayoutId, $sourceId, $id = null)
+        public function actionModalSaveFromRelation($relationAttributeName, $relationModelId, $relationModuleId, $id = null)
         {
             if($id == null)
             {
                 $task  = new Task();
                 TasksUtil::setDefaultValuesForTask($task);
-                $task  = $this->resolveNewModelByRelationInformation( $task,
-                                                                                        $relationAttributeName,
-                                                                                        (int)$relationModelId,
-                                                                                        $relationModuleId);
+                $task  = $this->resolveNewModelByRelationInformation( $task, $relationAttributeName,
+                                                                             (int)$relationModelId,
+                                                                             $relationModuleId);
             }
             else
             {
@@ -284,7 +284,7 @@
         /**
          * Saves task in the modal view
          */
-        public function actionModalSave($id)
+        public function actionModalSave($id = null)
         {
             if($id == null)
             {
@@ -338,7 +338,7 @@
             AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED,
                                        array(strval($task), get_class($this->getModule())), $task);
             TasksUtil::markUserHasReadLatest($task, Yii::app()->user->userModel);
-            echo ModalEditAndDetailsControllerUtil::setAjaxModeAndRenderModalDetailsView($this, 'TaskDetailsView',
+            echo ModalEditAndDetailsControllerUtil::setAjaxModeAndRenderModalDetailsView($this, 'TaskModalDetailsView',
                                                                                                 $task,
                                                                                                 'Details');
         }
@@ -418,12 +418,14 @@
                 {
                     if($taskId != '')
                     {
+                        $task               = Task::getById(intval($taskId));
                         $kanbanItem         = KanbanItem::getByTask(intval($taskId));
                         //if kanban type is completed
                         if($getData['type'] == KanbanItem::TYPE_COMPLETED)
                         {
                             $this->actionUpdateStatusInKanbanView(Task::STATUS_COMPLETED, $taskId);
                             $response['button'] = '';
+                            $response['status'] = Task::getStatusDisplayName($task->status);
                         }
                         else
                         {
@@ -444,6 +446,7 @@
                                                                                         $this->getModule()->getId(),
                                                                                         $taskId);
                                 $response['button'] = $content;
+                                $response['status'] = Task::getStatusDisplayName($task->status);
                             }
                             $kanbanItem->save();
                             $counter++;
@@ -508,6 +511,7 @@
                     $checkItem->completed = true;
                     $checkItem->unrestrictedSave();
                 }
+                $task->status            = Task::STATUS_COMPLETED;
                 $task->completedDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
                 $task->completed         = true;
                 $task->save();
@@ -613,6 +617,20 @@
         protected static function getZurmoControllerUtil()
         {
             return new TaskZurmoControllerUtil();
+        }
+
+        /**
+         * @param $id
+         * @param null $redirectUrl
+         */
+        public function actionDelete($id, $redirectUrl = null)
+        {
+            $task              = Task::getById(intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserDeleteModel($task);
+            if(!$task->delete())
+            {
+                throw new FailedToDeleteModelException();
+            }
         }
     }
 ?>
