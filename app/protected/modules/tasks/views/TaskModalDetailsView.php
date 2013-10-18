@@ -45,7 +45,7 @@
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type'  => 'EditLink'),
+                            array('type'  => 'TaskModalEditFromModalDetailsLink'),
                             array('type'  => 'AuditEventsModalListLink'),
                             array('type'  => 'TaskDeleteLink'),
                         ),
@@ -135,9 +135,9 @@
          */
         protected function renderContent()
         {
-            $content      = '<div class="details-table">'; //todo: we should probably call this something else?
-//          $content     .= $this->renderTitleContent(); //todo: remove
-            $content     .= $this->resolveAndRenderActionElementMenu();
+            $content      = $this->resolveAndRenderActionElementMenu();
+            $content     .= '<div class="details-table clearfix">'; //todo: we should probably call this something else?
+            //$content     .= $this->renderTitleContent();
             $content     .= $this->renderLeftSideContent();
             $content     .= $this->renderRightSideContent();
             $content     .= '</div>';
@@ -252,7 +252,7 @@
          */
         protected function renderOwnerContent($form)
         {
-            $content  = '<div id="owner-box">';
+            $content  = '<div class="owner-box">';
             $element  = new TaskUserElement($this->getModel(), 'owner', $form);
             $element->editableTemplate = '{label}{content}{error}';
             $content .= $element->render().'</div>';
@@ -266,7 +266,7 @@
          */
         protected function renderRequestedByUserContent($form)
         {
-            $content  = '<div id="owner-box">';
+            $content  = '<div class="owner-box">';
             $element  = new TaskUserElement($this->getModel(), 'requestedByUser', $form);
             $element->editableTemplate = '{label}{content}{error}';
             $content .= $element->render().'</div>';
@@ -351,7 +351,7 @@
             $element  = new TaskStatusDropDownElement($this->getModel(), 'status', $form);
             $content .= $element->render();
             $content .= '<span id="completionDate">';
-            if($this->model->status == Task::STATUS_COMPLETED) //todO: deal with showing completedDateTime etc.
+            if($this->model->status == Task::STATUS_COMPLETED)
             {
                 $content .= '<p>' . Zurmo::t('TasksModule', 'Completed On') . ': ' .
                             DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
