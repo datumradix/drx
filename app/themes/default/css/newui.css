@@ -150,6 +150,7 @@ a.EmailTestingButton,
 .AppContent.ImportWizardView #addExtraColumnButton .EmailTestingButton,
 .AppContent.ImportWizardView #addExtraColumnButton a.EmailTestingButton,
 .AppContent.ImportWizardView #addExtraColumnButton,
+.mapping-rules label,
 .import-summary li,
 .file-upload-box .ui-icon-plusthick,
 a.file-upload-box .ui-icon-plusthick,
@@ -317,7 +318,7 @@ a.ModalGameNotification a,
 .ComponentForWorkflowWizardView .action-type-selector-container:after,
 .workflow-order-module-selector-container:before,
 .workflow-order-module-selector-container:after {
-  content: "";
+  content: " ";
   display: table;
 }
 .cf:after,
@@ -344,7 +345,7 @@ a.ModalGameNotification a,
 .ComponentForWorkflowWizardView .add-email-message-button-container,
 .ComponentForWorkflowWizardView .action-type-selector-container,
 .workflow-order-module-selector-container {
-  zoom: 1;
+  *zoom: 1;
 }
 .clearfix,
 #modal-edit-form,
@@ -358,7 +359,7 @@ a.ModalGameNotification a,
 #MarketingListsManageSubscriptionsPageView .Warning,
 #kanban-board,
 #ContactWebFormEditAndDetailsView .ui-sortable {
-  zoom: 1;
+  *zoom: 1;
 }
 .clearfix:before,
 #modal-edit-form:before,
@@ -371,8 +372,20 @@ a.ModalGameNotification a,
 #MarketingListsExternalActionsPageView .Warning:before,
 #MarketingListsManageSubscriptionsPageView .Warning:before,
 #kanban-board:before,
-#ContactWebFormEditAndDetailsView .ui-sortable:before {
-  content: "";
+#ContactWebFormEditAndDetailsView .ui-sortable:before,
+.clearfix:after,
+#modal-edit-form:after,
+#edit-form:after,
+#delete-form:after,
+.right-side-edit-view-panel:after,
+.pager ul:after,
+#MarketingListsExternalActionsPageView > .GridView:after,
+#MarketingListsManageSubscriptionsPageView > .GridView:after,
+#MarketingListsExternalActionsPageView .Warning:after,
+#MarketingListsManageSubscriptionsPageView .Warning:after,
+#kanban-board:after,
+#ContactWebFormEditAndDetailsView .ui-sortable:after {
+  content: " ";
   display: table;
 }
 .clearfix:after,
@@ -387,8 +400,6 @@ a.ModalGameNotification a,
 #MarketingListsManageSubscriptionsPageView .Warning:after,
 #kanban-board:after,
 #ContactWebFormEditAndDetailsView .ui-sortable:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .flyout,
@@ -479,7 +490,7 @@ a.ModalGameNotification a {
   cursor: pointer;
   text-indent: 0;
   display: inline-block;
-  zoom: 1;
+  *zoom: 1;
 }
 .modal-view-toolbar a:before,
 .modal-view-toolbar input[type="submit"]:before,
@@ -521,8 +532,49 @@ a.designer-toolbar input[type="submit"]:before,
 a#contactStatesData_AddInputButton:before,
 a#customFieldDataData_AddInputButton:before,
 .ModalGameNotification a:before,
-a.ModalGameNotification a:before {
-  content: "";
+a.ModalGameNotification a:before,
+.modal-view-toolbar a:after,
+.modal-view-toolbar input[type="submit"]:after,
+.modal-view-toolbar input[type="button"]:after,
+.form-toolbar a:after,
+.form-toolbar input[type="submit"]:after,
+.form-toolbar input[type="button"]:after,
+.zButton:after,
+.z-button:after,
+a.zButton:after,
+a.z-button:after,
+.white-button:after,
+.search-form-tools input[type="submit"]:after,
+a.search-form-tools input[type="submit"]:after,
+#progressBar-links a:after,
+a#progressBar-links a:after,
+#InstallPageView .AppContainer a:after,
+a#InstallPageView .AppContainer a:after,
+#InstallPageView #install-form input[type="submit"]:after,
+a#InstallPageView #install-form input[type="submit"]:after,
+.configuration-list li a:after,
+a.configuration-list li a:after,
+table.configuration-list td:last-child a:after,
+atable.configuration-list td:last-child a:after,
+.multiselect-holder input[type="button"]:after,
+a.multiselect-holder input[type="button"]:after,
+.EmailTestingButton:after,
+a.EmailTestingButton:after,
+.file-upload-box .ui-icon-plusthick:after,
+a.file-upload-box .ui-icon-plusthick:after,
+.ui-datepicker .ui-datepicker-current:after,
+a.ui-datepicker .ui-datepicker-current:after,
+.ui-datepicker .ui-datepicker-close:after,
+a.ui-datepicker .ui-datepicker-close:after,
+.designer-toolbar input[type="submit"]:after,
+a.designer-toolbar input[type="submit"]:after,
+#contactStatesData_AddInputButton:after,
+#customFieldDataData_AddInputButton:after,
+a#contactStatesData_AddInputButton:after,
+a#customFieldDataData_AddInputButton:after,
+.ModalGameNotification a:after,
+a.ModalGameNotification a:after {
+  content: " ";
   display: table;
 }
 .modal-view-toolbar a:after,
@@ -566,8 +618,6 @@ a#contactStatesData_AddInputButton:after,
 a#customFieldDataData_AddInputButton:after,
 .ModalGameNotification a:after,
 a.ModalGameNotification a:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .modal-view-toolbar a.attachLoading.z-button,
@@ -694,15 +744,14 @@ a.ModalGameNotification a:not(.attachLoading):not(.green-button) .z-label {
   cursor: pointer;
   text-indent: 0;
   display: inline-block;
-  zoom: 1;
+  *zoom: 1;
 }
-.default-btn:before {
-  content: "";
+.default-btn:before,
+.default-btn:after {
+  content: " ";
   display: table;
 }
 .default-btn:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .default-btn.attachLoading.z-button {
@@ -823,7 +872,7 @@ table.configuration-list td:last-child a.loading .z-icon,
 }
 .zLink,
 .z-link,
-#ImportWizardMappingView #sample-column-header a,
+#sample-column-header a,
 .remove-extra-column-link,
 #show-triggers-structure-div-link,
 #show-filters-structure-div-link {
@@ -838,7 +887,7 @@ table.configuration-list td:last-child a.loading .z-icon,
 }
 .zLink:hover,
 .z-link:hover,
-#ImportWizardMappingView #sample-column-header a:hover,
+#sample-column-header a:hover,
 .remove-extra-column-link:hover,
 #show-triggers-structure-div-link:hover,
 #show-filters-structure-div-link:hover {
@@ -10576,15 +10625,14 @@ body > .ui-autocomplete {
 }
 /*#MenuView .parent > a*/
 #MenuView .nav li {
-  zoom: 1;
+  *zoom: 1;
 }
-#MenuView .nav li:before {
-  content: "";
+#MenuView .nav li:before,
+#MenuView .nav li:after {
+  content: " ";
   display: table;
 }
 #MenuView .nav li:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #MenuView ul a {
@@ -10895,15 +10943,14 @@ body > .ui-autocomplete {
   background-image: -ms-linear-gradient(#f6f6f6, #ffffff 100px, #ffffff) ;
   background-image: -o-linear-gradient(#f6f6f6, #ffffff 100px, #ffffff) ;
   background-image: linear-gradient(#f6f6f6, #ffffff 100px, #ffffff) ;
-  zoom: 1;
+  *zoom: 1;
 }
-.AppContent:before {
-  content: "";
+.AppContent:before,
+.AppContent:after {
+  content: " ";
   display: table;
 }
 .AppContent:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .AppContent .single-column {
@@ -10916,17 +10963,17 @@ body > .ui-autocomplete {
 .AppContent .single-column .juiportlet-widget,
 .AppContent .single-column .details-table {
   margin-right: 0 !important;
-  zoom: 1;
+  *zoom: 1;
 }
 .AppContent .single-column .juiportlet-widget:before,
-.AppContent .single-column .details-table:before {
-  content: "";
+.AppContent .single-column .details-table:before,
+.AppContent .single-column .juiportlet-widget:after,
+.AppContent .single-column .details-table:after {
+  content: " ";
   display: table;
 }
 .AppContent .single-column .juiportlet-widget:after,
 .AppContent .single-column .details-table:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .AppContent .single-column .right-side-edit-view-panel {
@@ -11925,11 +11972,11 @@ a.simple-link:before {
   margin: 0 !important;
   border: 1px solid #CCCCCC;
   background: #fff;
-  -webkit-box-shadow: 0 0 11px 5px rgba(51, 51, 51, 0.4);
-  -moz-box-shadow: 0 0 11px 5px rgba(51, 51, 51, 0.4);
-  -o-box-shadow: 0 0 11px 5px rgba(51, 51, 51, 0.4);
-  -ms-box-shadow: 0 0 11px 5px rgba(51, 51, 51, 0.4);
-  box-shadow: 0 0 11px 5px rgba(51, 51, 51, 0.4);
+  -webkit-box-shadow: 0 0 15px 0 rgba(51, 51, 51, 0.25);
+  -moz-box-shadow: 0 0 15px 0 rgba(51, 51, 51, 0.25);
+  -o-box-shadow: 0 0 15px 0 rgba(51, 51, 51, 0.25);
+  -ms-box-shadow: 0 0 15px 0 rgba(51, 51, 51, 0.25);
+  box-shadow: 0 0 15px 0 rgba(51, 51, 51, 0.25);
   /*33*/
 
 }
@@ -12024,8 +12071,7 @@ a.simple-link:before {
   background: transparent url(../images/widget-close-btn.png) left top no-repeat;
 }
 .big-spinner {
-  margin-left: 270px;
-  margin-top: 30px;
+  margin: 15px 50%;
   display: block;
 }
 .ui-resizable-handle {
@@ -12430,15 +12476,14 @@ div.wide.form label.hasCheckBox {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  zoom: 1;
+  *zoom: 1;
 }
-#search-form:before {
-  content: "";
+#search-form:before,
+#search-form:after {
+  content: " ";
   display: table;
 }
 #search-form:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #search-form .form-toolbar,
@@ -12998,15 +13043,14 @@ div.wide.form label.hasCheckBox {
 }
 .attributesContainer {
   padding-bottom: 15px;
-  zoom: 1;
+  *zoom: 1;
 }
-.attributesContainer:before {
-  content: "";
+.attributesContainer:before,
+.attributesContainer:after {
+  content: " ";
   display: table;
 }
 .attributesContainer:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .left-column {
@@ -13101,6 +13145,8 @@ div.wide.form label.hasCheckBox {
 }
 .more-panels-link {
   font-size: 11px;
+  position: relative;
+  left: -15px;
 }
 .ui-overlay-block {
   z-index: 250000;
@@ -13659,17 +13705,17 @@ div.wide.form label.hasCheckBox {
 }
 .DetailsAndRelationsView,
 #AccountDetailsAndRelationsView {
-  zoom: 1;
+  *zoom: 1;
 }
 .DetailsAndRelationsView:before,
-#AccountDetailsAndRelationsView:before {
-  content: "";
+#AccountDetailsAndRelationsView:before,
+.DetailsAndRelationsView:after,
+#AccountDetailsAndRelationsView:after {
+  content: " ";
   display: table;
 }
 .DetailsAndRelationsView:after,
 #AccountDetailsAndRelationsView:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .DetailsAndRelationsView .GridView,
@@ -13690,15 +13736,14 @@ div.wide.form label.hasCheckBox {
   margin-right: 20px;
 }
 #UserDetailsAndRelationsView {
-  zoom: 1;
+  *zoom: 1;
 }
-#UserDetailsAndRelationsView:before {
-  content: "";
+#UserDetailsAndRelationsView:before,
+#UserDetailsAndRelationsView:after {
+  content: " ";
   display: table;
 }
 #UserDetailsAndRelationsView:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #UserDetailsAndRelationsView .GridView {
@@ -13882,15 +13927,14 @@ div.wide.form label.hasCheckBox {
 }
 #inline-edit-form .permissions-box {
   margin-left: 0 !important;
-  zoom: 1;
+  *zoom: 1;
 }
-#inline-edit-form .permissions-box:before {
-  content: "";
+#inline-edit-form .permissions-box:before,
+#inline-edit-form .permissions-box:after {
+  content: " ";
   display: table;
 }
 #inline-edit-form .permissions-box:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #inline-edit-form .permissions-box > label {
@@ -14071,15 +14115,14 @@ div.radio-input .hasDropDown {
 div.overlay-label-field {
   position: relative;
   padding-bottom: 15px;
-  zoom: 1;
+  *zoom: 1;
 }
-div.overlay-label-field:before {
-  content: "";
+div.overlay-label-field:before,
+div.overlay-label-field:after {
+  content: " ";
   display: table;
 }
 div.overlay-label-field:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .overlay-label-field label {
@@ -14097,17 +14140,17 @@ div.overlay-label-field:after {
 }
 div.hasParallelFields,
 div.hasHalfs {
-  zoom: 1;
+  *zoom: 1;
 }
 div.hasParallelFields:before,
-div.hasHalfs:before {
-  content: "";
+div.hasHalfs:before,
+div.hasParallelFields:after,
+div.hasHalfs:after {
+  content: " ";
   display: table;
 }
 div.hasParallelFields:after,
 div.hasHalfs:after {
-  content: "";
-  display: table;
   clear: both;
 }
 div.hasParallelFields div:first-child,
@@ -14824,15 +14867,14 @@ div.hasHalfs > div input {
   -o-box-shadow: inset 0 1px 0 0 #ffffff;
   -ms-box-shadow: inset 0 1px 0 0 #ffffff;
   box-shadow: inset 0 1px 0 0 #ffffff;
-  zoom: 1;
+  *zoom: 1;
 }
-#search-formmodal:before {
-  content: "";
+#search-formmodal:before,
+#search-formmodal:after {
+  content: " ";
   display: table;
 }
 #search-formmodal:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #search-formmodal table {
@@ -16290,15 +16332,14 @@ i[class^="icon"] {
   content: "Y" !important;
 }
 table.configuration-list {
-  zoom: 1;
+  *zoom: 1;
 }
-table.configuration-list:before {
-  content: "";
+table.configuration-list:before,
+table.configuration-list:after {
+  content: " ";
   display: table;
 }
 table.configuration-list:after {
-  content: "";
-  display: table;
   clear: both;
 }
 table.configuration-list h4 {
@@ -16370,15 +16411,14 @@ table.configuration-list td:last-child a .z-label:before {
   width: 75%;
   max-width: 675px;
   margin: 0 auto;
-  zoom: 1;
+  *zoom: 1;
 }
-.multiselect-holder:before {
-  content: "";
+.multiselect-holder:before,
+.multiselect-holder:after {
+  content: " ";
   display: table;
 }
 .multiselect-holder:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .multiselect-holder label {
@@ -16786,18 +16826,17 @@ table.configuration-list td:last-child a .z-label:before {
   text-align: left;
 }
 .multi-select-checkbox-input {
-  zoom: 1;
+  *zoom: 1;
   width: 100%;
   display: block;
   margin-top: 4px;
 }
-.multi-select-checkbox-input:before {
-  content: "";
+.multi-select-checkbox-input:before,
+.multi-select-checkbox-input:after {
+  content: " ";
   display: table;
 }
 .multi-select-checkbox-input:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .multi-select-checkbox-input .hasCheckBox {
@@ -17021,16 +17060,15 @@ table.configuration-list td:last-child a .z-label:before {
   cursor: pointer;
   text-indent: 0;
   display: inline-block;
-  zoom: 1;
+  *zoom: 1;
   margin: 0;
 }
-.AppContent.ImportWizardView #addExtraColumnButton:before {
-  content: "";
+.AppContent.ImportWizardView #addExtraColumnButton:before,
+.AppContent.ImportWizardView #addExtraColumnButton:after {
+  content: " ";
   display: table;
 }
 .AppContent.ImportWizardView #addExtraColumnButton:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .AppContent.ImportWizardView #addExtraColumnButton.attachLoading.z-button {
@@ -17094,31 +17132,30 @@ table.configuration-list td:last-child a .z-label:before {
 #ImportWizardMappingView tr td:last-child {
   padding-right: 15px;
 }
-#ImportWizardMappingView .mapping-rules table {
-  border: none;
+.mapping-rules h4 {
+  padding: 10px 0 5px 0;
 }
-#ImportWizardMappingView .mapping-rules table,
-#ImportWizardMappingView .mapping-rules td,
-#ImportWizardMappingView .mapping-rules th,
-#ImportWizardMappingView .mapping-rules input,
-#ImportWizardMappingView .mapping-rules label {
-  margin: 0;
-}
-#ImportWizardMappingView .mapping-rules td,
-#ImportWizardMappingView .mapping-rules th {
-  padding: 0 !important;
-  background: none !important;
-  border: none !important;
-}
-#ImportWizardMappingView .mapping-rules th {
-  height: auto !important;
-  line-height: 100% !important;
-}
-#ImportWizardMappingView .mapping-rules label {
+.mapping-rules label {
   line-height: 26px;
+  padding-right: 10px;
+  width: 22%;
 }
-#ImportWizardMappingView .mapping-rules th:first-child {
-  padding-left: 0 !important;
+.mapping-rules > div {
+  width: 49%;
+  display: inline-block;
+}
+.mapping-rules > div > .has-model-select,
+.mapping-rules > div > .hasDropDown,
+.mapping-rules > div > input {
+  width: 78% !important;
+  display: inline-block;
+}
+.mapping-rules > div:last-child {
+  width: 100%;
+}
+.mapping-rules > div + div:last-child {
+  width: 49%;
+  margin-left: 2%;
 }
 .mapping-rules.multiple table {
   width: 49% !important;
@@ -17128,11 +17165,11 @@ table.configuration-list td:last-child a .z-label:before {
   float: right !important;
 }
 .remove-extra-column-link {
+  float: right;
   display: inline-block;
   position: relative;
   top: -21px;
-  left: 100%;
-  margin-left: 15px;
+  right: -90px;
   z-index: 99999;
 }
 /*=Step 5, process details*/
@@ -17232,15 +17269,14 @@ table.configuration-list td:last-child a .z-label:before {
   position: relative;
 }
 #ImportSequentialProcessContainerView .process-container-view {
-  zoom: 1;
+  *zoom: 1;
 }
-#ImportSequentialProcessContainerView .process-container-view:before {
-  content: "";
+#ImportSequentialProcessContainerView .process-container-view:before,
+#ImportSequentialProcessContainerView .process-container-view:after {
+  content: " ";
   display: table;
 }
 #ImportSequentialProcessContainerView .process-container-view:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #ImportSequentialProcessContainerView .process-container-view:after {
@@ -17509,7 +17545,7 @@ table.configuration-list td:last-child a .z-label:before {
 .available-portlets {
   padding: 15px 15px 0 15px;
   list-style: none;
-  zoom: 1;
+  *zoom: 1;
   max-height: 400px;
   overflow-y: scroll;
   /*
@@ -17525,13 +17561,12 @@ table.configuration-list td:last-child a .z-label:before {
 	*/
 
 }
-.available-portlets:before {
-  content: "";
+.available-portlets:before,
+.available-portlets:after {
+  content: " ";
   display: table;
 }
 .available-portlets:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .available-portlets li {
@@ -18036,7 +18071,7 @@ div.wide.form .errorMessage {
   cursor: pointer;
   text-indent: 0;
   display: inline-block;
-  zoom: 1;
+  *zoom: 1;
   -webkit-box-shadow: 0 0 2px 0 rgba(153, 153, 153, 0.15);
   -moz-box-shadow: 0 0 2px 0 rgba(153, 153, 153, 0.15);
   -o-box-shadow: 0 0 2px 0 rgba(153, 153, 153, 0.15);
@@ -18053,13 +18088,12 @@ div.wide.form .errorMessage {
   top: 2px;
   background: url(../images/view-toolbar-gradient.png) left bottom repeat-x !important;
 }
-.addfileinput-button span:before {
-  content: "";
+.addfileinput-button span:before,
+.addfileinput-button span:after {
+  content: " ";
   display: table;
 }
 .addfileinput-button span:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .addfileinput-button span.attachLoading.z-button {
@@ -18270,15 +18304,14 @@ div.wide.form .errorMessage {
   width: 100%;
   border-top: 1px solid #fff;
   padding: 5px 0;
-  zoom: 1;
+  *zoom: 1;
 }
-.ui-datepicker .ui-datepicker-buttonpane:before {
-  content: "";
+.ui-datepicker .ui-datepicker-buttonpane:before,
+.ui-datepicker .ui-datepicker-buttonpane:after {
+  content: " ";
   display: table;
 }
 .ui-datepicker .ui-datepicker-buttonpane:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .ui-datepicker .ui-datepicker-current {
@@ -20548,16 +20581,15 @@ a.close-ModalGameNotification.simple-link {
   padding: 0 0 20px 0;
 }
 #UserDetailsView .details-table {
-  zoom: 1;
+  *zoom: 1;
   position: relative !important;
 }
-#UserDetailsView .details-table:before {
-  content: "";
+#UserDetailsView .details-table:before,
+#UserDetailsView .details-table:after {
+  content: " ";
   display: table;
 }
 #UserDetailsView .details-table:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .gravatar-container a {
@@ -20588,15 +20620,14 @@ a.close-ModalGameNotification.simple-link {
   clear: right;
 }
 #UserChangeAvatarView {
-  zoom: 1;
+  *zoom: 1;
 }
-#UserChangeAvatarView:before {
-  content: "";
+#UserChangeAvatarView:before,
+#UserChangeAvatarView:after {
+  content: " ";
   display: table;
 }
 #UserChangeAvatarView:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #UserChangeAvatarView .col-0 {
@@ -20697,15 +20728,14 @@ a.dashboard-link .z-label {
   display: block;
   float: left;
   width: 100%;
-  zoom: 1;
+  *zoom: 1;
 }
-#welcome-content:before {
-  content: "";
+#welcome-content:before,
+#welcome-content:after {
+  content: " ";
   display: table;
 }
 #welcome-content:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .help-section {
@@ -20762,7 +20792,7 @@ a.dashboard-link .z-label {
   content: "•";
 }
 #instructions {
-  zoom: 1;
+  *zoom: 1;
   padding-bottom: 30px;
   border-bottom: 1px solid #ccc;
 }
@@ -20772,13 +20802,12 @@ a.dashboard-link .z-label {
   padding-right: 100px;
   padding-top: 15px;
 }
-#instructions:before {
-  content: "";
+#instructions:before,
+#instructions:after {
+  content: " ";
   display: table;
 }
 #instructions:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #welcome-gallery {
@@ -20890,21 +20919,23 @@ a.dashboard-link .z-label {
   background-image: -ms-linear-gradient(#ffffff, #f5f5f5 80%, #f5f5f5)  !important;
   background-image: -o-linear-gradient(#ffffff, #f5f5f5 80%, #f5f5f5)  !important;
   background-image: linear-gradient(#ffffff, #f5f5f5 80%, #f5f5f5)  !important;
-  zoom: 1;
+  *zoom: 1;
 }
 .single-coloumn-details-view .details-table:before,
 #MissionDetailsView .details-table:before,
 #ConversationDetailsView .details-table:before,
-#ConversationDetailsAndRelationsView .details-table:before {
-  content: "";
+#ConversationDetailsAndRelationsView .details-table:before,
+.single-coloumn-details-view .details-table:after,
+#MissionDetailsView .details-table:after,
+#ConversationDetailsView .details-table:after,
+#ConversationDetailsAndRelationsView .details-table:after {
+  content: " ";
   display: table;
 }
 .single-coloumn-details-view .details-table:after,
 #MissionDetailsView .details-table:after,
 #ConversationDetailsView .details-table:after,
 #ConversationDetailsAndRelationsView .details-table:after {
-  content: "";
-  display: table;
   clear: both;
 }
 .single-coloumn-details-view .toolbar-mbmenu,
@@ -21287,18 +21318,18 @@ a.dashboard-link .z-label {
 }
 #ConversationDetailsView .details-table,
 #MissionDetailsView .details-table {
-  zoom: 1;
+  *zoom: 1;
   margin-right: 0 !important;
 }
 #ConversationDetailsView .details-table:before,
-#MissionDetailsView .details-table:before {
-  content: "";
+#MissionDetailsView .details-table:before,
+#ConversationDetailsView .details-table:after,
+#MissionDetailsView .details-table:after {
+  content: " ";
   display: table;
 }
 #ConversationDetailsView .details-table:after,
 #MissionDetailsView .details-table:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #ConversationDetailsView .panel > table,
@@ -23042,15 +23073,14 @@ a.user-link {
   -o-box-shadow: none;
   -ms-box-shadow: none;
   box-shadow: none;
-  zoom: 1;
+  *zoom: 1;
 }
-#marketing-list-member-configuration-form:before {
-  content: "";
+#marketing-list-member-configuration-form:before,
+#marketing-list-member-configuration-form:after {
+  content: " ";
   display: table;
 }
 #marketing-list-member-configuration-form:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #marketing-list-member-configuration-form input[type="text"] {
@@ -23333,9 +23363,11 @@ a + .autoresponder-stats {
   line-height: 175%;
 }
 .module-intro-steps {
-  float: left;
   width: 100%;
   margin: 30px 0 15px 0;
+}
+.module-intro-steps:after {
+  clear: none;
 }
 .module-intro-steps > div {
   float: left;
@@ -23424,14 +23456,6 @@ a + .autoresponder-stats {
 }
 .hide-module-intro,
 .hide-marketing-intro {
-  display: block;
-  clear: both;
-  position: relative;
-  top: 30px;
-  font-size: 11px;
-  clear: none;
-  position: static;
-  top: 0;
   margin-bottom: 30px;
   width: 100%;
   text-align: right;
@@ -24084,12 +24108,16 @@ a + .autoresponder-stats {
   font-size: 11px;
   float: left;
 }
-.task-date {
+.task-due-date {
   float: right;
 }
 .task-content {
   padding: 10px 0 0 0;
   border-top: 1px solid #fff;
+}
+.task-content h4 span {
+  font-weight: normal;
+  margin-left: 5px;
 }
 .task-subscribers {
   margin-top: 10px;
@@ -25324,15 +25352,14 @@ div.special-pager .hidden.next:after {
 }
 #gd-mini-stats-card {
   margin-top: 0px;
-  zoom: 1;
+  *zoom: 1;
 }
-#gd-mini-stats-card:before {
-  content: "";
+#gd-mini-stats-card:before,
+#gd-mini-stats-card:after {
+  content: " ";
   display: table;
 }
 #gd-mini-stats-card:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #gd-mini-stats-card #gd-mini-stats-chart-div svg g:last-child > g:first-child {
@@ -25405,15 +25432,14 @@ div.special-pager .hidden.next:after {
   border-bottom: 1px solid rgba(32, 50, 52, 0.5);
 }
 #gd-badges-list li {
-  zoom: 1;
+  *zoom: 1;
 }
-#gd-badges-list li:before {
-  content: "";
+#gd-badges-list li:before,
+#gd-badges-list li:after {
+  content: " ";
   display: table;
 }
 #gd-badges-list li:after {
-  content: "";
-  display: table;
   clear: both;
 }
 #gd-badges-list li + li {
@@ -26024,6 +26050,165 @@ div.special-pager .hidden.next:after {
 }
 #ProjectsFeedListView .items {
   background: #fff;
+}
+.type-tasks .items-wrapper {
+  border: 1px solid #dfdfdf;
+}
+.task-dialog {
+  min-width: 1000px;
+  border: none;
+  background: #f0f0f0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: inset 0 0 0 1px rgba(204, 204, 204, 0.3) , 1px 1px 1px 0px rgba(153, 153, 153, 0.15);
+  -moz-box-shadow: inset 0 0 0 1px rgba(204, 204, 204, 0.3) , 1px 1px 1px 0px rgba(153, 153, 153, 0.15);
+  -o-box-shadow: inset 0 0 0 1px rgba(204, 204, 204, 0.3) , 1px 1px 1px 0px rgba(153, 153, 153, 0.15);
+  -ms-box-shadow: inset 0 0 0 1px rgba(204, 204, 204, 0.3) , 1px 1px 1px 0px rgba(153, 153, 153, 0.15);
+  box-shadow: inset 0 0 0 1px rgba(204, 204, 204, 0.3) , 1px 1px 1px 0px rgba(153, 153, 153, 0.15);
+}
+.task-dialog .ui-dialog-title {
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 15px;
+  font-weight: bold;
+  -webkit-text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
+  -moz-text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
+  -o-text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
+  -ms-text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
+  text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
+  height: 40px;
+  line-height: 40px;
+  background: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -o-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+  border-bottom: none;
+  text-indent: 15px;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.task-dialog .toolbar-mbmenu {
+  position: absolute;
+  right: 0;
+  top: 12px;
+}
+.task-dialog .wrapper,
+.task-dialog .details-table {
+  margin: 0;
+  padding: 0;
+  border: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  -o-box-shadow: none !important;
+  -ms-box-shadow: none !important;
+  box-shadow: none !important;
+  background: none !important;
+}
+.task-dialog table {
+  border: none;
+}
+.task-dialog td {
+  padding-bottom: 15px;
+}
+.task-dialog .attributesContainer {
+  padding-bottom: 0;
+}
+.task-dialog .float-bar {
+  margin-bottom: 0;
+}
+#task-left-column-form-data label {
+  margin-top: 15px;
+  float: none;
+  display: block;
+}
+#task-right-column-form-data label {
+  float: none;
+}
+#task-right-column-form-data #status-box {
+  margin-bottom: 15px;
+}
+#task-right-column-form-data .owner-box {
+  position: relative;
+  margin-bottom: 15px;
+}
+#task-subscriber-box {
+  margin-top: 15px;
+}
+.check-list {
+  margin-top: 15px;
+}
+.check-list h3 {
+  margin-bottom: 10px;
+}
+.check-list-item {
+  margin-top: 3px;
+}
+.check-list-item .hasCheckBox {
+  float: left;
+  position: relative;
+  top: -5px;
+  margin-right: 3px;
+}
+#task-check-item-inline-edit-form {
+  margin-top: 10px;
+  padding: 8px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  background: #EBEBEB;
+  display: table;
+  width: 100%;
+}
+#task-check-item-inline-edit-form input {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -o-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  display: inline-block;
+  border: 1px solid #ccc;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: #666 !important;
+  text-indent: 6px;
+  line-height: 24px;
+  height: 26px;
+  -webkit-box-shadow: 0 0 1px 1px rgba(153, 153, 153, 0.3);
+  -moz-box-shadow: 0 0 1px 1px rgba(153, 153, 153, 0.3);
+  -o-box-shadow: 0 0 1px 1px rgba(153, 153, 153, 0.3);
+  -ms-box-shadow: 0 0 1px 1px rgba(153, 153, 153, 0.3);
+  box-shadow: 0 0 1px 1px rgba(153, 153, 153, 0.3);
+  /* http://www.useragentman.com/blog/2011/08/24/how-to-simulate-css3-box-shadow-in-ie7-8-without-javascript/ */
+
+  zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.Shadow(Color=#bfbfbf, Strength=1, Direction=0), progid:DXImageTransform.Microsoft.Shadow(Color=#bfbfbf, Strength=1, Direction=90), progid:DXImageTransform.Microsoft.Shadow(Color=#bfbfbf, Strength=1, Direction=180), progid:DXImageTransform.Microsoft.Shadow(Color=#bfbfbf, Strength=1, Direction=270);
+  width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#task-check-item-inline-edit-form .task-input {
+  padding-right: 10px;
+  display: table-cell;
+  vertical-align: middle;
+  width: 99%;
+}
+#task-check-item-inline-edit-form .task-add-button {
+  display: table-cell;
+  width: 1%;
+  vertical-align: middle;
 }
 /*********************************************************************************
  * Zurmo is a customer relationship management program developed by
