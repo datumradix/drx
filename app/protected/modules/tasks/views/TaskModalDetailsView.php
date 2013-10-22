@@ -41,7 +41,6 @@
     {
         public static function getDefaultMetadata()
         {
-            $getData = GetUtil::getData();
             $metadata = array(
                 'global' => array(
                     'toolbar' => array(
@@ -183,6 +182,7 @@
             $formEnd  = $clipWidget->renderEndWidget();
             $content .= $formEnd;
             $content .= $this->renderModalContainer();
+            $content .= $this->renderAuditTrailModalContainer();
             $content .= '</div>';
             return ZurmoHtml::tag('div', array('class' => 'left-side-edit-view-panel'), $content);
         }
@@ -192,7 +192,9 @@
             return array('enableAjaxValidation' => true,
                 'clientOptions' => array(
                     'validateOnChange'  => true,
-                ),);
+                    //'validationUrl' => Yii::app()->createUrl('tasks/default/performAjaxValidation', array('id' => $this->getModel()->id)),
+                ),
+                );
         }
 
         protected function renderLeftSideBottomContent()
@@ -238,6 +240,16 @@
             $content .= $formEnd;
             $content .= ZurmoHtml::closeTag('div');
             return $content;
+        }
+
+        protected function resolveRightSideActiveFormAjaxValidationOptions()
+        {
+            return array(//'enableAjaxValidation' => true,
+                'enableClientValidation' => true,
+                'clientOptions' => array(
+                    'validateOnChange'  => true,
+                ),
+                );
         }
 
         protected function renderRightBottomSideContent()
@@ -413,6 +425,14 @@
         protected function doesLabelHaveOwnCell()
         {
             return false;
+        }
+
+        /**
+         * @return string
+         */
+        protected function renderAuditTrailModalContainer()
+        {
+            return ZurmoHtml::tag('div', array('id' => 'AuditEventsModalContainer'), '');
         }
     }
 ?>
