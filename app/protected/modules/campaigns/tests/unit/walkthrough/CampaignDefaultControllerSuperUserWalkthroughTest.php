@@ -185,7 +185,7 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
-            $this->assertTrue(strpos($content, 'No results found.') !== false);
+            $this->assertTrue(strpos($content, 'No results found') !== false);
 
             StickyReportUtil::clearDataByKey('CampaignsSearchForm');
             $this->setGetArray(array(
@@ -797,6 +797,18 @@
             $this->assertTrue($campaigns[0]->marketingList->id == $marketingList->id);
             $campaigns = Campaign::getAll();
             $this->assertEquals(3, count($campaigns));
+        }
+
+        /**
+         * @depends testSuperUserCreateFromRelationAction
+         */
+        public function testDrillDownDetailsAction()
+        {
+            $campaign     = Campaign::getByName('campaign01');
+            $campaignItem = CampaignItemTestHelper::createCampaignItem(true, $campaign);
+            $this->setGetArray(array('campaignItemId' => $campaignItem->id));
+            $content      = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/drillDownDetails');
+            $this->assertNotNull($content);
         }
     }
 ?>

@@ -54,7 +54,7 @@
             {
                 if (trim($this->name) == '')
                 {
-                    return Zurmo::t('ContactWebFormsModule', '(Unnamed)');
+                    return Zurmo::t('Core', '(Unnamed)');
                 }
                 return $this->name;
             }
@@ -77,6 +77,7 @@
                     'submitButtonLabel' => Zurmo::t('ContactWebFormsModule', 'Submit Button Label',  array(), null, $language),
                     'defaultState'      => Zurmo::t('ContactWebFormsModule', 'Default Status',  array(), null, $language),
                     'excludeStyles'     => Zurmo::t('ContactWebFormsModule', 'Exclude Styles',  array(), null, $language),
+                    'enableCaptcha'     => Zurmo::t('ContactWebFormsModule', 'Enable Captcha',  array(), null, $language),
                     'language'          => Zurmo::t('ZurmoModule',           'Language',        array(), null, $language),
                 )
             );
@@ -129,15 +130,16 @@
                     'submitButtonLabel',
                     'serializedData',
                     'excludeStyles',
+                    'enableCaptcha',
                     'language',
                 ),
                 'relations' => array(
-                    'defaultState'     => array(RedBeanModel::HAS_ONE,   'ContactState', RedBeanModel::NOT_OWNED,
-                                                RedBeanModel::LINK_TYPE_SPECIFIC, 'defaultState'),
-                    'entries'          => array(RedBeanModel::HAS_MANY, 'ContactWebFormEntry', RedBeanModel::OWNED,
-                                                RedBeanModel::LINK_TYPE_SPECIFIC, 'entries'),
-                    'defaultOwner'     => array(RedBeanModel::HAS_ONE,  'User', RedBeanModel::NOT_OWNED,
-                                                RedBeanModel::LINK_TYPE_SPECIFIC, 'defaultOwner'),
+                    'defaultState'     => array(static::HAS_ONE,   'ContactState', static::NOT_OWNED,
+                                                static::LINK_TYPE_SPECIFIC, 'defaultState'),
+                    'entries'          => array(static::HAS_MANY, 'ContactWebFormEntry', static::OWNED,
+                                                static::LINK_TYPE_SPECIFIC, 'entries'),
+                    'defaultOwner'     => array(static::HAS_ONE,  'User', static::NOT_OWNED,
+                                                static::LINK_TYPE_SPECIFIC, 'defaultOwner'),
                 ),
                 'rules' => array(
                     array('name',              'required'),
@@ -153,6 +155,8 @@
                     array('defaultOwner',      'required'),
                     array('excludeStyles',     'type', 'type' => 'boolean'),
                     array('excludeStyles',     'default', 'value' => 0),
+                    array('enableCaptcha',     'type', 'type' => 'boolean'),
+                    array('enableCaptcha',     'default', 'value' => 0),
                     array('language',          'type',    'type'  => 'string'),
                     array('language',          'length',  'max'   => 10),
                 ),

@@ -117,16 +117,6 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'null',
-                                                      'type'          => 'DerivedExplicitReadWriteModelPermissions'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
                                                 array('attributeName' => 'excludeStyles', 'type' => 'CheckBox'),
                                             ),
                                         ),
@@ -135,6 +125,16 @@
                                 array('cells' =>
                                     array(
                                         array(
+                                            'elements' => array(
+                                                array('attributeName' => 'enableCaptcha', 'type' => 'CheckBox'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'detailViewOnly' => 1,
                                             'elements' => array(
                                                 array('attributeName' => 'serializedData', 'type' => 'SortableContactWebFormAttributes'),
                                             ),
@@ -159,15 +159,6 @@
         }
 
         /**
-         * @param $form
-         * @return null|string|void
-         */
-        protected function renderRightSideFormLayoutForEdit($form)
-        {
-            return null;
-        }
-
-        /**
          * @return string|void
          */
         protected function renderBeforeFormLayoutForDetailsContent()
@@ -178,6 +169,15 @@
                             '</script></div>';
             $title = ZurmoHtml::tag('h3', array(), Zurmo::t('ContactWebFormsModule', 'Copy/Paste this code to your web page..'));
             return '<div class="webform-embed-code">' . $title . '<textarea onclick="this.focus();this.select()" readonly="readonly">' . htmlspecialchars($embedScript) . '</textarea></div>';
+        }
+
+        protected function renderAfterFormLayout($form)
+        {
+            $element  = new SortableContactWebFormAttributesElement($this->model, 'serializedData', $form);
+            $content  = $element->render();
+            $content .= ZurmoHtml::hiddenField('getPlacedAttributeAction',
+                        Yii::app()->createUrl('contactWebForms/default/getPlacedAttributeByName'));
+            return $content;
         }
     }
 ?>
