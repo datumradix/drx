@@ -383,7 +383,7 @@
             }
             catch (RedBean_Exception_SQL $e)
             {
-                if (strpos($e->getMessage(), ' 1148 ') === 0)
+                if (strpos($e->getMessage(), ' 1148 ') !== false)
                 {
                     $e = new NotSupportedException("Please enable LOCAL INFILE in mysql config. Add local-infile=1 to [mysqld] and [mysql] sections.");
                 }
@@ -520,6 +520,52 @@
                 throw new FailedToSaveModelException("Id of updated record does not match the id used in finding it.");
             }
         }
+
+        /**
+         * Update the row value in the table with a new value
+         * @param string        $tableName
+         * @param integer       $id
+         * @param string        $attribute
+         * @param string|null   $newValue
+         * @throws NotFoundException
+         * @throws FailedToSaveModelException
+         */
+        public static function updateRowValue($tableName, $id, $attribute, $newValue)
+        {
+            assert('is_string($tableName)');
+            assert('is_int($id)');
+            assert('is_string($attribute)');
+            assert('is_string($newValue) || $newValue == null');
+
+            $columnData = static::geColumnData($tableName, $attribute);
+            $columnLength = $columnData['character_maximum_length'];
+            $columnType = $columnData['data_type'];
+            if ($columnType == 'varchar' && strlen($newValue) > $columnLength)
+            {
+                $sql = 'alter table :table modify :column varchar(:length)';
+                //TODO: @sergio: This is causing an error
+                ZurmoRedBean::exec($sql, array(':table' => $tableName, ':column' => $attribute, ':length' => strlen($newValue)));
+            }
+            $bean = ZurmoRedBean::findOne($tableName, "id = :id", array('id' => $id));
+            if ($bean == null)
+            {
+                throw new NotFoundException();
+            }
+            $bean->$attribute         = $newValue;
+            $storedId = ZurmoRedBean::store($bean);
+            if ($storedId != $id)
+            {
+                throw new FailedToSaveModelException("Id of updated record does not match the id used in finding it.");
+            }
+        }
+
+        protected static function geColumnData($tableName, $column)
+        {
+            $sql = 'select  data_type, character_maximum_length from information_schema.columns where table_name = :table and column_name = :column';
+            $row = ZurmoRedBean::getRow($sql, array(':table' => $tableName, ':column' => $column));
+            return $row;
+        }
+
 
         /**
          * For the temporary import tables, some of the columns are reserved and not used by any of the import data
