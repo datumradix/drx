@@ -34,32 +34,21 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ProjectStatusDropDownAttributeForm extends AttributeForm
+    class ProjectAttributeForm extends HasOneModelAttributeForm
     {
-        /**
-         * @return string
-         */
         public static function getAttributeTypeDisplayName()
         {
-            $params = LabelUtil::getTranslationParamsForAllModules();
-            return Zurmo::t('ProjectsModule', 'ProjectsModuleSingularLabel Status Dropdown', $params);
+            return Zurmo::t('ProjectsModule', 'Project');
         }
 
-        /**
-         * @return string
-         */
         public static function getAttributeTypeDisplayDescription()
         {
-            $params = LabelUtil::getTranslationParamsForAllModules();
-            return Zurmo::t('ProjectsModule', 'ProjectsModuleSingularLabel Status Dropdown Values', $params);
+            return Zurmo::t('ProjectsModule', 'A project field');
         }
 
-        /**
-         * @return string
-         */
         public function getAttributeTypeName()
         {
-            return 'ProjectStatusDropDown';
+            return 'Project';
         }
     }
 ?>

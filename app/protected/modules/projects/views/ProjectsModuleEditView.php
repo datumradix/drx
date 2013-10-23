@@ -34,32 +34,7 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ProjectStatusDropDownAttributeForm extends AttributeForm
+    class ProjectsModuleEditView extends GlobalSearchEnabledModuleEditView
     {
-        /**
-         * @return string
-         */
-        public static function getAttributeTypeDisplayName()
-        {
-            $params = LabelUtil::getTranslationParamsForAllModules();
-            return Zurmo::t('ProjectsModule', 'ProjectsModuleSingularLabel Status Dropdown', $params);
-        }
-
-        /**
-         * @return string
-         */
-        public static function getAttributeTypeDisplayDescription()
-        {
-            $params = LabelUtil::getTranslationParamsForAllModules();
-            return Zurmo::t('ProjectsModule', 'ProjectsModuleSingularLabel Status Dropdown Values', $params);
-        }
-
-        /**
-         * @return string
-         */
-        public function getAttributeTypeName()
-        {
-            return 'ProjectStatusDropDown';
-        }
     }
 ?>
