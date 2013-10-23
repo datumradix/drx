@@ -41,7 +41,6 @@
     {
         public static function getDefaultMetadata()
         {
-            $getData = GetUtil::getData();
             $metadata = array(
                 'global' => array(
                     'toolbar' => array(
@@ -61,19 +60,6 @@
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_FIRST,
                     'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => null, 'type' => 'Null'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
                         array(
                             'rows' => array(
                                 array('cells' =>
@@ -183,6 +169,7 @@
             $formEnd  = $clipWidget->renderEndWidget();
             $content .= $formEnd;
             $content .= $this->renderModalContainer();
+            $content .= $this->renderAuditTrailModalContainer();
             $content .= '</div>';
             return ZurmoHtml::tag('div', array('class' => 'left-side-edit-view-panel'), $content);
         }
@@ -192,7 +179,9 @@
             return array('enableAjaxValidation' => true,
                 'clientOptions' => array(
                     'validateOnChange'  => true,
-                ),);
+                    //'validationUrl' => Yii::app()->createUrl('tasks/default/performAjaxValidation', array('id' => $this->getModel()->id)),
+                ),
+                );
         }
 
         protected function renderLeftSideBottomContent()
@@ -238,6 +227,16 @@
             $content .= $formEnd;
             $content .= ZurmoHtml::closeTag('div');
             return $content;
+        }
+
+        protected function resolveRightSideActiveFormAjaxValidationOptions()
+        {
+            return array(//'enableAjaxValidation' => true,
+                'enableClientValidation' => true,
+                'clientOptions' => array(
+                    'validateOnChange'  => true,
+                ),
+                );
         }
 
         protected function renderRightBottomSideContent()
@@ -413,6 +412,24 @@
         protected function doesLabelHaveOwnCell()
         {
             return false;
+        }
+
+        /**
+         * @return string
+         */
+        protected function renderAuditTrailModalContainer()
+        {
+            return ZurmoHtml::tag('div', array('id' => 'AuditEventsModalContainer'), '');
+        }
+
+        /**
+         * Gets the options menu class
+         * @return string
+         */
+        //TODO:@Amit need to style it similar to settings-header-menu in header for gear
+        protected static function getOptionsMenuCssClass()
+        {
+            return 'task-modal-details-options-menu';
         }
     }
 ?>
