@@ -125,6 +125,7 @@
             $cClipWidget->endClip();
             $content     = $this->renderKanbanViewTitleWithActionBars();
             $this->registerKanbanGridScript();
+            $this->resolveShouldOpenToTask();
             $content    .= $cClipWidget->getController()->clips['ListView'] . "\n";
             $content .= $this->renderScripts();
             $zeroModelView = new ZeroTasksForRelatedModelYetView($this->controllerId,
@@ -369,8 +370,7 @@
          */
         protected function registerKanbanGridScript()
         {
-            TasksUtil::registerTaskModalDetailScript($this->getGridId());
-            //This would be used in case of zero model view
+            TasksUtil::registerTaskModalDetailsScript($this->getGridId());
             if($this->dataProvider->getTotalItemCount() == 0)
             {
                 $script  = "$('#" . $this->getGridId() . "').hide();";
@@ -385,6 +385,20 @@
             Yii::app()->clientScript->registerScript('taskKanbanDetailScript',$script);
         }
 
+        protected function resolveShouldOpenToTask()
+        {
+            $getData = GetUtil::getData();
+            if(null != $taskId = ArrayUtil::getArrayValue($getData, 'openToTaskId'))
+            {
+                TasksUtil::registerOpenToTaskModalDetailsScript((int)$taskId, $this->getGridId());
+            }
+        }
+
+        /**
+         * Calling TaskKanbanBoardExtendedGridView::registerKanbanColumnSortableScript in order to reinitialize
+         * the sorting for the card columns after the board is refreshed
+         * @return string
+         */
         protected function getCGridViewAfterAjaxUpdate()
         {
             // Begin Not Coding Standard
@@ -400,6 +414,7 @@
                             $("#' . $this->getGridId() . '").hide();
                             $("#ZeroTasksForRelatedModelYetView").show();
                         }
+                        ' . TaskKanbanBoardExtendedGridView::registerKanbanColumnSortableScript() . '
                     }';
             // End Not Coding Standard
         }
