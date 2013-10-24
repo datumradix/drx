@@ -34,29 +34,32 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    // TODO: @Shoaibi/@Jason: High: Not Used.
-    /**
-     * When processing workflows, the user that processes them must be a super administrator to ensure the workflows can
-     * be properly processed.
-     */
-    class UserToRunWorkflowsAsElement extends SuperAdministratorToUseElement
+    class TaskStatusDropDownAttributeForm extends AttributeForm
     {
         /**
          * @return string
          */
-        protected static function renderTooltipContent()
+        public static function getAttributeTypeDisplayName()
         {
+            $params = LabelUtil::getTranslationParamsForAllModules();
+            return Zurmo::t('TasksModule', 'TasksModuleSingularLabel Status Dropdown', $params);
         }
 
-        protected function renderLabel()
+        /**
+         * @return string
+         */
+        public static function getAttributeTypeDisplayDescription()
         {
-            $title       = Zurmo::t('WorkflowsModule', 'Workflows must be processed as a super administrator user.');
-            $content     = parent::renderLabel();
-            $content    .= '<span id="run-workflows-from-user-tooltip" class="tooltip"  title="' . $title . '">';
-            $content    .= '?</span>';
-            $qtip = new ZurmoTip(array('options' => array('position' => array('my' => 'bottom right', 'at' => 'top left'))));
-            $qtip->addQTip("#run-workflows-from-user-tooltip");
-            return $content;
+            $params = LabelUtil::getTranslationParamsForAllModules();
+            return Zurmo::t('TasksModule', 'TasksModuleSingularLabel Status Dropdown Values', $params);
+        }
+
+        /**
+         * @return string
+         */
+        public function getAttributeTypeName()
+        {
+            return 'TaskStatusDropDown';
         }
     }
 ?>

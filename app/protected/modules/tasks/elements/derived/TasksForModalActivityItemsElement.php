@@ -34,15 +34,18 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    $basePath  =  Yii::app()->getBasePath();
-    require_once("$basePath/../../redbean/rb.php");
-
-    // TODO: @Shoaibi/@Jason: Critical: Not used anywhere?
-
     /**
-     * A criteria for use with RedbeanModelDataProvider.
+     * Override to change how cells show up for the noneditable render
      */
-    class RedBeanModelDbCriteria extends CDbCriteria
+    class TasksForModalActivityItemsElement extends ActivityItemsElement
     {
+        protected function getRelatedItemNonEditableTemplate()
+        {
+            $template  = "<tr>\n";
+            $template .= "<td colspan=\"" . $this->getColumnSpan() . "\">\n";
+            $template .= '{label}{content}';
+            $template .= "</td></tr>\n";
+            return $template;
+        }
     }
 ?>
