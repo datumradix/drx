@@ -125,10 +125,11 @@
         {
             $taskSortableScript = "
                         var fixHelper = function(e, ui) {
-                            ui.children().each(function() {
-                                $(this).width($(this).width());
-                            });
-                            return ui;
+                            var label = $($('<div></div>').html(ui.clone())).html();
+                            var width = $(ui).width();
+                            var clone = $('<div class=\"kanban-card clone\">' + label + '</div>');
+                            clone.width(width);
+                            return clone;
                         };";
             Yii::app()->clientScript->registerScript('task-sortable-data-helper', $taskSortableScript);
 
@@ -146,27 +147,18 @@
          */
         protected function registerKanbanColumnScripts()
         {
-            $taskSortableScript = "";
+            Yii::app()->clientScript->registerScriptFile(
+                Yii::app()->getAssetManager()->publish(
+                Yii::getPathOfAlias('application.core.kanbanBoard.widgets.assets')) . '/KanbanUtils.js');
+
             $columnDataKeys = array_keys($this->columnsData);
-            for($count=0; $count < count($this->columnsData); $count++)
-            {
-                 $type = $columnDataKeys[$count];
-                 if($type != KanbanItem::TYPE_COMPLETED)
-                 {
-                     $taskSortableScript .= $this->registerKanbanColumnSortableScript($count + 1, $type);
-                 }
-                 else
-                 {
-                     $taskSortableScript .= $this->registerKanbanColumnSortableScript($count + 1, $type);
-                 }
-            }
-            Yii::app()->clientScript->registerScript('task-sortable-data', $taskSortableScript);
+            Yii::app()->clientScript->registerScript('task-sortable-data', static::registerKanbanColumnSortableScript());
             $url = Yii::app()->createUrl('tasks/default/updateStatusInKanbanView', array());
-            $this->registerKanbanColumnStartActionScript(Zurmo::t('TasksModule', 'Finish'), Task::STATUS_IN_PROGRESS, $url);
-            $this->registerKanbanColumnFinishActionScript(Zurmo::t('TasksModule', 'Accept'),
-                        Zurmo::t('TasksModule', 'Reject'), Task::STATUS_AWAITING_ACCEPTANCE, $url);
+            $this->registerKanbanColumnStartActionScript(Zurmo::t('Core', 'Finish'), Task::STATUS_IN_PROGRESS, $url);
+            $this->registerKanbanColumnFinishActionScript(Zurmo::t('Core', 'Accept'),
+                        Zurmo::t('Core', 'Reject'), Task::STATUS_AWAITING_ACCEPTANCE, $url);
             $this->registerKanbanColumnAcceptActionScript('', Task::STATUS_COMPLETED, $url);
-            $this->registerKanbanColumnRejectActionScript(Zurmo::t('TasksModule', 'Start'), Task::STATUS_NEW, $url);
+            $this->registerKanbanColumnRejectActionScript(Zurmo::t('Core', 'Start'), Task::STATUS_NEW, $url);
             TasksUtil::registerSubscriptionScript();
             TasksUtil::registerUnsubscriptionScript();
         }
@@ -177,47 +169,15 @@
          * @param int $type
          * @return string
          */
-        protected function registerKanbanColumnSortableScript($count, $type)
+
+        /**
+         * Registers kanban column sortable script. Also called to use on refresh of kanban board
+         * @return string
+         */
+        public static function registerKanbanColumnSortableScript()
         {
-            return "$('#task-sortable-rows-" . $count . "').sortable({
-                        forcePlaceholderSize: true,
-                        forceHelperSize: true,
-                        items: 'li:not(.ui-state-disabled)',
-                        connectWith: '.connectedSortable',
-                        update : function (event, ui) {
-                            var id = $(ui.item).attr('id');
-                            var idParts = id.split('_');
-                            var taskId = parseInt(idParts[1]);
-                            serial = $('#task-sortable-rows-" . $count . "').sortable('serialize', {key: 'items[]', attribute: 'id'});
-                            console.log(serial);
-                            $.ajax({
-                                'url': '" . Yii::app()->createUrl('tasks/default/updateStatusOnDragInKanbanView', array('type'=> $type)) . "',
-                                'type': 'get',
-                                'data': serial,
-                                'dataType' : 'json',
-                                'success': function(data){
-                                    if(data.hasOwnProperty('button'))
-                                    {
-                                        if(data.button != '')
-                                        {
-                                            $(ui.item).find('.task-action-toolbar').html(data.button);
-                                        }
-                                        else
-                                        {
-                                            console.log($(ui.item).find('.task-action-toolbar'));
-                                            $(ui.item).find('.task-action-toolbar').remove();
-                                        }
-                                        $(ui.item).find('.task-status').html(data.status);
-                                    }
-                                },
-                                'error': function(request, status, error){
-                                    alert('We are unable to set the sort order at this time.  Please try again in a few minutes.');
-                                }
-                            });
-                        },
-                        helper: fixHelper
-                    }).disableSelection();
-                ";
+            $url = Yii::app()->createUrl('tasks/default/updateStatusOnDragInKanbanView');
+            return "setUpTaskKanbanSortable('{$url}');";
         }
 
         /**
@@ -358,6 +318,7 @@
                             else
                             {
                                 $(element).find('.button-label').remove();
+                                $(element).find('.task-action-toolbar').remove();
                                 $(element).addClass('ui-state-disabled');
                                 $(element).find('.task-status').html('{$completedStatusLabel}');
                                 //$('#task-sortable-rows-" . $targetKanbanItemType . " #' + id + ' .task-completion').html('" . $completionText . "');
@@ -421,7 +382,12 @@
             $content .= ZurmoHtml::closeTag('h4');
             if($task->description != null)
             {
-                $content .= ZurmoHtml::tag('p', array(), $task->description);
+                $description = $task->description;
+                if (strlen($description) > TaskKanbanBoard::TASK_DESCRIPTION_LENGTH)
+                {
+                    $description = substr($description, 0, TaskKanbanBoard::TASK_DESCRIPTION_LENGTH) . '...';
+                }
+                $content .= ZurmoHtml::tag('p', array(), $description);
             }
             $content .= ZurmoHtml::closeTag('div');
 

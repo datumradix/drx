@@ -124,13 +124,14 @@
             $cClipWidget->widget($this->getGridViewWidgetPath(), $this->getCGridViewParams());
             $cClipWidget->endClip();
             $content     = $this->renderKanbanViewTitleWithActionBars();
+            $this->registerKanbanGridScript();
+            $this->resolveShouldOpenToTask();
             $content    .= $cClipWidget->getController()->clips['ListView'] . "\n";
-            if ($this->getRowsAreSelectable())
-            {
-                $content .= ZurmoHtml::hiddenField($this->gridId . $this->gridIdSuffix .
-                                                    '-selectedIds', implode(",", $this->selectedIds)) . "\n"; // Not Coding Standard
-            }
             $content .= $this->renderScripts();
+            $zeroModelView = new ZeroTasksForRelatedModelYetView($this->controllerId,
+                                                                 $this->moduleId, 'Task',
+                                                                 get_class($this->params['relationModel']));
+            $content .= $zeroModelView->render();
             return $content;
         }
 
@@ -225,8 +226,7 @@
             $content     = TasksUtil::getModalDetailsLink($data,
                                                           $this->controllerId,
                                                           $this->moduleId,
-                                                          $this->getActionModuleClassName(),
-                                                          $this->getGridViewId());
+                                                          $this->getActionModuleClassName());
             return $content;
         }
 
@@ -366,14 +366,57 @@
         }
 
         /**
-         * Renders the zero model view when there is no data.
+         * Register kanban grid script
          */
-        public function getEmptyText()
+        protected function registerKanbanGridScript()
         {
-            $zeroModelView = new ZeroTasksForRelatedModelYetView($this->controllerId,
-                                                                     $this->moduleId, 'Task',
-                                                                     get_class($this->params['relationModel']));
-            return $zeroModelView->render();
+            TasksUtil::registerTaskModalDetailsScript($this->getGridId());
+            if($this->dataProvider->getTotalItemCount() == 0)
+            {
+                $script  = "$('#" . $this->getGridId() . "').hide();";
+                $script .= "$('#ZeroTasksForRelatedModelYetView').show();";
+            }
+            else
+            {
+                $script  = "$('#" . $this->getGridId() . "').show();";
+                $script .= "$('#ZeroTasksForRelatedModelYetView').hide();";
+
+            }
+            Yii::app()->clientScript->registerScript('taskKanbanDetailScript',$script);
+        }
+
+        protected function resolveShouldOpenToTask()
+        {
+            $getData = GetUtil::getData();
+            if(null != $taskId = ArrayUtil::getArrayValue($getData, 'openToTaskId'))
+            {
+                TasksUtil::registerOpenToTaskModalDetailsScript((int)$taskId, $this->getGridId());
+            }
+        }
+
+        /**
+         * Calling TaskKanbanBoardExtendedGridView::registerKanbanColumnSortableScript in order to reinitialize
+         * the sorting for the card columns after the board is refreshed
+         * @return string
+         */
+        protected function getCGridViewAfterAjaxUpdate()
+        {
+            // Begin Not Coding Standard
+            return 'js:function(id, data) {
+                        processAjaxSuccessError(id, data);
+                        if($("#" + id).find(".kanban-card").length > 0)
+                        {
+                            $("#' . $this->getGridId() . '").show();
+                            $("#ZeroTasksForRelatedModelYetView").hide();
+                        }
+                        else
+                        {
+                            $("#' . $this->getGridId() . '").hide();
+                            $("#ZeroTasksForRelatedModelYetView").show();
+                        }
+                        ' . TaskKanbanBoardExtendedGridView::registerKanbanColumnSortableScript() . '
+                    }';
+            // End Not Coding Standard
         }
     }
 ?>

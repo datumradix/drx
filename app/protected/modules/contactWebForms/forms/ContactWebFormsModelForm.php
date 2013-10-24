@@ -34,22 +34,64 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    // TODO: @Shoaibi/@Jason: High: No longer used.
     /**
-     * When sending notifications from the system, the from 'user' must be a super administrator
+     * Use this form when creating a new contact from web forms
      */
-    class UserToSendNotificationFromElement extends SuperAdministratorToUseElement
+    class ContactWebFormsModelForm extends ModelForm
     {
-        protected function renderLabel()
+        protected $customDisplayLabels = array();
+
+        protected $customRequiredFields = array();
+
+        protected static function getRedBeanModelClassName()
         {
-            $title       = Zurmo::t('EmailMessagesModule', 'Zurmo sends out system notifications.  The notifications must appear ' .
-                                                           'as coming from a super administrative user.');
-            $content     = parent::renderLabel();
-            $content    .= '<span id="send-notifications-from-user-tooltip" class="tooltip"  title="' . $title . '">';
-            $content    .= '?</span>';
-            $qtip = new ZurmoTip(array('options' => array('position' => array('my' => 'bottom right', 'at' => 'top left'))));
-            $qtip->addQTip("#send-notifications-from-user-tooltip");
-            return $content;
+            return 'Contact';
+        }
+
+        public function __construct(Contact $model)
+        {
+            $this->model = $model;
+        }
+
+        public function setCustomDisplayLabels($customDisplayLabels)
+        {
+            $this->customDisplayLabels = $customDisplayLabels;
+        }
+
+        public function setCustomRequiredFields($customRequiredFields)
+        {
+            $this->customRequiredFields = $customRequiredFields;
+        }
+
+        public function attributeLabels()
+        {
+            return array_merge($this->model->attributeLabels(), $this->customDisplayLabels);
+        }
+
+        public function rules()
+        {
+            return array_merge(parent::rules(), $this->customRequiredFields);
+        }
+
+        public function isAttributeRequired($attribute)
+        {
+            if ($this->isCustomRequiredAttribute($attribute))
+            {
+                return true;
+            }
+            return parent::isAttributeRequired($attribute);
+        }
+
+        public function isCustomRequiredAttribute($attribute)
+        {
+            foreach ($this->customRequiredFields as $customRequiredValidator)
+            {
+                if ($customRequiredValidator[0] == $attribute && $customRequiredValidator[1] == 'required')
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 ?>

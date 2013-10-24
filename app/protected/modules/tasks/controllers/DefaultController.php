@@ -36,9 +36,72 @@
 
     class TasksDefaultController extends ActivityModelsDefaultController
     {
+        public function actionDetails($id, $redirectUrl = null)
+        {
+            $task = static::getModelAndCatchNotFoundAndDisplayError('Task', intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($task);
+            if($task->project->id > 0)
+            {
+                $this->redirect(Yii::app()->createUrl('projects/default/details',
+                                                      array('id' => $task->project->id, 'openToTaskId' => $task->id)));
+            }
+            elseif($task->activityItems->count() > 0)
+            {
+                try
+                {
+                    $castedDownModel = TasksUtil::castDownActivityItem($task->activityItems[0]);
+                    $moduleClassName = StateMetadataAdapter::resolveModuleClassNameByModel($castedDownModel);
+                    $this->redirect(Yii::app()->createUrl($moduleClassName::getDirectoryName() . '/default/details',
+                        array('id' => $castedDownModel->id, 'kanbanBoard' => true, 'openToTaskId' => $task->id)));
+                }
+                catch (NotFoundException $e)
+                {
+                    //Something is missing or deleted. Fallback to home page
+                    $this->redirect(Yii::app()->createUrl('home/default/index'));
+                }
+            }
+            else
+            {
+                //todo: redirect to task list view, and open modal details, once we have a task details view
+                $this->redirect(Yii::app()->createUrl('home/default/index'));
+            }
+        }
+
+        public function actionEdit($id, $redirectUrl = null)
+        {
+            $task = Task::getById(intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($task);
+            if($task->project->id > 0)
+            {
+                $this->redirect(Yii::app()->createUrl('projects/default/details',
+                                                      array('id' => $task->project->id, 'openToTaskId' => $task->id)));
+            }
+            elseif($task->activityItems->count() > 0)
+            {
+                try
+                {
+                    $castedDownModel = TasksUtil::castDownActivityItem($task->activityItems[0]);
+                    $moduleClassName = StateMetadataAdapter::resolveModuleClassNameByModel($castedDownModel);
+                    $this->redirect(Yii::app()->createUrl($moduleClassName::getDirectoryName() . '/default/details',
+                        array('id' => $castedDownModel->id, 'kanbanBoard' => true, 'openToTaskId' => $task->id)));
+                }
+                catch (NotFoundException $e)
+                {
+                    //Something is missing or deleted. Fallback to home page
+                    $this->redirect(Yii::app()->createUrl('home/default/index'));
+                }
+            }
+            else
+            {
+                //todo: redirect to task list view, and open modal details, once we have a task details view
+                $this->redirect(Yii::app()->createUrl('home/default/index'));
+            }
+        }
+
         /**
          * Close task
-         * @param string $id
+         * @param $id
+         * @throws NotSupportedException
          */
         public function actionCloseTask($id)
         {
@@ -51,27 +114,6 @@
             {
                 throw new NotSupportedException();
             }
-        }
-
-        /**
-         * Display the details for the task
-         * @param string $id
-         * @param string $redirectUrl
-         */
-        public function actionDetails($id, $redirectUrl = null)
-        {
-            $modelClassName    = $this->getModule()->getPrimaryModelName();
-            $activity          = static::getModelAndCatchNotFoundAndDisplayError($modelClassName, intval($id));
-            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($activity);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED,
-                                                     array(strval($activity), get_class($this->getModule())),
-                                                    $activity);
-            TasksUtil::markUserHasReadLatest($activity, Yii::app()->user->userModel);
-            $pageViewClassName = $this->getPageViewClassName();
-            $detailsView       = new TaskModalDetailsView('Details', $this->getId(), $this->getModule()->getId(), $activity);
-            $view              = new $pageViewClassName(ZurmoDefaultViewUtil::
-                                         makeStandardViewForCurrentUser($this,$detailsView));
-            echo $view->render();
         }
 
         /**
@@ -267,7 +309,7 @@
             {
                 ProjectsUtil::logAddTaskEvent($task);
             }
-            $this->actionModalDetailsFromRelation($task->id);
+            $this->actionModalDetails($task->id);
         }
 
         /**
@@ -293,7 +335,7 @@
          * Copy task
          * @param string $id
          */
-        public function actionModalCopyFromRelation($id)
+        public function actionModalCopy($id)
         {
             $copyToTask   = new Task();
             if (!isset($_POST['Task']))
@@ -309,13 +351,11 @@
          * Loads modal view from related view
          * @param string $id
          */
-        public function actionModalDetailsFromRelation($id)
+        public function actionModalDetails($id)
         {
             $task = Task::getById(intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($task);
             $this->attemptToValidateAndSaveFromModalDetails($task);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED,
-                                       array(strval($task), get_class($this->getModule())), $task);
             $this->processModalDetails($task);
         }
 
@@ -331,9 +371,10 @@
          * Edit task from related view
          * @param string $id
          */
-        public function actionModalEditFromRelation($id)
+        public function actionModalEdit($id)
         {
             $task = Task::getById(intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($task);
             $this->processTaskEdit($task);
         }
 
@@ -593,7 +634,7 @@
          */
         protected static function getZurmoControllerUtil()
         {
-            return new TaskZurmoControllerUtil();
+            return new TaskZurmoControllerUtil('activityItems', 'ActivityItemForm');
         }
 
         /**

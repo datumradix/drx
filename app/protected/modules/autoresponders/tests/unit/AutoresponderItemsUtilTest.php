@@ -43,6 +43,8 @@
         {
             parent::setUpBeforeClass();
             SecurityTestHelper::createSuperAdmin();
+            $loaded = ContactsModule::loadStartingData();
+            assert($loaded); // Not Coding Standard
         }
 
         public function setUp()
@@ -501,11 +503,12 @@
             $email->emailAddress        = 'demo@zurmo.com';
             $contact                    = ContactTestHelper::createContactByNameForOwner('contact 09', $this->user);
             $contact->primaryEmail      = $email;
+            $contact->state             = ContactsUtil::getStartingState();
             $this->assertTrue($contact->save());
             $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 09',
-                                                                                                'description',
-                                                                                                'CustomFromName',
-                                                                                                'custom@from.com');
+                                                                                             'description',
+                                                                                             'CustomFromName',
+                                                                                             'custom@from.com');
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 09',
                                                                             'Url: [[MODEL^URL]]',
                                                                             'Click <a href="[[MODEL^URL]]">here</a>',

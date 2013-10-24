@@ -488,7 +488,10 @@
             {
                 foreach(static::getAll() as $model)
                 {
-                    $model->delete();
+                    if (!$model->delete())
+                    {
+                        throw new NotSupportedException("Unable to delete id# " . $model->id);
+                    }
                 }
                 // we could have used ZurmoRedBean::$writer->wipe() but that won't fire events related to delete.
             }
@@ -2100,8 +2103,7 @@
                         $relationAndOwns       = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
                         if (!in_array($relationAndOwns[$relationName][0],
                                       array(self::HAS_ONE_BELONGS_TO,
-                                            self::HAS_MANY_BELONGS_TO,
-                                            self::MANY_MANY)))
+                                            self::HAS_MANY_BELONGS_TO)))
                         {
                             if ($this->$relationName->isModified() ||
                                 $this->isAttributeRequired($relationName) &&
