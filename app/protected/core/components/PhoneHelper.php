@@ -34,29 +34,30 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class PhoneListViewColumnAdapter extends TextListViewColumnAdapter
+    /**
+     * Loaded by application as Yii::app()->phoneHelper
+     */
+    class PhoneHelper extends CApplicationComponent
     {
-        public function renderGridViewData()
+        
+        public function resolvePhoneNumberContentForDialing($content, $inputId, $model)
         {
-            if ($this->getIsLink())
-            {
-                return array(
-                    'name' => $this->attribute,
-                    'type' => 'raw',
-                    'value' => $this->view->getLinkString('$data->' . $this->attribute, $this->attribute),
-                    'htmlOptions' => array( 'class' => 'phone')
-                );
-            }
-            else
-            {
-                return array(
-                    'name'  => $this->attribute,
-                    'value' => 'Yii::app()->phoneHelper->resolvePhoneListViewColumnValue($data->' . $this->attribute . 
-                                ', "' . $this->attribute . '_".$data->id, $data)',
-                    'type'  => 'raw',
-                    'htmlOptions' => array( 'class' => 'phone')
-                );
-            }
+            return $content;
+        }
+        
+        public function resolvePersonCardViewOfficePhoneNumberContent($content, $model)
+        {
+            return ZurmoHtml::tag('span', array('class' => 'icon-office-phone'), $content);
+        }
+        
+        public function resolvePersonCardViewMobilePhoneNumberContent($content, $model)
+        {
+            return ZurmoHtml::tag('span', array('class' => 'icon-mobile-phone'), $content);
+        }
+        
+        public function resolvePhoneListViewColumnValue($content, $inputId, $model)
+        {
+            return $content;
         }
     }
 ?>
