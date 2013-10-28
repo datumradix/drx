@@ -62,7 +62,7 @@
 
         const ERROR_TEMP_DIR_NOT_WRITABLE               = -4;
 
-        protected static $dependentTestModelClassNames = array();
+        protected static $dependentTestModelClassNames  = array();
 
         public static function suite()
         {
@@ -195,8 +195,6 @@
                 echo PHP_EOL;
                 static::buildDependentTestModels($messageLogger);
                 $messageLogger->printMessages();
-                // recreate any missing read tables.
-                static::rebuildReadPermissionsTables(false, true, $messageStreamer);
             }
             echo PHP_EOL;
             static::closeDatabaseConnection();
@@ -259,7 +257,7 @@
                                 if (@class_exists($className, false))
                                 {
                                     $suite->addTestSuite(new PHPUnit_Framework_TestSuite($className));
-                                    static::resolveDependentTestModelClassNamesForClass($className);
+                                    static::resolveDependentTestModelClassNamesForClass($className, $directoryName);
                                 }
                             }
                         }
@@ -276,18 +274,32 @@
         {
             RedBeanModelsToTablesAdapter::generateTablesFromModelClassNames(static::$dependentTestModelClassNames,
                                                                                                 $messageLogger);
+            static::buildReadPermissionsOptimizationTableForTestModels();
         }
 
-        protected static function resolveDependentTestModelClassNamesForClass($className)
+        protected static function resolveDependentTestModelClassNamesForClass($className, $directoryName)
         {
             $dependentTestModelClassNames = $className::getDependentTestModelClassNames();
             if (!empty($dependentTestModelClassNames))
             {
                 $dependentTestModelClassNames = CMap::mergeArray(static::$dependentTestModelClassNames,
-                    $dependentTestModelClassNames);
+                                                                    $dependentTestModelClassNames);
                 static::$dependentTestModelClassNames = array_unique($dependentTestModelClassNames);
             }
         }
+
+        protected static function buildReadPermissionsOptimizationTableForTestModels()
+        {
+            foreach (static::$dependentTestModelClassNames as $modelClassName)
+            {
+                if (is_subclass_of($modelClassName, 'SecurableItem') && $modelClassName::hasReadPermissionsOptimization())
+                {
+                    ReadPermissionsOptimizationUtil::recreateTable(ReadPermissionsOptimizationUtil::getMungeTableName(
+                                                                                                    $modelClassName));
+                }
+            }
+        }
+
 
         protected static function setupDatabaseConnection($force = false)
         {
