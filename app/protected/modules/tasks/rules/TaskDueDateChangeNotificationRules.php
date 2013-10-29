@@ -35,46 +35,18 @@
      ********************************************************************************/
 
     /**
-     * Activities Modules such as Meetings, Notes, and Tasks
-     * should extend this class to provide generic functionality
-     * that is applicable to all activity modules.
+     * A  NotificationRules to manage when due date is changed
      */
-    abstract class ActivitiesModuleController extends ZurmoModuleController
+    class TaskDueDateChangeNotificationRules extends NotificationRules
     {
-        protected static function getZurmoControllerUtil()
+        public static function getDisplayName()
         {
-            return new ModelHasRelatedItemsZurmoControllerUtil('activityItems', 'ActivityItemForm');
+            return Zurmo::t('TasksModule', 'The due date is changed');
         }
 
-        /**
-         * Override to handle the special scenario of relations for an activity. Since relations are done in the
-         * ActivityItems, the relation information needs to handled in a specific way.
-         * @see ZurmoModuleController->resolveNewModelByRelationInformation
-         * @param Activity $model
-         * @param string $relationModelClassName
-         * @param int $relationModelId
-         * @param string $relationModuleId
-         * @return mixed
-         * @throws NotSupportedException
-         */
-        protected function resolveNewModelByRelationInformation(    $model, $relationModelClassName,
-                                                                    $relationModelId, $relationModuleId)
+        public static function getType()
         {
-            assert('$model instanceof Activity');
-            assert('is_string($relationModelClassName)');
-            assert('is_int($relationModelId)');
-            assert('is_string($relationModuleId)');
-            $metadata = Activity::getMetadata();
-            if (in_array($relationModelClassName, $metadata['Activity']['activityItemsModelClassNames']))
-            {
-                $relatedModel = $relationModelClassName::getById((int)$relationModelId);
-                $model->activityItems->add($relatedModel);
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-            return $model;
+            return 'TaskDueDateChange';
         }
     }
 ?>

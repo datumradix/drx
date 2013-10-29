@@ -212,18 +212,12 @@
                 if($this->status != Task::STATUS_COMPLETED)
                 {
                     $this->completed = false;
+                    $this->completedDateTime = null;
                 }
                 else
                 {
                     $this->completed = true;
-                }
-                if (array_key_exists('completed', $this->originalAttributeValues) &&
-                    $this->completed == true)
-                {
-                    if ($this->completedDateTime == null)
-                    {
-                        $this->completedDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
-                    }
+                    $this->completedDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
                     $this->unrestrictedSet('latestDateTime', $this->completedDateTime);
                 }
                 return true;
@@ -307,6 +301,10 @@
                       throw new FailedToSaveModelException();
                   }
                 }
+            }
+            if ($this->isNewModel)
+            {
+                TasksNotificationUtil::makeAndSubmitNewTaskNotificationMessage($this);
             }
         }
     }
