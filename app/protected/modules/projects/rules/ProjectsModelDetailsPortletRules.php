@@ -33,46 +33,19 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
+
     /**
-     * Project details overlay view in project task kanban view
+     * Class defines rules for any project related model details view for a portlet.
      */
-    class ProjectDetailsOverlayView extends TaskRelatedDetailsOverlayView
+    class ProjectsModelDetailsPortletRules extends ModelDetailsPortletRules
     {
-        protected $cssClasses = array('overlay-view');
-
-        const DESCRIPTION_CLASS          = 'marketing-list-description';
-
         /**
-         * Render content
-         * @return string
+         * (non-PHPdoc)
+         * @see PortletRules::allowOnDashboard()
          */
-        protected function renderContent()
+        public function allowOnDashboard()
         {
-            $content = $this->renderNameContent();
-            $content .= $this->renderDescriptionContent();
-            return $content;
-        }
-
-        /**
-         * Renders description
-         * @return string
-         */
-        protected function renderDescriptionContent()
-        {
-            $content = ZurmoHtml::tag('div', array('class' => static::DESCRIPTION_CLASS),
-                                      StringUtil::getChoppedStringContent($this->model->description, 50));
-            return $content;
-        }
-
-        /**
-         * Renders name
-         * @return string
-         */
-        protected function renderNameContent()
-        {
-            $content = ZurmoHtml::tag('div', array('class' => static::DESCRIPTION_CLASS),
-                                      ZurmoHtml::tag('strong', array(), $this->model->name));
-            return $content;
+            return true;
         }
     }
 ?>
