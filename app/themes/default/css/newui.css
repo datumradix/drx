@@ -11149,7 +11149,11 @@ body > .ui-autocomplete {
   display: inline-block;
   width: 100%;
   position: relative;
-  z-index: 100;
+  z-index: 9999;
+}
+.view-toolbar-container + div {
+  position: relative;
+  z-index: 1;
 }
 h1 + .view-toolbar-container {
   margin-top: 15px;
@@ -13562,6 +13566,9 @@ div.wide.form label.hasCheckBox {
 }
 .details-table h1 + .toolbar-mbmenu .parent > ul {
   top: 27px;
+}
+.DetailsView .col-0 {
+  width: 15%;
 }
 .after-form-details-content {
   color: #545454 !important;
@@ -16144,6 +16151,20 @@ i[class^="icon"] {
   box-sizing: border-box;
   letter-spacing: -40px;
 }
+.type-projects .icon-empty:before {
+  content: '\02C7';
+  font-weight: normal !important;
+  font-weight: normal;
+  font-size: 45px;
+  font-family: "zurmo_gamification_symbly_rRg";
+  padding: 0;
+  margin: 0;
+  vertical-align: middle;
+  position: relative;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
 #ZurmoLogo {
   background: url(../images/ZurmoLogo.png) left top no-repeat;
   width: 170px;
@@ -16775,9 +16796,6 @@ table.configuration-list td:last-child a .z-label:before {
   background: url(../images/table-items-header.png) left top repeat-x;
   padding: 0 0 0 10px !important;
 }
-#JobsCollectionView a {
-  margin-right: 5px;
-}
 #JobsCollectionView table {
   table-layout: auto;
   border-top: 1px solid #DFDFDF;
@@ -16787,6 +16805,15 @@ table.configuration-list td:last-child a .z-label:before {
 }
 #JobsCollectionView #jobs-collection-form > div + table {
   border-top: none;
+}
+.job-log-link {
+  display: table-cell;
+  white-space: nowrap;
+  float: left;
+}
+.job-name {
+  display: table-cell;
+  padding-left: 10px;
 }
 .reset-job-link {
   margin: 0 !important;
@@ -20362,6 +20389,10 @@ div.token-input-dropdown ul li.token-input-selected-dropdown-item {
 .CreateProductCategory .badge-icon:before {
   content: '\00D7';
 }
+.game-badge-SearchProjects .badge-icon:before,
+.SearchProjects .badge-icon:before {
+  content: '\02C7';
+}
 /*Big Icons for popup badges*/
 .game-level-change .badge-icon:before {
   content: ";";
@@ -21758,6 +21789,12 @@ a.user-link {
 #ArchivedEmailMatchingListView .items td {
   padding-right: 10px;
 }
+#ArchivedEmailMatchingListView .view-toolbar-container {
+  border-top: 1px solid #CCCCCC;
+}
+#ArchivedEmailMatchingListView table {
+  width: 100%;
+}
 .email-archive-item {
   border: none !important;
   background: none !important;
@@ -21804,7 +21841,7 @@ a.user-link {
 .email-archive-item th {
   height: auto !important;
   line-height: 1 !important;
-  padding: 0 !important;
+  padding: 0 0 15px 0 !important;
 }
 .email-archive-item td {
   padding-bottom: 15px;
@@ -24564,7 +24601,7 @@ a + .autoresponder-stats {
 .subscribe-task-link .icon-unsubscribe:after,
 .unsubscribe-task-link .icon-unsubscribe:after {
   color: #545454;
-  content: '\25CA';
+  content: '\2260';
   font-size: 29px;
 }
 .detail-subscribe-task-link,
@@ -24589,7 +24626,7 @@ a + .autoresponder-stats {
 .detail-subscribe-task-link .icon-unsubscribe:after,
 .detail-unsubscribe-task-link .icon-unsubscribe:after {
   color: #545454;
-  content: '\25CA';
+  content: '\2260';
   font-size: 44px;
 }
 .icon-unsubscribe:after {
@@ -25887,56 +25924,33 @@ div.special-pager .hidden.next:after {
   z-index: 100;
   overflow: scroll;
   width: 100%;
-  height: 100%;
-  position: fixed;
+  position: absolute;
   top: 78px;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.65);
-}
-#game-overlay {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.65);
-}
-#game-dashboard-container {
-  width: 100%;
-  height: 100%;
-  display: block;
-  position: relative;
-  z-index: 100;
-  color: #f1f1f1;
-}
-#game-dashboard-container * {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-}
-#game-dashboard-container ul {
-  list-style: none;
-}
-#game-dashboard-container h2 {
-  margin-bottom: 15px;
+  overflow: hidden;
 }
 #game-dashboard {
   width: 1200px;
   height: 600px;
   position: absolute;
   left: 50%;
+  margin: 30px auto auto -600px;
+  overflow: hidden;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px;
-  overflow: hidden;
-  margin: 30px auto auto -600px;
+  color: #f1f1f1;
   background: url(../images/game-dashboard/blue-chalkboard-blurred.jpg) left top repeat;
+}
+#game-dashboard * {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 #game-dashboard > div {
   padding: 10px 15px 15px 15px;
@@ -25956,6 +25970,12 @@ div.special-pager .hidden.next:after {
   -ms-text-shadow: 0 -1px 0 #151f1f;
   text-shadow: 0 -1px 0 #151f1f;
   color: #fff !important;
+}
+#game-dashboard ul {
+  list-style: none;
+}
+#game-dashboard h2 {
+  margin-bottom: 15px;
 }
 #game-dashboard a {
   color: #fff;
@@ -26376,6 +26396,10 @@ div.special-pager .hidden.next:after {
   overflow: hidden;
   background: url(../images/game-dashboard/blue-chalkboard-blurred.jpg) left top repeat;
   z-index: 100;
+  font-weight: normal !important;
+  font-weight: normal;
+  font-size: 42px;
+  font-family: "zurmo_gamification_symbly_rRg";
 }
 #nav-left {
   border-right: 1px solid rgba(32, 50, 52, 0.5);

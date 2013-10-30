@@ -34,75 +34,37 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class TaskCheckListItem extends OwnedModel
+    /**
+     * A  NotificationRules to manage when a new task is created
+     */
+    class TaskNotificationRules extends NotificationRules
     {
-        /**
-         * @return string
-         */
-        public function __toString()
+        protected $model;
+
+        public function getModel()
         {
-            if (trim($this->name) == '')
-            {
-                return Zurmo::t('TasksModule', '(None)');
-            }
-            return $this->name;
+            return $this->model;
+        }
+
+        public function setModel($model)
+        {
+            $this->model = $model;
         }
 
         /**
-         * @return array
+         * @returns Translated label that describes this rule type.
          */
-        public static function getDefaultMetadata()
+        public static function getDisplayName()
         {
-            $metadata = parent::getDefaultMetadata();
-            $metadata[__CLASS__] = array(
-                'members' => array(
-                    'name',
-                    'completed',
-                ),
-                'relations' => array(
-                    'task' => array(static::HAS_ONE, 'Task', static::NOT_OWNED),
-                ),
-                'rules' => array(
-                    array('name',       'required'),
-                    array('name',       'type', 'type' => 'string'),
-                    array('completed',  'type', 'type' => 'boolean'),
-                ),
-                'defaultSortAttribute' => 'name',
-                'customFields' => array(
-                ),
-            );
-            return $metadata;
+            return 'task';
         }
 
         /**
-         * @return bool
+         * @return The type of the NotificationRules
          */
-        public static function canSaveMetadata()
+        public static function getType()
         {
-            return true;
-        }
-
-        /**
-         * @return string
-         */
-        public static function getModuleClassName()
-        {
-            return 'TasksModule';
-        }
-
-        /**
-         * Given a related model id return a list of check items models.
-         * @param integer $taskId
-         */
-        public static function getByTask($taskId)
-        {
-            assert('is_int($taskId)');
-            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('TaskCheckListItem');
-            $orderByColumnName = RedBeanModelDataProvider::
-                                 resolveSortAttributeColumnName('TaskCheckListItem', $joinTablesAdapter, 'id');
-            $where             = "task_id = '" . $taskId . "'";
-            $orderBy           = $orderByColumnName . ' desc';
-            return self::getSubset($joinTablesAdapter, null, null, $where, $orderBy);
+            return 'Task';
         }
     }
 ?>
