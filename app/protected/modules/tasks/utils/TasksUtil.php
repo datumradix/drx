@@ -368,8 +368,7 @@
          */
         public static function resolveAjaxOptionsForCreateMenuItem()
         {
-            $title = self::getModalTitleForCreateTask("Create");
-            return   ModalView::getAjaxOptionsForModalLink($title, self::getModalContainerId());
+            return static::resolveAjaxOptionsForModalView('Create');
         }
 
         /**
@@ -455,6 +454,11 @@
                      $element = new TaskFinishLinkActionElement($controllerId, $moduleId, $taskId,
                                                                                             array('route' => $route));
                     break;
+                case Task::STATUS_REJECTED:
+
+                     $element = new TaskRestartLinkActionElement($controllerId, $moduleId, $taskId,
+                                                                                            array('route' => $route));
+                    break;
                 case Task::STATUS_AWAITING_ACCEPTANCE:
 
                      $acceptLinkElement = new TaskAcceptLinkActionElement($controllerId, $moduleId, $taskId,
@@ -480,10 +484,10 @@
         public static function getTaskStatusMappingToKanbanItemTypeArray()
         {
             return array(
-                            Task::STATUS_NEW                   => KanbanItem::TYPE_SOMEDAY,
+                            Task::STATUS_NEW                   => KanbanItem::TYPE_TODO,
                             Task::STATUS_IN_PROGRESS           => KanbanItem::TYPE_IN_PROGRESS,
                             Task::STATUS_AWAITING_ACCEPTANCE   => KanbanItem::TYPE_IN_PROGRESS,
-                            Task::STATUS_REJECTED              => KanbanItem::TYPE_TODO,
+                            Task::STATUS_REJECTED              => KanbanItem::TYPE_IN_PROGRESS,
                             Task::STATUS_COMPLETED             => KanbanItem::TYPE_COMPLETED
                         );
         }
@@ -498,23 +502,6 @@
             if($status == null)
             {
                 return KanbanItem::TYPE_SOMEDAY;
-            }
-            $data = self::getTaskStatusMappingToKanbanItemTypeArray();
-            return $data[intval($status)];
-        }
-
-        /**
-         * Resolve kanban item type for task
-         * @param int $taskId
-         * @return int
-         */
-        public static function resolveKanbanItemTypeForTask($taskId)
-        {
-            $task = Task::getById($taskId);
-            $status = $task->status;
-            if($status == null)
-            {
-                return KanbanItem::TYPE_TODO;
             }
             $data = self::getTaskStatusMappingToKanbanItemTypeArray();
             return $data[intval($status)];
@@ -554,7 +541,9 @@
          */
         public static function registerSubscriptionScript($taskId = null)
         {
-            $unsubscribeLink = '<strong>' . Zurmo::t('TasksModule', 'Unsubscribe') . '</strong>';
+            $title  = Zurmo::t('TasksModule', 'Unsubscribe');
+            $unsubscribeLink = ZurmoHtml::tag('i', array('class' => 'icon-unsubscribe', 'title' => $title), '');
+
             if($taskId == null)
             {
                 $url     = Yii::app()->createUrl('tasks/default/addKanbanSubscriber');
@@ -575,7 +564,9 @@
          */
         public static function registerUnsubscriptionScript($taskId = null)
         {
-            $subscribeLink = '<strong>' . Zurmo::t('Core', 'Subscribe') . '</strong>';
+            $title  = Zurmo::t('TasksModule', 'Subscribe');
+            $subscribeLink = ZurmoHtml::tag('i', array('class' => 'icon-subscribe', 'title' => $title), '');
+
             if($taskId == null)
             {
                 $url           = Yii::app()->createUrl('tasks/default/removeKanbanSubscriber');
@@ -695,7 +686,7 @@
             assert('is_string($unsubscribeLinkClass)');
             if(TasksUtil::isUserSubscribedForTask($task, Yii::app()->user->userModel) === false)
             {
-                $label       = '';//Zurmo::t('Core', 'Subscribe');
+                $label       = Zurmo::t('Core', 'Subscribe');
                 $class       = $subscribeLinkClass;
                 $iconContent = ZurmoHtml::tag('i', array('class' => 'icon-subscribe'), '');
             }

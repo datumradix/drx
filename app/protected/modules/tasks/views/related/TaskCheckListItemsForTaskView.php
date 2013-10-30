@@ -56,19 +56,19 @@
 
         protected $form;
 
-        public function __construct($controllerId, $moduleId, $checkListItemsData, Item $relatedModel, $form, $getParams, $uniquePageId = null)
+        public function __construct($controllerId, $moduleId, $checkListItemsData, Task $task, $form, $getParams, $uniquePageId = null)
         {
             assert('is_string($controllerId)');
             assert('is_string($moduleId)');
             assert('is_array($checkListItemsData)');
-            assert('$relatedModel->id > 0');
+            assert('$task->id > 0');
             assert('is_string($form) || $form == null');
             assert('is_array($getParams)');
             assert('is_string($uniquePageId) || $uniquePageId == null');
             $this->controllerId           = $controllerId;
             $this->moduleId               = $moduleId;
             $this->checkListItemsData     = $checkListItemsData;
-            $this->relatedModel           = $relatedModel;
+            $this->relatedModel           = $task; //todo: change relatedModel to task.
             $this->getParams              = $getParams;
             $this->uniquePageId           = $uniquePageId;
         }
@@ -123,9 +123,6 @@
          */
         protected function renderCheckListItemsContent()
         {
-            Yii::app()->clientScript->registerScriptFile(Yii::app()->getAssetManager()->publish(
-                    Yii::getPathOfAlias('application.modules.tasks.elements.assets')) . '/TaskUtils.js',
-                CClientScript::POS_END);
             $content  = null;
             $rows = 0;
             $data = array();
@@ -148,6 +145,9 @@
                 $itemContent .= $this->attachActionsToCheckListItem();
                 $content     .= ZurmoHtml::tag('li', array('class' => 'check-list-item clearfix'), $itemContent);
             }
+            Yii::app()->clientScript->registerScriptFile(Yii::app()->getAssetManager()->publish(
+                    Yii::getPathOfAlias('application.modules.tasks.elements.assets')) . '/TaskUtils.js',
+                                            CClientScript::POS_END);
             $this->registerCheckListItemsScript($checkListItem->id);
             return $content;
         }
@@ -171,7 +171,7 @@
         private function registerCheckListItemsScript()
         {
             $url = Yii::app()->createUrl('/tasks/taskCheckItems/updateNameViaAjax');
-            $deleteUrl = Yii::app()->createUrl('/tasks/taskCheckItems/deleteCheckListItem');
+            $deleteUrl = Yii::app()->createUrl('/tasks/taskCheckItems/deleteCheckListItem', array('taskId' => $this->relatedModel->id));
             $errorMessage = Yii::t('Core', 'Name can not be blank');
             Yii::app()->getClientScript()->registerScript('checklistitemscript', "
                                                                 var litag;

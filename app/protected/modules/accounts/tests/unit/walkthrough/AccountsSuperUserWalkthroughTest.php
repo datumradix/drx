@@ -637,16 +637,14 @@
             $this->setGetArray(array('id' => $accounts[0]->id, 'kanbanBoard' => '1'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/details');
             $matcher= array(
-                'tag' => 'span',
-                'attributes' => array('class' => 'z-label'),
+                'tag' => 'a',
                 //Multiple ancestors
                 'ancestor' => array('tag' => 'li', 'id' => 'items_' . $task->id, 'tag' => 'ul', 'id' => 'task-sortable-rows-3'),
                 'content' => 'MyTask'
             );
             $this->assertTag($matcher, $content);
             $matcher= array(
-                'tag' => 'span',
-                'attributes' => array('class' => 'z-label'),
+                'tag' => 'a',
                 //Multiple ancestors
                 'ancestor' => array('tag' => 'li', 'id' => 'items_' . $taskNew->id, 'tag' => 'ul', 'id' => 'task-sortable-rows-2'),
                 'content' => 'MyTask New'

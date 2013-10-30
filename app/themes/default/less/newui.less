@@ -96,8 +96,8 @@
 
 html.zurmo,
 html.zurmo body{
-		background:#DDDEDE;
-		min-height:100%;
+	background:#DDDEDE;
+	min-height:100%;
 }
 
 .zurmo body{
@@ -661,16 +661,20 @@ body > .ui-autocomplete{
 
 #globalSearchInput{
 	font-style:italic;
-	color:#999;
+	color:#999 !important;
 	height:23px;
-	text-indent:10px;
-	line-height:23px;
+	text-indent:10px !important;
+	line-height:26px !important;
+	height:25px;
 	width:300px;
 	border:1px solid #d5d4d4;
 	border-left:none;
 	margin:7px 0 0 -3px;
 	float:left;
 	background: url(../images/search-bar-gradient.png) left top repeat-x;
+	.radius(0);
+	.b-shadow(none);
+
 	&:focus{
 		outline: 0;
 		color:#545454;
@@ -981,7 +985,7 @@ body > .ui-autocomplete{
 		position: absolute;
 		top:0;
 		left:0;
-	/*Conversation button*/
+		/*Conversation button*/
 		> span{
 			position: relative;
 			top:-2px;
@@ -1109,7 +1113,7 @@ body > .ui-autocomplete{
 		}
 		a:hover{
 			span{
-			//.t-shadow(rgba(156, 156, 156, 0.8) 0px 1px);
+				//.t-shadow(rgba(156, 156, 156, 0.8) 0px 1px);
 				background-image: url(../images/main-nav-selected.png);
 				background-repeat: no-repeat;
 				background-position-x: 0;
@@ -1142,7 +1146,7 @@ body > .ui-autocomplete{
 @recentlyViewedIconSize : 24px;
 
 #RecentlyViewedView {
-/*deafult for if an icon doesnt exist*/
+	/*deafult for if an icon doesnt exist*/
 	li{
 		em:before{
 			content: "z";
@@ -1304,7 +1308,7 @@ body > .ui-autocomplete{
 
 .DynamicSearchView{
 	position: relative;
-//z-index: 9999;
+	//z-index: 9999;
 	float: left;
 	width: 100%;
 }
@@ -1744,7 +1748,7 @@ caption, th, td {
 			~ div{
 				padding-left:25px;
 				++.border-box;
-			 }
+			}
 		}
 		> div{
 			margin:0 0 2px 0;
@@ -1780,7 +1784,7 @@ caption, th, td {
 
 
 .sort-link:after{
-//content:"↑";
+	//content:"↑";
 	margin-left: 10px;
 	font-size: 12px;
 	position: relative;
@@ -1960,74 +1964,70 @@ td.empty{
 	.box-sizing();
 }
 
+input[type="text"],
+input[type="password"],
+select.multiple,
+textarea{
+	.text-input();
+}
+
+textarea,
+select.multiple {
+	height:auto;
+}
+
+textarea{
+	line-height: 135%;
+	text-indent: 0;
+	padding: 4px;
+	word-break: normal;
+	min-height: 60px;
+}
+
+select.multiple {
+	padding: 4px 4px 4px 6px;
+	option{
+		margin-bottom: 2px;
+	}
+}
+
+select[disabled="disabled"],
+input[type="text"][disabled],
+input[type="password"][disabled],
+textarea[disabled] {
+	background:#EFEFEF;
+}
 
 .form{
 	input[type="checkbox"]{
 		margin:0 0 10px 0 !important;
 		.b-shadow(0 0 1px 1px rgba(153, 153, 153, 0.3));
 	}
-	input[type="text"],
-	input[type="password"],
-	select.multiple,
-	textarea{
-		.text-input();
-	}
-	textarea, select.multiple {
-		height:auto;
-	}
-	textarea{
-		line-height: 135%;
-		text-indent: 0;
-		padding: 4px;
-		word-break: normal;
-		min-height: 60px;
-	}
-	select.multiple {
-		padding: 4px 4px 4px 6px;
-		option{
-			margin-bottom: 2px;
-		}
-	}
-	select[disabled="disabled"],
-	input[type="text"][disabled],
-	input[type="password"][disabled],
-	textarea[disabled] {
-		background:#EFEFEF;
-	}
-	th{
-		vertical-align: text-top;
-	}
-	table{
-		//table-layout:fixed;
-		width:100%;
-		border-bottom:1px solid #CCCCCC;
-	}
 	form{
+		border:1px solid #CCC;
+		.b-shadow(0 0 20px 5px rgba(153, 153, 153, 0.12)); /*999*/
+		background: #ffffff;
+		#gradient > .vertical(#ffffff, #F5F5F5);
+
 		thead tr th:first-child,
 		tbody tr td:first-child{
 			padding-left:15px;
 		}
 	}
-	form{
-		//padding:0 15px 15px 15px;
-		border:1px solid #CCC;
-		.b-shadow(0 0 20px 5px rgba(153, 153, 153, 0.12)); /*999*/
-		background: #ffffff;
-		#gradient > .vertical(#ffffff, #F5F5F5);
-	}
-	.row-description{
-		display: inline-block;
-		font-style: italic;
-		.smaller();
-		padding: 0 0 5px 0;
-		&:before{
-			content:"T";
-			.symbly(24px);
-			margin-right: 6px;
-			font-style: normal;
-			position: relative;
-			top: 2px;
-		}
+}
+
+.row-description{
+	display: inline-block;
+	font-style: italic;
+	.smaller();
+	padding: 0 0 5px 0;
+	&:before{
+		content:"T";
+		.symbly(24px);
+		margin-right: 6px;
+		font-style: normal;
+		position: relative;
+		top: 2px;
 	}
 }
 
@@ -2160,6 +2160,9 @@ a.simple-link{
 	&:before{
 		content:""  !important;
 	}
+	&:hover{
+
+	}
 }
 
 .normal-size{
@@ -2219,7 +2222,7 @@ a.simple-link{
 		margin:0 !important;
 		font-size:15px;
 		font-weight:bold;
-	//++.themeColor;
+		//++.themeColor;
 		.t-shadow( rgba( 255, 255, 255, 0.8 ) 0 1px 0 );
 		width: 100%;
 		height: 40px;
@@ -2449,7 +2452,7 @@ div.wide.form{
 		font-family:"Times New Roman", Times, serif;
 		font-style:italic;
 		font-size:48px;
-		line-height:60px;
+		line-height:1;
 		font-weight:normal;
 		padding:15px 50px 15px 30px;
 	}
@@ -2571,19 +2574,24 @@ div.wide.form{
 		line-height: 52%;
 	}
 	.GameReward .large-icon:after{
-		content:'\2205';// '\2248'; //2205
+		content:'\2205';
 		.symbly(300px);
 		line-height: 52%;
 	}
 	.Task .large-icon:after{
-		content:'4';// '\2248'; //2205
+		content:'4';
 		.symbly(300px);
 		line-height: 62%;
 	}
 	.Project .large-icon:after{
-		content:'\02C7';// '\2248'; //2205
+		content:'\02C7';
 		.symbly(300px);
 		line-height: 65%;
+	}
+	.QueueModel .large-icon:after{
+		content:'\00EF';
+		.symbly(300px);
+		line-height: 52%;
 	}
 }
 
@@ -2618,6 +2626,7 @@ div.wide.form{
 	}
 	table{
 		border-bottom:none;
+		width:100%;
 	}
 	.filters-bar{
 		width: auto;
@@ -3159,6 +3168,7 @@ div.wide.form{
 }
 
 .form-fields{
+	width:100%;
 	border-bottom:none;
 	table-layout: fixed;
 	th{
@@ -3451,6 +3461,9 @@ div.wide.form{
 .details-table{
 	position:relative;
 	margin:0px !important;
+	.col-0{
+		width: 30%;
+	}
 	table{
 		margin:0 0 10px 0;
 	}
@@ -3587,14 +3600,14 @@ div.wide.form{
 		border-bottom:1px solid #ccc;
 		overflow: hidden;
 	}
-//for opt in email checkboxes
+	//for opt in email checkboxes
 	input[type="checkbox"] + label{
 		width:60px;
 		margin-top:0;
 	}
-//for address fields
+	//for address fields
 	td > label:first-child{}
-//for 2 columns
+	//for 2 columns
 	td + th{
 		padding-left:30px;
 	}
@@ -4311,7 +4324,7 @@ div.hasHalfs{
 			color:#ccc;
 		}
 	}
-//doesnt work in IE
+	//doesnt work in IE
 	&:empty{
 		display:none;
 	}
@@ -4346,7 +4359,7 @@ div.hasHalfs{
 	}
 	h3{
 		color:#545454;
-		font-size:11px;
+		//font-size:11px;
 		margin-bottom:4px;
 		span{
 			font-weight:normal;
@@ -4862,7 +4875,7 @@ div.hasHalfs{
 	}
 	#sequential-process-spinner + #progressBar-msg{
 		display:block;
-	//text-indent:30px;
+		//text-indent:30px;
 	}
 }
 
@@ -5078,7 +5091,7 @@ div.hasHalfs{
 	}
 	.pager{
 		.b-shadow(none) !important;
-	//.no-ie-shadow();
+		//.no-ie-shadow();
 		border: 1px solid #DFDFDF;
 		border-top: none;
 		ul{

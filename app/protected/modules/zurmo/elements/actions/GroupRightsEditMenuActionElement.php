@@ -34,32 +34,23 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class FileTestModel extends FileModel
+    class GroupRightsEditMenuActionElement extends MenuActionElement
     {
-        public static function getDefaultMetadata()
+        protected function getDefaultLabel()
         {
-            $metadata = parent::getDefaultMetadata();
-            $metadata[__CLASS__] = array(
-                'relations' => array(
-                    'modelWithAttachmentTestItem' => array(static::HAS_ONE, 'ModelWithAttachmentTestItem',
-                                                            static::NOT_OWNED),
-                ),
-            );
-            return $metadata;
+            return Zurmo::t('ZurmoModule', 'Module Rights');
         }
 
-        protected function beforeDelete()
+        protected function getDefaultRoute()
         {
-            if ($this->hasEventHandler('onBeforeDelete'))
-            {
-                $event = new CModelEvent($this);
-                $this->onBeforeDelete($event);
-                return $event->isValid;
-            }
-            else
-            {
-                return true;
-            }
+            return Yii::app()->createUrl(
+                $this->moduleId . '/' . $this->controllerId . '/editRights/',
+                array('id' => $this->modelId));
         }
-  }
+
+        public function getActionType()
+        {
+            return null;
+        }
+    }
 ?>
