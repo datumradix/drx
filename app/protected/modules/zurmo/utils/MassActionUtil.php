@@ -34,22 +34,41 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class RedactorWithPreviewLinkElement extends RedactorElement
+    abstract class MassActionUtil
     {
-        protected function renderControlEditable()
+        public static function isMassEditOrDeleteLikeAction($actionId)
         {
-            $content                 = parent::renderControlEditable();
-            $selector                = $this->params['selector'];
-            $previewElementParams    = array('isHtmlContent' => 1,
-                                                'inputId' => $this->getEditableInputId(),
-                                                'selector' => $selector);
-            $previewElementParams    = CMap::mergeArray($this->params, $previewElementParams);
-            $controllerId            = Yii::app()->controller->id;
-            $moduleId                = Yii::app()->controller->module->id;
-            $previewElement          = new AutoresponderOrCampaignFooterTextPreviewElement($controllerId, $moduleId,
-                                                                            $this->model->Id, $previewElementParams);
-            $content                .= $previewElement->render();
-            return $content;
+            return (static::isMassEditLikeAction($actionId) || static::isMassDeleteLikeAction($actionId));
+        }
+
+        public static function isMassDeleteLikeAction($actionId)
+        {
+            return (strpos($actionId, 'massDelete') === 0);
+        }
+
+        public static function isMassEditLikeAction($actionId)
+        {
+            return (strpos($actionId, 'massEdit') === 0);
+        }
+
+        public static function isMassProgressLikeAction($actionId)
+        {
+            return (strpos($actionId, 'Progress') !== false);
+        }
+
+        public static function isMassSubscribeOrUnsubscribeLikeAction($actionId)
+        {
+            return (static::isMassSubscribeLikeAction($actionId) || static::isMassUnsubscribeLikeAction($actionId));
+        }
+
+        public static function isMassSubscribeLikeAction($actionId)
+        {
+            return (strpos($actionId, 'massSubscribe') === 0);
+        }
+
+        public static function isMassUnsubscribeLikeAction($actionId)
+        {
+            return (strpos($actionId, 'massUnsubscribe') === 0);
         }
     }
 ?>
