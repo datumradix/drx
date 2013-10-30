@@ -136,10 +136,10 @@
                 ),
                 'headerMenuItems' => array(
                     array(
-                        'label'  => "eval:Zurmo::t('ZurmoModule', 'Settings')",
+                        'label'  => "eval:Zurmo::t('ZurmoModule', 'Administration')",
                         'url'    => array('/configuration'),
                         'right'  => self::RIGHT_ACCESS_ADMINISTRATION,
-                        'order'  => 6,
+                        'order'  => 1,
                         'mobile' => false,
                     ),
                     array(

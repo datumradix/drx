@@ -368,8 +368,7 @@
          */
         public static function resolveAjaxOptionsForCreateMenuItem()
         {
-            $title = self::getModalTitleForCreateTask("Create");
-            return   ModalView::getAjaxOptionsForModalLink($title, self::getModalContainerId());
+            return static::resolveAjaxOptionsForModalView('Create');
         }
 
         /**
@@ -455,6 +454,11 @@
                      $element = new TaskFinishLinkActionElement($controllerId, $moduleId, $taskId,
                                                                                             array('route' => $route));
                     break;
+                case Task::STATUS_REJECTED:
+
+                     $element = new TaskRestartLinkActionElement($controllerId, $moduleId, $taskId,
+                                                                                            array('route' => $route));
+                    break;
                 case Task::STATUS_AWAITING_ACCEPTANCE:
 
                      $acceptLinkElement = new TaskAcceptLinkActionElement($controllerId, $moduleId, $taskId,
@@ -483,7 +487,7 @@
                             Task::STATUS_NEW                   => KanbanItem::TYPE_SOMEDAY,
                             Task::STATUS_IN_PROGRESS           => KanbanItem::TYPE_IN_PROGRESS,
                             Task::STATUS_AWAITING_ACCEPTANCE   => KanbanItem::TYPE_IN_PROGRESS,
-                            Task::STATUS_REJECTED              => KanbanItem::TYPE_TODO,
+                            Task::STATUS_REJECTED              => KanbanItem::TYPE_IN_PROGRESS,
                             Task::STATUS_COMPLETED             => KanbanItem::TYPE_COMPLETED
                         );
         }
@@ -498,23 +502,6 @@
             if($status == null)
             {
                 return KanbanItem::TYPE_SOMEDAY;
-            }
-            $data = self::getTaskStatusMappingToKanbanItemTypeArray();
-            return $data[intval($status)];
-        }
-
-        /**
-         * Resolve kanban item type for task
-         * @param int $taskId
-         * @return int
-         */
-        public static function resolveKanbanItemTypeForTask($taskId)
-        {
-            $task = Task::getById($taskId);
-            $status = $task->status;
-            if($status == null)
-            {
-                return KanbanItem::TYPE_TODO;
             }
             $data = self::getTaskStatusMappingToKanbanItemTypeArray();
             return $data[intval($status)];
