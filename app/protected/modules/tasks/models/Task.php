@@ -209,6 +209,14 @@
         {
             if (parent::beforeSave())
             {
+                if($this->status != Task::STATUS_COMPLETED)
+                {
+                    $this->completed = false;
+                }
+                else
+                {
+                    $this->completed = true;
+                }
                 if (array_key_exists('completed', $this->originalAttributeValues) &&
                     $this->completed == true)
                 {
@@ -276,6 +284,30 @@
         public static function hasReadPermissionsSubscriptionOptimization()
         {
             return true;
+        }
+
+        /**
+         * Updates kanban item after saving task
+         */
+        protected function afterSave()
+        {
+            parent::afterSave();
+            $kanbanItem       = KanbanItem::getByTask($this->id);
+            if($kanbanItem != null)
+            {
+                $targetKanbanType = TasksUtil::resolveKanbanItemTypeForTaskStatus(intval($this->status));
+                $sourceKanbanType = $kanbanItem->type;
+                if($sourceKanbanType != $targetKanbanType)
+                {
+                  $sortOrder             = KanbanItem::getMaximumSortOrderByType($targetKanbanType);
+                  $kanbanItem->sortOrder = $sortOrder;
+                  $kanbanItem->type      = $targetKanbanType;
+                  if(!$kanbanItem->save())
+                  {
+                      throw new FailedToSaveModelException();
+                  }
+                }
+            }
         }
     }
 ?>

@@ -227,19 +227,19 @@
             $this->assertEquals(KanbanItem::TYPE_IN_PROGRESS, $kanbanItemType);
 
             $kanbanItemType = TasksUtil::resolveKanbanItemTypeForTaskStatus(Task::STATUS_NEW);
-            $this->assertEquals(KanbanItem::TYPE_SOMEDAY, $kanbanItemType);
+            $this->assertEquals(KanbanItem::TYPE_TODO, $kanbanItemType);
         }
 
         public function testResolveKanbanItemTypeForTask()
         {
             $tasks  = Task::getByName('MyTest');
             $task   = $tasks[0];
-            $kanbanItemType = TasksUtil::resolveKanbanItemTypeForTask($task->id);
-            $this->assertEquals(KanbanItem::TYPE_TODO,$kanbanItemType);
+            $kanbanItemType = TasksUtil::resolveKanbanItemTypeForTaskStatus($task->status);
+            $this->assertEquals(KanbanItem::TYPE_SOMEDAY,$kanbanItemType);
 
             $task->status = Task::STATUS_AWAITING_ACCEPTANCE;
             $this->assertTrue($task->save());
-            $kanbanItemType = TasksUtil::resolveKanbanItemTypeForTask($task->id);
+            $kanbanItemType = TasksUtil::resolveKanbanItemTypeForTaskStatus($task->status);
             $this->assertEquals(KanbanItem::TYPE_IN_PROGRESS,$kanbanItemType);
         }
 

@@ -34,18 +34,18 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class GroupRightsEditLinkActionElement extends EditLinkActionElement
+    /**
+     * Class defines rules for any project related model details view for a portlet.
+     */
+    class ProjectsModelDetailsPortletRules extends ModelDetailsPortletRules
     {
-        protected function getDefaultLabel()
+        /**
+         * (non-PHPdoc)
+         * @see PortletRules::allowOnDashboard()
+         */
+        public function allowOnDashboard()
         {
-            return Zurmo::t('ZurmoModule', 'Module Rights');
-        }
-
-        protected function getDefaultRoute()
-        {
-            return Yii::app()->createUrl(
-                $this->moduleId . '/' . $this->controllerId . '/editRights/',
-                array('id' => $this->modelId));
+            return true;
         }
     }
 ?>

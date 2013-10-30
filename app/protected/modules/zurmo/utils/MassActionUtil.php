@@ -34,18 +34,41 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class GroupPoliciesEditLinkActionElement extends EditLinkActionElement
+    abstract class MassActionUtil
     {
-        protected function getDefaultLabel()
+        public static function isMassEditOrDeleteLikeAction($actionId)
         {
-            return Zurmo::t('ZurmoModule', 'Policies');
+            return (static::isMassEditLikeAction($actionId) || static::isMassDeleteLikeAction($actionId));
         }
 
-        protected function getDefaultRoute()
+        public static function isMassDeleteLikeAction($actionId)
         {
-            return Yii::app()->createUrl(
-                $this->moduleId . '/' . $this->controllerId . '/editPolicies/',
-                array('id' => $this->modelId));
+            return (strpos($actionId, 'massDelete') === 0);
+        }
+
+        public static function isMassEditLikeAction($actionId)
+        {
+            return (strpos($actionId, 'massEdit') === 0);
+        }
+
+        public static function isMassProgressLikeAction($actionId)
+        {
+            return (strpos($actionId, 'Progress') !== false);
+        }
+
+        public static function isMassSubscribeOrUnsubscribeLikeAction($actionId)
+        {
+            return (static::isMassSubscribeLikeAction($actionId) || static::isMassUnsubscribeLikeAction($actionId));
+        }
+
+        public static function isMassSubscribeLikeAction($actionId)
+        {
+            return (strpos($actionId, 'massSubscribe') === 0);
+        }
+
+        public static function isMassUnsubscribeLikeAction($actionId)
+        {
+            return (strpos($actionId, 'massUnsubscribe') === 0);
         }
     }
 ?>

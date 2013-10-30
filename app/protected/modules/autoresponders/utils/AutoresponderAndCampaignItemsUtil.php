@@ -215,7 +215,7 @@
                 $recipient->toAddress       = $contact->primaryEmail->emailAddress;
                 $recipient->toName          = strval($contact);
                 $recipient->type            = EmailMessageRecipient::TYPE_TO;
-                $recipient->personOrAccount->add($contact);
+                $recipient->personsOrAccounts->add($contact);
                 $emailMessage->recipients->add($recipient);
             }
         }
@@ -226,7 +226,7 @@
             {
                 foreach ($itemOwnerModel->files as $file)
                 {
-                    $emailMessageFile   = FileModelUtil::makeByFileModelWithSharedFileContent($file);
+                    $emailMessageFile   = FileModelUtil::makeByFileModel($file);
                     $emailMessage->files->add($emailMessageFile);
                 }
             }

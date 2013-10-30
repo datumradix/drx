@@ -46,7 +46,7 @@
          * @param string $fileName
          * @return $fileModel or false on failure
          */
-        public static function makeByFilePathAndName($filePath, $fileName, $fileModelClassName = 'FileModel')
+        public static function makeByFilePathAndName($filePath, $fileName)
         {
             assert('is_string($filePath) && $filePath !=""');
             assert('is_string($fileName) && $fileName !=""');
@@ -57,7 +57,7 @@
             }
             $fileContent          = new FileContent();
             $fileContent->content = $contents;
-            $file                 = new $fileModelClassName();
+            $file                 = new FileModel();
             $file->fileContent    = $fileContent;
             $file->name           = $fileName;
             $file->type           = ZurmoFileHelper::getMimeType($filePath);
@@ -73,14 +73,13 @@
          * Given an instance of a CUploadedFile, make a FileModel, save it, and return it.
          * If the file is empty, an exception is thrown otherwise the fileModel is returned.
          * @param object $uploadedFile CUploadedFile
-         * @param string $fileModelClassName
          */
-        public static function makeByUploadedFile($uploadedFile, $fileModelClassName = 'FileModel')
+        public static function makeByUploadedFile($uploadedFile)
         {
             assert('$uploadedFile instanceof CUploadedFile');
             $fileContent          = new FileContent();
             $fileContent->content = file_get_contents($uploadedFile->getTempName());
-            $file                 = new $fileModelClassName();
+            $file                 = new FileModel();
             $file->fileContent    = $fileContent;
             $file->name           = $uploadedFile->getName();
             $file->type           = $uploadedFile->getType();
@@ -141,41 +140,32 @@
         /**
          *
          * @param integer $fileModelId
-         * @param string $fileModelClassName
+         * @param bool $sharedContent
          * @return $fileModel or false on failure
          */
-        public static function makeByExistingFileModelId($fileModelId, $fileModelClassName = 'FileModel')
+        public static function makeByExistingFileModelId($fileModelId, $sharedContent = true)
         {
             assert('is_int($fileModelId) || (is_string($fileModelId) && !empty($fileModelId))');
-            $existingFileModel      = $fileModelClassName::getById($fileModelId);
-            return static::makeByFileModel($existingFileModel, $fileModelClassName);
+            $existingFileModel      = FileModel::getById($fileModelId);
+            return static::makeByFileModel($existingFileModel, $sharedContent);
         }
 
         /**
          *
          * @param FileModel $existingFileModel
-         * @param string $fileModelClassName
+         * @param bool $sharedContent
          * @return $fileModel or false on failure
          */
-        public static function makeByFileModel($existingFileModel, $fileModelClassName = 'FileModel')
-        {
-            $file                   = new $fileModelClassName();
-            ZurmoCopyModelUtil::copy($existingFileModel, $file);
-            $fileContent            = new FileContent();
-            $fileContent->content   = $existingFileModel->fileContent->content;
-            $file->fileContent      = $fileContent;
-            if (!$file->save())
-            {
-                return false;
-            }
-            return $file;
-        }
-
-        public static function makeByFileModelWithSharedFileContent($existingFileModel)
+        public static function makeByFileModel($existingFileModel, $sharedContent = true)
         {
             $file                   = new FileModel();
             ZurmoCopyModelUtil::copy($existingFileModel, $file);
-            $file->fileContent      = $existingFileModel->fileContent;
+            if (!$sharedContent)
+            {
+                $fileContent            = new FileContent();
+                $fileContent->content   = $existingFileModel->fileContent->content;
+                $file->fileContent      = $fileContent;
+            }
             if (!$file->save())
             {
                 return false;

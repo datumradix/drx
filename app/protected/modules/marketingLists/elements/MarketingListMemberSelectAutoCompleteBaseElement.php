@@ -103,7 +103,6 @@
             return 'js: function(event, ui)
                     {
                         subscribeContactsToMarketingList' . $this->getSelectType() . ' ($(this), event, ui.item.id, 1, 0, 0)
-                        console.log(event);
                     }';
             // End Not Coding Standard
         }
@@ -167,7 +166,7 @@
                                     beforeSend: function(request, settings)
                                                 {
                                                     $(searchBox).makeSmallLoadingSpinner(listGridViewId);
-                                                    $("#" + listGridViewId).addClass("loading");
+-                                                   $("#" + listGridViewId).addClass("loading");
                                                     if (disableTextBox == true)
                                                     {
                                                         $(searchBox).attr("disabled", "disabled");
@@ -179,7 +178,7 @@
                                                 },
                                     success:    function(data, status, request)
                                                 {
-                                                    $("#" + listGridViewId).find(".pager").find(".refresh").find("a").click();
+                                                    refreshMembersListGridView();
                                                     updateFlashBar(data, notificationBarId);
                                                     //todo: this is only a check if reporting.
                                                     if (data.nextPage)

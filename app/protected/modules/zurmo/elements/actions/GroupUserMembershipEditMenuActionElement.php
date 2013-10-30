@@ -34,7 +34,7 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class GroupUserMembershipEditLinkActionElement extends EditLinkActionElement
+    class GroupUserMembershipEditMenuActionElement extends MenuActionElement
     {
         protected function getDefaultLabel()
         {
@@ -46,6 +46,11 @@
             return Yii::app()->createUrl(
                 $this->moduleId . '/' . $this->controllerId . '/editUserMembership/',
                 array('id' => $this->modelId));
+        }
+
+        public function getActionType()
+        {
+            return null;
         }
     }
 ?>

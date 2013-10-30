@@ -39,7 +39,11 @@
      */
     class ProjectsDemoDataMaker extends DemoDataMaker
     {
-        protected $ratioToLoad = 3;
+        /**
+         * Limit projects to 5
+         * @var int
+         */
+        protected $loadMagnitude = 5;
 
         public static function getDependencies()
         {
@@ -61,7 +65,13 @@
                 $account            = $demoDataHelper->getRandomByModelName('Account');
                 $project->accounts->add($account);
                 $this->populateModel($project);
+                $project->addPermissions(Group::getByName(Group::EVERYONE_GROUP_NAME), Permission::READ_WRITE_CHANGE_PERMISSIONS_CHANGE_OWNER);
                 $saved = $project->save();
+                assert('$saved');
+                $project = Project::getById($project->id);
+                ReadPermissionsOptimizationUtil::
+                    securableItemGivenPermissionsForGroup($project, Group::getByName(Group::EVERYONE_GROUP_NAME));
+                $project->save();
                 assert('$saved');
                 ProjectAuditEvent::logAuditEvent(ProjectAuditEvent::PROJECT_CREATED, $project, $project->name);
                 self::addDemoTasks($project, 3, $demoDataHelper);
@@ -91,10 +101,11 @@
          */
         protected static function addDemoTasks($project, $taskInputCount = 1, & $demoDataHelper)
         {
-            for($i = 0; $i < $taskInputCount; $i++)
+            $randomTasks = self::getRandomTasks();
+            for($i = 0; $i < count($randomTasks); $i++)
             {
                 $task                       = new Task();
-                $task->name = RandomDataUtil::getRandomValueFromArray(self::getRandomTasks());
+                $task->name                 = $randomTasks[$i]['name'];
                 $task->owner                = $demoDataHelper->getRandomByModelName('User');
                 $task->requestedByUser      = $demoDataHelper->getRandomByModelName('User');
                 $task->completedDateTime    = '0000-00-00 00:00:00';
@@ -102,23 +113,25 @@
                 $task->status               = Task::STATUS_NEW;
                 $task->save();
                 //Notification subscriber
-                $notificationSubscriber     = new NotificationSubscriber();
-                $notificationSubscriber->person        = $task->owner;
+                $notificationSubscriber             = new NotificationSubscriber();
+                $notificationSubscriber->person     = $demoDataHelper->getRandomByModelName('User');
                 $notificationSubscriber->hasReadLatest = false;
                 //Task check list items
                 $task->notificationSubscribers->add($notificationSubscriber);
-                $taskCheckListItemsData = self::getTaskCheckListItems();
-                $taskCheckListItems = $taskCheckListItemsData[$task->name];
-                foreach($taskCheckListItems as $name)
+                $taskCheckListItems = $randomTasks[$i]['checkListItems'];
+                foreach($taskCheckListItems as $itemKey => $name)
                 {
                     $taskCheckListItem = new TaskCheckListItem();
                     $taskCheckListItem->name = $name;
+                    if(($itemKey * $i * rand(5, 100)) % 3 == 0)
+                    {
+                        $taskCheckListItem->completed = true;
+                    }
                     $task->checkListItems->add($taskCheckListItem);
                     ProjectsUtil::logTaskCheckItemEvent($task, $taskCheckListItem);
                 }
                 //Comments
-                $commentsData = self::getTaskComments();
-                $commentItems  = $commentsData[$task->name];
+                $commentItems  = $randomTasks[$i]['comments'];
                 foreach($commentItems as $description)
                 {
                     $comment = new Comment();
@@ -126,16 +139,21 @@
                     $comment->setScenario('importModel');
                     $comment->createdByUser = $demoDataHelper->getRandomByModelName('User');
                     $task->comments->add($comment);
-                    ProjectsUtil::logAddCommentEvent($task, $comment);
+                    ProjectsUtil::logAddCommentEvent($task, strval($comment));
                 }
                 //Add Super user
                 $comment                = new Comment();
                 $comment->description   = 'Versatile idea regarding the task';
                 $task->comments->add($comment);
+                $task->addPermissions(Group::getByName(Group::EVERYONE_GROUP_NAME), Permission::READ_WRITE_CHANGE_PERMISSIONS_CHANGE_OWNER);
                 $task->save();
                 $currentStatus              = $task->status;
                 ProjectsUtil::logAddTaskEvent($task);
+                $task = Task::getById($task->id);
                 $task->status = RandomDataUtil::getRandomValueFromArray(self::getTaskStatusOptions());
+                $task->save();
+                ReadPermissionsOptimizationUtil::
+                    securableItemGivenPermissionsForGroup($task, Group::getByName(Group::EVERYONE_GROUP_NAME));
                 $task->save();
                 ProjectsUtil::logTaskStatusChangeEvent($task,
                                                        Task::getStatusDisplayName($currentStatus),
@@ -149,22 +167,33 @@
          */
         protected static function getRandomTasks()
         {
-            return array(
+            $tasksList = array(
                 'Create Demo Proposal',
                 'Come up with a contacts list for the client',
                 'Prepare telephone directory for the company',
                 'Get an accounting software',
-                'Usage of google analytics on company website'
+                'Usage of google analytics on company website',
             );
+            $multipliedTasksList = array();
+            for($i = 1; $i <= 2; $i++)
+            {
+               foreach($tasksList as $task)
+               {
+                   $multipliedTasksList[] = array('name' => $task . ' v' . $i,
+                                                  'checkListItems' => self::getTaskCheckListItems($task),
+                                                  'comments' => self::getTaskComments($task));
+               }
+            }
+            return $multipliedTasksList;
         }
 
         /**
          * Gets the list of task check items
          * @return array
          */
-        protected static function getTaskCheckListItems()
+        protected static function getTaskCheckListItems($key)
         {
-            return array(
+            $checklistItemsArray =  array(
                 'Create Demo Proposal'                        => array('Get the requirements',
                                                                         'Analysis of requirements'),
                 'Come up with a contacts list for the client' => array('Call the contacts',
@@ -176,15 +205,17 @@
                 'Usage of google analytics on company website'=> array('Explore the usage',
                                                                         'Implement into the website'),
             );
+
+            return $checklistItemsArray[$key];
         }
 
         /**
          * Gets the list of task check items
          * @return array
          */
-        protected static function getTaskComments()
+        protected static function getTaskComments($key)
         {
-            return array(
+            $comments = array(
                 'Create Demo Proposal'                        => array('Quite useful moving forward',
                                                                        'Would be helful for other people'),
                 'Come up with a contacts list for the client' => array('Very beneficial for the company',
@@ -197,6 +228,7 @@
                 'Usage of google analytics on company website'=> array('Aids in site analysis',
                                                                         'Would be helpful from SEO perspective'),
             );
+            return $comments[$key];
         }
 
         /**

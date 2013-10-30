@@ -34,9 +34,30 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    Yii::import('application.modules.zurmo.controllers.FileModelController', true);
-    class ZurmoFileTestModelController extends ZurmoFileModelController
+    class EditMenuActionElement extends MenuActionElement
     {
-        const FILE_MODEL_CLASS_NAME = 'FileTestModel';
+        public function getActionType()
+        {
+            return 'Edit';
+        }
+
+        protected function getDefaultLabel()
+        {
+            return Zurmo::t('Core', 'Edit');
+        }
+
+        protected function getDefaultRoute()
+        {
+            $params = array('id' => $this->modelId);
+            if (Yii::app()->request->getParam('redirectUrl') != null)
+            {
+                $params = array_merge($params, array('redirectUrl' => Yii::app()->request->getParam('redirectUrl')));
+            }
+            elseif ($this->getRedirectUrl() != null)
+            {
+                $params = array_merge($params, array('redirectUrl' => $this->getRedirectUrl()));
+            }
+            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/edit/', $params);
+        }
     }
 ?>

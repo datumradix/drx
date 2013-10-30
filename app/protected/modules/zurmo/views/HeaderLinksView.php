@@ -161,7 +161,7 @@
 
         protected static function getSettingsMenuTopLevel()
         {
-            return array(array('label' => Zurmo::t('ZurmoModule', 'Settings'), 'url' => null));
+            return array(array('label' => Zurmo::t('ZurmoModule', 'Administration'), 'url' => null));
         }
 
         protected static function renderHeaderMenuContent($menuItems, $menuId)
@@ -237,7 +237,7 @@
                     $("body").addClass("gd-dashboard-active");
                     $("#' . $id . '").html("‰").toggleClass("highlighted");
                 }',
-                'success'    => 'js:function(data){$("body").append(data);}');
+                'success'    => 'js:function(data){$("#FooterView").after(data);}');
         }
 
         protected static function getModalContainerId($id)

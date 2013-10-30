@@ -62,7 +62,7 @@
             $collectionImageUrl   = Yii::app()->themeManager->baseUrl . '/default/images/collections/' .
                                     $gameCollectionRules::getType() . '/' .
                                     $gameCollectionRules::makeLargeCollectionImageName();
-            $collectionBadgeImage = ZurmoHtml::image($collectionImageUrl);
+            $collectionBadgeImage = static::resolveLazyLoadImage($collectionImageUrl);
             $content  = ZurmoHtml::tag('div', array('class' => 'collection-badge'), $collectionBadgeImage);
             $content .= ZurmoHtml::tag('h3', array(), $gameCollectionRules->getCollectionLabel() . ' ' .
                                        Zurmo::t('GamificationModule', 'Collection'));
@@ -124,15 +124,24 @@
 
         protected function registerScripts()
         {
-            $cs = Yii::app()->getClientScript();
-            $cs->registerCoreScript('gamification-dashboard');
-            $cs->registerScriptFile(
+            $this->registerCoreScriptAndPublishToAssets();
+            $this->registerCloseButtonScript();
+            $this->registerLazyLoadImagesScript();
+        }
+
+        protected function registerCoreScriptAndPublishToAssets()
+        {
+            Yii::app()->clientScript->registerCoreScript('gamification-dashboard');
+            Yii::app()->clientScript->registerScriptFile(
                 Yii::app()->getAssetManager()->publish(
                     Yii::getPathOfAlias('application.modules.gamification.views.assets')
                 ) . '/gamification-dashboard.js',
                 CClientScript::POS_END
             );
+        }
 
+        protected function registerCloseButtonScript()
+        {
             $script = "$('.close-dashboard-button a').on('click', function(){
                            if($('#UserGameDashboardView').length){
                                closeGamificationDashboard();
@@ -140,6 +149,32 @@
                            }
                        });";
             Yii::app()->clientScript->registerScript('closeGameficationDashboardScript', $script);
+        }
+
+        protected function registerLazyLoadImagesScript()
+        {
+            $dummyImageUrl = static::getDummyImageUrl();
+            $script = <<<SPT
+// we only monitor nav-right because the ones on left would already be loaded.
+$('a.nav-button#nav-right[href="#"]').unbind('click.lazyLoadImages').bind('click.lazyLoadImages', function(event)
+    {
+        updateGamificationImagesSrcForLazyLoading();
+    });
+
+    function updateGamificationImagesSrcForLazyLoading()
+    {
+        $('div.gd-collection-panel.visible-panel img[src*="{$dummyImageUrl}"], div.gd-collection-panel.visible-panel-last img[src*="{$dummyImageUrl}"]').each(function()
+        {
+            var dataSrc = $(this).data('src');
+            if (typeof dataSrc !== 'undefined')
+            {
+                this.src = dataSrc;
+            }
+        });
+    }
+    updateGamificationImagesSrcForLazyLoading(); // called on page load to resolve src for the first 4 images.
+SPT;
+            Yii::app()->clientScript->registerScript('lazyLoadGameficationDashboardImagesScript', $script);
         }
 
         protected function renderDashboardContent()
@@ -151,9 +186,8 @@
             $content .= $this->renderStatisticsContent();
             $content .= $this->renderCollectionsContent();
             $content  = ZurmoHtml::tag('div', array('id' => 'game-dashboard', 'class' => 'clearfix'), $content);
-            $content .= $this->renderDashboardCloseButton();
-            $content  = ZurmoHtml::tag('div', array('id' => 'game-overlay'), $content);
-            return      ZurmoHtml::tag('div', array('id' => 'game-dashboard-container'), $content);
+            $content  = $this->renderDashboardCloseButton() . $content;
+            return $content;
         }
 
         protected function renderProfileContent()
@@ -287,9 +321,9 @@
 
         protected function renderCollectionsContent()
         {
-            $content  = ZurmoHtml::link('◀', '#', array('id' => 'nav-left', 'class' => 'nav-button'));
+            $content  = ZurmoHtml::link('&cedil;', '#', array('id' => 'nav-left', 'class' => 'nav-button'));
             $content .= $this->renderCollectionsCarouselWrapperAndContent();
-            $content .= ZurmoHtml::link('▶', '#', array('id' => 'nav-right', 'class' => 'nav-button'));
+            $content .= ZurmoHtml::link('&circ;', '#', array('id' => 'nav-right', 'class' => 'nav-button'));
             return      ZurmoHtml::tag('div', array('id' => 'gd-collections'), $content);
         }
 
@@ -311,11 +345,11 @@
             $itemTypesAndLabels = $gameCollectionRules->getItemTypesAndLabels();
             $content    = null;
             $canCollect = true;
-            foreach($collection->getItemsData() as $itemType => $quantityCollected)
+            foreach ($collection->getItemsData() as $itemType => $quantityCollected)
             {
                 $itemLabel               = $itemTypesAndLabels[$itemType];
                 $collectionItemImagePath = $gameCollectionRules::makeMediumCOllectionItemImagePath($itemType);
-                $itemContent = ZurmoHtml::image($collectionItemImagePath, $itemLabel,
+                $itemContent = static::resolveLazyLoadImage($collectionItemImagePath, $itemLabel,
                                           array('class'=> 'qtip-shadow', 'data-tooltip' => $itemLabel));
                 $qtip = new ZurmoTip(array('options' => array('position' => array('my' => 'bottom center', 'at' => 'top center'),
                                                           'content'  => array('attr' => 'data-tooltip'))));
@@ -368,7 +402,9 @@
                 'success' => 'js:function(data)
                     {
                         $("#' . $containerId . '").replaceWith(data);
+                        $("#' . $containerId . '").addClass("visible-panel");
                         ' . self::renderGameCoinRefreshAjax($userId) . '
+                        updateGamificationImagesSrcForLazyLoading();
                     }'
             ), $htmlOptions);
         }
@@ -434,6 +470,22 @@
         protected static function renderDashboardCloseButton()
         {
             return '<div class="close-dashboard-button"><a href="#"><span class="ui-icon ui-icon-closethick">close</span></a></div>';
+        }
+
+        protected static function getDummyImageUrl()
+        {
+            return PlaceholderImageUtil::resolveOneByOnePixelImageUrl(false);
+        }
+
+        protected static function resolveLazyLoadImage($source, $alt='', $htmlOptions=array())
+        {
+            $dummyImageUrl = static::getDummyImageUrl();
+            if ($source != $dummyImageUrl)
+            {
+                $htmlOptions['data-src']    = $source;
+                $source                     = $dummyImageUrl;
+            }
+            return ZurmoHtml::image($source, $alt, $htmlOptions);
         }
     }
 ?>
