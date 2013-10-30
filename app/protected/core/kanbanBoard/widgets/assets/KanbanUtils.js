@@ -86,7 +86,7 @@ function setUpTaskKanbanSortable(inputurl)
                     items: 'li:not(.ui-state-disabled)',
                     connectWith: '.connectedSortable',
                     cursor: 'move',
-                    placeholder: 'kanban-card clone',
+                    placeholder: 'kanban-card item-to-place',
                     stop: function(event, ui){
                         document.body.style.cursor = 'auto';
                     },
@@ -102,7 +102,6 @@ function setUpTaskKanbanSortable(inputurl)
                         $.ajax({
                             url: url,
                             type: 'get',
-                            data: serial,
                             dataType : 'json',
                             success: function(data){
                                 if(data.hasOwnProperty('button'))
@@ -114,6 +113,7 @@ function setUpTaskKanbanSortable(inputurl)
                                     else
                                     {
                                         //console.log($(ui.item).find('.task-action-toolbar'));
+                                        $(ui.item).addClass('ui-state-disabled');
                                         $(ui.item).find('.task-action-toolbar').remove();
                                     }
                                     $(ui.item).find('.task-status').html(data.status);

@@ -66,28 +66,6 @@
         /**
          * @depends testInlineCreateCommentFromAjax
          */
-        public function testUpdateUserViaAjax()
-        {
-            $super  = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
-            $user   = UserTestHelper::createBasicUser('test');
-            $tasks  = Task::getByName('aTest');
-            $task   = $tasks[0];
-            $taskId = $task->id;
-            $this->setGetArray(array('id' => $task->id, 'attribute' => 'owner', 'userId' => $user->id));
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/updateRelatedUsersViaAjax');
-            $task   = Task::getById($taskId);
-            $this->assertEquals($user->id, $task->owner->id);
-
-            $this->setGetArray(array('id' => $task->id, 'attribute' => 'requestedByUser', 'userId' => $user->id));
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/updateRelatedUsersViaAjax');
-            $task   = Task::getById($taskId);
-
-            $this->assertEquals($user->id, $task->requestedByUser->id);
-        }
-
-        /**
-         * @depends testInlineCreateCommentFromAjax
-         */
         public function testUpdateDueDateTimeViaAjax()
         {
             $super  = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
