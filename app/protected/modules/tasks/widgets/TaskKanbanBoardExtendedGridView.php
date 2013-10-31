@@ -230,7 +230,7 @@
          */
         protected function getRowClassForTaskKanbanColumn($data)
         {
-            if((bool)$data->completed)
+            if($data->status == Task::STATUS_COMPLETED)
             {
                 return 'kanban-card item-to-place ui-state-disabled';
             }
@@ -283,9 +283,11 @@
         protected function registerButtonActionScript($buttonClass, $targetKanbanItemType, $label,
                                                       $targetButtonClass, $url, $targetStatus)
         {
-            $completionText = Zurmo::t('TasksModule', '% Complete - 100');
-            $newStatusLabel = Task::getStatusDisplayName(Task::STATUS_NEW);
+            $completionText       = Zurmo::t('TasksModule', '% Complete - 100');
+            $rejectStatusLabel    = Task::getStatusDisplayName(Task::STATUS_REJECTED);
+            $inProgressStatusLabel = Task::getStatusDisplayName(Task::STATUS_IN_PROGRESS);
             $completedStatusLabel = Task::getStatusDisplayName(Task::STATUS_COMPLETED);
+            $completedStatus      = Task::STATUS_COMPLETED;
             return "$(document).on('click','." . $buttonClass . "',
                         function()
                         {
@@ -297,18 +299,22 @@
                             var idParts = id.split('_');
                             var taskId = parseInt(idParts[1]);
                             var columnType = parseInt(ulidParts[3]);
-                            $('#task-sortable-rows-" . $targetKanbanItemType . "').append(element);
+                            $('#task-sortable-rows-{$targetKanbanItemType}').append(element);
                             $('#task-sortable-rows-' + columnType).remove('#' + id);
 
-                            if(" . $targetStatus . " != " . Task::STATUS_COMPLETED . ")
+                            if('{$targetStatus}' != '{$completedStatus}')
                             {
-                                var linkTag = $('#task-sortable-rows-" . $targetKanbanItemType . " #' + id + ' ." . $buttonClass . "');
+                                var linkTag = $(element).find('.{$buttonClass}');
                                 $(linkTag).find('.button-label').html('" . $label . "');
                                 $(linkTag).removeClass('" . $buttonClass . "').addClass('" . $targetButtonClass . "');
-                                if('" . $buttonClass . "' == 'action-type-reject')
+                                if('{$buttonClass}' == 'action-type-reject')
                                 {
-                                    $('#task-sortable-rows-" . $targetKanbanItemType . " #' + id + ' .action-type-accept').remove();
-                                    $(element).find('.task-status').html('{$newStatusLabel}');
+                                    $(element).find('.action-type-accept').remove();
+                                    $(element).find('.task-status').html('{$rejectStatusLabel}');
+                                }
+                                if('{$buttonClass}' == 'action-type-restart')
+                                {
+                                    $(element).find('.task-status').html('{$inProgressStatusLabel}');
                                 }
                             }
                             else
@@ -317,13 +323,12 @@
                                 $(element).find('.task-action-toolbar').remove();
                                 $(element).addClass('ui-state-disabled');
                                 $(element).find('.task-status').html('{$completedStatusLabel}');
-                                //$('#task-sortable-rows-" . $targetKanbanItemType . " #' + id + ' .task-completion').html('" . $completionText . "');
                             }
                             $.ajax(
                             {
                                 type : 'GET',
-                                data : {'targetStatus':" . $targetStatus . ", 'taskId':taskId},
-                                url  : '" . $url . "'
+                                data : {'targetStatus':'{$targetStatus}', 'taskId':taskId},
+                                url  : '{$url}'
                             }
                             );
                         }
@@ -426,13 +431,20 @@
                 if($user->isSame($task->owner))
                 {
                     $content .= TasksUtil::renderSubscriberImageAndLinkContent($user, 20, 'task-owner');
+                    break;
                 }
             }
+            //To take care of the case of duplicates
+            $addedSubscribers = array();
             foreach($subscribedUsers as $user)
             {
                 if(!$user->isSame($task->owner))
                 {
-                    $content .= TasksUtil::renderSubscriberImageAndLinkContent($user, 20);
+                    if(!in_array($user->id, $addedSubscribers))
+                    {
+                        $content .= TasksUtil::renderSubscriberImageAndLinkContent($user, 20);
+                        $addedSubscribers[] = $user->id;
+                    }
                 }
             }
             return $content;
