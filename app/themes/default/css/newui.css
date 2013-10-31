@@ -11151,10 +11151,6 @@ body > .ui-autocomplete {
   position: relative;
   z-index: 9999;
 }
-.view-toolbar-container + div {
-  position: relative;
-  z-index: 1;
-}
 h1 + .view-toolbar-container {
   margin-top: 15px;
 }
@@ -11816,6 +11812,9 @@ textarea[disabled] {
   font-style: normal;
   position: relative;
   top: 2px;
+}
+.hasCheckBox + .row-description {
+  margin-left: 10px;
 }
 .AppContent label {
   font-size: 12px;
@@ -17281,6 +17280,7 @@ table.configuration-list td:last-child a .z-label:before {
 }
 #ImportWizardMappingView tr td:last-child {
   padding-right: 15px;
+  vertical-align: top;
 }
 .mapping-rules h4 {
   padding: 10px 0 5px 0;
@@ -21844,6 +21844,7 @@ a.user-link {
   padding: 0 0 15px 0 !important;
 }
 .email-archive-item td {
+  padding-right: 0 !important;
   padding-bottom: 15px;
 }
 .email-archive-item th,
@@ -24779,6 +24780,10 @@ a + .autoresponder-stats {
 .hidden-field-label textarea {
   width: 80%;
 }
+.field-label .has-model-select,
+.hidden-field-label .has-model-select,
+.field-label .has-date-select,
+.hidden-field-label .has-date-select,
 .field-label .hasDropDown,
 .hidden-field-label .hasDropDown {
   width: 80% !important;
@@ -25665,6 +25670,7 @@ div.special-pager .hidden.next:after {
   padding: 0 3px;
 }
 .button-actions {
+  cursor: text;
   z-index: 999;
   color: #EFEFEF;
   display: none;
@@ -25891,9 +25897,9 @@ div.special-pager .hidden.next:after {
 }
 .overlay-view .after-form-details-content a {
   display: inline;
-  color: #fff !important;
+  color: #EFEFEF !important;
   padding: 0;
-  text-decoration: underline;
+  text-decoration: underline !important;
 }
 .overlay-view h3 {
   font-weight: bold;
@@ -25909,6 +25915,19 @@ div.special-pager .hidden.next:after {
   margin-bottom: 5px !important;
   line-height: 1.4;
   font-size: 12px;
+}
+.overlay-view strong {
+  display: block;
+}
+body .overlay-view .after-form-details-content a:hover {
+  background: none !important;
+  background-image: none !important;
+  color: #fff !important;
+  -webkit-text-shadow: none !important;
+  -moz-text-shadow: none !important;
+  -o-text-shadow: none !important;
+  -ms-text-shadow: none !important;
+  text-shadow: none !important;
 }
 .stay-open {
   display: block !important;
