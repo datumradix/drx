@@ -412,7 +412,7 @@
          */
         public static function registerSubscriptionScript($taskId = null)
         {
-            $title  = Zurmo::t('TasksModule', 'Unsubscribe');
+            $title  = Zurmo::t('Core', 'Unsubscribe');
             $unsubscribeLink = ZurmoHtml::tag('i', array('class' => 'icon-unsubscribe', 'title' => $title), '');
 
             if($taskId == null)
@@ -435,7 +435,7 @@
          */
         public static function registerUnsubscriptionScript($taskId = null)
         {
-            $title  = Zurmo::t('TasksModule', 'Subscribe');
+            $title  = Zurmo::t('Core', 'Subscribe');
             $subscribeLink = ZurmoHtml::tag('i', array('class' => 'icon-subscribe', 'title' => $title), '');
 
             if($taskId == null)
@@ -563,7 +563,7 @@
             }
             else
             {
-                $label       = Zurmo::t('TasksModule', 'Unsubscribe');
+                $label       = Zurmo::t('Core', 'Unsubscribe');
                 $class       = $unsubscribeLinkClass;
                 $iconContent = ZurmoHtml::tag('i', array('class' => 'icon-unsubscribe'), '');
             }
@@ -792,16 +792,24 @@
          * @param $relationModelId
          * @return string
          */
-        public static function resolveModalSaveActionNameForByRelationModelId($relationModelId)
+        public static function resolveModalSaveActionNameForByRelationModelId($relationModelId, $copyAction = null)
         {
             assert('is_string($relationModelId) || $relationModelId == null');
-            if($relationModelId != null)
+            assert('is_string($copyAction) || $copyAction == null');
+            if($copyAction == 'copy')
             {
-                return 'modalSaveFromRelation';
+                return 'modalCopyFromRelation';
             }
             else
             {
-                return 'modalSave';
+                if($relationModelId != null)
+                {
+                    return 'modalSaveFromRelation';
+                }
+                else
+                {
+                    return 'modalSave';
+                }
             }
         }
 
@@ -867,12 +875,22 @@
             //If kanbantype is changed, do the sort
             if($sourceKanbanType != $targetKanbanType)
             {
+                //Set the sort and type for target
                 $sortOrder = self::resolveAndGetSortOrderForTaskOnKanbanBoard($targetKanbanType, $task);
                 $kanbanItem->sortOrder = $sortOrder;
                 $kanbanItem->type      = $targetKanbanType;
                 if(!$kanbanItem->save())
                 {
                     throw new FailedToSaveModelException();
+                }
+                //Resort the source one
+                if($task->project->id > 0)
+                {
+                    TasksUtil::sortKanbanColumnItems($sourceKanbanType, $task->project);
+                }
+                else
+                {
+                    TasksUtil::sortKanbanColumnItems($sourceKanbanType, $task->activityItems->offsetGet(0));
                 }
             }
         }
@@ -887,13 +905,58 @@
         {
             if($task->project->id > 0)
             {
-                $sortOrder = KanbanItem::getMaximumSortOrderByType($targetKanbanType, $task->project);
+                $sortOrder = KanbanItem::getMaximumSortOrderByType(intval($targetKanbanType), $task->project);
             }
             else
             {
-                $sortOrder = KanbanItem::getMaximumSortOrderByType($targetKanbanType, $task->activityItems->offsetGet(0));
+                $sortOrder = KanbanItem::getMaximumSortOrderByType(intval($targetKanbanType), $task->activityItems->offsetGet(0));
             }
             return $sortOrder;
+        }
+
+        /**
+         * Reset the sortoder for kanban type for the associated to it
+         * @param Task $task
+         * @param int $kanbanType
+         * @param Item $childObjectOfItem
+         * @return int
+         */
+        public static function sortKanbanColumnItems($kanbanType, Item $childObjectOfItem)
+        {
+            $models = KanbanItem::getAllTasksByType(intval($kanbanType), $childObjectOfItem);
+            foreach($models as $index => $model)
+            {
+                $model->sortOrder = $index + 1;
+                $model->save();
+            }
+        }
+
+        /**
+         * Check kanban type for status and update if it is required, it is required
+         * when user is changing the status from modal detail view
+         * @param $task Task
+         */
+        public static function checkKanbanTypeByStatusAndUpdateIfRequired(Task $task)
+        {
+            $kanbanItem = KanbanItem::getByTask($task->id);
+            $kanbanTypeByStatus = TasksUtil::resolveKanbanItemTypeForTaskStatus($task->status);
+            if($kanbanItem->type != $kanbanTypeByStatus)
+            {
+                $sourceKanbanItemType = $kanbanItem->type;
+                //put the item at the end
+                $kanbanItem->sortOrder = TasksUtil::resolveAndGetSortOrderForTaskOnKanbanBoard($kanbanTypeByStatus, $task);
+                $kanbanItem->type = $kanbanTypeByStatus;
+                $kanbanItem->save();
+                //Resort the source column
+                if($task->project->id > 0)
+                {
+                    TasksUtil::sortKanbanColumnItems($sourceKanbanItemType, $task->project);
+                }
+                else
+                {
+                    TasksUtil::sortKanbanColumnItems($sourceKanbanItemType, $task->activityItems->offsetGet(0));
+                }
+            }
         }
     }
 ?>
