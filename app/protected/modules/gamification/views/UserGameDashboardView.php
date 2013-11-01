@@ -86,7 +86,7 @@
             $content  = ZurmoHtml::tag('span', array('id' => 'gd-z-coin'), '');
             $content .= ZurmoHtml::tag('h3', array(), Zurmo::t('GamificationModule', '{n} coin|{n} coins',
                 array($coinValue)));
-            $content .= ZurmoHtml::link(Zurmo::t('GamificationModule', 'Redeem'), $url);
+            $content .= ZurmoHtml::link(Zurmo::t('ZurmoModule', 'Redeem'), $url);
             return      ZurmoHtml::tag('div', array('id' => self::getGameCoinContainerId()), $content);
         }
 
@@ -142,7 +142,7 @@
 
         protected function registerCloseButtonScript()
         {
-            $script = "$('.close-dashboard-button a').on('click', function(){
+            $script = "$('.close-dashboard-button a, #gd-overlay, #gd-container, #gd-centralizer').on('click', function(){
                            if($('#UserGameDashboardView').length){
                                closeGamificationDashboard();
                                return false;
@@ -302,7 +302,7 @@ SPT;
                 $rankingContent .= ZurmoHtml::tag('span', array(), $ranking['typeLabel']);
                 $content .= ZurmoHtml::tag('div', array('class' => 'leaderboard-rank'), $rankingContent);
             }
-            return      ZurmoHtml::tag('div', array('id' => 'gd-leaderboard'), $content);
+            return      ZurmoHtml::tag('div', array('id' => 'gd-leaderboard', 'class' => 'clearfix'), $content);
         }
 
         protected function renderStatisticsContent()
