@@ -127,7 +127,6 @@
             {
                 $content .= static::renderHeaderGameDashboardContent();
             }
-            $content     .= static::renderHeaderGameDashboardContent();
             $content     .= static::renderHeaderMenuContent($userMenuItemsWithTopLevel, self::USER_MENU_ID);
             $content     .= static::renderHeaderMenuContent($settingsMenuItemsWithTopLevel, self::SETTINGS_MENU_ID);
             return $content;
@@ -203,7 +202,7 @@
         {
             assert('is_string($gameBoardUrl)');
             $collectionAndItemKey = Yii::app()->gameHelper->resolveNewCollectionItems();
-            if(null != $collectionAndItemKey)
+            if (null != $collectionAndItemKey)
             {
                 $gameCollectionRules = GameCollectionRulesFactory::createByType($collectionAndItemKey[0]->type);
                 $collectionItemTypesAndLabels = $gameCollectionRules::getItemTypesAndLabels();
