@@ -35,46 +35,21 @@
      ********************************************************************************/
 
     /**
-     * Leads Module Walkthrough spefically testing the kanban board list for task in detail view
+     * Adds extra support for checklist items
      */
-    class LeadsSuperUserKanbanBoardWalkthroughTest extends ZurmoWalkthroughBaseTest
+    class TaskActivityCopyModelUtil extends ActivityCopyModelUtil
     {
-        public static function setUpBeforeClass()
+        /**
+         * @param RedBeanModel $model
+         * @param RedBeanModel $copyToModel
+         */
+        public static function copy(RedBeanModel $model, RedBeanModel $copyToModel)
         {
-            parent::setUpBeforeClass();
-            SecurityTestHelper::createSuperAdmin();
-            $super = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
-
-            //Setup test data owned by the super user.
-            LeadTestHelper::createLeadbyNameForOwner('superLead',  $super);
-        }
-
-        public function testKanbanViewForOpportunityDetails()
-        {
-            $super          = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
-            $superLeadId    = self::getModelIdByModelNameAndName('Contact', 'superLead superLeadson');
-            $lead           = Contact::getById($superLeadId);
-
-            $task = TaskTestHelper::createTaskWithOwnerAndRelatedItem('MyTask', $super, $lead, Task::STATUS_IN_PROGRESS);
-            $taskNew = TaskTestHelper::createTaskWithOwnerAndRelatedItem('MyTask New', $super, $lead, Task::STATUS_NEW);
-            $this->setGetArray(array('id' => $task->id, 'kanbanBoard' => '1'));
-            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/details');
-            $matcher= array(
-                'tag' => 'h4',
-                //Multiple ancestors
-                'ancestor' => array('tag' => 'li', 'id' => 'items_' . $task->id, 'tag' => 'ul', 'id' => 'task-sortable-rows-3'),
-                'content' => 'MyTask'
-            );
-            $this->assertTag($matcher, $content);
-
-            $matcher= array(
-                'tag' => 'h4',
-                //Multiple ancestors
-                'ancestor' => array('tag' => 'li', 'id' => 'items_' . $taskNew->id, 'tag' => 'ul', 'id' => 'task-sortable-rows-1'),
-                'content' => 'MyTask New'
-            );
-            $this->assertTag($matcher, $content);
+            parent::copy($model, $copyToModel);
+            foreach ($model->checkListItems as $checkListItem)
+            {
+                $copyToModel->checkListItems->add($checkListItem);
+            }
         }
     }
 ?>
