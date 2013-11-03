@@ -40,27 +40,6 @@
     class TasksUtil
     {
         /**
-         * Given a Task and User, determine if the user is already a subscriber.
-         * @param Task $model
-         * @param User $user
-         * @return boolean
-         */
-        public static function isUserSubscribedForTask(Task $model, User $user)
-        {
-            if ($model->notificationSubscribers->count() > 0)
-            {
-                foreach ($model->notificationSubscribers as $subscriber)
-                {
-                    if ($subscriber->person->getClassId('Item') == $user->getClassId('Item'))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /**
          * Get task subscriber data
          * @param Task $task
          * @return string
@@ -555,7 +534,7 @@
         {
             assert('is_string($subscribeLinkClass)');
             assert('is_string($unsubscribeLinkClass)');
-            if (TasksUtil::isUserSubscribedForTask($task, Yii::app()->user->userModel) === false)
+            if ($task->doNotificationSubscribersContainPerson(Yii::app()->user->userModel) === false)
             {
                 $label       = Zurmo::t('Core', 'Subscribe');
                 $class       = $subscribeLinkClass;
@@ -757,6 +736,46 @@
             Yii::app()->clientScript->registerScript('openToTaskModalDetailsScript' . $sourceId, $script);
         }
 
+        /**
+         * Resolves the related project or first related activityItem string value
+         * @param Task $task
+         * @return null|string
+         */
+        public static function resolveFirstRelatedModelStringValue(Task $task)
+        {
+            $modelOrNull = static::resolveFirstRelatedModel($task);
+            if($modelOrNull === null)
+            {
+                return null;
+            }
+            return strval($modelOrNull);
+        }
+
+        /**
+         * Resolves the related project or first related activityItem model
+         * @param Task $task
+         * @return null|RedBeanModel $model
+         */
+        public static function resolveFirstRelatedModel(Task $task)
+        {
+            if($task->project->id > 0)
+            {
+                return $task->project;
+            }
+            elseif($task->activityItems->count() > 0)
+            {
+                try
+                {
+                    $castedDownModel = TasksUtil::castDownActivityItem($task->activityItems[0]);
+                    return $castedDownModel;
+                }
+                catch (NotFoundException $e)
+                {
+                }
+            }
+            return null;
+        }
+
         public static function castDownActivityItem(Item $activityItem)
         {
             $relationModelClassNames = ActivitiesUtil::getActivityItemsModelClassNames();
@@ -794,7 +813,7 @@
          */
         public static function resolveModalSaveActionNameForByRelationModelId($relationModelId, $copyAction = null)
         {
-            assert('is_string($relationModelId) || $relationModelId == null');
+            assert('is_string($relationModelId) || is_int($relationModelId) ||$relationModelId == null');
             assert('is_string($copyAction) || $copyAction == null');
             if ($copyAction == 'copy')
             {
@@ -825,7 +844,7 @@
             $isAlreadySubscribed = false;
             foreach ($task->notificationSubscribers as $notificationSubscriber)
             {
-                if ($notificationSubscriber->person->id == $user->id)
+                if ($notificationSubscriber->person->getClassId('Item') == $user->getClassId('Item'))
                 {
                     $isAlreadySubscribed = true;
                     break;
