@@ -34,22 +34,27 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ContactsModuleEditView extends GlobalSearchEnabledModuleEditView
+    /**
+     * Helper functionality for rendering renderAfterFormLayoutForDetailsContent() for ownedsecurableitems
+     */
+    class ContactDetailsViewUtil extends OwnedSecurableItemDetailsViewUtil
     {
-        public static function getDefaultMetadata()
+        protected static function shouldRenderDetailsContent($model)
         {
-            $metadata = parent::getDefaultMetadata();
-            $metadata['global']['panels'][0]['rows'][] =
-                array('cells' =>
-                array(
-                    array(
-                        'elements' => array(
-                            array('attributeName' => null, 'type' => 'UpdateLatestActivityDateTime'),
-                        ),
-                    ),
-                ),
+            if ($model instanceof Contact)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        protected static function getElements($model)
+        {
+            $elements = parent::getElements($model);
+            $elements[] = array('className'  => 'LatestActivityDateTimeElement',
+                                'parameters' => array($model, 'latestActivityDateTime'),
             );
-            return $metadata;
+            return $elements;
         }
     }
 ?>

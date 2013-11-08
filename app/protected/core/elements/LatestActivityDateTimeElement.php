@@ -34,22 +34,39 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ContactsModuleEditView extends GlobalSearchEnabledModuleEditView
+    /**
+     * Displays the latest activity date/time localized display. Specifically used for detailview display in
+     * renderAfterFormLayoutForDetailsContent() in xxEditAndDetailsView
+     */
+    class LatestActivityDateTimeElement extends DateTimeElement
     {
-        public static function getDefaultMetadata()
+        /**
+         * Not a supported method.
+         */
+        protected function renderControlEditable()
         {
-            $metadata = parent::getDefaultMetadata();
-            $metadata['global']['panels'][0]['rows'][] =
-                array('cells' =>
-                array(
-                    array(
-                        'elements' => array(
-                            array('attributeName' => null, 'type' => 'UpdateLatestActivityDateTime'),
-                        ),
-                    ),
-                ),
-            );
-            return $metadata;
+            throw new NotSupportedException();
+        }
+
+        /**
+         * Renders the attribute from the model.
+         * @return The element's content.
+         */
+        protected function renderControlNonEditable()
+        {
+            if ($this->model->{$this->attribute} != null)
+            {
+                return parent::renderControlNonEditable();
+            }
+            else
+            {
+                return Zurmo::t('Core', 'Never');
+            }
+        }
+
+        protected function getFormattedAttributeLabel()
+        {
+            return Yii::app()->format->text(Zurmo::t('Core', 'Latest Activity'));
         }
     }
 ?>
