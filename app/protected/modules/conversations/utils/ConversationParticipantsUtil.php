@@ -206,9 +206,6 @@
                 $emailContent->textContent  = EmailNotificationUtil::
                                                 resolveNotificationTextTemplate(
                                                 static::getParticipantInviteEmailTextContent($conversation));
-                $emailContent->htmlContent  = EmailNotificationUtil::
-                                                resolveNotificationHtmlTemplate(
-                                                static::getParticipantInviteEmailHtmlContent($conversation));
                 $emailMessage->content      = $emailContent;
                 $sender                     = new EmailMessageSender();
                 $sender->fromAddress        = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
@@ -236,7 +233,7 @@
 
         protected static function getParticipantInviteEmailTextContent(Conversation $conversation)
         {
-            $url     = static::getUrlToConversationDetailAndRelationsView($conversation->id);
+            $url     = ShortUrlUtil::createShortUrl(static::getUrlToConversationDetailAndRelationsView($conversation->id));
             $content = Zurmo::t('ConversationsModule', '{headerStartTag}Join the Conversation{headerEndTag}{headerLineBreak}{ownerName} ' .
                                          'would like you to join a conversation {strongStartTag}"{conversationSubject}"{strongEndTag}',
                                array('{headerStartTag}'      => null,
@@ -247,7 +244,7 @@
                                      '{ownerName}'           => $conversation->owner,
                                      '{conversationSubject}' => $conversation->subject));
             $content .= "\n\n";
-            $content .= ZurmoHtml::link($url, $url);
+            $content .= $url;
             return $content;
         }
 
