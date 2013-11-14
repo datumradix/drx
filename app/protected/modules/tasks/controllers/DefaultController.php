@@ -534,7 +534,7 @@
             $currentStatus = $task->status;
             $task->status = intval($status);
             //check for owner in case a user start the task
-            if($currentStatus == Task::STATUS_NEW && $currentStatus != $task->status)
+            if ($currentStatus == Task::STATUS_NEW && $currentStatus != $task->status)
             {
                 $task->owner = Yii::app()->user->userModel;
             }

@@ -228,7 +228,7 @@
             assert('is_string($renderType)');
             $title = self::getModalTitleForCreateTask($renderType);
             return   ModalView::getAjaxOptionsForModalLink($title, self::getModalContainerId(), 'auto', 600,
-                     'center top+25', $class = "'task-dialog'",
+                     'center top+25', $class = "'task-dialog'", // Not Coding Standard
                      static::resolveExtraCloseScriptForModalAjaxOptions($sourceKanbanBoardId));
         }
 
@@ -373,14 +373,14 @@
         public static function resolveSubscriberAjaxOptions()
         {
             return array(
-                'type'    => 'GET',
-                'dataType'=> 'html',
-                'data'    => array(),
-                'success' => 'function(data)
-                              {
-                                $("#subscribe-task-link").hide();
-                                $("#subscriberList").replaceWith(data);
-                              }'
+                'type'     => 'GET',
+                'dataType' => 'html',
+                'data'     => array(),
+                'success'  => 'function(data)
+                               {
+                                 $("#subscribe-task-link").hide();
+                                 $("#subscriberList").replaceWith(data);
+                               }'
             );
         }
 
@@ -479,6 +479,7 @@
          */
         public static function getDetailSubscriptionScript($url, $sourceClass, $targetClass, $link, $taskId)
         {
+            // Begin Not Coding Standard
             return "$('body').on('click', '." . $sourceClass . "', function()
                                                     {
                                                         $.ajax(
@@ -507,6 +508,7 @@
                                                         );
                                                     }
                                                 );";
+            // End Not Coding Standard
         }
 
         /**
@@ -964,7 +966,7 @@
         {
             $kanbanItem = KanbanItem::getByTask($task->id);
             //It should be created here but check for create as well here
-            if($kanbanItem == null)
+            if ($kanbanItem == null)
             {
                 $kanbanItem = TasksUtil::createKanbanItemFromTask($task);
             }
