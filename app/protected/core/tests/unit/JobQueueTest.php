@@ -34,19 +34,50 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    Yii::import('application.modules.zurmo.components.EndRequestBehavior');
-    class EndRequestTestBehavior extends EndRequestBehavior
+    class JobQueueTest extends BaseTest
     {
-        public function attach($owner)
+        public static function setUpBeforeClass()
         {
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleGamification'));
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleJobQueue'));
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleEndRequest'));
+            parent::setUpBeforeClass();
         }
 
-        public function handleEndRequest($event)
+        public function testAddAndGetAll()
         {
-            throw new ExitException();
+            $this->assertCount(0, Yii::app()->jobQueue->getAll());
+            Yii::app()->jobQueue->add('aJob', 15);
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(1, $queuedJobs[15]);
+            $this->assertEquals('aJob', $queuedJobs[15][0]);
+            //Try to add it again
+            Yii::app()->jobQueue->add('aJob', 15);
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(1, $queuedJobs[15]);
+            $this->assertEquals('aJob', $queuedJobs[15][0]);
+            //Try to add a new job
+            Yii::app()->jobQueue->add('bJob', 15);
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(2, $queuedJobs[15]);
+            $this->assertEquals('aJob', $queuedJobs[15][0]);
+            $this->assertEquals('bJob', $queuedJobs[15][1]);
+            //Add an immediate job
+            Yii::app()->jobQueue->add('cJob');
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(1, $queuedJobs[0]);
+            $this->assertEquals('cJob', $queuedJobs[0][0]);
+        }
+
+        /**
+         * @depends testAddAndGetAll
+         */
+        public function testDeleteAll()
+        {
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(2, $queuedJobs);
+            $this->assertCount(2, $queuedJobs[15]);
+            $this->assertCount(1, $queuedJobs[0]);
+            Yii::app()->jobQueue->deleteAll();
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(0, $queuedJobs);
         }
     }
 ?>

@@ -34,19 +34,65 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    Yii::import('application.modules.zurmo.components.EndRequestBehavior');
-    class EndRequestTestBehavior extends EndRequestBehavior
+    /**
+     * Helper class for managing job queues. Override as needed.
+     */
+    class JobQueue extends CApplicationComponent
     {
-        public function attach($owner)
+        protected $queuedJobs = array();
+
+        /**
+         * @param string $jobType
+         * @param int $delay - seconds to delay job
+         */
+        public function add($jobType, $delay = 0)
         {
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleGamification'));
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleJobQueue'));
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleEndRequest'));
+            assert('is_string($jobType)');
+            assert('is_int($delay)');
+            if(!isset($this->queuedJobs[$delay]) || !in_array($jobType, $this->queuedJobs[$delay]))
+            {
+                $this->queuedJobs[$delay][] = $jobType;
+            }
         }
 
-        public function handleEndRequest($event)
+        public function getAll()
         {
-            throw new ExitException();
+            return $this->queuedJobs;
+        }
+
+        public function deleteAll()
+        {
+            $this->queuedJobs = array();
+        }
+
+        /**
+         * Override if there is processing to complete. see @EndRequestBehavior
+         */
+        public function processAll()
+        {
+        }
+
+        /**
+         * Override and toggle as needed.
+         * @return bool
+         */
+        public function isEnabled()
+        {
+            return false;
+        }
+
+        public function getQueueJobLabel()
+        {
+            return Zurmo::t('JobsManagerModule', 'Queue Job');
+        }
+
+        public function getQueueJobAgainLabel()
+        {
+            return Zurmo::t('JobsManagerModule', 'Queue Job Again');
+        }
+
+        public function processByJobTypeAndDelay($jobType, $delay, MessageLogger $messageLogger)
+        {
         }
     }
 ?>

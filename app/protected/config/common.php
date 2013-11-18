@@ -120,6 +120,9 @@
             'gamificationObserver' => array(
                 'class' => 'application.modules.gamification.observers.GamificationObserver',
             ),
+            'jobQueue' => array(
+                'class' => 'application.core.components.JobQueue',
+            ),
             'licenseManager' => array(
                 'class' => 'application.core.components.LicenseManager',
             ),
