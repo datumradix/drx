@@ -21027,12 +21027,16 @@ a.close-ModalGameNotification.simple-link {
 }
 .reward-name {
   margin-bottom: 5px;
-  display: inline-block;
+  display: block;
 }
 .reward-name span {
   font-weight: normal;
   font-size: 11px;
   color: #545454;
+}
+.reward-description {
+  line-height: 1.5;
+  padding-bottom: 1.33em;
 }
 .reward-cost {
   display: inline-block;
