@@ -34,61 +34,50 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ZurmoBaseTest extends BaseTest
+    class JobQueueTest extends BaseTest
     {
-        public static $activateDefaultLanguages = false;
-
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
-            ZurmoDatabaseCompatibilityUtil::createActualPermissionsCacheTable();
-            ZurmoDatabaseCompatibilityUtil::dropStoredFunctionsAndProcedures();
-            PermissionsCache::forgetAll();
-            RightsCache::forgetAll();
-            PoliciesCache::forgetAll();
-            Currency::resetCaches();  //php only cache
-            $activitiesObserver = new ActivitiesObserver();
-            $activitiesObserver->init(); //runs init();
-            $conversationsObserver = new ConversationsObserver();
-            $conversationsObserver->init(); //runs init();
-            Yii::app()->gameHelper;
-            Yii::app()->gamificationObserver; //runs init();
-            Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();
-            Yii::app()->emailHelper->sendEmailThroughTransport = false;
+        }
+
+        public function testAddAndGetAll()
+        {
+            $this->assertCount(0, Yii::app()->jobQueue->getAll());
+            Yii::app()->jobQueue->add('aJob', 15);
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(1, $queuedJobs[15]);
+            $this->assertEquals('aJob', $queuedJobs[15][0]);
+            //Try to add it again
+            Yii::app()->jobQueue->add('aJob', 15);
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(1, $queuedJobs[15]);
+            $this->assertEquals('aJob', $queuedJobs[15][0]);
+            //Try to add a new job
+            Yii::app()->jobQueue->add('bJob', 15);
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(2, $queuedJobs[15]);
+            $this->assertEquals('aJob', $queuedJobs[15][0]);
+            $this->assertEquals('bJob', $queuedJobs[15][1]);
+            //Add an immediate job
+            Yii::app()->jobQueue->add('cJob');
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(1, $queuedJobs[0]);
+            $this->assertEquals('cJob', $queuedJobs[0][0]);
+        }
+
+        /**
+         * @depends testAddAndGetAll
+         */
+        public function testDeleteAll()
+        {
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(2, $queuedJobs);
+            $this->assertCount(2, $queuedJobs[15]);
+            $this->assertCount(1, $queuedJobs[0]);
             Yii::app()->jobQueue->deleteAll();
-        }
-
-        public function setUp()
-        {
-            parent::setUp();
-            Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();
-        }
-
-        protected static function startOutputBuffer()
-        {
-            ob_start();
-        }
-
-        protected static function endAndGetOutputBuffer()
-        {
-            $content = ob_get_contents();
-            ob_end_clean();
-            self::cleanUpOutputBuffer();
-            return $content;
-        }
-
-        protected function endPrintOutputBufferAndFail()
-        {
-            echo $this->endAndGetOutputBuffer();
-            $this->fail();
-        }
-
-        private static function cleanUpOutputBuffer()
-        {
-            while (count(ob_get_status(true)) > 1)
-            {
-                ob_end_clean();
-            }
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(0, $queuedJobs);
         }
     }
 ?>

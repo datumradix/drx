@@ -34,61 +34,65 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ZurmoBaseTest extends BaseTest
+    /**
+     * Helper class for managing job queues. Override as needed.
+     */
+    class JobQueue extends CApplicationComponent
     {
-        public static $activateDefaultLanguages = false;
+        protected $queuedJobs = array();
 
-        public static function setUpBeforeClass()
+        /**
+         * @param string $jobType
+         * @param int $delay - seconds to delay job
+         */
+        public function add($jobType, $delay = 0)
         {
-            parent::setUpBeforeClass();
-            ZurmoDatabaseCompatibilityUtil::createActualPermissionsCacheTable();
-            ZurmoDatabaseCompatibilityUtil::dropStoredFunctionsAndProcedures();
-            PermissionsCache::forgetAll();
-            RightsCache::forgetAll();
-            PoliciesCache::forgetAll();
-            Currency::resetCaches();  //php only cache
-            $activitiesObserver = new ActivitiesObserver();
-            $activitiesObserver->init(); //runs init();
-            $conversationsObserver = new ConversationsObserver();
-            $conversationsObserver->init(); //runs init();
-            Yii::app()->gameHelper;
-            Yii::app()->gamificationObserver; //runs init();
-            Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();
-            Yii::app()->emailHelper->sendEmailThroughTransport = false;
-            Yii::app()->jobQueue->deleteAll();
-        }
-
-        public function setUp()
-        {
-            parent::setUp();
-            Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();
-        }
-
-        protected static function startOutputBuffer()
-        {
-            ob_start();
-        }
-
-        protected static function endAndGetOutputBuffer()
-        {
-            $content = ob_get_contents();
-            ob_end_clean();
-            self::cleanUpOutputBuffer();
-            return $content;
-        }
-
-        protected function endPrintOutputBufferAndFail()
-        {
-            echo $this->endAndGetOutputBuffer();
-            $this->fail();
-        }
-
-        private static function cleanUpOutputBuffer()
-        {
-            while (count(ob_get_status(true)) > 1)
+            assert('is_string($jobType)');
+            assert('is_int($delay)');
+            if(!isset($this->queuedJobs[$delay]) || !in_array($jobType, $this->queuedJobs[$delay]))
             {
-                ob_end_clean();
+                $this->queuedJobs[$delay][] = $jobType;
             }
+        }
+
+        public function getAll()
+        {
+            return $this->queuedJobs;
+        }
+
+        public function deleteAll()
+        {
+            $this->queuedJobs = array();
+        }
+
+        /**
+         * Override if there is processing to complete. see @EndRequestBehavior
+         */
+        public function processAll()
+        {
+        }
+
+        /**
+         * Override and toggle as needed.
+         * @return bool
+         */
+        public function isEnabled()
+        {
+            return false;
+        }
+
+        public function getQueueJobLabel()
+        {
+            return Zurmo::t('JobsManagerModule', 'Queue Job');
+        }
+
+        public function getQueueJobAgainLabel()
+        {
+            return Zurmo::t('JobsManagerModule', 'Queue Job Again');
+        }
+
+        public function processByJobTypeAndDelay($jobType, $delay, MessageLogger $messageLogger)
+        {
         }
     }
 ?>
