@@ -1,3 +1,16 @@
+.details-item:before,
+.details-item:after,
+.details-item-editable:before,
+.details-item-editable:after {
+	content: " ";
+	display: table;
+}
+
+.details-item:after,
+.details-item-editable:after{
+	clear: both;
+}
+
 .details{
 }
 
@@ -81,9 +94,7 @@
 	position: static;
 }
 
-
 /*Editable view from here*/
-
 .req:after{
 	content:"*";
 	font-weight: bold;
