@@ -936,9 +936,13 @@
             {
                 $sortOrder = KanbanItem::getMaximumSortOrderByType(intval($targetKanbanType), $task->project);
             }
-            else
+            elseif ($task->activityItems->count() > 0)
             {
                 $sortOrder = KanbanItem::getMaximumSortOrderByType(intval($targetKanbanType), $task->activityItems->offsetGet(0));
+            }
+            else
+            {
+                $sortOrder = 1;
             }
             return $sortOrder;
         }
@@ -1124,6 +1128,75 @@
                           }
                         );";
              Yii::app()->clientScript->registerScript('taskModalDeleteScript', $script, ClientScript::POS_END);
+        }
+
+        /**
+         * Resolve that should task be opened in modal detal view
+         */
+        public static function resolveShouldOpenToTask($gridId)
+        {
+            $getData = GetUtil::getData();
+            if (null != $taskId = ArrayUtil::getArrayValue($getData, 'openToTaskId'))
+            {
+                TasksUtil::registerOpenToTaskModalDetailsScript((int)$taskId, $gridId);
+            }
+        }
+
+        /**
+         * @param string $modelClassName
+         */
+        public static function saveSelectedOptionsAsStickyData($filterValue = TasksConfigurationForm::FILTERED_BY_ALL_STATUS)
+        {
+            StickyUtil::setDataByKeyAndData('TasksListViewFilteredByStatus', array('filterValue' => $filterValue));
+        }
+
+        /**
+         * @param string $modelClassName
+         * @return MashableInboxForm
+         */
+        public static function getConfigurationFormWithStatusAsStickyData()
+        {
+            $data = StickyUtil::getDataByKey('TasksListViewFilteredByStatus');
+            $tasksConfigurationForm = new TasksConfigurationForm();
+            if($data == null)
+            {
+                $tasksConfigurationForm->filteredByStatus = TasksConfigurationForm::FILTERED_BY_ALL_STATUS;
+            }
+            else
+            {
+                $tasksConfigurationForm->filteredByStatus = $data['filterValue'];
+            }
+            return $tasksConfigurationForm;
+        }
+
+        public static function makeStatusSearchAttributeData($status)
+        {
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'status',
+                    'operatorType'         => 'equals',
+                    'value'                => (int)$status,
+                )
+            );
+            $searchAttributeData['structure'] = '1';
+            return $searchAttributeData;
+        }
+
+        public static function makeDataProviderForFilterByStatus($status, $pageSize)
+        {
+            $searchAttributeData = self::makeStatusSearchAttributeData($status);
+            $sortAttribute  = SearchUtil::resolveSortAttributeFromGetArray('Task');
+            $sortDescending =  SearchUtil::resolveSortDescendingFromGetArray('Task');
+            return new RedBeanModelDataProvider( 'Task',
+                                                 $sortAttribute,
+                                                 (bool)$sortDescending,
+                                                 $searchAttributeData,
+                                                 array(
+                                                        'pagination' => array(
+                                                            'pageSize' => $pageSize,
+                                                    )
+                                                ));
         }
     }
 ?>
