@@ -35,36 +35,21 @@
      ********************************************************************************/
 
     /**
-     * Campaigns Options link.
+     * Class to make default data that needs to be created upon an installation.
      */
-    class CampaignsOptionsMenuActionElement extends MenuActionElement
+    class CampaignItemsDefaultDataMaker extends DefaultDataMaker
     {
-        public function getActionType()
+        /**
+         * Make the field data for campaign item stages
+         */
+        public function make()
         {
-            return 'Delete';
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('Core', 'Options');
-        }
-
-        protected function getDefaultRoute()
-        {
-            return null;
-        }
-
-        protected function getMenuItems()
-        {
-            $deleteElement          = new CampaignDeleteLinkActionElement($this->controllerId, $this->moduleId, $this->modelId);
-            $deleteElementContent   = $deleteElement->renderMenuItem();
-            $editElement            = new EditLinkActionElement($this->controllerId, $this->moduleId, $this->modelId);
-            $editElementContent     = $editElement->renderMenuItem();
-            $copyElement            = new CopyLinkActionElement($this->controllerId, $this->moduleId, $this->modelId);
-            $copyElementContent     = $copyElement->renderMenuItem();
-            // TODO: @Shoaibi/@Jason: Low: securable on these items from the outside coming in?
-            $menuItems              = array( $editElementContent, $deleteElementContent, $copyElementContent);
-            return $menuItems;
+            $values = array(
+                Zurmo::t('Core', 'Opened'),
+                Zurmo::t('CustomField', 'Clicked'),
+                Zurmo::t('CustomField', 'Bounced'),
+            );
+            static::makeCustomFieldDataByValuesAndDefault('CampaignItemStages', $values);
         }
     }
 ?>
