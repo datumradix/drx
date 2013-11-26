@@ -49,6 +49,12 @@
         protected $totalModelsProcessed = 0;
 
         /**
+         * @see BaseJob::$loadJobQueueOnCleanupAndFallback
+         * @var bool
+         */
+        protected static $loadJobQueueOnCleanupAndFallback = true;
+
+        /**
          * @returns Translated label that describes this job type.
          */
         public static function getDisplayName()
@@ -123,6 +129,10 @@
                     }
                 }
                 Yii::app()->user->userModel = $originalUser;
+                if ($this->hasReachedMaximumProcessingCount())
+                {
+                    Yii::app()->jobQueue->add('Export', 5);
+                }
             }
             $this->processEndMemoryUsageMessage((int)$startTime);
             return true;

@@ -120,6 +120,9 @@
             'gamificationObserver' => array(
                 'class' => 'application.modules.gamification.observers.GamificationObserver',
             ),
+            'jobQueue' => array(
+                'class' => 'application.core.components.JobQueue',
+            ),
             'licenseManager' => array(
                 'class' => 'application.core.components.LicenseManager',
             ),
@@ -232,6 +235,12 @@
             'phoneHelper' => array(
                 'class'          => 'application.core.components.PhoneHelper',
             ),
+            'request' => array(
+                'class' => 'application.core.components.ZurmoHttpRequest',
+                'enableCsrfValidation' => true,
+                'enableCookieValidation' => false, //keep off until we can fix it on linux/windows servers.
+                'tokenEnabledRoutes' => array('contacts/external/'),
+            ),
             'sanitizer' => array(
                 'class'          => 'application.extensions.esanitizer.ESanitizer',
                 'sanitizeGet'    => false, //off for now
@@ -249,12 +258,6 @@
             'timeZoneHelper' => array(
                 'class' => 'application.modules.zurmo.components.ZurmoTimeZoneHelper',
                 'timeZone'             => 'America/Chicago',
-            ),
-            'request' => array(
-                'class' => 'application.core.components.ZurmoHttpRequest',
-                'enableCsrfValidation' => true,
-                'enableCookieValidation' => false, //keep off until we can fix it on linux/windows servers.
-                'tokenEnabledRoutes' => array('contacts/external/'),
             ),
             'statePersister' => array(
                 'class'     => 'application.modules.zurmo.components.ZurmoDbStatePersister',
