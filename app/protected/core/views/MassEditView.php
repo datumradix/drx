@@ -129,12 +129,17 @@
             }
             $content .= '</tbody>';
             $content .= '</table>';
+            $this->renderDateTimeScript();
             return $content;
         }
 
         protected function renderActiveAttributesCheckBox($elementIds, $elementInformation, $checked, $realAttributeName)
         {
             $checkBoxHtmlOptions         = array();
+            if($elementInformation['type'] == 'DateTime' || $elementInformation['type'] == 'Date')
+            {
+                $checkBoxHtmlOptions['class'] = 'datetime';
+            }
             $checkBoxHtmlOptions['id']   = "MassEdit_" . $realAttributeName;
             $enableInputsScript          = "";
             $disableInputsScript         = "";
@@ -228,6 +233,40 @@ END;
             {
                 return $attributeName;
             }
+        }
+
+        /**
+         * Register script for date and datetime element
+         */
+        protected function renderDateTimeScript()
+        {
+            $script = "
+                        $('.datetime').click(function()
+                        {
+                            if ($(this).is(':checked'))
+                            {
+                                $(this).parent().parent().parent().find('.ui-datepicker-trigger').show();
+                            }
+                            else
+                            {
+                                $(this).parent().parent().parent().find('.ui-datepicker-trigger').hide();
+                            }
+                        });
+                        $('.datetime').each(
+                            function(index)
+                            {
+                                if ($(this).is(':checked'))
+                                {
+                                    $(this).parent().parent().parent().find('.ui-datepicker-trigger').show();
+                                }
+                                else
+                                {
+                                    $(this).parent().parent().parent().find('.ui-datepicker-trigger').hide();
+                                }
+                            }
+                        );
+                      ";
+            Yii::app()->clientScript->registerScript('datetimescript', $script);
         }
     }
 ?>
