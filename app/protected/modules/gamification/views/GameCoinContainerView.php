@@ -56,7 +56,7 @@
 
         protected function renderContent()
         {
-            if (GameCoin::showCoin($this->controller))
+            if (GameCoin::showCoin($this->controller) && Yii::app()->gameHelper->modalNotificationsEnabled)
             {
                 $this->registerScripts();
                 return $this->renderCoinContainerContent();
@@ -107,6 +107,8 @@
         {
             $content = ZurmoHtml::tag('div', array('class' => 'game-coin'), '');
             $content .= ZurmoHtml::tag('div', array('class' => 'smoke'), '');
+            $content .= ZurmoHtml::tag('div', array('class' => 'game-coin-quantity', 'style' => 'display:none;'), 
+                                                                                    $this->getGameCoinForCurrentUser()->value + 1);
             return ZurmoHtml::tag('div', array(), $content);
         }
 
@@ -123,6 +125,11 @@
             return ZurmoHtml::tag('audio', array('id' => 'game-coin-chime'), $content);
         }
 
+        protected function getGameCoinForCurrentUser()
+        {
+            return GameCoin::resolveByPerson(Yii::app()->user->userModel);
+        }
+        
         protected function makeAjaxClickUrl()
         {
             return Yii::app()->createUrl('gamification/default/CollectRandomCoin');

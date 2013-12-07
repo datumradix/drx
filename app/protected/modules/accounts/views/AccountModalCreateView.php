@@ -150,5 +150,14 @@
             $sourceNameFieldId = $getData['modalTransferInformation']['sourceNameFieldId'];
             return $sourceNameFieldId . '-' . parent::getFormId();
         }
+
+        /**
+         * Gets form layout unique id
+         * @return null
+         */
+        protected function getFormLayoutUniqueId()
+        {
+            return 'task-modal-edit-form-layout';
+        }
     }
 ?>
