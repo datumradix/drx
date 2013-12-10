@@ -77,21 +77,23 @@
             $url    = $this->makeAjaxClickUrl();
             // Begin Not Coding Standard
             $script = "$('.random-game-coin').click(function(e){
-                            $(this).unbind('click');
-                            " . ZurmoHtml::ajax(array('type' => 'GET', 'url' =>  $url)) . "
-                            var audio = document.getElementById('game-coin-chime');
-                            audio.play();
-                            $('.game-coin').animate({top:15},75).hide(0);
-                            $('.smoke').show(0).animate({top:0},500).animateSprite({
-                                columns: 8,
-                                totalFrames: 40,
-                                duration: 1000,
-                                loop: false,
-                                complete: function(){
-                                    $('.random-game-coin').remove();
-                                }
-                            });
-                        });";
+                                $(this).unbind('click');
+                                " . ZurmoHtml::ajax(array('type' => 'GET', 'url' =>  $url)) . "
+                                var audio = document.getElementById('game-coin-chime');
+                                audio.play();
+                                $('.game-coin').animate({top:15},100, function(){
+                                    $(this).hide(0);
+                                });
+                                $('.smoke').show(0).animate({top:0},500).animateSprite({
+                                    columns: 8,
+                                    totalFrames: 40,
+                                    duration: 1000,
+                                    loop: false,
+                                    complete: function(){
+                                        $('.random-game-coin').remove();
+                                    }
+                                });
+                            });";
             Yii::app()->clientScript->registerScript('gameCoinClickScript', $script);
             // End Not Coding Standard
         }
@@ -113,7 +115,7 @@
         protected function renderAudioContent()
         {
             $publishedAssetsPath = Yii::app()->assetManager->publish(
-                                        Yii::getPathOfAlias("application.modules.gamification.views.assets.audio"));
+                Yii::getPathOfAlias("application.modules.gamification.views.assets.audio"));
             $MP3AudioFilePath = $publishedAssetsPath . '/cash-register.mp3';
             $OGGAudioFilePath = $publishedAssetsPath . '/cash-register.ogg';
             $WAVAudioFilePath = $publishedAssetsPath . '/cash-register.wav';

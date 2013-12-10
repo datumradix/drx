@@ -51,6 +51,9 @@
         ),
 
         'components' => array(
+            'accountLatestActivityDateTimeObserver' => array(
+                'class' => 'application.modules.accounts.observers.AccountLatestActivityDateTimeObserver',
+            ),
             'additionalModelsConfig' => array(
                 'class'         => 'application.core.components.AdditionalModelsConfig',
                 'zurmoModels'   => array('application.core.models', 'application.core.portlets', 'application.core.kanbanBoard.models'),
@@ -82,6 +85,9 @@
                             'jquery.treeview.edit.js'),
                         'depends'  => array('jquery', 'cookie')),
                 ),
+            ),
+            'contactLatestActivityDateTimeObserver' => array(
+                'class' => 'application.modules.contacts.observers.ContactLatestActivityDateTimeObserver',
             ),
             'currencyHelper' => array(
                 'class' => 'application.modules.zurmo.components.ZurmoCurrencyHelper',

@@ -51,6 +51,10 @@
             $activitiesObserver->init(); //runs init();
             $conversationsObserver = new ConversationsObserver();
             $conversationsObserver->init(); //runs init();
+            $contactLatestActivityDateTimeObserver = new ContactLatestActivityDateTimeObserver();
+            $contactLatestActivityDateTimeObserver->init(); //runs init();
+            $accountLatestActivityDateTimeObserver = new AccountLatestActivityDateTimeObserver();
+            $accountLatestActivityDateTimeObserver->init(); //runs init();
             Yii::app()->gameHelper;
             Yii::app()->gamificationObserver; //runs init();
             Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();

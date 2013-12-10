@@ -98,6 +98,8 @@
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadLanguage'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadTimeZone'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadContactLatestActivityDateTimeObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadAccountLatestActivityDateTimeObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleCheckAndUpdateCurrencyRates'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleResolveCustomData'));
         }
@@ -137,6 +139,8 @@
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadActivitiesObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadConversationsObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadContactLatestActivityDateTimeObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadAccountLatestActivityDateTimeObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadGamification'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleCheckAndUpdateCurrencyRates'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleResolveCustomData'));
@@ -524,6 +528,16 @@
         public function handleLoadWorkflowsObserver($event)
         {
             Yii::app()->workflowsObserver;
+        }
+
+        public function handleLoadContactLatestActivityDateTimeObserver($event)
+        {
+            Yii::app()->contactLatestActivityDateTimeObserver;
+        }
+
+        public function handleLoadAccountLatestActivityDateTimeObserver($event)
+        {
+            Yii::app()->accountLatestActivityDateTimeObserver;
         }
 
         public function handleLoadGamification($event)
