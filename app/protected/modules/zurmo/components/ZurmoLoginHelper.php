@@ -34,55 +34,14 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class UsersMassEditView extends MassEditView
+    /**
+     * Component for assisting extra login features like googlePlusSignIn
+     */
+    class ZurmoLoginHelper extends CApplicationComponent
     {
-        public static function getDefaultMetadata()
+        public function resolveExtraLoginViewContent()
         {
-            $metadata = array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type' => 'SaveButton'),
-                            array('type' => 'CancelLink'),
-                        ),
-                    ),
-                    'nonPlaceableAttributeNames' => array(
-                        'title',
-                        'firstName',
-                        'lastName',
-                        'username',
-                        'hash',
-                        'newPassword',
-                        'newPassword_repeat',
-                    ),
-                    'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
-                    'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'department', 'type' => 'Text'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'manager', 'type' => 'User'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            );
-            return $metadata;
+
         }
     }
 ?>
