@@ -1,0 +1,156 @@
+#nav-trigger2{
+	float: left;
+	text-align:center;
+	padding:0;
+	margin-right:15px;
+	line-height: 38px;
+	height:38px;
+	width: 44px;
+	font-size: 24px;
+	font-weight: normal;
+	.symbly(30px);
+
+	position: absolute;
+	left: -30px;
+	top: 0;
+}
+
+.AppNavigation.nav-collapsed{
+	width: 47px;
+}
+
+.AppContent.nav-collapsed{
+	margin-left: 47px;
+}
+
+.AppNavigation.nav-collapsed #MenuView{
+	//position: static;
+	//margin: 0 !important;
+	//padding: 0 0 0 10px !important;
+	//top: 0 !important;
+	//.opacity(0);
+	//.box-sizing();
+	//left: 0;
+	width:auto;
+	//height: 100%;
+	border: none;
+	background: none;
+	.radius(0 0 0 5px);
+	> ul > li{
+		.clearfix();
+		padding-left: 10px;
+	}
+	> ul > li > a{
+		em{
+			display:inline-block;
+			position:relative;
+			top:4px;
+			width:25px;
+			height:25px;
+			line-height:22px;
+			vertical-align:top;
+			background:#FFF;
+			z-index:9999;
+			text-align:center;
+			margin:0 0 0 0;
+			padding:0 0 0 0;
+			font-style:normal;
+			.radius(4px);
+			.symbly(@recentlyViewedIconSize);
+			.t-shadow(~"none !important");
+			//.box-sizing();
+		}
+		em:before{
+			content: "z";
+		}
+		em + span{
+			text-indent: -9999px !important;
+		}
+		span{
+			width: 33px !important;
+			display: block;
+			margin-left: -4px;
+		}
+	}
+	#search > a > em:before{
+		content:  "k";
+	}
+	#shortcuts > a > em:before{
+		content:  "Y";
+	}
+	#home > a > em:before{
+		content:  "A";
+	}
+	#accounts > a > em:before{
+		content:  "P";
+	}
+	#leads > a > em:before{
+		content:  ".";
+	}
+	#contacts > a > em:before{
+		content:  "y";
+	}
+	#opportunities > a > em:before{
+		content:  "9";
+	}
+	#conversations > a > em:before{
+		content:  "b";
+	}
+	#recently-viewed > a > em:before{
+		content:  "{";
+	}
+	#mashableInbox > a > em:before{
+		content:  "g";
+	}
+	#marketing > a > em:before{
+		content:  '\00B6';
+	}
+	#reports > a > em:before{
+		content:  "V";
+	}
+
+	.unread-inbox-count{
+		display: none;
+	}
+}
+
+.AppNavigation.nav-collapsed #RecentlyViewedView{
+	width:auto;
+	padding-left: 0;
+	padding-right: 0;
+	h3{
+		display: none;
+	}
+	> ul > li{
+		.clearfix();
+		padding-left: 10px;
+	}
+	> ul > li > a{
+		em{
+			display:inline-block;
+			position:relative;
+			top:4px;
+			width:25px;
+			height:25px;
+			line-height:22px;
+			vertical-align:top;
+			background:#FFF;
+			z-index:9999;
+			text-align:center;
+			margin:0 0 0 0;
+			padding:0 0 0 0;
+			font-style:normal;
+			.radius(4px);
+			.symbly(@recentlyViewedIconSize);
+			.t-shadow(~"none !important");
+		}
+		em + span{
+			text-indent: -9999px !important;
+		}
+		span{
+			width: 33px !important;
+			display: block;
+			margin-left: -4px;
+		}
+	}
+}

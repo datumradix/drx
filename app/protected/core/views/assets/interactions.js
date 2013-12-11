@@ -635,6 +635,17 @@ $.fn.spin = function(opts) {
     };
 }(jQuery));
 $(window).ready(function(){
+    $('#nav-trigger2').click(
+        function(e){
+            if ( $('.AppContent').hasClass('nav-collapsed') ){
+                $('.AppNavigation').removeClass('high-z-index');
+            }
+            $('.AppContent').toggleClass('nav-collapsed');
+            $('.AppNavigation').toggleClass('nav-collapsed');
+            e.preventDefault();
+            return false;
+        }
+    );
     //main menu flyouts or mbmenu releacment
     $('.nav:not(.user-menu-item):not(.clickable-mbmenu) > .parent').live({
         mouseenter: function() {
