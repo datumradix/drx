@@ -826,6 +826,7 @@ body > .ui-autocomplete{
 	.radius(0 0 5px 5px);
 	z-index: 0;
 	position:relative;
+	border-left:1px solid #eee;
 }
 
 #HeaderView{
@@ -906,10 +907,7 @@ body > .ui-autocomplete{
 	width:170px;
 	float:left;
 	#gradient > .vertical(#f6f6f6, #f4f4f4);
-	border-right:1px solid #eee;
-	border-left:1px solid #eee;
 	height:100%;
-	overflow:hidden;
 	display:block;
 	overflow: visible;
 	.radius(0 0 0 5px);
@@ -1065,21 +1063,21 @@ body > .ui-autocomplete{
 #RecentlyViewedView{
 	#gradient > .vertical(#dcdcdc, #e3e3e3);
 	border-top:1px solid #F9F9FA;
-	padding:20px 5px;
-	width:168px;
+	padding:0 0 20px 0;
 	h3{
 		color:#666;
 		font-size:10px;
 		margin-bottom:20px;
+		text-indent: 6px;
 	}
 	li{
 		font-size:12px;
 		font-weight: bold;
 		color:#555;
 		margin:0 0 1px 0;
-		padding:0;
+		padding:0 4px;
 		a{
-			width:160px;
+			//width:160px;
 			.text-overflow;
 			line-height: 33px;
 			vertical-align:middle;
@@ -1280,10 +1278,10 @@ body > .ui-autocomplete{
 
 /*=Content*/
 .AppContent{
-	.radius(0 0 5px 5px);
+	.radius(0 0 5px 0);
 	padding:20px 20px 0 20px;
 	margin-left:170px;
-	margin-bottom:20px;
+	border-left:1px solid #eee;
 	#gradient > .vertical-three-colors( #f6f6f6, #ffffff, 100px, #ffffff );
 	.clearfix();
 	.single-column{
@@ -1291,11 +1289,6 @@ body > .ui-autocomplete{
 		> .GridView{
 			display:block;
 			width:100% !important;
-		}
-		.panel{
-			//width:70%;
-			//float:left;
-			//position: relative;
 		}
 		.juiportlet-widget,
 		.details-table{

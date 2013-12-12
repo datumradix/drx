@@ -635,10 +635,15 @@ $.fn.spin = function(opts) {
     };
 }(jQuery));
 $(window).ready(function(){
-    $('#nav-trigger2').click(
+    $('#toggle-collapsible-nav').click(
         function(e){
             if ( $('.AppContent').hasClass('nav-collapsed') ){
                 $('.AppNavigation').removeClass('high-z-index');
+            }
+            if($(this).text() === 'ˆ ¸'){
+                $(this).text('¸ ˆ');
+            } else {
+                $(this).text('ˆ ¸');
             }
             $('.AppContent').toggleClass('nav-collapsed');
             $('.AppNavigation').toggleClass('nav-collapsed');

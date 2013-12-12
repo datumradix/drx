@@ -52,8 +52,10 @@
 
         protected function renderContent()
         {
-            $content        = '<h3>' . Zurmo::t('ZurmoModule', 'Recently Viewed') . '</h3>';
-            $items          = $this->renderMenu();
+            $content  = ZurmoHtml::tag('a', array('href' => '#', 'id' => 'toggle-collapsible-nav',
+                        'title' => Zurmo::t('ZurmoModule', 'Collapse or expand navigation')), 'ˆ ¸');
+            $content .= '<h3>' . Zurmo::t('ZurmoModule', 'Recently Viewed') . '</h3>';
+            $items    = $this->renderMenu();
 
             if (count($items))
             {

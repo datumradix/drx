@@ -1,18 +1,11 @@
-#nav-trigger2{
-	float: left;
-	text-align:center;
-	padding:0;
-	margin-right:15px;
-	line-height: 38px;
-	height:38px;
-	width: 44px;
-	font-size: 24px;
-	font-weight: normal;
-	.symbly(30px);
-
-	position: absolute;
-	left: -30px;
-	top: 0;
+#toggle-collapsible-nav{
+	display: block;
+	text-align: center;
+	padding:0 0 5px 0;
+	margin: 0 0 0 0;
+	cursor: pointer;
+	position: relative;
+	.symbly(15px);
 }
 
 .AppNavigation.nav-collapsed{
@@ -24,15 +17,7 @@
 }
 
 .AppNavigation.nav-collapsed #MenuView{
-	//position: static;
-	//margin: 0 !important;
-	//padding: 0 0 0 10px !important;
-	//top: 0 !important;
-	//.opacity(0);
-	//.box-sizing();
-	//left: 0;
 	width:auto;
-	//height: 100%;
 	border: none;
 	background: none;
 	.radius(0 0 0 5px);
@@ -116,16 +101,16 @@
 
 .AppNavigation.nav-collapsed #RecentlyViewedView{
 	width:auto;
-	padding-left: 0;
-	padding-right: 0;
+	padding:10px 0 20px 0;
 	h3{
 		display: none;
 	}
 	> ul > li{
 		.clearfix();
-		padding-left: 10px;
+		padding:0 0 0 6px;
 	}
 	> ul > li > a{
+		padding-left: 4px;
 		em{
 			display:inline-block;
 			position:relative;
@@ -148,9 +133,10 @@
 			text-indent: -9999px !important;
 		}
 		span{
-			width: 33px !important;
+			width: 37px !important;
 			display: block;
 			margin-left: -4px;
+			.radius(4px);
 		}
 	}
 }
