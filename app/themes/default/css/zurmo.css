@@ -1305,6 +1305,7 @@ body > .ui-autocomplete {
   border-radius: 0 0 5px 5px;
   z-index: 0;
   position: relative;
+  border-left: 1px solid #eee;
 }
 #HeaderView {
   position: relative;
@@ -1449,10 +1450,7 @@ body > .ui-autocomplete {
   background-image: -webkit-linear-gradient(top,#f6f6f6,#f4f4f4);
   background-image: -o-linear-gradient(top,#f6f6f6,#f4f4f4);
   background-image: linear-gradient(top,#f6f6f6,#f4f4f4);
-  border-right: 1px solid #eee;
-  border-left: 1px solid #eee;
   height: 100%;
-  overflow: hidden;
   display: block;
   overflow: visible;
   -webkit-border-radius: 0 0 0 5px;
@@ -1465,6 +1463,7 @@ body > .ui-autocomplete {
   list-style: none;
 }
 #MenuView {
+  position: relative;
   padding: 20px 0 0 0;
   border-bottom: 1px solid #cccccc;
 }
@@ -1623,23 +1622,22 @@ body > .ui-autocomplete {
   background-image: -o-linear-gradient(top,#dcdcdc,#e3e3e3);
   background-image: linear-gradient(top,#dcdcdc,#e3e3e3);
   border-top: 1px solid #F9F9FA;
-  padding: 20px 5px;
-  width: 168px;
+  padding: 0 0 20px 0;
 }
 #RecentlyViewedView h3 {
   color: #666;
   font-size: 10px;
   margin-bottom: 20px;
+  text-indent: 6px;
 }
 #RecentlyViewedView li {
   font-size: 12px;
   font-weight: bold;
   color: #555;
   margin: 0 0 1px 0;
-  padding: 0;
+  padding: 0 4px;
 }
 #RecentlyViewedView li a {
-  width: 160px;
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
   -webkit-text-overflow: ellipsis;
@@ -1826,14 +1824,14 @@ body > .ui-autocomplete {
   font-size: 22px;
 }
 .AppContent {
-  -webkit-border-radius: 0 0 5px 5px;
-  -moz-border-radius: 0 0 5px 5px;
-  -ms-border-radius: 0 0 5px 5px;
-  -o-border-radius: 0 0 5px 5px;
-  border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 0;
+  -moz-border-radius: 0 0 5px 0;
+  -ms-border-radius: 0 0 5px 0;
+  -o-border-radius: 0 0 5px 0;
+  border-radius: 0 0 5px 0;
   padding: 20px 20px 0 20px;
   margin-left: 170px;
-  margin-bottom: 20px;
+  border-left: 1px solid #eee;
   background-color: #ffffff ;
   background-repeat: no-repeat ;
   background-image: -webkit-gradient(linear,0 0,0 100%,from(#f6f6f6),color-stop(100px,#ffffff),to(#ffffff)) ;
@@ -18901,4 +18899,184 @@ a + .project-stats {
   #login-form {
     padding: 0 20px !important;
   }
+}
+#toggle-collapsible-nav {
+  display: block;
+  text-align: center;
+  padding: 0 0 5px 0;
+  margin: 0 0 0 0;
+  cursor: pointer;
+  position: relative;
+  font-weight: normal !important;
+  font-size: 15px;
+  font-family: "zurmo_gamification_symbly_rRg";
+}
+.AppNavigation.nav-collapsed {
+  width: 47px;
+}
+.AppContent.nav-collapsed {
+  margin-left: 47px;
+}
+.AppNavigation.nav-collapsed #MenuView {
+  width: auto;
+  border: none;
+  background: none;
+  -webkit-border-radius: 0 0 0 5px;
+  -moz-border-radius: 0 0 0 5px;
+  -ms-border-radius: 0 0 0 5px;
+  -o-border-radius: 0 0 0 5px;
+  border-radius: 0 0 0 5px;
+}
+.AppNavigation.nav-collapsed #MenuView > ul > li {
+  *zoom: 1;
+  padding-left: 10px;
+}
+.AppNavigation.nav-collapsed #MenuView > ul > li:before,
+.AppNavigation.nav-collapsed #MenuView > ul > li:after {
+  content: " ";
+  display: table;
+}
+.AppNavigation.nav-collapsed #MenuView > ul > li:after {
+  clear: both;
+}
+.AppNavigation.nav-collapsed #MenuView > ul > li > a em {
+  display: inline-block;
+  position: relative;
+  top: 4px;
+  width: 25px;
+  height: 25px;
+  line-height: 22px;
+  vertical-align: top;
+  background: #FFF;
+  z-index: 9999;
+  text-align: center;
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  font-style: normal;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  font-weight: normal !important;
+  font-size: 24px;
+  font-family: "zurmo_gamification_symbly_rRg";
+  -webkit-text-shadow: none !important;
+  -moz-text-shadow: none !important;
+  -ms-text-shadow: none !important;
+  -o-text-shadow: none !important;
+  text-shadow: none !important;
+}
+.AppNavigation.nav-collapsed #MenuView > ul > li > a em:before {
+  content: "z";
+}
+.AppNavigation.nav-collapsed #MenuView > ul > li > a em + span {
+  text-indent: -9999px !important;
+}
+.AppNavigation.nav-collapsed #MenuView > ul > li > a span {
+  width: 33px !important;
+  display: block;
+  margin-left: -4px;
+}
+.AppNavigation.nav-collapsed #MenuView #search > a > em:before {
+  content: "k";
+}
+.AppNavigation.nav-collapsed #MenuView #shortcuts > a > em:before {
+  content: "Y";
+}
+.AppNavigation.nav-collapsed #MenuView #home > a > em:before {
+  content: "A";
+}
+.AppNavigation.nav-collapsed #MenuView #accounts > a > em:before {
+  content: "P";
+}
+.AppNavigation.nav-collapsed #MenuView #leads > a > em:before {
+  content: ".";
+}
+.AppNavigation.nav-collapsed #MenuView #contacts > a > em:before {
+  content: "y";
+}
+.AppNavigation.nav-collapsed #MenuView #opportunities > a > em:before {
+  content: "9";
+}
+.AppNavigation.nav-collapsed #MenuView #conversations > a > em:before {
+  content: "b";
+}
+.AppNavigation.nav-collapsed #MenuView #recently-viewed > a > em:before {
+  content: "{";
+}
+.AppNavigation.nav-collapsed #MenuView #mashableInbox > a > em:before {
+  content: "g";
+}
+.AppNavigation.nav-collapsed #MenuView #marketing > a > em:before {
+  content: '\00B6';
+}
+.AppNavigation.nav-collapsed #MenuView #reports > a > em:before {
+  content: "V";
+}
+.AppNavigation.nav-collapsed #MenuView .unread-inbox-count {
+  display: none;
+}
+.AppNavigation.nav-collapsed #RecentlyViewedView {
+  width: auto;
+  padding: 10px 0 20px 0;
+}
+.AppNavigation.nav-collapsed #RecentlyViewedView h3 {
+  display: none;
+}
+.AppNavigation.nav-collapsed #RecentlyViewedView > ul > li {
+  *zoom: 1;
+  padding: 0 0 0 6px;
+}
+.AppNavigation.nav-collapsed #RecentlyViewedView > ul > li:before,
+.AppNavigation.nav-collapsed #RecentlyViewedView > ul > li:after {
+  content: " ";
+  display: table;
+}
+.AppNavigation.nav-collapsed #RecentlyViewedView > ul > li:after {
+  clear: both;
+}
+.AppNavigation.nav-collapsed #RecentlyViewedView > ul > li > a {
+  padding-left: 4px;
+}
+.AppNavigation.nav-collapsed #RecentlyViewedView > ul > li > a em {
+  display: inline-block;
+  position: relative;
+  top: 4px;
+  width: 25px;
+  height: 25px;
+  line-height: 22px;
+  vertical-align: top;
+  background: #FFF;
+  z-index: 9999;
+  text-align: center;
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  font-style: normal;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  font-weight: normal !important;
+  font-size: 24px;
+  font-family: "zurmo_gamification_symbly_rRg";
+  -webkit-text-shadow: none !important;
+  -moz-text-shadow: none !important;
+  -ms-text-shadow: none !important;
+  -o-text-shadow: none !important;
+  text-shadow: none !important;
+}
+.AppNavigation.nav-collapsed #RecentlyViewedView > ul > li > a em + span {
+  text-indent: -9999px !important;
+}
+.AppNavigation.nav-collapsed #RecentlyViewedView > ul > li > a span {
+  width: 37px !important;
+  display: block;
+  margin-left: -4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
 }

@@ -83,8 +83,7 @@
             $cClipWidget->endClip();
             $content  = $cClipWidget->getController()->clips['Tabs'];
             $content .= $this->resolveToggleForHiddenItems();
-            $collpaser = '<a href="#" id="nav-trigger2" title="Toggle Navigation">›</a>';
-            return $collpaser . $content;
+            return $content ;
         }
 
         protected function resolveForHiddenItems($items, $showCount)
