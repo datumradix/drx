@@ -34,61 +34,15 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ZurmoBaseTest extends BaseTest
+    /**
+     * Class InQueueBatchSizeConfigUtil
+     */
+    class InQueueBatchSizeConfigUtil extends BatchSizeConfigUtil
     {
-        public static $activateDefaultLanguages = false;
+        const CONFIG_KEY             = 'InQueueBatchSize';
 
-        public static function setUpBeforeClass()
-        {
-            parent::setUpBeforeClass();
-            ZurmoDatabaseCompatibilityUtil::createActualPermissionsCacheTable();
-            ZurmoDatabaseCompatibilityUtil::dropStoredFunctionsAndProcedures();
-            PermissionsCache::forgetAll();
-            RightsCache::forgetAll();
-            PoliciesCache::forgetAll();
-            Currency::resetCaches();  //php only cache
-            $activitiesObserver = new ActivitiesObserver();
-            $activitiesObserver->init(); //runs init();
-            $conversationsObserver = new ConversationsObserver();
-            $conversationsObserver->init(); //runs init();
-            Yii::app()->gameHelper;
-            Yii::app()->gamificationObserver; //runs init();
-            Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();
-            Yii::app()->emailHelper->sendEmailThroughTransport = false;
-            Yii::app()->jobQueue->deleteAll();
-        }
+        const CONFIG_MODULE_NAME     = 'WorkflowsModule';
 
-        public function setUp()
-        {
-            parent::setUp();
-            Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();
-        }
-
-        protected static function startOutputBuffer()
-        {
-            ob_start();
-        }
-
-        protected static function endAndGetOutputBuffer()
-        {
-            $content = ob_get_contents();
-            ob_end_clean();
-            self::cleanUpOutputBuffer();
-            return $content;
-        }
-
-        protected function endPrintOutputBufferAndFail()
-        {
-            echo $this->endAndGetOutputBuffer();
-            $this->fail();
-        }
-
-        private static function cleanUpOutputBuffer()
-        {
-            while (count(ob_get_status(true)) > 1)
-            {
-                ob_end_clean();
-            }
-        }
+        const CONFIG_DEFAULT_VALUE   = 200;
     }
 ?>

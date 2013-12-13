@@ -34,61 +34,54 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ZurmoBaseTest extends BaseTest
+    class StuckJobTest extends ZurmoBaseTest
     {
-        public static $activateDefaultLanguages = false;
-
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
-            ZurmoDatabaseCompatibilityUtil::createActualPermissionsCacheTable();
-            ZurmoDatabaseCompatibilityUtil::dropStoredFunctionsAndProcedures();
-            PermissionsCache::forgetAll();
-            RightsCache::forgetAll();
-            PoliciesCache::forgetAll();
-            Currency::resetCaches();  //php only cache
-            $activitiesObserver = new ActivitiesObserver();
-            $activitiesObserver->init(); //runs init();
-            $conversationsObserver = new ConversationsObserver();
-            $conversationsObserver->init(); //runs init();
-            Yii::app()->gameHelper;
-            Yii::app()->gamificationObserver; //runs init();
-            Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();
-            Yii::app()->emailHelper->sendEmailThroughTransport = false;
-            Yii::app()->jobQueue->deleteAll();
+            SecurityTestHelper::createSuperAdmin();
         }
 
-        public function setUp()
+        public function testSetAndGet()
         {
-            parent::setUp();
-            Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();
+            $stuckJob           = new StuckJob();
+            $stuckJob->type     = 'abc';
+            $stuckJob->quantity = 3;
+            $this->assertTrue($stuckJob->save());
+            $stuckJobId = $stuckJob->id;
+            $stuckJob->forget();
+            $stuckJob           = StuckJob::getById($stuckJobId);
+            $this->assertEquals('abc', $stuckJob->type);
+            $this->assertEquals(3    , $stuckJob->quantity);
+            $this->assertTrue($stuckJob->delete());
         }
 
-        protected static function startOutputBuffer()
+        public function testGetByType()
         {
-            ob_start();
-        }
-
-        protected static function endAndGetOutputBuffer()
-        {
-            $content = ob_get_contents();
-            ob_end_clean();
-            self::cleanUpOutputBuffer();
-            return $content;
-        }
-
-        protected function endPrintOutputBufferAndFail()
-        {
-            echo $this->endAndGetOutputBuffer();
-            $this->fail();
-        }
-
-        private static function cleanUpOutputBuffer()
-        {
-            while (count(ob_get_status(true)) > 1)
-            {
-                ob_end_clean();
-            }
+            $this->assertEquals(0, count(StuckJob::getAll()));
+            $stuckJob           = new StuckJob();
+            $stuckJob->type     = 'abc';
+            $stuckJob->quantity = 3;
+            $this->assertTrue($stuckJob->save());
+            $stuckJob           = new StuckJob();
+            $stuckJob->type     = 'abc';
+            $stuckJob->quantity = 3;
+            $this->assertTrue($stuckJob->save());
+            $stuckJob           = new StuckJob();
+            $stuckJob->type     = 'def';
+            $stuckJob->quantity = 3;
+            $this->assertTrue($stuckJob->save());
+            $stuckJob = StuckJob::getByType('abc');
+            $this->assertEquals(1, count($stuckJob));
+            $this->assertEquals('abc', $stuckJob->type);
+            $this->assertTrue($stuckJob->id > 0);
+            $stuckJob = StuckJob::getByType('def');
+            $this->assertEquals(1, count($stuckJob));
+            $this->assertEquals('def', $stuckJob->type);
+            $this->assertTrue($stuckJob->id > 0);
+            $stuckJob = StuckJob::getByType('hij');
+            $this->assertEquals(1, count($stuckJob));
+            $this->assertTrue($stuckJob->id < 0);
         }
     }
 ?>

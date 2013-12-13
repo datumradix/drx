@@ -34,61 +34,41 @@
      * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    class ZurmoBaseTest extends BaseTest
+    /**
+     * Class BatchSizeConfigUtil
+     */
+    class BatchSizeConfigUtil
     {
-        public static $activateDefaultLanguages = false;
-
-        public static function setUpBeforeClass()
+        /**
+         * @param bool $returnDefaultIfMissing
+         * @param bool $setDefaultIfMissing
+         * @return configuration|int $size
+         */
+        public static function getBatchSize($returnDefaultIfMissing = true, $setDefaultIfMissing = false)
         {
-            parent::setUpBeforeClass();
-            ZurmoDatabaseCompatibilityUtil::createActualPermissionsCacheTable();
-            ZurmoDatabaseCompatibilityUtil::dropStoredFunctionsAndProcedures();
-            PermissionsCache::forgetAll();
-            RightsCache::forgetAll();
-            PoliciesCache::forgetAll();
-            Currency::resetCaches();  //php only cache
-            $activitiesObserver = new ActivitiesObserver();
-            $activitiesObserver->init(); //runs init();
-            $conversationsObserver = new ConversationsObserver();
-            $conversationsObserver->init(); //runs init();
-            Yii::app()->gameHelper;
-            Yii::app()->gamificationObserver; //runs init();
-            Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();
-            Yii::app()->emailHelper->sendEmailThroughTransport = false;
-            Yii::app()->jobQueue->deleteAll();
-        }
-
-        public function setUp()
-        {
-            parent::setUp();
-            Yii::app()->gameHelper->resetDeferredPointTypesAndValuesByUserIdToAdd();
-        }
-
-        protected static function startOutputBuffer()
-        {
-            ob_start();
-        }
-
-        protected static function endAndGetOutputBuffer()
-        {
-            $content = ob_get_contents();
-            ob_end_clean();
-            self::cleanUpOutputBuffer();
-            return $content;
-        }
-
-        protected function endPrintOutputBufferAndFail()
-        {
-            echo $this->endAndGetOutputBuffer();
-            $this->fail();
-        }
-
-        private static function cleanUpOutputBuffer()
-        {
-            while (count(ob_get_status(true)) > 1)
+            $size = ZurmoConfigurationUtil::getByModuleName(static::CONFIG_MODULE_NAME, static::CONFIG_KEY);
+            if (empty($size) && $returnDefaultIfMissing)
             {
-                ob_end_clean();
+                $size = static::CONFIG_DEFAULT_VALUE;
+                if ($setDefaultIfMissing)
+                {
+                    static::setBatchSize($size);
+                }
             }
+            elseif(empty($size))
+            {
+                return null;
+            }
+            return $size;
+        }
+
+        /**
+         * @param int $size
+         */
+        public static function setBatchSize($size)
+        {
+            assert('is_int($size) || $size === null');
+            ZurmoConfigurationUtil::setByModuleName(static::CONFIG_MODULE_NAME, static::CONFIG_KEY, $size);
         }
     }
 ?>
