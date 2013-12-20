@@ -50,33 +50,31 @@
 
         public $inputValue;
 
-        public $swatchName;
+        /**
+         * @var string a javascript function that will be invoked after the color changes.
+         */
+        public $change = "{}";
+
+        /**
+         * @var array HTML attributes for the input color container
+         */
+        public $htmlOptions=array();
 
         public function run()
         {
-            $javaScript = "$(document).ready(function(){
+            $javaScript = "
+                $(document).ready(function()
+                {
                     $('#{$this->inputId}').iris({
-                        change: function(event, ui) {
-                            $('#{$this->inputId}').css('border-color', ui.color.toString());
-                            $('.custom .{$this->swatchName}').css('background-color', ui.color.toString());
-                        }
+                        hide: false,
+                        change: {$this->change},
                     });
-                    $('#{$this->inputId}').focus(function(){
-                        //$('#ZurmoUserInterfaceConfigurationForm_customThemeColor1').iris('hide');
-                        //$('#ZurmoUserInterfaceConfigurationForm_customThemeColor2').iris('hide');
-                        //$('#ZurmoUserInterfaceConfigurationForm_customThemeColor3').iris('hide');
-                        $('#{$this->inputId}').iris('show');
-                    });
-                    $(document).click(function (e) {
-                        if (!$(e.target).is('#{$this->inputId}, .iris-picker, .iris-picker-inner')) {
-                            $('#{$this->inputId}').iris('hide');
-                        }
-                    });
-                });
+                }
+                );
             ";
             Yii::app()->getClientScript()->registerScript(__CLASS__ . '#' . $this->id, $javaScript, CClientScript::POS_END);
-            echo ZurmoHtml::textField($this->inputName, $this->inputValue, array('id' => $this->inputId));
+            $this->htmlOptions['id'] = $this->inputId;
+            echo ZurmoHtml::textField($this->inputName, $this->inputValue, $this->htmlOptions);
         }
-
     }
 ?>
