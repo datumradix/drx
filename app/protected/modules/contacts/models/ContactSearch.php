@@ -40,15 +40,15 @@
          * For a give Contact name, run a partial search by
          * full name and retrieve contact models.
          * @param string $partialName
-         * @param int $pageSize
+         * @param null|int $pageSize
          * @param null|string $stateMetadataAdapterClassName
          * @param $autoCompleteOptions
          */
-        public static function getContactsByPartialFullName($partialName, $pageSize,
+        public static function getContactsByPartialFullName($partialName, $pageSize = null,
                                                     $stateMetadataAdapterClassName = null, $autoCompleteOptions = null)
         {
             assert('is_string($partialName)');
-            assert('is_int($pageSize)');
+            assert('is_int($pageSize) || $pageSize == null');
             assert('$stateMetadataAdapterClassName == null || is_string($stateMetadataAdapterClassName)');
             $personTableName   = Person::getTableName();
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('Contact');
@@ -159,6 +159,42 @@
                     'relatedAttributeName' => 'emailAddress',
                     'operatorType'         => 'equals',
                     'value'                => $emailAddress,
+                ),
+            );
+            $metadata['structure'] = '(1 or 2)';
+            $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter('Contact');
+            if ($stateMetadataAdapterClassName != null)
+            {
+                $stateMetadataAdapter = new $stateMetadataAdapterClassName($metadata);
+                $metadata = $stateMetadataAdapter->getAdaptedDataProviderMetadata();
+            }
+            $where  = RedBeanModelDataProvider::makeWhere('Contact', $metadata, $joinTablesAdapter);
+            static::handleAutoCompleteOptions($joinTablesAdapter, $where, $autoCompleteOptions);
+            return Contact::getSubset($joinTablesAdapter, null, $pageSize, $where);
+        }
+
+        /**
+         * For a given phone number, run search by phone numbers and retrieve contact models.
+         * @param string $phoneNumber
+         * @param null|int $pageSize
+         * @param null|sting $stateMetadataAdapterClassName
+         * @param $autoCompleteOptions
+         */
+        public static function getContactsByAnyPhone($phoneNumber, $pageSize = null,
+                                                     $stateMetadataAdapterClassName = null, $autoCompleteOptions = null)
+        {
+            assert('is_string($phoneNumber)');
+            $metadata = array();
+            $metadata['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'mobilePhone',
+                    'operatorType'         => 'equals',
+                    'value'                => $phoneNumber,
+                ),
+                2 => array(
+                    'attributeName'        => 'officePhone',
+                    'operatorType'         => 'equals',
+                    'value'                => $phoneNumber,
                 ),
             );
             $metadata['structure'] = '(1 or 2)';
