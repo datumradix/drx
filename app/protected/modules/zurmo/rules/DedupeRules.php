@@ -69,6 +69,15 @@
         }
 
         /**
+         * This array maps the relation between the attribute name and function callback for search for duplicate models
+         * @return array
+         */
+        protected function getDedupeAttributesAndSearchForDuplicateModelsCallbackMappedArray()
+        {
+            return array();
+        }
+
+        /**
          * The ViewClassName used to display the results of the dedupe models list
          * @return string
          */
@@ -80,7 +89,7 @@
         /**
          * Register the script that will make the ajax call to search for a dedupe and update the DedupeViewClassName
          * with the content returned. It also display a clickable flash message with the number of results found
-         * @see ZurmoModuleController::actionSearchForDedupes
+         * @see ZurmoModuleController::actionSearchForDuplicateModels
          * @param Element $element
          * @return null
          */
@@ -97,7 +106,7 @@
                 'data'       => array('attribute' => $this->getAttributeForDedupe($element),
                     'value'     => "js:$('#{$id}').val()",
                 ),
-                'url'        => 'searchForDedupes',
+                'url'        => 'searchForDuplicateModels',
                 'success'    => "js:function(data, textStatus, jqXHR){
                                         var returnObj = jQuery.parseJSON(data);
                                         if (returnObj != null)
@@ -201,6 +210,41 @@
                 return false;
             }
             return true;
+        }
+
+        public function searchForDuplicateModelsAndRenderResultsObject($attribute, $value, $controllerId, $moduleId)
+        {
+            assert('is_string($attribute) && $attribute != null');
+            assert('is_string($value)');
+            $callback      = $this->getCallbackToSearchForDuplicateModelsByAttribute($attribute);
+            $matchedModels = call_user_func($callback, $value, ModelsListDuplicateMergedModelForm::SELECTED_MODELS_COUNT + 1);
+            if (count($matchedModels) > 0)
+            {
+                if (count($matchedModels) > ModelsListDuplicateMergedModelForm::SELECTED_MODELS_COUNT)
+                {
+                    $message =  Zurmo::t('ZurmoModule',
+                                         'There are at least {n} possible matches.',
+                                         ModelsListDuplicateMergedModelForm::SELECTED_MODELS_COUNT
+                    );
+                }
+                else
+                {
+                    $message =  Zurmo::t('ZurmoModule',
+                                         'There is {n} possible match.|There are {n} possible matches.',
+                                         count($matchedModels)
+                    );
+                }
+                $viewClassName = $this->getDedupeViewClassName();
+                $summaryView = new $viewClassName($controllerId, $moduleId, $this->model, $matchedModels);
+                $content = $summaryView->render();
+                return json_encode(array('message' => $message, 'content' => $content));
+            }
+        }
+
+        protected function getCallbackToSearchForDuplicateModelsByAttribute($attribute)
+        {
+            $callbackMappedArray = $this->getDedupeAttributesAndSearchForDuplicateModelsCallbackMappedArray();
+            return $callbackMappedArray[$attribute];
         }
     }
 ?>
