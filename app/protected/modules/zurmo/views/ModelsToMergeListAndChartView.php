@@ -62,14 +62,10 @@
         protected function renderContent()
         {
             $leftContent = $this->renderSelectedContactsListWithCardView();
-            $leftContainer = ZurmoHtml::tag('div', array('class' => 'left-column'), $leftContent);
+            $leftContainer = ZurmoHtml::tag('div', array('class' => 'left-column clearfix'), $leftContent);
             $rightContent = $this->renderRightSideContent();
             $rightContainer = ZurmoHtml::tag('div', array('class' => 'right-column'), $rightContent);
-            $content = ZurmoHtml::tag('div', array('class' => 'full-width', 'style' => 'height:200px;border:solid 1px #cccccc'),
-                                                $leftContainer . $rightContainer);
-            return ZurmoHtml::tag('div',
-                                  array('class' => 'details-table'),
-                                  $content);
+            return ZurmoHtml::tag('div', array('class' => 'chosen-entries'), $leftContainer . $rightContainer);
         }
 
         protected function renderSelectedContactsListWithCardView()
@@ -79,12 +75,14 @@
             $preparedContent = null;
             $modelsToShow    = $this->dupeModels;
             $this->resolveMaxModelsToShow($modelsToShow);
-            foreach($modelsToShow as $dupeModel)
+            $cards = null;
+            foreach($modelsToShow as $key => $dupeModel)
             {
                 $detailsViewContent = $this->renderDetailsViewForDupeModel($dupeModel);
-                $content = ZurmoHtml::tag('div', array('class' => 'sliding-panel business-card showing-panel',
+                $display = ($key == 0) ? 'block' : 'none';
+                $cards .= ZurmoHtml::tag('div', array('class' => 'sliding-panel business-card showing-panel',
                                                         'id'   => 'dupeDetailsView-' . $dupeModel->id,
-                                                        'style' => 'display:none'),
+                                                        'style' => 'display:' . $display),
                                           $detailsViewContent);
                 $checked      = !strcmp($dupeModel->id, $this->model->id);
                 $radioElement = ZurmoHtml::radioButton('primaryModelId', $checked,
@@ -94,11 +92,13 @@
                                                              )) . strval($dupeModel);
                 $contactNameElement = ZurmoHtml::tag('li', array('class' => 'selectedDupe',
                                                                  'id' => 'selectedDupe-' . $dupeModel->id),
-                                                                $radioElement) . $content;
+                                                                $radioElement);
                 $preparedContent .= $contactNameElement;
             }
             $this->registerScripts();
-            return ZurmoHtml::tag('ul', array(), $label . $maxWarning . $preparedContent);
+            $cards = ZurmoHtml::tag('div', array('class' => 'cards'), $cards);
+            $possibleMatches = ZurmoHtml::tag('ul', array('class' => 'possible-matches'), $label . $maxWarning . $preparedContent);
+            return $possibleMatches . $cards;
         }
 
         protected function resolveMaxModelsToShow(& $models)
@@ -131,10 +131,8 @@
 
         protected function renderRightSideContent($form = null)
         {
-            $chartContent = $this->renderChart();
-            $divContent   = ZurmoHtml::tag('div', array('class' => 'spidergraph', 'style' => 'display:block'), $chartContent);
-            $spanContent  = ZurmoHtml::tag('span', array('class' => 'graphDisplay'), Zurmo::t('ZurmoModule', 'Show'));
-            return $spanContent . $divContent;
+            $content = ZurmoHtml::tag('div', array('class' => 'spidergraph'), $this->renderChart());
+            return $content;
         }
 
         protected   function renderChart()
@@ -155,7 +153,7 @@
             Yii::app()->getClientScript()->registerScript(__CLASS__ . '#' . $chartId, $scriptContent);
             $cClipWidget        = new CClipWidget();
             $cClipWidget->beginClip("Chart" . $chartId);
-            $cClipWidget->widget('application.core.widgets.AmChart', array('id' => $chartId));
+            $cClipWidget->widget('application.core.widgets.AmChart', array('id' => $chartId, 'height' => '250px'));
             $cClipWidget->endClip();
             return $cClipWidget->getController()->clips['Chart' . $chartId];
         }
@@ -292,7 +290,8 @@
                                                    array('class' => 'total-meetings'),
                                                    LatestActivitiesUtil::getCountByModelClassName
                                                        ('Meeting', array($itemId), LatestActivitiesConfigurationForm::OWNED_BY_FILTER_ALL));
-            return $notesTotalContent . $tasksTotalContent . $emailsTotalContent . $meetingsTotalContent;
+            $content = $notesTotalContent . $tasksTotalContent . $emailsTotalContent . $meetingsTotalContent;
+            return ZurmoHtml::tag('div', array('class' => 'entry-stats'), $content);
         }
     }
 ?>
