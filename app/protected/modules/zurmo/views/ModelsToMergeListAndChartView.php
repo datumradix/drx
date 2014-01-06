@@ -39,8 +39,6 @@
      */
     abstract class ModelsToMergeListAndChartView extends SecuredDetailsView
     {
-        const MAX_NUMBER_OF_MODELS_TO_SHOW = 0;
-
         protected $dupeModels;
 
         protected $colorsArray = array('#98cdff', '#12cd11');
@@ -78,7 +76,7 @@
         {
             $label           = $this->getLabelForDupes();
             $maxWarning      = $this->getMaxWarning();
-            $preparedContent = $label . $maxWarning . '<ul>';
+            $preparedContent = null;
             $modelsToShow    = $this->dupeModels;
             $this->resolveMaxModelsToShow($modelsToShow);
             foreach($modelsToShow as $dupeModel)
@@ -99,16 +97,15 @@
                                                                 $radioElement) . $content;
                 $preparedContent .= $contactNameElement;
             }
-            $preparedContent .= '</ul>';
             $this->registerScripts();
-            return $preparedContent;
+            return ZurmoHtml::tag('ul', array(), $label . $maxWarning . $preparedContent);
         }
 
         protected function resolveMaxModelsToShow(& $models)
         {
-            if (static::MAX_NUMBER_OF_MODELS_TO_SHOW > 0 && count($this->dupeModels) > static::MAX_NUMBER_OF_MODELS_TO_SHOW)
+            if (ModelsListDuplicateMergedModelForm::SELECTED_MODELS_COUNT > 0 && count($this->dupeModels) > ModelsListDuplicateMergedModelForm::SELECTED_MODELS_COUNT)
             {
-                $models = array_slice($models, 0, static::MAX_NUMBER_OF_MODELS_TO_SHOW);
+                $models = array_slice($models, 0, ModelsListDuplicateMergedModelForm::SELECTED_MODELS_COUNT);
             }
         }
 
@@ -135,7 +132,7 @@
         protected function renderRightSideContent($form = null)
         {
             $chartContent = $this->renderChart();
-            $divContent   = ZurmoHtml::tag('div', array('class' => 'spidergraph', 'style' => 'display:none'), $chartContent);
+            $divContent   = ZurmoHtml::tag('div', array('class' => 'spidergraph', 'style' => 'display:block'), $chartContent);
             $spanContent  = ZurmoHtml::tag('span', array('class' => 'graphDisplay'), Zurmo::t('ZurmoModule', 'Show'));
             return $spanContent . $divContent;
         }
@@ -221,9 +218,9 @@
 
         protected function getMaxWarning()
         {
-            if (static::MAX_NUMBER_OF_MODELS_TO_SHOW > 0 && count($this->dupeModels) > static::MAX_NUMBER_OF_MODELS_TO_SHOW)
+            if (ModelsListDuplicateMergedModelForm::SELECTED_MODELS_COUNT > 0 && count($this->dupeModels) > ModelsListDuplicateMergedModelForm::SELECTED_MODELS_COUNT)
             {
-                return Zurmo::t('ZurmoModule', 'Only showing the first {n} possible matches.', static::MAX_NUMBER_OF_MODELS_TO_SHOW);
+                return Zurmo::t('ZurmoModule', 'Only showing the first {n} possible matches.', ModelsListDuplicateMergedModelForm::SELECTED_MODELS_COUNT);
             }
         }
 
