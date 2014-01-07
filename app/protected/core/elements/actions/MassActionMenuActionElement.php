@@ -102,14 +102,17 @@
             {
                 // Begin Not Coding Standard
                 Yii::app()->clientScript->registerScript('massActionMenuActionElementEventHandler', "
-                        function massActionMenuActionElementEventHandler(elementType, gridId, baseUrl, actionId, pageVarName)
+                        function massActionMenuActionElementEventHandler(elementType, gridId, baseUrl, actionId,
+                                pageVarName, minSelected, alertMessage)
                         {
                             selectAll = '';
                             if (elementType == " . static::SELECTED_MENU_TYPE . ")
                             {
-                                if ($('#' + gridId + '-selectedIds').val() == '')
+                                var selectedIdsString = $('#' + gridId + '-selectedIds').val();
+                                var numberSelected = selectedIdsString == '' ? 0 : selectedIdsString.split(',').length;
+                                if (numberSelected < minSelected)
                                 {
-                                    alert('You must select at least one record');
+                                    alert(alertMessage);
                                     $(this).val('');
                                     return false;
                                 }
@@ -199,11 +202,13 @@
                                 }
                                 $('#" . $dropDownId . "').val('');
                                 massActionMenuActionElementEventHandler(" .
-                                        "menuType, ".
-                                        " '" . $this->gridId. "',".
-                                        " '" . Yii::app()->createUrl($this->moduleId . '/' . $this->getControllerId()) . "',".
-                                        " actionName,".
-                                        " '" . $this->getPageVarName() ."'".
+                                        "menuType, " .
+                                        " '" . $this->gridId. "'," .
+                                        " '" . Yii::app()->createUrl($this->moduleId . '/' . $this->getControllerId()) . "'," .
+                                        " actionName," .
+                                        " '" . $this->getPageVarName() . "'," .
+                                        " '" . $this->getMinimumNumberOfSelectedElements() . "'," .
+                                        " '" . $this->getAlertMessage() . "'" .
                                         ");
                             }
                         }
@@ -260,9 +265,11 @@
             return "massActionMenuActionElementEventHandler(" .
                             $menuType . ",".
                             " '" . $this->gridId. "',".
-                            " '" . Yii::app()->createUrl($this->moduleId . '/' . $this->getControllerId()) . "',".
-                            " '" . $this->getActionId(). "',".
-                            " '" . $this->getPageVarName() ."'".
+                            " '" . Yii::app()->createUrl($this->moduleId . '/' . $this->getControllerId()) . "'," .
+                            " '" . $this->getActionId(). "'," .
+                            " '" . $this->getPageVarName() . "'," .
+                            " '" . $this->getMinimumNumberOfSelectedElements() . "'," .
+                            " '" . $this->getAlertMessage() . "'" .
                             ")";
             // End Not Coding Standard
         }
@@ -327,6 +334,21 @@
         {
             return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/details',
                                                                                         array('id' => $this->modelId));
+        }
+
+        /**
+         * The minimum number of records that need to be selected to trigger the event
+         * @return int
+         */
+        protected function getMinimumNumberOfSelectedElements()
+        {
+            return 1;
+        }
+
+        protected function getAlertMessage()
+        {
+            return Zurmo::t('Core', 'At least {n} record must be selected|At least {n} records must be selected',
+                            $this->getMinimumNumberOfSelectedElements());
         }
     }
 ?>

@@ -38,21 +38,14 @@
     /**
      * Layout for the business card view for a person.
      */
-    class PersonCardViewLayout
+    class PersonCardViewLayout extends CardViewLayout
     {
-        protected $model;
-
-        public function __construct($model)
+        public function __construct($model, $haveGoToDetailsLink = false)
         {
-            assert('$model instanceof User || $model instanceof Person');
-            $this->model = $model;
-        }
-
-        public function renderContent()
-        {
-            $content  = $this->renderFrontOfCardContent();
-            $content .= $this->renderBackOfCardContent();
-            return $content;
+            assert('$model instanceof Item');
+            assert('is_bool($haveGoToDetailsLink)');
+            $this->model               = $model;
+            $this->haveGoToDetailsLink = $haveGoToDetailsLink;
         }
 
         protected function renderFrontOfCardContent()
@@ -96,7 +89,27 @@
             {
                 $spanContent = ZurmoHtml::tag('span', array('class' => 'salutation'), $element->render());
             }
-            return ZurmoHtml::tag('h2', array(), $spanContent . strval($this->model) . $starLink);
+            return ZurmoHtml::tag('h2', array(), $spanContent . strval($this->model) . $starLink . $this->renderGoToDetailsLink());
+        }
+
+        protected function renderGoToDetailsLink()
+        {
+            if ($this->haveGoToDetailsLink)
+            {
+                if (get_class($this->model) == 'User')
+                {
+                    $link = Yii::app()->createUrl('users/default/details/', array('id' => $this->model->id));
+                }
+                elseif (LeadsUtil::isStateALead($this->model->state))
+                {
+                    $link = Yii::app()->createUrl('leads/default/details/', array('id' => $this->model->id));
+                }
+                else
+                {
+                    $link = Yii::app()->createUrl('contacts/default/details/', array('id' => $this->model->id));
+                }
+                return ZurmoHtml::link(Zurmo::t('ZurmoModule', 'Go To Details'), $link, array('class' => 'simple-link', 'target' => '_blank'));
+            }
         }
 
         protected function resolveBackOfCardLinkContent()

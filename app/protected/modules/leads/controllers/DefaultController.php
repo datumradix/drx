@@ -88,7 +88,8 @@
             }
             else
             {
-                $mixedView = $this->makeActionBarSearchAndListView($searchForm, $dataProvider);
+                $mixedView = $this->makeActionBarSearchAndListView($searchForm, $dataProvider,
+                                                                    'SecuredActionBarForLeadsSearchAndListView');
                 $view = new LeadsPageView(ZurmoDefaultViewUtil::
                                          makeStandardViewForCurrentUser($this, $mixedView));
             }
@@ -475,6 +476,37 @@
         public function actionExport()
         {
             $this->export('LeadsSearchView');
+        }
+
+        /**
+         * Overriding to implement the dedupe action for new leads
+         */
+        public function actionSearchForDuplicateModels($attribute, $value)
+        {
+            assert('is_string($attribute)');
+            assert('is_string($value)');
+            $model          = new Contact();
+            $depudeRules    = DedupeRulesFactory::createRulesByModel($model);
+            $viewClassName  = $depudeRules->getDedupeViewClassName();
+            $searchResult   = $depudeRules->searchForDuplicateModels($attribute, $value);
+            if ($searchResult != null)
+            {
+                $summaryView    = new $viewClassName($this->id, $this->module->id, $model, $searchResult['matchedModels']);
+                $content        = $summaryView->render();
+                $message        = $searchResult['message'];
+                echo CJSON::encode(array('content' => $content, 'message' => $message));
+            }
+        }
+
+        /**
+         * List view merge for leads
+         */
+        public function actionListViewMerge()
+        {
+            $this->processListViewMerge('Contact',
+                                        'LeadsListDuplicateMergedModelForm',
+                                        'LeadsMerged', 'LeadsPageView',
+                                        '/leads/default/list');
         }
     }
 ?>

@@ -96,7 +96,6 @@
                                                                 )
                                                             );
             $content .= $formStart;
-            $content .= '<div class="attributesContainer">';
             if ($form != null && $this->renderRightSideFormLayoutForEdit($form) == null)
             {
                 $class = ' full-width';
@@ -105,9 +104,10 @@
             {
                 $class = '';
             }
-            $content .= ZurmoHtml::tag('div', array('class' => 'left-column' . $class), $this->renderFormLayout($form));
-            $content .= $this->renderRightSideContent($form);
-            $content .= '</div>';
+            $formContent  = $this->beforeRenderingFormLayout();
+            $formContent .= ZurmoHtml::tag('div', array('class' => 'left-column' . $class), $this->renderFormLayout($form));
+            $formContent .= $this->renderRightSideContent($form);
+            $content .= $this->renderAttributesContainerWrapperDiv($formContent);
             $content .= $this->renderAfterFormLayout($form);
             $actionElementContent = $this->renderActionElementBar(true);
             if ($actionElementContent != null)
@@ -226,8 +226,39 @@
             throw new NotImplementedException();
         }
 
+        protected function beforeRenderingFormLayout()
+        {
+            if ($dedupeRules = DedupeRulesFactory::createRulesByModel($this->model))
+            {
+                $dedupeViewClassName = $dedupeRules->getDedupeViewClassName();
+                $summaryView = new $dedupeViewClassName($this->controllerId,
+                    $this->moduleId,
+                    $this->model,
+                    array());
+                return $summaryView->render();
+            }
+            else
+            {
+                return null;
+            }
+        }
+        
         protected function resolveAndRenderActionElementMenuForEdit()
         {
+        }
+
+        protected function resolveElementDuringFormLayoutRender(& $element)
+        {
+            if ($dedupeRules = DedupeRulesFactory::createRulesByModel($this->model))
+            {
+                $dedupeRules->registerScriptForEditAndDetailsView($element);
+            }
+            parent::resolveElementDuringFormLayoutRender($element);
+        }
+
+        protected function renderAttributesContainerWrapperDiv($content)
+        {
+            return ZurmoHtml::tag('div', array('class' => 'attributesContainer'), $content);
         }
     }
 ?>

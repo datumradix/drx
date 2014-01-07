@@ -91,7 +91,7 @@
         public function actionDetails($id)
         {
             $contact = static::getModelAndCatchNotFoundAndDisplayError('Contact', intval($id));
-            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($contact);
+                                    ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($contact);
             AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($contact), 'ContactsModule'), $contact);
             if (KanbanUtil::isKanbanRequest() === false)
             {
@@ -440,6 +440,37 @@
             {
                 return Zurmo::t('ContactsModule', 'You must select a MarketingListsModuleSingularLabel',
                                                    LabelUtil::getTranslationParamsForAllModules());
+            }
+        }
+
+        /**
+         * List view merge for contacts
+         */
+        public function actionListViewMerge()
+        {
+            $this->processListViewMerge('Contact',
+                                        'ContactsListDuplicateMergedModelForm',
+                                        'ContactsMerged', 'ContactsPageView',
+                                        '/contacts/default/list');
+        }
+
+        /**
+         * Overriding to implement the dedupe action for new contacts
+         */
+        public function actionSearchForDuplicateModels($attribute, $value)
+        {
+            assert('is_string($attribute)');
+            assert('is_string($value)');
+            $model          = new Contact();
+            $depudeRules    = DedupeRulesFactory::createRulesByModel($model);
+            $viewClassName  = $depudeRules->getDedupeViewClassName();
+            $searchResult   = $depudeRules->searchForDuplicateModels($attribute, $value);
+            if ($searchResult != null)
+            {
+                $summaryView    = new $viewClassName($this->id, $this->module->id, $model, $searchResult['matchedModels']);
+                $content        = $summaryView->render();
+                $message        = $searchResult['message'];
+                echo CJSON::encode(array('content' => $content, 'message' => $message));
             }
         }
     }
