@@ -76,8 +76,7 @@
          */
         protected function getFormLayoutMetadata()
         {
-            $metadata = self::getMetadata();
-            return ContactsUtil::resolveFormLayoutMetadataForOneColumnDisplay($metadata);
+            return ListViewMergeUtil::resolveFormLayoutMetadataForOneColumnDisplay(self::getMetadata());
         }
 
         /**
@@ -130,7 +129,7 @@
         public function getTitle()
         {
             $translationParams = LabelUtil::getTranslationParamsForAllModules();
-            return Zurmo::t('LeadsModule', 'Merged LeadsModulePluralLabel', $translationParams);
+            return Zurmo::t('LeadsModule', 'Merge LeadsModulePluralLabel', $translationParams);
         }
     }
 ?>

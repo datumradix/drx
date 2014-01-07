@@ -85,11 +85,12 @@
         /**
          * Sets primary model for the merge
          * @param ModelsListDuplicateMergedModelForm $model
+         * @param array $getData data from $_GET
          */
-        public static function setPrimaryModelForListViewMerge($model)
+        public static function setPrimaryModelForListViewMerge($model, $getData)
         {
             assert('$model instanceof ModelsListDuplicateMergedModelForm');
-            $getData      = GetUtil::getData();
+            assert('is_array($getData)');
             $modelsList   = $model->selectedModels;
             if(isset($getData['primaryModelId']))
             {
@@ -108,12 +109,13 @@
         /**
          * Gets selected models for merge
          * @param string $modelClassName
+         * @param array $getData data from $_GET
          * @return array
          */
-        public static function getSelectedModelsListForMerge($modelClassName)
+        public static function getSelectedModelsListForMerge($modelClassName, $getData)
         {
             assert('is_string($modelClassName)');
-            $getData      = GetUtil::getData();
+            assert('is_array($getData)');
             $modelsList = array();
             if(isset($getData['selectedIds']) && $getData['selectedIds'] != null)
             {
@@ -130,12 +132,14 @@
         /**
          * Processes copying relations from non primary models to primary model and than deleting them
          * @param RedBeanModel $primaryModel
+         * @param array $getData data from $_GET
          */
-        public static function processCopyRelationsAndDeleteNonPrimaryModelsInMerge($primaryModel)
+        public static function processCopyRelationsAndDeleteNonPrimaryModelsInMerge($primaryModel, $getData)
         {
             assert('$primaryModel instanceof RedBeanModel');
+            assert('is_array($getData)');
             $modelClassName     = get_class($primaryModel);
-            $selectedModelsList = self::getSelectedModelsListForMerge($modelClassName);
+            $selectedModelsList = self::getSelectedModelsListForMerge($modelClassName, $getData);
             self::processAssignRelationsToMergedModelFromModelsToBeDeleted($selectedModelsList, $primaryModel);
             foreach($selectedModelsList as $selectedModel)
             {
@@ -251,6 +255,50 @@
                     }
                 }
             }
+        }
+
+        /**
+         * Resolves form layout metadata for one column display
+         * @param array $metadata
+         * @return array
+         */
+        public static function resolveFormLayoutMetadataForOneColumnDisplay($metadata)
+        {
+            $modifiedElementsData = array();
+            foreach($metadata['global']['panels'] as $panel)
+            {
+                foreach($panel['rows'] as $row)
+                {
+                    foreach($row['cells'] as $cell)
+                    {
+                        foreach($cell['elements'] as $elementData)
+                        {
+                            if($elementData['attributeName'] == 'null' && !class_exists($elementData['type'] . 'Element'))
+                            {
+                                continue;
+                            }
+                            elseif($elementData['type'] == 'TitleFullName')
+                            {
+                                $modifiedElementsData[] = array('attributeName' => 'title', 'type' => 'DropDown');
+                                $modifiedElementsData[] = array('attributeName' => 'firstName', 'type' => 'Text');
+                                $modifiedElementsData[] = array('attributeName' => 'lastName', 'type' => 'Text');
+                            }
+                            else
+                            {
+                                $modifiedElementsData[] = $elementData;
+                            }
+                        }
+                    }
+                }
+            }
+            //Prepare panels data
+            $panelsData = array();
+            foreach($modifiedElementsData as $row => $elementData)
+            {
+                $panelsData[0]['rows'][$row]['cells'][0]['elements'][0] = $elementData;
+            }
+            $metadata['global']['panels'] = $panelsData;
+            return $metadata;
         }
     }
 ?>
