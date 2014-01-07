@@ -84,7 +84,8 @@
             }
             else
             {
-                $mixedView = $this->makeActionBarSearchAndListView($searchForm, $dataProvider);
+                $mixedView = $this->makeActionBarSearchAndListView($searchForm, $dataProvider,
+                                                                    'SecuredActionBarForAccountsSearchAndListView');
                 $view = new AccountsPageView(ZurmoDefaultViewUtil::
                                          makeStandardViewForCurrentUser($this, $mixedView));
             }
@@ -368,5 +369,37 @@
                 Yii::app()->end(0, false);
             }
         }
+
+        /**
+         * Overriding to implement the dedupe action for new leads
+         */
+        public function actionSearchForDuplicateModels($attribute, $value)
+        {
+            assert('is_string($attribute)');
+            assert('is_string($value)');
+            $model          = new Account();
+            $depudeRules    = DedupeRulesFactory::createRulesByModel($model);
+            $viewClassName  = $depudeRules->getDedupeViewClassName();
+            $searchResult   = $depudeRules->searchForDuplicateModels($attribute, $value);
+            if ($searchResult != null)
+            {
+                $summaryView    = new $viewClassName($this->id, $this->module->id, $model, $searchResult['matchedModels']);
+                $content        = $summaryView->render();
+                $message        = $searchResult['message'];
+                echo CJSON::encode(array('content' => $content, 'message' => $message));
+            }
+        }
+
+        /**
+         * List view merge for accounts
+         */
+        public function actionListViewMerge()
+        {
+            $this->processListViewMerge('Account',
+                                        'AccountsListDuplicateMergedModelForm',
+                                        'AccountsMerged', 'AccountsPageView',
+                                        '/accounts/default/list');
+        }
+
     }
 ?>

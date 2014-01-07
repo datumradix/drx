@@ -459,5 +459,63 @@
                 throw new FailedToSaveModelException();
             }
         }
+
+        /**
+         * Override to implement, it should return a json object with content and message to be used by
+         * @see DedupeRules::registerScriptForEditAndDetailsView
+         * @param string $attribute The attribute used to trigger the dedupe action
+         * @param string $value The value of the attribute for the new model
+         * @throws NotImplementedException
+         */
+        public function actionSearchForDuplicateModels($attribute, $value)
+        {
+            throw new NotImplementedException();
+        }
+
+        /**
+         * Process list view merge for models
+         */
+        public function processListViewMerge($modelClassName,
+                                             $mergedModelFormClassName,
+                                             $viewPrefix,
+                                             $pageView,
+                                             $redirectUrl)
+        {
+            $getData                 = GetUtil::getData();
+            $modelsList              = ListViewMergeUtil::getSelectedModelsListForMerge($modelClassName, $getData);
+            $model                   = new $mergedModelFormClassName('listViewMerge');
+            $model->selectedModels   = $modelsList;
+            ListViewMergeUtil::setPrimaryModelForListViewMerge($model, $getData);
+            $redirectUrl             = Yii::app()->createUrl($redirectUrl);
+            if($model->validate())
+            {
+                $titleBarAndEditView = $this->makeListMergeView(
+                                            $this->attemptToSaveModelFromPost($model->primaryModel, null, $redirectUrl),
+                                            $viewPrefix, array_values($modelsList));
+                $view                = new $pageView(ZurmoDefaultViewUtil::
+                                                    makeStandardViewForCurrentUser($this, $titleBarAndEditView));
+                echo $view->render();
+            }
+            else
+            {
+                $this->redirect($redirectUrl);
+            }
+        }
+
+        /**
+         * Processing before redirecting
+         * @param RedBeanModel $model
+         */
+        protected function beforeRedirect($model)
+        {
+            assert('$model instanceof RedBeanModel');
+            $getData = GetUtil::getData();
+            if($this->getAction()->id == 'listViewMerge')
+            {
+                Yii::app()->gameHelper->muteScoringModelsOnSave();
+                ListViewMergeUtil::processCopyRelationsAndDeleteNonPrimaryModelsInMerge($model, $getData);
+                Yii::app()->gameHelper->unmuteScoringModelsOnSave();
+            }
+        }
     }
 ?>

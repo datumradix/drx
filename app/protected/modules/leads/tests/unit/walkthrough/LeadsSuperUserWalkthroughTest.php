@@ -637,5 +637,45 @@
             $this->assertFalse(strpos(serialize($leads), 'superLead6') === false);
             $this->assertEquals(3, count($leads));
         }
+
+        public function testSuperUserSearchForDuplicateModelsAction()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $this->setGetArray(array('attribute' => 'lastName',
+                                     'value'     => 'fakeValue',
+            ));
+            $this->runControllerWithNoExceptionsAndGetContent('leads/default/searchForDuplicateModels', true);
+
+            $lead = LeadTestHelper::createLeadbyNameForOwner('test', $super);
+
+            //Test search by lastName
+            $this->setGetArray(array('attribute' => 'lastName',
+                                     'value'     => 'testson',
+            ));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/searchForDuplicateModels');
+            $object = json_decode($content);
+            $this->assertEquals  ('There is 1 possible match. <span class="underline">Click here</span> to view.', $object->message);
+            $this->assertContains('CreateModelsToMergeListAndChartView',       $object->content);
+            //Test search by phone
+            $lead->mobilePhone = '123456789';
+            $this->assertTrue($lead->save());
+            $this->setGetArray(array('attribute' => 'officePhone',
+                                     'value'     => '123456789',
+            ));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/searchForDuplicateModels');
+            $object = json_decode($content);
+            $this->assertEquals  ('There is 1 possible match. <span class="underline">Click here</span> to view.', $object->message);
+            $this->assertContains('CreateModelsToMergeListAndChartView',       $object->content);
+            //Test search by email
+            $lead->secondaryEmail->emailAddress = 'a@a.a';
+            $this->assertTrue($lead->save());
+            $this->setGetArray(array('attribute' => 'primaryEmail',
+                                     'value'     => 'a@a.a',
+            ));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/searchForDuplicateModels');
+            $object = json_decode($content);
+            $this->assertEquals  ('There is 1 possible match. <span class="underline">Click here</span> to view.', $object->message);
+            $this->assertContains('CreateModelsToMergeListAndChartView',       $object->content);
+        }
     }
 ?>
