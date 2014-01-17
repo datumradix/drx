@@ -1,0 +1,1872 @@
+<!DOCTYPE html><!--[if IE 8]>
+<html class="zurmo ie8" lang="en"><![endif]--><!--[if gt IE 8]><!-->
+<html class="zurmo" lang="en"><!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<link rel="shortcut icon" href="../app/themes/default/ico/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="../app/themes/default/css/zurmo-sunrise.css"/>
+	<link rel="stylesheet" type="text/css" href="detail-edit-view.css"/>
+	<title>ZurmoCRM - ORG View</title></head>
+<body class="sunrise">
+<div id="AccountsPageView" class="ZurmoDefaultPageView ZurmoPageView PageView">
+<div id="ZurmoDefaultView">
+<div class="GridView">
+<div id="HeaderView"><!-- Start of themes/default/templates/HeaderView.xhtml -->
+	<div id="MainLogo" class="zurmo-logo"></div>
+	<div class="GridView">
+		<div id="HeaderLinksView">
+			<div class="clearfix">
+				<a href="#" id="nav-trigger" title="Toggle Navigation">&rsaquo;</a>
+				<div id="corp-logo">
+					<a href="/Zurmo/app/index.php/home/default">
+						<img src="/Zurmo/app/themes/default/images/Zurmo_logo.png" alt="Zurmo Logo" height="32" width="107"/>
+					</a>
+					<span>Demo Company Inc.</span></div>
+				<div id="user-toolbar" class="clearfix">
+					<div id="header-game-dashboard-link-wrapper" class="user-menu-item">
+						<a id="header-game-dashboard-link" href="#">∂</a>
+					</div>
+					<ul id="user-header-menu" class="user-menu-item nav">
+						<li class="parent last">
+							<a href="javascript:void(0);"><span>super</span></a>
+							<ul>
+								<li>
+									<a href="/Zurmo/app/index.php/users/default/profile"><span>My Profile</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/gamification/default/leaderboard">
+										<span>Leaderboard</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/emailMessages/default/matchingList">
+										<span>Data Cleanup</span></a>
+								</li>
+								<li class="last">
+									<a href="/Zurmo/app/index.php/zurmo/default/logout"><span>Sign out</span></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<ul id="settings-header-menu" class="user-menu-item nav">
+						<li class="parent last">
+							<a href="javascript:void(0);"><span>Administration</span></a>
+							<ul>
+								<li>
+									<a href="/Zurmo/app/index.php/configuration"><span>Administration</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/designer/default"><span>Designer</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/import/default"><span>Import</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/users/default"><span>Users</span></a>
+								</li>
+								<li>
+									<a href="http://www.zurmo.com/needSupport.php"><span>Need Support?</span></a>
+								</li>
+								<li class="last">
+									<a href="/Zurmo/app/index.php/zurmo/default/about"><span>About Zurmo</span></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="GridView">
+			<div id="GlobalSearchAndShortcutsCreateMenuView">
+				<div id="app-search" class="clearfix">
+					<select class="ignore-style" id="globalSearchScope" multiple="multiple" style="display:none;" size="4" name="globalSearchScope[]">
+						<option value="All" selected="selected">All</option>
+						<option value="accounts">Accounts</option>
+						<option value="contacts">Contacts</option>
+						<option value="leads">Leads</option>
+						<option value="opportunities">Opportunities</option>
+					</select><input class="global-search global-search-hint" onfocus="$(this).removeClass(&quot;global-search-hint&quot;); $(this).val(&quot;&quot;);" onblur="$(this).val(&quot;&quot;)" id="globalSearchInput" type="text" value="Search by name, phone, or e-mail" name="globalSearchInput"/><span class="z-spinner"></span>
+				</div>
+				<ul id="ShortcutsMenu" class="nav">
+					<li class="parent last">
+						<a href="javascript:void(0);"><span>Create</span></a>
+						<ul>
+							<li>
+								<a href="/Zurmo/app/index.php/accounts/default/create"><span>Account</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/contacts/default/create"><span>Contact</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/conversations/default/create"><span>Conversation</span>
+								</a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/leads/default/create"><span>Lead</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/missions/default/create"><span>Mission</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/opportunities/default/create"><span>Opportunity</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/reports/default/selectType"><span>Report</span></a>
+							</li>
+							<li class="last">
+								<a href="#" id="yt0"><span>Task</span></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- End of themes/default/templates/HeaderView.xhtml --></div>
+<div class="AppContainer clearfix GridView">
+<div class="AppNavigation clearfix GridView">
+	<div id="MenuView">
+		<ul class="nav">
+			<li id="home">
+				<a href="/Zurmo/app/index.php/home/default"><span></span><em></em><span>Home</span></a>
+			</li>
+			<li id="mashableInbox">
+				<a href="/Zurmo/app/index.php/mashableInbox/default">
+					<span></span><em></em><span>Inbox<span class="unread-inbox-count">7</span></span></a>
+			</li>
+			<li id="accounts" class="active">
+				<a href="/Zurmo/app/index.php/accounts/default"><span></span><em></em><span>Accounts</span></a>
+			</li>
+			<li id="leads">
+				<a href="/Zurmo/app/index.php/leads/default"><span></span><em></em><span>Leads</span></a>
+			</li>
+			<li id="contacts">
+				<a href="/Zurmo/app/index.php/contacts/default"><span></span><em></em><span>Contacts</span></a>
+			</li>
+			<li id="opportunities">
+				<a href="/Zurmo/app/index.php/opportunities/default"><span></span><em></em><span>Opportunities</span>
+				</a>
+			</li>
+			<li id="marketing" class="hidden-nav-item">
+				<a href="/Zurmo/app/index.php/marketing/default/dashboardDetails">
+					<span></span><em></em><span>Marketing</span></a>
+			</li>
+			<li id="projects" class="hidden-nav-item">
+				<a href="/Zurmo/app/index.php/projects/default/dashboardDetails">
+					<span></span><em></em><span>Projects</span></a>
+			</li>
+			<li id="products" class="hidden-nav-item">
+				<a href="/Zurmo/app/index.php/products/default"><span></span><em></em><span>Products</span></a>
+			</li>
+			<li id="reports" class="hidden-nav-item last">
+				<a href="/Zurmo/app/index.php/reports/default"><span></span><em></em><span>Reports</span></a>
+			</li>
+		</ul>
+		<a class="toggle-hidden-nav-items"></a>
+	</div>
+	<div id="RecentlyViewedView"><h3>Recently Viewed</h3>
+		<ul class="nav">
+			<li class="type-AccountsModule">
+				<a href="/Zurmo/app/index.php/accounts/default/details?id=4">
+					<span></span><em></em><span>Big Kahuna Burger</span></a>
+			</li>
+			<li class="type-WorkflowsModule">
+				<a href="/Zurmo/app/index.php/workflows/default/details?id=1"><span></span><em></em><span>name</span>
+				</a>
+			</li>
+			<li class="type-MarketingListsModule">
+				<a href="/Zurmo/app/index.php/marketingLists/default/details?id=3">
+					<span></span><em></em><span>Clients</span></a>
+			</li>
+			<li class="type-ContactsModule">
+				<a href="/Zurmo/app/index.php/contacts/default/details?id=10">
+					<span></span><em></em><span>Walter Allen</span></a>
+			</li>
+			<li class="type-LeadsModule">
+				<a href="/Zurmo/app/index.php/leads/default/details?id=15">
+					<span></span><em></em><span>Ester Garcia</span></a>
+			</li>
+			<li class="type-CampaignsModule">
+				<a href="/Zurmo/app/index.php/campaigns/default/details?id=7">
+					<span></span><em></em><span>Loyalty Member - Enroll Now</span></a>
+			</li>
+			<li class="type-CampaignsModule">
+				<a href="/Zurmo/app/index.php/campaigns/default/details?id=3">
+					<span></span><em></em><span>Infrastructure redesign completed</span></a>
+			</li>
+			<li class="type-CampaignsModule">
+				<a href="/Zurmo/app/index.php/campaigns/default/details?id=2">
+					<span></span><em></em><span>5% discount for existing clients</span></a>
+			</li>
+			<li class="type-CampaignsModule">
+				<a href="/Zurmo/app/index.php/campaigns/default/details?id=1">
+					<span></span><em></em><span>10% discount for new clients</span></a>
+			</li>
+			<li class="type-AccountsModule last">
+				<a href="/Zurmo/app/index.php/accounts/default/details?id=1"><span></span><em></em><span>Virtucon</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="AppContent GridView">
+<div id="StickyDetailsAndRelationsBreadCrumbView" class="BreadCrumbView">
+	<div class="breadcrumbs">
+		<a href="/Zurmo/app/index.php/accounts/default/index">Accounts</a>
+		&#47; <span>Big Kahuna Burger</span></div>
+</div>
+<div id="AccountDetailsAndRelationsView" class="ConfigurableDetailsAndRelationsView DetailsAndRelationsView ConfigurableMetadataView MetadataView">
+<div class="view-toolbar-container widgets-lock clearfix ">
+	<nav class="pillbox clearfix">
+		<div class="default-button">
+			<a title="View as Kanban Board" href="/Zurmo/app/index.php/accounts/default/details?id=4&amp;kanbanBoard=1">
+				<i class="icon-kanban-board-view-type"><span>Kanban</span></i></a>
+		</div>
+		<div class="default-button active">
+			<a title="View as Details" href="/Zurmo/app/index.php/accounts/default/details?id=4&amp;kanbanBoard=">
+				<i class="icon-grid-view-type active"><span>Details</span></i></a>
+		</div>
+		<div class="default-button">
+			<a id="AddPortletLink" href="#"><i class="icon-add"></i><span class="button-label">Add Portlet</span></a>
+		</div>
+		<nav class="default-button">
+			<a title="Lock and prevent layout changes to this screen" href="/Zurmo/app/index.php/accounts/default/details?id=4&amp;lockPortlets=1">
+				<i class="icon-unlock"><!--Lock--></i></a>
+		</nav>
+	</nav>
+</div>
+<div class="ModelRelationsSecuredPortletFrameView SecuredPortletFrameView PortletFrameView MetadataView">
+
+
+<style>
+	#d3-dialog{
+		z-index: 999999999999;
+		display: none;
+		background-color: #F5F5F5;
+		background-repeat: no-repeat;
+		background-image: -webkit-gradient(linear,0 0,0 100%,from(#FFF),color-stop(80%,#F5F5F5),to(#F5F5F5));
+		background-image: -webkit-linear-gradient(#FFF,#F5F5F5 80%,#F5F5F5);
+		background-image: -ms-linear-gradient(#ffffff,#f5f5f5 80%,#f5f5f5);
+		background-image: -o-linear-gradient(#ffffff,#f5f5f5 80%,#f5f5f5);
+		background-image: -moz-linear-gradient(#ffffff,#f5f5f5 80%,#f5f5f5);
+		background-image: linear-gradient(#FFF,#F5F5F5 80%,#F5F5F5);
+	}
+	#d3{
+		height: 500px;
+		margin-top: 35px;
+	}
+	#tree-container{
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: relative;
+	}
+	#tree-container > svg{
+		display: block;
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.node {
+		cursor: pointer;
+	}
+	.overlay{
+		background-color:transparent;
+	}
+	.node circle {
+		fill: #fff;
+		stroke: steelblue;
+		stroke-width: 1.5px;
+	}
+	.node text {
+		font-size:10px;
+		font-family:sans-serif;
+	}
+	.link {
+		fill: none;
+		stroke: #ccc;
+		stroke-width: 1.5px;
+	}
+	.templink {
+		fill: none;
+		stroke: red;
+		stroke-width: 3px;
+	}
+	.ghostCircle.show{
+		display:block;
+	}
+	.ghostCircle, .activeDrag .ghostCircle{
+		display: none;
+	}
+
+	.pencil{
+		visibility: visible;
+		opacity:.5;
+	}
+	.pencil:hover{
+		opacity:1;
+	}
+	.button-column.open{
+		padding-top: 36px;
+	}
+	.relationship-chooser{
+		padding: 10px 0 0 0;
+		display: none;
+	}
+	.relationship-chooser > div{
+		width: 47%;
+		float: left;
+		clear: none;
+	}
+	.relationship-chooser > strong{
+		width: 6%;
+		line-height: 26px;
+		float: left;
+		display:block;
+		text-align: center;
+	}
+</style>
+
+
+
+
+
+<div id="d3-dialog" class="ui-dialog ui-widget ui-widget-content ui-corner-all task-dialog ui-draggable ui-resizable openingModal" tabindex="-1" role="dialog" aria-labelledby="ui-id-2"
+	style="outline: 0px; z-index: 1002; position: absolute; min-height: 100px; height: auto; top: 0;
+	left: 0">
+
+	<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+		<span id="ui-id-2" class="ui-dialog-title">Org Graph</span>
+		<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">
+			<span class="ui-icon ui-icon-closethick">close</span></a>
+	</div>
+	<div id="modalContainer" class="ui-dialog-content ui-widget-content" scrolltop="0" scrollleft="0" style="width: auto; min-height: 50px; height: auto;">
+		<link rel="stylesheet" type="text/css" href="/Zurmo/app/assets/442bdb27/jquery-ui-timepicker-addon.css">
+		<div id="ModalView">
+			<div id="TaskModalDetailsView" class="SecuredDetailsView DetailsView ModelView ConfigurableMetadataView MetadataView">
+				<div class="view-toolbar-container toolbar-mbmenu clearfix">
+					<div class="view-toolbar">
+						<ul class="task-modal-details-options-menu nav">
+							<li class="parent last">
+								<a href="javascript:void(0);"><span>Options</span></a>
+								<ul>
+									<li id="TaskModalEditFromModalDetailsLinkActionElement">
+										<a id="TaskModalEditFromModalDetailsLinkActionElement-42-yt0" href="#">
+											<span>Edit</span></a>
+									</li>
+									<li id="TaskModalCloneFromModalDetailsLinkActionElement">
+										<a id="TaskModalCloneFromModalDetailsLinkActionElement-42-yt1" href="#">
+											<span>Clone</span></a>
+									</li>
+									<li id="TaskAuditEventsModalListLinkActionElement">
+										<a id="TaskAuditEventsModalListLinkActionElement-42-yt2" href="#">
+											<span>Audit Trail</span></a>
+									</li>
+									<li class="last">
+										<a id="TaskDeleteLinkActionElement-42-yt3" href="#"><span>Delete</span></a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="details-table clearfix">
+					<div class="left-column full-width">
+						<div id="d3">
+							<div id="tree-container"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<script>
+	$(document).ready(function(){
+		$('.pencil').click(function(){
+			$(this).parent().parent().find('.relationship-chooser').slideToggle(250);
+			$(this).parent().toggleClass('open');
+			return false;
+		});
+		$('.ui-dialog-titlebar-close').click(function(){
+			$(this).parent().parent().hide();
+			return false;
+		});
+		$('#graph-btn').click(function(){
+			$('#d3-dialog').fadeIn();
+			return false;
+		});
+	});
+</script>
+
+<div class="juiportlet-columns">
+<ul class="juiportlet-columns-AccountDetailsAndRelationsView juiportlet-widget-column1 juiportlet-column juiportlet-column-split-left-75">
+
+	<li class="juiportlet-widget ContactsForAccountRelatedListView type-contacts" id="AccountDetailsAndRelationsView_14">
+		<div class="juiportlet-widget-head">
+			<h3>Parent/child Relationships</h3>
+			<ul class="options-menu edit-portlet-menu nav">
+				<li class="parent last">
+					<a href="javascript:void(0);"><span></span></a>
+					<ul>
+						<li class="last">
+							<a class="remove-portlet" href="#"><span>Remove Portlet</span></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="view-toolbar-container clearfix">
+				<div class="portlet-toolbar">
+					<a id="graph-btn" class="portlet-create-button" href="/Zurmo/app/index.php/contacts/default/createFromRelation?relationAttributeName=account&amp;relationModelId=4&amp;relationModuleId=accounts&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4%26lockPortlets%3D">
+						<span class="z-label">Launch Graph</span></a>
+				</div>
+			</div>
+		</div>
+		<div class="juiportlet-widget-content">
+			<div class="ContactsForAccountRelatedListView ContactsRelatedListView SecuredRelatedListView RelatedListView ListView ModelView ConfigurableMetadataView MetadataView">
+				<div class="cgrid-view type-contacts" id="list-viewAccountDetailsAndRelationsView_14">
+
+					<table class="items stacked-list">
+						<tbody>
+						<tr class="odd">
+							<td>
+								<div><a href="/Zurmo/app/index.php/contacts/default/details?id=1">Lisa Davis</a></div>
+
+								<div class="relationship-chooser">
+									<div class="hasDropDown">
+										<span class="select-arrow"></span>
+										<select name="Account[industry][value]" id="Account_industry_value">
+											<option value="">(None)</option>
+											<option value="Automotive">Parent</option>
+											<option value="Banking">Child</option>
+										</select>
+									</div>
+									<strong>Of</strong>
+									<div class="has-model-select">
+										<input onblur="clearIdFromAutoCompleteField($(this).val(), 'Account_owner_id');"
+											id="Account_owner_name" type="text" value="Super User" name="Account_owner_name"
+											class="ui-autocomplete-input" autocomplete="off">
+											<span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+										<a id="Account_owner_SelectLink" href="#">
+											<span class="model-select-icon"></span><span class="z-spinner"></span>
+										</a>
+									</div>
+								</div>
+							</td>
+							<td class="button-column"><a class="pencil" title="Update" href="/Zurmo/app/index.php/accounts/default/edit?id=4">!</a></td>
+						</tr>
+						<tr class="even">
+							<td>
+								<div>
+									<a href="/Zurmo/app/index.php/contacts/default/details?id=3">— Alice Lewis</a>
+								</div>
+								<div class="relationship-chooser">
+									<div class="hasDropDown">
+										<span class="select-arrow"></span>
+										<select name="Account[industry][value]" id="Account_industry_value">
+											<option value="">(None)</option>
+											<option value="Automotive">Parent</option>
+											<option value="Banking">Child</option>
+										</select>
+									</div>
+									<strong>Of</strong>
+									<div class="has-model-select">
+										<input onblur="clearIdFromAutoCompleteField($(this).val(), 'Account_owner_id');"
+											id="Account_owner_name" type="text" value="Super User" name="Account_owner_name"
+											class="ui-autocomplete-input" autocomplete="off">
+										<span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+										<a id="Account_owner_SelectLink" href="#">
+											<span class="model-select-icon"></span><span class="z-spinner"></span>
+										</a>
+									</div>
+								</div>
+							</td>
+							<td class="button-column"><a class="pencil" title="Update" href="/Zurmo/app/index.php/accounts/default/edit?id=4">!</a></td>
+						</tr>
+						<tr class="odd">
+							<td>
+								<div><a href="/Zurmo/app/index.php/contacts/default/details?id=1">— — Some Other Davis</a></div>
+								<div class="relationship-chooser">
+									<div class="hasDropDown">
+										<span class="select-arrow"></span>
+										<select name="Account[industry][value]" id="Account_industry_value">
+											<option value="">(None)</option>
+											<option value="Automotive">Parent</option>
+											<option value="Banking">Child</option>
+										</select>
+									</div>
+									<strong>Of</strong>
+									<div class="has-model-select">
+										<input onblur="clearIdFromAutoCompleteField($(this).val(), 'Account_owner_id');"
+											id="Account_owner_name" type="text" value="Super User" name="Account_owner_name"
+											class="ui-autocomplete-input" autocomplete="off">
+										<span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+										<a id="Account_owner_SelectLink" href="#">
+											<span class="model-select-icon"></span><span class="z-spinner"></span>
+										</a>
+									</div>
+								</div>
+							</td>
+							<td class="button-column"><a class="pencil" title="Update" href="/Zurmo/app/index.php/accounts/default/edit?id=4">!</a></td>
+						</tr>
+						<tr class="odd">
+							<td>
+								<div><a href="/Zurmo/app/index.php/contacts/default/details?id=1">Lisa Other Surname</a></div>
+								<div class="relationship-chooser">
+									<div class="hasDropDown">
+										<span class="select-arrow"></span>
+										<select name="Account[industry][value]" id="Account_industry_value">
+											<option value="">(None)</option>
+											<option value="Automotive">Parent</option>
+											<option value="Banking">Child</option>
+										</select>
+									</div>
+									<strong>Of</strong>
+									<div class="has-model-select">
+										<input onblur="clearIdFromAutoCompleteField($(this).val(), 'Account_owner_id');"
+											id="Account_owner_name" type="text" value="Super User" name="Account_owner_name"
+											class="ui-autocomplete-input" autocomplete="off">
+										<span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+										<a id="Account_owner_SelectLink" href="#">
+											<span class="model-select-icon"></span><span class="z-spinner"></span>
+										</a>
+									</div>
+								</div>
+							</td>
+							<td class="button-column"><a class="pencil" title="Update" href="/Zurmo/app/index.php/accounts/default/edit?id=4">!</a></td>
+						</tr>
+						<tr class="odd">
+							<td>
+								<div><a href="/Zurmo/app/index.php/contacts/default/details?id=1">— David Davis</a></div>
+								<div class="relationship-chooser">
+									<div class="hasDropDown">
+										<span class="select-arrow"></span>
+										<select name="Account[industry][value]" id="Account_industry_value">
+											<option value="">(None)</option>
+											<option value="Automotive">Parent</option>
+											<option value="Banking">Child</option>
+										</select>
+									</div>
+									<strong>Of</strong>
+									<div class="has-model-select">
+										<input onblur="clearIdFromAutoCompleteField($(this).val(), 'Account_owner_id');"
+											id="Account_owner_name" type="text" value="Super User" name="Account_owner_name"
+											class="ui-autocomplete-input" autocomplete="off">
+										<span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+										<a id="Account_owner_SelectLink" href="#">
+											<span class="model-select-icon"></span><span class="z-spinner"></span>
+										</a>
+									</div>
+								</div>
+							</td>
+							<td class="button-column"><a class="pencil" title="Update" href="/Zurmo/app/index.php/accounts/default/edit?id=4">!</a></td>
+						</tr>
+						</tbody>
+					</table>
+					<div class="pager horizontal">
+						<ul id="yw1" class="yiiPager">
+							<li class="refresh hidden">
+								<a href="/Zurmo/app/index.php/accounts/defaultPortlet/details?id=4&amp;lockPortlets=&amp;portletId=14&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4%26lockPortlets%3D">refresh</a>
+							</li>
+						</ul>
+					</div>
+					<div class="list-preloader"><span class="z-spinner"></span></div>
+					<div class="keys" style="display:none" title="/Zurmo/app/index.php/accounts/default/details?id=4&amp;lockPortlets=">
+						<span>1</span><span>3</span></div>
+				</div>
+			</div>
+		</div>
+	</li>
+
+
+	<script type="text/javascript">
+	// Get JSON data
+	treeJSON = d3.json("flare.json", function(error, treeData) {
+
+		// Calculate total nodes, max label length
+		var totalNodes = 0;
+		var maxLabelLength = 0;
+		// variables for drag/drop
+		var selectedNode = null;
+		var draggingNode = null;
+		// panning variables
+		var panSpeed = 200;
+		var panBoundary = 20; // Within 20px from edges will pan when dragging.
+		// Misc. variables
+		var i = 0;
+		var duration = 750;
+		var root;
+
+		// size of the diagram
+		var viewerWidth  = $("#tree-container").width();
+		var viewerHeight = $("#tree-container").height();
+
+		var tree = d3.layout.tree()
+			.size([viewerHeight, viewerWidth]);
+
+		// define a d3 diagonal projection for use by the node paths later on.
+		var diagonal = d3.svg.diagonal()
+			.projection(function(d) {
+				return [d.y, d.x];
+			});
+
+		// A recursive helper function for performing some setup by walking through all nodes
+
+		function visit(parent, visitFn, childrenFn) {
+			if (!parent) return;
+
+			visitFn(parent);
+
+			var children = childrenFn(parent);
+			if (children) {
+				var count = children.length;
+				for (var i = 0; i < count; i++) {
+					visit(children[i], visitFn, childrenFn);
+				}
+			}
+		}
+
+		// Call visit function to establish maxLabelLength
+		visit(treeData, function(d) {
+			totalNodes++;
+			maxLabelLength = Math.max(d.name.length, maxLabelLength);
+
+		}, function(d) {
+			return d.children && d.children.length > 0 ? d.children : null;
+		});
+
+
+		// sort the tree according to the node names
+
+		function sortTree() {
+			tree.sort(function(a, b) {
+				return b.name.toLowerCase() < a.name.toLowerCase() ? 1 : -1;
+			});
+		}
+		// Sort the tree initially incase the JSON isn't in a sorted order.
+		sortTree();
+
+		// TODO: Pan function, can be better implemented.
+
+		function pan(domNode, direction) {
+			var speed = panSpeed;
+			if (panTimer) {
+				clearTimeout(panTimer);
+				translateCoords = d3.transform(svgGroup.attr("transform"));
+				if (direction == 'left' || direction == 'right') {
+					translateX = direction == 'left' ? translateCoords.translate[0] + speed : translateCoords.translate[0] - speed;
+					translateY = translateCoords.translate[1];
+				} else if (direction == 'up' || direction == 'down') {
+					translateX = translateCoords.translate[0];
+					translateY = direction == 'up' ? translateCoords.translate[1] + speed : translateCoords.translate[1] - speed;
+				}
+				scaleX = translateCoords.scale[0];
+				scaleY = translateCoords.scale[1];
+				scale = zoomListener.scale();
+				svgGroup.transition().attr("transform", "translate(" + translateX + "," + translateY + ")scale(" + scale + ")");
+				d3.select(domNode).select('g.node').attr("transform", "translate(" + translateX + "," + translateY + ")");
+				zoomListener.scale(zoomListener.scale());
+				zoomListener.translate([translateX, translateY]);
+				panTimer = setTimeout(function() {
+					pan(domNode, speed, direction);
+				}, 50);
+			}
+		}
+
+		// Define the zoom function for the zoomable tree
+
+		function zoom() {
+			svgGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+		}
+
+
+		// define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
+		var zoomListener = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", zoom);
+
+		function initiateDrag(d, domNode) {
+			draggingNode = d;
+			d3.select(domNode).select('.ghostCircle').attr('pointer-events', 'none');
+			d3.selectAll('.ghostCircle').attr('class', 'ghostCircle show');
+			d3.select(domNode).attr('class', 'node activeDrag');
+
+			svgGroup.selectAll("g.node").sort(function(a, b) { // select the parent and sort the path's
+				if (a.id != draggingNode.id) return 1; // a is not the hovered element, send "a" to the back
+				else return -1; // a is the hovered element, bring "a" to the front
+			});
+			// if nodes has children, remove the links and nodes
+			if (nodes.length > 1) {
+				// remove link paths
+				links = tree.links(nodes);
+				nodePaths = svgGroup.selectAll("path.link")
+					.data(links, function(d) {
+						return d.target.id;
+					}).remove();
+				// remove child nodes
+				nodesExit = svgGroup.selectAll("g.node")
+					.data(nodes, function(d) {
+						return d.id;
+					}).filter(function(d, i) {
+						if (d.id == draggingNode.id) {
+							return false;
+						}
+						return true;
+					}).remove();
+			}
+
+			// remove parent link
+			parentLink = tree.links(tree.nodes(draggingNode.parent));
+			svgGroup.selectAll('path.link').filter(function(d, i) {
+				if (d.target.id == draggingNode.id) {
+					return true;
+				}
+				return false;
+			}).remove();
+
+			dragStarted = null;
+		}
+
+		// define the baseSvg, attaching a class for styling and the zoomListener
+		var baseSvg = d3.select("#tree-container").append("svg")
+			.attr("width", viewerWidth)
+			.attr("height", viewerHeight)
+			.attr("class", "overlay")
+			.call(zoomListener);
+
+
+		// Define the drag listeners for drag/drop behaviour of nodes.
+		dragListener = d3.behavior.drag()
+			.on("dragstart", function(d) {
+				if (d == root) {
+					return;
+				}
+				dragStarted = true;
+				nodes = tree.nodes(d);
+				d3.event.sourceEvent.stopPropagation();
+				// it's important that we suppress the mouseover event on the node being dragged. Otherwise it will absorb the mouseover event and the underlying node will not detect it d3.select(this).attr('pointer-events', 'none');
+			})
+			.on("drag", function(d) {
+				if (d == root) {
+					return;
+				}
+				if (dragStarted) {
+					domNode = this;
+					initiateDrag(d, domNode);
+				}
+
+				// get coords of mouseEvent relative to svg container to allow for panning
+				relCoords = d3.mouse($('svg').get(0));
+				if (relCoords[0] < panBoundary) {
+					panTimer = true;
+					pan(this, 'left');
+				} else if (relCoords[0] > ($('svg').width() - panBoundary)) {
+
+					panTimer = true;
+					pan(this, 'right');
+				} else if (relCoords[1] < panBoundary) {
+					panTimer = true;
+					pan(this, 'up');
+				} else if (relCoords[1] > ($('svg').height() - panBoundary)) {
+					panTimer = true;
+					pan(this, 'down');
+				} else {
+					try {
+						clearTimeout(panTimer);
+					} catch (e) {
+
+					}
+				}
+
+				d.x0 += d3.event.dy;
+				d.y0 += d3.event.dx;
+				var node = d3.select(this);
+				node.attr("transform", "translate(" + d.y0 + "," + d.x0 + ")");
+				updateTempConnector();
+			}).on("dragend", function(d) {
+				if (d == root) {
+					return;
+				}
+				domNode = this;
+				if (selectedNode) {
+					// now remove the element from the parent, and insert it into the new elements children
+					var index = draggingNode.parent.children.indexOf(draggingNode);
+					if (index > -1) {
+						draggingNode.parent.children.splice(index, 1);
+					}
+					if (typeof selectedNode.children !== 'undefined' || typeof selectedNode._children !== 'undefined') {
+						if (typeof selectedNode.children !== 'undefined') {
+							selectedNode.children.push(draggingNode);
+						} else {
+							selectedNode._children.push(draggingNode);
+						}
+					} else {
+						selectedNode.children = [];
+						selectedNode.children.push(draggingNode);
+					}
+					// Make sure that the node being added to is expanded so user can see added node is correctly moved
+					expand(selectedNode);
+					sortTree();
+					endDrag();
+				} else {
+					endDrag();
+				}
+			});
+
+		function endDrag() {
+			selectedNode = null;
+			d3.selectAll('.ghostCircle').attr('class', 'ghostCircle');
+			d3.select(domNode).attr('class', 'node');
+			// now restore the mouseover event or we won't be able to drag a 2nd time
+			d3.select(domNode).select('.ghostCircle').attr('pointer-events', '');
+			updateTempConnector();
+			if (draggingNode !== null) {
+				update(root);
+				centerNode(draggingNode);
+				draggingNode = null;
+			}
+		}
+
+		// Helper functions for collapsing and expanding nodes.
+
+		function collapse(d) {
+			if (d.children) {
+				d._children = d.children;
+				d._children.forEach(collapse);
+				d.children = null;
+			}
+		}
+
+		function expand(d) {
+			if (d._children) {
+				d.children = d._children;
+				d.children.forEach(expand);
+				d._children = null;
+			}
+		}
+
+		var overCircle = function(d) {
+			selectedNode = d;
+			updateTempConnector();
+		};
+		var outCircle = function(d) {
+			selectedNode = null;
+			updateTempConnector();
+		};
+
+		// Function to update the temporary connector indicating dragging affiliation
+		var updateTempConnector = function() {
+			var data = [];
+			if (draggingNode !== null && selectedNode !== null) {
+				// have to flip the source coordinates since we did this for the existing connectors on the original tree
+				data = [{
+					source: {
+						x: selectedNode.y0,
+						y: selectedNode.x0
+					},
+					target: {
+						x: draggingNode.y0,
+						y: draggingNode.x0
+					}
+				}];
+			}
+			var link = svgGroup.selectAll(".templink").data(data);
+
+			link.enter().append("path")
+				.attr("class", "templink")
+				.attr("d", d3.svg.diagonal())
+				.attr('pointer-events', 'none');
+
+			link.attr("d", d3.svg.diagonal());
+
+			link.exit().remove();
+		};
+
+		// Function to center node when clicked/dropped so node doesn't get lost when collapsing/moving with large amount of children.
+
+		function centerNode(source) {
+			scale = zoomListener.scale();
+			x = -source.y0;
+			y = -source.x0;
+			x = x * scale + viewerWidth / 2;
+			y = y * scale + viewerHeight / 2;
+			d3.select('g').transition()
+				.duration(duration)
+				.attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
+			zoomListener.scale(scale);
+			zoomListener.translate([x, y]);
+		}
+
+		// Toggle children function
+
+		function toggleChildren(d) {
+			if (d.children) {
+				d._children = d.children;
+				d.children = null;
+			} else if (d._children) {
+				d.children = d._children;
+				d._children = null;
+			}
+			return d;
+		}
+
+		// Toggle children on click.
+
+		function click(d) {
+			if (d3.event.defaultPrevented) return; // click suppressed
+			d = toggleChildren(d);
+			update(d);
+			centerNode(d);
+		}
+
+		function update(source) {
+			// Compute the new height, function counts total children of root node and sets tree height accordingly.
+			// This prevents the layout looking squashed when new nodes are made visible or looking sparse when nodes are removed
+			// This makes the layout more consistent.
+			var levelWidth = [1];
+			var childCount = function(level, n) {
+
+				if (n.children && n.children.length > 0) {
+					if (levelWidth.length <= level + 1) levelWidth.push(0);
+
+					levelWidth[level + 1] += n.children.length;
+					n.children.forEach(function(d) {
+						childCount(level + 1, d);
+					});
+				}
+			};
+			childCount(0, root);
+			var newHeight = d3.max(levelWidth) * 25; // 25 pixels per line
+			tree = tree.size([newHeight, viewerWidth]);
+
+			// Compute the new tree layout.
+			var nodes = tree.nodes(root).reverse(),
+				links = tree.links(nodes);
+
+			// Set widths between levels based on maxLabelLength.
+			nodes.forEach(function(d) {
+				d.y = (d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
+				// alternatively to keep a fixed scale one can set a fixed depth per level
+				// Normalize for fixed-depth by commenting out below line
+				// d.y = (d.depth * 500); //500px per level.
+			});
+
+			// Update the nodes…
+			node = svgGroup.selectAll("g.node")
+				.data(nodes, function(d) {
+					return d.id || (d.id = ++i);
+				});
+
+			// Enter any new nodes at the parent's previous position.
+			var nodeEnter = node.enter().append("g")
+				.call(dragListener)
+				.attr("class", "node")
+				.attr("transform", function(d) {
+					return "translate(" + source.y0 + "," + source.x0 + ")";
+				})
+				.on('click', click);
+
+			nodeEnter.append("circle")
+				.attr('class', 'nodeCircle')
+				.attr("r", 0)
+				.style("fill", function(d) {
+					return d._children ? "lightsteelblue" : "#fff";
+				});
+
+			nodeEnter.append("text")
+				.attr("x", function(d) {
+					return d.children || d._children ? -10 : 10;
+				})
+				.attr("dy", ".35em")
+				.attr('class', 'nodeText')
+				.attr("text-anchor", function(d) {
+					return d.children || d._children ? "end" : "start";
+				})
+				.text(function(d) {
+					return d.name;
+				})
+				.style("fill-opacity", 0);
+
+			// phantom node to give us mouseover in a radius around it
+			nodeEnter.append("circle")
+				.attr('class', 'ghostCircle')
+				.attr("r", 30)
+				.attr("opacity", 0.2) // change this to zero to hide the target area
+				.style("fill", "red")
+				.attr('pointer-events', 'mouseover')
+				.on("mouseover", function(node) {
+					overCircle(node);
+				})
+				.on("mouseout", function(node) {
+					outCircle(node);
+				});
+
+			// Update the text to reflect whether node has children or not.
+			node.select('text')
+				.attr("x", function(d) {
+					return d.children || d._children ? -10 : 10;
+				})
+				.attr("text-anchor", function(d) {
+					return d.children || d._children ? "end" : "start";
+				})
+				.text(function(d) {
+					return d.name;
+				});
+
+			// Change the circle fill depending on whether it has children and is collapsed
+			node.select("circle.nodeCircle")
+				.attr("r", 4.5)
+				.style("fill", function(d) {
+					return d._children ? "lightsteelblue" : "#fff";
+				});
+
+			// Transition nodes to their new position.
+			var nodeUpdate = node.transition()
+				.duration(duration)
+				.attr("transform", function(d) {
+					return "translate(" + d.y + "," + d.x + ")";
+				});
+
+			// Fade the text in
+			nodeUpdate.select("text")
+				.style("fill-opacity", 1);
+
+			// Transition exiting nodes to the parent's new position.
+			var nodeExit = node.exit().transition()
+				.duration(duration)
+				.attr("transform", function(d) {
+					return "translate(" + source.y + "," + source.x + ")";
+				})
+				.remove();
+
+			nodeExit.select("circle")
+				.attr("r", 0);
+
+			nodeExit.select("text")
+				.style("fill-opacity", 0);
+
+			// Update the links…
+			var link = svgGroup.selectAll("path.link")
+				.data(links, function(d) {
+					return d.target.id;
+				});
+
+			// Enter any new links at the parent's previous position.
+			link.enter().insert("path", "g")
+				.attr("class", "link")
+				.attr("d", function(d) {
+					var o = {
+						x: source.x0,
+						y: source.y0
+					};
+					return diagonal({
+						source: o,
+						target: o
+					});
+				});
+
+			// Transition links to their new position.
+			link.transition()
+				.duration(duration)
+				.attr("d", diagonal);
+
+			// Transition exiting nodes to the parent's new position.
+			link.exit().transition()
+				.duration(duration)
+				.attr("d", function(d) {
+					var o = {
+						x: source.x,
+						y: source.y
+					};
+					return diagonal({
+						source: o,
+						target: o
+					});
+				})
+				.remove();
+
+			// Stash the old positions for transition.
+			nodes.forEach(function(d) {
+				d.x0 = d.x;
+				d.y0 = d.y;
+			});
+		}
+
+		// Append a group which holds all nodes and which the zoom Listener can act upon.
+		var svgGroup = baseSvg.append("g");
+
+		// Define the root
+		root = treeData;
+		root.x0 = viewerHeight / 2;
+		root.y0 = 0;
+
+		// Layout the tree initially and center on the root node.
+		update(root);
+		centerNode(root);
+	});
+	</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<li class="juiportlet-widget AccountDetailsPortletView type-accounts" id="AccountDetailsAndRelationsView_9">
+		<div class="juiportlet-widget-head">
+			<h3>Big Kahuna Burger
+				<a class="icon-star starred" id="star-Account-4" href="#">w</a>
+			</h3>
+			<div class="view-toolbar-container toolbar-mbmenu clearfix">
+				<div class="view-toolbar">
+					<ul class="options-menu nav">
+						<li class="parent last">
+							<a href="javascript:void(0);"><span>Options</span></a>
+							<ul>
+								<li id="EditLinkActionElement">
+									<a id="EditLinkActionElement-4-yt11" href="/Zurmo/app/index.php/accounts/default/edit?id=4">
+										<span>Edit</span></a>
+								</li>
+								<li id="AuditEventsModalListLinkActionElement">
+									<a id="AuditEventsModalListLinkActionElement-4-yt12" href="#">
+										<span>Audit Trail</span></a>
+								</li>
+								<li>
+									<a id="CopyLinkActionElement-4-yt13" href="/Zurmo/app/index.php/accounts/default/copy?id=4">
+										<span>Clone</span></a>
+								</li>
+								<li class="last">
+									<a id="AccountDeleteLinkActionElement-4-yt14" href="/Zurmo/app/index.php/accounts/default/delete?id=4">
+										<span>Delete</span></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="juiportlet-widget-content">
+			<div id="AccountDetailsPortletView" class="AccountEditAndDetailsView SecuredEditAndDetailsView EditAndDetailsView DetailsView ModelView ConfigurableMetadataView MetadataView">
+				<div class="details-table">
+					<div class="left-column full-width">
+						<div class="panel">
+							<table class="form-fields">
+								<colgroup>
+									<col class="col-0"/>
+									<col class="col-1"/>
+								</colgroup>
+								<tbody>
+								<tr>
+									<th>Name</th>
+									<td colspan="1">Big Kahuna Burger</td>
+								</tr>
+								<tr>
+									<th>Office Phone</th>
+									<td colspan="1">766-307-8854</td>
+								</tr>
+								<tr>
+									<th>Industry</th>
+									<td colspan="1">Energy</td>
+								</tr>
+								<tr>
+									<th>Office Fax</th>
+									<td colspan="1">649-700-8614</td>
+								</tr>
+								<tr>
+									<th>Employees</th>
+									<td colspan="1">10</td>
+								</tr>
+								<tr>
+									<th>Annual Revenue</th>
+									<td colspan="1">585,000,000</td>
+								</tr>
+								<tr>
+									<th>Type</th>
+									<td colspan="1">Vendor</td>
+								</tr>
+								<tr>
+									<th>Website</th>
+									<td colspan="1">
+										<a target="blank" href="http://www.Unnamed.com">http://www.Unnamed.com</a>
+									</td>
+								</tr>
+								<tr>
+									<th>Billing Address</th>
+									<td colspan="1">
+										<a id="Account_billingAddress_MapLink" class="icon-map" href="#">3937 North Elm Blvd<br/>
+											Columbus OH,&#160;43085
+										</a>
+									</td>
+								</tr>
+								<tr>
+									<th>Shipping Address</th>
+									<td colspan="1"></td>
+								</tr>
+								<tr>
+									<th>Description</th>
+									<td colspan="1"></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<p class="after-form-details-content">Last Modified 12/29/13 2:51 PM&#160;by&#160;Super User&#160;|&#160;Created On 12/29/13 2:51 PM&#160;by&#160;Super User&#160;|&#160;Owner
+							<a href="/Zurmo/app/index.php/users/default/details?id=7">Mary Smith</a>
+							&#160;|&#160;Who can read and write Owner&#160;|&#160;Latest Activity Never
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</li>
+	<li class="juiportlet-widget AccountLatestActivitiesForPortletView type-activities" id="AccountDetailsAndRelationsView_11">
+		<div class="juiportlet-widget-head">
+			<h3>Latest Activities</h3>
+			<ul class="options-menu edit-portlet-menu nav">
+				<li class="parent last">
+					<a href="javascript:void(0);"><span></span></a>
+					<ul>
+						<li class="last">
+							<a class="remove-portlet" href="#"><span>Remove Portlet</span></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="view-toolbar-container toolbar-mbmenu clearfix">
+				<div class="view-toolbar">
+					<ul class="options-menu nav">
+						<li class="parent last">
+							<a href="javascript:void(0);"><span>Create</span></a>
+							<ul>
+								<li class="last">
+									<a id="CreateConversationFromRelatedListLinkActionElement--yt26" href="/Zurmo/app/index.php/conversations/default/createFromRelation?relationAttributeName=notUsed&amp;relationModelClassName=Account&amp;relationModelId=4&amp;relationModuleId=accounts&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4%26lockPortlets%3D">
+										<span>Conversation</span></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="juiportlet-widget-content">
+			<div id="AccountLatestActivitiesForPortletView" class="LatestActivitiesForPortletView ConfigurableMetadataView MetadataView">
+				<div class="LatestActivitiesForAccountListView LatestActivitiesListView ListView ModelView ConfigurableMetadataView MetadataView">
+					<form id="latest-activity-configuration-form" action="/Zurmo/app/index.php/accounts/default/details?id=4&amp;lockPortlets=" method="post">
+						<div style="display:none">
+							<input type="hidden" value="ae29bbad405cb68326bb171706ae8a97b2482fe5" name="YII_CSRF_TOKEN"/>
+						</div>
+						<div class="horizontal-line latest-activity-toolbar">
+							<div id="LatestActivitiesConfigurationForm_ownedByFilter_area">
+								<strong>View</strong>
+								:<input id="ytLatestActivitiesConfigurationForm_ownedByFilter" type="hidden" value="" name="LatestActivitiesConfigurationForm[ownedByFilter]"/><input id="LatestActivitiesConfigurationForm_ownedByFilter_0" value="user" type="radio" name="LatestActivitiesConfigurationForm[ownedByFilter]"/><label for="LatestActivitiesConfigurationForm_ownedByFilter_0">Mine</label><input id="LatestActivitiesConfigurationForm_ownedByFilter_1" value="all" checked="checked" type="radio" name="LatestActivitiesConfigurationForm[ownedByFilter]"/><label for="LatestActivitiesConfigurationForm_ownedByFilter_1">Everyone</label>
+							</div>
+							<div id="LatestActivitiesConfigurationForm_rollup_area">Roll Up:<span id="activities-rollup-tooltip" class="tooltip" title="Turn roll up on to see activities from related records.">?</span><input id="ytLatestActivitiesConfigurationForm_rollup" type="hidden" value="" name="LatestActivitiesConfigurationForm[rollup]"/><input id="LatestActivitiesConfigurationForm_rollup_0" value="" type="radio" name="LatestActivitiesConfigurationForm[rollup]"/><label for="LatestActivitiesConfigurationForm_rollup_0">Off</label><input id="LatestActivitiesConfigurationForm_rollup_1" value="1" checked="checked" type="radio" name="LatestActivitiesConfigurationForm[rollup]"/><label for="LatestActivitiesConfigurationForm_rollup_1">On</label>
+							</div>
+							<a id="filter-latest-activities-link" href="#">Filters</a>
+						</div>
+						<div id="filter-portlet-model-bar-AccountLatestActivitiesForPortletView" class="filter-portlet-model-bar" style="display:none">
+							<div id="LatestActivitiesConfigurationForm_filteredByModelName_area">
+								<input id="ytLatestActivitiesConfigurationForm_filteredByModelName" type="hidden" value="" name="LatestActivitiesConfigurationForm[filteredByModelName]"/><input id="LatestActivitiesConfigurationForm_filteredByModelName_0" value="all" checked="checked" type="radio" name="LatestActivitiesConfigurationForm[filteredByModelName]"/><label for="LatestActivitiesConfigurationForm_filteredByModelName_0">All Activities</label><input id="LatestActivitiesConfigurationForm_filteredByModelName_1" value="Conversation" type="radio" name="LatestActivitiesConfigurationForm[filteredByModelName]"/><label for="LatestActivitiesConfigurationForm_filteredByModelName_1">Conversations</label><input id="LatestActivitiesConfigurationForm_filteredByModelName_2" value="EmailMessage" type="radio" name="LatestActivitiesConfigurationForm[filteredByModelName]"/><label for="LatestActivitiesConfigurationForm_filteredByModelName_2">Emails</label><input id="LatestActivitiesConfigurationForm_filteredByModelName_3" value="Meeting" type="radio" name="LatestActivitiesConfigurationForm[filteredByModelName]"/><label for="LatestActivitiesConfigurationForm_filteredByModelName_3">Meetings</label><input id="LatestActivitiesConfigurationForm_filteredByModelName_4" value="Note" type="radio" name="LatestActivitiesConfigurationForm[filteredByModelName]"/><label for="LatestActivitiesConfigurationForm_filteredByModelName_4">Notes</label><input id="LatestActivitiesConfigurationForm_filteredByModelName_5" value="Task" type="radio" name="LatestActivitiesConfigurationForm[filteredByModelName]"/><label for="LatestActivitiesConfigurationForm_filteredByModelName_5">Tasks</label>
+							</div>
+						</div>
+					</form>
+					<div class="cgrid-view type-activities" id="list-viewAccountLatestActivitiesForPortletView">
+
+						<table class="items">
+							<tbody>
+							<tr class="odd">
+								<td>
+									<div class="activity-item"><em class="Meeting"></em>
+										<strong class="activity-date">January 17, 2014</strong>
+										<span><a id="DetailsLinkActionElement-16-yt15" href="/Zurmo/app/index.php/meetings/default/details?id=16&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4">Proposal review</a> </span><span class='less-pronounced-text'>owned by Mary Smith </span>
+									</div>
+								</td>
+							</tr>
+							<tr class="even">
+								<td>
+									<div class="activity-item"><em class="Meeting"></em>
+										<strong class="activity-date">January 1, 2014</strong>
+										<span><a id="DetailsLinkActionElement-13-yt17" href="/Zurmo/app/index.php/meetings/default/details?id=13&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4">Phase 2 discussion</a> </span><span class='less-pronounced-text'>owned by Mary Smith </span>
+									</div>
+								</td>
+							</tr>
+							<tr class="odd">
+								<td>
+									<div class="activity-item"><em class="Conversation"></em>
+										<strong class="activity-date">December 29, 2013</strong>
+										<span><a id="DetailsLinkActionElement-3-yt19" href="/Zurmo/app/index.php/conversations/default/details?id=3&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4">Vacation time in December</a> </span><span class='less-pronounced-text'>created by Jason Blue</span><span></span>
+									</div>
+								</td>
+							</tr>
+							<tr class="even">
+								<td>
+									<div class="activity-item"><em class="EmailMessage"></em>
+										<strong class="activity-date">December 29, 2013</strong>
+										<span class='less-pronounced-text'><span class="email-from"><strong>From:</strong> <a id="DetailsLinkActionElement-1-yt21" href="/Zurmo/app/index.php/users/default/details?id=1">Super User</a></span> <span class="email-to"><strong>To:</strong> <a id="DetailsLinkActionElement-3-yt22" href="/Zurmo/app/index.php/contacts/default/details?id=3">Alice Lewis</a></span> </span><br/><span><a id="DetailsLinkActionElement-34-yt20" href="/Zurmo/app/index.php/emailMessages/default/details?id=34&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4">Jingle Bells and Special Christmas Offer</a></span><span></span>
+									</div>
+								</td>
+							</tr>
+							<tr class="odd">
+								<td>
+									<div class="activity-item"><em class="EmailMessage"></em>
+										<strong class="activity-date">December 29, 2013</strong>
+										<span class='less-pronounced-text'><span class="email-from"><strong>From:</strong> <a id="DetailsLinkActionElement-1-yt24" href="/Zurmo/app/index.php/users/default/details?id=1">Super User</a></span> <span class="email-to"><strong>To:</strong> <a id="DetailsLinkActionElement-3-yt25" href="/Zurmo/app/index.php/contacts/default/details?id=3">Alice Lewis</a></span> </span><br/><span><a id="DetailsLinkActionElement-22-yt23" href="/Zurmo/app/index.php/emailMessages/default/details?id=22&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4">Jingle Bells and Special Christmas Offer</a></span><span></span>
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+						<div class="pager horizontal">
+							<ul id="yw2" class="yiiPager">
+								<li class="refresh hidden">
+									<a href="/Zurmo/app/index.php/accounts/defaultPortlet/details?id=4&amp;lockPortlets=&amp;portletId=11">refresh</a>
+								</li>
+								<li class="first hidden"><span>first</span></li>
+								<li class="previous hidden"><span>previous</span></li>
+								<li class="next">
+									<a href="/Zurmo/app/index.php/accounts/defaultPortlet/details?id=4&amp;lockPortlets=&amp;portletId=11&amp;AccountLatestActivitiesForPortletView_page=2">
+										<span>next</span></a>
+								</li>
+								<li class="last">
+									<a href="/Zurmo/app/index.php/accounts/defaultPortlet/details?id=4&amp;lockPortlets=&amp;portletId=11&amp;AccountLatestActivitiesForPortletView_page=5">
+										<span>last</span></a>
+								</li>
+							</ul>
+						</div>
+						<div class="list-preloader"><span class="z-spinner"></span></div>
+						<div class="keys" style="display:none" title="/Zurmo/app/index.php/accounts/default/details?id=4&amp;lockPortlets=">
+							<span>16</span><span>13</span><span>3</span><span>34</span><span>22</span></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</li>
+</ul>
+<ul class="juiportlet-columns-AccountDetailsAndRelationsView juiportlet-widget-column2 juiportlet-column juiportlet-column-split-right-25">
+	<li class="juiportlet-widget UpcomingMeetingsForAccountCalendarView type-meetings" id="AccountDetailsAndRelationsView_12">
+		<div class="juiportlet-widget-head">
+			<h3>Upcoming Meetings</h3>
+			<ul class="options-menu edit-portlet-menu nav">
+				<li class="parent last">
+					<a href="javascript:void(0);"><span></span></a>
+					<ul>
+						<li class="last">
+							<a class="remove-portlet" href="#"><span>Remove Portlet</span></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="view-toolbar-container clearfix">
+				<div class="portlet-toolbar">
+					<a class="portlet-create-button" href="/Zurmo/app/index.php/meetings/default/createFromRelation?relationAttributeName=Account&amp;relationModelId=4&amp;relationModuleId=accounts&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4%26lockPortlets%3D">
+						<span class="z-label">Create</span></a>
+				</div>
+			</div>
+		</div>
+		<div class="juiportlet-widget-content">
+			<div id="UpcomingMeetingsForAccountCalendarView" class="UpcomingMeetingsRelatedCalendarView UpcomingMeetingsCalendarView CalendarView ModelView ConfigurableMetadataView MetadataView">
+				<div id="calendarAccountDetailsAndRelationsView_12_container"></div>
+				<input id="calendarSelectedDateAccountDetailsAndRelationsView_12" style="display:none;" type="text" name="calendarSelectedDateAccountDetailsAndRelationsView_12"/>
+			</div>
+		</div>
+	</li>
+	<li class="juiportlet-widget OpenTasksForAccountRelatedListView type-tasks" id="AccountDetailsAndRelationsView_13">
+		<div class="juiportlet-widget-head">
+			<h3>Open Tasks</h3>
+			<ul class="options-menu edit-portlet-menu nav">
+				<li class="parent last">
+					<a href="javascript:void(0);"><span></span></a>
+					<ul>
+						<li class="last">
+							<a class="remove-portlet" href="#"><span>Remove Portlet</span></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="view-toolbar-container clearfix">
+				<div class="portlet-toolbar">
+					<a class="portlet-create-button" href="#" id="yt33"><span class="z-label">Create</span></a>
+				</div>
+			</div>
+		</div>
+		<div class="juiportlet-widget-content">
+			<div class="OpenTasksForAccountRelatedListView OpenTasksRelatedListView SecuredRelatedListView RelatedListView ListView ModelView ConfigurableMetadataView MetadataView">
+				<div class="cgrid-view type-tasks" id="list-viewAccountDetailsAndRelationsView_13">
+
+					<table class="items stacked-list">
+						<tbody>
+						<tr class="odd">
+							<td>
+								<div class="checkbox-column">
+									<label class="hasCheckBox"><input class="close-task-checkbox" onclick="closeOpenTaskByCheckBoxClick(&#039;closeTask2&#039;, &#039;2&#039;)" type="checkbox" value="1" name="closeTask2" id="closeTask2"/></label>
+								</div>
+								<div>
+									<a namespace="modalLink" class="task-kanban-detail-link" id="task-2" href="#">Follow up with renewal</a>
+								</div>
+							</td>
+							<td>
+								<div>
+									<ul class="options-menu edit-row-menu nav">
+										<li class="parent last">
+											<a href="javascript:void(0);"><span></span></a>
+											<ul>
+												<li>
+													<a class="edit-related-open-task" id="EditModalLinkActionElement-2-yt27" href="#">
+														<span>Edit</span></a>
+												</li>
+												<li>
+													<a class="copy-related-open-task" id="CopyModalLinkActionElement-2-yt28" href="#">
+														<span>Clone</span></a>
+												</li>
+												<li class="last">
+													<a id="list-viewAccountDetailsAndRelationsView_13-delete-2" class="delete-related-open-task" href="#">
+														<span>Delete</span></a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr class="even">
+							<td>
+								<div class="checkbox-column">
+									<label class="hasCheckBox"><input class="close-task-checkbox" onclick="closeOpenTaskByCheckBoxClick(&#039;closeTask17&#039;, &#039;17&#039;)" type="checkbox" value="1" name="closeTask17" id="closeTask17"/></label>
+								</div>
+								<div>
+									<a namespace="modalLink" class="task-kanban-detail-link" id="task-17" href="#">Review contract with legal</a>
+								</div>
+							</td>
+							<td>
+								<div>
+									<ul class="options-menu edit-row-menu nav">
+										<li class="parent last">
+											<a href="javascript:void(0);"><span></span></a>
+											<ul>
+												<li>
+													<a class="edit-related-open-task" id="EditModalLinkActionElement-17-yt30" href="#">
+														<span>Edit</span></a>
+												</li>
+												<li>
+													<a class="copy-related-open-task" id="CopyModalLinkActionElement-17-yt31" href="#">
+														<span>Clone</span></a>
+												</li>
+												<li class="last">
+													<a id="list-viewAccountDetailsAndRelationsView_13-delete-17" class="delete-related-open-task" href="#">
+														<span>Delete</span></a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					<div class="pager horizontal">
+						<ul id="yw3" class="yiiPager">
+							<li class="refresh hidden">
+								<a href="/Zurmo/app/index.php/accounts/defaultPortlet/details?id=4&amp;lockPortlets=&amp;portletId=13&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4%26lockPortlets%3D">refresh</a>
+							</li>
+						</ul>
+					</div>
+					<div class="list-preloader"><span class="z-spinner"></span></div>
+					<div class="keys" style="display:none" title="/Zurmo/app/index.php/accounts/default/details?id=4&amp;lockPortlets=">
+						<span>2</span><span>17</span></div>
+				</div>
+			</div>
+		</div>
+	</li>
+	<li class="juiportlet-widget NoteInlineEditForPortletView type-notes" id="AccountDetailsAndRelationsView_10">
+		<div class="juiportlet-widget-head">
+			<h3>Notes</h3>
+			<ul class="options-menu edit-portlet-menu nav">
+				<li class="parent last">
+					<a href="javascript:void(0);"><span></span></a>
+					<ul>
+						<li class="last">
+							<a class="remove-portlet" href="#"><span>Remove Portlet</span></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div class="juiportlet-widget-content">
+			<div id="NoteInlineEditForPortletView" class="InlineEditForPortletView ConfigurableMetadataView MetadataView">
+				<div class="NoteInlineEditView InlineEditView EditView DetailsView ModelView ConfigurableMetadataView MetadataView">
+					<div class="wide form">
+						<form id="inline-edit-form" action="/Zurmo/app/index.php/notes/default/inlineCreateSave?redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2FdefaultPortlet%2Fdetails%3Fid%3D4%26lockPortlets%3D%26portletId%3D10%26uniqueLayoutId%3DAccountDetailsAndRelationsView_10" method="post">
+							<div style="display:none">
+								<input type="hidden" value="ae29bbad405cb68326bb171706ae8a97b2482fe5" name="YII_CSRF_TOKEN"/>
+							</div>
+							<div class="left-column full-width">
+								<div class="panel">
+									<table class="form-fields">
+										<colgroup>
+											<col class="col-0"/>
+										</colgroup>
+										<tbody>
+										<tr>
+											<td colspan="1">
+												<textarea id="Note_description" name="Note[description]" rows="6" cols="50"></textarea>
+												<div class="errorMessage" id="Note_description_em_" style="display:none"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="1">
+												<a class="more-panels-link" id="show-more-panels-link-yt34" data-unique="yt34" data-label="Fewer Options" href="#">More Options</a>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="panel more-view-panel-yt34" style="display:none;">
+									<table class="form-fields">
+										<colgroup>
+											<col class="col-0"/>
+										</colgroup>
+										<tbody>
+										<tr>
+											<td colspan="1">
+												<div class="file-upload-box">
+													<div id="fileUploadNote">
+														<div class="fileupload-buttonbar clearfix">
+															<div class="addfileinput-button"><span>Y</span>
+																<strong class="add-label">Add Files</strong>
+																<input id="Note_files" type="file" name="Note_files"/>
+															</div>
+														</div>
+														<div class="fileupload-content">
+															<table class="files">
+																<tbody></tbody>
+															</table>
+														</div>
+													</div>
+													<script id="template-upload" type="text/x-jquery-tmpl">
+    <tr class="template-upload{{if error}} ui-state-error{{/if}}">
+        <td class="name">
+            <span class="z-spinner"></span>
+            ${name} <span class="file-size">(${sizef})</span>
+            {{if error}}
+                <span class="upload-error">${error}</span>
+            {{else}}
+                <span class="upload-actions cancel">
+                    <button class="cancel" title="Cancel"><span>Cancel</span></button>
+                </span>
+            {{/if}}
+        </td>
+    </tr>
+
+													</script>
+													<script id="template-download" type="text/x-jquery-tmpl">
+    <tr class="template-download{{if error}} ui-state-error{{/if}}">
+        {{if error}}
+            <td class="error" colspan="4">${error}</td>
+        {{else}}
+            <td class="name">
+                ${name} <span class="file-size">(${size})</span>
+                <span class="upload-actions delete">
+                    <button class="icon-delete" title="Remove" data-url="/Zurmo/app/index.php/zurmo/fileModel/delete?id=${id}"><span><!--Delete--><span></button>
+                </span>
+                <input name="filesIds[]" type="hidden" value="${id}"/>
+            </td>
+        {{/if}}
+    </tr>
+
+													</script>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="1">
+												<label for="Note_occurredOnDateTime">Occurred On</label><br/>
+
+												<div class="has-date-select">
+													<input id="Note_occurredOnDateTime" name="Note[occurredOnDateTime]" style="position:relative;z-index:10000;" type="text" value="1/17/2014 1:38 PM"/>
+												</div>
+												<div class="errorMessage" id="Note_occurredOnDateTime_em_" style="display:none"></div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label for="ActivityItemForm_Account_id">Account</label><br/><input name="ActivityItemForm[Account][id]" id="ActivityItemForm_Account_id" value="4" type="hidden"/>
+
+												<div class="has-model-select">
+													<input onblur="clearIdFromAutoCompleteField($(this).val(), &#039;ActivityItemForm_Account_id&#039;);" id="ActivityItemForm_Account_name" type="text" value="Big Kahuna Burger" name="ActivityItemForm_Account_name"/>
+													<a id="ActivityItemForm_Account_SelectLink" href="#">
+														<span class="model-select-icon"></span><span class="z-spinner"></span>
+													</a>
+												</div>
+												<div class="errorMessage" id="ActivityItemForm_Account_em_" style="display:none"></div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label for="ActivityItemForm_Contact_id">Contact or Lead</label><br/><input name="ActivityItemForm[Contact][id]" id="ActivityItemForm_Contact_id" value="" type="hidden"/>
+
+												<div class="has-model-select">
+													<input onblur="clearIdFromAutoCompleteField($(this).val(), &#039;ActivityItemForm_Contact_id&#039;);" id="ActivityItemForm_Contact_name" type="text" value="" name="ActivityItemForm_Contact_name"/>
+													<a id="ActivityItemForm_Contact_SelectLink" href="#">
+														<span class="model-select-icon"></span><span class="z-spinner"></span>
+													</a>
+												</div>
+												<div class="errorMessage" id="ActivityItemForm_Contact_em_" style="display:none"></div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label for="ActivityItemForm_Opportunity_id">Opportunity</label><br/><input name="ActivityItemForm[Opportunity][id]" id="ActivityItemForm_Opportunity_id" value="" type="hidden"/>
+
+												<div class="has-model-select">
+													<input onblur="clearIdFromAutoCompleteField($(this).val(), &#039;ActivityItemForm_Opportunity_id&#039;);" id="ActivityItemForm_Opportunity_name" type="text" value="" name="ActivityItemForm_Opportunity_name"/>
+													<a id="ActivityItemForm_Opportunity_SelectLink" href="#">
+														<span class="model-select-icon"></span><span class="z-spinner"></span>
+													</a>
+												</div>
+												<div class="errorMessage" id="ActivityItemForm_Opportunity_em_" style="display:none"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="1">
+												<div class="permissions-box"><label>Who can read and write</label><br/>
+
+													<div class="radio-input">
+														<input id="Note_explicitReadWriteModelPermissions_type_0" value="" type="radio" name="Note[explicitReadWriteModelPermissions][type]"/><label for="Note_explicitReadWriteModelPermissions_type_0">Owner</label>
+													</div>
+													<div class="radio-input">
+														<input id="Note_explicitReadWriteModelPermissions_type_1" value="2" type="radio" name="Note[explicitReadWriteModelPermissions][type]"/><label for="Note_explicitReadWriteModelPermissions_type_1">Owner and users in</label>&#160;
+														<div class="hasDropDown">
+															<span class="select-arrow"></span><select id="Note_explicitReadWriteModelPermissions_nonEveryoneGroup" onclick="document.getElementById(&quot;Note_explicitReadWriteModelPermissions_type_1&quot;).checked=&quot;checked&quot;;" name="Note[explicitReadWriteModelPermissions][nonEveryoneGroup]">
+															<option value="3">East</option>
+															<option value="5">East Channel Sales</option>
+															<option value="7">East Direct Sales</option>
+															<option value="4">West</option>
+															<option value="6">West Channel Sales</option>
+															<option value="8">West Direct Sales</option>
+														</select></div>
+													</div>
+													<div class="radio-input">
+														<input id="Note_explicitReadWriteModelPermissions_type_2" value="1" checked="checked" type="radio" name="Note[explicitReadWriteModelPermissions][type]"/><label for="Note_explicitReadWriteModelPermissions_type_2">Everyone</label>
+													</div>
+												</div>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="view-toolbar-container clearfix">
+								<div class="form-toolbar clearfix">
+									<a id="save" name="save" class="attachLoading z-button" onclick="jQuery.yii.submitForm(this, &#039;&#039;, {}); return false;" href="#">
+										<span class="z-spinner"></span><span class="z-icon"></span><span class="z-label">Save</span>
+									</a>
+									<div class="post-to-profile clearfix">
+										<span>Post to Profile</span><span id="post-to-profile-note-tooltip" class="tooltip" title="Post this note to your profile to share with your colleagues">?</span><label class="hasCheckBox"><input type="checkbox" value="1" name="postToProfile" id="postToProfile"/></label>
+									</div>
+								</div>
+							</div>
+						</form>
+						<div id="modalContainer-inline-edit-form"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</li>
+	<li class="juiportlet-widget OpportunitiesForAccountRelatedListView type-opportunities" id="AccountDetailsAndRelationsView_15">
+		<div class="juiportlet-widget-head">
+			<h3>Opportunities</h3>
+			<ul class="options-menu edit-portlet-menu nav">
+				<li class="parent last">
+					<a href="javascript:void(0);"><span></span></a>
+					<ul>
+						<li class="last">
+							<a class="remove-portlet" href="#"><span>Remove Portlet</span></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="view-toolbar-container clearfix">
+				<div class="portlet-toolbar">
+					<a class="portlet-create-button" href="/Zurmo/app/index.php/opportunities/default/createFromRelation?relationAttributeName=account&amp;relationModelId=4&amp;relationModuleId=accounts&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4%26lockPortlets%3D">
+						<span class="z-label">Create</span></a>
+				</div>
+			</div>
+		</div>
+		<div class="juiportlet-widget-content">
+			<div class="OpportunitiesForAccountRelatedListView OpportunitiesRelatedListView SecuredRelatedListView RelatedListView ListView ModelView ConfigurableMetadataView MetadataView">
+				<div class="cgrid-view type-opportunities" id="list-viewAccountDetailsAndRelationsView_15">
+
+					<table class="items stacked-list">
+						<tbody>
+						<tr class="odd">
+							<td>
+								<div>
+									<a href="/Zurmo/app/index.php/opportunities/default/details?id=9">Consulting Services</a>
+								</div>
+								<div>€45,000.00</div>
+								<div>Closed Won</div>
+								<div>1/20/14</div>
+							</td>
+							<td>
+								<div>
+									<ul class="options-menu edit-row-menu nav">
+										<li class="parent last">
+											<a href="javascript:void(0);"><span></span></a>
+											<ul>
+												<li id="EditLinkActionElement">
+													<a id="EditLinkActionElement-9-yt35" href="/Zurmo/app/index.php/opportunities/default/edit?id=9&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4%26lockPortlets%3D">
+														<span>Edit</span></a>
+												</li>
+												<li>
+													<a id="list-viewAccountDetailsAndRelationsView_15-delete-9" href="#">
+														<span>Delete</span></a>
+												</li>
+												<li class="last">
+													<a id="list-viewAccountDetailsAndRelationsView_15-unlink-9" href="#">
+														<span>Unlink</span></a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr class="even">
+							<td>
+								<div>
+									<a href="/Zurmo/app/index.php/opportunities/default/details?id=11">Consulting Services</a>
+								</div>
+								<div>€134,000.00</div>
+								<div>Prospecting</div>
+								<div>1/7/14</div>
+							</td>
+							<td>
+								<div>
+									<ul class="options-menu edit-row-menu nav">
+										<li class="parent last">
+											<a href="javascript:void(0);"><span></span></a>
+											<ul>
+												<li id="EditLinkActionElement">
+													<a id="EditLinkActionElement-11-yt38" href="/Zurmo/app/index.php/opportunities/default/edit?id=11&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4%26lockPortlets%3D">
+														<span>Edit</span></a>
+												</li>
+												<li>
+													<a id="list-viewAccountDetailsAndRelationsView_15-delete-11" href="#">
+														<span>Delete</span></a>
+												</li>
+												<li class="last">
+													<a id="list-viewAccountDetailsAndRelationsView_15-unlink-11" href="#">
+														<span>Unlink</span></a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						<tr class="odd">
+							<td>
+								<div>
+									<a href="/Zurmo/app/index.php/opportunities/default/details?id=1">Enterprise Software</a>
+								</div>
+								<div>$283,000.00</div>
+								<div>Qualification</div>
+								<div>5/18/14</div>
+							</td>
+							<td>
+								<div>
+									<ul class="options-menu edit-row-menu nav">
+										<li class="parent last">
+											<a href="javascript:void(0);"><span></span></a>
+											<ul>
+												<li id="EditLinkActionElement">
+													<a id="EditLinkActionElement-1-yt41" href="/Zurmo/app/index.php/opportunities/default/edit?id=1&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4%26lockPortlets%3D">
+														<span>Edit</span></a>
+												</li>
+												<li>
+													<a id="list-viewAccountDetailsAndRelationsView_15-delete-1" href="#">
+														<span>Delete</span></a>
+												</li>
+												<li class="last">
+													<a id="list-viewAccountDetailsAndRelationsView_15-unlink-1" href="#">
+														<span>Unlink</span></a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					<div class="pager horizontal">
+						<ul id="yw4" class="yiiPager">
+							<li class="refresh hidden">
+								<a href="/Zurmo/app/index.php/accounts/defaultPortlet/details?id=4&amp;lockPortlets=&amp;portletId=15&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Faccounts%2Fdefault%2Fdetails%3Fid%3D4%26lockPortlets%3D">refresh</a>
+							</li>
+						</ul>
+					</div>
+					<div class="list-preloader"><span class="z-spinner"></span></div>
+					<div class="keys" style="display:none" title="/Zurmo/app/index.php/accounts/default/details?id=4&amp;lockPortlets=">
+						<span>9</span><span>11</span><span>1</span></div>
+				</div>
+			</div>
+		</div>
+	</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="FlashMessageView">
+	<div id="FlashMessageBar"></div>
+</div>
+</div>
+<div id="ModalContainerView">
+	<div id="modalContainer"></div>
+</div>
+<div id="ModalGameNotificationContainerView"></div>
+<div id="GameCoinContainerView"></div>
+<div id="FooterView">
+	<a href="http://www.zurmo.com" id="credit-link" class="clearfix">
+		<span>Copyright &#169; Zurmo Inc., 2014. All rights reserved.</span></a>
+	<div class="ui-chooser">
+		<a class="icon-mobile" href="/Zurmo/app/index.php/zurmo/default/userInterface?userInterface=Mobile">
+			<span>Show Mobile</span></a>
+		<a class="icon-desktop active" href="/Zurmo/app/index.php/zurmo/default/userInterface?userInterface=Desktop">
+			<span>Show Full</span></a>
+	</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>
+
