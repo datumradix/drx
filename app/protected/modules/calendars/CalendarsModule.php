@@ -34,11 +34,11 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ProductsModule extends SecurableModule
+    class CalendarsModule extends SecurableModule
     {
-        const RIGHT_CREATE_PRODUCTS = 'Create Products';
-        const RIGHT_DELETE_PRODUCTS = 'Delete Products';
-        const RIGHT_ACCESS_PRODUCTS = 'Access Products Tab';
+        const RIGHT_CREATE_CALENDAR = 'Create Calendar';
+        const RIGHT_DELETE_CALENDAR = 'Delete Calendar';
+        const RIGHT_ACCESS_CALENDAR = 'Access Calandar Tab';
 
         public function getDependencies()
         {
@@ -50,16 +50,16 @@
 
         public function getRootModelNames()
         {
-            return array('Product');
+            return array('SavedCalendar');
         }
 
         public static function getTranslatedRightsLabels()
         {
             $params                              = LabelUtil::getTranslationParamsForAllModules();
             $labels                              = array();
-            $labels[self::RIGHT_CREATE_PRODUCTS] = Zurmo::t('ProductsModule', 'Create ProductsModulePluralLabel',     $params);
-            $labels[self::RIGHT_DELETE_PRODUCTS] = Zurmo::t('ProductsModule', 'Delete ProductsModulePluralLabel',     $params);
-            $labels[self::RIGHT_ACCESS_PRODUCTS] = Zurmo::t('ProductsModule', 'Access ProductsModulePluralLabel Tab', $params);
+            $labels[self::RIGHT_CREATE_CALENDAR] = Zurmo::t('CalendarsModule', 'Create CalendarsModulePluralLabel',     $params);
+            $labels[self::RIGHT_DELETE_CALENDAR] = Zurmo::t('CalendarsModule', 'Delete CalendarsModulePluralLabel',     $params);
+            $labels[self::RIGHT_ACCESS_CALENDAR] = Zurmo::t('CalendarsModule', 'Access CalendarsModulePluralLabel Tab', $params);
             return $labels;
         }
 
@@ -74,14 +74,13 @@
                     'showMenusLink' => true,
                 ),
                 'globalSearchAttributeNames' => array(
-                    'quantity',
                     'name'
                 ),
                 'tabMenuItems' => array(
                     array(
-                        'label' => "eval:Zurmo::t('ProductsModule', 'ProductsModulePluralLabel', \$translationParams)",
-                        'url'   => array('/products/default'),
-                        'right' => self::RIGHT_ACCESS_PRODUCTS,
+                        'label' => "eval:Zurmo::t('CalendarsModule', 'CalendarsModulePluralLabel', \$translationParams)",
+                        'url'   => array('/calendars/default'),
+                        'right' => self::RIGHT_ACCESS_CALENDAR,
                     ),
                 ),
             );
@@ -90,52 +89,52 @@
 
         public static function getPrimaryModelName()
         {
-            return 'Product';
+            return 'SavedCalendar';
         }
 
         public static function getSingularCamelCasedName()
         {
-            return 'Product';
+            return 'Calendars';
         }
 
         protected static function getSingularModuleLabel($language)
         {
-            return Zurmo::t('ProductsModule', 'Product', array(), null, $language);
+            return Zurmo::t('CalendarsModule', 'Calendars', array(), null, $language);
         }
 
         protected static function getPluralModuleLabel($language)
         {
-            return Zurmo::t('ProductsModule', 'Products', array(), null, $language);
+            return Zurmo::t('CalendarsModule', 'Calendars', array(), null, $language);
         }
 
         public static function getAccessRight()
         {
-            return self::RIGHT_ACCESS_PRODUCTS;
+            return self::RIGHT_ACCESS_CALENDAR;
         }
 
         public static function getCreateRight()
         {
-            return self::RIGHT_CREATE_PRODUCTS;
+            return self::RIGHT_CREATE_CALENDAR;
         }
 
         public static function getDeleteRight()
         {
-            return self::RIGHT_DELETE_PRODUCTS;
+            return self::RIGHT_DELETE_CALENDAR;
         }
 
         public static function getDefaultDataMakerClassName()
         {
-            return 'ProductsDefaultDataMaker';
+            return 'CalendarsDefaultDataMaker';
         }
 
         public static function getDemoDataMakerClassNames()
         {
-            return array('ProductsDemoDataMaker');
+            return array('CalendarsDemoDataMaker');
         }
 
         public static function getGlobalSearchFormClassName()
         {
-            return 'ProductsSearchForm';
+            return 'CalendarsSearchForm';
         }
 
         public static function hasPermissions()
@@ -155,15 +154,10 @@
 
         public static function canHaveWorkflow()
         {
-            return true;
+            return false;
         }
 
         public static function canHaveContentTemplates()
-        {
-            return true;
-        }
-
-        public static function canShowOnCalendar()
         {
             return true;
         }
