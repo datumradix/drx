@@ -6,3 +6,161 @@
 @z_path              : '../images/';
 
 @import "zurmo.less";
+
+//@import "mixins.less";
+
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+*{
+	margin:0;
+	padding:0;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+html.zurmo,
+html.zurmo body{
+	//background:#DDDEDE;
+	min-height:100%;
+}
+
+html.zurmo{
+	#gradient > .vertical-three-colors( #f6f6f6, #ffffff, 100px, #ffffff ) !important;
+}
+
+.zurmo body{
+	//font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: 'Open Sans', sans-serif;
+	font-size:12px;
+	color:@textColor;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-o-font-smoothing: antialiased;
+	font-smooth: always;
+	background: none;
+}
+
+.container{
+	//margin:0 3% 0 3%;
+	margin: 0;
+	min-width:900px;
+	max-width: 1600px;
+}
+
+
+@headerHeight : 80px;
+
+.HeaderView{
+	height: @headerHeight;
+	width: 100%;
+	margin: 0 auto 0 auto;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 10;
+	background: darken(@headerBarColor, 10%);
+	.b-shadow( ~"inset 0 10px 50px 0 @{headerBarColor}");
+	> div{
+		padding: 5px 15px;
+	}
+	> .container{
+		#gradient > .vertical( @themeColorHeader, @themeColorHeader2 );
+		.b-shadow(0 0 10px 2px rgba(102, 102, 102, 0.5));
+	}
+}
+
+
+
+.logo-and-search{
+	width: 50%;
+	float: left;
+}
+
+#corp-logo{
+	margin-bottom: 5px;
+	display: block;
+	span{
+		float: none;
+		position: relative;
+		top: -9px;
+	}
+}
+#app-search{
+	margin-bottom: 5px;
+	display: block;
+}
+
+.user-actions{
+	width: 50%;
+	float: right;
+}
+
+.header-fixed{
+	.HeaderView{
+		height: 40px;
+	}
+	#corp-logo{
+		display: inline-block;
+		span{
+			display: none;
+		}
+	}
+	#app-search{
+		display: inline-block;
+	}
+	.AppContainer{
+		margin-top: 40px;
+	}
+	.AppNavigation{
+		margin-top: 40px;
+	}
+}
+
+
+
+.AppContainer{
+	height:100%;
+	//border:1px solid #eee;
+	border-top:none;
+	//#gradient > .vertical-three-colors( #f6f6f6, #ffffff, 100px, #ffffff );
+	//background:#fff url("@{path}nav.png") -2px top repeat-y;
+	//.b-shadow(0 0 12px 5px rgba(153, 153, 153, 0.3)); /*999*/
+	//.radius(0 0 5px 5px);
+	z-index: 0;
+	position:relative;
+	margin-top: @headerHeight;
+}
+
+.HeaderView,
+.AppContainer,
+.FooterView{
+	//padding: 0 3% 0 3%;
+}
+
+
+
+
+@navWidth : 170px;
+
+.AppNavigation{
+	width: @navWidth;
+	float: left;
+	background-color: salmon;// #DDDEDE;
+	//#gradient > .vertical(#f6f6f6, #f4f4f4);
+	position: fixed;
+	//left: 3%;
+	top: 0;
+	bottom:0;
+	margin-top: @headerHeight;
+}
+
+.AppContent{
+	margin-left:@navWidth;
+}
+
+.FooterView{
+	padding: 15px 0;
+}
