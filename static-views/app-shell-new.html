@@ -1,6 +1,5 @@
-<!DOCTYPE html><!--[if IE 8]>
-<html class="zurmo ie8" lang="en"><![endif]--><!--[if gt IE 8]><!-->
-<html class="zurmo" lang="en"><!--<![endif]-->
+<!DOCTYPE html>
+<html class="zurmo with-padding" lang="en"
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -18,8 +17,6 @@
 	<title>ZurmoCRM</title>
 </head>
 <body class="blue">
-
-
 	<header class="HeaderView">
 		<div class="container clearfix">
 			<div class="logo-and-search">
@@ -37,34 +34,8 @@
 					</select><input class="global-search global-search-hint" onfocus="$(this).removeClass(&quot;global-search-hint&quot;); $(this).val(&quot;&quot;);" onblur="$(this).val(&quot;&quot;)" id="globalSearchInput" type="text" value="Search by name, phone, or e-mail" name="globalSearchInput"/><span class="z-spinner"></span>
 				</div>
 			</div>
-			<div class="user-actions">
+			<div class="user-actions clearfix">
 				<div id="user-toolbar" class="clearfix">
-					<div id="header-game-dashboard-link-wrapper" class="user-menu-item">
-						<a id="header-game-dashboard-link" href="#">∂</a>
-					</div>
-					<ul id="user-header-menu" class="user-menu-item nav">
-						<li class="parent last active">
-							<a href="javascript:void(0);"><span>super</span></a>
-							<ul>
-								<li>
-									<a href="/Zurmo/app/index.php/users/default/profile">
-										<span>My Profile</span></a>
-								</li>
-								<li>
-									<a href="/Zurmo/app/index.php/gamification/default/leaderboard">
-										<span>Leaderboard</span></a>
-								</li>
-								<li>
-									<a href="/Zurmo/app/index.php/emailMessages/default/matchingList">
-										<span>Data Cleanup</span></a>
-								</li>
-								<li class="last">
-									<a href="/Zurmo/app/index.php/zurmo/default/logout">
-										<span>Sign out</span></a>
-								</li>
-							</ul>
-						</li>
-					</ul>
 					<ul id="settings-header-menu" class="user-menu-item nav">
 						<li class="parent last">
 							<a href="javascript:void(0);"><span>Administration</span></a>
@@ -94,8 +65,70 @@
 							</ul>
 						</li>
 					</ul>
+					<ul id="user-header-menu" class="user-menu-item nav">
+						<li class="parent last active">
+							<a href="javascript:void(0);"><span>super</span></a>
+							<ul>
+								<li>
+									<a href="/Zurmo/app/index.php/users/default/profile">
+										<span>My Profile</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/gamification/default/leaderboard">
+										<span>Leaderboard</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/emailMessages/default/matchingList">
+										<span>Data Cleanup</span></a>
+								</li>
+								<li class="last">
+									<a href="/Zurmo/app/index.php/zurmo/default/logout">
+										<span>Sign out</span></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<div id="header-game-dashboard-link-wrapper" class="user-menu-item">
+						<a id="header-game-dashboard-link" href="#">∂</a>
+					</div>
 				</div>
-
+				<ul id="ShortcutsMenu" class="nav">
+					<li class="parent last">
+						<a href="javascript:void(0);"><span>Create</span></a>
+						<ul>
+							<li>
+								<a href="/Zurmo/app/index.php/accounts/default/create"><span>Account</span>
+								</a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/contacts/default/create"><span>Contact</span>
+								</a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/conversations/default/create">
+									<span>Conversation</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/leads/default/create"><span>Lead</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/missions/default/create"><span>Mission</span>
+								</a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/opportunities/default/create">
+									<span>Opportunity</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/reports/default/selectType">
+									<span>Report</span></a>
+							</li>
+							<li class="last">
+								<a href="#" id="yt0"><span>Task</span></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</header>
@@ -163,6 +196,14 @@
 					</li>
 				</ul>
 			</div>
+
+				<div class="ui-chooser">
+					<a class="icon-mobile" href="/Zurmo/app/index.php/zurmo/default/userInterface?userInterface=Mobile">
+						<span>Show Mobile</span></a>
+					<a class="icon-desktop active" href="/Zurmo/app/index.php/zurmo/default/userInterface?userInterface=Desktop">
+						<span>Show Full</span></a>
+				</div>
+
 		</nav>
 		<div class="AppContent">
 			<div class="wrapper"><h1><span class="truncated-title" threedots="Create Account"><span class="ellipsis-content">Create Account</span></span></h1><div class="wide form"><form onsubmit="js:return $(this).attachLoadingOnSubmit(&quot;edit-form&quot;)" id="edit-form" action="/demos/bleeding/app/index.php/accounts/default/create" method="post">
@@ -226,7 +267,7 @@
 
 	<footer class="FooterView">
 		<div class="container">
-			footer
+			<a href="http://www.zurmo.com" id="credit-link" class="clearfix"><span>Copyright &#169; Zurmo Inc., 2014. All rights reserved.</span></a>
 		</div>
 	</footer>
 
