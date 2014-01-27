@@ -287,14 +287,48 @@ html.with-padding_{
 	#gradient > .vertical(#f6f6f6, #f4f4f4);
 }
 
+@speed : 0.28s;
+
 .AppContent,
 .FooterView{
 	margin-left:@navWidth;
+	.animateAll(0.28s);
 }
 
 .FooterView{
 	padding: 10px 0 10px 20px;
 	#credit-link{
 		margin-left: 0;
+	}
+}
+
+.nav-closed{
+	@newWidth : 40px;
+
+	.AppNavigation{
+		width: @newWidth;
+		.animateAll(@speed);
+		&:hover{
+			width: @navWidth;
+			.hideme{
+				display: block !important;
+			}
+			+ .AppContent{
+				margin-left: @navWidth;
+				+ .FooterView{
+					margin-left: @navWidth;
+				}
+			}
+		}
+	}
+	.ui-chooser{
+		width: 38px;
+	}
+	.AppContent,
+	.FooterView{
+		margin-left: @newWidth;
+	}
+	.hideme{
+		display: none !important;
 	}
 }
