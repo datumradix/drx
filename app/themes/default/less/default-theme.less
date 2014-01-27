@@ -50,7 +50,8 @@ html.zurmo{
 }
 
 
-@headerHeight : 80px;
+@headerHeight : 84px;
+@headerHeight2 : 46px;
 
 .HeaderView{
 	height: @headerHeight;
@@ -62,13 +63,36 @@ html.zurmo{
 	right: 0;
 	z-index: 10;
 	background: darken(@headerBarColor, 10%);
-	.b-shadow( ~"inset 0 10px 50px 0 @{headerBarColor}");
+
+	@topColor : lighten(@headerBarColor, 10%);
+
+	.b-shadow( ~"inset 0 10px 50px 0 @{topColor}");
 	> div{
-		padding: 5px 15px;
+		//padding: 5px 15px;
 	}
 	> .container{
-		#gradient > .vertical( @themeColorHeader, @themeColorHeader2 );
+		height: 100%;
+		//#gradient > .vertical( @themeColorHeader, @themeColorHeader2 );
 		.b-shadow(0 0 10px 2px rgba(102, 102, 102, 0.5));
+
+
+			background-color: transparent;
+			//background-image: -o-linear-gradient(     0deg , rgba(51,204,255,1) 0%, @themeColorHeader 50%, rgba(51,204,255,0) 0%, @themeColorHeader2 100%);
+			//background-image: -moz-linear-gradient(   0deg , rgba(51,204,255,1) 0%, @themeColorHeader 50%, rgba(51,204,255,0) 0%, @themeColorHeader2 100%);
+			background-image:
+				-webkit-linear-gradient(
+					top,
+					rgba(255,0,0,0) 0%,
+					rgba(102, 102, 102, 0) 44%,
+					rgba(102, 102, 102, 0) 50%,
+					@themeColorHeader 50%,
+					@themeColorHeader2 100%
+			);
+			//background-image: -ms-linear-gradient(    0deg , rgba(51,204,255,1) 0%, @themeColorHeader 50%, rgba(51,204,255,0) 0%, @themeColorHeader2 100%);
+			//background-image: linear-gradient(        0deg , rgba(51,204,255,1) 0%, @themeColorHeader 50%, rgba(51,204,255,0) 0%, @themeColorHeader2 100%);
+
+
+
 	}
 }
 
@@ -77,6 +101,7 @@ html.zurmo{
 .logo-and-search{
 	width: 50%;
 	float: left;
+	padding: 5px 0 0 15px;
 }
 
 #corp-logo{
@@ -88,28 +113,85 @@ html.zurmo{
 		top: -9px;
 	}
 }
+
 #app-search{
 	margin-bottom: 5px;
 	display: block;
 }
 
 .user-actions{
+	padding: 5px 15px 0 0;
+	position: relative;
 	width: 50%;
+	float: right;
+	ul{
+		list-style: none;
+		li{
+			position: relative;
+			overflow: visible;
+			a{
+				color:#fff;
+				font-weight:bold;
+			}
+			a:hover{
+				color:#fff !important;
+			}
+		}
+		ul{
+			.headerDropDownSpecial;
+			display: none !important;
+		}
+	}
+}
+
+
+#user-toolbar{
+	float:right;
+	position: static;
+	right: 0;
+	top: 0;
+}
+
+.user-menu-item{
+	float: right !important;
+}
+
+#ShortcutsMenu {
+	position: relative;
+	right: 10px;
+	clear: right;
 	float: right;
 }
 
+
+
 .header-fixed{
 	.HeaderView{
-		height: 40px;
+		height: @headerHeight2;
+		.animateAll(0.5s);
+		> .container {
+			background-image: none !important;
+			.animateAll(0.5s);
+		}
 	}
 	#corp-logo{
 		display: inline-block;
+		.animateAll(0.5s);
 		span{
 			display: none;
 		}
 	}
 	#app-search{
 		display: inline-block;
+		.animateAll(0.5s);
+		margin-left: 0;
+	}
+	#globalSearchInput{
+		margin-top: 5px;
+	}
+	#ShortcutsMenu {
+		clear: none;
+		.animateAll(0.5s);
 	}
 	.AppContainer{
 		margin-top: 40px;
@@ -119,6 +201,35 @@ html.zurmo{
 	}
 }
 
+
+html.with-padding_{
+	background-image: none !important;
+	background-color: #DDDEDE !important;
+	.ui-chooser,
+	.AppNavigation{
+		left: 3% !important;
+	}
+	.AppContainer{
+		margin: @headerHeight 3% 0 3%;
+		border:1px solid #eee;
+		border-top:none;
+		#gradient > .vertical-three-colors( #f6f6f6, #ffffff, 100px, #ffffff );
+		//background:#fff url("@{path}nav.png") -2px top repeat-y;
+		.b-shadow(0 0 12px 5px rgba(153, 153, 153, 0.3)); /*999*/
+		.radius(0 0 5px 5px);
+	}
+	.FooterView{
+		.container{
+			padding-left: 3%;
+		}
+	}
+	.logo-and-search{
+		padding-left: 3%;
+	}
+	.user-actions{
+		padding-right: 3%;
+	}
+}
 
 
 .AppContainer{
@@ -148,19 +259,42 @@ html.zurmo{
 .AppNavigation{
 	width: @navWidth;
 	float: left;
-	background-color: salmon;// #DDDEDE;
-	//#gradient > .vertical(#f6f6f6, #f4f4f4);
+	//background-color: #DDDEDE;
+	#gradient > .vertical(#dcdcdc, #e3e3e3);
 	position: fixed;
 	//left: 3%;
 	top: 0;
 	bottom:0;
 	margin-top: @headerHeight;
+
+	.ui-chooser{
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 168px;
+		padding:8px 10px;
+		margin: 0 1px;
+		border-top:1px solid #ccc;
+		.b-shadow(inset 0 1px 0 0 #F9F9FA);
+
+		a{
+			margin: 0 5px 0 0;
+		}
+	}
 }
 
-.AppContent{
+#MenuView{
+	#gradient > .vertical(#f6f6f6, #f4f4f4);
+}
+
+.AppContent,
+.FooterView{
 	margin-left:@navWidth;
 }
 
 .FooterView{
-	padding: 15px 0;
+	padding: 10px 0 10px 20px;
+	#credit-link{
+		margin-left: 0;
+	}
 }
