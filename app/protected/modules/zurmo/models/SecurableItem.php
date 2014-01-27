@@ -342,10 +342,12 @@
             if ($this instanceof NamedSecurableItem)
             {
                 PermissionsCache::forgetAll();
+                AllPermissionsOptimizationCache::forgetAll();
             }
             else
             {
                 PermissionsCache::forgetSecurableItem($this);
+                AllPermissionsOptimizationCache::forgetSecurableItemForRead($this);
             }
             $found = false;
             foreach ($this->permissions as $permission)
@@ -388,10 +390,12 @@
             if ($this instanceof NamedSecurableItem)
             {
                 PermissionsCache::forgetAll();
+                AllPermissionsOptimizationCache::forgetAll();
             }
             else
             {
                 PermissionsCache::forgetSecurableItem($this);
+                AllPermissionsOptimizationCache::forgetSecurableItemForRead($this);
             }
             foreach ($this->permissions as $permission)
             {
@@ -409,10 +413,12 @@
             if ($this instanceof NamedSecurableItem)
             {
                 PermissionsCache::forgetAll();
+                AllPermissionsOptimizationCache::forgetAll();
             }
             else
             {
                 PermissionsCache::forgetSecurableItem($this);
+                AllPermissionsOptimizationCache::forgetSecurableItemForRead($this);
             }
         }
 
@@ -420,6 +426,7 @@
         {
             $this->checkPermissionsHasAnyOf(Permission::CHANGE_PERMISSIONS);
             PermissionsCache::forgetAll();
+            AllPermissionsOptimizationCache::forgetAll();
             $this->permissions->removeAll();
         }
 
@@ -463,14 +470,17 @@
          * @param int $requiredPermissions
          * @throws AccessDeniedSecurityException
          */
-        protected function checkPermissionsHasAnyOf($requiredPermissions)
+        public function checkPermissionsHasAnyOf($requiredPermissions, User $user = null)
         {
             assert('is_int($requiredPermissions)');
-            $currentUser = Yii::app()->user->userModel;
-            $effectivePermissions = $this->getEffectivePermissions($currentUser);
+            if($user == null)
+            {
+                $user = Yii::app()->user->userModel;
+            }
+            $effectivePermissions = $this->getEffectivePermissions($user);
             if (($effectivePermissions & $requiredPermissions) == 0)
             {
-                throw new AccessDeniedSecurityException($currentUser, $requiredPermissions, $effectivePermissions);
+                throw new AccessDeniedSecurityException($user, $requiredPermissions, $effectivePermissions);
             }
         }
 
