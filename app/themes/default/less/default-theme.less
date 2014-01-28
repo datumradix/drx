@@ -168,22 +168,22 @@ html.zurmo{
 .header-fixed{
 	.HeaderView{
 		height: @headerHeight2;
-		.animateAll(0.5s);
+		.animateAll(@speed);
 		> .container {
 			background-image: none !important;
-			.animateAll(0.5s);
+			.animateAll(@speed);
 		}
 	}
 	#corp-logo{
 		display: inline-block;
-		.animateAll(0.5s);
+		.animateAll(@speed);
 		span{
 			display: none;
 		}
 	}
 	#app-search{
 		display: inline-block;
-		.animateAll(0.5s);
+		.animateAll(@speed);
 		margin-left: 0;
 	}
 	#globalSearchInput{
@@ -191,12 +191,14 @@ html.zurmo{
 	}
 	#ShortcutsMenu {
 		clear: none;
-		.animateAll(0.5s);
+		.animateAll(@speed);
 	}
 	.AppContainer{
+		.animateAll(@speed);
 		margin-top: 40px;
 	}
 	.AppNavigation{
+		.animateAll(@speed);
 		margin-top: 40px;
 	}
 }
@@ -285,6 +287,12 @@ html.with-padding_{
 
 #MenuView{
 	#gradient > .vertical(#f6f6f6, #f4f4f4);
+	.hideme{
+		text-indent: 30px;
+	}
+	em{
+		background:none !important;
+	}
 }
 
 @speed : 0.28s;
@@ -302,7 +310,7 @@ html.with-padding_{
 	}
 }
 
-.nav-closed{
+.nav-closed_{
 	@newWidth : 40px;
 
 	.AppNavigation{
