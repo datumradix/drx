@@ -34,18 +34,21 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Workflow rules to be used with the Opportunities module.
-     */
-    class OpportunitiesWorkflowRules extends SecuredWorkflowRules
+    class ProductAttributeForm extends HasOneModelAttributeForm
     {
-        /**
-         * @return array
-         */
-        public static function getDefaultMetadata()
+        public static function getAttributeTypeDisplayName()
         {
-            $metadata = array();
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            return Zurmo::t('ProductsModule', 'Product');
+        }
+
+        public static function getAttributeTypeDisplayDescription()
+        {
+            return Zurmo::t('ProductsModule', 'A product field');
+        }
+
+        public function getAttributeTypeName()
+        {
+            return 'Product';
         }
     }
 ?>
