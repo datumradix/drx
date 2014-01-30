@@ -20,18 +20,47 @@
 	<header class="HeaderView">
 		<div class="container clearfix">
 			<div class="logo-and-search">
-				<a href="/Zurmo/app/index.php/home/default" id="corp-logo">
+				<a href="/Zurmo/app/index.php/home/default" id="corp-logo" class="clearfix">
 					<img src="/Zurmo/app/themes/default/images/Zurmo_logo.png" alt="Zurmo Logo" height="32" width="107"/>
 					<span>Demo Company Inc.</span>
 				</a>
 				<div id="app-search" class="clearfix">
-					<select class="ignore-style" id="globalSearchScope" multiple="multiple" style="display:none;" size="4" name="globalSearchScope[]">
+						<select class="ignore-style" id="globalSearchScope" multiple="multiple" style="display: none;" size="4" name="globalSearchScope[]">
 						<option value="All" selected="selected">All</option>
 						<option value="accounts">Accounts</option>
 						<option value="contacts">Contacts</option>
 						<option value="leads">Leads</option>
 						<option value="opportunities">Opportunities</option>
-					</select><input class="global-search global-search-hint" onfocus="$(this).removeClass(&quot;global-search-hint&quot;); $(this).val(&quot;&quot;);" onblur="$(this).val(&quot;&quot;)" id="globalSearchInput" type="text" value="Search by name, phone, or e-mail" name="globalSearchInput"/><span class="z-spinner"></span>
+					</select>
+					<button type="button" class="global-search-loopa" aria-haspopup="true"><span></span></button>
+					<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all">
+						<div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix" style="display: none;">
+							<ul class="ui-helper-reset">
+								<li class="ui-multiselect-close">
+									<a href="#" class="ui-multiselect-close">
+										<span class="ui-icon ui-icon-circle-close"></span></a>
+								</li>
+							</ul>
+						</div>
+						<ul class="ui-multiselect-checkboxes ui-helper-reset">
+							<li class="">
+								<label for="ui-multiselect-globalSearchScope-option-0" title="" class="ui-corner-all c_on"><input id="ui-multiselect-globalSearchScope-option-0" name="multiselect_globalSearchScope" type="checkbox" value="All" title="All" class="multiselect-checkbox" checked="checked" aria-selected="true"><span>All</span></label>
+							</li>
+							<li class="">
+								<label for="ui-multiselect-globalSearchScope-option-1" title="" class="ui-corner-all"><input id="ui-multiselect-globalSearchScope-option-1" name="multiselect_globalSearchScope" type="checkbox" value="accounts" title="Accounts" class="multiselect-checkbox"><span>Accounts</span></label>
+							</li>
+							<li class="">
+								<label for="ui-multiselect-globalSearchScope-option-2" title="" class="ui-corner-all"><input id="ui-multiselect-globalSearchScope-option-2" name="multiselect_globalSearchScope" type="checkbox" value="contacts" title="Contacts" class="multiselect-checkbox"><span>Contacts</span></label>
+							</li>
+							<li class="">
+								<label for="ui-multiselect-globalSearchScope-option-3" title="" class="ui-corner-all"><input id="ui-multiselect-globalSearchScope-option-3" name="multiselect_globalSearchScope" type="checkbox" value="leads" title="Leads" class="multiselect-checkbox"><span>Leads</span></label>
+							</li>
+							<li class="">
+								<label for="ui-multiselect-globalSearchScope-option-4" title="" class="ui-corner-all"><input id="ui-multiselect-globalSearchScope-option-4" name="multiselect_globalSearchScope" type="checkbox" value="opportunities" title="Opportunities" class="multiselect-checkbox"><span>Opportunities</span></label>
+							</li>
+						</ul>
+					</div>
+					<input class="global-search global-search-hint ui-autocomplete-input" onfocus="$(this).removeClass(&quot;global-search-hint&quot;); $(this).val(&quot;&quot;);" onblur="$(this).val(&quot;&quot;)" id="globalSearchInput" type="text" value="Search by name, phone, or e-mail" name="globalSearchInput" autocomplete="off"><span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span><span class="z-spinner"></span>
 				</div>
 			</div>
 			<div class="user-actions clearfix">
@@ -180,7 +209,8 @@
 				</ul>
 				<a class="toggle-hidden-nav-items"></a>
 			</div>
-			<div id="RecentlyViewedView"><h3 class="hideme">Recently Viewed</h3>
+			<div id="RecentlyViewedView">
+				<h3 class="hideme"><a href="#"><i class="icon-z">Z</i></a>Recently Viewed</h3>
 				<ul class="nav">
 					<li class="type-UsersModule">
 						<a href="/Zurmo/app/index.php/users/default/details?id=1">

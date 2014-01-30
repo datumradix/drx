@@ -10,7 +10,7 @@
 //@import "mixins.less";
 
 
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700);
+//@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700);
 
 *{
 	margin:0;
@@ -22,7 +22,6 @@
 
 html.zurmo,
 html.zurmo body{
-	//background:#DDDEDE;
 	min-height:100%;
 }
 
@@ -31,8 +30,8 @@ html.zurmo{
 }
 
 .zurmo body{
-	//font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-family: 'Open Sans', sans-serif;
+	font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+	//font-family: 'Open Sans', sans-serif;
 	font-size:12px;
 	color:@textColor;
 	-webkit-font-smoothing: antialiased;
@@ -43,18 +42,16 @@ html.zurmo{
 }
 
 .container{
-	//margin:0 3% 0 3%;
 	margin: 0;
 	min-width:900px;
 	max-width: 1600px;
 }
 
 
-@headerHeight : 84px;
+@headerHeight : 50px;
 @headerHeight2 : 46px;
 
 .HeaderView{
-	height: @headerHeight;
 	width: 100%;
 	margin: 0 auto 0 auto;
 	position: fixed;
@@ -62,65 +59,43 @@ html.zurmo{
 	left: 0;
 	right: 0;
 	z-index: 10;
-	background: darken(@headerBarColor, 10%);
-
-	@topColor : lighten(@headerBarColor, 10%);
-
-	.b-shadow( ~"inset 0 10px 50px 0 @{topColor}");
-	> div{
-		//padding: 5px 15px;
-	}
+	#gradient > .vertical(@themeColorHeader, @themeColorHeader2);
+	.b-shadow(0 0 10px 2px rgba(102, 102, 102, 0.7));
+	padding-bottom: 3px;
 	> .container{
+		padding: 3px 0 1px 0;
 		height: 100%;
-		//#gradient > .vertical( @themeColorHeader, @themeColorHeader2 );
-		.b-shadow(0 0 10px 2px rgba(102, 102, 102, 0.5));
-
-
-			background-color: transparent;
-			//background-image: -o-linear-gradient(     0deg , rgba(51,204,255,1) 0%, @themeColorHeader 50%, rgba(51,204,255,0) 0%, @themeColorHeader2 100%);
-			//background-image: -moz-linear-gradient(   0deg , rgba(51,204,255,1) 0%, @themeColorHeader 50%, rgba(51,204,255,0) 0%, @themeColorHeader2 100%);
-			background-image:
-				-webkit-linear-gradient(
-					top,
-					rgba(255,0,0,0) 0%,
-					rgba(102, 102, 102, 0) 44%,
-					rgba(102, 102, 102, 0) 50%,
-					@themeColorHeader 50%,
-					@themeColorHeader2 100%
-			);
-			//background-image: -ms-linear-gradient(    0deg , rgba(51,204,255,1) 0%, @themeColorHeader 50%, rgba(51,204,255,0) 0%, @themeColorHeader2 100%);
-			//background-image: linear-gradient(        0deg , rgba(51,204,255,1) 0%, @themeColorHeader 50%, rgba(51,204,255,0) 0%, @themeColorHeader2 100%);
-
-
-
+		#gradient > .vertical(lighten(@headerBarColor, 5%), darken(@headerBarColor, 5%));
 	}
 }
-
-
 
 .logo-and-search{
 	width: 50%;
 	float: left;
-	padding: 5px 0 0 15px;
+	padding: 0 0 0 15px;
 }
 
 #corp-logo{
-	margin-bottom: 5px;
 	display: block;
+	img{
+		//display: block;
+	}
 	span{
 		float: none;
 		position: relative;
-		top: -9px;
+		top: -10px;
 	}
 }
 
 #app-search{
-	margin-bottom: 5px;
+	//margin-bottom: 5px;
 	display: block;
+	float: left;
+	margin-left: 15px;
 }
 
 .user-actions{
-	padding: 5px 15px 0 0;
+	padding: 0 15px 0 0;
 	position: relative;
 	width: 50%;
 	float: right;
@@ -144,7 +119,6 @@ html.zurmo{
 	}
 }
 
-
 #user-toolbar{
 	float:right;
 	position: static;
@@ -158,52 +132,49 @@ html.zurmo{
 
 #ShortcutsMenu {
 	position: relative;
-	right: 10px;
-	clear: right;
+	right: 30px;
 	float: right;
 }
 
-
-
-.header-fixed{
+.header-fixed_{
 	.HeaderView{
 		height: @headerHeight2;
-		.animateAll(@speed);
+		//.animateAll(@speed);
 		> .container {
 			background-image: none !important;
-			.animateAll(@speed);
+		//	.animateAll(@speed);
 		}
 	}
 	#corp-logo{
 		display: inline-block;
-		.animateAll(@speed);
+		//.animateAll(@speed);
 		span{
 			display: none;
 		}
 	}
 	#app-search{
 		display: inline-block;
-		.animateAll(@speed);
+		//.animateAll(@speed);
 		margin-left: 0;
 	}
 	#globalSearchInput{
-		margin-top: 5px;
+		//margin-top: 4px;
 	}
 	#ShortcutsMenu {
 		clear: none;
-		.animateAll(@speed);
+		//.animateAll(@speed);
 	}
 	.AppContainer{
-		.animateAll(@speed);
-		margin-top: 40px;
+		//.animateAll(@speed);
+		//margin-top: 40px;
 	}
 	.AppNavigation{
-		.animateAll(@speed);
-		margin-top: 40px;
+		//.animateAll(@speed);
+		//margin-top: 40px;
 	}
 }
 
-
+/*
 html.with-padding_{
 	background-image: none !important;
 	background-color: #DDDEDE !important;
@@ -216,8 +187,7 @@ html.with-padding_{
 		border:1px solid #eee;
 		border-top:none;
 		#gradient > .vertical-three-colors( #f6f6f6, #ffffff, 100px, #ffffff );
-		//background:#fff url("@{path}nav.png") -2px top repeat-y;
-		.b-shadow(0 0 12px 5px rgba(153, 153, 153, 0.3)); /*999*/
+		.b-shadow(0 0 12px 5px rgba(153, 153, 153, 0.3));
 		.radius(0 0 5px 5px);
 	}
 	.FooterView{
@@ -232,16 +202,11 @@ html.with-padding_{
 		padding-right: 3%;
 	}
 }
-
+*/
 
 .AppContainer{
 	height:100%;
-	//border:1px solid #eee;
 	border-top:none;
-	//#gradient > .vertical-three-colors( #f6f6f6, #ffffff, 100px, #ffffff );
-	//background:#fff url("@{path}nav.png") -2px top repeat-y;
-	//.b-shadow(0 0 12px 5px rgba(153, 153, 153, 0.3)); /*999*/
-	//.radius(0 0 5px 5px);
 	z-index: 0;
 	position:relative;
 	margin-top: @headerHeight;
@@ -253,22 +218,15 @@ html.with-padding_{
 	//padding: 0 3% 0 3%;
 }
 
-
-
-
 @navWidth : 170px;
-
 .AppNavigation{
 	width: @navWidth;
 	float: left;
-	//background-color: #DDDEDE;
 	#gradient > .vertical(#dcdcdc, #e3e3e3);
 	position: fixed;
-	//left: 3%;
 	top: 0;
 	bottom:0;
-	margin-top: @headerHeight;
-
+	//margin-top: @headerHeight;
 	.ui-chooser{
 		position: fixed;
 		left: 0;
@@ -286,6 +244,7 @@ html.with-padding_{
 }
 
 #MenuView{
+	padding-top: 70px;
 	#gradient > .vertical(#f6f6f6, #f4f4f4);
 	.hideme{
 		text-indent: 30px;
@@ -312,7 +271,6 @@ html.with-padding_{
 
 .nav-closed_{
 	@newWidth : 40px;
-
 	.AppNavigation{
 		width: @newWidth;
 		.animateAll(@speed);
