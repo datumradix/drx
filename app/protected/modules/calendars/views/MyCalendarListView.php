@@ -48,5 +48,15 @@
             $content = ZurmoHtml::tag('div', array('class' => 'cal-list-header clearfix'), $title . $link);
             return $content;
         }
+
+        /**
+         * Wraps content in a container.
+         * @param string $content
+         * @return string
+         */
+        protected function wrapContent($content)
+        {
+            return ZurmoHtml::tag('div', array('id' => 'my-calendars-list'), $content);
+        }
     }
 ?>
