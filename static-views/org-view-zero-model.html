@@ -1,0 +1,330 @@
+<!DOCTYPE html><!--[if IE 8]>
+<html class="zurmo ie8" lang="en"><![endif]--><!--[if gt IE 8]><!-->
+<html class="zurmo" lang="en"><!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<link rel="shortcut icon" href="../app/themes/default/ico/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="../app/themes/default/css/keyframes.css"/>
+	<link rel="stylesheet" type="text/css" href="../app/themes/default/css/zurmo-sunrise.css"/>
+	<link rel="stylesheet" type="text/css" href="detail-edit-view.css"/>
+	<title>ZurmoCRM - ORG View</title></head>
+<body class="sunrise">
+<div id="AccountsPageView" class="ZurmoDefaultPageView ZurmoPageView PageView">
+<div id="ZurmoDefaultView">
+<div class="GridView">
+<div id="HeaderView"><!-- Start of themes/default/templates/HeaderView.xhtml -->
+	<div id="MainLogo" class="zurmo-logo"></div>
+	<div class="GridView">
+		<div id="HeaderLinksView">
+			<div class="clearfix">
+				<a href="#" id="nav-trigger" title="Toggle Navigation">›</a>
+				<div id="corp-logo">
+					<a href="/Zurmo/app/index.php/home/default">
+						<img src="/Zurmo/app/themes/default/images/Zurmo_logo.png" alt="Zurmo Logo" height="32" width="107">
+					</a>
+					<span>Demo Company Inc.</span></div>
+				<div id="user-toolbar" class="clearfix">
+					<div id="header-game-dashboard-link-wrapper" class="user-menu-item">
+						<a id="header-game-dashboard-link" href="#">∂</a>
+					</div>
+					<ul id="user-header-menu" class="user-menu-item nav">
+						<li class="parent last">
+							<a href="javascript:void(0);"><span>super</span></a>
+							<ul>
+								<li>
+									<a href="/Zurmo/app/index.php/users/default/profile"><span>My Profile</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/gamification/default/leaderboard">
+										<span>Leaderboard</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/emailMessages/default/matchingList">
+										<span>Data Cleanup</span></a>
+								</li>
+								<li class="last">
+									<a href="/Zurmo/app/index.php/zurmo/default/logout"><span>Sign out</span></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<ul id="settings-header-menu" class="user-menu-item nav">
+						<li class="parent last">
+							<a href="javascript:void(0);"><span>Administration</span></a>
+							<ul>
+								<li>
+									<a href="/Zurmo/app/index.php/configuration"><span>Administration</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/designer/default"><span>Designer</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/import/default"><span>Import</span></a>
+								</li>
+								<li>
+									<a href="/Zurmo/app/index.php/users/default"><span>Users</span></a>
+								</li>
+								<li>
+									<a href="http://www.zurmo.com/needSupport.php"><span>Need Support?</span></a>
+								</li>
+								<li class="last">
+									<a href="/Zurmo/app/index.php/zurmo/default/about"><span>About Zurmo</span></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="GridView">
+			<div id="GlobalSearchAndShortcutsCreateMenuView">
+				<div id="app-search" class="clearfix">
+					<select class="ignore-style" id="globalSearchScope" multiple="multiple" style="display: none;" size="4" name="globalSearchScope[]">
+						<option value="All" selected="selected">All</option>
+						<option value="accounts">Accounts</option>
+						<option value="contacts">Contacts</option>
+						<option value="leads">Leads</option>
+						<option value="opportunities">Opportunities</option>
+					</select>
+					<button type="button" class="global-search-loopa" aria-haspopup="true"><span></span></button>
+					<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all">
+						<div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix" style="display: none;">
+							<ul class="ui-helper-reset">
+								<li class="ui-multiselect-close">
+									<a href="#" class="ui-multiselect-close">
+										<span class="ui-icon ui-icon-circle-close"></span></a>
+								</li>
+							</ul>
+						</div>
+						<ul class="ui-multiselect-checkboxes ui-helper-reset">
+							<li class="">
+								<label for="ui-multiselect-globalSearchScope-option-0" title="" class="ui-corner-all c_on"><input id="ui-multiselect-globalSearchScope-option-0" name="multiselect_globalSearchScope" type="checkbox" value="All" title="All" class="multiselect-checkbox" checked="checked" aria-selected="true"><span>All</span></label>
+							</li>
+							<li class="">
+								<label for="ui-multiselect-globalSearchScope-option-1" title="" class="ui-corner-all"><input id="ui-multiselect-globalSearchScope-option-1" name="multiselect_globalSearchScope" type="checkbox" value="accounts" title="Accounts" class="multiselect-checkbox"><span>Accounts</span></label>
+							</li>
+							<li class="">
+								<label for="ui-multiselect-globalSearchScope-option-2" title="" class="ui-corner-all"><input id="ui-multiselect-globalSearchScope-option-2" name="multiselect_globalSearchScope" type="checkbox" value="contacts" title="Contacts" class="multiselect-checkbox"><span>Contacts</span></label>
+							</li>
+							<li class="">
+								<label for="ui-multiselect-globalSearchScope-option-3" title="" class="ui-corner-all"><input id="ui-multiselect-globalSearchScope-option-3" name="multiselect_globalSearchScope" type="checkbox" value="leads" title="Leads" class="multiselect-checkbox"><span>Leads</span></label>
+							</li>
+							<li class="">
+								<label for="ui-multiselect-globalSearchScope-option-4" title="" class="ui-corner-all"><input id="ui-multiselect-globalSearchScope-option-4" name="multiselect_globalSearchScope" type="checkbox" value="opportunities" title="Opportunities" class="multiselect-checkbox"><span>Opportunities</span></label>
+							</li>
+						</ul>
+					</div>
+					<input class="global-search global-search-hint ui-autocomplete-input" onfocus="$(this).removeClass(&quot;global-search-hint&quot;); $(this).val(&quot;&quot;);" onblur="$(this).val(&quot;&quot;)" id="globalSearchInput" type="text" value="Search by name, phone, or e-mail" name="globalSearchInput" autocomplete="off"><span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span><span class="z-spinner"></span>
+				</div>
+				<ul id="ShortcutsMenu" class="nav">
+					<li class="parent last">
+						<a href="javascript:void(0);"><span>Create</span></a>
+						<ul>
+							<li>
+								<a href="/Zurmo/app/index.php/accounts/default/create"><span>Account</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/contacts/default/create"><span>Contact</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/conversations/default/create"><span>Conversation</span>
+								</a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/leads/default/create"><span>Lead</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/missions/default/create"><span>Mission</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/opportunities/default/create"><span>Opportunity</span></a>
+							</li>
+							<li>
+								<a href="/Zurmo/app/index.php/reports/default/selectType"><span>Report</span></a>
+							</li>
+							<li class="last">
+								<a href="#" id="yt0"><span>Task</span></a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- End of themes/default/templates/HeaderView.xhtml --></div>
+<div class="AppContainer clearfix GridView">
+<div class="AppNavigation clearfix GridView">
+	<div id="MenuView">
+		<ul class="nav">
+			<li id="home">
+				<a href="/Zurmo/app/index.php/home/default"><span></span><em></em><span>Home</span></a>
+			</li>
+			<li id="mashableInbox">
+				<a href="/Zurmo/app/index.php/mashableInbox/default">
+					<span></span><em></em><span>Inbox<span class="unread-inbox-count">4</span></span></a>
+			</li>
+			<li id="accounts" class="active">
+				<a href="/Zurmo/app/index.php/accounts/default"><span></span><em></em><span>Accounts</span></a>
+			</li>
+			<li id="leads">
+				<a href="/Zurmo/app/index.php/leads/default"><span></span><em></em><span>Leads</span></a>
+			</li>
+			<li id="contacts">
+				<a href="/Zurmo/app/index.php/contacts/default"><span></span><em></em><span>Contacts</span></a>
+			</li>
+			<li id="opportunities">
+				<a href="/Zurmo/app/index.php/opportunities/default"><span></span><em></em><span>Opportunities</span>
+				</a>
+			</li>
+			<li id="marketing" class="hidden-nav-item">
+				<a href="/Zurmo/app/index.php/marketing/default/dashboardDetails">
+					<span></span><em></em><span>Marketing</span></a>
+			</li>
+			<li id="projects" class="hidden-nav-item">
+				<a href="/Zurmo/app/index.php/projects/default/dashboardDetails">
+					<span></span><em></em><span>Projects</span></a>
+			</li>
+			<li id="products" class="hidden-nav-item">
+				<a href="/Zurmo/app/index.php/products/default"><span></span><em></em><span>Products</span></a>
+			</li>
+			<li id="reports" class="hidden-nav-item last">
+				<a href="/Zurmo/app/index.php/reports/default"><span></span><em></em><span>Reports</span></a>
+			</li>
+		</ul>
+		<a class="toggle-hidden-nav-items"></a>
+	</div>
+	<div id="RecentlyViewedView"><h3>Recently Viewed</h3>
+		<ul class="nav">
+			<li class="type-AccountsModule">
+				<a href="/Zurmo/app/index.php/accounts/default/details?id=2">
+					<span></span><em></em><span>Burleigh and Stronginthearm</span></a>
+			</li>
+			<li class="type-ProjectsModule">
+				<a href="/Zurmo/app/index.php/projects/default/details?id=3">
+					<span></span><em></em><span>Atlantic Northern Project</span></a>
+			</li>
+			<li class="type-UsersModule">
+				<a href="/Zurmo/app/index.php/users/default/details?id=1"><span></span><em></em><span>Super User</span>
+				</a>
+			</li>
+			<li class="type-TasksModule">
+				<a href="/Zurmo/app/index.php/tasks/default/details?id=46">
+					<span></span><em></em><span>Prepare telephone directory for the company v2</span></a>
+			</li>
+			<li class="type-CampaignsModule">
+				<a href="/Zurmo/app/index.php/campaigns/default/details?id=8">
+					<span></span><em></em><span>Loyalty Members - Free Lunch</span></a>
+			</li>
+			<li class="type-MarketingListsModule">
+				<a href="/Zurmo/app/index.php/marketingLists/default/details?id=2">
+					<span></span><em></em><span>Sales</span></a>
+			</li>
+			<li class="type-MarketingListsModule">
+				<a href="/Zurmo/app/index.php/marketingLists/default/details?id=1">
+					<span></span><em></em><span>Prospects</span></a>
+			</li>
+			<li class="type-MarketingListsModule">
+				<a href="/Zurmo/app/index.php/marketingLists/default/details?id=5">
+					<span></span><em></em><span>New Offers</span></a>
+			</li>
+			<li class="type-MarketingListsModule">
+				<a href="/Zurmo/app/index.php/marketingLists/default/details?id=4">
+					<span></span><em></em><span>Companies</span></a>
+			</li>
+			<li class="type-MarketingListsModule last">
+				<a href="/Zurmo/app/index.php/marketingLists/default/details?id=3">
+					<span></span><em></em><span>Clients</span></a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="AppContent GridView">
+<div id="StickyDetailsAndRelationsBreadCrumbView" class="BreadCrumbView">
+	<div class="breadcrumbs">
+		<a href="/Zurmo/app/index.php/accounts/default/index">Accounts</a>
+		/ <span>Burleigh and Stronginthearm</span></div>
+</div>
+<div id="AccountDetailsAndRelationsView" class="ConfigurableDetailsAndRelationsView DetailsAndRelationsView ConfigurableMetadataView MetadataView">
+<div class="view-toolbar-container widgets-lock clearfix ">
+	<nav class="pillbox clearfix">
+		<div class="default-button">
+			<a title="View as Kanban Board" href="/Zurmo/app/index.php/accounts/default/details?id=2&amp;kanbanBoard=1">
+				<i class="icon-kanban-board-view-type"><span>Kanban</span></i></a>
+		</div>
+		<div class="default-button">
+			<a title="View as Details" href="/Zurmo/app/index.php/accounts/default/details?id=2&amp;kanbanBoard=">
+				<i class="icon-grid-view-type active"><span>Details</span></i></a>
+		</div>
+		<div class="default-button active">
+			<a id="AddPortletLink" href="#"><span class="button-label">ORG View</span></a>
+		</div>
+		<div class="default-button">
+			<a id="AddPortletLink" href="#"><i class="icon-add"></i><span class="button-label">Add Portlet</span></a>
+		</div>
+		<nav class="default-button">
+			<a title="Lock and prevent layout changes to this screen" href="/Zurmo/app/index.php/accounts/default/details?id=2&amp;lockPortlets=1">
+				<i class="icon-unlock"><!--Lock--></i></a>
+		</nav>
+	</nav>
+</div>
+
+
+<div class="ModelRelationsSecuredPortletFrameView SecuredPortletFrameView PortletFrameView MetadataView">
+<!--new layout-->
+<style>
+
+</style>
+<div class="wrapper">
+	<h1><span class="truncated-title" threedots="Create Account"><span class="ellipsis-content">Organizational Chart for ACCOUNT_NAME (add zero model view))</span></span></h1>
+	<div class="wide form">
+
+		<div id="WorkflowsZeroModelsYetView" class="splash-view ZeroModelsYetView SplashView">
+			<div class="SavedWorkflow">
+				<h2>"Thought is the parent of the deed."</h2>
+				<i>- Thomas Carlyle</i>
+				<div class="large-icon"></div>
+				<p>Make life easier and create a workflow process to automate and streamline your business processes. Just make sure you know what you're doing.</p>
+				<a class="z-button green-button" id="CreateLinkActionElement--yt6" href="/Zurmo/app/index.php/workflows/default/create">
+					<span class="z-label">Create Workflow</span></a>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!--end new layout-->
+</div>
+
+</div>
+</div>
+<div id="FlashMessageView">
+	<div id="FlashMessageBar" class="notify-wrapper"></div>
+</div>
+</div>
+<div id="ModalContainerView">
+	<div id="modalContainer"></div>
+</div>
+<div id="ModalGameNotificationContainerView"></div>
+<div id="GameCoinContainerView"></div>
+<div id="FooterView">
+	<a href="http://www.zurmo.com" id="credit-link" class="clearfix">
+		<span>Copyright © Zurmo Inc., 2013. All rights reserved.</span></a>
+	<div class="ui-chooser">
+		<a class="icon-mobile" href="/Zurmo/app/index.php/zurmo/default/userInterface?userInterface=Mobile">
+			<span>Show Mobile</span></a>
+		<a class="icon-desktop active" href="/Zurmo/app/index.php/zurmo/default/userInterface?userInterface=Desktop">
+			<span>Show Full</span></a>
+	</div>
+</div>
+</div>
+</div>
+</div>
+<ul class="ui-autocomplete ui-menu ui-widget ui-widget-content ui-corner-all" id="ui-id-1" tabindex="0" style="z-index: 10000; display: none;"></ul>
+<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div>
+</body>
+</html>
