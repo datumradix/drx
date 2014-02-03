@@ -1,0 +1,566 @@
+<!DOCTYPE html><!--[if IE 8]>
+<html class="zurmo ie8" lang="en"><![endif]--><!--[if gt IE 8]><!-->
+<html class="zurmo" lang="en"><!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <link rel="apple-touch-icon" sizes="144x144" href="/Zurmo/app/themes/default/images/touch-icon-iphone4.png"/>
+    <link rel="shortcut icon" href="/Zurmo/app/themes/default/ico/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="/Zurmo/app/themes/default/css/zurmo-blue.css">
+    <link rel="stylesheet" type="text/css" href="/Zurmo/app/assets/569e74c9/jquery-ui-timepicker-addon.css"/>
+    <title>ZurmoCRM - Merge Entries</title></head>
+<body class="blue">
+<div id="ContactsPageView" class="ZurmoDefaultPageView ZurmoPageView PageView">
+<div id="ZurmoDefaultView">
+<div class="GridView">
+<div id="HeaderView">
+    <!-- Start of themes/default/templates/HeaderView.xhtml -->
+    <div id="MainLogo" class="zurmo-logo"></div>
+    <div class="GridView">
+        <div id="HeaderLinksView">
+            <div class="clearfix"><a href="#" id="nav-trigger" title="Toggle Navigation">&rsaquo;</a>
+
+                <div id="corp-logo"><a href="/Zurmo/app/index.php/home/default"><img
+                        src="/Zurmo/app/themes/default/images/Zurmo_logo.png" alt="Zurmo Logo" height="32"
+                        width="107"/></a><span>Demo Company Inc.</span></div>
+                <div id="user-toolbar" class="clearfix">
+                    <div id="header-game-dashboard-link-wrapper" class="user-menu-item"><a
+                            id="header-game-dashboard-link" href="#">∂</a></div>
+                    <ul id="user-header-menu" class="user-menu-item nav">
+                        <li class="parent last"><a href="javascript:void(0);"><span>super</span></a>
+                            <ul>
+                                <li>
+                                    <a href="/Zurmo/app/index.php/users/default/profile"><span>My Profile</span></a>
+                                </li>
+                                <li><a href="/Zurmo/app/index.php/gamification/default/leaderboard"><span>Leaderboard</span></a>
+                                </li>
+                                <li><a href="/Zurmo/app/index.php/emailMessages/default/matchingList"><span>Data Cleanup</span></a>
+                                </li>
+                                <li class="last"><a href="/Zurmo/app/index.php/zurmo/default/logout"><span>Sign out</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul id="settings-header-menu" class="user-menu-item nav">
+                        <li class="parent last"><a
+                                href="javascript:void(0);"><span>Administration</span></a>
+                            <ul>
+                                <li><a href="/Zurmo/app/index.php/configuration"><span>Administration</span></a>
+                                </li>
+                                <li>
+                                    <a href="/Zurmo/app/index.php/designer/default"><span>Designer</span></a>
+                                </li>
+                                <li><a href="/Zurmo/app/index.php/import/default"><span>Import</span></a>
+                                </li>
+                                <li><a href="/Zurmo/app/index.php/users/default"><span>Users</span></a></li>
+                                <li>
+                                    <a href="http://www.zurmo.com/needSupport.php"><span>Need Support?</span></a>
+                                </li>
+                                <li class="last"><a href="/Zurmo/app/index.php/zurmo/default/about"><span>About Zurmo</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="GridView">
+            <div id="GlobalSearchAndShortcutsCreateMenuView">
+                <div id="app-search" class="clearfix"><select class="ignore-style" id="globalSearchScope"
+                                                              multiple="multiple" style="display:none;"
+                                                              size="4" name="globalSearchScope[]">
+                    <option value="All" selected="selected">All</option>
+                    <option value="accounts">Accounts</option>
+                    <option value="contacts">Contacts</option>
+                    <option value="leads">Leads</option>
+                    <option value="opportunities">Opportunities</option>
+                </select><input class="global-search global-search-hint"
+                                onblur="" id="globalSearchInput" type="text"
+                                value="Search by name, phone, or e-mail" name="globalSearchInput"/><span
+                        class="z-spinner"></span></div>
+                <ul id="ShortcutsMenu" class="nav">
+                    <li class="parent last active"><a href="javascript:void(0);"><span>Create</span></a>
+                        <ul>
+                            <li><a href="/Zurmo/app/index.php/accounts/default/create"><span>Account</span></a>
+                            </li>
+                            <li><a href="/Zurmo/app/index.php/contacts/default/create"><span>Contact</span></a>
+                            </li>
+                            <li><a href="/Zurmo/app/index.php/conversations/default/create"><span>Conversation</span></a>
+                            </li>
+                            <li><a href="/Zurmo/app/index.php/leads/default/create"><span>Lead</span></a>
+                            </li>
+                            <li><a href="/Zurmo/app/index.php/missions/default/create"><span>Mission</span></a>
+                            </li>
+                            <li><a href="/Zurmo/app/index.php/opportunities/default/create"><span>Opportunity</span></a>
+                            </li>
+                            <li>
+                                <a href="/Zurmo/app/index.php/reports/default/selectType"><span>Report</span></a>
+                            </li>
+                            <li class="last"><a href="#" id="yt0"><span>Task</span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- End of themes/default/templates/HeaderView.xhtml --></div>
+<div class="AppContainer clearfix GridView">
+<div class="AppNavigation clearfix GridView">
+    <div id="MenuView">
+        <ul class="nav">
+            <li id="home"><a
+                    href="/Zurmo/app/index.php/home/default"><span></span><em></em><span>Home</span></a>
+            </li>
+            <li id="mashableInbox"><a
+                    href="/Zurmo/app/index.php/mashableInbox/default"><span></span><em></em><span>Inbox<span
+                    class="unread-inbox-count">8</span></span></a></li>
+            <li id="accounts"><a
+                    href="/Zurmo/app/index.php/accounts/default"><span></span><em></em><span>Accounts</span></a>
+            </li>
+            <li id="leads"><a href="/Zurmo/app/index.php/leads/default"><span></span><em></em><span>Leads</span></a>
+            </li>
+            <li id="contacts" class="active"><a
+                    href="/Zurmo/app/index.php/contacts/default"><span></span><em></em><span>Contacts</span></a>
+            </li>
+            <li id="opportunities"><a
+                    href="/Zurmo/app/index.php/opportunities/default"><span></span><em></em><span>Opportunities</span></a>
+            </li>
+            <li id="marketing" class="hidden-nav-item"><a
+                    href="/Zurmo/app/index.php/marketing/default/dashboardDetails"><span></span><em></em><span>Marketing</span></a>
+            </li>
+            <li id="projects" class="hidden-nav-item"><a
+                    href="/Zurmo/app/index.php/projects/default/dashboardDetails"><span></span><em></em><span>Projects</span></a>
+            </li>
+            <li id="products" class="hidden-nav-item"><a
+                    href="/Zurmo/app/index.php/products/default"><span></span><em></em><span>Products</span></a>
+            </li>
+            <li id="reports" class="hidden-nav-item last"><a
+                    href="/Zurmo/app/index.php/reports/default"><span></span><em></em><span>Reports</span></a>
+            </li>
+        </ul>
+        <a class="toggle-hidden-nav-items"></a></div>
+    <div id="RecentlyViewedView"><h3>Recently Viewed</h3>
+        <ul class="nav">
+
+        </ul>
+    </div>
+</div>
+<div id="ContactEditAndDetailsView"
+     class="AppContent SecuredEditAndDetailsView EditAndDetailsView DetailsView ModelView ConfigurableMetadataView MetadataView">
+
+<div class="wrapper">
+
+<h1><span class="truncated-title"><span class="ellipsis-content">Calendar</span></span></h1>
+
+    <div class="view-toolbar-container toolbar-mbmenu clearfix">
+        <div class="view-toolbar">
+            <ul class="options-menu nav">
+                <li class="parent last"><a href="javascript:void(0);"><span>Options</span></a>
+                    <ul style="display: none;">
+                        <li id="EditLinkActionElement"><a id="EditLinkActionElement-3-yt2" href="/Zurmo/app/index.php/products/default/edit?id=3"><span>Edit</span></a></li>
+                        <li><a id="ProductDeleteLinkActionElement-3-yt3" href="/Zurmo/app/index.php/products/default/delete?id=3"><span>Delete</span></a></li>
+                        <li class="last"><a id="CopyLinkActionElement-3-yt4" href="/Zurmo/app/index.php/products/default/copy?id=3"><span>Clone</span></a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+<div class="wide double-column form">
+
+<form id="edit-form" action="/Zurmo/app/index.php/contacts/default/create" method="post">
+
+
+
+<!-- new layout -->
+<link rel="stylesheet" type="text/css" href="detail-edit-view.css"/>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<link href='fullcalendar/fullcalendar.css' rel='stylesheet' />
+<script src='fullcalendar/fullcalendar.min.js'></script>
+    <script>
+        $(document).ready(function() {
+
+            var date = new Date();
+            var d = date.getDate();
+            var m = date.getMonth();
+            var y = date.getFullYear();
+
+            $('#calendar').fullCalendar({
+                editable: true,
+                events: [
+                    { title: 'All Day Event', start: new Date(y, m, 1) },
+                    { title: 'Long Event', start: new Date(y, m, d-5), end: new Date(y, m, d-2) },
+                    { id: 999, title: 'Repeating Event', start: new Date(y, m, d-3, 16, 0), allDay: false },
+                    { id: 999, title: 'Repeating Event', start: new Date(y, m, d+4, 16, 0), allDay: false },
+                    { title: 'Meeting', start: new Date(y, m, d, 10, 30), allDay: false },
+                    { title: 'Lunch', start: new Date(y, m, d, 12, 0), end: new Date(y, m, d, 14, 0), allDay: false },
+                    { title: 'Birthday Party', start: new Date(y, m, d+1, 19, 0), end: new Date(y, m, d+1, 22, 30), allDay: false },
+                    { title: 'Click for Google', start: new Date(y, m, 28), end: new Date(y, m, 29), url: 'http://google.com/' }
+                ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                //defaultView: 'agendaWeek',
+                //allDaySlot: false,
+                loading: function(bool) {
+                    if (bool) $('#loading').show();
+                    else $('#loading').hide();
+                }
+                ,eventRender: function(event, element) {
+                    var c = parseInt('FFFFFF',16) * Math.random();
+                    $(element).css({backgroundColor: '#' + c, borderColor: '#' + c});
+                }
+                /*,eventRender: function(event, element) {
+                    element.qtip({
+                        content: '<h3>' + event.title + '</h3>' +
+                                '<strong><em>' + event.human_date + '</em></strong>' +
+                                '<p>' + event.description + '</p>' +
+                                '<p class="event-type' + event.event_type + '">' + event.nice_list + '</p>'
+                        ,position: {
+                            my: 'bottom center',
+                            at: 'top center',
+                            target: 'mouse',
+                            viewport: $(window)
+                        },
+                        hide: {
+                            fixed: true
+                        },
+                        style: 'qtip-shadow'
+                    });
+                }*/
+            });
+
+            $( "#datepicker" ).datepicker({
+                onSelect: function(){
+                    var day = $("#datepicker").datepicker('getDate').getDate();
+                    var month = $("#datepicker").datepicker('getDate').getMonth(); //+1
+                    var year = $("#datepicker").datepicker('getDate').getFullYear();
+                    $('#calendar').fullCalendar( 'gotoDate', year, month, day );
+                }
+            });
+
+        });
+    </script>
+<style>
+    .wrapper{
+        position: relative;
+    }
+    .view-toolbar-container{
+        position: absolute;
+        top: 6px;
+        right: 0;
+    }
+    #calendar {
+        width: 100%;
+        margin: 0 auto;
+    }
+    .fc-header{
+        text-transform: capitalize;
+    }
+    #calendar td{
+        padding: 0;
+    }
+    .calendar-view .left-column{
+        width: 25%;
+    }
+    .calendar-view .right-column{
+        width: 75%;
+    }
+    .calendars-list{
+        margin-top: 30px;
+    }
+    .calendars-list ul{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .calendars-list > ul > li{
+        display: block;
+        padding: 5px 0;
+        line-height: 1;
+    }
+    .calendars-list .edit-row-menu > li > a:before{
+        line-height: 12px;
+    }
+    .calendars-list  a{
+        color: #545454 !important;
+    }
+    .cal-color{
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        background: #3A87AD;
+        margin-right: 4px;
+        position: relative;
+        top: 1px;
+    }
+    .cal-color.outline{
+        background: none;
+        border:1px solid salmon;
+    }
+    .calendars-list + .calendars-list{
+        margin-top:30px;
+    }
+    .calendars-list + .calendars-list .cal-color{
+        background: darkgoldenrod;
+    }
+    .calendars-list + .calendars-list .cal-color.outline{
+        background: none;
+        border:1px solid rosybrown;
+    }
+    .task-subscribers{
+        border-top:none;
+        padding: 0 0 0 16px;
+        margin-top:5px;
+        box-shadow: none;
+    }
+    .quick-insert{
+        padding: 0;
+        margin-top: 30px;
+    }
+    .quick-insert .details-item-editable{
+        padding-left: 0;
+        padding-bottom: 5px;
+    }
+    .quick-insert .simple-link{
+        margin: 5px 0 0 0;
+        display: block;
+    }
+    .symbly{
+         font-weight:normal !important;
+         font-size:20px;
+         font-family: "zurmo_gamification_symbly_rRg";
+    }
+</style>
+
+    <section class="calendar-view">
+        <div class="left-column">
+            <input type="text" id="datepicker" placeholder="Search For Date" />
+
+            <div class="quick-insert mobile-view">
+                <h3>Quickly create an event                                         <a class="symbly" href="#">÷</a>+permissions in a tooltip</h3>
+                <div class="details-item-editable full-row clearfix">
+                    <label><strong>Name<span class="required">*</span></strong></label>
+                    <div><input type="text" maxlength="64"/></div>
+                </div>
+
+                <div class="details-item-editable full-row clearfix">
+                    <label><strong>Description</strong></label>
+                    <div><input type="text" maxlength="64"/></div>
+                </div>
+
+                <div class="details-item-editable full-row clearfix">
+                    <label><strong>Related Account/Opp<span class="required">*</span></strong></label>
+                    <div class="has-model-select">
+                        <input onblur="clearIdFromAutoCompleteField($(this).val(), 'Opportunity_account_id');"
+                               id="Opportunity_account_name" type="text" value="" name="Opportunity_account_name"
+                               class="ui-autocomplete-input" autocomplete="off">
+                        <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+                        <a id="Opportunity_account_SelectLink" href="#">
+                            <span class="model-select-icon"></span>
+                            <span class="z-spinner"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="details-item-editable full-row clearfix">
+                    <label><strong>Event Date Time<span class="required">*</span></strong></label>
+                    <div class="has-date-select">
+                        <input id="Account_latestActivityDateTime"
+                               name="Account[latestActivityDateTime]" style="position:relative;z-index:10000;" type="text" class="hasDatepicker">
+                        <button type="button" class="ui-datepicker-trigger"><span><!--Date--></span></button>
+                    </div>
+                    <a class="simple-link" href="#">add end date?</a>
+                </div>
+
+            </div>
+
+            <div class="calendars-list my-calendars">
+                <h3>My Calendars</h3>
+                <ul>
+                    <li class="clearfix">
+                        <a href="">
+                            <span class="cal-color"></span>Calendar Name
+                        </a>
+                        <ul class="options-menu edit-row-menu nav">
+                            <li class="parent last"><a href="javascript:void(0);"><span></span></a>
+                                <ul style="display: none;">
+                                    <li><a id="EditModalLinkActionElement-79-yt11" href="#"><span>Edit</span></a></li>
+                                    <li><a id="CopyModalLinkActionElement-79-yt12" href="#"><span>Clone</span></a></li>
+                                    <li class="last"><a id="list-viewAccountDetailsAndRelationsView_12-delete-79" href="#"><span>Delete</span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="clearfix">
+                        <a href="">
+                            <span class="cal-color outline"></span>Calendar Name
+                        </a>
+                        <ul class="options-menu edit-row-menu nav">
+                            <li class="parent last"><a href="javascript:void(0);"><span></span></a>
+                                <ul style="display: none;">
+                                    <li><a id="EditModalLinkActionElement-79-yt11" href="#"><span>Edit</span></a></li>
+                                    <li><a id="CopyModalLinkActionElement-79-yt12" href="#"><span>Clone</span></a></li>
+                                    <li class="last"><a id="list-viewAccountDetailsAndRelationsView_12-delete-79" href="#"><span>Delete</span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="clearfix">
+                        <a href="">
+                            + Add Calendar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+
+
+            <div class="calendars-list my-calendars">
+                <h3>Shared with me</h3>
+                <ul>
+                    <li class="clearfix">
+                        <a href="">
+                            <span class="cal-color"></span>Calendar Name by <strong>User Name</strong>
+                        </a>
+
+                        <ul class="options-menu edit-row-menu nav">
+                            <li class="parent last"><a href="javascript:void(0);"><span></span></a>
+                                <ul style="display: none;">
+                                    <li><a id="EditModalLinkActionElement-79-yt11" href="#"><span>Edit</span></a></li>
+                                    <li><a id="CopyModalLinkActionElement-79-yt12" href="#"><span>Clone</span></a></li>
+                                    <li class="last"><a id="list-viewAccountDetailsAndRelationsView_12-delete-79" href="#"><span>Delete</span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <div class="task-subscribers">
+                            <a title="Jason Blue" class="task-owner" href="/Zurmo/app/index.php/users/default/details?id=3">
+                                <img class="gravatar" width="20" height="20" src="http://www.gravatar.com/avatar/cb41d4a1055f65be920fadb3d574eaea?s=20&amp;d=identicon&amp;r=g" alt="Jason Blue">
+                            </a>
+                            <a title="Mary Smith" href="/Zurmo/app/index.php/users/default/details?id=7">
+                                <img class="gravatar" width="20" height="20" src="http://www.gravatar.com/avatar/bcb7cb87747d8d8b69787d2c0032864d?s=20&amp;d=identicon&amp;r=g" alt="Mary Smith">
+                            </a>
+                            <a class="subscribe-task-link" title="Subscribe" href="#"><i class="icon-subscribe"></i></a>
+                        </div>
+                    </li>
+                    <li class="clearfix">
+                        <a href="">
+                            <span class="cal-color outline"></span>Calendar Name by <strong>Jason Green</strong>
+                        </a>
+                        <ul class="options-menu edit-row-menu nav">
+                            <li class="parent last"><a href="javascript:void(0);"><span></span></a>
+                                <ul style="display: none;">
+                                    <li><a id="EditModalLinkActionElement-79-yt11" href="#"><span>Edit</span></a></li>
+                                    <li><a id="CopyModalLinkActionElement-79-yt12" href="#"><span>Clone</span></a></li>
+                                    <li class="last"><a id="list-viewAccountDetailsAndRelationsView_12-delete-79" href="#"><span>Delete</span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="task-subscribers">
+                            <a title="Jason Blue" class="task-owner" href="/Zurmo/app/index.php/users/default/details?id=3">
+                                <img class="gravatar" width="20" height="20" src="http://www.gravatar.com/avatar/cb41d4a1055f65be920fadb3d574eaea?s=20&amp;d=identicon&amp;r=g" alt="Jason Blue">
+                            </a>
+                            <a title="Mary Smith" href="/Zurmo/app/index.php/users/default/details?id=7">
+                                <img class="gravatar" width="20" height="20" src="http://www.gravatar.com/avatar/bcb7cb87747d8d8b69787d2c0032864d?s=20&amp;d=identicon&amp;r=g" alt="Mary Smith">
+                            </a>
+                            <a class="subscribe-task-link" title="Subscribe" href="#"><i class="icon-subscribe"></i></a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="right-column">
+            <div id="loading" style="display:none">loading...</div>
+            <div id="calendar"></div>
+        </div>
+    </section>
+
+<!-- end new layout -->
+
+
+<div class="right-column" style="display: none">
+    <div class="right-side-edit-view-panel"><h3>Rights and Permissions</h3>
+
+        <div id="owner-box"><label for="Contact_owner_id" class="required">Owner
+            <span class="required">*</span></label><input name="Contact[owner][id]"
+                                                          id="Contact_owner_id"
+                                                          value="1" type="hidden"/>
+
+            <div class="has-model-select"><input
+                    onblur=""
+                    id="Contact_owner_name" type="text" value="Super User"
+                    name="Contact_owner_name"/><a id="Contact_owner_SelectLink"
+                                                  href="#"><span
+                    class="model-select-icon"></span><span class="z-spinner"></span></a>
+            </div>
+        </div>
+        <label>Who can read and write</label>
+
+        <div class="radio-input"><input
+                id="Contact_explicitReadWriteModelPermissions_type_0" value=""
+                type="radio"
+                name="Contact[explicitReadWriteModelPermissions][type]"/><label
+                for="Contact_explicitReadWriteModelPermissions_type_0">Owner</label>
+        </div>
+        <div class="radio-input"><input
+                id="Contact_explicitReadWriteModelPermissions_type_1" value="2"
+                type="radio"
+                name="Contact[explicitReadWriteModelPermissions][type]"/><label
+                for="Contact_explicitReadWriteModelPermissions_type_1">Owner and
+            users in</label>&#160;
+            <div class="hasDropDown"><span class="select-arrow"></span><select
+                    id="Contact_explicitReadWriteModelPermissions_nonEveryoneGroup"
+                    onclick=""
+                    name="Contact[explicitReadWriteModelPermissions][nonEveryoneGroup]">
+                <option value="3">East</option>
+                <option value="5">East Channel Sales</option>
+                <option value="7">East Direct Sales</option>
+                <option value="4">West</option>
+                <option value="6">West Channel Sales</option>
+                <option value="8">West Direct Sales</option>
+            </select></div>
+        </div>
+        <div class="radio-input"><input
+                id="Contact_explicitReadWriteModelPermissions_type_2" value="1"
+                checked="checked" type="radio"
+                name="Contact[explicitReadWriteModelPermissions][type]"/><label
+                for="Contact_explicitReadWriteModelPermissions_type_2">Everyone</label>
+        </div>
+    </div>
+</div>
+
+
+</form>
+<div id="modalContainer-edit-form"></div>
+</div>
+</div>
+</div>
+<div id="FlashMessageView">
+    <div id="FlashMessageBar"></div>
+</div>
+</div>
+<div id="ModalContainerView">
+    <div id="modalContainer"></div>
+</div>
+<div id="ModalGameNotificationContainerView"></div>
+<div id="GameCoinContainerView"></div>
+<div id="FooterView"><a href="http://www.zurmo.com" id="credit-link" class="clearfix"><span>Copyright &#169; Zurmo Inc., 2013. All rights reserved.</span></a>
+
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>
