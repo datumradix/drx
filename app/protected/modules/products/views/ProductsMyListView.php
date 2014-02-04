@@ -35,26 +35,66 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * Class used for the dashboard, selectable by users to display a list of their products or filtered any way.
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class ProductsMyListView extends SecuredMyListView
     {
-        /**
-         * @return array
-         */
         public static function getDefaultMetadata()
         {
             $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers', 'checkListItems', 'comments'),
-                    'availableOperatorsTypes' =>
-                        array('status' => ModelAttributeToOperatorTypeUtil::AVAILABLE_OPERATORS_TYPE_DROPDOWN),
-                    'triggerValueElementTypes' =>
-                        array('status' => 'TaskStatusStaticDropDownForWizardModel'),
+                'perUser' => array(
+                    'title' => "eval:Zurmo::t('ProductsModule', 'My ProductsModulePluralLabel', LabelUtil::getTranslationParamsForAllModules())",
+                    'searchAttributes' => array('ownedItemsOnly' => true),
+                ),
+                'global' => array(
+                    'panels' => array(
+                        array(
+                            'rows' => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'quantity', 'type' => 'integer'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                            ),
+                        ),
                     ),
+                ),
             );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            return $metadata;
+        }
+
+        public static function getModuleClassName()
+        {
+            return 'ProductsModule';
+        }
+
+        public static function getDisplayDescription()
+        {
+            return Zurmo::t('ProductsModule', 'My ProductsModulePluralLabel', LabelUtil::getTranslationParamsForAllModules());
+        }
+
+        protected function getSearchModel()
+        {
+            $modelClassName = $this->modelClassName;
+            return new ProductsSearchForm(new $modelClassName(false));
+        }
+
+        protected static function getConfigViewClassName()
+        {
+            return 'ProductsMyListConfigView';
         }
     }
 ?>

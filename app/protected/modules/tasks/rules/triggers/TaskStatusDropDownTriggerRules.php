@@ -34,13 +34,10 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ZurmoUrlManager extends CUrlManager
+    /**
+     * Class to help evaluate TaskStatusField triggers against model values.
+     */
+    class TaskStatusDropDownTriggerRules extends StatusDropDownTriggerRules
     {
-        public function getPositionOfPathInUrl($keyword)
-        {
-            $requestedUrl = Yii::app()->getRequest()->getUrl();
-            $position = strpos(trim($requestedUrl, '/'), trim($keyword, '/'));
-            return $position;
-        }
     }
 ?>

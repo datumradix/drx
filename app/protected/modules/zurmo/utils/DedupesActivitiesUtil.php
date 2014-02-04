@@ -34,13 +34,20 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ZurmoUrlManager extends CUrlManager
+    /**
+     * Class DedupesActivitiesUtil
+     * Used as an helper to count total activities for each dupe
+     */
+    class DedupesActivitiesUtil extends LatestActivitiesUtil
     {
-        public function getPositionOfPathInUrl($keyword)
+        /**
+         * Override so it don't resolve the $searchAttributesData for LatestActivities
+         * @param $searchAttributesData
+         * @param $mashableActivityRules
+         */
+        protected static function resolveSearchAttributeDataForLatestActivities(& $searchAttributesData, $mashableActivityRules)
         {
-            $requestedUrl = Yii::app()->getRequest()->getUrl();
-            $position = strpos(trim($requestedUrl, '/'), trim($keyword, '/'));
-            return $position;
+            return;
         }
     }
 ?>
