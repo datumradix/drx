@@ -34,13 +34,11 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ZurmoUrlManager extends CUrlManager
+    class ProjectsDefaultPortletController extends ZurmoPortletController
     {
-        public function getPositionOfPathInUrl($keyword)
+        public function actionHome($action)
         {
-            $requestedUrl = Yii::app()->getRequest()->getUrl();
-            $position = strpos(trim($requestedUrl, '/'), trim($keyword, '/'));
-            return $position;
+            $this->redirect(array('home/' . $action));
         }
     }
 ?>

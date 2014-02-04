@@ -35,26 +35,61 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with the Tasks module.
+     * View for showing the configuration parameters for the @see ProductsMyListView.
      */
-    class TasksWorkflowRules extends ActivitiesWorkflowRules
+    class ProductsMyListConfigView extends MyListConfigView
     {
-        /**
-         * @return array
-         */
         public static function getDefaultMetadata()
         {
             $metadata = array(
-                'Task' => array(
-                    'cannotTrigger' =>
-                        array('files', 'notificationSubscribers', 'checkListItems', 'comments'),
-                    'availableOperatorsTypes' =>
-                        array('status' => ModelAttributeToOperatorTypeUtil::AVAILABLE_OPERATORS_TYPE_DROPDOWN),
-                    'triggerValueElementTypes' =>
-                        array('status' => 'TaskStatusStaticDropDownForWizardModel'),
+                'global' => array(
+                    'toolbar' => array(
+                        'elements' => array(
+                            array('type' => 'SaveButton'),
+                        ),
                     ),
+                    'nonPlaceableAttributeNames' => array(
+                        'anyMixedAttributes',
+                    ),
+                    'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
+                    'panels' => array(
+                        array(
+                            'title' => 'List Filters',
+                            'rows' => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'stage', 'type' => 'DropDownAsMultiSelect', 'addBlank' => true),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'ownedItemsOnly', 'type' => 'CheckBox'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
             );
-            return array_merge(parent::getDefaultMetadata(), $metadata);
+            return $metadata;
+        }
+
+        public static function getDisplayDescription()
+        {
+            return Zurmo::t('ProductsModule', 'My ProductsModulePluralLabel', LabelUtil::getTranslationParamsForAllModules());
+        }
+
+        public static function getModelForMetadataClassName()
+        {
+            return 'ProductsSearchForm';
         }
     }
 ?>
