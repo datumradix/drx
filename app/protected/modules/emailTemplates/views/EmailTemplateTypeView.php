@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,64 +31,41 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     /**
-     * Factory for creating workflow wizard views of
-     * the appropriate type.
+     * View for selecting a type of emailTemplate to create
      */
-    class WorkflowWizardViewFactory
+    class EmailTemplateTypeView extends WizardTypeView
     {
         /**
-         * @param Workflow $workflow
-         * @param $isBeingCopied
-         * @return View
-         * @throws NotSupportedException if the type provided is not valid
+         * @return string
          */
-        public static function makeViewFromWorkflow(Workflow $workflow, $isBeingCopied = false)
+        public function getTitle()
         {
-            assert('is_bool($isBeingCopied)');
-            $type                      = $workflow->getType();
-            $workflowToWizardFormAdapter = new WorkflowToWizardFormAdapter($workflow);
-            if ($type == Workflow::TYPE_ON_SAVE)
-            {
-                $viewClassName = 'OnSaveWorkflowWizardView';
-                $form          = $workflowToWizardFormAdapter->makeOnSaveWizardForm();
-            }
-            elseif ($type == Workflow::TYPE_BY_TIME)
-            {
-                $viewClassName = 'ByTimeWorkflowWizardView';
-                $form          = $workflowToWizardFormAdapter->makeByTimeWizardForm();
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-            return new $viewClassName($form, $isBeingCopied);
+            return Zurmo::t('EmailTemplatesModule', 'Email Template Wizard');
         }
 
         /**
-         * @param Workflow $workflow
-         * @return  ByTimeWorkflowStepsAndProgressBarForWizardView|
-         *          OnSaveWorkflowStepsAndProgressBarForWizardView
-         * @throws NotSupportedException
+         * @return array
          */
-        public static function makeStepsAndProgressBarViewFromWorkflow(Workflow $workflow)
+        protected function getTypeData()
         {
-            $type = $workflow->getType();
-            if ($type == Workflow::TYPE_BY_TIME)
+            $sourceModuleType   = $this->getSourceModuleType();
+            $baseRoute          = "emailTemplates/default/create?type=${sourceModuleType}&builtType=";
+            $builtTypes         = EmailTemplate::getBuiltTypeDropDownArray();
+            $types = array();
+            foreach ($builtTypes as $builtType => $titleLabel)
             {
-                return new ByTimeWorkflowStepsAndProgressBarForWizardView();
+                $types['clearCache'][]    = array('titleLabel' => $titleLabel, 'route' => $baseRoute . $builtType);
             }
-            elseif ($type == Workflow::TYPE_ON_SAVE)
-            {
-                return new OnSaveWorkflowStepsAndProgressBarForWizardView();
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
+            return $types;
+        }
+
+        protected function getSourceModuleType()
+        {
+            return Yii::app()->request->getQuery('type');
         }
     }
 ?>

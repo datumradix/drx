@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,64 +31,46 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
     /**
-     * Factory for creating workflow wizard views of
+     * Factory for creating emailTemplate wizard views of
      * the appropriate type.
      */
-    class WorkflowWizardViewFactory
+    class EmailTemplateWizardViewFactory
     {
         /**
-         * @param Workflow $workflow
-         * @param $isBeingCopied
+         * @param EmailTemplate $emailTemplate
          * @return View
-         * @throws NotSupportedException if the type provided is not valid
          */
-        public static function makeViewFromWorkflow(Workflow $workflow, $isBeingCopied = false)
+        public static function makeViewFromEmailTemplate(EmailTemplate $emailTemplate)
         {
-            assert('is_bool($isBeingCopied)');
-            $type                      = $workflow->getType();
-            $workflowToWizardFormAdapter = new WorkflowToWizardFormAdapter($workflow);
-            if ($type == Workflow::TYPE_ON_SAVE)
-            {
-                $viewClassName = 'OnSaveWorkflowWizardView';
-                $form          = $workflowToWizardFormAdapter->makeOnSaveWizardForm();
-            }
-            elseif ($type == Workflow::TYPE_BY_TIME)
-            {
-                $viewClassName = 'ByTimeWorkflowWizardView';
-                $form          = $workflowToWizardFormAdapter->makeByTimeWizardForm();
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-            return new $viewClassName($form, $isBeingCopied);
+            $viewClassName                      = static::getViewFromEmailTemplateBuiltType($emailTemplate->builtType);
+            $emailTemplateToWizardFormAdapter   = new EmailTemplateToWizardFormAdapter($emailTemplate);
+            $form                               = $emailTemplateToWizardFormAdapter->makeFormByBuiltType();
+            return new $viewClassName($form);
         }
 
         /**
-         * @param Workflow $workflow
-         * @return  ByTimeWorkflowStepsAndProgressBarForWizardView|
-         *          OnSaveWorkflowStepsAndProgressBarForWizardView
-         * @throws NotSupportedException
+         * @return  BuilderEmailTemplateStepsAndProgressBarForWizardView | NullView
          */
-        public static function makeStepsAndProgressBarViewFromWorkflow(Workflow $workflow)
+        public static function makeStepsAndProgressBarViewFromEmailTemplate(EmailTemplate $emailTemplate)
         {
-            $type = $workflow->getType();
-            if ($type == Workflow::TYPE_BY_TIME)
+            if ($emailTemplate->builtType == EmailTemplate::BUILT_TYPE_BUILDER_TEMPLATE)
             {
-                return new ByTimeWorkflowStepsAndProgressBarForWizardView();
+                return new BuilderEmailTemplateStepsAndProgressBarForWizardView();
             }
-            elseif ($type == Workflow::TYPE_ON_SAVE)
+            return new NullView();
+        }
+
+        protected static function getViewFromEmailTemplateBuiltType($type)
+        {
+            if ($type == EmailTemplate::BUILT_TYPE_BUILDER_TEMPLATE)
             {
-                return new OnSaveWorkflowStepsAndProgressBarForWizardView();
+                return 'BuilderEmailTemplateWizardView';
             }
-            else
-            {
-                throw new NotSupportedException();
-            }
+            return 'ClassicEmailTemplateWizardView';
         }
     }
 ?>

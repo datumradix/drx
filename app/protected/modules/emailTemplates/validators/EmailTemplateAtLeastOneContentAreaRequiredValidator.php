@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,64 +31,28 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Factory for creating workflow wizard views of
-     * the appropriate type.
-     */
-    class WorkflowWizardViewFactory
+    class EmailTemplateAtLeastOneContentAreaRequiredValidator extends AtLeastOneContentAreaRequiredValidator
     {
-        /**
-         * @param Workflow $workflow
-         * @param $isBeingCopied
-         * @return View
-         * @throws NotSupportedException if the type provided is not valid
-         */
-        public static function makeViewFromWorkflow(Workflow $workflow, $isBeingCopied = false)
+        protected function validateAttribute($object, $attribute)
         {
-            assert('is_bool($isBeingCopied)');
-            $type                      = $workflow->getType();
-            $workflowToWizardFormAdapter = new WorkflowToWizardFormAdapter($workflow);
-            if ($type == Workflow::TYPE_ON_SAVE)
+            // TODO: @Shoaibi: Critical99: For builder: how do we validate that at least one content was provided?
+            // TODO: @Shoaibi: Critical99: we may have to disable this validator and then validate that user does put something on canvas.
+            if ($object->builtType == EmailTemplate::BUILT_TYPE_BUILDER_TEMPLATE)
             {
-                $viewClassName = 'OnSaveWorkflowWizardView';
-                $form          = $workflowToWizardFormAdapter->makeOnSaveWizardForm();
+                return true;
             }
-            elseif ($type == Workflow::TYPE_BY_TIME)
+            $textContent = $this->textContentPropertyName;
+            if ($object->builtType == EmailTemplate::BUILT_TYPE_PLAIN_TEXT_ONLY &&
+                (empty($object->$textContent) && ($attribute == $textContent)))
             {
-                $viewClassName = 'ByTimeWorkflowWizardView';
-                $form          = $workflowToWizardFormAdapter->makeByTimeWizardForm();
+                $message = Zurmo::t('EmailTemplatesModule', 'Text Content cannot be blank.');
+                $this->addError($object, $attribute, $message);
+                return false;
             }
-            else
-            {
-                throw new NotSupportedException();
-            }
-            return new $viewClassName($form, $isBeingCopied);
-        }
-
-        /**
-         * @param Workflow $workflow
-         * @return  ByTimeWorkflowStepsAndProgressBarForWizardView|
-         *          OnSaveWorkflowStepsAndProgressBarForWizardView
-         * @throws NotSupportedException
-         */
-        public static function makeStepsAndProgressBarViewFromWorkflow(Workflow $workflow)
-        {
-            $type = $workflow->getType();
-            if ($type == Workflow::TYPE_BY_TIME)
-            {
-                return new ByTimeWorkflowStepsAndProgressBarForWizardView();
-            }
-            elseif ($type == Workflow::TYPE_ON_SAVE)
-            {
-                return new OnSaveWorkflowStepsAndProgressBarForWizardView();
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
+            return parent::validateAttribute($object, $attribute);
         }
     }
 ?>
