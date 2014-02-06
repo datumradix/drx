@@ -34,61 +34,7 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Factory for creating workflow wizard views of
-     * the appropriate type.
-     */
-    class WorkflowWizardViewFactory
+    class FailedToResolveSerializedDataToHtmlException extends CException
     {
-        /**
-         * @param Workflow $workflow
-         * @param $isBeingCopied
-         * @return View
-         * @throws NotSupportedException if the type provided is not valid
-         */
-        public static function makeViewFromWorkflow(Workflow $workflow, $isBeingCopied = false)
-        {
-            assert('is_bool($isBeingCopied)');
-            $type                      = $workflow->getType();
-            $workflowToWizardFormAdapter = new WorkflowToWizardFormAdapter($workflow);
-            if ($type == Workflow::TYPE_ON_SAVE)
-            {
-                $viewClassName = 'OnSaveWorkflowWizardView';
-                $form          = $workflowToWizardFormAdapter->makeOnSaveWizardForm();
-            }
-            elseif ($type == Workflow::TYPE_BY_TIME)
-            {
-                $viewClassName = 'ByTimeWorkflowWizardView';
-                $form          = $workflowToWizardFormAdapter->makeByTimeWizardForm();
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-            return new $viewClassName($form, $isBeingCopied);
-        }
-
-        /**
-         * @param Workflow $workflow
-         * @return  ByTimeWorkflowStepsAndProgressBarForWizardView|
-         *          OnSaveWorkflowStepsAndProgressBarForWizardView
-         * @throws NotSupportedException
-         */
-        public static function makeStepsAndProgressBarViewFromWorkflow(Workflow $workflow)
-        {
-            $type = $workflow->getType();
-            if ($type == Workflow::TYPE_BY_TIME)
-            {
-                return new ByTimeWorkflowStepsAndProgressBarForWizardView();
-            }
-            elseif ($type == Workflow::TYPE_ON_SAVE)
-            {
-                return new OnSaveWorkflowStepsAndProgressBarForWizardView();
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-        }
     }
 ?>

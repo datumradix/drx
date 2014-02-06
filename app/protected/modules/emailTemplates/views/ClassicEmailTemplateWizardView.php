@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,64 +31,40 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Factory for creating workflow wizard views of
-     * the appropriate type.
-     */
-    class WorkflowWizardViewFactory
+    class ClassicEmailTemplateWizardView extends EmailTemplateWizardView
     {
         /**
-         * @param Workflow $workflow
-         * @param $isBeingCopied
-         * @return View
-         * @throws NotSupportedException if the type provided is not valid
+         * @return string
          */
-        public static function makeViewFromWorkflow(Workflow $workflow, $isBeingCopied = false)
+        public function getTitle()
         {
-            assert('is_bool($isBeingCopied)');
-            $type                      = $workflow->getType();
-            $workflowToWizardFormAdapter = new WorkflowToWizardFormAdapter($workflow);
-            if ($type == Workflow::TYPE_ON_SAVE)
-            {
-                $viewClassName = 'OnSaveWorkflowWizardView';
-                $form          = $workflowToWizardFormAdapter->makeOnSaveWizardForm();
-            }
-            elseif ($type == Workflow::TYPE_BY_TIME)
-            {
-                $viewClassName = 'ByTimeWorkflowWizardView';
-                $form          = $workflowToWizardFormAdapter->makeByTimeWizardForm();
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-            return new $viewClassName($form, $isBeingCopied);
+            return parent::getTitle() . ' - ' . Zurmo::t('EmailTemplatesModule', 'Classic');
         }
 
-        /**
-         * @param Workflow $workflow
-         * @return  ByTimeWorkflowStepsAndProgressBarForWizardView|
-         *          OnSaveWorkflowStepsAndProgressBarForWizardView
-         * @throws NotSupportedException
-         */
-        public static function makeStepsAndProgressBarViewFromWorkflow(Workflow $workflow)
+        protected function resolveContainingViews(WizardActiveForm $form)
         {
-            $type = $workflow->getType();
-            if ($type == Workflow::TYPE_BY_TIME)
-            {
-                return new ByTimeWorkflowStepsAndProgressBarForWizardView();
-            }
-            elseif ($type == Workflow::TYPE_ON_SAVE)
-            {
-                return new OnSaveWorkflowStepsAndProgressBarForWizardView();
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
+            $views              = array();
+            $views[]            = new GeneralDataForEmailTemplateWizardView($this->model, $form);
+            return $views;
+        }
+
+        protected function renderGeneralDataNextPageLinkScript($formName)
+        {
+            return "
+                    if (linkId == '" . GeneralDataForEmailTemplateWizardView::getNextPageLinkId() . "')
+                    {
+                        " . $this->getSaveAjaxString($formName) . "
+                    }
+                    else
+                    {
+                        $('#" . $formName . "').find('.attachLoadingTarget').removeClass('loading');
+                        $('#" . $formName . "').find('.attachLoadingTarget').removeClass('loading-ajax-submit');
+                        $('#" . $formName . "').find('.attachLoadingTarget').removeClass('attachLoadingTarget');
+                    }
+                    ";
         }
     }
 ?>
