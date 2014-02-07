@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html class="zurmo with-padding" lang="en"
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<script type="text/javascript" src="jquery-2.1.0.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="icon-font.css" />
+	<link rel="stylesheet/less" type="text/css" id="default-theme" href="/Zurmo/app/themes/default/less/default-theme.less"/>
+	<script type="text/javascript" src="less-1.2.0.min.js"></script>
+	<title>ZurmoCRM</title>
+</head>
+<body class="blue nav-closed">
+	<header class="HeaderView">
+		<div class="container clearfix">
+			<div class="logo-and-search">
+				<a href="/Zurmo/app/index.php/home/default" id="corp-logo" class="clearfix">
+					<img src="/Zurmo/app/themes/default/images/Zurmo_logo.png" alt="Zurmo Logo" height="32" width="107"/>
+					<span>Demo Company Inc.</span>
+				</a>
+				<div id="app-search" class="clearfix">
+						<select class="ignore-style" id="globalSearchScope" multiple="multiple" style="display: none;" size="4" name="globalSearchScope[]">
+						<option value="All" selected="selected">All</option>
+						<option value="accounts">Accounts</option>
+						<option value="contacts">Contacts</option>
+						<option value="leads">Leads</option>
+						<option value="opportunities">Opportunities</option>
+					</select>
+					<button type="button" class="global-search-loopa" aria-haspopup="true"><span></span></button>
+					<div class="ui-multiselect-menu ui-widget ui-widget-content ui-corner-all">
+						<div class="ui-widget-header ui-corner-all ui-multiselect-header ui-helper-clearfix" style="display: none;">
+							<ul class="ui-helper-reset">
+								<li class="ui-multiselect-close">
+									<a href="#" class="ui-multiselect-close">
+										<span class="ui-icon ui-icon-circle-close"></span></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<input class="global-search global-search-hint ui-autocomplete-input" onfocus="$(this).removeClass(&quot;global-search-hint&quot;); $(this).val(&quot;&quot;);" onblur="$(this).val(&quot;&quot;)" id="globalSearchInput" type="text" value="Search by name, phone, or e-mail" name="globalSearchInput" autocomplete="off"><span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span><span class="z-spinner"></span>
+				</div>
+			</div>
+			<div class="user-actions clearfix">
+				<div id="user-toolbar" class="clearfix">
+					<ul id="settings-header-menu" class="user-menu-item nav">
+						<li class="parent last">
+							<a href="javascript:void(0);"><span>Administration</span></a>
+						</li>
+					</ul>
+					<div id="header-game-dashboard-link-wrapper" class="user-menu-item">
+						<a id="header-game-dashboard-link" href="#">∂</a>
+					</div>
+					<div id="header-calendar-link" class="user-menu-item">
+						<a id="header-game-dashboard-link" href="#">U</a>
+					</div>
+					<ul id="user-header-menu" class="user-menu-item nav">
+						<li class="parent last active">
+							<a href="javascript:void(0);">
+								<span class="avatar-holder">
+									<img id="avatar" src="http://zurmo.com/img/amit.png" />super</span>
+							</a>
+						</li>
+					</ul>
+					<ul id="ShortcutsMenu" class="nav">
+						<li class="parent last">
+							<a href="javascript:void(0);"><span>Create</span></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</header>
+	<section class="AppContainer container clearfix">
+		<nav class="AppNavigation">
+			<div id="MenuView">
+				<ul class="nav">
+					<li id="home">
+						<a href="/Zurmo/app/index.php/home/default"><span></span><em></em><span class="hideme">Home</span></a>
+					</li>
+					<li id="mashableInbox">
+						<a href="/Zurmo/app/index.php/mashableInbox/default">
+							<span></span><em></em><span class="hideme">Inbox<span class="unread-inbox-count">8</span></span>
+						</a>
+					</li>
+					<li id="accounts">
+						<a href="/Zurmo/app/index.php/accounts/default">
+							<span></span><em></em><span class="hideme">Accounts</span></a>
+					</li>
+					<li id="leads">
+						<a href="/Zurmo/app/index.php/leads/default"><span></span><em></em><span class="hideme">Leads</span>
+						</a>
+					</li>
+					<li id="contacts">
+						<a href="/Zurmo/app/index.php/contacts/default">
+							<span></span><em></em><span class="hideme">Contacts</span></a>
+					</li>
+					<li id="opportunities">
+						<a href="/Zurmo/app/index.php/opportunities/default">
+							<span></span><em></em><span class="hideme">Opportunities</span></a>
+					</li>
+					<li id="marketing" class="hidden-nav-item">
+						<a href="/Zurmo/app/index.php/marketing/default/dashboardDetails"><span></span><em></em><span class="hideme">Marketing</span>
+						</a>
+					</li>
+					<li id="projects" class="hidden-nav-item">
+						<a href="/Zurmo/app/index.php/projects/default/dashboardDetails">
+							<span></span><em></em><span class="hideme">Projects</span></a>
+					</li>
+					<li id="products" class="hidden-nav-item">
+						<a href="/Zurmo/app/index.php/products/default">
+							<span></span><em></em><span class="hideme">Products</span></a>
+					</li>
+					<li id="reports" class="hidden-nav-item last">
+						<a href="/Zurmo/app/index.php/reports/default">
+							<span></span><em></em><span class="hideme">Reports</span></a>
+					</li>
+				</ul>
+				<a class="toggle-hidden-nav-items"></a>
+			</div>
+			<div id="RecentlyViewedView">
+				<h3 class="hideme"><a href="#"><i class="icon-z">Z</i></a>Recently Viewed</h3>
+				<ul class="nav">
+					<li class="type-UsersModule">
+						<a href="/Zurmo/app/index.php/users/default/details?id=1">
+							<span></span>
+							<em></em>
+							<span class="hideme">Juan Uri</span></a>
+					</li>
+					<li class="type-AccountsModule">
+						<a href="/Zurmo/app/index.php/accounts/default/details?id=2">
+							<span></span><em></em><span  class="hideme">123 Warehousing</span></a>
+					</li>
+					<li class="type-TasksModule last">
+						<a href="/Zurmo/app/index.php/tasks/default/details?id=79">
+							<span></span><em></em><span class="hideme">Some Task</span></a>
+					</li>
+					<li class="type-AccountsModule">
+						<a href="/Zurmo/app/index.php/accounts/default/details?id=2">
+							<span></span><em></em><span  class="hideme">Acme Inc.</span></a>
+					</li>
+					<li class="type-AccountsModule">
+						<a href="/Zurmo/app/index.php/accounts/default/details?id=2">
+							<span></span><em></em><span  class="hideme">Guardian UK LLC</span></a>
+					</li>
+					<li class="type-TasksModule last">
+						<a href="/Zurmo/app/index.php/tasks/default/details?id=79">
+							<span></span><em></em><span class="hideme">Call Barack</span></a>
+					</li>
+					<li class="type-TasksModule last">
+						<a href="/Zurmo/app/index.php/tasks/default/details?id=79">
+							<span></span><em></em><span class="hideme">Lunch with Rudy</span></a>
+					</li>
+					<li class="type-UsersModule">
+						<a href="/Zurmo/app/index.php/users/default/details?id=1">
+							<span></span>
+							<em></em>
+							<span class="hideme">Sebastian B.</span></a>
+					</li>
+				</ul>
+			</div>
+			<div class="ui-chooser">
+				<div class="device">
+					<a class="icon-desktop active" href="/Zurmo/app/index.php/zurmo/default/userInterface?userInterface=Desktop">
+						<span>Show Full</span>
+					</a>
+					<a class="icon-mobile" href="/Zurmo/app/index.php/zurmo/default/userInterface?userInterface=Mobile">
+						<span>Show Mobile</span>
+					</a>
+				</div>
+				<a href="#" class="collapse-menu"><i class="icon-pin">K</i></a>
+			</div>
+		</nav>
+		<div class="AppContent">
+			<div class="wrapper">
+				<h1>Create Template</h1>
+				<div class="wide form">
+					<form onsubmit="js:return $(this).attachLoadingOnSubmit(&quot;edit-form&quot;)" id="edit-form"
+						action="/demos/bleeding/app/index.php/accounts/default/create" method="post">
+						<div class="attributesContainer">
+
+
+							<!--builder-->
+
+							<section id="builder" class="strong-right">
+
+								<div class="left-column">
+
+
+									<div class="view-toolbar-container clearfix">
+										<nav class="pillbox clearfix">
+											<div id="section_name" class="default-button">
+												<a class="button-action" href="/">
+													<i class="icon-email-templates"></i><span class="button-label">Layouts ?</span>
+												</a>
+											</div>
+											<div id="section_name" class="default-button active">
+												<a class="button-action" href="/">
+													<i class="icon-webforms"></i><span class="button-label">Building Blocks</span>
+												</a>
+											</div>
+											<div id="section_name" class="default-button">
+												<a class="button-action" href="/">
+													<i class="icon-user-config"></i><span class="button-label">Design Configuration</span>
+												</a>
+											</div>
+
+										</nav>
+									</div>
+
+
+									<h3>Elements <small>+ tooltip saying drag & drop etc. etc.</small></h3>
+
+									<ul id="building-blocks" class="clearfix">
+										<li id="Whatever-Type-1"><div class="clearfix"><i class="icon-z">z</i><span>Caption/name</span></div></li>
+										<li id="Whatever-Type-2"><div class="clearfix"><i class="icon-z">¿</i><span>Caption/name</span></div></li>
+										<li id="Whatever-Type-3"><div class="clearfix"><i class="icon-z">“</i><span>Caption/name</span></div></li>
+										<li id="Whatever-Type-4"><div class="clearfix"><i class="icon-z">¢</i><span>Caption/name</span></div></li>
+										<li id="Whatever-Type-5"><div class="clearfix"><i class="icon-z">˙</i><span>Caption/name</span></div></li>
+										<li id="Whatever-Type-6"><div class="clearfix"><i class="icon-z">¨</i><span>Caption/name</span></div></li>
+										<li id="Whatever-Type-X"><div class="clearfix"><i class="icon-z"><</i><span>Caption/name</span></div></li>
+										<li id="Whatever-Type-7"><div class="clearfix"><i class="icon-z">^</i><span>Caption/name</span></div></li>
+										<li id="Whatever-Type-8"><div class="clearfix"><i class="icon-z">@</i><span>Caption/name</span></div></li>
+										<li id="Whatever-Type-9"><div class="clearfix"><i class="icon-z">¶</i><span>Caption/name</span></div></li>
+									   <li id="Whatever-Type-10"><div class="clearfix"><i class="icon-z">∑</i><span>Caption/name</span></div></li>
+									   <li id="Whatever-Type-11"><div class="clearfix"><i class="icon-z">∆</i><span>Caption/name</span></div></li>
+									</ul>
+
+
+
+
+								</div>
+
+								<div class="right-column">
+									<iframe src="ink-1.0.5/examples/sidebar-hero.html" id="preview-template"
+										seamless="seamless" frameborder="0" width="100%" height="100%"></iframe>
+								</div>
+
+
+							</section>
+
+
+
+							<!--/builder-->
+
+
+
+
+
+
+
+						</div>
+						<div class="float-bar">
+							<div class="dock view-toolbar-container clearfix">
+								<div class="form-toolbar">
+									<a id="saveyt2" name="save" class="attachLoading z-button"
+										onclick="jQuery.yii.submitForm(this, '', {'save':'save'}); return false;" href="#">
+										<span class="z-spinner"></span>
+										<span class="z-icon"></span>
+										<span class="z-label">Save</span>
+									</a>
+									<a id="CancelLinkActionElement--20-yt3" class="secondary-button" href="/demos/bleeding/app/index.php/accounts/default">
+										<span class="z-label">Apply</span>
+									</a>
+									<a id="CancelLinkActionElement--20-yt3" class="secondary-button" href="/demos/bleeding/app/index.php/accounts/default">
+										<span class="z-label">Next</span>
+									</a>
+									<a id="CancelLinkActionElement--20-yt3" class="secondary-button" href="/demos/bleeding/app/index.php/accounts/default">
+										<span class="z-label">Previous</span>
+									</a>
+									<a id="CancelLinkActionElement--20-yt3" class="cancel-button" href="/demos/bleeding/app/index.php/accounts/default">
+										<span class="z-label">Cancel</span>
+									</a>
+									<span>Or whatever else comes here</span>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<footer class="FooterView">
+		<div class="container">
+			<a href="http://www.zurmo.com" id="credit-link" class="clearfix"><span>Copyright &#169; Zurmo Inc., 2014. All rights reserved.</span></a>
+		</div>
+	</footer>
+
+	<script>
+		jQuery(document).ready(function($){
+			//sticky nav bar
+			var html = $('html'),
+				body = $('body'),
+				navbar = $('.HeaderView');
+			$(window).scroll(function () {
+				if (window.scrollY > 0) {
+					body.addClass('header-fixed');
+				} else {
+					body.removeClass('header-fixed');
+				}
+			});
+
+			$('.collapse-menu').click(function(){
+				$('body').toggleClass('nav-closed');
+			});
+		});
+	</script>
+</body>
+</html>

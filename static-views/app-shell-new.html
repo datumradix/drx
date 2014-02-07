@@ -16,7 +16,7 @@
 	<!--<script type="text/javascript" src="interactions.js"></script>-->
 	<title>ZurmoCRM</title>
 </head>
-<body class="blue nav-closed">
+<body class="blue">
 	<header class="HeaderView">
 		<div class="container clearfix">
 			<div class="logo-and-search">
@@ -174,7 +174,6 @@
 			</div>
 
 			<div class="ui-chooser">
-				<a href="#"><i class="icon-pin">K</i></a>
 				<div class="device">
 					<a class="icon-mobile" href="/Zurmo/app/index.php/zurmo/default/userInterface?userInterface=Mobile">
 						<span>Show Mobile</span>
@@ -183,6 +182,14 @@
 						<span>Show Full</span>
 					</a>
 				</div>
+
+				<a href="#" class="collapse-menu"><i class="icon-pin">K</i></a>
+
+				<script>
+					$('.collapse-menu').click(function(){
+						$('body').toggleClass('nav-closed');
+					});
+				</script>
 			</div>
 
 		</nav>
