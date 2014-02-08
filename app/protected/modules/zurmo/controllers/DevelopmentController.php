@@ -94,5 +94,49 @@
             print_r($className::getMetadata());
             echo "</pre>";
         }
+
+        public function actionRebuildAllNamedSecurableActualPermissions()
+        {
+            if (!Group::isUserASuperAdministrator(Yii::app()->user->userModel))
+            {
+                throw new NotSupportedException();
+            }
+            $namedSecurableItems = array();
+            $modules             = Module::getModuleObjects();
+            foreach ($modules as $module)
+            {
+                if($module instanceof SecurableModule)
+                {
+                    $namedSecurableItems[] = NamedSecurableItem::getByName(get_class($module));
+                }
+            }
+            foreach(User::getAll() as $user)
+            {
+                if(!$user->isSuperAdministrator() && !$user->isSystemUser)
+                {
+                    echo 'Processing named securable cache for user: ' . strval($user) . "<BR>";
+                    foreach($namedSecurableItems as $namedSecurableItem)
+                    {
+                        $namedSecurableItem->getActualPermissions($user);
+                        //echo '-processing for module: ' . $namedSecurableItem->name . "<BR>";
+                    }
+                    echo 'Current memory usage: ' . Yii::app()->performance->getMemoryUsage() . "<BR>";
+                }
+                else
+                {
+                    echo 'Skipping adding named securable cache for user: ' . strval($user) . "<BR>";
+                }
+                if(!$user->isSystemUser)
+                {
+                    echo 'Processing actual rights cache for user: ' . strval($user) . "<BR>";
+                    RightsUtil::cacheAllRightsByPermitable($user);
+                    echo 'Current memory usage: ' . Yii::app()->performance->getMemoryUsage() . "<BR>";
+                }
+                else
+                {
+                    echo 'Skipping adding actual rights cache for user: ' . strval($user) . "<BR>";
+                }
+            }
+        }
     }
 ?>
