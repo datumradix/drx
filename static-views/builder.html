@@ -187,19 +187,19 @@
 
 									<div class="view-toolbar-container clearfix">
 										<nav class="pillbox clearfix">
-											<div id="section_name" class="default-button">
-												<a class="button-action" href="/">
-													<i class="icon-email-templates"></i><span class="button-label">Layouts ?</span>
-												</a>
-											</div>
 											<div id="section_name" class="default-button active">
 												<a class="button-action" href="/">
-													<i class="icon-webforms"></i><span class="button-label">Building Blocks</span>
+													<i class="icon-webforms"></i><span class="button-label">Elements</span>
 												</a>
 											</div>
 											<div id="section_name" class="default-button">
 												<a class="button-action" href="/">
-													<i class="icon-user-config"></i><span class="button-label">Design Configuration</span>
+													<i class="icon-user-config"></i><span class="button-label">Canvas Configuration</span>
+												</a>
+											</div>
+											<div id="section_name" class="default-button">
+												<a class="button-action" href="/" id="preview-button">
+													<i class="icon-email-templates"></i><span class="button-label">Preview</span>
 												</a>
 											</div>
 
@@ -299,9 +299,19 @@
 				}
 			});
 
-			$('.collapse-menu').click(function(){
+			$('.collapse-menu').click(function(event){
 				$('body').toggleClass('nav-closed');
+				event.preventDefault();
 			});
+
+			$('#preview-button').click(function(event){
+				var $temp = $('#preview-template').clone().addClass('in-preview');
+				$('.builder-toolbar', $temp).hide();
+				$('body').append($temp);
+				event.preventDefault();
+			});
+
+
 		});
 	</script>
 </body>

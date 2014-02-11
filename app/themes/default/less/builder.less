@@ -19,6 +19,25 @@
 	min-height: 800px;
 	background: url("../../../../static-views/psd-light.png");
 	padding: 15px;
+	&.in-preview{
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 100%;
+		height: 100%;
+		background: #efefef;
+		z-index: 99999999999;
+		.builder-toolbar{
+			display: none !important;
+		}
+	}
+}
+
+.builder-toolbar{
+	border: 2px solid red;
+	padding: 5px;
 }
 
 
