@@ -469,5 +469,16 @@
             }
             return DataUtil::purifyHtml($sanitizedAttributeValue);
         }
+        
+        public static function getResolvedModuleNameForContactWebFormEntry(Contact $contact)
+        {
+            $startingStateId = ContactsUtil::getStartingStateId();
+            $source = $contact->state->id;
+            if($source < $startingStateId)
+            {
+                return 'leads';
+            }
+            return 'contacts';
+        }
     }
 ?>
