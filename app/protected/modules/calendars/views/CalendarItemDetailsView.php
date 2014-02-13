@@ -34,48 +34,11 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Extending MixedNumberTypesElement to add a currencyId dropdown.
-     */
-    class MixedCurrencyValueTypesElement extends MixedNumberTypesElement
+    abstract class CalendarItemDetailsView extends SecuredDetailsView
     {
-        public static function getValueAreasCount()
+        public function getTitle()
         {
-            return 2;
-        }
-
-        protected function renderEditableFirstValueContent()
-        {
-            $content = parent::renderEditableFirstValueContent();
-            $htmlOptions = array(
-                'id'              => $this->getCurrencyIdForValueEditableInputId(),
-                'empty'           => Zurmo::t('Core', '(None)'),
-            );
-            $data         = Yii::app()->currencyHelper->getActiveCurrenciesOrSelectedCurrenciesData(
-                (int)$this->model->currencyIdForValue);
-            $content     .= ZurmoHtml::dropDownList($this->getCurrencyIdForValueEditableInputName(),
-                $this->model->currencyIdForValue,
-                $data,
-                $htmlOptions
-            );
-            $error        = $this->form->error($this->model, 'currencyIdForValue',
-                array('inputID' => $this->getCurrencyIdForValueEditableInputId()));
-            return $content . $error;
-        }
-
-        protected function getCurrencyIdForValueEditableInputId()
-        {
-            return $this->getEditableInputId('currencyIdForValue');
-        }
-
-        protected function getCurrencyIdForValueEditableInputName()
-        {
-            return $this->getEditableInputName('currencyIdForValue');
-        }
-
-        protected function getExtraFirstValueAreaClassName()
-        {
-            return ' currency-input';
+            return null;
         }
     }
 ?>

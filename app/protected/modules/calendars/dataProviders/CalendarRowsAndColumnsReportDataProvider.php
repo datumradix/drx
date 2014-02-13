@@ -35,47 +35,18 @@
      ********************************************************************************/
 
     /**
-     * Extending MixedNumberTypesElement to add a currencyId dropdown.
+     * Data provider a report that is a rows and columns report
      */
-    class MixedCurrencyValueTypesElement extends MixedNumberTypesElement
+    class CalendarRowsAndColumnsReportDataProvider extends RowsAndColumnsReportDataProvider
     {
-        public static function getValueAreasCount()
+        /**
+         * Makes sql query adapter.
+         *
+         * @param bool $isDistinct
+         */
+        protected function makeSelectQueryAdapter($isDistinct = false)
         {
-            return 2;
-        }
-
-        protected function renderEditableFirstValueContent()
-        {
-            $content = parent::renderEditableFirstValueContent();
-            $htmlOptions = array(
-                'id'              => $this->getCurrencyIdForValueEditableInputId(),
-                'empty'           => Zurmo::t('Core', '(None)'),
-            );
-            $data         = Yii::app()->currencyHelper->getActiveCurrenciesOrSelectedCurrenciesData(
-                (int)$this->model->currencyIdForValue);
-            $content     .= ZurmoHtml::dropDownList($this->getCurrencyIdForValueEditableInputName(),
-                $this->model->currencyIdForValue,
-                $data,
-                $htmlOptions
-            );
-            $error        = $this->form->error($this->model, 'currencyIdForValue',
-                array('inputID' => $this->getCurrencyIdForValueEditableInputId()));
-            return $content . $error;
-        }
-
-        protected function getCurrencyIdForValueEditableInputId()
-        {
-            return $this->getEditableInputId('currencyIdForValue');
-        }
-
-        protected function getCurrencyIdForValueEditableInputName()
-        {
-            return $this->getEditableInputName('currencyIdForValue');
-        }
-
-        protected function getExtraFirstValueAreaClassName()
-        {
-            return ' currency-input';
+            return new RedBeanModelSelectQueryAdapter(true);
         }
     }
 ?>
