@@ -34,48 +34,48 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Extending MixedNumberTypesElement to add a currencyId dropdown.
-     */
-    class MixedCurrencyValueTypesElement extends MixedNumberTypesElement
+    abstract class CalendarItemDetailsViewDesignerRules extends DetailsViewDesignerRules
     {
-        public static function getValueAreasCount()
+        public function allowEditInLayoutTool()
         {
-            return 2;
+            return true;
         }
 
-        protected function renderEditableFirstValueContent()
+        public function maxCellsPerRow()
         {
-            $content = parent::renderEditableFirstValueContent();
-            $htmlOptions = array(
-                'id'              => $this->getCurrencyIdForValueEditableInputId(),
-                'empty'           => Zurmo::t('Core', '(None)'),
+            return 1;
+        }
+
+        public function canMergeAndSplitCells()
+        {
+            return false;
+        }
+
+        public function canConfigureLayoutPanelsType()
+        {
+            return false;
+        }
+
+        public function getNonPlaceableLayoutAttributeNames()
+        {
+            return array(
+                'id'
             );
-            $data         = Yii::app()->currencyHelper->getActiveCurrenciesOrSelectedCurrenciesData(
-                (int)$this->model->currencyIdForValue);
-            $content     .= ZurmoHtml::dropDownList($this->getCurrencyIdForValueEditableInputName(),
-                $this->model->currencyIdForValue,
-                $data,
-                $htmlOptions
-            );
-            $error        = $this->form->error($this->model, 'currencyIdForValue',
-                array('inputID' => $this->getCurrencyIdForValueEditableInputId()));
-            return $content . $error;
         }
 
-        protected function getCurrencyIdForValueEditableInputId()
+        public function canAddPanels()
         {
-            return $this->getEditableInputId('currencyIdForValue');
+            return false;
         }
 
-        protected function getCurrencyIdForValueEditableInputName()
+        public function canMovePanels()
         {
-            return $this->getEditableInputName('currencyIdForValue');
+            return false;
         }
 
-        protected function getExtraFirstValueAreaClassName()
+        public function canRemovePanels()
         {
-            return ' currency-input';
+            return false;
         }
     }
 ?>
