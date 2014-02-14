@@ -48,5 +48,15 @@
         {
             return new RedBeanModelSelectQueryAdapter(true);
         }
+
+        /**
+         * Resolve sql query adapter for count query.
+         *
+         * @param RedBeanModelSelectQueryAdapter $selectQueryAdapter
+         */
+        protected function resolveSqlQueryAdapterForCount(RedBeanModelSelectQueryAdapter $selectQueryAdapter)
+        {
+            $selectQueryAdapter     = new RedBeanModelSelectQueryAdapter(false);
+        }
     }
 ?>

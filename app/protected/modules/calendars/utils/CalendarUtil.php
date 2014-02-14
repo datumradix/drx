@@ -203,6 +203,10 @@
                 $modelClass                = $calItem->getModelClass();
                 $model                     = $modelClass::getById($calItem->getModelId());
                 $fullCalendarItem['model'] = $model;
+                if($modelClass == 'Meeting')
+                {
+                    $fullCalendarItem['allDay'] = false;
+                }
                 $fullCalendarItems[] = $fullCalendarItem;
             }
             return $fullCalendarItems;
@@ -216,8 +220,22 @@
         public static function getFullCalendarFormattedDateTimeElement($dateTime)
         {
             assert('is_string($dateTime)');
-            $dateTimeObject = new DateTime($dateTime);
-            return Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm',
+            $gmtAdjustedUnixTimeStamp = DateTimeUtil::convertDbFormatDateTimeToTimestamp($dateTime);
+            $dateTimeObject  = new DateTime();
+            $dateTimeObject->setTimestamp($gmtAdjustedUnixTimeStamp);
+            $currentTimeZone = new DateTimeZone(Yii::app()->timeZoneHelper->getForCurrentUser());
+            $offset          = $currentTimeZone->getOffset($dateTimeObject);
+            if($offset < 0)
+            {
+                $modifiedGmtAdjustedUnixTimeStamp = $gmtAdjustedUnixTimeStamp + abs($offset/3600);
+            }
+            else
+            {
+                $modifiedGmtAdjustedUnixTimeStamp = $gmtAdjustedUnixTimeStamp - $offset/3600;
+            }
+            $dateTimeObject  = new DateTime();
+            $dateTimeObject->setTimestamp($modifiedGmtAdjustedUnixTimeStamp);
+            return Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm:ss',
                         $dateTimeObject->getTimestamp());
         }
 
@@ -790,23 +808,6 @@
                 }
             }
             return $moduleClassNames;
-        }
-
-        /**
-         * Render full calendar items for a model.
-         * @param Object $model
-         * @return string
-         */
-        public static function renderFullCalendarItems($model)
-        {
-            assert('$model instanceof CalendarItemInterface');
-            $descriptionArray = $model->getCalendarItemData();
-            $content          = ZurmoHtml::tag('div', array('class' => 'itemDescription'), '');
-            foreach ($descriptionArray as $key => $value)
-            {
-                $content .= ZurmoHtml::tag('span', array(), $key . ':' . $value) . "<br/>";
-            }
-            return $content;
         }
 
         /**
