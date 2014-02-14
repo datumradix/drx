@@ -184,17 +184,17 @@
 			<div id="BuilderEmailTemplateStepsAndProgressBarForWizardView" class="StepsAndProgressBarForWizardView MetadataView">
 				<div class="progress">
 					<div class="progress-back">
-						<div class="progress-bar" style="width:100%; margin-left:0%"></div>
+						<div class="progress-bar" style="width:66.6%; margin-left:0%"></div>
 					</div>
 					<span style="width:33%">General</span>
-					<span style="width:33%">Select a Base Template</span>
-					<span style="width:33%" class="current-step">Canvas</span>
+					<span style="width:33%" class="current-step">Select a Base Template</span>
+					<span style="width:33%">Canvas</span>
 				</div>
 			</div>
 
 
 			<div class="wrapper">
-				<h1>Create Template</h1>
+				<h1>Select a Base Template</h1>
 				<div class="wide form">
 					<form onsubmit="js:return $(this).attachLoadingOnSubmit(&quot;edit-form&quot;)" id="edit-form"
 						action="/demos/bleeding/app/index.php/accounts/default/create" method="post">
@@ -205,53 +205,14 @@
 
 							<section id="builder" class="strong-right">
 
-								<div class="left-column">
+								<div class="left-column" style="width: 100%">
 
-
-									<div class="view-toolbar-container clearfix">
-										<nav class="pillbox clearfix">
-											<div id="section_name" class="default-button active">
-												<a class="button-action" href="/">
-													<i class="icon-webforms"></i><span class="button-label">Elements</span>
-												</a>
-											</div>
-											<div id="section_name" class="default-button">
-												<a class="button-action" href="/">
-													<i class="icon-user-config"></i><span class="button-label">Canvas Configuration</span>
-												</a>
-											</div>
-											<div id="section_name" class="default-button">
-												<a class="button-action" href="/" id="preview-button">
-													<i class="icon-email-templates"></i><span class="button-label">Preview</span>
-												</a>
-											</div>
-
-										</nav>
-									</div>
-
-
-									<h3>Elements<small></h3>
-									<ul id="building-blocks" class="clearfix">
-										<li id="Whatever-Type-1"><div class="clearfix"><i class="icon-z">z</i><span>Text</span></div></li>
-										<li id="Whatever-Type-2"><div class="clearfix"><i class="icon-z">¿</i><span>Title</span></div></li>
-										<li id="Whatever-Type-3"><div class="clearfix"><i class="icon-z">“</i><span>Caption</span></div></li>
-										<li id="Whatever-Type-4"><div class="clearfix"><i class="icon-z">¢</i><span>Image</span></div></li>
-										<li id="Whatever-Type-5"><div class="clearfix"><i class="icon-z">˙</i><span>Image + Text</span></div></li>
-										<li id="Whatever-Type-6"><div class="clearfix"><i class="icon-z">∆</i><span>Social Links</span></div></li>
-										<li id="Whatever-Type-X"><div class="clearfix"><i class="icon-z"><</i><span>Button</span></div></li>
-										<li id="Whatever-Type-7"><div class="clearfix"><i class="icon-z">^</i><span>Divider</span></div></li>
-										<li id="Whatever-Type-8"><div class="clearfix"><i class="icon-z">@</i><span>Image Group</span></div></li>
-										<li id="Whatever-Type-9"><div class="clearfix"><i class="icon-z">¶</i><span>Social Share</span></div></li>
-									   <li id="Whatever-Type-10"><div class="clearfix"><i class="icon-z">∑</i><span>Boxed Text</span></div></li>
-									   <li id="Whatever-Type-11"><div class="clearfix"><i class="icon-z">¨</i><span>Footer</span></div></li>
-									</ul>
-
-
-
+									<iframe src="templates.html" id=""
+										seamless="seamless" frameborder="0" width="100%" height="800px"></iframe>
 
 								</div>
 
-								<div class="right-column">
+								<div class="right-column" style="display: none">
 									<iframe src="ink-1.0.5/examples/sidebar-hero.html" id="preview-template"
 										seamless="seamless" frameborder="0" width="100%" height="100%"></iframe>
 								</div>
