@@ -7,6 +7,8 @@
 	<link rel="stylesheet" type="text/css" href="icon-font.css" />
 	<link rel="stylesheet/less" type="text/css" id="default-theme" href="/Zurmo/app/themes/default/less/default-theme.less"/>
 	<script type="text/javascript" src="less-1.2.0.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="redactor/css/redactor.css" />
+	<script type="text/javascript" src="redactor/redactor.js"></script>
 	<title>ZurmoCRM</title>
 </head>
 <body class="blue nav-closed">
@@ -210,12 +212,12 @@
 
 									<div class="view-toolbar-container clearfix">
 										<nav class="pillbox clearfix">
-											<div id="section_name" class="default-button active">
+											<div id="section_name" class="default-button">
 												<a class="button-action" href="/">
 													<i class="icon-webforms"></i><span class="button-label">Elements</span>
 												</a>
 											</div>
-											<div id="section_name" class="default-button">
+											<div id="section_name" class="default-button active">
 												<a class="button-action" href="/">
 													<i class="icon-user-config"></i><span class="button-label">Canvas Configuration</span>
 												</a>
@@ -230,25 +232,15 @@
 									</div>
 
 
-									<h3>Elements<small></h3>
-									<ul id="building-blocks" class="clearfix">
-										<li id="Whatever-Type-1"><div class="clearfix"><i class="icon-z">z</i><span>Text</span></div></li>
-										<li id="Whatever-Type-2"><div class="clearfix"><i class="icon-z">¿</i><span>Title</span></div></li>
-										<li id="Whatever-Type-3"><div class="clearfix"><i class="icon-z">“</i><span>Caption</span></div></li>
-										<li id="Whatever-Type-4"><div class="clearfix"><i class="icon-z">¢</i><span>Image</span></div></li>
-										<li id="Whatever-Type-5"><div class="clearfix"><i class="icon-z">˙</i><span>Image + Text</span></div></li>
-										<li id="Whatever-Type-6"><div class="clearfix"><i class="icon-z">∆</i><span>Social Links</span></div></li>
-										<li id="Whatever-Type-X"><div class="clearfix"><i class="icon-z"><</i><span>Button</span></div></li>
-										<li id="Whatever-Type-7"><div class="clearfix"><i class="icon-z">^</i><span>Divider</span></div></li>
-										<li id="Whatever-Type-8"><div class="clearfix"><i class="icon-z">@</i><span>Image Group</span></div></li>
-										<li id="Whatever-Type-9"><div class="clearfix"><i class="icon-z">¶</i><span>Social Share</span></div></li>
-									   <li id="Whatever-Type-10"><div class="clearfix"><i class="icon-z">∑</i><span>Boxed Text</span></div></li>
-									   <li id="Whatever-Type-11"><div class="clearfix"><i class="icon-z">¨</i><span>Footer</span></div></li>
-									</ul>
-
-
-
-
+									<h3>Configure Text Element<small></h3>
+									<div>
+										<textarea id="X"></textarea>
+										<script type="text/javascript">
+											$(document).ready(function(){
+												$('#X').redactor();
+											});
+										</script>
+									</div>
 								</div>
 
 								<div class="right-column">
