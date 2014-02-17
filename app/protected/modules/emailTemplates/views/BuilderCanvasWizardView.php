@@ -46,6 +46,10 @@
 
         const ELEMENT_EDIT_FORM_OVERLAY_CONTAINER_ID        = 'element-edit-form-overlay-container';
 
+        const UL_ELEMENT_TO_PLACE_ID                        = 'building-blocks';
+
+        const ELEMENT_IFRAME_OVERLAY_ID                     = 'iframe-overlay';
+
         /**
          * @return string
          */
@@ -96,8 +100,9 @@
             // TODO: @Shoaibi: Critical1: Hidden elements for all serializedData Indexes?
             $hiddenElements                             = null;
 
+            $freezeOverlayContent                       = $this->renderFreezeOverlayContent();
             $leftSidebarContent                         = ZurmoHtml::tag('h3', array(), 'Elements');
-            $leftSidebarContent                         .= $this->resolveElementsSidebarContent();
+            $leftSidebarContent                        .= $this->resolveElementsSidebarContent();
             $this->renderCachedSerializedDataHiddenField($hiddenElements);
             $this->renderHiddenElements($hiddenElements, $leftSidebarContent);
             $this->renderRefreshCanvasLink($leftSidebarContent);
@@ -106,11 +111,17 @@
 
             $this->wrapContentForLeftSideBar($leftSidebarContent);
             $this->wrapContentForRightSideBar($rightSidebarContent);
-            $content                                    = $leftSidebarContent . $rightSidebarContent;
-            $content                                    = ZurmoHtml::tag('section', $this->resolveContentHtmlOptions(),
+            $content                                    = $freezeOverlayContent . $leftSidebarContent . $rightSidebarContent;
+            $content                                    = ZurmoHtml::tag('div', $this->resolveContentHtmlOptions(),
                                                                                     $content);
             $this->wrapContentForAttributesContainer($content);
             return $content;
+        }
+
+        protected function renderFreezeOverlayContent()
+        {
+            $span = ZurmoHtml::tag('span', array('class' => 'big-spinner'));
+            return ZurmoHtml::tag('div', array('id' => static::ELEMENT_IFRAME_OVERLAY_ID, 'class' => 'ui-overlay-block'), $span);
         }
 
         protected function renderCachedSerializedDataHiddenField(& $hiddenElements)
@@ -125,7 +136,7 @@
 
         protected function resolveContentHtmlOptions()
         {
-            return array('id' => 'builder', 'class' => 'strong-right');
+            return array('id' => 'builder', 'class' => 'strong-right clearfix');
         }
 
         protected function renderRefreshCanvasLink(& $content)
@@ -247,7 +258,11 @@
         protected function registerScripts()
         {
             // TODO: @Shoaibi/@Sergio: Critical5: Did i miss any JS here?
+            $baseScriptUrl = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.emailTemplates.widjets.assets'));
+            $cs            = Yii::app()->getClientScript();
+            $cs->registerScriptFile($baseScriptUrl . '/EmailTemplateEditor.js', CClientScript::POS_HEAD);
             parent::registerScripts();
+            $this->registerInitializeEmailTemplateEditor();
             $this->registerRefreshCanvasFromSavedTemplateScript();
             $this->registerSetIsDraftToZeroOnClickingFinishScript();
             $this->registerBindElementNonEditableActionsOverlayScript();
@@ -258,6 +273,31 @@
             $this->registerCanvasFinishScript();
             $this->registerCanvasChangedScript();
         }
+
+        protected function registerInitializeEmailTemplateEditor()
+        {
+            $elementsToPlaceSelector = '#' . static::UL_ELEMENT_TO_PLACE_ID;
+            $editSelector            = '#' . static::ELEMENT_EDIT_FORM_OVERLAY_CONTAINER_ID;
+            $editActionSelector      = 'span.' . BaseBuilderElement::OVERLAY_ACTION_EDIT;
+            $moveActionSelector      = 'span.' . BaseBuilderElement::OVERLAY_ACTION_MOVE;
+            $deleteActionSelector    = 'span.' . BaseBuilderElement::OVERLAY_ACTION_DELETE;
+            $iframeOverlaySelector   = '#' . static::ELEMENT_IFRAME_OVERLAY_ID;
+            Yii::app()->getClientScript()->registerScript('initializeEmailTemplateEditor', "
+                $(document).ready(function(){
+                    emailTemplateEditor.init(
+                        '{$elementsToPlaceSelector}',
+                        '{$editSelector}',
+                        '{$editActionSelector}',
+                        '{$moveActionSelector}',
+                        '{$deleteActionSelector}',
+                        '{$iframeOverlaySelector}',
+                        '{$this->resolveElementEditableActionUrl()}',
+                        '{$this->resolveElementNonEditableActionUrl()}'
+                    );
+                });
+                ", CClientScript::POS_END);
+        }
+
 
         protected function registerRefreshCanvasFromSavedTemplateScript()
         {

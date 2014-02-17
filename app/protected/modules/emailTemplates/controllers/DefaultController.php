@@ -249,6 +249,47 @@
             echo $view->render();
         }
 
+        /**
+         * This is to test the Prof of Concept only, remove it when not needed
+         */
+        public function actionCreatePoc($type)
+        {
+            //TODO: @sergio: Remove this!
+            $type = (int)$type;
+            $emailTemplate       = new EmailTemplate();
+            $emailTemplate->type = $type;
+            $editViewClassName   = 'PocEmailTemplateEditAndDetailsView';
+            $editAndDetailsView  = new $editViewClassName('Edit', $this->getId(), $this->getModule()->getId(), $emailTemplate);;
+            if ($emailTemplate->type == EmailTemplate::TYPE_WORKFLOW)
+            {
+                $breadCrumbLinks    = static::getDetailsAndEditForWorkflowBreadcrumbLinks();
+                $breadCrumbLinks[]  = Zurmo::t('Core', 'Create');
+                $view               = new EmailTemplatesPageView(WorkflowDefaultAdminViewUtil::
+                    makeViewWithBreadcrumbsForCurrentUser($this, $editAndDetailsView,
+                        $breadCrumbLinks, 'WorkflowBreadCrumbView'));
+            }
+            elseif ($emailTemplate->type == EmailTemplate::TYPE_CONTACT)
+            {
+                $emailTemplate->modelClassName = 'Contact';
+                $breadCrumbLinks    = static::getDetailsAndEditForMarketingBreadcrumbLinks();
+                $breadCrumbLinks[]  = Zurmo::t('Core', 'Create');
+                $view               = new EmailTemplatesPageView(MarketingDefaultViewUtil::
+                    makeViewWithBreadcrumbsForCurrentUser($this, $editAndDetailsView,
+                        $breadCrumbLinks, 'MarketingBreadCrumbView'));
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+            echo $view->render();
+        }
+
+        public function actionRenderCanvas()
+        {
+            $view = new BuilderCanvasView();
+            echo $view->render();
+        }
+
         public function actionEdit($id, $redirectUrl = null)
         {
             $emailTemplate = static::getModelAndCatchNotFoundAndDisplayError('EmailTemplate', intval($id));
@@ -610,7 +651,8 @@
 
         public function actionRenderElementEditable($className, $id = null, $properties = null, $content = null)
         {
-            echo BuilderElementRenderUtil::renderEditable($className, $id, $properties, $content);
+//            echo BuilderElementRenderUtil::renderEditable($className, $id, $properties, $content);
+            echo $className . $id;
         }
 
         public function actionRenderElementNonEditable($className, $renderForCanvas = false, $wrapElementInRow = false,
@@ -632,7 +674,7 @@
             {
                 Yii::app()->end(0, false);
             }
-            $this->actionRenderElementNonEditable($className, $renderForCanvas, $wrapElementInRow, $id, $properties, $content);
+            $this->actionRenderElementNonEditable($className, $renderForCanvas, $id, $properties, $content);
         }
     }
 ?>
