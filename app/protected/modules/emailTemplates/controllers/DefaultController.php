@@ -249,6 +249,41 @@
             echo $view->render();
         }
 
+        /**
+         * This is to test the Prof of Concept only, remove it when not needed
+         */
+        public function actionCreatePoc($type)
+        {
+            //TODO: @sergio: Remove this!
+            $type = (int)$type;
+            $emailTemplate       = new EmailTemplate();
+            $emailTemplate->type = $type;
+            $editViewClassName   = 'PocEmailTemplateEditAndDetailsView';
+            $editAndDetailsView  = new $editViewClassName('Edit', $this->getId(), $this->getModule()->getId(), $emailTemplate);;
+            if ($emailTemplate->type == EmailTemplate::TYPE_WORKFLOW)
+            {
+                $breadCrumbLinks    = static::getDetailsAndEditForWorkflowBreadcrumbLinks();
+                $breadCrumbLinks[]  = Zurmo::t('Core', 'Create');
+                $view               = new EmailTemplatesPageView(WorkflowDefaultAdminViewUtil::
+                    makeViewWithBreadcrumbsForCurrentUser($this, $editAndDetailsView,
+                        $breadCrumbLinks, 'WorkflowBreadCrumbView'));
+            }
+            elseif ($emailTemplate->type == EmailTemplate::TYPE_CONTACT)
+            {
+                $emailTemplate->modelClassName = 'Contact';
+                $breadCrumbLinks    = static::getDetailsAndEditForMarketingBreadcrumbLinks();
+                $breadCrumbLinks[]  = Zurmo::t('Core', 'Create');
+                $view               = new EmailTemplatesPageView(MarketingDefaultViewUtil::
+                    makeViewWithBreadcrumbsForCurrentUser($this, $editAndDetailsView,
+                        $breadCrumbLinks, 'MarketingBreadCrumbView'));
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+            echo $view->render();
+        }
+
         public function actionEdit($id, $redirectUrl = null)
         {
             $emailTemplate = static::getModelAndCatchNotFoundAndDisplayError('EmailTemplate', intval($id));
@@ -486,6 +521,8 @@
 
         public function actionRenderCanvas($id = null)
         {
+//            $view = new BuilderCanvasView();
+//            echo $view->render();
             // TODO: @Shoaibi: Critical0: get rid of this.
             $serializedData['dom'] = array(
                 'canvas1'     => array(
@@ -615,13 +652,20 @@
 
         public function actionRenderElementEditable($className, $id = null, $properties = null, $content = null)
         {
-            echo BuilderElementRenderUtil::renderEditable($className, $id, $properties, $content);
+//            echo BuilderElementRenderUtil::renderEditable($className, $id, $properties, $content);
+            echo $className . $id;
         }
 
         public function actionRenderElementNonEditable($className, $renderForCanvas = false, $wrapElementInRow = false,
                                                        $id = null, $properties = null, $content = null)
         {
-            echo BuilderElementRenderUtil::renderNonEditable($className, $renderForCanvas,$wrapElementInRow, $id, $properties, $content);
+            // TODO: @Sergio: Remove this. Only used for PoC
+            $handleSpan   = ZurmoHtml::tag('span', array('class' => 'handle'), ZurmoHtml::tag('i', array('class' => 'icon-move'), ''));
+            $settingsSpan = ZurmoHtml::tag('span', array('class' => 'edit'), ZurmoHtml::tag('i', array('class' => 'icon-gear'), ''));
+            $removeSpan   = ZurmoHtml::tag('span', array('class' => 'delete'), ZurmoHtml::tag('i', array('class' => 'icon-trash'), ''));
+            $tools        = ZurmoHtml::tag('div', array('class' => 'email-template-container-tools'), $handleSpan . $settingsSpan . $removeSpan);
+            echo ZurmoHtml::tag('div', array('id' => time(), 'class' => 'builder-element-non-editable'), $tools . $className);
+            //echo BuilderElementRenderUtil::renderNonEditable($className, $renderForCanvas,$wrapElementInRow, $id, $properties, $content);
         }
 
         public function actionRenderElementNonEditableByPost()
@@ -637,7 +681,7 @@
             {
                 Yii::app()->end(0, false);
             }
-            $this->actionRenderElementNonEditable($className, $renderForCanvas, $wrapElementInRow, $id, $properties, $content);
+            $this->actionRenderElementNonEditable($className, $renderForCanvas, $id, $properties, $content);
         }
 
         public function actionRenderBaseTemplateOptions($elementClassName, $elementModelClassName, $elementAttributeName, $elementFormClassName, array $elementParams = array())
