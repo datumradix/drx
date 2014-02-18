@@ -36,6 +36,9 @@
 
     class CalendarsDefaultController extends ZurmoModuleController
     {
+        /**
+         * @return array
+         */
         public function filters()
         {
             $modelClassName   = $this->getModule()->getPrimaryModelName();
@@ -131,7 +134,9 @@
          */
         public function actionCombinedDetails()
         {
-            $dataProvider               = CalendarUtil::getCalendarItemsDataProvider();
+            //Check for the calendars for the user. If not add the default calendar.
+            
+            $dataProvider               = CalendarUtil::getCalendarItemsDataProvider(Yii::app()->user->userModel);
             $interactiveCalendarView    = new CombinedCalendarView($dataProvider, $this->getId(), $this->getModule()->getId());
             $view                       = new CalendarsPageView(ZurmoDefaultViewUtil::
                                                   makeStandardViewForCurrentUser($this, $interactiveCalendarView));
@@ -147,7 +152,8 @@
          */
         public function actionRelationsAndAttributesTree($type, $treeType, $id = null, $nodeId = null)
         {
-            $report        = CalendarUtil::resolveReportBySavedCalendarPostData($type, $id);
+            $postData      = PostUtil::getData();
+            $report        = CalendarUtil::resolveReportBySavedCalendarPostData($type, $id, $postData);
             if ($nodeId != null)
             {
                 $reportToTreeAdapter = new CalendarReportRelationsAndAttributesToTreeAdapter($report, $treeType);
@@ -161,40 +167,22 @@
             echo $content;
         }
 
-        //todO: refactor to reuse same code in controller for reporting? do if it makes sense after done.
+        /**
+         * Add attribute from tree.
+         *
+         * @param string $type
+         * @param string $treeType
+         * @param string $nodeId
+         * @param int $rowNumber
+         * @param boolean $trackableStructurePosition
+         * @param int $id
+         */
         public function actionAddAttributeFromTree($type, $treeType, $nodeId, $rowNumber,
                                                    $trackableStructurePosition = false, $id = null)
         {
-            $report                             = CalendarUtil::resolveReportBySavedCalendarPostData($type, $id);
-            $nodeIdWithoutTreeType              = ReportRelationsAndAttributesToTreeAdapter::
-                                                     removeTreeTypeFromNodeId($nodeId, $treeType);
-            $moduleClassName                    = $report->getModuleClassName();
-            $modelClassName                     = $moduleClassName::getPrimaryModelName();
-            $form                               = new WizardActiveForm();
-            $form->id                           = 'edit-form';
-            $form->enableAjaxValidation         = true; //ensures error validation populates correctly
-
-            $wizardFormClassName                = ReportToWizardFormAdapter::getFormClassNameByType($report->getType());
-            $model                              = ComponentForReportFormFactory::makeByComponentType($moduleClassName,
-                                                      $modelClassName, $report->getType(), $treeType);
-            $form->modelClassNameForError       = $wizardFormClassName;
-            $attribute                          = ReportRelationsAndAttributesToTreeAdapter::
-                                                      resolveAttributeByNodeId($nodeIdWithoutTreeType);
-            $model->attributeIndexOrDerivedType = ReportRelationsAndAttributesToTreeAdapter::
-                                                      resolveAttributeByNodeId($nodeIdWithoutTreeType);
-            $inputPrefixData                    = ReportRelationsAndAttributesToTreeAdapter::
-                                                      resolveInputPrefixData($wizardFormClassName,
-                                                      $treeType, (int)$rowNumber);
-            $adapter                            = new ReportAttributeForSavedCalendarToElementAdapter($inputPrefixData, $model,
-                                                      $form, $treeType);
-            $view                               = new AttributeRowForReportComponentView($adapter,
-                                                      (int)$rowNumber, $inputPrefixData, $attribute,
-                                                      (bool)$trackableStructurePosition, true, $treeType);
-            $content               = $view->render();
-            $form->renderAddAttributeErrorSettingsScript($view::getFormId());
-            Yii::app()->getClientScript()->setToAjaxMode();
-            Yii::app()->getClientScript()->render($content);
-            echo $content;
+            $postData   = PostUtil::getData();
+            $report     = CalendarUtil::resolveReportBySavedCalendarPostData($type, $id, $postData);
+            ReportUtil::processAttributeAdditionFromTree($nodeId, $treeType, $report, $rowNumber, $trackableStructurePosition);
         }
 
         /**
@@ -249,6 +237,11 @@
 
         /**
          * Get events for the selected calendars.
+         * @param string $selectedMyCalendarIds
+         * @param string $selectedSharedCalendarIds
+         * @param string $startDate
+         * @param string $endDate
+         * @param string $dateRangeType
          */
         public function actionGetEvents($selectedMyCalendarIds = null,
                                         $selectedSharedCalendarIds = null,
@@ -274,7 +267,12 @@
         }
 
         /**
-         * Get events for the selected calendars.
+         * Get events count for the selected calendars.
+         * @param string $selectedMyCalendarIds
+         * @param string $selectedSharedCalendarIds
+         * @param string $startDate
+         * @param string $endDate
+         * @param string $dateRangeType
          */
         public function actionGetEventsCount($selectedMyCalendarIds = null,
                                             $selectedSharedCalendarIds = null,
@@ -307,7 +305,7 @@
             $savedCalendar = SavedCalendar::getById(intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserDeleteModel($savedCalendar);
             $savedCalendar->delete();
-            $dataProvider                        = CalendarUtil::getCalendarItemsDataProvider();
+            $dataProvider                        = CalendarUtil::getCalendarItemsDataProvider(Yii::app()->user->userModel);
             $savedCalendarSubscriptions          = $dataProvider->getSavedCalendarSubscriptions();
             $content                             = CalendarUtil::makeCalendarItemsList($savedCalendarSubscriptions->getMySavedCalendarsAndSelected(),
                                                                                        'mycalendar[]', 'mycalendar', 'saved');
@@ -339,7 +337,7 @@
             $savedCalendarSubscription->user     = $user;
             $savedCalendarSubscription->savedcalendar = $savedCalendar;
             $savedCalendarSubscription->save();
-            $dataProvider                        = CalendarUtil::getCalendarItemsDataProvider();
+            $dataProvider                        = CalendarUtil::getCalendarItemsDataProvider($user);
             $savedCalendarSubscriptions          = $dataProvider->getSavedCalendarSubscriptions();
             $content                             = CalendarUtil::makeCalendarItemsList($savedCalendarSubscriptions->getSubscribedToSavedCalendarsAndSelected(),
                                                                                        'sharedcalendar[]', 'sharedcalendar', 'shared');
@@ -354,7 +352,7 @@
         {
             $savedCalendarSubscription = SavedCalendarSubscription::getById(intval($id));
             $savedCalendarSubscription->delete();
-            $dataProvider                        = CalendarUtil::getCalendarItemsDataProvider();
+            $dataProvider                        = CalendarUtil::getCalendarItemsDataProvider(Yii::app()->user->userModel);
             $savedCalendarSubscriptions          = $dataProvider->getSavedCalendarSubscriptions();
             $content                             = CalendarUtil::makeCalendarItemsList($savedCalendarSubscriptions->getSubscribedToSavedCalendarsAndSelected(),
                                                                                        'sharedcalendar[]', 'sharedcalendar', 'shared');

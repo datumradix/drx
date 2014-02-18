@@ -75,7 +75,15 @@
          */
         private $_calendarItemsData;
 
+        /**
+         * @var boolean
+         */
         private $_isMaxCountReached = false;
+
+        /**
+         * @var int
+         */
+        private $_itemCount;
 
         /**
          * @param SavedCalendarSubscriptions $savedCalendarSubscriptions
@@ -88,24 +96,19 @@
             {
                 $this->$key = $value;
             }
-            $this->startDate = DateTimeUtil::convertTimestampToDbFormatDate(strtotime($this->startDate));
-            $this->endDate = DateTimeUtil::convertTimestampToDbFormatDate(strtotime($this->endDate));
+            $this->startDate  = DateTimeUtil::convertTimestampToDbFormatDate(strtotime($this->startDate));
+            $this->endDate    = DateTimeUtil::convertTimestampToDbFormatDate(strtotime($this->endDate));
+            $this->_itemCount = 0;
         }
 
         /**
-         * See the yii documentation. This function is made public for unit testing.
-         * @return int|string
+         * Calculates total item count.
+         *
+         * @return int
          */
         public function calculateTotalItemCount()
         {
-            $selectQueryAdapter     = new RedBeanModelSelectQueryAdapter();
-            $sql = $this->makeSqlQueryForFetchingTotalItemCount($selectQueryAdapter, true);
-            $count = ZurmoRedBean::getCell($sql);
-            if ($count === null || empty($count))
-            {
-                $count = 0;
-            }
-            return $count;
+            return 0;
         }
 
         /**
@@ -125,6 +128,8 @@
         }
 
         /**
+         * Fetches data.
+         *
          * @return array
          */
         protected function fetchData()
@@ -133,7 +138,7 @@
         }
 
         /**
-         * See the yii documentation.
+         * Fetches keys for data items.
          * @return array
          */
         protected function fetchKeys()
@@ -183,12 +188,11 @@
             $report             = $this->makeReportBySavedCalendar($calendar);
             $reportDataProvider = new CalendarRowsAndColumnsReportDataProvider($report);
             $reportResultsRows  = $reportDataProvider->getData();
-            $count              = 1;
             foreach ($reportResultsRows as $reportResultsRowData)
             {
                 $models[] = $reportResultsRowData->getModel('attribute0');
-                $count++;
-                if ($count > self::MAXIMUM_CALENDAR_ITEMS_COUNT)
+                $this->_itemCount++;
+                if ($this->_itemCount > self::MAXIMUM_CALENDAR_ITEMS_COUNT)
                 {
                     $this->setIsMaxCountReached(true);
                     break;
@@ -224,15 +228,16 @@
             $endFilter->value                       = $this->endDate;
             $endFilter->valueType                   = MixedDateTypesSearchFormAttributeMappingRules::TYPE_BEFORE;
             $report->addFilter($endFilter);
-//            if (count($existingFilters) > 0)
-//            {
-//                $report->setFiltersStructure($report->getFiltersStructure() .
-//                                             '(' . (count($existingFilters) + 1) . ' AND ' . ($existingFilters + 2) . ')');
-//            }
-//            else
-//            {
+            if (count($existingFilters) > 0)
+            {
+                $filtersCount = count($existingFilters);
+                $report->setFiltersStructure($report->getFiltersStructure() .
+                                             ' AND ' . ($filtersCount + 1) . ' AND ' . ($filtersCount + 2));
+            }
+            else
+            {
                 $report->setFiltersStructure('1 AND 2');
-            //}
+            }
             $displayAttribute = new DisplayAttributeForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(),
                                     $report->getType());
             $displayAttribute->attributeIndexOrDerivedType = 'id';
@@ -318,13 +323,21 @@
             $this->dateRangeType = $dateRangeType;
         }
 
+        /**
+         * @return bool
+         */
         public function getIsMaxCountReached()
         {
             return $this->_isMaxCountReached;
         }
 
+        /**
+         * Sets is max count reached
+         * @param bool $isMaxCountReached
+         */
         public function setIsMaxCountReached($isMaxCountReached)
         {
+            assert('is_bool($isMaxCountReached)');
             $this->_isMaxCountReached = $isMaxCountReached;
         }
     }

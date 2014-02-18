@@ -33,15 +33,23 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-
+     /**
+      * Calendar item detail view for product.
+      */
     class ProductForCalendarItemDetailsView extends CalendarItemDetailsView
     {
+        /**
+         * @return array
+         */
         public static function getDefaultMetadata()
         {
             $metadata = array(
                 'global' => array(
                     'toolbar' => array(
-                        'elements' => array(),
+                        'elements' => array(
+                            array('type'  => 'ProductEditLink', 'renderType' => 'Details'),
+                            array('type'  => 'ProductDetailsLink', 'renderType' => 'Details')
+                        ),
                     ),
                     'panels' => array(
                         array(

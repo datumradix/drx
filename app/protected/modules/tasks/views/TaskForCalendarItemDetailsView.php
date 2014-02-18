@@ -33,15 +33,23 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-
+     /**
+      * Calendar item detail view for task.
+      */
     class TaskForCalendarItemDetailsView extends CalendarItemDetailsView
     {
+        /**
+         * @return array
+         */
         public static function getDefaultMetadata()
         {
             $metadata = array(
                 'global' => array(
                     'toolbar' => array(
-                        'elements' => array(),
+                        'elements' => array(
+                            array('type'  => 'TaskEditLink', 'renderType' => 'Details'),
+                            array('type'  => 'TaskDetailsLink', 'renderType' => 'Details')
+                        ),
                     ),
                     'panels' => array(
                         array(

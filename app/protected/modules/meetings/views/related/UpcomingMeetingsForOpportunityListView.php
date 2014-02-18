@@ -34,7 +34,34 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class CalendarsModuleForm extends GlobalSearchEnabledModuleForm
+    /**
+     * For a given opportunity, display the meetings in a list view.
+     */
+    class UpcomingMeetingsForOpportunityListView extends UpcomingMeetingsRelatedListView
     {
+        /**
+         * @return string
+         */
+        protected function getRelationAttributeName()
+        {
+            return 'Opportunity';
+        }
+
+        /**
+         * @return null|string
+         */
+        public static function getDisplayDescription()
+        {
+            return Zurmo::t('MeetingsModule', 'MeetingsModulePluralLabel For OpportunitiesModuleSingularLabel',
+                            LabelUtil::getTranslationParamsForAllModules());
+        }
+
+        /**
+         * @return array
+         */
+        public static function getAllowedOnPortletViewClassNames()
+        {
+            return array('OpportunityDetailsAndRelationsView');
+        }
     }
 ?>

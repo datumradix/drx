@@ -35,7 +35,7 @@
      ********************************************************************************/
 
     /**
-     * Data provider a report that is a rows and columns report
+     * Data provider for rows and columns report for a calendar.
      */
     class CalendarRowsAndColumnsReportDataProvider extends RowsAndColumnsReportDataProvider
     {
@@ -56,7 +56,7 @@
          */
         protected function resolveSqlQueryAdapterForCount(RedBeanModelSelectQueryAdapter $selectQueryAdapter)
         {
-            $selectQueryAdapter     = new RedBeanModelSelectQueryAdapter(false);
+            return new RedBeanModelSelectQueryAdapter(false);
         }
     }
 ?>

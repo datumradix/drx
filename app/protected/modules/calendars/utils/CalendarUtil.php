@@ -143,7 +143,11 @@
 
         /**
          * Process user calendars and get data provider.
-         * @param mixed $myCalendarIds
+         * @param null|string $myCalendarIds
+         * @param null|string $mySubscribedCalendarIds
+         * @param null|string $dateRangeType
+         * @param null|string $startDate
+         * @param null|string $endDate
          * @return CalendarItemsDataProvider
          */
         public static function processUserCalendarsAndMakeDataProviderForCombinedView($myCalendarIds = null,
@@ -187,7 +191,7 @@
          */
         public static function getFullCalendarItems(CalendarItemsDataProvider $dataProvider)
         {
-            $calendarItems = $dataProvider->getData();
+            $calendarItems = $dataProvider->getData(true);
             $fullCalendarItems = array();
             for($k = 0; $k < count($calendarItems); $k++)
             {
@@ -241,8 +245,9 @@
 
         /**
          * Gets used color by user.
-         *
          * @param User $user
+         * @param string $modelClassName
+         * @param string $attributeName
          * @return array
          */
         public static function getUsedCalendarColorsByUser(User $user, $modelClassName, $attributeName)
@@ -296,7 +301,7 @@
         }
 
         /**
-         * Get task modal script
+         * Register shared calendar modal script
          * @param string $url
          * @param string $selector
          * @return string
@@ -323,7 +328,7 @@
         }
 
         /**
-         * Get the items by user
+         * Get the calendars user has subscribed for.
          * @param User $user
          * @return integer
          */
@@ -437,19 +442,20 @@
 
         /**
          * Get calendar items data provider.
+         * @param User $user
          * @return CalendarItemsDataProvider
          */
-        public static function getCalendarItemsDataProvider()
+        public static function getCalendarItemsDataProvider(User $user)
         {
-            $mySavedCalendarIds         = ZurmoConfigurationUtil::getByUserAndModuleName(Yii::app()->user->userModel,
+            $mySavedCalendarIds         = ZurmoConfigurationUtil::getByUserAndModuleName($user,
                                                                                         'CalendarsModule', 'myCalendarSelections');
-            $mySubscribedCalendarIds    = ZurmoConfigurationUtil::getByUserAndModuleName(Yii::app()->user->userModel,
+            $mySubscribedCalendarIds    = ZurmoConfigurationUtil::getByUserAndModuleName($user,
                                                                                         'CalendarsModule', 'mySubscribedCalendarSelections');
-            $dateRangeType              = ZurmoConfigurationUtil::getByUserAndModuleName(Yii::app()->user->userModel,
+            $dateRangeType              = ZurmoConfigurationUtil::getByUserAndModuleName($user,
                                                                                         'CalendarsModule', 'myCalendarDateRangeType');
-            $startDate                  = ZurmoConfigurationUtil::getByUserAndModuleName(Yii::app()->user->userModel,
+            $startDate                  = ZurmoConfigurationUtil::getByUserAndModuleName($user,
                                                                                         'CalendarsModule', 'myCalendarStartDate');
-            $endDate                    = ZurmoConfigurationUtil::getByUserAndModuleName(Yii::app()->user->userModel,
+            $endDate                    = ZurmoConfigurationUtil::getByUserAndModuleName($user,
                                                                                         'CalendarsModule', 'myCalendarEndDate');
             return CalendarUtil::processUserCalendarsAndMakeDataProviderForCombinedView($mySavedCalendarIds,
                                                                                         $mySubscribedCalendarIds,
@@ -487,8 +493,8 @@
         }
 
         /**
-         * Get shared calendar subscriber data
-         * @param Task $task
+         * Get shared calendar subscriber data.
+         * @param SavedCalendar $subscribedCalendar
          * @return string
          */
         public static function getCalendarSubscriberData(SavedCalendar $subscribedCalendar)
@@ -540,13 +546,14 @@
 
         /**
          * Sets my calendar color.
+         * @param User $user
          * @param SavedCalendar $savedCalendar
          */
-        public static function setMyCalendarColor(SavedCalendar $savedCalendar)
+        public static function setMyCalendarColor(SavedCalendar $savedCalendar, User $user)
         {
             if($savedCalendar->color == null)
             {
-                $usedColors      = CalendarUtil::getAlreadyUsedColorsByUser(Yii::app()->user->userModel);
+                $usedColors      = CalendarUtil::getAlreadyUsedColorsByUser($user);
                 self::processAndSaveColor($savedCalendar, $usedColors);
             }
         }
@@ -581,7 +588,9 @@
         }
 
         /**
-         * Register my calendar delete script
+         * Register saved calendar delete script
+         * @param string $startDate
+         * @param string $endDate
          */
         public static function registerSavedCalendarDeleteScript($startDate, $endDate)
         {
@@ -692,6 +701,7 @@
         }
 
         /**
+         * Makes component form and populate report from the data.
          * @param array $componentFormsData
          * @param Report $report
          * @param null|string $componentPrefix
@@ -742,15 +752,16 @@
         }
 
         /**
-         * Resolve report by saved calendar post data
+         * Resolve report by saved calendar post data.
          * @param string $type
          * @param int $id
+         * @param array $postData
          * @return Report
          */
-        public static function resolveReportBySavedCalendarPostData($type, $id = null)
+        public static function resolveReportBySavedCalendarPostData($type, $id = null, $postData)
         {
             assert('is_string($type)');
-            $postData = PostUtil::getData();
+            assert('is_array($postData)');
             if ($id == null)
             {
                 $report = new Report();
@@ -766,10 +777,10 @@
             {
                 $report->setModuleClassName($postData['SavedCalendar']['moduleClassName']);
             }
-//            else
-//            {
-//                throw new NotSupportedException();
-//            }
+            else
+            {
+                throw new NotSupportedException();
+            }
             DataToReportUtil::resolveReportByWizardPostData($report, $postData,
                                                                 ReportToWizardFormAdapter::getFormClassNameByType($type));
             return $report;
@@ -812,14 +823,18 @@
 
         /**
          * Process and get data provider for events data.
-         *
+         * @param null|string $myCalendarIds
+         * @param null|string $mySubscribedCalendarIds
+         * @param null|string $dateRangeType
+         * @param null|string $startDate
+         * @param null|string $endDate
          * @return CalendarItemsDataProvider
          */
         public static function processAndGetDataProviderForEventsData($selectedMyCalendarIds = null,
-                                                                        $selectedSharedCalendarIds = null,
-                                                                        $startDate = null,
-                                                                        $endDate = null,
-                                                                        $dateRangeType = null)
+                                                                      $selectedSharedCalendarIds = null,
+                                                                      $startDate = null,
+                                                                      $endDate = null,
+                                                                      $dateRangeType = null)
         {
             ZurmoConfigurationUtil::setByUserAndModuleName(Yii::app()->user->userModel,
                                                                'CalendarsModule',
@@ -835,6 +850,44 @@
                                                                                         $dateRangeType,
                                                                                         $startDate,
                                                                                         $endDate);
+        }
+
+        /**
+         * Checks and load default calendars for the user.
+         * @param User $user
+         */
+        public static function loadDefaultCalendars(User $user)
+        {
+            $name = Zurmo::t('CalendarsModule', 'My Meetings');
+            self::populateSavedCalendar($user, $name, 'MeetingsModule', 'startDateTime', 'endDateTime');
+            $name = Zurmo::t('CalendarsModule', 'My Tasks');
+            self::populateSavedCalendar($user, $name, 'TasksModule', 'createdDateTime');
+        }
+
+        /**
+         * Populate saved calendar module.
+         *
+         * @param User $user
+         * @param string $name
+         * @param string $moduleClassName
+         * @param string $startAttributeName
+         * @param string $endAttributeName
+         */
+        public static function populateSavedCalendar(User $user,
+                                                     $name,
+                                                     $moduleClassName,
+                                                     $startAttributeName,
+                                                     $endAttributeName = '')
+        {
+            $savedCalendar                      = new SavedCalendar();
+            $savedCalendar->name                = $name;
+            $savedCalendar->timeZone            = $user->timeZone;
+            $savedCalendar->location            = 'Chicago';
+            $savedCalendar->moduleClassName     = $moduleClassName;
+            $savedCalendar->startAttributeName  = $startAttributeName;
+            $savedCalendar->endAttributeName    = $endAttributeName;
+            assert($savedCalendar->save());
+            CalendarUtil::setMyCalendarColor($savedCalendar, $user);
         }
     }
 ?>

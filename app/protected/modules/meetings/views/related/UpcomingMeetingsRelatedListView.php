@@ -33,23 +33,33 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-     /**
-      * Calendar item detail view for meeting.
-      */
-    class MeetingForCalendarItemDetailsView extends CalendarItemDetailsView
+
+    /**
+     * Base class for displaying meetings list view for a related model
+     */
+    abstract class UpcomingMeetingsRelatedListView extends SecuredRelatedListView
     {
         /**
          * @return array
          */
         public static function getDefaultMetadata()
         {
-            $metadata = array(
+            $metadata = parent::getDefaultMetadata();
+            $metadata = array_merge($metadata, array(
+                'perUser' => array(
+                    'title' => "eval:Zurmo::t('MeetingsModule', 'Upcoming MeetingsModulePluralLabel List',
+                               LabelUtil::getTranslationParamsForAllModules())",
+                ),
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type'  => 'MeetingEditLink', 'renderType' => 'Details'),
-                            array('type'  => 'MeetingDetailsLink', 'renderType' => 'Details')
+                            array(  'type'            => 'CreateFromRelatedListLink',
+                                    'routeModuleId'   => 'eval:$this->moduleId',
+                                    'routeParameters' => 'eval:$this->getCreateLinkRouteParameters()'),
                         ),
+                    ),
+                    'nonPlaceableAttributeNames' => array(
+                        'latestDateTime',
                     ),
                     'panels' => array(
                         array(
@@ -67,25 +77,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'location', 'type' => 'Text'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
                                                 array('attributeName' => 'startDateTime', 'type' => 'DateTime'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'endDateTime', 'type' => 'DateTime'),
                                             ),
                                         ),
                                     )
@@ -94,16 +86,73 @@
                         ),
                     ),
                 ),
-            );
+            ));
             return $metadata;
+        }
+
+        /**
+         * @return array
+         */
+        protected function getCreateLinkRouteParameters()
+        {
+            return array(
+                'relationAttributeName' => $this->getRelationAttributeName(),
+                'relationModelId'       => $this->params['relationModel']->id,
+                'relationModuleId'      => $this->params['relationModuleId'],
+                'redirectUrl'           => $this->params['redirectUrl'],
+            );
+        }
+
+        /**
+         * @param null $stringTime
+         * @return array
+         */
+        protected function makeSearchAttributeData($stringTime = null)
+        {
+            assert('is_string($stringTime) || $stringTime == null');
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'startDateTime',
+                    'operatorType'         => 'greaterThan',
+                    'value'                => DateTimeUtil::
+                                              convertDateIntoTimeZoneAdjustedDateTimeBeginningOfDay(
+                                              DateTimeUtil::getFirstDayOfAMonthDate($stringTime))
+                ),
+                2 => array(
+                    'attributeName'        => 'startDateTime',
+                    'operatorType'         => 'lessThan',
+                    'value'                => DateTimeUtil::
+                                              convertDateIntoTimeZoneAdjustedDateTimeEndOfDay(
+                                              DateTimeUtil::getLastDayOfAMonthDate($stringTime))
+                ),
+                3 => array(
+                    'attributeName'        => 'logged',
+                    'operatorType'         => 'doesNotEqual',
+                    'value'                => true
+                ),
+                4 => array(
+                    'attributeName'        => 'logged',
+                    'operatorType'         => 'isNull',
+                    'value'                => null
+                ),
+                5 => array(
+                    'attributeName'        => 'activityItems',
+                    'relatedAttributeName' => 'id',
+                    'operatorType'         => 'equals',
+                    'value'                => (int)$this->params['relationModel']->getClassId('Item')
+                )
+            );
+            $searchAttributeData['structure'] = '(1 and 2 and (3 or 4) and 5)';
+            return $searchAttributeData;
         }
 
         /**
          * @return string
          */
-        public static function getDesignerRulesType()
+        public static function getModuleClassName()
         {
-            return 'MeetingForCalendarItemDetailsView';
+            return 'MeetingsModule';
         }
     }
 ?>

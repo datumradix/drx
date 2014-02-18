@@ -62,6 +62,7 @@
          *
          * @param SavedCalendarSubscriptions $savedCalendarSubscriptions
          * @param User $user
+         * @param string $selectedCalendarIds
          * @return \SavedCalendarSubscriptions
          */
         private static function addMySavedCalendars(SavedCalendarSubscriptions $savedCalendarSubscriptions,
@@ -70,7 +71,7 @@
             $mySavedCalendars           = CalendarUtil::getUserSavedCalendars($user);
             if (count($mySavedCalendars) > 0)
             {
-                ZurmoConfigurationUtil::setByUserAndModuleName(Yii::app()->user->userModel,
+                ZurmoConfigurationUtil::setByUserAndModuleName($user,
                                                                'CalendarsModule',
                                                                'myCalendarSelections', $selectedCalendarIds);
                 $selectedCalendarIdArray = array();
@@ -80,7 +81,7 @@
                 }
                 foreach ($mySavedCalendars as $key => $mySavedCalendar)
                 {
-                    CalendarUtil::setMyCalendarColor($mySavedCalendar);
+                    CalendarUtil::setMyCalendarColor($mySavedCalendar, $user);
                     if (in_array($mySavedCalendar->id, $selectedCalendarIdArray))
                     {
                         $savedCalendarSubscriptions->addMySavedCalendar($mySavedCalendar, true);
@@ -90,6 +91,10 @@
                         $savedCalendarSubscriptions->addMySavedCalendar($mySavedCalendar, false);
                     }
                 }
+            }
+            else
+            {
+                CalendarUtil::loadDefaultCalendars($user);
             }
         }
 
@@ -107,7 +112,7 @@
             $mySubscribedCalendars           = CalendarUtil::getUserSubscribedCalendars($user);
             if (count($mySubscribedCalendars) > 0)
             {
-                ZurmoConfigurationUtil::setByUserAndModuleName(Yii::app()->user->userModel,
+                ZurmoConfigurationUtil::setByUserAndModuleName($user,
                                                                'CalendarsModule',
                                                                'mySubscribedCalendarSelections', $subscribedCalendarIds);
                 $subscribedCalendarIdArray = array();

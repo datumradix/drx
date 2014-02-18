@@ -33,18 +33,35 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-     /**
-      * Dropdown to fetch date and datetime fields for the module selected in the saved calendar form.
-      */
-    class CalendarDateAttributeStaticDropDownElement extends StaticDropDownFormElement
+
+    /**
+     * For a given contact, display the meetings in a list view.
+     */
+    class UpcomingMeetingsForContactListView extends UpcomingMeetingsRelatedListView
     {
         /**
-         * Gets dropdown array for date and datetime fields.
+         * @return string
+         */
+        protected function getRelationAttributeName()
+        {
+            return 'Contact';
+        }
+
+        /**
+         * @return null|string
+         */
+        public static function getDisplayDescription()
+        {
+            return Zurmo::t('MeetingsModule', 'MeetingsModulePluralLabel For ContactsModuleSingularLabel',
+                            LabelUtil::getTranslationParamsForAllModules());
+        }
+
+        /**
          * @return array
          */
-        protected function getDropDownArray()
+        public static function getAllowedOnPortletViewClassNames()
         {
-            return CalendarUtil::getModelAttributesForSelectedModule($this->model->moduleClassName);
+            return array('ContactDetailsAndRelationsView');
         }
     }
 ?>
