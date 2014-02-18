@@ -3,7 +3,23 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<script type="text/javascript" src="jquery-2.1.0.min.js"></script>
+
+
+	<script type="text/javascript" src="/Zurmo/app/assets/d2591c5c/jquery.min.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/d2591c5c/jui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/d2591c5c/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/d2591c5c/jquery.ba-bbq.min.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/d2591c5c/jquery.yii.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/1924bba5/less-1.2.0.min.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/1924bba5/ZurmoDialog.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/1924bba5/interactions.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/1924bba5/mobile-interactions.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/1924bba5/jquery.truncateText.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/4f6830dd/juiMultiSelect/jquery.multiselect.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/7e034789/jquery.tokeninput.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/1924bba5/dropDownInteractions.js"></script>
+	<script type="text/javascript" src="/Zurmo/app/assets/4f6830dd/jnotify/jquery.jnotify.js"></script>
+
 	<link rel="stylesheet" type="text/css" href="icon-font.css" />
 	<link rel="stylesheet/less" type="text/css" id="default-theme" href="/Zurmo/app/themes/default/less/default-theme.less"/>
 	<script type="text/javascript" src="less-1.2.0.min.js"></script>
@@ -232,12 +248,38 @@
 									</div>
 
 
-									<h3>Configure Text Element<small></h3>
-									<div>
+									<h3>Configure Text Element</h3>
+									<div id="F">
 										<textarea id="X"></textarea>
+										<style>
+											body #ui-id-1{
+												display: block !important;
+											}
+										</style>
+
 										<script type="text/javascript">
 											$(document).ready(function(){
 												$('#X').redactor();
+												$(".redactor_editor").autocomplete(
+													{
+														appendTo: "#F",
+														source: "/Zurmo/app/index.php/users/default/autoComplete?" + $.param(  $("#X").serializeArray() ),
+														position:{
+															using: function(position, ui){
+																console.log( event );
+																$( this ).css( "top", 666 );
+															}
+															//my : "left top",
+															//at: "left" + event.offsetX + "px" + " top" + event.offsetY + "px"
+														},
+														search: function( event, ui ) {
+															//console.log('search ',event);
+														},
+														response: function( event, ui ) {
+															//console.log('response', event);
+														}
+													}
+												);
 											});
 										</script>
 									</div>
