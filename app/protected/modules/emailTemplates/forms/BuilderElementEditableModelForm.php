@@ -53,10 +53,31 @@
                 $index              = substr($name, strpos($name, '[') + 1, -1);
                 if (property_exists($this, $basePropertyName))
                 {
-                    return $this->{$basePropertyName}[$index];
+                    return ArrayUtil::getNestedValue($this->{$basePropertyName}, $index);
                 }
             }
             return parent::__get($name);
+        }
+
+        public function setAttributes($values, $safeOnly = true)
+        {
+            $formValues  = array();
+            $modelValues = array();
+            foreach ($values as $name => $value)
+            {
+                $basePropertyName   = substr($name, 0, strpos($name, '['));
+                $index              = substr($name, strpos($name, '[') + 1, -1);
+                if (property_exists($this, $basePropertyName))
+                {
+                    return $this->{$basePropertyName}[$index] = $value;
+                }
+                else
+                {
+                    $modelValues[$name] = $value;
+                }
+            }
+            parent::setAttributes($formValues, $safeOnly);
+            $this->model->setAttributes($modelValues, $safeOnly);
         }
 
         public function isAttributeRequired($attribute)
