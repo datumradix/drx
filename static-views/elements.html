@@ -4,7 +4,45 @@
 	<title></title>
 </head>
 <body>
-<h1>February 24</h1>
+<h1>February 28</h1>
+
+
+
+<!--padding-->
+<h3>Padding</h3>
+<td style="padding:$_PADDING_px">the content</td>
+
+<h3>Padding form</h3>
+<div>
+	<p>
+		Padding
+		<input type="number" placeholder="5" value="$_PADDING_"> pixels
+	</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <h3>Fancy Divider</h3>
@@ -90,12 +128,13 @@
 	Height: <input type="number" placeholder="10"> pixels
 </div>
 
-
 <h3>Button</h3>
-<td class="button-container" align="ALIGNMENT" width="100%-IF-WIDTH-IS-FULL">
-	<a href="URL" target="OPEN_IN" class="newsletter-button SIZE_CLASS"
-		style="background-color/font-family/font-size/color/border-radius"><span>Button Text</span></a>
-</td>
+<table class="SIZE_CLASS">
+	<td class="button-container" align="ALIGNMENT" width="100%-IF-WIDTH-IS-FULL">
+		<a href="URL" target="OPEN_IN" class="newsletter-button"
+			style="background-color/font-family/font-size/color/border-radius/padding"><span>Button Text</span></a>
+	</td>
+</table>
 
 <h3>FORM for Button</h3>
 <div>
@@ -131,9 +170,10 @@
 	<p>
 		Button Size (predefined design)
 		<select>
-			<option value="button-XL">Big</option>
-			<option value="button-M">Medium</option>
-			<option value="button-S">Small</option>
+			<option value="large-button">Big</option>
+			<option value="medium-button">Medium</option>
+			<option value="small-button">Small</option>
+			<option value="tiny-button">Tiny</option>
 		</select>
 	</p>
 	<p>
