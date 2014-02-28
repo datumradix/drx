@@ -22,11 +22,68 @@
 
 
 
+<!--social elements-->
+<h3>Social Elements Form</h3>
+<form>
+	<div>
+		<p>
+			Layout
+			<select>
+				<option value="">Horizontal</option>
+				<option value="">Vertical</option>
+			</select>
+		</p>
+	</div>
+	<div>
+		<label><input type="checkbox">Facebook ($_SERVICE_NAME)</label>
+		<p>
+			URL
+			<input type="text" placeholder="http://...">
+		</p>
+	</div>
+	<div>
+		<label><input type="checkbox">Twitter (service name)</label>
+		<p>
+			URL
+			<input type="text" placeholder="http://...">
+		</p>
+	</div>
+	<div>
+		<label><input type="checkbox">Youtube (service name)</label>
+		<p>
+			URL
+			<input type="text" placeholder="http://...">
+		</p>
+	</div>
+	<div>
+		<label><input type="checkbox">G+ (service name)</label>
+		<p>
+			URL
+			<input type="text" placeholder="http://...">
+		</p>
+	</div>
+	<div>
+		<label><input type="checkbox">Instagram (service name)</label>
+		<p>
+			URL
+			<input type="text" placeholder="http://...">
+		</p>
+	</div>
+</form>
 
-
-
-
-
+<h3>social element</h3>
+<table class="$_LAYOUT">
+	<tr>
+		for ($i=0; $i < services.length; $i++)..
+		<table class="button">
+			<tr>
+				<td class="button-container">
+					<a href="$_URL_" target="_blank" class="newsletter-button $_SERVICE_NAME_"><span>Service Name</span></a>
+				</td>
+			</tr>
+		</table>
+	</tr>
+</table>
 
 
 
@@ -130,10 +187,12 @@
 
 <h3>Button</h3>
 <table class="SIZE_CLASS">
-	<td class="button-container" align="ALIGNMENT" width="100%-IF-WIDTH-IS-FULL">
-		<a href="URL" target="OPEN_IN" class="newsletter-button"
-			style="background-color/font-family/font-size/color/border-radius/padding"><span>Button Text</span></a>
-	</td>
+		<tr>
+		<td class="button-container" align="ALIGNMENT" width="100%-IF-WIDTH-IS-FULL">
+			<a href="URL" target="OPEN_IN" class="newsletter-button"
+				style="background-color/font-family/font-size/color/border-radius/padding"><span>Button Text</span></a>
+		</td>
+	</tr>
 </table>
 
 <h3>FORM for Button</h3>
