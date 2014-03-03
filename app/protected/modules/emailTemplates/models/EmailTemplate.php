@@ -377,5 +377,14 @@
         {
             return ($this->builtType == static::BUILT_TYPE_BUILDER_TEMPLATE);
         }
+
+        protected function beforeValidate()
+        {
+            if (isset($this->originalAttributeValues['serializedData']) && $this->isBuilderTemplate())
+            {
+                $this->htmlContent  = EmailTemplateSerializedDataToHtmlUtil::resolveHtmlBySerializedData($this->serializedData, false);
+            }
+            return parent::beforeValidate();
+        }
     }
 ?>
