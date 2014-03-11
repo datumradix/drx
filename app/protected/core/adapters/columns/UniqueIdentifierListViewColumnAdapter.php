@@ -34,57 +34,30 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Defines the import rules for importing into the users module.
-     */
-    class UsersImportRules extends ImportRules
+    class UniqueIdentifierListViewColumnAdapter extends TextListViewColumnAdapter
     {
         /**
-         * Override to handle the password setting as well as not showing all the derived types that are available
-         * in other models. This is why this override does not call the parent first.
+         * Renders grid view data for unique identifier.
+         *
          * @return array
          */
-        public static function getDerivedAttributeTypes()
+        public function renderGridViewData()
         {
-            return array('Password', 'UserStatus');
-        }
-
-        /**
-         * Override to block out additional attributes that are not importable
-         * @return array
-         */
-        public static function getNonImportableAttributeNames()
-        {
-            return array_merge(parent::getNonImportableAttributeNames(), array('isActive', 'hash', 'createdByUser',
-                               'modifiedByUser', 'createdDateTime', 'modifiedDateTime', 'isRootUser', 'isSystemUser',
-                               'hideFromSelecting', 'hideFromLeaderboard', 'serializedAvatarData'));
-        }
-
-        public static function getModelClassName()
-        {
-            return 'User';
-        }
-
-        /**
-         * Override to add Password as a default field for mapping
-         * @param Array $attributesCollection
-         */
-        protected static function resolveRequiredDerivedAttributesCollection(& $attributesCollection)
-        {
-            $modelClassName = static::getModelClassName();
-            $model          = new $modelClassName(false);
-            $attributeImportRulesClassName = 'PasswordAttributeImportRules';
-            $attributeImportRules          = new $attributeImportRulesClassName($model);
-            $displayLabel                  = $attributeImportRules->getDisplayLabel();
-            ModelAttributeImportMappingCollectionUtil::populateCollection(
-                $attributesCollection,
-                'hash',
-                $displayLabel,
-                'hash',
-                'Password',
-                null,
-                true
-            );
+            if ($this->getIsLink())
+            {
+                return array(
+                'name'   => 'id',
+                'header' => Zurmo::t('Core', 'Unique ID'),
+                'type'   => 'raw',
+                'value'  => $this->view->getLinkString('$data->' . $this->attribute, $this->attribute),
+                );
+            }
+            else
+            {
+                return array(
+                    'name' => $this->attribute
+                );
+            }
         }
     }
 ?>

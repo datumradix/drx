@@ -35,56 +35,42 @@
      ********************************************************************************/
 
     /**
-     * Defines the import rules for importing into the users module.
+     * Display the unique identifier for the model
      */
-    class UsersImportRules extends ImportRules
+    class UniqueIdentifierElement extends Element implements DerivedElementInterface
     {
-        /**
-         * Override to handle the password setting as well as not showing all the derived types that are available
-         * in other models. This is why this override does not call the parent first.
-         * @return array
-         */
-        public static function getDerivedAttributeTypes()
+        protected function renderEditable()
         {
-            return array('Password', 'UserStatus');
+            throw new NotSupportedException();
+        }
+
+        protected function renderControlEditable()
+        {
+            throw new NotSupportedException();
         }
 
         /**
-         * Override to block out additional attributes that are not importable
-         * @return array
+         * Render the id as a non-editable display
+         * @return The element's content.
          */
-        public static function getNonImportableAttributeNames()
+        protected function renderControlNonEditable()
         {
-            return array_merge(parent::getNonImportableAttributeNames(), array('isActive', 'hash', 'createdByUser',
-                               'modifiedByUser', 'createdDateTime', 'modifiedDateTime', 'isRootUser', 'isSystemUser',
-                               'hideFromSelecting', 'hideFromLeaderboard', 'serializedAvatarData'));
+            return $this->model->id;
         }
 
-        public static function getModelClassName()
+        protected function renderLabel()
         {
-            return 'User';
+            return Zurmo::t('Core', 'Unique ID');
         }
 
-        /**
-         * Override to add Password as a default field for mapping
-         * @param Array $attributesCollection
-         */
-        protected static function resolveRequiredDerivedAttributesCollection(& $attributesCollection)
+        public static function getDisplayName()
         {
-            $modelClassName = static::getModelClassName();
-            $model          = new $modelClassName(false);
-            $attributeImportRulesClassName = 'PasswordAttributeImportRules';
-            $attributeImportRules          = new $attributeImportRulesClassName($model);
-            $displayLabel                  = $attributeImportRules->getDisplayLabel();
-            ModelAttributeImportMappingCollectionUtil::populateCollection(
-                $attributesCollection,
-                'hash',
-                $displayLabel,
-                'hash',
-                'Password',
-                null,
-                true
-            );
+            return Zurmo::t('Core', 'Unique ID');
         }
-    }
+
+        public static function getModelAttributeNames()
+        {
+            return array();
+        }
+}
 ?>
