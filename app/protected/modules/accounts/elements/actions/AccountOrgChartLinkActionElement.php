@@ -59,10 +59,10 @@
             return $this->getLabel();
         }
 
-        
+
         protected function getRouteAction()
         {
-            return '/orgGraph/';
+            return '/orgChart/';
         }
         /*
         public function getElementValue()

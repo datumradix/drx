@@ -37,9 +37,9 @@
     class OrgChart extends ZurmoWidget
     {
         public $assetFolderName = 'orgChart';
-        
-        public $scriptFile = array('org-chart.js', 'd3.v3.min.js');
-        
+
+        public $scriptFile      = array('d3.v3.min.js', 'org-chart.js');
+
         public $cssFile         = 'org-chart.css';
 
         public function run()
@@ -52,7 +52,7 @@
                     });
                 });";
             Yii::app()->getClientScript()->registerScript(__CLASS__ . '#' . $this->getId(), $javaScript);
-            
+
             echo "<div id='d3'><div id='tree-container'></div></div>";
         }
     }

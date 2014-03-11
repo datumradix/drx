@@ -401,11 +401,12 @@
                                         '/accounts/default/list');
         }
 
-        public function actionOrgGraph()
+        public function actionOrgChart()
         {
-            $renderOrgGraphModalView = new AccountOrgChartModalView();
-            $view = new ModalView($this, $renderOrgGraphModalView);
-            return $view->render();
+            Yii::app()->getClientScript()->setToAjaxMode();
+            $accountOrgChartModalView = new AccountOrgChartModalView();
+            $view = new ModalView($this, $accountOrgChartModalView);
+            echo $view->render();
         }
     }
 ?>
