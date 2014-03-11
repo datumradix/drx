@@ -86,12 +86,12 @@
             return Zurmo::t('Core', 'Next');
         }
 
-        protected function getControllerId()
+        protected static function getControllerId()
         {
             return 'default';
         }
 
-        protected function getModuleId()
+        protected static function getModuleId()
         {
             return 'emailTemplates';
         }
@@ -172,25 +172,58 @@
 
         public static function resolveAdditionalAjaxOptions($formName)
         {
-            $errorMessage   = Zurmo::t('EmailTemplatesModule',
-                                                'There was an error saving EmailTemplatesModuleSingularLabel',
-                                                LabelUtil::getTranslationParamsForAllModules());
+            return static::resolveErrorAjaxCallback();
+        }
+
+        public static function resolveErrorAjaxCallback($message = null)
+        {
+            if ($message === null)
+            {
+                $message   = Zurmo::t('EmailTemplatesModule',
+                                            'There was an error saving EmailTemplatesModuleSingularLabel',
+                                            LabelUtil::getTranslationParamsForAllModules());
+            }
             $ajaxArray                  = array();
             $ajaxArray['error']       = "js:function(data)
-                                            {
-                                                $('#FlashMessageBar').jnotifyAddMessage({
-                                                    text: '" . $errorMessage . "',
-                                                    permanent: true,
-                                                    clickOverlay : true,
-                                                    showIcon: false,
-                                                });
-                                            }";
+                                        {
+                                            $('#FlashMessageBar').jnotifyAddMessage({
+                                                text: '" . $message . "',
+                                                permanent: true,
+                                                clickOverlay : true,
+                                                showIcon: false,
+                                            });
+                                        }";
             return $ajaxArray;
         }
 
-        protected function resolveRelativeUrl($action, $params = array())
+        protected static function resolveRelativeUrl($action, $params = array())
         {
-            return Yii::app()->createUrl($this->getModuleId() . '/' . $this->getControllerId() . '/' . $action, $params);
+            return Yii::app()->createUrl(static::getModuleId() . '/' . static::getControllerId() . '/' . $action, $params);
+        }
+
+        protected static function resolveCanvasActionUrl($id = 0)
+        {
+            return static::resolveRelativeUrl('renderCanvas', array('id' => $id));
+        }
+
+        protected static function resolveBaseTemplateOptionsUrl()
+        {
+            return static::resolveRelativeUrl('renderBaseTemplateOptions');
+        }
+
+        protected static function resolvePreviewActionUrl()
+        {
+            return static::resolveRelativeUrl('renderPreview');
+        }
+
+        protected static function resolveElementEditableActionUrl()
+        {
+            return static::resolveRelativeUrl('renderElementEditable');
+        }
+
+        public static function resolveElementNonEditableActionUrl()
+        {
+            return static::resolveRelativeUrl('renderElementNonEditable');
         }
     }
 ?>

@@ -47,8 +47,27 @@
 
         protected function resolveAvailableFonts()
         {
-            // TODO: @Shoaibi: Critical: Need better font styles here.
-            $fonts = array('Arial', 'Verdana', 'Tahoma', 'Times New Roman', 'Georgia', 'Courier New');
+            $fonts = array('Arial',
+                            'Arial Black',
+                            'Book Antiqua',
+                            'Charcoal',
+                            'Comic Sans',
+                            'Courier New',
+                            'Geneva',
+                            'Georgia',
+                            'Helvetica',
+                            'Impact',
+                            'Lucida Console',
+                            'Lucida Grande',
+                            'Lucida Sans Unicode',
+                            'Monaco.',
+                            'Palatino',
+                            'Palatino Linotype',
+                            'Tahoma',
+                            'Times',
+                            'Times New Roman',
+                            'Trebuchet MS',
+                            'Verdana');
             $fonts  = array_combine($fonts, $fonts);
             return $fonts;
         }
