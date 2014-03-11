@@ -431,12 +431,5 @@
             $itemDetailViewInstance  = new $itemDetailViewClassName($this->getId(), $this->getModule()->getId(), $model);
             echo $itemDetailViewInstance->render();
         }
-
-        public function actionOrgGraph()
-        {
-            $renderOrgChartModalView = new AccountOrgChartModalView();
-            $view = new ModalView($this, $renderOrgChartModalView);
-            return $view->render();
-        }
     }
 ?>
