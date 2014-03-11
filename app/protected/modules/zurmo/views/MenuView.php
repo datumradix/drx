@@ -77,8 +77,7 @@
             $cClipWidget->beginClip("Tabs");
             $cClipWidget->widget($widgetPath, array(
                 'items'         => static::resolveForHiddenItems($this->items, $this->showCount),
-                'labelPrefix'   => 'em',
-                'linkPrefix'    => 'span',
+                'labelPrefix'   => 'i'
             ));
             $cClipWidget->endClip();
             $content  = $cClipWidget->getController()->clips['Tabs'];
@@ -93,11 +92,15 @@
             $count = 1;
             foreach ($this->items as $key => $item)
             {
-                if ($count > $showCount && !ArrayUtil::getArrayValue($item, 'active'))
+                if(isset($item['moduleId']))
                 {
-                    $items[$key]['itemOptions']['class'] = 'hidden-nav-item';
+                    $items[$key]['itemOptions']['class'] = 'type-' . $item['moduleId'];
+                    if ($count > $showCount && !ArrayUtil::getArrayValue($item, 'active'))
+                    {
+                        $items[$key]['itemOptions']['class'] = 'hidden-nav-item type-' . $item['moduleId'];
+                    }
+                    $count++;
                 }
-                $count++;
             }
             return $items;
         }

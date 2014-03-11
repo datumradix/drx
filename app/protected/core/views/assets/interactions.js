@@ -680,7 +680,7 @@ $(window).ready(function(){
     );
 
     //Main nav hover
-     $('#MenuView > ul > li > a, #RecentlyViewedView  > ul > li > a').hover(
+     /*$('#MenuView > ul > li > a, #RecentlyViewedView  > ul > li > a').hover(
         function(){
             $('> span:first-child', this).stop(true, true).fadeTo( 50, 1, 'linear' );
             $('> span:last-child', this).stop(true, true).animate({ color : '#555', color: '#fff' }, 50, 'linear');
@@ -691,13 +691,26 @@ $(window).ready(function(){
                 $('> span:last-child', this).stop(true, true).animate({ color : '#fff', color: '#555' }, 100, 'linear');
             }
         }
-    );
+    );*/
 
     //Main nav toggle hidden items
     $('.toggle-hidden-nav-items').click(
         function(){
             $('.hidden-nav-item').slideToggle(200);
             $(this).toggleClass('point-up');
+        }
+    );
+
+    //show/collapse left nav
+    $('#nav-collapser').click(
+        function(event){
+            $('body').toggleClass('nav-collapsed');
+            if($('body').hasClass('nav-collapsed')){
+                $('#nav-collapser i').addClass('icon-expand');
+            } else {
+                $('#nav-collapser i').removeClass('icon-expand');
+            }
+            event.preventDefault();
         }
     );
 
@@ -738,10 +751,10 @@ $(window).ready(function(){
     };
 
     $(window).resize(function(){
-      $(this).resizeWhiteArea();
+      //$(this).resizeWhiteArea();
     });
 
-    $(this).resizeWhiteArea();
+    //$(this).resizeWhiteArea();
 
     /*Autogrow text areas*/
     $('textarea').autogrow();
@@ -752,15 +765,13 @@ $(window).ready(function(){
     });
 
     $(".overlay-label-field > input").live('blur', function(){
-        if($(this).val() == "")
-        {
+        if($(this).val() == ""){
             $(this).prev().fadeIn(250);
         }
     });
 
     $(".overlay-label-field input").live('change', function(){
-        if($(this).val() != "")
-        {
+        if($(this).val() != ""){
             $(this).prev().fadeOut(250);
         }
     });
