@@ -39,47 +39,47 @@
      */
     class MixedDateTypesSearchFormAttributeMappingRules extends SearchFormAttributeMappingRules
     {
-        const TYPE_YESTERDAY       = 'Yesterday';
+        const TYPE_YESTERDAY        = 'Yesterday';
 
-        const TYPE_TODAY           = 'Today';
+        const TYPE_TODAY            = 'Today';
 
-        const TYPE_TOMORROW        = 'Tomorrow';
+        const TYPE_TOMORROW         = 'Tomorrow';
 
-        const TYPE_BEFORE          = 'Before';
+        const TYPE_BEFORE           = 'Before';
 
-        const TYPE_AFTER           = 'After';
+        const TYPE_AFTER            = 'After';
 
-        const TYPE_ON              = 'On';
+        const TYPE_ON               = 'On';
 
-        const TYPE_BETWEEN         = 'Between';
+        const TYPE_BETWEEN          = 'Between';
 
-        const TYPE_NEXT_7_DAYS     = 'Next 7 Days';
+        const TYPE_NEXT_7_DAYS      = 'Next 7 Days';
 
-        const TYPE_LAST_7_DAYS     = 'Last 7 Days';
+        const TYPE_LAST_7_DAYS      = 'Last 7 Days';
 
         const TYPE_LAST_30_DAYS     = 'Last 30 Days';
 
-        const TYPE_THIS_MONTH     = 'This Month';
+        const TYPE_THIS_MONTH       = 'This Month';
 
-        const TYPE_LAST_MONTH     = 'Last Month';
+        const TYPE_LAST_MONTH       = 'Last Month';
 
-        const TYPE_NEXT_MONTH     = 'Next Month';
+        const TYPE_NEXT_MONTH       = 'Next Month';
         
-        const TYPE_ALL_BEFORE_TODAY     = 'All Before Today';
+        const TYPE_BEFORE_TODAY     = 'Before Today';
 
-        const TYPE_IS_TIME_FOR     = 'Is Time For';
+        const TYPE_IS_TIME_FOR      = 'Is Time For';
 
-        const TYPE_IS_EMPTY        = 'Is Empty';
+        const TYPE_IS_EMPTY         = 'Is Empty';
 
-        const TYPE_IS_NOT_EMPTY    = 'Is Not Empty';
+        const TYPE_IS_NOT_EMPTY     = 'Is Not Empty';
 
-        const TYPE_WAS_ON          = 'Was On';
+        const TYPE_WAS_ON           = 'Was On';
 
-        const TYPE_BECOMES_ON      = 'Becomes On';
+        const TYPE_BECOMES_ON       = 'Becomes On';
 
-        const TYPE_CHANGES         = 'Changes';
+        const TYPE_CHANGES          = 'Changes';
 
-        const TYPE_DOES_NOT_CHANGE = 'Does Not Change';
+        const TYPE_DOES_NOT_CHANGE  = 'Does Not Change';
 
         /**
          * In the event that the type is BEFORE or AFTER, and the firstDate value is not populated, it will be treated
@@ -185,7 +185,7 @@
                             self::TYPE_THIS_MONTH,
                             self::TYPE_LAST_MONTH,
                             self::TYPE_NEXT_MONTH,
-                            self::TYPE_ALL_BEFORE_TODAY,
+                            self::TYPE_BEFORE_TODAY,
                             self::TYPE_IS_TIME_FOR,
                             self::TYPE_IS_EMPTY,
                             self::TYPE_IS_NOT_EMPTY,
@@ -214,7 +214,7 @@
                          self::TYPE_THIS_MONTH => Zurmo::t('Core', 'This Month'),
                          self::TYPE_LAST_MONTH => Zurmo::t('Core', 'Last Month'),
                          self::TYPE_NEXT_MONTH => Zurmo::t('Core', 'Next Month'),
-                         self::TYPE_ALL_BEFORE_TODAY => Zurmo::t('Core', 'All Before Today'),
+                         self::TYPE_BEFORE_TODAY => Zurmo::t('Core', 'Before Today'),
             );
         }
 
@@ -361,7 +361,7 @@
                     $attributeAndRelations = array(array($realAttributeName, null, 'greaterThanOrEqualTo', $firstDateValue, true),
                                                    array($realAttributeName, null, 'lessThanOrEqualTo',    $secondDateValue, true));
                 }
-                elseif ($value['type'] == self::TYPE_ALL_BEFORE_TODAY)
+                elseif ($value['type'] == self::TYPE_BEFORE_TODAY)
                 {
                     $attributeAndRelations = array(array($realAttributeName, null, 'lessThanOrEqualTo', 'resolveValueByRules'));
                 }
