@@ -40,7 +40,7 @@
         {
             $metadata = array(
                 'perUser' => array(
-                    'title' => "eval:Zurmo::t('AccountsModule', 'Related AccountsModulePluralLabel', LabelUtil::getTranslationParamsForAllModules())",
+                    'title' => "eval:Zurmo::t('AccountsModule', 'Member AccountsModulePluralLabel', LabelUtil::getTranslationParamsForAllModules())",
                 ),
                 'global' => array(
                     'gridViewType' => RelatedListView::GRID_VIEW_TYPE_NORMAL,
