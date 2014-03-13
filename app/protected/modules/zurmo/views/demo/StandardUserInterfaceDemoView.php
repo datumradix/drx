@@ -34,32 +34,14 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ZurmoPageView extends PageView
+    class StandardUserInterfaceDemoView extends View
     {
-        /**
-         * Get the global page title value.
-         * @return string - page title.
-         */
-        public function getTitle()
-        {
-            if (null != $pageTitle = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'pageTitle'))
-            {
-                return $pageTitle;
-            }
-            else
-            {
-                return Zurmo::t('ZurmoModule', 'ZurmoCRM');
-            }
-        }
+        public $message;
 
-        protected function getStyles()
+        protected function renderContent()
         {
-            return array();
-        }
-
-        protected function getContainerWrapperTag()
-        {
-            return null;
+            $content = 'DEMO VIEW - ' . $this->message;
+            return ZurmoHtml::tag('div', array(), $content);
         }
     }
 ?>
