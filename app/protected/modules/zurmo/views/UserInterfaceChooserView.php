@@ -34,36 +34,53 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Base view for displaying a global search and shortcuts create menu view
-     */
-    class GlobalSearchAndShortcutsCreateMenuView extends View
+    class UserInterfaceChooserView extends View
     {
-        protected $moduleNamesAndLabelsAndAll;
-
-        protected $sourceUrl;
-
-        protected $shortcutsCreateMenuView;
-
-        /**
-         * @param array $moduleNamesAndLabelsAndAll
-         * @param string $sourceUrl
-         * @param ShortcutsCreateMenuView $shortcutsCreateMenuView
-         */
-        public function __construct($moduleNamesAndLabelsAndAll, $sourceUrl, $shortcutsCreateMenuView)
-        {
-            assert('is_array($moduleNamesAndLabelsAndAll)');
-            assert('is_string($sourceUrl)');
-            assert('$shortcutsCreateMenuView instanceof ShortcutsCreateMenuView');
-            $this->moduleNamesAndLabelsAndAll = $moduleNamesAndLabelsAndAll;
-            $this->sourceUrl                  = $sourceUrl;
-            $this->shortcutsCreateMenuView    = $shortcutsCreateMenuView;
-        }
-
         protected function renderContent()
         {
-            $globalSearchView = new GlobalSearchView($this->moduleNamesAndLabelsAndAll, $this->sourceUrl);
-            return $globalSearchView->render() . $this->shortcutsCreateMenuView->render();
+            return $this->renderUserInterfaceTypeSelector();
+        }
+
+        /**
+         * Render section for selection user interface type.
+         * Show only if user is using mobile and tablet devices.
+         */
+        protected function renderUserInterfaceTypeSelector()
+        {
+            if (Yii::app()->userInterface->isMobile())
+            {
+                $mobileActive  = ' active';
+                $desktopActive = null;
+            }
+            else
+            {
+                $mobileActive  = null;
+                $desktopActive = ' active';
+            }
+            $content   = ZurmoHtml::link(ZurmoHtml::tag('i', array('class' => 'icon-mobile' . $mobileActive), ''),
+                         Yii::app()->createUrl('zurmo/default/userInterface', array('userInterface' => UserInterface::MOBILE)),
+                         array('title' => Zurmo::t('ZurmoModule', 'Show Mobile')));
+
+            $content  .= ZurmoHtml::link(ZurmoHtml::tag('i', array('class' => 'icon-desktop' . $desktopActive), ''),
+                         Yii::app()->createUrl('zurmo/default/userInterface', array('userInterface' => UserInterface::DESKTOP)),
+                         array('title' => Zurmo::t('ZurmoModule', 'Show Full')));
+
+            $content   = ZurmoHtml::tag('div', array('class' => 'device'), $content);
+
+            $collapser = ZurmoHtml::link(ZurmoHtml::tag('i', array('class' => 'icon-collapse'), ''), '#',
+                         array('id' => 'nav-collapser', 'title' => Zurmo::t('ZurmoModule', 'Collapse or Expand')));
+
+            return $collapser . $content;
+        }
+
+        protected function renderContainerWrapperId()
+        {
+            return false;
+        }
+
+        protected function resolveDefaultClasses()
+        {
+            return array('ui-chooser');
         }
     }
 ?>
