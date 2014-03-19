@@ -33,65 +33,25 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-
     /**
-     * Sanitizer for handling user timeZone.
+     * Renders cancel button on saved user email configuration form.
      */
-    class UserTimeZoneSanitizerUtil extends SanitizerUtil
+    class UserEmailConfigurationCancelLinkActionElement extends CancelLinkActionElement
     {
         /**
-         * @param RedBean_OODBBean $rowBean
+         * @return string
          */
-        public function analyzeByRow(RedBean_OODBBean $rowBean)
+        protected function getDefaultRoute()
         {
-            if ($rowBean->{$this->columnName} != null)
+            $getData = GetUtil::getData();
+            if (isset($getData['id']) && $getData['id'] != '')
             {
-                $resolvedAcceptableValues = ArrayUtil::resolveArrayToLowerCase(static::getAcceptableValues());
-                if (!in_array(strtolower($rowBean->{$this->columnName}), $resolvedAcceptableValues))
-                {
-                    $label = Zurmo::t('ImportModule',
-                                      '{attributeLabel} specified is invalid.',
-                                      array('{attributeLabel}' => User::getAnAttributeLabel('timeZone')));
-                    $this->shouldSkipRow      = false;
-                    $this->analysisMessages[] = $label;
-                }
+                return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/details/', array('id' => $getData['id']));
             }
-        }
-
-        public static function getLinkedMappingRuleType()
-        {
-            return 'DefaultValueModelAttribute';
-        }
-
-        public function sanitizeValue($value)
-        {
-            $resolvedAcceptableValues = ArrayUtil::resolveArrayToLowerCase(static::getAcceptableValues());
-            if ($value != null)
+            else
             {
-                if (!in_array(strtolower($value), $resolvedAcceptableValues))
-                {
-                    return null;
-                }
-                return $value;
+                return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId);
             }
-            if (isset($this->mappingRuleData['defaultValue']) && $this->mappingRuleData['defaultValue'] != null)
-            {
-                if (!in_array(strtolower($this->mappingRuleData['defaultValue']), $resolvedAcceptableValues))
-                {
-                    return null;
-                }
-                return $this->mappingRuleData['defaultValue'];
-            }
-        }
-
-        protected static function getAcceptableValues()
-        {
-            return DateTimeZone::listIdentifiers();
-        }
-
-        public function shouldSanitizeValue()
-        {
-            return true;
         }
     }
 ?>
