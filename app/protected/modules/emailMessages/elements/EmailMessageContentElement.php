@@ -45,7 +45,9 @@
             $emailMessageContent = $this->model->{$this->attribute};
             if ($emailMessageContent->htmlContent != null)
             {
-                return Yii::app()->format->html($emailMessageContent->htmlContent);
+                // we don't use Yii::app()->format->html because we know its good in terms of
+                // purification. Plus using that messes up html.
+                return $emailMessageContent->htmlContent;
             }
             elseif ($emailMessageContent->textContent != null)
             {
@@ -65,8 +67,18 @@
             $cClipWidget   = new CClipWidget();
             $cClipWidget->beginClip("Redactor");
             $cClipWidget->widget('application.core.widgets.Redactor', array(
-                                        'htmlOptions' => $htmlOptions,
-                                        'content'     => $emailMessageContent->$attribute,
+                                        'htmlOptions'   => $htmlOptions,
+                                        'content'       => $emailMessageContent->$attribute,
+                                        'paragraphy'    => "false",
+                                        'fullpage'      => "true",
+                                        'observeImages' => 'true',
+                                        'deniedTags'    => CJSON::encode($this->resolveDeniedTags()),
+                                        'imageUpload'   => ImageFileModelUtil::getUrlForActionUpload(),
+                                        'imageGetJson'  => ImageFileModelUtil::getUrlForActionGetUploaded(),
+                                        'initCallback' => 'function(){
+                                             var contentHeight = $(".redactor_box iframe").contents().find("body").outerHeight();
+                                             $(".redactor_box iframe").height(contentHeight + 50);
+                                        }'
             ));
             $cClipWidget->endClip();
             $content  = $cClipWidget->getController()->clips['Redactor'];
@@ -88,6 +100,11 @@
                                             array('for' => $this->getEditableInputId($this->attribute, 'htmlContent'),
                                                   'label' => $label));
             }
+        }
+
+        protected function resolveDeniedTags()
+        {
+            return array();
         }
     }
 ?>
