@@ -35,6 +35,7 @@
      ********************************************************************************/
     class EmailTemplateTest extends ZurmoBaseTest
     {
+        // TODO: @Shoaibi: Critical: Ensure validators are working fine too.
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
@@ -48,6 +49,32 @@
             Yii::app()->user->userModel = User::getByUsername('super');
         }
 
+        public function testGetTypeDropDownArray()
+        {
+            $types  = EmailTemplate::getTypeDropDownArray();
+            $this->assertCount(2, $types);
+            $this->assertArrayHasKey(EmailTemplate::TYPE_CONTACT, $types);
+            $this->assertArrayHasKey(EmailTemplate::TYPE_WORKFLOW, $types);
+        }
+
+        public function testGetBuiltTypeDropDownArray()
+        {
+            $builtTypes = EmailTemplate::getBuiltTypeDropDownArray();
+            $this->assertCount(3, $builtTypes);
+            $this->assertArrayHasKey(EmailTemplate::BUILT_TYPE_PLAIN_TEXT_ONLY, $builtTypes);
+            $this->assertArrayHasKey(EmailTemplate::BUILT_TYPE_PASTED_HTML, $builtTypes);
+            $this->assertArrayHasKey(EmailTemplate::BUILT_TYPE_BUILDER_TEMPLATE, $builtTypes);
+        }
+
+        public function testRenderNonEditableTypeStringContent()
+        {
+            $type                   = EmailTemplate::TYPE_CONTACT;
+            $types                  = EmailTemplate::getTypeDropDownArray();
+            $expectedTypeString     = $types[$type];
+            $resolvedTypeString     = EmailTemplate::renderNonEditableTypeStringContent($type);
+            $this->assertEquals($expectedTypeString, $resolvedTypeString);
+        }
+
         public function testCreateAndGetEmailTemplateById()
         {
             $emailTemplate                  = new EmailTemplate();
@@ -57,6 +84,7 @@
             $emailTemplate->name            = 'Test Email Template';
             $emailTemplate->htmlContent     = 'Test html Content';
             $emailTemplate->textContent     = 'Test text Content';
+            $emailTemplate->builtType       = EmailTemplate::BUILT_TYPE_PASTED_HTML;
             $this->assertTrue($emailTemplate->save());
             $id             = $emailTemplate->id;
             unset($emailTemplate);
@@ -72,6 +100,33 @@
         /**
          * @depends testCreateAndGetEmailTemplateById
          */
+        public function testDefaultLanguageGetsPopulated()
+        {
+            $emailTemplate                  = new EmailTemplate();
+            $emailTemplate->type            = EmailTemplate::TYPE_CONTACT;
+            $emailTemplate->subject         = 'Test subject For Language';
+            $emailTemplate->modelClassName  = 'Contact';
+            $emailTemplate->name            = 'Test Email Template For Language';
+            $emailTemplate->htmlContent     = 'Test html Content For Language';
+            $emailTemplate->textContent     = 'Test text Content For Language';
+            $emailTemplate->builtType       = EmailTemplate::BUILT_TYPE_PASTED_HTML;
+            $emailTemplate->language        = "";
+            $this->assertTrue($emailTemplate->save());
+            $id             = $emailTemplate->id;
+            unset($emailTemplate);
+            $emailTemplate  = EmailTemplate::getById($id);
+            $this->assertEquals(EmailTemplate::TYPE_CONTACT,                            $emailTemplate->type);
+            $this->assertEquals('Test subject For Language',                            $emailTemplate->subject);
+            $this->assertEquals('Test Email Template For Language',                     $emailTemplate->name);
+            $this->assertEquals('Test html Content For Language',                       $emailTemplate->htmlContent);
+            $this->assertEquals('Test text Content For Language',                       $emailTemplate->textContent);
+            $this->assertEquals(Yii::app()->languageHelper-> getForCurrentUser(),       $emailTemplate->language);
+            $this->assertEquals(2, EmailTemplate::getCount());
+        }
+
+        /**
+         * @depends testCreateAndGetEmailTemplateById
+         */
         public function testAtLeastOneContentFieldIsRequired()
         {
             $emailTemplate                  = new EmailTemplate();
@@ -79,6 +134,7 @@
             $emailTemplate->subject         = 'Another Test subject';
             $emailTemplate->modelClassName  = 'Contact';
             $emailTemplate->name            = 'Another Test Email Template';
+            $emailTemplate->builtType       = EmailTemplate::BUILT_TYPE_PASTED_HTML;
             $this->assertFalse($emailTemplate->save());
             $errorMessages = $emailTemplate->getErrors();
             $this->assertEquals(1, count($errorMessages));
@@ -98,6 +154,7 @@
             $emailTemplate->subject         = 'Another Test subject';
             $emailTemplate->name            = 'Another Test Email Template';
             $emailTemplate->textContent     = 'Text Content';
+            $emailTemplate->builtType       = EmailTemplate::BUILT_TYPE_PASTED_HTML;
             $emailTemplate->modelClassName  = 'RaNdOmTeXt';
             $this->assertFalse($emailTemplate->save());
             $errorMessages = $emailTemplate->getErrors();
@@ -117,7 +174,7 @@
             $emailTemplate->modelClassName  = 'Contact';
             $this->assertTrue($emailTemplate->save());
             $this->assertEmpty($emailTemplate->getErrors());
-            $this->assertEquals(2, EmailTemplate::getCount());
+            $this->assertEquals(3, EmailTemplate::getCount());
         }
 
         /**
@@ -133,6 +190,7 @@
             $emailTemplate->subject         = 'Another Test subject';
             $emailTemplate->name            = 'Another Test Email Template';
             $emailTemplate->textContent     = 'Text Content';
+            $emailTemplate->builtType       = EmailTemplate::BUILT_TYPE_PASTED_HTML;
             $emailTemplate->modelClassName  = 'Contact';
             $this->assertFalse($emailTemplate->save());
             $errorMessages = $emailTemplate->getErrors();
@@ -161,6 +219,7 @@
             $emailTemplate->name            = 'Another Test Email Template';
             $emailTemplate->textContent     = 'Text Content [[TEXT__INVALID^MERGE^TAG]]';
             $emailTemplate->htmlContent     = 'Html Content [[HTMLINVALIDMERGETAG]]';
+            $emailTemplate->builtType       = EmailTemplate::BUILT_TYPE_PASTED_HTML;
             $emailTemplate->modelClassName  = 'Contact';
             $this->assertFalse($emailTemplate->save());
             $errorMessages = $emailTemplate->getErrors();
@@ -176,13 +235,13 @@
             $emailTemplate->htmlContent    = 'Html Content without tags';
             $this->assertTrue($emailTemplate->save());
             $this->assertEmpty($emailTemplate->getErrors());
-            $this->assertEquals(4, EmailTemplate::getCount());
+            $this->assertEquals(5, EmailTemplate::getCount());
             // test with valid merge tags
             $emailTemplate->textContent    = 'Name : [[FIRST^NAME]] [[LAST^NAME]]';
             $emailTemplate->htmlContent    = '<b>Name : [[FIRST^NAME]] [[LAST^NAME]]</b>';
             $this->assertTrue($emailTemplate->save());
             $this->assertEmpty($emailTemplate->getErrors());
-            $this->assertEquals(4, EmailTemplate::getCount());
+            $this->assertEquals(5, EmailTemplate::getCount());
         }
 
         /**
@@ -192,6 +251,7 @@
         {
             $emailTemplate                  = new EmailTemplate();
             $emailTemplate->type            = EmailTemplate::TYPE_CONTACT;
+            $emailTemplate->builtType       = EmailTemplate::BUILT_TYPE_PASTED_HTML;
             $emailTemplate->subject         = 'Another Test subject';
             $emailTemplate->name            = 'Another Test Email Template';
             $emailTemplate->textContent     = '';
@@ -206,7 +266,7 @@
 
             $emailTemplate->textContent         = 'Text Content';
             $this->assertTrue($emailTemplate->save());
-            $this->assertEquals(5, EmailTemplate::getCount());
+            $this->assertEquals(6, EmailTemplate::getCount());
             $id             = $emailTemplate->id;
             unset($emailTemplate);
             $emailTemplate  = EmailTemplate::getById($id);
@@ -227,6 +287,7 @@
             $htmlContent                    = $randomData['htmlContent'][count($randomData['htmlContent']) -1];
             $emailTemplate                  = new EmailTemplate();
             $emailTemplate->type            = EmailTemplate::TYPE_CONTACT;
+            $emailTemplate->builtType       = EmailTemplate::BUILT_TYPE_PASTED_HTML;
             $emailTemplate->subject         = 'Another Test subject';
             $emailTemplate->name            = 'Another Test Email Template';
             $emailTemplate->textContent     = 'Text Content';
@@ -260,16 +321,26 @@
             $this->assertEquals('Email Templates', $emailTemplate[0]::getModelLabelByTypeAndLanguage('Plural'));
         }
 
+        /**
+         * @depends testCreateAndGetEmailTemplateById
+         */
+        public function testToString()
+        {
+            $emailTemplate = EmailTemplate::getByName('Test Email Template');
+            $stringValue    = strval($emailTemplate[0]);
+            $this->assertEquals($emailTemplate[0]->name, $stringValue);
+        }
+
         /*
          * @depends testCreateAndGetEmailTemplateById
          */
         public function testDeleteEmailTemplate()
         {
             $emailTemplates = EmailTemplate::getAll();
-            $this->assertEquals(6, count($emailTemplates));
+            $this->assertEquals(7, count($emailTemplates));
             $emailTemplates[0]->delete();
             $emailTemplates = EmailTemplate::getAll();
-            $this->assertEquals(5, count($emailTemplates));
+            $this->assertEquals(6, count($emailTemplates));
         }
     }
 ?>
