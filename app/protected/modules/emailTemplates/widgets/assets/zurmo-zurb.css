@@ -1,0 +1,131 @@
+div img {
+	float: none;
+}
+
+.builder-element-non-editable p {
+	font-size: inherit;
+	line-height: inherit;
+	font-family: inherit;
+	font-weight: inherit;
+	color: inherit;
+	text-align: inherit;
+}
+
+.simple-divider,
+.fancy-divider {
+	width: 100%;
+}
+
+table.header td.wrapper {
+	vertical-align: middle;
+}
+
+td.wrapper{
+	vertical-align: top;
+}
+
+td.button-container {
+	text-align: center;
+}
+
+.social-button {}
+
+table.button,
+table.tiny-button,
+table.small-button,
+table.medium-button,
+table.large-button{
+	width: auto;
+}
+
+table.button td,
+table.tiny-button td,
+table.small-button td,
+table.medium-button td,
+table.large-button td {
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+td.container{
+	text-align: center;
+	width: 100%;
+}
+
+.button-container{
+
+}
+table.tiny-button td {
+	padding: 5px 5px 4px 5px;
+}
+table.small-button td {
+	padding: 8px 8px 7px 8px;
+}
+table.medium-button td {
+	padding: 12px 12px 10px 12px;
+}
+table.large-button td {
+	padding: 21px 21px 18px 21px;
+}
+
+table.Facebook td {
+	color: #ffffff;
+	background: #3b5998;
+	border-color: #2d4473;
+}
+table.Facebook:hover {
+	background: #2d4473 !important;
+}
+table.Twitter td{
+	color: #ffffff;
+	background: #00acee;
+	border-color: #0087bb;
+}
+table.Twitter:hover {
+	background: #0087bb !important;
+}
+table.GooglePlus td{
+	 color: #ffffff;
+	 background-color: #DB4A39;
+	 border-color: #CC0000;
+ }
+table.GooglePlus:hover {
+	background: #CC0000 !important;
+}
+table.YouTube td{
+	color: #ffffff;
+	background-color: #db1925;
+	border-color: #cc0f29;
+}
+table.YouTube:hover {
+	background: #cc0f29 !important;
+}
+table.Instagram td{
+	color: #ffffff;
+	background: #7b4829;
+	border-color: #773424;
+}
+table.Instagram:hover {
+	background: #773424 !important;
+}
+table.Website td{
+	color: #ffffff;
+	background: #7d098b;
+	border-color: #560861;
+}
+table.Website:hover {
+	background: #560861 !important;
+}
+
+table.horizontal, table.vertical{
+	width: 100%;
+}
+
+table.vertical table{
+	margin-bottom: 15px;
+}
+
+table.horizontal table{
+	float: left;
+	margin-right: 15px;
+}
