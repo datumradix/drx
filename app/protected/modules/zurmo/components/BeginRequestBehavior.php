@@ -429,10 +429,9 @@
          */
         public function handleClearCache($event)
         {
-            if (isset($_GET['clearCache']) && $_GET['clearCache'] == 1)
+            if (intval(ArrayUtil::getArrayValue($_GET, 'clearCache')) == 1)
             {
-                ForgetAllCacheUtil::forgetAllCaches();
-                $this->clearCacheDirectories();
+                ClearCacheDirectoriesUtil::clearCacheDirectories();
             }
         }
 
@@ -583,39 +582,6 @@
         protected static function getAllowedGuestUserRoutes()
         {
             return self::$allowedGuestUserRoutes;
-        }
-
-        protected function clearCacheDirectories()
-        {
-            $cacheDirectories   = $this->resolveCacheDirectoryPaths();
-            foreach ($cacheDirectories as $cacheDirectory)
-            {
-                $this->clearCacheDirectory($cacheDirectory);
-            }
-        }
-
-        protected function clearCacheDirectory(array $cacheDirectory)
-        {
-            $excludedFiles          = array('index.html');
-            $path                   = null;
-            $removeDirectoryItself  = false;
-            extract($cacheDirectory);
-            if (is_dir($path))
-            {
-                FileUtil::deleteDirectoryRecursive($path, $removeDirectoryItself, $excludedFiles);
-            }
-        }
-
-        protected function resolveCacheDirectoryPaths()
-        {
-            $cacheDirectories       = array(
-                array(  'path'                  => Yii::app()->assetManager->getBasePath(),
-                        'removeDirectoryItself' => false),
-                array(  'path'                 => Yii::getPathOfAlias('application.runtime.themes'),
-                        'removeDirectoryItself' => false),
-                array(  'path'                 => Yii::getPathOfAlias('application.runtime.minscript.cache'),
-                        'removeDirectoryItself' => false));
-            return $cacheDirectories;
         }
      }
 ?>
