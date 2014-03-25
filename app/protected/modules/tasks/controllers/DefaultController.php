@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     class TasksDefaultController extends ActivityModelsDefaultController
@@ -41,10 +41,11 @@
             return array_merge(parent::filters(),
                 array(
                     array(
-                        ZurmoBaseController::REQUIRED_ATTRIBUTES_FILTER_PATH . ' + modalCreateFromRelation,
+                        ZurmoBaseController::REQUIRED_ATTRIBUTES_FILTER_PATH . ' + modalCreateFromRelation, modalCreate,
                                             ModalEdit',
                         'moduleClassName' => get_class($this->getModule()),
                         'viewClassName'   => 'TaskModalEditView',
+                        'isModal'         => true,
                    ),
                     array(
                         ZurmoBaseController::REQUIRED_ATTRIBUTES_FILTER_PATH . ' + modalDetails',
@@ -72,7 +73,7 @@
                                                     );
             if ((isset($_GET['ajax']) && $_GET['ajax'] == 'list-view'))
             {
-                if(isset($_GET['openToTaskId']))
+                if (isset($_GET['openToTaskId']))
                 {
                     unset($_GET['openToTaskId']);
                 }
@@ -493,6 +494,8 @@
                             $kanbanItem->sortOrder = TasksUtil::resolveAndGetSortOrderForTaskOnKanbanBoard($type, $task);
                             $kanbanItem->type = intval($type);
                             $kanbanItem->save();
+                            //set the scenario
+                            $task->setScenario('kanbanViewDrag');
                             $this->processStatusUpdateViaAjax($task, Task::STATUS_COMPLETED, false);
                             $response['button'] = '';
                             $response['status'] = Task::getStatusDisplayName($task->status);
@@ -512,16 +515,15 @@
                             else
                             {
                                 //This would be the one which is dragged across column
-                                //kanban update has to be done first
-                                $kanbanItem->sortOrder = $counter;
-                                $kanbanItem->type = intval($type);
-                                $kanbanItem->save();
                                 $targetStatus = TasksUtil::getDefaultTaskStatusForKanbanItemType(intval($type));
                                 $this->processStatusUpdateViaAjax($task, $targetStatus, false);
                                 $content = TasksUtil::resolveActionButtonForTaskByStatus($targetStatus,
                                                                                         $this->getId(),
                                                                                         $this->getModule()->getId(),
                                                                                         intval($taskId));
+                                $kanbanItem->sortOrder = $counter;
+                                $kanbanItem->type = intval($type);
+                                $kanbanItem->save();
                                 $subscriptionContent = TasksUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
                                 $subscriptionContent .= TasksUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
                                 $response['button'] = $content;
@@ -537,7 +539,7 @@
             echo CJSON::encode($response);
         }
 
-        /**
+       /**
         * Update task status in kanban view
         * @param int $targetStatus
         * @param int $taskId
@@ -547,6 +549,8 @@
            $response = array();
            //Run update queries for update task staus and update type and sort order in kanban column
            $task = Task::getById(intval($taskId));
+           //set the scenario
+           $task->setScenario('kanbanViewButtonClick');
            $this->processStatusUpdateViaAjax($task, $targetStatus, false);
            TasksUtil::processKanbanItemUpdateOnButtonAction(intval($targetStatus), intval($taskId), intval($sourceKanbanType));
            $subscriptionContent = TasksUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
@@ -563,7 +567,6 @@
          */
         protected function processStatusUpdateViaAjax(Task $task, $status, $showCompletionDate = true)
         {
-            //$task          = Task::getById(intval($id));
             $currentStatus = $task->status;
             $task->status = intval($status);
             //check for owner in case a user start the task
@@ -677,15 +680,8 @@
             if (isset($_POST['ajax']) &&
                 ($_POST['ajax'] == 'task-left-column-form-data' || $_POST['ajax'] == 'task-right-column-form-data'))
             {
-                $oldStatus = $task->status;
                 $task = $this->attemptToSaveModelFromPost($task, null, false);
                 $errorData = ZurmoActiveForm::makeErrorsDataAndResolveForOwnedModelAttributes($task);
-
-                if (empty ($errorData) && $oldStatus != $task->status)
-                {
-                    //may need to reset the kanban type and sort as well
-                    TasksUtil::checkKanbanTypeByStatusAndUpdateIfRequired($task);
-                }
                 echo CJSON::encode($errorData);
                 Yii::app()->end(0, false);
             }

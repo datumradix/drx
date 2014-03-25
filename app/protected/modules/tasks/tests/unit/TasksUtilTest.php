@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     class TasksUtilTest extends ZurmoBaseTest
@@ -431,21 +431,21 @@
                                                                               Yii::app()->user->userModel,
                                                                               $project,
                                                                               Task::STATUS_IN_PROGRESS);
-            $kanbanItem1            = TaskTestHelper::createKanbanItemForTask($task);
+            $kanbanItem1            = KanbanItem::getByTask($task->id);
             $this->assertEquals(KanbanItem::TYPE_IN_PROGRESS, $kanbanItem1->type);
             $this->assertEquals($task->project->id, $kanbanItem1->kanbanRelatedItem->id);
             $task2                  = TaskTestHelper::createTaskByNameWithProjectAndStatus('MySecondKanbanTask',
                                                                               Yii::app()->user->userModel,
                                                                               $project,
                                                                               Task::STATUS_IN_PROGRESS);
-            $kanbanItem2            = TaskTestHelper::createKanbanItemForTask($task2);
+            $kanbanItem2            = KanbanItem::getByTask($task2->id);
             $this->assertEquals(KanbanItem::TYPE_IN_PROGRESS, $kanbanItem2->type);
             $this->assertEquals($task2->project->id, $kanbanItem2->kanbanRelatedItem->id);
             $task3                  = TaskTestHelper::createTaskByNameWithProjectAndStatus('MyThirdKanbanTask',
                                                                               Yii::app()->user->userModel,
                                                                               $project,
                                                                               Task::STATUS_IN_PROGRESS);
-            $kanbanItem3            = TaskTestHelper::createKanbanItemForTask($task3);
+            $kanbanItem3            = KanbanItem::getByTask($task3->id);
             $this->assertEquals(KanbanItem::TYPE_IN_PROGRESS, $kanbanItem3->type);
             $this->assertEquals($task3->project->id, $kanbanItem3->kanbanRelatedItem->id);
             $sourceKanbanType       = TasksUtil::resolveKanbanItemTypeForTaskStatus(Task::STATUS_IN_PROGRESS);
@@ -492,6 +492,7 @@
             $tasks          = Task::getByName('MyThirdKanbanTask');
             $task3          = $tasks[0];
             $kanbanItem     = KanbanItem::getByTask($task->id);
+            $task->setScenario('kanbanViewButtonClick');
             TasksUtil::processKanbanItemUpdateOnButtonAction(Task::STATUS_IN_PROGRESS, $task->id, $kanbanItem->type);
             $kanbanItem             = KanbanItem::getByTask($task->id);
             $kanbanItem2            = KanbanItem::getByTask($task2->id);
@@ -516,7 +517,7 @@
             $tasks          = Task::getByName('MyThirdKanbanTask');
             $task3          = $tasks[0];
             $kanbanItem2     = KanbanItem::getByTask($task2->id);
-
+            $task2->setScenario('kanbanViewButtonClick');
             //Check for target status waiting for acceptance(should not change sort order)
             TasksUtil::processKanbanItemUpdateOnButtonAction(Task::STATUS_AWAITING_ACCEPTANCE, $task2->id, $kanbanItem2->type);
             $kanbanItem             = KanbanItem::getByTask($task->id);
@@ -529,6 +530,7 @@
             $this->assertEquals($task3->id, $kanbanItem3->task->id);
             $this->assertEquals(2, $kanbanItem3->sortOrder);
 
+            $task2->setScenario('kanbanViewButtonClick');
             //Check for target status rejected(should not change sort order)
             TasksUtil::processKanbanItemUpdateOnButtonAction(Task::STATUS_REJECTED, $task2->id, $kanbanItem2->type);
             $kanbanItem             = KanbanItem::getByTask($task->id);
@@ -541,6 +543,7 @@
             $this->assertEquals($task3->id, $kanbanItem3->task->id);
             $this->assertEquals(2, $kanbanItem3->sortOrder);
 
+            $task2->setScenario('kanbanViewButtonClick');
             //Check for target status in progress(should not change sort order)
             TasksUtil::processKanbanItemUpdateOnButtonAction(Task::STATUS_IN_PROGRESS, $task2->id, $kanbanItem2->type);
             $kanbanItem             = KanbanItem::getByTask($task->id);
@@ -553,6 +556,7 @@
             $this->assertEquals($task3->id, $kanbanItem3->task->id);
             $this->assertEquals(2, $kanbanItem3->sortOrder);
 
+            $task2->setScenario('kanbanViewButtonClick');
             //Check for target status completed(should change sort order)
             TasksUtil::processKanbanItemUpdateOnButtonAction(Task::STATUS_COMPLETED, $task2->id, $kanbanItem2->type);
             $kanbanItem             = KanbanItem::getByTask($task->id);

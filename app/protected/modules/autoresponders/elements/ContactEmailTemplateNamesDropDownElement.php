@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     abstract class ContactEmailTemplateNamesDropDownElement extends StaticDropDownFormElement
@@ -86,7 +86,8 @@
                             updateElementWithData(textContentElement, data.textContent);
                             updateElementWithData(subjectElement, data.subject);
                             $(htmlContentElement).redactor("set", data.htmlContent);
-                            //$(htmlContentElement).redactor("sync");
+                            var contentHeight = $(".redactor_box iframe").contents().find("html").outerHeight();
+                            $(".redactor_box iframe").height(contentHeight + 50);
                         }
 
                         function updateElementWithData(element, data)
@@ -152,7 +153,7 @@
                             {
                                 var dropDown            = $(this);
                                 var notificationBarId   = "' . static::NOTIFICATION_BAR_ID . '";
-                                var url                 = "' . $this->getEmailTemplateDetailsUrl() . '";
+                                var url                 = "' . $this->getEmailTemplateDetailsJsonUrl() . '";
                                 var disableDropDown     = "' . static::DISABLE_DROPDOWN_WHEN_AJAX_IN_PROGRESS . '";
                                 var disableTextBox      = "' . static::DISABLE_TEXTBOX_WHEN_AJAX_IN_PROGRESS. '";
                                 var textContentId       = "' . $this->getTextContentId() . '";
@@ -195,9 +196,9 @@
                                                         $(this).makeLargeLoadingSpinner(false, ".email-template-content");
                                                         $(".email-template-content .big-spinner").remove();
                                                         updateContentElementsWithData(textContentElement,
-                                                                                        htmlContentElement,
-                                                                                        subjectElement,
-                                                                                        data);
+                                                                                      htmlContentElement,
+                                                                                      subjectElement,
+                                                                                      data);
                                                         subjectElement.focus();
                                                         updateAddFilesWithDataFromAjax(data.filesIds, notificationBarId);
                                                     },
@@ -291,9 +292,9 @@
             return $htmlOptions;
         }
 
-        protected function getEmailTemplateDetailsUrl()
+        protected function getEmailTemplateDetailsJsonUrl()
         {
-            return Yii::app()->createUrl('/emailTemplates/default/details');
+            return Yii::app()->createUrl('/emailTemplates/default/detailsJson');
         }
 
         protected function getTextContentId()

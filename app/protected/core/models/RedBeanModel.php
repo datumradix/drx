@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -1190,12 +1190,15 @@
 
         private static function findNextDerivativeBean($bean, $modelClassName1, $modelClassName2)
         {
-            $key = strtolower($modelClassName1) . '_id';
-            $tableName = $modelClassName2::getTableName();
-            $beans = ZurmoRedBean::find($tableName, "$key = :id", array('id' => $bean->id));
-            if (count($beans) == 1)
+            if ($bean->id > 0)
             {
-                return reset($beans);
+                $key = strtolower($modelClassName1) . '_id';
+                $tableName = $modelClassName2::getTableName();
+                $beans = ZurmoRedBean::find($tableName, "$key = :id", array('id' => $bean->id));
+                if (count($beans) == 1)
+                {
+                    return reset($beans);
+                }
             }
             return null;
         }
@@ -1347,9 +1350,11 @@
 
                             case self::HAS_MANY:
                                 $this->relationNameToRelatedModel[$attributeName] =
-                                    new RedBeanOneToManyRelatedModels($bean,
+                                    new RedBeanOneToManyRelatedModels($this,
+                                                                      $bean,
                                                                       $relatedModelClassName,
                                                                       $attributeModelClassName,
+                                                                      $attributeName,
                                                                       $owns,
                                                                       $linkType,
                                                                       $relationLinkName);
@@ -2044,6 +2049,15 @@
         public function onAfterSave($event)
         {
             $this->raiseEvent('onAfterSave', $event);
+        }
+
+        /**
+         * This event is raised on a RedBeanOneToManyRelatedModels change
+         * @param $event
+         */
+        public function onRedBeanOneToManyRelatedModelsChange($event)
+        {
+            $this->raiseEvent('onRedBeanOneToManyRelatedModelsChange', $event);
         }
 
         /**
@@ -3123,6 +3137,81 @@
         public static function getYiiValidatorsToRedBeanValidators()
         {
             return static::$yiiValidatorsToRedBeanValidators;
+        }
+
+        /**
+         * Wrapper for CValidator::createValidator
+         * @param $attribute
+         * @param $validator
+         * @param array $params
+         */
+        public function addValidator($attribute, $validator, $params = array())
+        {
+            if ($attribute != null && $validator != null)
+            {
+                $this->validators[] = CValidator::createValidator($validator, $this, $attribute, $params);
+            }
+        }
+
+        public static function getHasManyOpposingRelationName(RedBeanModel $model, $precedingModelClassName, $precedingRelation)
+        {
+            assert('is_string($precedingModelClassName)');
+            assert('is_string($precedingRelation)');
+            foreach ($model->attributeNames() as $attributeName)
+            {
+                if ($model->isRelation($attributeName) &&
+                    ($model->getRelationType($attributeName) == RedBeanModel::HAS_ONE ||
+                        $model->getRelationType($attributeName) ==  RedBeanModel::HAS_MANY_BELONGS_TO) &&
+                    static::relationLinksToPrecedingRelation(get_class($model), $attributeName,
+                        $precedingModelClassName, $precedingRelation))
+                {
+                    return $attributeName;
+                }
+            }
+        }
+
+        /**
+         * @param string $modelClassName
+         * @param string $relation
+         * @param null|string $precedingModelClassName
+         * @param null|string $precedingRelation
+         * @return bool
+         */
+        public static function relationLinksToPrecedingRelation($modelClassName, $relation,
+                                                                $precedingModelClassName = null,
+                                                                $precedingRelation = null)
+        {
+            assert('is_string($modelClassName)');
+            assert('is_string($relation)');
+            assert('is_string($precedingModelClassName) || $precedingModelClassName == null');
+            assert('is_string($precedingRelation) || $precedingRelation == null');
+            if ($precedingModelClassName == null || $precedingRelation == null)
+            {
+                return false;
+            }
+            //Check if the relation is a derived relation in which case return false because it is handled by
+            //@see self::inferredRelationLinksToPrecedingRelation
+            if (!$precedingModelClassName::isAnAttribute($precedingRelation))
+            {
+                return false;
+            }
+            if ($precedingModelClassName != $modelClassName::getRelationModelClassName($relation))
+            {
+                return false;
+            }
+            if ( $precedingModelClassName::getRelationLinkType($precedingRelation) == RedBeanModel::LINK_TYPE_ASSUMPTIVE &&
+                $modelClassName::getRelationLinkType($relation) == RedBeanModel::LINK_TYPE_ASSUMPTIVE)
+            {
+                return true;
+            }
+            //Check for LINK_TYPE_SPECIFIC
+            if ( $precedingModelClassName::getRelationLinkType($precedingRelation) == RedBeanModel::LINK_TYPE_SPECIFIC &&
+                $modelClassName::getRelationLinkType($relation) == RedBeanModel::LINK_TYPE_SPECIFIC &&
+                $precedingModelClassName::getRelationLinkName($precedingRelation) == $modelClassName::getRelationLinkName($relation))
+            {
+                return true;
+            }
+            return false;
         }
     }
 ?>

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -69,10 +69,10 @@
             $this->runControllerWithNoExceptionsAndGetContent('emailTemplates/default/listForMarketing');
 
             // Setup test data owned by the super user.
-            EmailTemplateTestHelper::createEmailTemplateByName(EmailTemplate::TYPE_WORKFLOW, 'Test Subject', 'Contact',
-                'Test Name', 'Test HtmlContent', 'Test TextContent');
-            EmailTemplateTestHelper::createEmailTemplateByName(EmailTemplate::TYPE_CONTACT, 'Test Subject1', 'Contact',
-                'Test Name1', 'Test HtmlContent1', 'Test TextContent1');
+            EmailTemplateTestHelper::create('Test Name', 'Test Subject', 'Contact', 'Text HtmlContent',
+                                            'Test TextContent', EmailTemplate::TYPE_WORKFLOW);
+            EmailTemplateTestHelper::create('Test Name1', 'Test Subject1', 'Contact', 'Text HtmlContent1',
+                                            'Test TextContent1', EmailTemplate::TYPE_WORKFLOW);
 
             $this->runControllerWithNoExceptionsAndGetContent('emailTemplates/default');
             $this->runControllerWithNoExceptionsAndGetContent('emailTemplates/default/index');
@@ -84,6 +84,19 @@
 
         /**
          * @depends testSuperUserAllDefaultControllerActions
+         */
+        public function testSuperUserRelationsAndAttributesTreeForMergeTags()
+        {
+            //Test without a node id
+            $this->runControllerWithNoExceptionsAndGetContent('emailTemplates/default/relationsAndAttributesTreeForMergeTags');
+
+            //Test with a node id
+            $this->setGetArray (array('uniqueId' => 'EmailTemplate', 'nodeId' => 'EmailTemplate_secondaryAddress'));
+            $this->runControllerWithExitExceptionAndGetContent('emailTemplates/default/relationsAndAttributesTreeForMergeTags');
+        }
+
+        /**
+         * @depends testSuperUserRelationsAndAttributesTreeForMergeTags
          */
         public function testSuperUserListForMarketingAction()
         {
@@ -355,14 +368,14 @@
             $this->assertNotEmpty($emailTemplateDetailsArray);
             $this->setGetArray(array('id' => $emailTemplateId, 'renderJson' => true));
             // @ to avoid headers already sent error.
-            $content = @$this->runControllerWithExitExceptionAndGetContent('emailTemplates/default/details');
+            $content = @$this->runControllerWithExitExceptionAndGetContent('emailTemplates/default/detailsJson');
             $emailTemplateDetailsResolvedArray = CJSON::decode($content);
             $this->assertNotEmpty($emailTemplateDetailsResolvedArray);
             $this->assertEquals($emailTemplateDetailsArray, $emailTemplateDetailsResolvedArray);
 
             $this->setGetArray(array('id' => $emailTemplateId, 'renderJson' => true, 'includeFilesInJson' => true));
             // @ to avoid headers already sent error.
-            $content = @$this->runControllerWithExitExceptionAndGetContent('emailTemplates/default/details');
+            $content = @$this->runControllerWithExitExceptionAndGetContent('emailTemplates/default/detailsJson');
             $emailTemplateDetailsResolvedArray = CJSON::decode($content);
             $emailTemplateDetailsResolvedArrayWithoutFiles = $emailTemplateDetailsResolvedArray;
             unset($emailTemplateDetailsResolvedArrayWithoutFiles['filesIds']);
@@ -408,7 +421,7 @@
             $this->assertNotEmpty($emailTemplateDetailsArray);
             $this->setGetArray(array('id' => $emailTemplateId, 'renderJson' => true));
             // @ to avoid headers already sent error.
-            $content = @$this->runControllerWithExitExceptionAndGetContent('emailTemplates/default/details');
+            $content = @$this->runControllerWithExitExceptionAndGetContent('emailTemplates/default/detailsJson');
             $emailTemplateDetailsResolvedArray = CJSON::decode($content);
             $this->assertNotEmpty($emailTemplateDetailsResolvedArray);
             $this->assertEquals($emailTemplateDetailsArray, $emailTemplateDetailsResolvedArray);
@@ -422,9 +435,9 @@
             $contact         = ContactTestHelper::createContactByNameForOwner('test', $this->super);
             $emailTemplateId = self::getModelIdByModelNameAndName ('EmailTemplate', 'New Test Workflow Email Template 00');
             $emailTemplate   = EmailTemplate::getById($emailTemplateId);
-            $unsubscribePlaceholder         = UnsubscribeAndManageSubscriptionsPlaceholderUtil::
+            $unsubscribePlaceholder         = GlobalMarketingFooterUtil::
                                                     UNSUBSCRIBE_URL_PLACEHOLDER;
-            $manageSubscriptionsPlaceholder = UnsubscribeAndManageSubscriptionsPlaceholderUtil::
+            $manageSubscriptionsPlaceholder = GlobalMarketingFooterUtil::
                                                     MANAGE_SUBSCRIPTIONS_URL_PLACEHOLDER;
             $emailTemplate->textContent = "Test text content with contact tag: [[FIRST^NAME]] {$unsubscribePlaceholder}";
             $emailTemplate->htmlContent = "Test html content with contact tag: [[FIRST^NAME]] {$manageSubscriptionsPlaceholder}";
@@ -434,7 +447,7 @@
                                      'includeFilesInJson' => false,
                                      'contactId'          => $contact->id));
             // @ to avoid headers already sent error.
-            $content = @$this->runControllerWithExitExceptionAndGetContent('emailTemplates/default/details');
+            $content = @$this->runControllerWithExitExceptionAndGetContent('emailTemplates/default/detailsJson');
             $emailTemplateDetailsResolvedArray = CJSON::decode($content);
             $this->assertNotEmpty($emailTemplateDetailsResolvedArray);
             $this->assertEquals('Test text content with contact tag: test ', $emailTemplateDetailsResolvedArray['textContent']);

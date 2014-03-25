@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     class MergeTagGuideView extends View
@@ -133,6 +133,26 @@
             $specialTagsItems[]     = $this->renderBoldMergeTag(MergeTagsUtil::TAG_PREFIX . "LAST" .
                                         MergeTagsUtil::CAPITAL_DELIMITER . "YEAR" . MergeTagsUtil::TAG_SUFFIX) .
                                         " : prints last year.";
+
+            $specialTagsItems[]     = $this->renderBoldMergeTag(MergeTagsUtil::TAG_PREFIX .'OWNERS^AVATAR^SMALL' .
+                                      MergeTagsUtil::TAG_SUFFIX) .
+                                      " : prints the owner's small avatar image (32x32).";
+            $specialTagsItems[]     = $this->renderBoldMergeTag(MergeTagsUtil::TAG_PREFIX .'OWNERS^AVATAR^MEDIUM ' .
+                                      MergeTagsUtil::TAG_SUFFIX) .
+                                      " : prints the owner's medium avatar image (64x64).";
+            $specialTagsItems[]     = $this->renderBoldMergeTag(MergeTagsUtil::TAG_PREFIX .'OWNERS^AVATAR^LARGE' .
+                                      MergeTagsUtil::TAG_SUFFIX) .
+                                      " : prints the owner's large avatar image (128x128).";
+            $specialTagsItems[]     = $this->renderBoldMergeTag(MergeTagsUtil::TAG_PREFIX .'OWNERS^EMAIL^SIGNATURE' .
+                                      MergeTagsUtil::TAG_SUFFIX) .
+                                      " : prints the owner's email signature.";
+            $specialTagsItems[]     = $this->renderBoldMergeTag(MergeTagsUtil::TAG_PREFIX .
+                                        'GLOBAL^MARKETING^FOOTER^PLAIN^TEXT' .
+                                        MergeTagsUtil::TAG_SUFFIX) .
+                                        " : prints the Global Marketing Footer(Plain Text).";
+            $specialTagsItems[]     = $this->renderBoldMergeTag(MergeTagsUtil::TAG_PREFIX .'GLOBAL^MARKETING^FOOTER^HTML' .
+                                        MergeTagsUtil::TAG_SUFFIX) .
+                                        " : prints the Global Marketing Footer(Rich Text).";
             $specialTagsItems[]     = $this->renderBoldMergeTag('{{UNSUBSCRIBE_URL}}') .
                                         " : prints unsubscribe url.";
             $specialTagsItems[]     = $this->renderBoldMergeTag('{{MANAGE_SUBSCRIPTIONS_URL}}') .

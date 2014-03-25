@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -55,12 +55,12 @@
             UserTestHelper::createBasicUser('nobody');
 
             // Setup test data owned by the super user.
-            static::$templateOwnedBySuper = EmailTemplateTestHelper::createEmailTemplateByName(EmailTemplate::TYPE_CONTACT,
-                                                                                                    'Test Subject1',
-                                                                                                    'Contact',
-                                                                                                    'Test Name1',
-                                                                                                    'Test HtmlContent1',
-                                                                                                    'Test TextContent1');
+
+            static::$templateOwnedBySuper = EmailTemplateTestHelper::create('Test Name1',
+                                                                            'Test Subject1',
+                                                                            'Contact',
+                                                                            'Test HtmlContent1',
+                                                                            'Test TextContent1');
             ReadPermissionsOptimizationUtil::rebuild();
         }
 
@@ -75,10 +75,8 @@
         {
             $this->user->setRight('ContactsModule', ContactsModule::getAccessRight());
             $this->assertTrue($this->user->save());
-            $emailTemplate = EmailTemplateTestHelper::createEmailTemplateByName(EmailTemplate::TYPE_CONTACT,
-                                                                                'Test Subject Regular 01',
+            $emailTemplate = EmailTemplateTestHelper::create('Test Name Regular 01', 'Test Subject Regular 01',
                                                                                 'Contact',
-                                                                                'Test Name Regular 01',
                                                                                 'Test HtmlContent Regular 01',
                                                                                 'Test TextContent Regular 01');
 

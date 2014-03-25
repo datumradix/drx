@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -357,6 +357,41 @@
         }
 
         /**
+         * Some task status's are ok for multiple kanban item types.
+         * @param $kanbanItemType
+         * @param $taskStatus
+         * @return true if the task status is ok for the current kanbanItemType
+         */
+        public static function isKanbanItemTypeValidBasedOnTaskStatus($kanbanItemType, $taskStatus)
+        {
+            if($taskStatus == null && $kanbanItemType == KanbanItem::TYPE_SOMEDAY)
+            {
+                return true;
+            }
+            elseif($taskStatus == null)
+            {
+                return false;
+            }
+            if ($taskStatus == Task::STATUS_NEW)
+            {
+                if($kanbanItemType == KanbanItem::TYPE_SOMEDAY || $kanbanItemType == KanbanItem::TYPE_TODO)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            $data = self::getTaskStatusMappingToKanbanItemTypeArray();
+            if($data[intval($taskStatus)] == $kanbanItemType)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /**
          * Resolves Subscribe Url
          * @param int $taskId
          * @return string
@@ -496,7 +531,7 @@
                                                                       {
                                                                         $(this).html('" . $link . "');
                                                                         $(this).attr('class', '" . $targetClass . "');
-                                                                        if(data == '')
+                                                                        if (data == '')
                                                                         {
                                                                             $('#subscriberList').html('');
                                                                         }
@@ -716,7 +751,7 @@
             $ajaxOptions['beforeSend'] = new CJavaScriptExpression($ajaxOptions['beforeSend']);
             $script = " $(document).off('click.taskDetailLink', '#{$sourceId} .task-kanban-detail-link');
                         $(document).on('click.taskDetailLink',  '#{$sourceId} .task-kanban-detail-link', function()
-                          {
+                        {
                             var id = $(this).attr('id');
                             var idParts = id.split('-');
                             var taskId = parseInt(idParts[1]);
@@ -728,6 +763,7 @@
                                 'update'     : '{$ajaxOptions['update']}',
                                 'success': function(html){jQuery('#{$modalId}').html(html)}
                             });
+                            return false;
                           }
                         );";
              Yii::app()->clientScript->registerScript('taskModalDetailsScript' . $sourceId, $script);
@@ -975,24 +1011,30 @@
             //It should be created here but check for create as well here
             if ($kanbanItem == null)
             {
-                $kanbanItem = TasksUtil::createKanbanItemFromTask($task);
+                TasksUtil::createKanbanItemFromTask($task);
             }
-            $kanbanTypeByStatus = TasksUtil::resolveKanbanItemTypeForTaskStatus($task->status);
-            if ($kanbanItem->type != $kanbanTypeByStatus)
+            else
             {
-                $sourceKanbanItemType = $kanbanItem->type;
-                //put the item at the end
-                $kanbanItem->sortOrder = TasksUtil::resolveAndGetSortOrderForTaskOnKanbanBoard($kanbanTypeByStatus, $task);
-                $kanbanItem->type = $kanbanTypeByStatus;
-                $kanbanItem->save();
-                //Resort the source column
-                if ($task->project->id > 0)
+                if (!TasksUtil::isKanbanItemTypeValidBasedOnTaskStatus($kanbanItem->type, $task->status))
                 {
-                    TasksUtil::sortKanbanColumnItems($sourceKanbanItemType, $task->project);
-                }
-                else
-                {
-                    TasksUtil::sortKanbanColumnItems($sourceKanbanItemType, $task->activityItems->offsetGet(0));
+                    $kanbanTypeByStatus = TasksUtil::resolveKanbanItemTypeForTaskStatus($task->status);
+                    if ($kanbanItem->type != $kanbanTypeByStatus)
+                    {
+                        $sourceKanbanItemType = $kanbanItem->type;
+                        //put the item at the end
+                        $kanbanItem->sortOrder = TasksUtil::resolveAndGetSortOrderForTaskOnKanbanBoard($kanbanTypeByStatus, $task);
+                        $kanbanItem->type = $kanbanTypeByStatus;
+                        $kanbanItem->save();
+                        //Resort the source column
+                        if ($task->project->id > 0)
+                        {
+                            TasksUtil::sortKanbanColumnItems($sourceKanbanItemType, $task->project);
+                        }
+                        elseif ($task->activityItems->count() > 0)
+                        {
+                            TasksUtil::sortKanbanColumnItems($sourceKanbanItemType, $task->activityItems->offsetGet(0));
+                        }
+                    }
                 }
             }
         }
@@ -1140,6 +1182,24 @@
             {
                 TasksUtil::registerOpenToTaskModalDetailsScript((int)$taskId, $gridId);
             }
+        }
+
+        /**
+         * Gets full calendar item data.
+         * @return string
+         */
+        public function getCalendarItemData()
+        {
+            $name                      = $this->name;
+            $status                    = self::getStatusDisplayName($this->status);
+            $requestedByUser           = $this->requestedByUser->getFullName();
+            $owner                     = $this->owner->getFullName();
+            $language                  = Yii::app()->languageHelper->getForCurrentUser();
+            $translatedAttributeLabels = self::translatedAttributeLabels($language);
+            return array(Zurmo::t('Core',        'Name',    array(), null, $language)          => $name,
+                         Zurmo::t('ZurmoModule', 'Status',  array(), null, $language)       => $status,
+                         $translatedAttributeLabels['requestedByUser']                      => $requestedByUser,
+                         $translatedAttributeLabels['owner']                                => $owner);
         }
     }
 ?>

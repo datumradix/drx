@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -327,6 +327,17 @@
             $this->setPostArray($postData);
             $content = $this->runControllerWithNoExceptionsAndGetContent('reports/default/drillDownDetails');
             $this->assertTrue(strpos($content, '<th id="report-results-grid-view2_c2">Currency Value</th>') !== false);
+            $this->assertContains('No results found', $content);
+
+            //Check drillDown works with runtime filters
+            $this->setPostArray(array('SummationReportWizardForm' => array('Filters' => array(
+                array('attributeIndexOrDerivedType' => 'string',
+                    'operator'                    => OperatorRules::TYPE_EQUALS,
+                    'value'                       => 'string1')))));
+            $this->runControllerWithNoExceptionsAndGetContent('reports/default/applyRuntimeFilters', true);
+            $content = $this->runControllerWithNoExceptionsAndGetContent('reports/default/drillDownDetails');
+            $this->assertTrue(strpos($content, '<th id="report-results-grid-view2_c2">Currency Value</th>') !== false);
+            $this->assertContains('1 result(s)', $content);
         }
 
         /**

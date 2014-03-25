@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     Yii::import('zii.widgets.CMenu');
@@ -64,6 +64,8 @@
         public $navBarClass        = 'nav-bar';
 
         public $labelPrefix        = null;
+
+        public $labelPrefixOptions = array();
 
         public $linkPrefix         = null;
 
@@ -228,7 +230,16 @@
         protected function resolveLabelContent(array $item)
         {
             $label      = $item['label'] . $this->resolveAndGetSpanAndDynamicLabelContent($item);
-            $content    = $this->renderLabelPrefix() . ZurmoHtml::tag('span', array(),  $label);
+            if(isset($item['labelSpanHtmlOptions']))
+            {
+                $labelSpanHtmlOptions = $item['labelSpanHtmlOptions'];
+            }
+            else
+            {
+                $labelSpanHtmlOptions = array();
+            }
+            $avatarImageContent = '<img id="avatar" src="http://zurmo.com/img/amit.png">';
+            $content    = $this->renderLabelPrefix() . ZurmoHtml::tag('span', $labelSpanHtmlOptions,  $label);
             return $content;
         }
 
@@ -346,7 +357,7 @@
         {
             if ($this->labelPrefix)
             {
-                return ZurmoHtml::tag($this->labelPrefix, array(), '');
+                return ZurmoHtml::tag($this->labelPrefix, $this->labelPrefixOptions, '');
             }
         }
 

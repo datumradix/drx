@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -46,22 +46,45 @@
         public $columnsData;
 
         /**
+         * Heals sortOrder for kanbanItems if they are wrong.  It can be wrong if tasks are created from workflow actions
+         * because during that task creation, it doesn't know what project or other activityItem it is part of.
+         * This will at least heal the sortOrder for display. Then upon subsequent saves of the board, it will properly
+         * set the sortOrder in the database
          * @return array
          */
         protected function resolveDataIntoKanbanColumns()
         {
             $this->makeColumnsDataAndStructure();
-            $kanbanItemsArray = array();
-            foreach ($this->dataProvider->data as $notUsed => $data)
+            $kanbanItemsArray           = array();
+            $kanbanItems                = array();
+            $maximumKanbanItemSortOrder = 0;
+            foreach ($this->dataProvider->getData() as $notUsed => $task)
             {
-                $kanbanItem  = KanbanItem::getByTask($data->id);
+                $kanbanItem  = KanbanItem::getByTask($task->id);
                 if ($kanbanItem == null)
                 {
                     //Create KanbanItem here
-                    $kanbanItem = TasksUtil::createKanbanItemFromTask($data);
+                    $kanbanItem = TasksUtil::createKanbanItemFromTask($task);
                 }
-
-                $kanbanItemsArray[$kanbanItem->type][intval($kanbanItem->sortOrder)] = $kanbanItem->task;
+                $kanbanItems[] = $kanbanItem;
+                if($kanbanItem->sortOrder > $maximumKanbanItemSortOrder)
+                {
+                    $maximumKanbanItemSortOrder = $kanbanItem->sortOrder;
+                }
+            }
+            foreach ($kanbanItems as $kanbanItem)
+            {
+                if(isset($kanbanItemsArray[$kanbanItem->type]) &&
+                   isset($kanbanItemsArray[$kanbanItem->type][intval($kanbanItem->sortOrder)]))
+                {
+                    $sortOrder                  = $maximumKanbanItemSortOrder + 1;
+                    $maximumKanbanItemSortOrder = $sortOrder;
+                }
+                else
+                {
+                    $sortOrder = intval($kanbanItem->sortOrder);
+                }
+                $kanbanItemsArray[$kanbanItem->type][$sortOrder] = $kanbanItem->task;
             }
             foreach ($kanbanItemsArray as $type => $kanbanData)
             {
@@ -187,7 +210,7 @@
          */
         protected function registerKanbanColumnFinishActionScript($labelAccept, $labelReject, $targetStatus, $url)
         {
-            $acceptanceStatusLabel = Task::getStatusDisplayName(Task::STATUS_AWAITING_ACCEPTANCE);
+            $acceptanceStatusLabel = ZurmoHtml::encode(Task::getStatusDisplayName(Task::STATUS_AWAITING_ACCEPTANCE));
             $acceptanceStatus      = Task::STATUS_AWAITING_ACCEPTANCE;
             $inProgressKanbanType  = KanbanItem::TYPE_IN_PROGRESS;
             // Begin Not Coding Standard

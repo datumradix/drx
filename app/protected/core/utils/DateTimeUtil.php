@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -388,6 +388,42 @@
                         $dateTime->getTimestamp());
         }
 
+        public static function getFirstDayOfLastMonthDate($stringTime = null)
+        {
+            assert('is_string($stringTime) || $stringTime == null');
+            $dateTime = new DateTime($stringTime);
+            $dateTime->modify('first day of last month');
+            return Yii::app()->dateFormatter->format(DatabaseCompatibilityUtil::getDateFormat(),
+                        $dateTime->getTimestamp());
+        }
+
+        public static function getLastDayOfLastMonthDate($stringTime = null)
+        {
+            assert('is_string($stringTime) || $stringTime == null');
+            $dateTime = new DateTime($stringTime);
+            $dateTime->modify('last day of last month');
+            return Yii::app()->dateFormatter->format(DatabaseCompatibilityUtil::getDateFormat(),
+                        $dateTime->getTimestamp());
+        }
+
+        public static function getFirstDayOfNextMonthDate($stringTime = null)
+        {
+            assert('is_string($stringTime) || $stringTime == null');
+            $dateTime = new DateTime($stringTime);
+            $dateTime->modify('first day of next month');
+            return Yii::app()->dateFormatter->format(DatabaseCompatibilityUtil::getDateFormat(),
+                        $dateTime->getTimestamp());
+        }
+
+        public static function getLastDayOfNextMonthDate($stringTime = null)
+        {
+            assert('is_string($stringTime) || $stringTime == null');
+            $dateTime = new DateTime($stringTime);
+            $dateTime->modify('last day of next month');
+            return Yii::app()->dateFormatter->format(DatabaseCompatibilityUtil::getDateFormat(),
+                        $dateTime->getTimestamp());
+        }
+
         public static function isDateValueNull(RedBeanModel $model, $attributeName)
         {
             assert('is_string($attributeName) || $attributeName == null');
@@ -428,7 +464,7 @@
 
         public static function resolveDateTimeAsDate($dateTime)
         {
-            assert('is_string($date)');
+            assert('is_string($dateTime)');
             if ($dateTime == '0000-00-00 00:00:00')
             {
                 return '0000-00-00';
@@ -553,6 +589,92 @@
                 $monthsData[$beginDateOfMonth] = $endDateOfMonth;
             }
             return $monthsData;
+        }
+
+        /**
+         * Gets first day of week.
+         * @param string|null $stringTime
+         * @return string
+         */
+        public static function getFirstDayOfAWeek($stringTime = null)
+        {
+            assert('is_string($stringTime) || $stringTime == null');
+            $dateTime = new DateTime($stringTime);
+            $dateTime->modify('Monday this week');
+            return Yii::app()->dateFormatter->format(DatabaseCompatibilityUtil::getDateFormat(),
+                        $dateTime->getTimestamp());
+        }
+
+        /**
+         * Gets last day of week.
+         * @param string|null $stringTime
+         * @return string
+         */
+        public static function getLastDayOfAWeek($stringTime = null)
+        {
+            assert('is_string($stringTime) || $stringTime == null');
+            $dateTime = new DateTime($stringTime);
+            $dateTime->modify('Sunday this week');
+            return Yii::app()->dateFormatter->format(DatabaseCompatibilityUtil::getDateFormat(),
+                        $dateTime->getTimestamp());
+        }
+
+        /**
+         * Gets todays date.
+         * @return string
+         */
+        public static function getTodaysDate()
+        {
+            $dateTime = new DateTime();
+            return Yii::app()->dateFormatter->format(DatabaseCompatibilityUtil::getDateFormat(),
+                        $dateTime->getTimestamp());
+        }
+
+        /**
+         * Get first day of next week.
+         * @return string
+         */
+        public static function getFirstDayOfNextWeek()
+        {
+            $dateTime = new DateTime();
+            $dateTime->modify('next monday');
+            return Yii::app()->dateFormatter->format(DatabaseCompatibilityUtil::getDateFormat(),
+                        $dateTime->getTimestamp());
+        }
+
+        /**
+         * Gets tomorrows date.
+         * @return string
+         */
+        public static function getTomorrowsDate()
+        {
+            $dateTime = new DateTime();
+            $dateTime->modify('tomorrow');
+            return Yii::app()->dateFormatter->format(DatabaseCompatibilityUtil::getDateFormat(),
+                        $dateTime->getTimestamp());
+        }
+
+        /**
+         * Convert date to datetime by setting the h:i:s as offset hours, minutes and seconds.
+         * @param string $date
+         * @return string
+         */
+        public static function convertDateToDateTimeByTimeZoneOffset($date)
+        {
+            $offset          = ZurmoTimeZoneHelper::getTimeZoneOffset();
+            $absOffset       = abs($offset);
+            $hours           = floor($absOffset / (60 * 60));
+            $absOffset       -= $hours * (60 * 60);
+
+            $minutes         = floor($absOffset / 60);
+            $absOffset       -= $minutes * 60;
+
+            $seconds         = floor($absOffset);
+            $absOffset       -= $seconds;
+            $hours           = ($hours < 10)? '0' . $hours : $hours;
+            $minutes         = ($minutes < 10)? '0' . $minutes : $minutes;
+            $seconds         = ($seconds < 10)? '0' . $seconds : $seconds;
+            return $date . ' ' . $hours . ':' . $minutes . ':' . $seconds;
         }
     }
 ?>
