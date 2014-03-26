@@ -34,16 +34,71 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class BeginRequestTestBehavior extends BeginRequestBehavior
+    /**
+     * Class responsible for attaching appropriate events
+     */
+    abstract class EventsBinder
     {
-        protected function resolveDefaultRequestType($className)
+        const EVENT_NAME                            = null;
+
+        protected $owner                            = null;
+
+        protected $installed                        = null;
+
+        protected $defaultHandler                   = null;
+
+        abstract public function bind();
+
+        abstract protected function resolveDefaultHandlerClassName();
+
+        public function __construct(CComponent $owner)
         {
-            return $className::TEST_REQUEST;
+            assert('is_object($owner)');
+            $this->owner                            = $owner;
+            $this->installed                        = Yii::app()->isApplicationInstalled();
+            $this->resolveDefaultHandler();
         }
 
-        protected function resolveIsApiRequest()
+        protected function attachEventsByDefinitions(array $definitions)
         {
-            return false;
+            array_walk($definitions, array($this, 'attachEvent'));
         }
+
+        protected function attachEvent(array $definition)
+        {
+            $method     = null;
+            $handler    = $this->defaultHandler;
+            extract($definition);
+            if (!isset($method))
+            {
+                throw new NotSupportedException('Method name should not be empty');
+            }
+            if (!isset($handler))
+            {
+                throw new NotSupportedException('Unable to resolve handler');
+            }
+            if (static::EVENT_NAME === null)
+            {
+                throw new NotSupportedException('Event Name must be specified.');
+            }
+            $this->owner->attachEventHandler(static::EVENT_NAME, array($handler, $method));
+        }
+
+        protected function resolveEventDefinition($method, $handler = null)
+        {
+            $definition = array('method' => $method);
+            if ($handler)
+            {
+                $definition['handler'] = $handler;
+            }
+            return $definition;
+        }
+
+        protected function resolveDefaultHandler()
+        {
+            $defaultHandlerClassName    = $this->resolveDefaultHandlerClassName();
+            $this->defaultHandler       = new $defaultHandlerClassName();
+        }
+
     }
 ?>

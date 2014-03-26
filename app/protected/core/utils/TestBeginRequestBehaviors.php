@@ -34,12 +34,39 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    Yii::import('application.modules.zurmo.components.EndRequestBehavior');
-    class EndRequestTestBehavior extends EndRequestBehavior
+    Yii::import('application.core.utils.BeginRequestBehaviors');
+    /**
+     * Class containing test begin request behaviors.
+     */
+    class TestBeginRequestBehaviors extends BeginRequestBehaviors
     {
-        protected function resolveDefaultRequestType($className)
+        /**
+         * Import all files that need to be included(for lazy loading)
+         */
+        public function handleImports()
         {
-            return $className::TEST_REQUEST;
+            // TODO: @Shoaibi: Critical: Refactor this against parent.
+            try
+            {
+                // we don't ue $default here as the computation of default on each request would take more time.
+                $filesToInclude = GeneralCache::getEntry('filesToIncludeForTests');
+            }
+            catch (NotFoundException $e)
+            {
+                $filesToInclude   = FileUtil::getFilesFromDir(Yii::app()->basePath . '/modules', Yii::app()->basePath . '/modules', 'application.modules', true);
+                $filesToIncludeFromFramework = FileUtil::getFilesFromDir(Yii::app()->basePath . '/core', Yii::app()->basePath . '/core', 'application.core', true);
+                $totalFilesToIncludeFromModules = count($filesToInclude);
+
+                foreach ($filesToIncludeFromFramework as $key => $file)
+                {
+                    $filesToInclude[$totalFilesToIncludeFromModules + $key] = $file;
+                }
+                GeneralCache::cacheEntry('filesToIncludeForTests', $filesToInclude);
+            }
+            foreach ($filesToInclude as $file)
+            {
+                Yii::import($file);
+            }
         }
     }
 ?>
