@@ -373,12 +373,12 @@
             'min' => 'application.extensions.minscript.controllers.ExtMinScriptController',
         ),
         'import' => array(
-            'application.modules.zurmo.components.BeginRequestBehavior',
+            'application.core.exceptions.NotFoundException',
+            'application.core.exceptions.NotSupportedException',
             'application.core.utils.ArrayUtil',
             'application.core.utils.FileUtil',
             'application.core.utils.ZurmoCache',
             'application.core.utils.GeneralCache',
-            'application.core.exceptions.NotFoundException',
             'application.core.components.ZurmoLocale',
             'application.core.utils.Zurmo',
             'application.modules.api.tests.unit.models.*',
@@ -391,6 +391,7 @@
             'application.extensions.wideImage.WideImage',
             'application.extensions.phaActiveColumn.*',
             'application.extensions.userinterface.UserInterface',
+            'application.modules.zurmo.components.BeginRequestBehavior',
         ),
         'modules' => array(
             'accountAccountAffiliations',
