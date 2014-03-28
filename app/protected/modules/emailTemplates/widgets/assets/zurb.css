@@ -74,10 +74,15 @@ td {
     border-collapse: collapse !important;
 }
 
-table, tr, td {
+table, tr {
     padding: 0;
     vertical-align: top;
     text-align: left;
+}
+
+td{
+	vertical-align: top;
+	text-align: left;
 }
 
 hr {
@@ -316,7 +321,7 @@ img.center {
 
 /* Typography */
 
-body, table.body, h1, h2, h3, h4, h5, h6, p, td {
+body, table.body, h1, h2, h3, h4, h5, h6, p {
     color: #222222;
     font-family: "Helvetica", "Arial", sans-serif;
     font-weight: normal;
@@ -324,6 +329,14 @@ body, table.body, h1, h2, h3, h4, h5, h6, p, td {
     margin: 0;
     text-align: left;
     line-height: 1.3;
+}
+
+td{
+	font-family: "Helvetica", "Arial", sans-serif;
+	font-weight: normal;
+	margin: 0;
+	text-align: left;
+	line-height: 1.3;
 }
 
 h1, h2, h3, h4, h5, h6 {
