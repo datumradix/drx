@@ -36,13 +36,9 @@
 
     class SelectBaseTemplateForEmailTemplateWizardView extends ComponentForEmailTemplateWizardView
     {
-        const PREDEFINED_TEMPLATES_DIV_ID                       = 'select-base-template-from-predefined-templates';
+        const CHOSEN_DIV_ID                                     = 'chosen-layout';
 
-        const PREDEFINED_TEMPLATES_ELEMENT_CLASS_NAME           = 'SelectBaseTemplateFromPredefinedTemplatesElement';
-
-        const PREVIOUSLY_CREATED_TEMPLATES_DIV_ID               = 'select-base-template-from-previously-created-templates';
-
-        const PREVIOUSLY_CREATED_TEMPLATES_ELEMENT_CLASS_NAME   = 'SelectBaseTemplateFromPreviouslyCreatedTemplatesElement';
+        const TEMPLATES_DIV_ID                                  = 'templates';
 
         const BASE_TEMPLATE_RADIO_BUTTON_ATTRIBUTE_NAME         = 'baseTemplateId';
 
@@ -51,7 +47,7 @@
          */
         public static function getWizardStepTitle()
         {
-            return Zurmo::t('EmailTemplatesModule', 'Layout');
+            return null;
         }
 
         /**
@@ -80,57 +76,91 @@
          */
         protected function renderFormContent()
         {
-            $leftSideContent                            =  null;
-            $hiddenElements                             = null;
+            $leftSideContent           =  null;
+            $hiddenElements            = null;
             $this->renderSerializedDataHiddenFields($hiddenElements);
-
-            $leftSideContent                            .= $this->renderSelectBaseTemplateFromPredefinedTemplates();
-            $leftSideContent                            .= $this->renderSelectBaseTemplateFromPreviouslyCreatedTemplates();
+            $leftSideContent  = $this->renderSelectedLayout();
+            $leftSideContent .= $this->renderSelectBaseTemplateForm();
             $this->renderHiddenElements($hiddenElements, $leftSideContent);
-
-            $content                                    = $leftSideContent;
+            $content         = $leftSideContent;
             return $content;
         }
 
-        protected function renderSelectBaseTemplateFromPredefinedTemplates()
+        protected function renderSelectedLayout()
         {
-            $elementClassName   = static::PREDEFINED_TEMPLATES_ELEMENT_CLASS_NAME;
-            $wrapperDivCssId    = static::PREDEFINED_TEMPLATES_DIV_ID;
-            $heading            = Zurmo::t('EmailTemplatesModule', 'Templates');
-            $params             = array('inputPrefix' => 'predefinedTemplate');
-            $content            = $this->renderSelectBaseTemplateByElementName($elementClassName, $wrapperDivCssId, $heading, $params);
+            $textForLink = ZurmoHtml::tag('span', array('class' => 'z-label'),
+                                          Zurmo::t('EmailTemplatesModule', 'Or select a different one'));
+            $content  = $this->resolveThumbnail();
+            $content .= ZurmoHtml::tag('h3', array(), $this->model->name);
+            $content .= ZurmoHtml::tag('p', array(), $this->model->subject);
+            $content .= ZurmoHtml::link($textForLink, '#', array('id' => 'chooser-overlay', 'class' => 'secondary-button'));
+            $this->wrapContentInDiv($content, $this->getHtmlOptionsForSelectedLayoutDiv());
             return $content;
         }
 
-        protected function renderSelectBaseTemplateFromPreviouslyCreatedTemplates()
+        protected function getHtmlOptionsForSelectedLayoutDiv()
         {
-            $elementClassName   = static::PREVIOUSLY_CREATED_TEMPLATES_ELEMENT_CLASS_NAME;
-            $wrapperDivCssId    = static::PREVIOUSLY_CREATED_TEMPLATES_DIV_ID;
-            $heading            = Zurmo::t('EmailTemplatesModule', 'My Templates');
-            $params             = array('inputPrefix' => 'previouslyDefinedTemplate');
-            $content            = $this->renderSelectBaseTemplateByElementName($elementClassName, $wrapperDivCssId, $heading, $params);
-            return $content;
-        }
-
-        protected function renderSelectBaseTemplateByElementName($elementName, $wrapperDivCssId, $heading = null, $params = array())
-        {
-            $element = new $elementName($this->model, static::BASE_TEMPLATE_RADIO_BUTTON_ATTRIBUTE_NAME, $this->form, $params);
-            if (null != $content = $element->render())
+            $style = 'display: none;';
+            if ($this->getBaseTemplateId() != null)
             {
-                $content = ZurmoHtml::tag('ul', array('class' => 'clearfix'), $content);
-                $content = "<h3>${heading}</h3>" . $content;
-                $this->wrapContentInDiv($content, array('id' => $wrapperDivCssId, 'class' => 'templates-chooser-list clearfix'));
+                $style = 'display: block;';
             }
+            return array(
+                'id'    => static::CHOSEN_DIV_ID,
+                'class' => 'clearfix',
+                'style' => $style,
+            );
+        }
+
+        protected function resolveThumbnail()
+        {
+            $unserializedData   = CJSON::decode($this->model->serializedData);
+            $icon               = ArrayUtil::getArrayValue($unserializedData, 'icon');
+            if (!empty($icon))
+            {
+                return ZurmoHtml::icon($icon);
+            }
+            else
+            {
+                return ZurmoHtml::icon('icon-user-template');
+            }
+        }
+
+        protected function renderSelectBaseTemplateForm()
+        {
+            $element = new SelectBaseTemplateElement($this->model, 'baseTemplateId', $this->form);
+            $element->editableTemplate = '{content}{error}';
+            $content = $element->render();
+            $this->wrapContentInDiv($content, $this->getHtmlOptionsForSelectBaseTemplatesDiv());
             return $content;
+        }
+
+        protected function getHtmlOptionsForSelectBaseTemplatesDiv()
+        {
+            $style = 'display: block;';
+            if ($this->getBaseTemplateId() != null)
+            {
+                $style = 'display: none;';
+            }
+            return array(
+                'id'    => static::TEMPLATES_DIV_ID,
+                'style' => $style,
+            );
         }
 
         protected function renderSerializedDataHiddenFields(& $hiddenElements)
         {
-            $unserializedData   = CJSON::decode($this->model->serializedData);
-            $baseTemplateId     = (isset($unserializedData['baseTemplateId']))? $unserializedData['baseTemplateId'] : null;
+            $baseTemplateId = $this->getBaseTemplateId();
             $this->renderHiddenField($hiddenElements, 'serializedData[baseTemplateId]', $baseTemplateId);
             $this->renderHiddenField($hiddenElements, 'originalBaseTemplateId', $baseTemplateId);
             $this->renderHiddenField($hiddenElements, BuilderCanvasWizardView::CACHED_SERIALIZED_DATA_ATTRIBUTE_NAME . '[dom]', null);
+        }
+
+        protected function getBaseTemplateId()
+        {
+            $unserializedData   = CJSON::decode($this->model->serializedData);
+            $baseTemplateId     = (isset($unserializedData['baseTemplateId']))? $unserializedData['baseTemplateId'] : null;
+            return $baseTemplateId;
         }
 
         protected function registerScripts()
@@ -140,10 +170,11 @@
             $this->registerPreSelectBaseTemplateScript();
             $this->registerPopulateBaseTemplatesScript();
             $this->registerUpdateBaseTemplatesByDivIdScript();
-            $this->registerReloadPreviouslyCreatedTemplatesScript();
             $this->registerResetBaseTemplateIdScript();
             $this->registerResetOriginalBaseTemplateIdScript();
             $this->registerResetSerializedDomDataScript();
+            $this->registerChooserButtonClickScript();
+            $this->registerChooserCloseButtonClickScript();
         }
 
         protected function registerResetBaseTemplateIdScript()
@@ -178,6 +209,7 @@
 
         protected function registerPreSelectBaseTemplateScript()
         {
+            //TODO: @sergio: We dont need to preSelect a template anymore
             Yii::app()->clientScript->registerScript('preSelectBaseTemplateScript', "
                 function preSelectBaseTemplate()
                 {
@@ -206,6 +238,7 @@
                                                                                             .bind('click', function()
                 {
                     originalBaseTemplateId  = $('" . $this->resolveOriginalBaseTemplateIdHiddenInputJQuerySelector() . "').val();
+
                     currentSelectedValue    = $(this).val();
                     // show warning only on edit when a user has already been to canvas once.
                     if (originalBaseTemplateId != '' && currentSelectedValue != originalBaseTemplateId)
@@ -279,23 +312,32 @@
             // End Not Coding Standard
         }
 
-        protected function registerReloadPreviouslyCreatedTemplatesScript()
+        protected function registerChooserButtonClickScript()
         {
-            // Begin Not Coding Standard
-            Yii::app()->clientScript->registerScript('reloadPreviouslyCreatedTemplatesScript', "
-                function reloadPreviouslyCreatedTemplates(elementParams)
-                {
-                    elementClassName        = '" . static::PREVIOUSLY_CREATED_TEMPLATES_ELEMENT_CLASS_NAME . "';
-                    elementModelClassName   = '" . get_class($this->model) . "';
-                    elementAttributeName    = '" . static::BASE_TEMPLATE_RADIO_BUTTON_ATTRIBUTE_NAME. "';
-                    elementFormClassName    = '" . get_class($this->form) . "';
-                    divId                   = '" . static::PREVIOUSLY_CREATED_TEMPLATES_DIV_ID . "';
-                    populateBaseTemplates(elementClassName, elementModelClassName, elementAttributeName, elementFormClassName, elementParams, divId);
-                }", CClientScript::POS_HEAD);
-            // End Not Coding Standard
+            Yii::app()->clientScript->registerScript('chooserButtonClickScript', "
+                $('#chooser-overlay').off('click');
+                $('#chooser-overlay').on('click', function (event) {
+                    $('#" . static::CHOSEN_DIV_ID . "').hide();
+                    $('#" . static::TEMPLATES_DIV_ID . "').show();
+                    $('#BuilderEmailTemplateWizardView .float-bar').hide();
+                    event.preventDefault();
+                });
+            ");
         }
 
-        protected function resolveBaseTemplateIdInputNameWithoutSerializedData()
+        protected function registerChooserCloseButtonClickScript()
+        {
+            Yii::app()->clientScript->registerScript('chooserCloseButtonClickScript', "
+                $('." . SelectBaseTemplateElement::CLOSE_LINK_CLASS_NAME . "').click(function(){
+                    $('#" . static::CHOSEN_DIV_ID . "').show();
+                    $('#BuilderEmailTemplateWizardView .float-bar').show();
+                    $('#" . static::TEMPLATES_DIV_ID . "').hide();
+                    event.preventDefault();
+                });
+            ");
+        }
+
+        protected function resolveBaseTemplateIdInputIdWithoutSerializedData()
         {
             $name   = ZurmoHtml::activeName($this->model, static::BASE_TEMPLATE_RADIO_BUTTON_ATTRIBUTE_NAME);
             return $name;
@@ -303,8 +345,8 @@
 
         protected function resolveBaseTemplateIdRadioInputWithoutSerializedDataJQuerySelector()
         {
-            $inputName          = $this->resolveBaseTemplateIdInputNameWithoutSerializedData();
-            $selector           = ":radio[name^=\"${inputName}\"]";
+            $inputId  = $this->resolveBaseTemplateIdInputIdWithoutSerializedData();
+            $selector = "#{$inputId}";
             return $selector;
         }
 
@@ -320,7 +362,7 @@
             return '#' . $id;
         }
 
-        protected static function resolveOriginalBaseTemplateIdHiddenInputJQuerySelector()
+        public static function resolveOriginalBaseTemplateIdHiddenInputJQuerySelector()
         {
             $id = ZurmoHtml::activeId(new BuilderEmailTemplateWizardForm(), 'originalBaseTemplateId');
             return '#' . $id;

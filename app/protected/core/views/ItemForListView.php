@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,52 +31,36 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class SelectBaseTemplateFromPreviouslyCreatedTemplatesElement extends SelectBaseTemplateBaseElement
+    /**
+     * Class ItemForListView
+     * Used to render items for the @see ZurmoListView
+     */
+    abstract class ItemForListView
     {
-        protected function resolveBaseTemplates()
+        /**
+         * The index of the row where the item will be rendered
+         * @var int
+         */
+        protected $rowIndex;
+
+        /**
+         * The model to be rendered
+         * @var
+         */
+        protected $model;
+
+        protected $widget;
+
+        public function __construct($data)
         {
-            $templates  = EmailTemplate::getPreviouslyCreatedBuilderTemplates($this->resolveModelClassName());
-            $templates  = array_filter($templates, array($this, 'excludeSelf'));
-            return $templates;
+            $this->rowIndex = $data['index'];
+            $this->model    = $data['data'];
+            $this->widget   = $data['widget'];
         }
 
-        protected function excludeSelf($template)
-        {
-            return ($template->id != $this->model->id);
-        }
-
-        protected function resolveModelClassName()
-        {
-            if (isset($this->params['modelClassName']))
-            {
-                return $this->params['modelClassName'];
-            }
-
-            if (isset($this->model->modelClassName))
-            {
-                return $this->model->modelClassName;
-            }
-
-            if ($this->model->isWorkflowTemplate())
-            {
-                $availableModels    = EmailTemplateModelClassNameElement::getAvailableModelNamesArray();
-                reset($availableModels);
-                return key($availableModels);
-            }
-            return 'Contact';
-        }
-
-        protected function resolveThumbnailByModel(EmailTemplate $template)
-        {
-            // add custom logic here to load user template specific thumbnails
-            // once we have the ability to generate those.
-            // these could be stored in serializedData, or a column.
-            // a column would be better because we would love to have thumbnails for
-            // html and plaintext templates too.
-            return ZurmoHtml::tag('i', array('class' => 'icon-user-template'), '');
-        }
+        abstract public function renderItem();
     }
 ?>

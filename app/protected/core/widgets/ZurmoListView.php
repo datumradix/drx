@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,24 +31,44 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class SelectBaseTemplateFromPredefinedTemplatesElement extends SelectBaseTemplateBaseElement
+    Yii::import('zii.widgets.CListView');
+
+    class ZurmoListView extends CListView
     {
-        protected function resolveBaseTemplates()
+        public function renderItems()
         {
-            return EmailTemplate::getPredefinedBuilderTemplates();
+            echo CHtml::openTag($this->itemsTagName,array('class'=>$this->itemsCssClass))."\n";
+            $data=$this->dataProvider->getData();
+            if(($n=count($data))>0)
+            {
+                $owner=$this->getOwner();
+                $viewFile=$owner->getViewFile($this->itemView);
+                $j=0;
+                foreach($data as $i=>$item)
+                {
+                    $data=$this->viewData;
+                    $data['index']=$i;
+                    $data['data']=$item;
+                    $data['widget']=$this;
+                    $this->renderItem($data);
+                    if($j++ < $n-1)
+                        echo $this->separator;
+                }
+            }
+            else
+                $this->renderEmptyText();
+            echo CHtml::closeTag($this->itemsTagName);
         }
 
-        protected function resolveThumbnailByModel(EmailTemplate $template)
+        protected function renderItem($data)
         {
-            $unserializedData   = CJSON::decode($template->serializedData);
-            $icon               = ArrayUtil::getArrayValue($unserializedData, 'icon');
-            if (!empty($icon))
-            {
-                return ZurmoHtml::tag('i', array('class' => $icon), '');
-            }
+            $itemViewClassName = $this->itemView;
+            $itemForListView   = new $itemViewClassName($data);
+            $item = $itemForListView->renderItem();
+            echo $item;
         }
     }
 ?>
