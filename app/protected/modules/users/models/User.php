@@ -405,11 +405,6 @@
         private function getAvatarImageUrl($size)
         {
             assert('is_int($size)');
-            if (isset($this->avatarImageUrl))
-            {
-                return $this->avatarImageUrl;
-            }
-            else
             {
                 if (isset($this->serializedAvatarData))
                 {
