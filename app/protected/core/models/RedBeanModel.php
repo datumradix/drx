@@ -127,6 +127,7 @@
         protected $isInGetErrors          = false;
         protected $isValidating           = false;
         protected $isSaving               = false;
+        protected $isDeleting             = false;
         protected $isNewModel             = false;
         protected $isCopied               = false;
 
@@ -562,6 +563,7 @@
                 $this->isInGetErrors              = false;
                 $this->isValidating               = false;
                 $this->isSaving                   = false;
+                $this->isDeleting                 = false;
             }
             catch (Exception $e)
             {
@@ -2180,7 +2182,9 @@
             }
             if ($this->beforeDelete())
             {
+                $this->isDeleting = true;
                 $deleted = $this->unrestrictedDelete();
+                $this->isDeleting = false;
                 $this->afterDelete();
                 return $deleted;
             }
