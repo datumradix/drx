@@ -1084,7 +1084,7 @@ body > .ui-autocomplete{
 		}
 	}
 	.over > a,
-	.active a,
+	.active > a,
 	a:hover{
 		color: #fff !important;
 		background-color: @themeColor2;
@@ -1658,8 +1658,9 @@ form,
 .performance-info{
 	color: @themeColor;
 	text-align: left;
-	margin:0 3% 15px 3%;
-	font-style: italic;
+	margin:15px 0;
+	padding-right: 15px;
+	line-height: 1.4;
 	.smaller();
 }
 
@@ -2143,6 +2144,9 @@ input[type="button"]:hover:after{
 	a{
 		display:inline-block;
 		margin:0 10px;
+	}
+	.simple-link{
+		display: inline;
 	}
 }
 
@@ -3422,6 +3426,13 @@ div.wide.form{
 	}
 }
 
+.clear-select{
+	float: left;
+	margin-top: -22px;
+	margin-left: 3px;
+	display: inline;
+}
+
 .has-model-select{
 	clear:left;
 	padding:0 !important;
@@ -3513,7 +3524,6 @@ div.wide.form{
 		}
 	}
 }
-
 
 .has-color-picker{
 	> span{
