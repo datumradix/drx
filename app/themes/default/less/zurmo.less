@@ -1214,6 +1214,7 @@ body > .ui-autocomplete{
 		@topColor: #c43d53;
 		@bottomColor: #a82d31;
 		#gradient > .vertical(@topColor, @bottomColor ) !important;
+		.b-shadow(0 1px 0 0 @topColor);
 	}
 	&.admin-menu{
 		.parent ul{
@@ -3249,7 +3250,9 @@ div.wide.form{
 
 #modal-edit-form,
 #edit-form,
-#delete-form{
+#delete-form,
+#select-account-form,
+#account-skip-form{
 	.clearfix();
 
 	position: relative;
@@ -5437,8 +5440,7 @@ div.radio-input{
 	border-bottom: 1px dotted #ccc;
 	width: auto;
 	display: inline-block;
-	//padding-bottom: 2px;
-	//margin-top: 3px;
+	word-break: break-word;
 	&:after{
 		content:"!";
 		.symbly(20px);
