@@ -82,8 +82,16 @@
             $content       .= ZurmoHtml::openTag('div', array('class' => $gridClass));
             $content       .= ZurmoHtml::link($this->resolveLabelForNonKanbanBoard(), $this->getNonKanbanBoardUrl(),
                                               array('title' => $this->getViewLabelForNonKanbanBoard()));
-            $content       .= ZurmoHtml::closeTag('div');
-            return $content;
+	        $content       .= ZurmoHtml::closeTag('div');
+
+
+	        $composeEmailview = '<div class="default-button">
+	                                <a title="View as Kanban Board" href="#">
+	                                    <i class="icon-email"><span><!--Compose Email--></span></i>
+	                                </a></div>';
+
+
+	        return $composeEmailview . $content;
         }
 
         /**

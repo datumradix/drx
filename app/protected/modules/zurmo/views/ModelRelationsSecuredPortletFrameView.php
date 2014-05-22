@@ -94,7 +94,8 @@
         protected function renderContent()
         {
             $this->portlets = $this->getPortlets($this->uniqueLayoutId, $this->metadata);
-            return $this->renderPortlets($this->uniqueLayoutId,
+	        $emailCompose = file_get_contents('../static-views/email-compose.php');
+            return $emailCompose . $this->renderPortlets($this->uniqueLayoutId,
                                          $this->portletsAreCollapsible,
                                          $this->portletsAreMovable,
                                          $this->portletsAreRemovable);
