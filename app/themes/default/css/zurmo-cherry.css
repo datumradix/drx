@@ -2505,16 +2505,16 @@ form .view-toolbar-container,
   position: relative;
 }
 .ui-chooser .active {
-  color: #7CB830;
+  color: #933140;
   filter: alpha(opacity=100);
   -khtml-opacity: 1;
   -moz-opacity: 1;
   opacity: 1;
-  -webkit-text-shadow: 0 0 15px #7CB830;
-  -moz-text-shadow: 0 0 15px #7CB830;
-  -ms-text-shadow: 0 0 15px #7CB830;
-  -o-text-shadow: 0 0 15px #7CB830;
-  text-shadow: 0 0 15px #7CB830;
+  -webkit-text-shadow: 0 0 15px;
+  -moz-text-shadow: 0 0 15px;
+  -ms-text-shadow: 0 0 15px;
+  -o-text-shadow: 0 0 15px;
+  text-shadow: 0 0 15px;
 }
 .ui-chooser .icon-mobile:after,
 .ui-chooser .icon-desktop:after {
@@ -7292,6 +7292,14 @@ i[class^="icon"] {
 .icon-expand:after {
   content: '\03A9';
 }
+.icon-code:after,
+.icon-html:after,
+.icon-markup:after {
+  content: '\0040';
+}
+.icon-email:after {
+  content: "g";
+}
 .pillbox .icon-projects-list {
   font-size: 22px;
   top: -2px !important;
@@ -8871,6 +8879,21 @@ a.simple-link .icon-x {
 }
 .value-data .has-model-select {
   width: 100%;
+}
+.two-value-areas_ > div {
+  width: 45%;
+  float: left;
+}
+.two-value-areas_ > div + div {
+  width: 55%;
+}
+.two-value-areas_ > div + div .dynamic-and-for-mixed {
+  padding-left: 15px;
+  padding-right: 5px;
+  width: 20%;
+}
+.two-value-areas_ > div + div input {
+  width: 80%;
 }
 .report-runtime-availability {
   min-width: 145px;
