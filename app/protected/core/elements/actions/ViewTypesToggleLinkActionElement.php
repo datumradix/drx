@@ -85,7 +85,7 @@
 	        $content       .= ZurmoHtml::closeTag('div');
 
 
-	        $composeEmailview = '<div class="default-button">
+	        $composeEmailview = '<div class="default-button active">
 	                                <a title="View as Kanban Board" href="#">
 	                                    <i class="icon-email"><span><!--Compose Email--></span></i>
 	                                </a></div>';
