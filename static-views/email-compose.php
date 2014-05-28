@@ -20,7 +20,7 @@
 				<div style="display:none">
 					<input type="hidden" value="39c85569e9f83e75eec0a11d848f4e8153646d97" name="YII_CSRF_TOKEN"></div>
 				<div class="attributesContainer">
-					<div class="left-column _full-width">
+					<div class="left-column full-width">
 						<div class="panel">
 							<h1>Compose Email</h1>
 							<table class="form-fields">
@@ -250,70 +250,6 @@
 								</tbody>
 							</table>
 						</div>
-					</div>
-					<div class="right-column latest-emails">
-						<h3>Some Latest Email Activity with Dr.Laura Allen</h3>
-						<table class="items">
-							<tbody>
-							<tr class="odd">
-								<td>
-									<div class="activity-item"><em class="EmailMessage"></em>
-										<strong class="activity-date">May 6, 2014</strong>
-										<span class="less-pronounced-text"><span class="email-from"><strong>From:</strong> <a id="DetailsLinkActionElement-1-yt9" href="/Zurmo/app/index.php/contacts/default/details?id=1">Laura Allen</a></span> <span class="email-to"><strong>To:</strong> <a id="DetailsLinkActionElement-1-yt10" href="/Zurmo/app/index.php/users/default/details?id=1">Super User</a></span> </span><br><span><a id="DetailsLinkActionElement-41-yt8" href="/Zurmo/app/index.php/emailMessages/default/details?id=41&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Fcontacts%2Fdefault%2Fdetails%3Fid%3D1">A test unmatched archived received email</a></span><span></span>
-									</div>
-									<div class="actual-email">
-										<h3>A test unmatched archived received email</h3>
-										<p>
-											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tincidunt lacus quis risus imperdiet eget sollicitudin velit tristique. Nulla facilisi. Quisque non egestas ante. Etiam nibh magna, molestie vitae egestas vitae, egestas vitae tortor. Pellentesque commodo suscipit enim, ac ultricies orci pretium eu. Pellentesque eu felis ut sem dictum faucibus id ac mi. Suspendisse quis vehicula est. Nam congue mattis pellentesque. Maecenas et nisl eu dui aliquet auctor nec sed elit. Nullam a risus sed leo mollis iaculis. Proin porttitor sem ac enim blandit scelerisque. Proin varius tincidunt velit nec vehicula. Sed vitae sem convallis est venenatis sagittis vitae at lectus. Nunc purus tellus, feugiat et sollicitudin in, scelerisque vel ligula. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce sit amet aliquet purus.
-										</p>
-									</div>
-								</td>
-							</tr>
-							<tr class="even">
-								<td>
-									<div class="activity-item"><em class="EmailMessage"></em>
-										<strong class="activity-date">May 4, 2014</strong>
-										<span class="less-pronounced-text"><span class="email-from"><strong>From:</strong> <a id="DetailsLinkActionElement-1-yt12" href="/Zurmo/app/index.php/users/default/details?id=1">Super User</a></span> <span class="email-to"><strong>To:</strong> <a id="DetailsLinkActionElement-1-yt13" href="/Zurmo/app/index.php/contacts/default/details?id=1">Laura Allen</a></span> </span><br><span><a id="DetailsLinkActionElement-35-yt11" href="/Zurmo/app/index.php/emailMessages/default/details?id=35&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Fcontacts%2Fdefault%2Fdetails%3Fid%3D1">Special Offer: 5% Discount for existing clients</a></span><span></span>
-									</div>
-									<div class="actual-email">
-										<h3>Special Offer: 5% Discount for existing clients</h3>
-										<p>
-											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tincidunt lacus quis risus imperdiet eget sollicitudin velit tristique. Nulla facilisi. Quisque non egestas ante. Etiam nibh magna, molestie vitae egestas vitae, egestas vitae tortor. Pellentesque commodo suscipit enim, ac ultricies orci pretium eu. Pellentesque eu felis ut sem dictum faucibus id ac mi. Suspendisse quis vehicula est. Nam congue mattis pellentesque. Maecenas et nisl eu dui aliquet auctor nec sed elit. Nullam a risus sed leo mollis iaculis. Proin porttitor sem ac enim blandit scelerisque. Proin varius tincidunt velit nec vehicula. Sed vitae sem convallis est venenatis sagittis vitae at lectus. Nunc purus tellus, feugiat et sollicitudin in, scelerisque vel ligula. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce sit amet aliquet purus.
-										</p>
-									</div>
-								</td>
-							</tr>
-							<tr class="odd">
-								<td>
-									<div class="activity-item"><em class="EmailMessage"></em>
-										<strong class="activity-date">May 4, 2014</strong>
-										<span class="less-pronounced-text"><span class="email-from"><strong>From:</strong> <a id="DetailsLinkActionElement-1-yt15" href="/Zurmo/app/index.php/users/default/details?id=1">Super User</a></span> <span class="email-to"><strong>To:</strong> <a id="DetailsLinkActionElement-1-yt16" href="/Zurmo/app/index.php/contacts/default/details?id=1">Laura Allen</a></span> </span><br><span><a id="DetailsLinkActionElement-30-yt14" href="/Zurmo/app/index.php/emailMessages/default/details?id=30&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Fcontacts%2Fdefault%2Fdetails%3Fid%3D1">Special Offer: 5% Discount for existing clients</a></span><span></span>
-									</div>
-
-									<div class="actual-email">
-										<h3>Special Offer: 5% Discount for existing clients</h3>
-										<p>
-											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tincidunt lacus quis risus imperdiet eget sollicitudin velit tristique. Nulla facilisi. Quisque non egestas ante. Etiam nibh magna, molestie vitae egestas vitae, egestas vitae tortor. Pellentesque commodo suscipit enim, ac ultricies orci pretium eu. Pellentesque eu felis ut sem dictum faucibus id ac mi. Suspendisse quis vehicula est. Nam congue mattis pellentesque. Maecenas et nisl eu dui aliquet auctor nec sed elit. Nullam a risus sed leo mollis iaculis. Proin porttitor sem ac enim blandit scelerisque. Proin varius tincidunt velit nec vehicula. Sed vitae sem convallis est venenatis sagittis vitae at lectus. Nunc purus tellus, feugiat et sollicitudin in, scelerisque vel ligula. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce sit amet aliquet purus.
-										</p>
-									</div>
-								</td>
-							</tr>
-							<tr class="even">
-								<td>
-									<div class="activity-item"><em class="EmailMessage"></em>
-										<strong class="activity-date">May 4, 2014</strong>
-										<span class="less-pronounced-text"><span class="email-from"><strong>From:</strong> <a id="DetailsLinkActionElement-1-yt18" href="/Zurmo/app/index.php/users/default/details?id=1">Super User</a></span> <span class="email-to"><strong>To:</strong> <a id="DetailsLinkActionElement-1-yt19" href="/Zurmo/app/index.php/contacts/default/details?id=1">Laura Allen</a></span> </span><br><span><a id="DetailsLinkActionElement-17-yt17" href="/Zurmo/app/index.php/emailMessages/default/details?id=17&amp;redirectUrl=%2FZurmo%2Fapp%2Findex.php%2Fcontacts%2Fdefault%2Fdetails%3Fid%3D1">You subscribed today.</a></span><span></span>
-									</div>
-									<div class="actual-email">
-										<h3>You subscribed today.</h3>
-										<p>
-											Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tincidunt lacus quis risus imperdiet eget sollicitudin velit tristique. Nulla facilisi. Quisque non egestas ante. Etiam nibh magna, molestie vitae egestas vitae, egestas vitae tortor. Pellentesque commodo suscipit enim, ac ultricies orci pretium eu. Pellentesque eu felis ut sem dictum faucibus id ac mi. Suspendisse quis vehicula est. Nam congue mattis pellentesque. Maecenas et nisl eu dui aliquet auctor nec sed elit. Nullam a risus sed leo mollis iaculis. Proin porttitor sem ac enim blandit scelerisque. Proin varius tincidunt velit nec vehicula. Sed vitae sem convallis est venenatis sagittis vitae at lectus. Nunc purus tellus, feugiat et sollicitudin in, scelerisque vel ligula. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce sit amet aliquet purus.
-										</p>
-									</div>
-								</td>
-							</tr>
-							</tbody>
-						</table>
 					</div>
 				</div>
 				<!--
