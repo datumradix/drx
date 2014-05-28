@@ -35,10 +35,15 @@
      ********************************************************************************/
 
     /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
+     * Element for displaying a filter by for game rewards search view
      */
-    class TaskModalButtonColumn extends ButtonColumn
+    class GameRewardsFilterByRadioElement extends FilterByRadioElement
     {
+        protected function getArray()
+        {
+            $data = array(GameRewardsSearchForm::FILTERED_BY_ALL => Zurmo::t('Core', 'All'),
+                GameRewardsSearchForm::FILTERED_BY_CAN_REDEEM  => Zurmo::t('GameRewardsModule', 'Redeemable'));
+            return $data;
+        }
     }
 ?>

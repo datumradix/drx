@@ -34,11 +34,16 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
-     */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImageModalSearchAndListView extends ModalSearchAndListView
     {
+        public static function getListViewClassName()
+        {
+            return 'ImagesModalListView';
+        }
+
+        public static function getSearchViewClassName()
+        {
+            return 'ImagesModalSearchView';
+        }
     }
 ?>

@@ -35,10 +35,9 @@
      ********************************************************************************/
 
     /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
+     * Render a file upload element for images
      */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImageFileUpload extends FileUpload
     {
     }
 ?>

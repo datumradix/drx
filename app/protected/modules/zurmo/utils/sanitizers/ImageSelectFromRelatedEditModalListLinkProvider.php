@@ -34,46 +34,50 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class BuilderImageRedactorElement extends RedactorElement
+    class ImageSelectFromRelatedEditModalListLinkProvider extends ModalListLinkProvider
     {
-        protected function resolveRedactorOptions()
+        /**
+         * Id of input field in display for saving back a selected
+         * record from the modal list view.
+         * @see $sourceIdFieldId
+         */
+        protected $sourceIdFieldId;
+
+        /**
+         * Name of input field in display for saving back a selected
+         * record from the modal list view.
+         * @see $sourceNameFieldId
+         */
+        protected $sourceNameFieldId;
+
+        /**
+         * The id of the modal container where the list view resides
+         * @var type
+         */
+        protected $modalId;
+
+        /**
+         * sourceIdFieldName and sourceNameFieldId are needed to know
+         * which fields in the parent form to populate data with
+         * upon selecting a row in the listview
+         *
+         */
+        public function __construct($sourceIdFieldId, $sourceNameFieldId, $modalId = ModelElement::MODAL_CONTAINER_PREFIX)
         {
-            $parentOptions          = parent::resolveRedactorOptions();
-            $options                = array(
-                'observeImages'             => 'true',
-                'allowedTags'               => $this->resolveAllowedTags(),
-                'buttons'                   => $this->resolveRedactorButtons(),
-                'imageUpload'               => ImageFileModelUtil::getUrlForActionUpload(),
-                'imageUploadErrorCallback'  => 'function(json)
-                                                {
-                                                    alert(json.error);
-                                                }',
-                'imageGetJson'              => ImageFileModelUtil::getUrlForActionGetUploaded(),
-                'syncBeforeCallback'        => $this->renderSyncBeforeCallbackScript()
-            );
-            $options            = CMap::mergeArray($parentOptions, $options);
-            return $options;
+            assert('is_string($sourceIdFieldId)');
+            assert('is_string($sourceNameFieldId)');
+            $this->sourceIdFieldId   = $sourceIdFieldId;
+            $this->sourceNameFieldId = $sourceNameFieldId;
+            $this->modalId           = $modalId;
         }
 
-        protected function resolveAllowedTags()
+        public function getLinkString($model)
         {
-            return CJSON::encode(array('img', 'p'));
-        }
-
-        protected function resolveRedactorButtons()
-        {
-            $buttons         = array('zurmoImage');
-            return CJSON::encode($buttons);
-        }
-
-        protected function renderSyncBeforeCallbackScript()
-        {
-            // Begin Not Coding Standard
-            return "function(html)
-                    {
-                        return this.getEditor().contents().find('img:first').wrap('<p/>').parent().html();
-                    }";
-            // End Not Coding Standard
+            $summary    = ImageFileModelUtil::getImageSummary($model);
+            $data       =  CJavaScript::encode(array($this->sourceIdFieldId => $model->id));
+            return ZurmoHtml::link($model->name,
+                                    "javascript:transferModalValues('#{$this->modalId}', {$data});
+                                                replaceImageSummary('{$this->sourceNameFieldId}', '{$summary}')");
         }
     }
 ?>

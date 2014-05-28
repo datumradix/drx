@@ -34,11 +34,51 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
-     */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImagesModalSearchView extends SearchView
     {
+        public static function getDefaultMetadata()
+        {
+            $metadata = array(
+                'global' => array(
+                    'panels' => array(
+                        array(
+                            'locked' => true,
+                            'title'  => 'Basic Search',
+                            'rows'   => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'anyMixedAttributes',
+                                                    'type' => 'AnyMixedAttributesSearch', 'wide' => true),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            );
+            return $metadata;
+        }
+
+        public static function getDesignerRulesType()
+        {
+            return 'ModalSearchView';
+        }
+
+        public static function getModelForMetadataClassName()
+        {
+            return 'ImagesSearchForm';
+        }
+
+        //TODO: @sergio: Why this is not working in the modal
+        protected function renderFiltersContent($form)
+        {
+            $element = new ImagesFilterByRadioElement($this->model, 'filteredBy', $form);
+            $element->editableTemplate = "{content}";
+            return $element->render();
+        }
     }
 ?>

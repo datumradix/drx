@@ -35,10 +35,16 @@
      ********************************************************************************/
 
     /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
+     * Element for displaying a filter by for search view
      */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImagesFilterByRadioElement extends FilterByRadioElement
     {
+        protected function getArray()
+        {
+            $data = array(ImagesSearchForm::FILTERED_BY_ALL         => Zurmo::t('Core', 'All'),
+                          ImagesSearchForm::FILTERED_BY_I_CREATED   => Zurmo::t('ZurmoModule', 'I Created'),
+                          ImagesSearchForm::FILTERED_BY_SHARED      => Zurmo::t('ZurmoModule', 'Shared with me'));
+            return $data;
+        }
     }
 ?>

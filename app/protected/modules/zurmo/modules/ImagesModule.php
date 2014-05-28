@@ -35,10 +35,56 @@
      ********************************************************************************/
 
     /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
+     * Module used to manage images
      */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImagesModule extends Module
     {
+        public function getDependencies()
+        {
+            return array(
+                'zurmo',
+            );
+        }
+
+        public function getRootModelNames()
+        {
+            return array('ImageFileModel');
+        }
+
+        public static function getDefaultMetadata()
+        {
+            $metadata = array();
+            $metadata['global'] = array(
+                'globalSearchAttributeNames' => array(
+                    'name',
+                ),
+            );
+            return $metadata;
+        }
+
+        public static function getPrimaryModelName()
+        {
+            return 'ImageFileModel';
+        }
+
+        protected static function getSingularModuleLabel($language)
+        {
+            return Zurmo::t('ImagesModule', 'Image', array(), null, $language);
+        }
+
+        protected static function getPluralModuleLabel($language)
+        {
+            return Zurmo::t('ImagesModule', 'Images', array(), null, $language);
+        }
+
+        public static function getGlobalSearchFormClassName()
+        {
+            return 'ImagesSearchForm';
+        }
+
+        public static function modelsAreNeverGloballySearched()
+        {
+            return true;
+        }
     }
 ?>

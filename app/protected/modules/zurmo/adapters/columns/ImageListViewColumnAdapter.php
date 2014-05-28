@@ -35,10 +35,26 @@
      ********************************************************************************/
 
     /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
+     * Adapts the
+     * Class ThumbnailListViewColumnAdapter
      */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImageListViewColumnAdapter  extends ListViewColumnAdapter
     {
+        public function renderGridViewData()
+        {
+            return array(
+                'name'  => $this->attribute,
+                'value' => array($this, 'renderDataCellContent'),
+                'type'  => 'raw',
+            );
+        }
+
+        public function renderDataCellContent($data, $row)
+        {
+            $stringValue = $this->view->getLinkString($data, $this->attribute);
+            $layout = '{image} <strong>' . $stringValue . '</strong> </br> {size} {dimensions} {creator} {createdTime}';
+            return ImageFileModelUtil::getImageSummary($data, $layout);
+        }
+
     }
 ?>

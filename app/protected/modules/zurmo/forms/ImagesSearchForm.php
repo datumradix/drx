@@ -34,11 +34,24 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
-     */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImagesSearchForm extends SearchForm
     {
+        const FILTERED_BY_ALL = 'all';
+
+        const FILTERED_BY_I_CREATED = 'iCreated';
+
+        const FILTERED_BY_SHARED = 'shared';
+
+        public $filteredBy = self::FILTERED_BY_ALL;
+
+        protected static function getRedBeanModelClassName()
+        {
+            return 'ImageFileModel';
+        }
+
+        public function __construct(ImageFileModel $model)
+        {
+            parent::__construct($model);
+        }
     }
 ?>

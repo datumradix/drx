@@ -42,26 +42,33 @@
             $tempFilePath = $uploadedFile->getTempName();
             $fileContent  = new FileContent();
             $fileContent->content = file_get_contents($tempFilePath);
+            list($width, $height, $type, $attr) = getimagesize($tempFilePath);
             $imageFileModel = new ImageFileModel();
             $imageFileModel->name        = $uploadedFile->getName();
             $imageFileModel->size        = $uploadedFile->getSize();
             $imageFileModel->type        = $uploadedFile->getType();
+            $imageFileModel->width       = $width;
+            $imageFileModel->height      = $height;
             $imageFileModel->fileContent = $fileContent;
             if ($imageFileModel->save())
             {
                 $imageFileModel->createImageCache();
-                $array = array(
+                $fileUploadData = array(
+                    'id'   => $imageFileModel->id,
+                    'name' => $imageFileModel->name,
+                    'size' => FileModelDisplayUtil::convertSizeToHumanReadableAndGet($imageFileModel->size),
+                    'thumbnail_url' => $this->createAbsoluteUrl('imageModel/getThumb',
+                                                               array('fileName' => $imageFileModel->getImageCacheFileName())),
                     'filelink' => $this->createAbsoluteUrl('imageModel/getImage',
-                            array('fileName' => $imageFileModel->getImageCacheFileName()))
+                                                           array('fileName' => $imageFileModel->getImageCacheFileName()))
                 );
-                echo CJSON::encode($array);
             }
             else
             {
                 $message = Zurmo::t('ZurmoModule', 'Error uploading the image');
                 $fileUploadData = array('error' => $message);
-                echo CJSON::encode($fileUploadData);
             }
+            echo CJSON::encode(array($fileUploadData));
         }
 
         public function actionGetUploaded()
@@ -88,6 +95,130 @@
         {
             assert('is_string($fileName)');
             ImageFileModelUtil::readImageFromCache($fileName, true);
+        }
+
+        public function actionDelete($id)
+        {
+            $imageFileModel = ImageFileModel::getById((int)$id);
+            $imageFileModel->delete();
+        }
+
+        public function actionModalList()
+        {
+            $modalListLinkProvider = new ImageSelectFromRelatedEditModalListLinkProvider(
+                $_GET['modalTransferInformation']['sourceIdFieldId'],
+                $_GET['modalTransferInformation']['sourceNameFieldId'],
+                $_GET['modalTransferInformation']['modalId']
+            );
+            Yii::app()->getClientScript()->setToAjaxMode();
+            $className           = 'ImageModalSearchAndListView';
+            $modelClassName      = 'ImageFileModel';
+            $stateMetadataAdapterClassName = null;
+            $searchViewClassName = $className::getSearchViewClassName();
+            if ($searchViewClassName::getModelForMetadataClassName() != null)
+            {
+                $formModelClassName   = $searchViewClassName::getModelForMetadataClassName();
+                $model                = new $modelClassName(false);
+                $searchModel          = new $formModelClassName($model);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+            $pageSize          = Yii::app()->pagination->resolveActiveForCurrentUserByType(
+                'modalListPageSize', get_class($this->getModule()));
+
+            $dataProvider = $this->resolveSearchDataProvider(
+                $searchModel,
+                $pageSize,
+                $stateMetadataAdapterClassName,
+                'ImagesSearchView'
+            );
+
+            $searchAndListView = new ImageModalSearchAndListView(
+                $this->id,
+                $this->module->id,
+                'modalList',
+                $modalListLinkProvider,
+                $searchModel,
+                $model,
+                $dataProvider,
+                'modal'
+            );
+
+            $imageUploadView = new ImageFilesUploadView();
+
+            $gridView = new GridView(2,1);
+            $gridView->setView($searchAndListView, 0,0);
+            $gridView->setView($imageUploadView, 1, 0);
+
+            $view = new ModalView($this, $gridView);
+            echo $view->render();
+        }
+
+        protected function resolveFilteredByMetadataBeforeMakingDataProvider($searchForm, & $metadata)
+        {
+            $userId = Yii::app()->user->userModel->id;
+            if ($searchForm->filteredBy == ImagesSearchForm::FILTERED_BY_I_CREATED)
+            {
+                $clauseNumber = count($metadata['clauses']) + 1;
+                $metadata['clauses'][$clauseNumber] = array('attributeName' => 'createdByUser',
+                                                            'operatorType'  => 'equals',
+                                                            'value'         => $userId);
+                if ($metadata['structure'] == '')
+                {
+                    $metadata['structure'] = '(' . $clauseNumber . ')';
+                }
+                else
+                {
+                    $metadata['structure'] .= ' AND (' . $clauseNumber . ')';
+                }
+            }
+            elseif ($searchForm->filteredBy == ImagesSearchForm::FILTERED_BY_SHARED)
+            {
+                $clauseNumber = count($metadata['clauses']) + 1;
+                $metadata['clauses'][$clauseNumber] = array('attributeName' => 'createdByUser',
+                                                            'operatorType'  => 'doesNotEqual',
+                                                            'value'         => $userId);
+                $metadata['clauses'][$clauseNumber + 1] = array('attributeName' => 'isShared',
+                                                                'operatorType'  => 'equals',
+                                                                'value'         => true);
+                if ($metadata['structure'] == '')
+                {
+                    $metadata['structure'] = '(' . $clauseNumber . ' AND ' . ($clauseNumber + 1) . ')';
+                }
+                else
+                {
+                    $metadata['structure'] .= ' AND (' . $clauseNumber . ' AND ' . ($clauseNumber + 1) . ')';
+                }
+            }
+            else
+            {
+                $clauseNumber = count($metadata['clauses']) + 1;
+                $metadata['clauses'][$clauseNumber] = array('attributeName' => 'createdByUser',
+                                                            'operatorType'  => 'equals',
+                                                            'value'         => $userId);
+                $metadata['clauses'][$clauseNumber + 1] = array('attributeName' => 'isShared',
+                                                                'operatorType'  => 'equals',
+                                                                'value'         => 1);
+                if ($metadata['structure'] == '')
+                {
+                    $metadata['structure'] = '(' . $clauseNumber . ' OR ' . ($clauseNumber + 1) . ')';
+                }
+                else
+                {
+                    $metadata['structure'] .= ' AND (' . $clauseNumber . ' OR ' . ($clauseNumber + 1) . ')';
+                }
+            }
+        }
+
+        public function actionToggle($id, $attribute)
+        {
+            if (Yii::app()->request->isAjaxRequest && Yii::app()->request->isPostRequest)
+            {
+                $imageFile = ImageFileModel::getById((int) $id);
+                $imageFile->toggle($attribute);
+            }
         }
     }
 ?>

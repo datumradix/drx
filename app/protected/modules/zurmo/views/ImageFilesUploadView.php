@@ -35,10 +35,40 @@
      ********************************************************************************/
 
     /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
+     * View to display an upload element for images
+     * Class ImageFilesUploadView
      */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImageFilesUploadView extends View
     {
+        /**
+         * Renders the view content.
+         */
+        protected function renderContent()
+        {
+            $content = $this->renderImagesUploadInput();
+            return $content;
+        }
+
+        protected function renderImagesUploadInput()
+        {
+            $inputNameAndId = 'file';
+            $cClipWidget = new CClipWidget();
+            $cClipWidget->beginClip("imageFilesElement");
+            $cClipWidget->widget('application.core.widgets.ImageFileUpload', array(
+                'uploadUrl'            => Yii::app()->createUrl("zurmo/imageModel/upload"),
+                'deleteUrl'            => Yii::app()->createUrl("zurmo/imageModel/delete"),
+                'inputName'            => $inputNameAndId,
+                'inputId'              => $inputNameAndId,
+                'hiddenInputName'      => 'filesIds',
+                'allowMultipleUpload'  => true,
+                'existingFiles'        => array(),
+                'maxSize'              => (int)InstallUtil::getMaxAllowedFileSize(),
+                'showMaxSize'          => true,
+                'id'                   => __CLASS__,
+            ));
+
+            $cClipWidget->endClip();
+            return $cClipWidget->getController()->clips['imageFilesElement'];
+        }
     }
 ?>

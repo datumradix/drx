@@ -34,11 +34,15 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
-     */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ToggleListViewColumnAdapter extends TextListViewColumnAdapter
     {
+        public function renderGridViewData()
+        {
+            return array(
+                'class' => 'ToggleDataColumn',
+                'name'  => $this->attribute,
+                'type'  => 'Boolean',
+            );
+        }
     }
 ?>

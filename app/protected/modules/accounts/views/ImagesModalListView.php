@@ -34,7 +34,7 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class GameRewardsSearchView extends SavedDynamicSearchView
+    class ImagesModalListView extends ModalListView
     {
         public static function getDefaultMetadata()
         {
@@ -42,41 +42,60 @@
                 'global' => array(
                     'panels' => array(
                         array(
-                            'locked' => true,
-                            'title'  => 'Basic Search',
-                            'rows'   => array(
+                            'rows' => array(
                                 array('cells' =>
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'anyMixedAttributes',
-                                                      'type' => 'AnyMixedAttributesSearch', 'wide' => true),
+                                                array('attributeName' => 'name', 'type' => 'Image'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'isShared', 'type' => 'Toggle'),
                                             ),
                                         ),
                                     )
                                 ),
                             ),
                         ),
-                        array(
-                            'advancedSearchType' => static::ADVANCED_SEARCH_TYPE_DYNAMIC,
-                            'rows'   => array(),
-                        ),
                     ),
                 ),
             );
             return $metadata;
         }
-
-        public static function getModelForMetadataClassName()
+        protected function getCGridViewLastColumn()
         {
-            return 'GameRewardsSearchForm';
+            $url  = 'Yii::app()->createUrl("' . $this->getGridViewActionRoute('delete');
+            $url .= '", array("id" => $data->id))';
+            return array(
+                'class'           => 'ButtonColumn',
+                'template'        => '{delete}',
+                'buttons' => array(
+                    'delete' => array(
+                        'url' => $url,
+                        'imageUrl'        => false,
+                        'label'           => '<i class="icon-delete"></i>',
+                        'options'         => array('title' => 'Delete',
+                                                   'id' => get_class($this) . '-delete-' . $this->getLinkId(),
+                        ),
+                    ),
+                ),
+            );
         }
 
-        protected function renderFiltersContent($form)
+        protected function getLinkId()
         {
-            $element = new GameRewardsFilterByRadioElement($this->model, 'filteredBy', $form);
-            $element->editableTemplate = "{content}";
-            return $element->render();
+            return ZurmoHtml::ID_PREFIX . ZurmoHtml::$count++;;
+        }
+
+        public function getLinkString($attributeString, $attribute)
+        {
+            return $this->modalListLinkProvider->getLinkString($attributeString, $attribute);
         }
     }
 ?>
