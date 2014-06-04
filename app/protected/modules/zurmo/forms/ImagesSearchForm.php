@@ -34,46 +34,24 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class BuilderImageRedactorElement extends RedactorElement
+    class ImagesSearchForm extends SearchForm
     {
-        protected function resolveRedactorOptions()
+        const FILTERED_BY_ALL = 'all';
+
+        const FILTERED_BY_I_CREATED = 'iCreated';
+
+        const FILTERED_BY_SHARED = 'shared';
+
+        public $filteredBy = self::FILTERED_BY_ALL;
+
+        protected static function getRedBeanModelClassName()
         {
-            $parentOptions          = parent::resolveRedactorOptions();
-            $options                = array(
-                'observeImages'             => 'true',
-                'allowedTags'               => $this->resolveAllowedTags(),
-                'buttons'                   => $this->resolveRedactorButtons(),
-                'imageUpload'               => ImageFileModelUtil::getUrlForActionUpload(),
-                'imageUploadErrorCallback'  => 'function(json)
-                                                {
-                                                    alert(json.error);
-                                                }',
-                'imageGetJson'              => ImageFileModelUtil::getUrlForActionGetUploaded(),
-                'syncBeforeCallback'        => $this->renderSyncBeforeCallbackScript()
-            );
-            $options            = CMap::mergeArray($parentOptions, $options);
-            return $options;
+            return 'ImageFileModel';
         }
 
-        protected function resolveAllowedTags()
+        public function __construct(ImageFileModel $model)
         {
-            return CJSON::encode(array('img', 'p'));
-        }
-
-        protected function resolveRedactorButtons()
-        {
-            $buttons         = array('zurmoImage');
-            return CJSON::encode($buttons);
-        }
-
-        protected function renderSyncBeforeCallbackScript()
-        {
-            // Begin Not Coding Standard
-            return "function(html)
-                    {
-                        return this.getEditor().contents().find('img:first').wrap('<p/>').parent().html();
-                    }";
-            // End Not Coding Standard
+            parent::__construct($model);
         }
     }
 ?>

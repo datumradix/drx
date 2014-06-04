@@ -84,6 +84,14 @@
         public $formName;
 
         /**
+         * Additional form data to be sent along with the file uploads can be set using this option,
+         * which accepts an array of objects with name and value properties, a function returning such an array,
+         * a FormData object (for XHR file uploads), or a simple object.
+         * @var string
+         */
+        public $formData;
+
+        /**
          * Name of the file input field.
          * @var string
          */
@@ -141,7 +149,6 @@
         {
             assert('is_string($this->uploadUrl) && $this->uploadUrl != ""');
             assert('is_string($this->deleteUrl) && $this->deleteUrl != ""');
-            assert('is_string($this->formName)  && $this->formName  != ""');
             assert('is_string($this->inputId)   && $this->inputId   != ""');
             assert('is_string($this->inputName) && $this->inputName != ""');
             assert('is_string($this->hiddenInputName) && $this->hiddenInputName != ""');
@@ -178,6 +185,9 @@ $(function () {
         sequentialUploads: true,
         maxFileSize: {$this->maxSize},
         dropZone: $('#dropzone{$id}'),
+        uploadTemplateId: '{$this->getUploadTemplateId()}',
+        downloadTemplateId: '{$this->getDownloadTemplateId()}',
+        {$this->renderParamForInit('formData')}
         add: function (e, data) {
             {$this->beforeUploadAction}
             {$sendAction}
@@ -236,9 +246,12 @@ $(function () {
 EOD;
             // End Not Coding Standard
             Yii::app()->getClientScript()->registerScript(__CLASS__ . '#' . $id, $javaScript);
-
             $htmlOptions = array('id' => $this->inputId);
-            $html  = '<div id="dropzone' . $id . '"></div>';
+            if ($this->allowMultipleUpload)
+            {
+                $htmlOptions['multiple'] = 'multiple';
+            }
+            $html  = '<div id="dropzone' . $id . '">' . $this->getDropZoneContent() . '</div>';
             $html .= '<div id="fileUpload' . $id . '">';
             $html .= '<div class="fileupload-buttonbar clearfix">';
             $html .= '<div class="addfileinput-button"><span>Y</span>' . $addLabel;
@@ -250,22 +263,32 @@ EOD;
             echo $html;
         }
 
+        protected function getDropZoneContent()
+        {
+            return null;
+        }
+
         protected function makeDownloadRowScriptContent()
         {
             $deleteLabel = 'Delete';
             $removeLabel = Zurmo::t('Core', 'Remove');
-            $templateId  = static::DOWNLOAD_TEMPLATE_ID;
 $scriptContent = <<<EOD
-<script id="{$templateId}" type="text/x-jquery-tmpl">
-    <tr class="{$templateId}{{if error}} ui-state-error{{/if}}">
+<script id="{$this->getDownloadTemplateId()}" type="text/x-jquery-tmpl">
+    <tr class="{$this->getDownloadTemplateId()}{{if error}} ui-state-error{{/if}}">
         {{if error}}
             <td class="error" colspan="4">\${error}</td>
         {{else}}
             <td class="name">
-                \${name} <span class="file-size">(\${size})</span>
-                <span class="upload-actions delete">
+                {{if insert_link}}
+                    {{if thumbnail_url}} <span class="uploaded-logo"><img src="\${thumbnail_url}"/></span>{{/if}}
+                    <span class="file-size">(\${size})</span>
+                    <a href="\${insert_link}">\${name}</a>
+                {{else}}
+                    \${name} <span class="file-size">(\${size})</span>
+                    <span class="upload-actions delete">
                     <button class="icon-delete" title="{$removeLabel}" data-url="{$this->deleteUrl}?id=\${id}"><span><!--{$deleteLabel}--><span></button>
                 </span>
+                {{/if}}
                 <input name="{$this->hiddenInputName}[]" type="hidden" value="\${id}"/>
             </td>
         {{/if}}
@@ -273,17 +296,14 @@ $scriptContent = <<<EOD
 </script>
 EOD;
             return $scriptContent;
-            return $js;
         }
 
         protected function makeUploadRowScriptContent()
         {
-            $startLabel  = Zurmo::t('Core', 'Start');
             $cancelLabel = Zurmo::t('Core', 'Cancel');
-            $templateId  = static::UPLOAD_TEMPLATE_ID;
 $scriptContent = <<<EOD
-<script id="{$templateId}" type="text/x-jquery-tmpl">
-    <tr class="{$templateId}{{if error}} ui-state-error{{/if}}">
+<script id="{$this->getUploadTemplateId()}" type="text/x-jquery-tmpl">
+    <tr class="{$this->getUploadTemplateId()}{{if error}} ui-state-error{{/if}}">
         <td class="name">
             <span class="z-spinner"></span>
             \${name} <span class="file-size">(\${sizef})</span>
@@ -312,6 +332,26 @@ EOD;
             $content = '<span class="max-upload-size">' . Zurmo::t('Core', 'Max upload size: {maxSize}',
                        array('{maxSize}' => FileModelDisplayUtil::convertSizeToHumanReadableAndGet($maxSize))) . '</span>';
             return $content;
+        }
+
+        protected function getDownloadTemplateId()
+        {
+            return static::DOWNLOAD_TEMPLATE_ID;
+        }
+
+        protected function getUploadTemplateId()
+        {
+            return static::UPLOAD_TEMPLATE_ID;
+        }
+
+        protected function renderParamForInit($paramName)
+        {
+            $paramValue = $this->$paramName;
+            if (isset($paramValue))
+            {
+                $config = "{$paramName}: {$paramValue},"; // Not Coding Standard
+                return $config;
+            }
         }
     }
 ?>

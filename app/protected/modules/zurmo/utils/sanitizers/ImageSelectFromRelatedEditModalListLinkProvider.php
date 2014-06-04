@@ -34,28 +34,69 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
-     */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImageSelectFromRelatedEditModalListLinkProvider extends ModalListLinkProvider
     {
         /**
-         * Renders an ajaxlink button.
-         * @param string $id the ID of the button
-         * @param array $button the button configuration which may contain 'label', 'url', 'imageUrl' and 'options' elements.
-         * See {@link buttons} for more details.
-         * @param integer $row the row number (zero-based)
-         * @param mixed $data the data object associated with the row
+         * Id of input field in display for saving back a selected
+         * record from the modal list view.
+         * @see $sourceIdFieldId
          */
-        protected function renderButton($id, $button, $row, $data)
+        protected $sourceIdFieldId;
+
+        /**
+         * Name of input field in display for saving back a selected
+         * record from the modal list view.
+         * @see $sourceNameFieldId
+         */
+        protected $sourceNameFieldId;
+
+        /**
+         * The id of the modal container where the list view resides
+         * @var type
+         */
+        protected $modalId;
+
+        /**
+         * sourceIdFieldName and sourceNameFieldId are needed to know
+         * which fields in the parent form to populate data with
+         * upon selecting a row in the listview
+         *
+         */
+        public function __construct($sourceIdFieldId, $sourceNameFieldId, $modalId = ModelElement::MODAL_CONTAINER_PREFIX)
         {
-            $options = isset($button['options']) ? $button['options'] : array();
-            //Required else id assigned to update button is same as create task link in top nav bar
-            //opening create task instead of edit task
-            $options['id'] = $button['gridId'] . '-' . $data->id;
-            $button['options'] = $options;
-            return parent::renderButton($id, $button, $row, $data);
+            assert('is_string($sourceIdFieldId)');
+            assert('is_string($sourceNameFieldId)');
+            $this->sourceIdFieldId   = $sourceIdFieldId;
+            $this->sourceNameFieldId = $sourceNameFieldId;
+            $this->modalId           = $modalId;
+        }
+
+        public function getLinkString($model)
+        {
+            return ZurmoHtml::link($model->name, $this->getScriptForClick($model));
+        }
+
+        protected function getScriptForClick($model)
+        {
+            $summary    = ImageFileModelUtil::getImageSummary($model);
+            $data       =  CJavaScript::encode(array($this->sourceIdFieldId => $model->id));
+            return "javascript:parent.transferModalValues('#{$this->modalId}', {$data});
+                               parent.replaceImageSummary('{$this->sourceNameFieldId}', '{$summary}')";
+        }
+
+        public function getSourceIdFieldId()
+        {
+            return $this->sourceIdFieldId;
+        }
+
+        public function getSourcesNameFieldId()
+        {
+            return $this->sourceNameFieldId;
+        }
+
+        public function getModalId()
+        {
+            return $this->modalId;
         }
     }
 ?>

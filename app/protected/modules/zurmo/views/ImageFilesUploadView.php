@@ -35,27 +35,45 @@
      ********************************************************************************/
 
     /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
+     * View to display an upload element for images
+     * Class ImageFilesUploadView
      */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImageFilesUploadView extends View
     {
         /**
-         * Renders an ajaxlink button.
-         * @param string $id the ID of the button
-         * @param array $button the button configuration which may contain 'label', 'url', 'imageUrl' and 'options' elements.
-         * See {@link buttons} for more details.
-         * @param integer $row the row number (zero-based)
-         * @param mixed $data the data object associated with the row
+         * Renders the view content.
          */
-        protected function renderButton($id, $button, $row, $data)
+        protected function renderContent()
         {
-            $options = isset($button['options']) ? $button['options'] : array();
-            //Required else id assigned to update button is same as create task link in top nav bar
-            //opening create task instead of edit task
-            $options['id'] = $button['gridId'] . '-' . $data->id;
-            $button['options'] = $options;
-            return parent::renderButton($id, $button, $row, $data);
+            $content = $this->renderImagesUploadInput();
+            return $content;
+        }
+
+        protected function renderImagesUploadInput()
+        {
+            $inputNameAndId = 'file';
+            $cClipWidget = new CClipWidget();
+            $cClipWidget->beginClip("imageFilesElement");
+            $cClipWidget->widget('application.core.widgets.ImageFileUpload', array(
+                'uploadUrl'            => Yii::app()->createUrl("zurmo/imageModel/upload"),
+                'deleteUrl'            => Yii::app()->createUrl("zurmo/imageModel/delete"),
+                'inputName'            => $inputNameAndId,
+                'inputId'              => $inputNameAndId,
+                'hiddenInputName'      => 'filesIds',
+                'allowMultipleUpload'  => true,
+                'existingFiles'        => array(),
+                'maxSize'              => (int)InstallUtil::getMaxAllowedFileSize(),
+                'showMaxSize'          => true,
+                'id'                   => __CLASS__,
+            ));
+
+            $cClipWidget->endClip();
+            return $cClipWidget->getController()->clips['imageFilesElement'];
+        }
+
+        protected function getViewStyle()
+        {
+            return " style=' display:none;'";
         }
     }
 ?>
