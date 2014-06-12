@@ -193,6 +193,8 @@
             $url                          = Yii::app()->createAbsoluteUrl('missions/default/details/',
                                                                 array('id' => $missionId));
             $message->htmlContent        .= '-' . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
+            $message->textContent         = $messageContent;
+            $message->textContent        .= Zurmo::t('MissionsModule', 'Click Here: ') . $url;
             $rules                        = new MissionStatusChangeNotificationRules();
             $rules->addUser($userToReceiveMessage);
             $rules->setAllowDuplicates(true);
@@ -225,7 +227,7 @@
             foreach ($peopleToSendNotification as $person)
             {
                 if ($person->primaryEmail->emailAddress != null &&
-                    !UserConfigurationFormAdapter::resolveAndGetValue($person, 'turnOffEmailNotifications'))
+                UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($person, 'enableNewMissionNotification', 'email'))
                 {
                     EmailNotificationUtil::resolveAndSendEmail($mission->owner,
                                                                array($person),

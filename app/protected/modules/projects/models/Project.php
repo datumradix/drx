@@ -207,10 +207,12 @@
             if ($this->getIsNewModel())
             {
                 ProjectAuditEvent::logAuditEvent(ProjectAuditEvent::PROJECT_CREATED, $this, $this->name);
+                ProjectsNotificationUtil::submitProjectNotificationMessage($this, ProjectAuditEvent::PROJECT_CREATED);
             }
             elseif ($this->status == Project::STATUS_ARCHIVED)
             {
                 ProjectAuditEvent::logAuditEvent(ProjectAuditEvent::PROJECT_ARCHIVED, $this, $this->name);
+                ProjectsNotificationUtil::submitProjectNotificationMessage($this, ProjectAuditEvent::PROJECT_ARCHIVED);
             }
             parent::afterSave();
         }

@@ -55,6 +55,9 @@
                          array('label'   => Zurmo::t('UsersModule', 'Security Overview'),
                                'url'     => $this->getRouteFormMenuItems() . '/securityDetails?id=' . $this->modelId,
                                'itemOptions' => array( 'id'   => 'ffff')),
+                         array('label'   => Zurmo::t('UsersModule', 'Notifications'),
+                               'url'     => $this->getRouteFormMenuItems() . '/notificationConfiguration?id=' . $this->modelId,
+                               'itemOptions' => array( 'id'   => 'nnn')),
                          );
         }
 

@@ -156,7 +156,18 @@
             }
             foreach ($people as $personOrUserModel)
             {
-                static::sendEmailInviteToParticipant($conversation, $personOrUserModel);
+                if ($personOrUserModel instanceof User)
+                {
+                    if (UserNotificationUtil::
+                    isEnabledByUserAndNotificationNameAndType($personOrUserModel, 'enableConversationInvitesNotification', 'email'))
+                    {
+                        static::sendEmailInviteToParticipant($conversation, $personOrUserModel);
+                    }
+                }
+                else
+                {
+                    static::sendEmailInviteToParticipant($conversation, $personOrUserModel);
+                }
             }
         }
 
@@ -193,10 +204,7 @@
         {
             assert('$conversation->id > 0');
             assert('$person instanceof User || $person instanceof Contact');
-            if ($person->primaryEmail->emailAddress !== null &&
-                (($person instanceof User &&
-                !UserConfigurationFormAdapter::resolveAndGetValue($person, 'turnOffEmailNotifications')) ||
-                 $person instanceof Contact))
+            if ($person->primaryEmail->emailAddress !== null)
             {
                 $userToSendMessagesFrom     = $conversation->owner;
                 $emailMessage               = new EmailMessage();

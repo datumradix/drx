@@ -550,7 +550,13 @@
             $conversationParticipant                = new ConversationParticipant();
             $conversationParticipant->person        = $mary;
             $conversation->conversationParticipants->add($conversationParticipant);
-            UserConfigurationFormAdapter::setValue($mary, true, 'turnOffEmailNotifications');
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableConversationNewCommentNotification'] = array(
+                'inbox' => false,
+                'email' => false
+            );
+            UserNotificationUtil::
+                    setValue($mary, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
             //Save a new comment
             $this->setGetArray(array('relatedModelId'             => $conversation->id,
                                      'relatedModelClassName'      => 'Conversation',

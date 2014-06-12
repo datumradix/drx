@@ -56,7 +56,12 @@
             $steven                             = UserTestHelper::createBasicUser('steven');
             $steven->primaryEmail->emailAddress = 'steven@testzurmo.com';
             //Steven has turned off notifications
-            UserConfigurationFormAdapter::setValue($steven, true, 'turnOffEmailNotifications');
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableNewMissionNotification'] = array('inbox'=>false, 'email'=>false);
+            $inboxAndEmailNotificationSettings['enableMissionStatusChangeNotification'] = array('inbox'=>false, 'email'=>false);
+            $inboxAndEmailNotificationSettings['enableMissionNewCommentNotification'] = array('inbox'=>false, 'email'=>false);
+            UserNotificationUtil::
+                    setValue($steven, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
             $sally                              = UserTestHelper::createBasicUser('sally');
             $sally->primaryEmail->emailAddress  = 'sally@testzurmo.com';
             $mary                               = UserTestHelper::createBasicUser('mary');

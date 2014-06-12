@@ -85,12 +85,6 @@
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
         }
 
-        public function testSubmitCritical()
-        {
-            //todo:
-            //setCritical($critical);
-        }
-
         public function testSubmittingDuplicateNotifications()
         {
             //todo:

@@ -56,6 +56,7 @@
          * Defines whether a job is considered critical.  Critical jobs that fail will create
          * email alerts immediately to certain users, usually admins.
          * @var boolean
+         * TODO: To be removed, it's not used anymore
          */
         protected $critical    = false;
 
@@ -64,6 +65,12 @@
         * @var boolean
         */
         protected $allowDuplicates    = false;
+        
+        /**
+        * Defines whether an email will be sent along with the inbox notification.
+        * @var boolean
+        */
+        protected $allowSendingEmail    = true;
 
         /**
          * @returns Translated label that describes this rule type.
@@ -92,8 +99,18 @@
         }
 
         /**
+         * @return true/false whether to allow sending an email along with the inbox notification.
+         * created.
+         */
+        public function allowSendingEmail()
+        {
+            return $this->allowSendingEmail;
+        }
+        
+        /**
          * @return true/false whether the notification is considered critical, in which case an Email
          * will be sent out in addition to the notification.
+         * TODO: To be removed, it's not used anymore
          */
         public function isCritical()
         {
@@ -104,6 +121,7 @@
          * Set the notification as being critical or not. This will override the default
          * setting for this particular NotificationRules
          * @param boolean $critical
+         * TODO: To be removed, it's not used anymore
          */
         public function setCritical($critical)
         {
