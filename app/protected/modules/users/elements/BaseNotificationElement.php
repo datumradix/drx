@@ -81,7 +81,7 @@
             $htmlOptions                = array_merge($this->getHtmlOptions(), $htmlOptions);
             $checkbox                   = $this->form->checkBox($this->model, $this->attribute.'Email', $htmlOptions);
             $content                   .= ZurmoHtml::tag('span', array('class'=>'emailNotificationsCheckbox'), $checkbox);
-            return ZurmoHtml::tag('span', array(), $content);
+            return $content;
         }
 
         protected static function renderTooltipContentForNotification()
