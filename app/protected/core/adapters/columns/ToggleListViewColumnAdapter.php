@@ -34,28 +34,16 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
-     */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ToggleListViewColumnAdapter extends TextListViewColumnAdapter
     {
-        /**
-         * Renders an ajaxlink button.
-         * @param string $id the ID of the button
-         * @param array $button the button configuration which may contain 'label', 'url', 'imageUrl' and 'options' elements.
-         * See {@link buttons} for more details.
-         * @param integer $row the row number (zero-based)
-         * @param mixed $data the data object associated with the row
-         */
-        protected function renderButton($id, $button, $row, $data)
+        public function renderGridViewData()
         {
-            $options = isset($button['options']) ? $button['options'] : array();
-            //Required else id assigned to update button is same as create task link in top nav bar
-            //opening create task instead of edit task
-            $options['id'] = $button['gridId'] . '-' . $data->id;
-            $button['options'] = $options;
-            return parent::renderButton($id, $button, $row, $data);
+            return array(
+                'class'     => 'ToggleDataColumn',
+                'name'      => $this->attribute,
+                'type'      => 'Boolean',
+                'visible'   => "\$data->isToggleable('{$this->attribute}')",
+            );
         }
     }
 ?>

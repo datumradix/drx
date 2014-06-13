@@ -34,46 +34,39 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class BuilderImageRedactorElement extends RedactorElement
+    class ImagesModalListView extends ModalListView
     {
-        protected function resolveRedactorOptions()
+        public static function getDefaultMetadata()
         {
-            $parentOptions          = parent::resolveRedactorOptions();
-            $options                = array(
-                'observeImages'             => 'true',
-                'allowedTags'               => $this->resolveAllowedTags(),
-                'buttons'                   => $this->resolveRedactorButtons(),
-                'imageUpload'               => ImageFileModelUtil::getUrlForActionUpload(),
-                'imageUploadErrorCallback'  => 'function(json)
-                                                {
-                                                    alert(json.error);
-                                                }',
-                'imageGetJson'              => ImageFileModelUtil::getUrlForActionGetUploaded(),
-                'syncBeforeCallback'        => $this->renderSyncBeforeCallbackScript()
+            $metadata = array(
+                'global' => array(
+                    'panels' => array(
+                        array(
+                            'rows' => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'name', 'type' => 'Image'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'isShared', 'type' => 'Toggle'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
             );
-            $options            = CMap::mergeArray($parentOptions, $options);
-            return $options;
-        }
-
-        protected function resolveAllowedTags()
-        {
-            return CJSON::encode(array('img', 'p'));
-        }
-
-        protected function resolveRedactorButtons()
-        {
-            $buttons         = array('zurmoImage');
-            return CJSON::encode($buttons);
-        }
-
-        protected function renderSyncBeforeCallbackScript()
-        {
-            // Begin Not Coding Standard
-            return "function(html)
-                    {
-                        return this.getEditor().contents().find('img:first').wrap('<p/>').parent().html();
-                    }";
-            // End Not Coding Standard
+            return $metadata;
         }
     }
 ?>

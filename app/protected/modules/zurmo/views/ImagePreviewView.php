@@ -35,27 +35,24 @@
      ********************************************************************************/
 
     /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
+     * Class ImagePreviewView
      */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImagePreviewView extends View
     {
-        /**
-         * Renders an ajaxlink button.
-         * @param string $id the ID of the button
-         * @param array $button the button configuration which may contain 'label', 'url', 'imageUrl' and 'options' elements.
-         * See {@link buttons} for more details.
-         * @param integer $row the row number (zero-based)
-         * @param mixed $data the data object associated with the row
-         */
-        protected function renderButton($id, $button, $row, $data)
+        protected $imageFileName;
+
+        public function __construct($imageFileName)
         {
-            $options = isset($button['options']) ? $button['options'] : array();
-            //Required else id assigned to update button is same as create task link in top nav bar
-            //opening create task instead of edit task
-            $options['id'] = $button['gridId'] . '-' . $data->id;
-            $button['options'] = $options;
-            return parent::renderButton($id, $button, $row, $data);
+            assert('is_string($imageFileName)');
+            $this->imageFileName = $imageFileName;
+        }
+
+        /**
+         * @inheritdoc
+         */
+        protected function renderContent()
+        {
+            return ZurmoHtml::image(ImageFileModelUtil::getUrlForGetImageFromImageFileName($this->imageFileName));
         }
     }
 ?>

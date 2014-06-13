@@ -34,28 +34,53 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Override class for ButtonColumn for ajaxlink button
-     * @see CGridView class
-     */
-    class TaskModalButtonColumn extends ButtonColumn
+    class ImagesModalSearchView extends SearchView
     {
-        /**
-         * Renders an ajaxlink button.
-         * @param string $id the ID of the button
-         * @param array $button the button configuration which may contain 'label', 'url', 'imageUrl' and 'options' elements.
-         * See {@link buttons} for more details.
-         * @param integer $row the row number (zero-based)
-         * @param mixed $data the data object associated with the row
-         */
-        protected function renderButton($id, $button, $row, $data)
+        protected $showAdvancedSearch = false;
+
+        public static function getDefaultMetadata()
         {
-            $options = isset($button['options']) ? $button['options'] : array();
-            //Required else id assigned to update button is same as create task link in top nav bar
-            //opening create task instead of edit task
-            $options['id'] = $button['gridId'] . '-' . $data->id;
-            $button['options'] = $options;
-            return parent::renderButton($id, $button, $row, $data);
+            $metadata = array(
+                'global' => array(
+                    'panels' => array(
+                        array(
+                            'locked' => true,
+                            'title'  => 'Basic Search',
+                            'rows'   => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'anyMixedAttributes',
+                                                    'type' => 'AnyMixedAttributesSearch', 'wide' => true),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            );
+            return $metadata;
+        }
+
+        public static function getDesignerRulesType()
+        {
+            return 'ModalSearchView';
+        }
+
+        public static function getModelForMetadataClassName()
+        {
+            return 'ImagesSearchForm';
+        }
+
+        //TODO: @sergio: Why this is not working in the modal
+        protected function renderFiltersContent($form)
+        {
+            $element = new ImagesFilterByRadioElement($this->model, 'filteredBy', $form);
+            $element->editableTemplate = "{content}";
+            return ZurmoHtml::tag('div', array('class' => 'filter-portlet-model-bar'), $element->render());
         }
     }
 ?>
