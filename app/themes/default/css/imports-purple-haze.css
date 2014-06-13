@@ -2590,6 +2590,18 @@ table.configuration-list tr:last-child td {
 .security-adhoc-sharing .icon:before {
   content: '\00EB';
 }
+.notificationConfigurationTableHead span {
+  display: inline-block;
+  font-weight: bold;
+  width: 45px;
+}
+.enableInboxAndEmailNotifications span {
+  display: inline-block;
+  width: 45px;
+}
+.enableInboxAndEmailNotifications span {
+  padding-left: 8px;
+}
 .available-portlets {
   padding: 15px 15px 0 15px;
   list-style: none;
