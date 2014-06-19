@@ -34,46 +34,37 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class BuilderImageRedactorElement extends RedactorElement
+    /**
+     * Class ImageEditForm
+     */
+    class ImageEditForm extends CFormModel
     {
-        protected function resolveRedactorOptions()
+        public $id;
+
+        public $cropX;
+
+        public $cropY;
+
+        public $cropWidth;
+
+        public $cropHeight;
+
+        public $imageWidth;
+
+        public $imageHeight;
+
+        public function rules()
         {
-            $parentOptions          = parent::resolveRedactorOptions();
-            $options                = array(
-                'observeImages'             => 'true',
-                'allowedTags'               => $this->resolveAllowedTags(),
-                'buttons'                   => $this->resolveRedactorButtons(),
-                'imageUpload'               => ImageFileModelUtil::getUrlForActionUpload(),
-                'imageUploadErrorCallback'  => 'function(json)
-                                                {
-                                                    alert(json.error);
-                                                }',
-                'imageGetJson'              => ImageFileModelUtil::getUrlForActionGetUploaded(),
-                'syncBeforeCallback'        => $this->renderSyncBeforeCallbackScript()
+            return array(
+                array('id, cropX, cropY, cropWidth, cropHeight, imageWidth, imageHeight', 'required'),
+                array('id',             'type',    'type' => 'integer'),
+                array('cropX',          'type',    'type' => 'integer'),
+                array('cropY',          'type',    'type' => 'integer'),
+                array('cropWidth',      'type',    'type' => 'integer'),
+                array('cropHeight',     'type',    'type' => 'integer'),
+                array('imageWidth',     'type',    'type' => 'integer'),
+                array('imageHeight',    'type',    'type' => 'integer'),
             );
-            $options            = CMap::mergeArray($parentOptions, $options);
-            return $options;
-        }
-
-        protected function resolveAllowedTags()
-        {
-            return CJSON::encode(array('img', 'p'));
-        }
-
-        protected function resolveRedactorButtons()
-        {
-            $buttons         = array('zurmoImage');
-            return CJSON::encode($buttons);
-        }
-
-        protected function renderSyncBeforeCallbackScript()
-        {
-            // Begin Not Coding Standard
-            return "function(html)
-                    {
-                        return this.getEditor().contents().find('img:first').wrap('<p/>').parent().html();
-                    }";
-            // End Not Coding Standard
         }
     }
 ?>

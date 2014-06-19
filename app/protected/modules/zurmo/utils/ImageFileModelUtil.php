@@ -74,5 +74,46 @@
         {
             return Yii::app()->createAbsoluteUrl('zurmo/imageModel/getUploaded');
         }
+
+        public static function getUrlForGetImageFromImageFileName($fileName, $shouldReturnForThumbnail = false)
+        {
+            //TODO: @sergio: Add test
+            assert('is_string($fileName)');
+            assert('is_bool($shouldReturnForThumbnail)');
+            $path = 'zurmo/imageModel/getImage';
+            if ($shouldReturnForThumbnail)
+            {
+                $path = 'zurmo/imageModel/getThumb';
+            }
+            return Yii::app()->createAbsoluteUrl($path, array('fileName' => $fileName));
+        }
+
+        public static function getImageSummary(ImageFileModel $imageFileModel, $layout = null)
+        {
+            //TODO: @sergio: Add test
+            $data = array();
+            if ($layout == null)
+            {
+                $layout = static::getDefaultLayout();
+            }
+            $url                   = static::getUrlForGetImageFromImageFileName($imageFileModel->getImageCacheFileName(), true);
+            $urlForPreview         = Yii::app()->createAbsoluteUrl('zurmo/imageModel/modalPreview',array('fileName' => $imageFileModel->getImageCacheFileName()));
+            $data['{image}']       = ZurmoHtml::image($url, '', array('data-url' => $urlForPreview));
+            $data['{name}']        = $imageFileModel->name;
+            $data['{size}']        = FileModelDisplayUtil::convertSizeToHumanReadableAndGet((int) $imageFileModel->size);
+            $data['{dimensions}']  = $imageFileModel->width . ' × ' . $imageFileModel->height;
+            $data['{creator}']     = $imageFileModel->createdByUser;
+            $data['{createdTime}'] = DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay($imageFileModel->createdDateTime);
+            return strtr($layout, $data);
+        }
+
+        protected static function getDefaultLayout()
+        {
+            $createdByLabel = Zurmo::t('ZurmoModule', 'Created by');
+            $onLabel        = Zurmo::t('ZurmoModule', 'on');
+            return '<div class="builder-uploaded-image-thumb">{image}</div><div class="builder-image-details">' .
+                   '<strong>{name}</strong><br />{size} · {dimensions} · ' . $createdByLabel .
+                   ' {creator} ' . $onLabel . ' {createdTime}</div>';
+        }
     }
 ?>
