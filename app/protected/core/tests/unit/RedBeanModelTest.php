@@ -83,6 +83,8 @@
                         'TestSelfRelatingModel',
                         'TestSimplestModel',
                         'Y',
+                        'X',
+                        'P'
                         );
         }
 
@@ -1568,6 +1570,52 @@
             $i     = I::getById($iId);
             $this->assertEquals($i->j, $jSame);
             $this->assertEquals($i->j, J::getById($jId));
+        }
+
+        public function testRelatedValidation()
+        {
+            $this->markTestIncomplete(
+                    'This test has not been completed yet.'
+            );
+            $x          = new X();
+            $p          = new P();
+            $b          = new B();
+            $x->P       = $p;
+            $x->B       = $b;
+            $this->assertFalse($x->validate());
+//            $this->assertEquals(
+//                array('P' =>
+//                    array(
+//                        ' P cannot be blank.'
+//                    ),
+//                    'B' =>
+//                    array(
+//                        ' B cannot be blank.'
+//                    )
+//                ),
+//                $x->getErrors()
+//            );
+            //After save errors
+            $x          = new X();
+            $p          = new P();
+            $this->assertTrue($p->save(false));
+            $id = $p->id;
+            unset($p);
+            $p = P::getById($id);
+
+            $b          = new B();
+            $b->b = 'Hello';
+            $this->assertTrue($b->save());
+            $id = $b->id;
+            unset($b);
+            $b = B::getById($id);
+
+            $x->P       = $p;
+            $x->B       = $b;
+            $this->assertFalse($x->save());
+            $errors = $x->getErrors();
+            //Ask jason printing for model P that name is required rather printing There was a problem validating P
+            //although it is entering that loop
         }
     }
 ?>
