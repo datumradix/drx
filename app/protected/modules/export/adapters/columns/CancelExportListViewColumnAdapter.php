@@ -33,36 +33,45 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-
-    class SearchAndListView extends GridView
+    /**
+     * Column adapter for cancel of job for the export item.
+     */
+    class CancelExportListViewColumnAdapter extends IntegerListViewColumnAdapter
     {
-        public function __construct($controllerId,
-                                    $moduleId,
-                                    ModelForm $searchModel,
-                                    RedBeanModel $listModel,
-                                    $moduleName,
-                                    CDataProvider $dataProvider,
-                                    $selectedIds)
+        public function renderGridViewData()
         {
-            parent::__construct(3, 1);
-            $moduleClassName = $moduleName . 'Module';
-            $titleBarView = new TitleBarView (  $moduleClassName::getModuleLabelByTypeAndLanguage('Plural'),
-                                                Zurmo::t('ZurmoModule', 'Home'), 1);
-            $this->setView($titleBarView, 0, 0);
-            $searchViewClassName = $moduleName . 'SearchView';
-            $this->setView(new $searchViewClassName($searchModel, get_class($listModel)), 1, 0);
-            $listViewClassName   = $moduleName . 'ListView';
-            $this->setView(new $listViewClassName($controllerId,
-                                                  $moduleId,
-                                                  get_class($listModel),
-                                                  $dataProvider,
-                                                  $selectedIds,
-                                                  null, array(), $searchModel->getListAttributesSelector()), 2, 0);
+            return array(
+                    'name'  => $this->attribute,
+                    'value' => 'CancelExportListViewColumnAdapter::renderStatus($data)',
+                    'type'  => 'raw',
+            );
         }
 
-        public function isUniqueToAPage()
+        public static function renderStatus($data)
         {
-            return true;
+            $value = (int)$data->isJobRunning;
+            $url   = Yii::app()->createUrl('export/default/cancel', array('id' => $data->id));
+            if($value == 0)
+            {
+                $cancelBtn  = ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('Core', 'Cancel')), $url, array('class' => 'white-button'));
+                if((int)$data->cancelExport == 0)
+                {
+                    return $cancelBtn;
+                }
+                else
+                {
+                    return Zurmo::t('ExportModule', 'Cancel Pending');
+                }
+            }
+            elseif($value == 1)
+            {
+                $cancelBtn  = ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('Core', 'Cancel')), $url, array('class' => 'white-button disabled'));
+                return $cancelBtn;
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
         }
     }
 ?>
