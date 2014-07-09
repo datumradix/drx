@@ -39,8 +39,11 @@
      */
     class NewMissionNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when a new mission becomes available.';
-        
         protected static $tooltipId = 'user-new-mission-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a new mission becomes available.');
+        }
     }
 ?>

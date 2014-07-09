@@ -39,8 +39,11 @@
      */
     class DeliveredTaskNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when someone delivers a story that I have requested.';
-        
         protected static $tooltipId = 'user-delivered-task-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when someone delivers a story that I have requested.');
+        }
     }
 ?>

@@ -39,8 +39,11 @@
      */
     class ConversationNewCommentNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when a comment is added to a conversation I am participating in.';
-        
         protected static $tooltipId = 'user-conversation-new-comment-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a comment is added to a conversation I am participating in.');
+        }
     }
 ?>

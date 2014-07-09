@@ -39,8 +39,11 @@
      */
     class ProjectTaskNewCommentNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me of new comments on Tasks for Projects I own.';
-        
         protected static $tooltipId = 'user-project-task-new-comment-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me of new comments on Tasks for Projects I own.');
+        }
     }
 ?>

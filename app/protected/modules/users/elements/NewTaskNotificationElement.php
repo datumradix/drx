@@ -39,8 +39,11 @@
      */
     class NewTaskNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when I have a new Task assigned.';
-        
         protected static $tooltipId = 'user-new-task-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when I have a new Task assigned.');
+        }
     }
 ?>

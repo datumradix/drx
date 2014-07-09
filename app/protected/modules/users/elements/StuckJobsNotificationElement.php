@@ -39,8 +39,11 @@
      */
     class StuckJobsNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me if any scheduled jobs are stuck.';
-        
         protected static $tooltipId = 'user-stuck-jobs-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me if any scheduled jobs are stuck.');
+        }
     }
 ?>

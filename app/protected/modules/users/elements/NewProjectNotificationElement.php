@@ -39,8 +39,11 @@
      */
     class NewProjectNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when a new Project is created.';
-        
         protected static $tooltipId = 'user-new-project-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a new Project is created.');
+        }
     }
 ?>

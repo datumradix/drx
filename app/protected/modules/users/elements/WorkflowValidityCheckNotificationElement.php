@@ -39,8 +39,11 @@
      */
     class WorkflowValidityCheckNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when there is an issue with the validity of a workflow.';
-        
         protected static $tooltipId = 'user-workflow-validity-warnings-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when there is an issue with the validity of a workflow.');
+        }
     }
 ?>

@@ -39,8 +39,11 @@
      */
     class NewZurmoVersionAvailableNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when a newer version of Zurmo is available.';
-        
         protected static $tooltipId = 'user-new-zurmo-version-available-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a newer version of Zurmo is available.');
+        }
     }
 ?>

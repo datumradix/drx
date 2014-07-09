@@ -39,8 +39,11 @@
      */
     class ProjectTaskAddedNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when a new task is added to a Project I own.';
-        
         protected static $tooltipId = 'user-project-task-added-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a new task is added to a Project I own.');
+        }
     }
 ?>
