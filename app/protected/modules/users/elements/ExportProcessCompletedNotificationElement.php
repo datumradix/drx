@@ -39,8 +39,11 @@
      */
     class ExportProcessCompletedNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when my Exported data is ready.';
-        
         protected static $tooltipId = 'user-export-ready-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when my Exported data is ready.');
+        }
     }
 ?>

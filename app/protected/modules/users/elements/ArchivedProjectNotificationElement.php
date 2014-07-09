@@ -38,9 +38,12 @@
      * Element used in user notification configuration area.
      */
     class ArchivedProjectNotificationElement extends BaseNotificationElement
-    {
-        protected static $title = 'Notify me when a Project is archived.';
-        
+    {   
         protected static $tooltipId = 'user-archived-project-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a Project is archived.');
+        }
     }
 ?>

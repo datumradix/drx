@@ -39,8 +39,11 @@
      */
     class RejectedTaskNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when someone rejects a story that I own.';
-        
         protected static $tooltipId = 'user-rejected-task-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when someone rejects a story that I own.');
+        }
     }
 ?>

@@ -39,8 +39,11 @@
      */
     class ProjectTaskStatusChangeNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when the Status of a task changes for projects I own.';
-        
         protected static $tooltipId = 'user-project-task-status-change-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when the Status of a task changes for projects I own.');
+        }
     }
 ?>

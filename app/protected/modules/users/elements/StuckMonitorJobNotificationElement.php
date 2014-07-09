@@ -39,8 +39,11 @@
      */
     class StuckMonitorJobNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me if the Monitor job gets stuck.';
-        
         protected static $tooltipId = 'user-stuck-monitor-job-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me if the Monitor job gets stuck.');
+        }
     }
 ?>

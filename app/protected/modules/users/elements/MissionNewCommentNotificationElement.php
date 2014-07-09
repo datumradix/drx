@@ -39,8 +39,11 @@
      */
     class MissionNewCommentNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when a comment is added to one of my missions.';
-        
         protected static $tooltipId = 'user-mission-new-comment-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a comment is added to one of my missions.');
+        }
     }
 ?>

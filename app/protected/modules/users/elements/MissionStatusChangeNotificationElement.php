@@ -39,8 +39,11 @@
      */
     class MissionStatusChangeNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when the status changes on one of my missions.';
-        
         protected static $tooltipId = 'user-mission-status-change-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when the status changes on one of my missions.');
+        }
     }
 ?>

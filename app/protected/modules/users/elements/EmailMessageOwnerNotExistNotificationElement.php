@@ -39,8 +39,11 @@
      */
     class EmailMessageOwnerNotExistNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when a non-zurmo user attempts to archive an email.';
-        
         protected static $tooltipId = 'user-email-message-owner-not-exist-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a non-zurmo user attempts to archive an email.');
+        }
     }
 ?>

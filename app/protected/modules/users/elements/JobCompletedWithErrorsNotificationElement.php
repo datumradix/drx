@@ -39,8 +39,11 @@
      */
     class JobCompletedWithErrorsNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me if a scheduled job completes with errors.';
-        
         protected static $tooltipId = 'user-job-completed-with-errors-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me if a scheduled job completes with errors.');
+        }
     }
 ?>

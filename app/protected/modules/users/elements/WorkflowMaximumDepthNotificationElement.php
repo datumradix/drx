@@ -39,8 +39,11 @@
      */
     class WorkflowMaximumDepthNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when possible workflow loops occur.';
-        
         protected static $tooltipId = 'user-workflow-endless-loop-warnings-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when possible workflow loops occur.');
+        }
     }
 ?>

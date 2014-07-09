@@ -39,8 +39,11 @@
      */
     class ConversationInvitesNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when I am invited to a conversation.';
-        
         protected static $tooltipId = 'user-conversation-invites-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when I am invited to a conversation.');
+        }
     }
 ?>

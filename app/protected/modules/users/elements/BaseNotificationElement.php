@@ -39,7 +39,6 @@
      */
     class BaseNotificationElement extends Element
     {
-        protected static $title;
         protected static $tooltipId;
         
         /**
@@ -86,8 +85,7 @@
 
         protected static function renderTooltipContentForNotification()
         {
-            $title       = Zurmo::t('UsersModule',
-                            static::$title);
+            $title       = static::getTitle();
             $content     = ZurmoHtml::tag('span',
                                           array('id'    => static::$tooltipId,
                                                 'class' => 'tooltip',

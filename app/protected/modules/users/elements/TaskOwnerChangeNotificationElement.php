@@ -39,8 +39,11 @@
      */
     class TaskOwnerChangeNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when the owner changes on a task that I have requested.';
-        
         protected static $tooltipId = 'user-task-owner-change-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when the owner changes on a task that I have requested.');
+        }
     }
 ?>

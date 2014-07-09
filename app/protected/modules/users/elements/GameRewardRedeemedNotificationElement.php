@@ -39,8 +39,11 @@
      */
     class GameRewardRedeemedNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when I redeems a reward.';
-        
         protected static $tooltipId = 'user-game-reward-redeemed-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when I redeems a reward.');
+        }
     }
 ?>

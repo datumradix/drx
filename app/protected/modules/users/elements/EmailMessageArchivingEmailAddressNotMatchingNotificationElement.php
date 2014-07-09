@@ -39,8 +39,11 @@
      */
     class EmailMessageArchivingEmailAddressNotMatchingNotificationElement extends BaseNotificationElement
     {
-        protected static $title = 'Notify me when an email I archived could not be matched to any contacts.';
-        
         protected static $tooltipId = 'user-email-message-archiving-email-address-not-matching-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when an email I archived could not be matched to any contacts.');
+        }
     }
 ?>

@@ -38,9 +38,12 @@
      * Element used in user notification configuration area
      */
     class AcceptedTaskNotificationElement extends BaseNotificationElement
-    {
-        protected static $title = 'Notify me when someone accepts a story that I own.';
-        
+    {   
         protected static $tooltipId = 'user-accepted-task-notification-tooltip';
+        
+        public static function getTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when someone accepts a story that I own.');
+        }    
     }
 ?>
