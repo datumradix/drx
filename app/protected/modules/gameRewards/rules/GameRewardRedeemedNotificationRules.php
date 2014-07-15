@@ -51,14 +51,32 @@
          */
         protected $allowDuplicates    = true;
 
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('JobsManagerModule', 'A game reward was redeemed');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'GameRewardRedeemed';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('GameRewardsModule');
+        }
+
+        public function getTooltipId()
+        {
+            return 'game-reward-redeemed-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when I redeems a reward.');
         }
     }
 ?>

@@ -42,17 +42,27 @@
         /**
          * @returns Translated label that describes this rule type.
          */
-        public static function getDisplayName()
+        public function getDisplayName()
         {
-            return Zurmo::t('TasksModule', 'task');
+            return Zurmo::t('TasksModule', 'Accepted Tasks');
         }
 
         /**
          * @return The type of the NotificationRules
          */
-        public static function getType()
+        public function getType()
         {
             return 'AcceptedTask';
+        }
+
+        public function getTooltipId()
+        {
+            return 'accepted-task-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when someone accepts a story that I own.');
         }
     }
 ?>

@@ -35,15 +35,38 @@
      ********************************************************************************/
 
     /**
-     * Element used in user notification configuration area
+     * A NotificationRules to manage when user is invited to a conversation.
      */
-    class JobCompletedWithErrorsNotificationElement extends BaseNotificationElement
+    class ConversationInvitesNotificationRules extends SimpleNotificationRules
     {
-        protected static $tooltipId = 'user-job-completed-with-errors-notification-tooltip';
-        
-        public static function getTitle()
+        protected $allowDuplicates      = true;
+
+        public function getDisplayName()
         {
-            return Zurmo::t('UsersModule', 'Notify me if a scheduled job completes with errors.');
+            return Zurmo::t('ConversationsModule', 'Invited to a Conversation');
+        }
+
+        public function getType()
+        {
+            return 'ConversationInvites';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('ConversationsModule');
+        }
+
+        public function getTooltipId()
+        {
+            return 'conversation-invites-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when I am invited to a conversation.');
         }
     }
 ?>

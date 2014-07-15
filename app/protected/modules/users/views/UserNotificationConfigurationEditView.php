@@ -39,16 +39,16 @@
      */
     class UserNotificationConfigurationEditView extends EditAndDetailsView
     {
-        protected static $notificationConfigurationPanelRows = array();
-        
+        protected static $notificationConfigurationPanels = array();
+
         public function __construct($renderType, $controllerId, $moduleId, $model, $title)
         {
             parent::__construct($renderType, $controllerId, $moduleId, $model);
             $this->title = $title;
             $user = $this->model->user;
-            self::$notificationConfigurationPanelRows = $this->resolveNotificationConfigurationViewContentByUserType($user);
+            self::$notificationConfigurationPanels = $this->resolveNotificationConfigurationViewContentByUserType($user);
         }
-        
+
         public function getTitle()
         {
             return $this->title;
@@ -67,11 +67,7 @@
                         ),
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
-                    'panels' => array(
-                        array(
-                            'rows' => self::$notificationConfigurationPanelRows
-                        ),
-                    ),
+                    'panels' => self::$notificationConfigurationPanels
                 ),
             );
             return $metadata;
@@ -81,293 +77,42 @@
         {
             return null;
         }
-        
+
         protected function resolveNotificationConfigurationViewContentByUserType($user)
         {
-            $tableHeadRow = array(
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'notificationConfigurationTableHead',
-                                       'type' => 'NotificationConfigurationTableHead',),
-                              ),
-                         ),
-                     ),
-                ),
-            );
-            $superAdministratorRows = array(
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableStuckMonitorJobNotification',
-                                       'type' => 'StuckMonitorJobNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableStuckJobsNotification',
-                                       'type' => 'StuckJobsNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableJobCompletedWithErrorsNotification',
-                                       'type' => 'JobCompletedWithErrorsNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableNewZurmoVersionAvailableNotification',
-                                       'type' => 'NewZurmoVersionAvailableNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableEmailMessageOwnerNotExistNotification',
-                                       'type' => 'EmailMessageOwnerNotExistNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableWorkflowValidityCheckNotification',
-                                       'type' => 'WorkflowValidityCheckNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableWorkflowMaximumDepthNotification',
-                                       'type' => 'WorkflowMaximumDepthNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-            );
-            $regularUserRows = array(
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableConversationInvitesNotification',
-                                       'type' => 'ConversationInvitesNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableConversationNewCommentNotification',
-                                       'type' => 'ConversationNewCommentNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableNewMissionNotification',
-                                       'type' => 'NewMissionNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableMissionStatusChangeNotification',
-                                       'type' => 'MissionStatusChangeNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableMissionNewCommentNotification',
-                                       'type' => 'MissionNewCommentNotification',),
-                              ),
-                         ),
-                     ),
-                ),  
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableNewTaskNotification',
-                                       'type' => 'NewTaskNotification',),
-                              ),
-                         ),
-                     ),
-                ),  
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableDeliveredTaskNotification',
-                                       'type' => 'DeliveredTaskNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableAcceptedTaskNotification',
-                                       'type' => 'AcceptedTaskNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableRejectedTaskNotification',
-                                       'type' => 'RejectedTaskNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableTaskOwnerChangeNotification',
-                                       'type' => 'TaskOwnerChangeNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableTaskNewCommentNotification',
-                                       'type' => 'TaskNewCommentNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableNewProjectNotification',
-                                       'type' => 'NewProjectNotification',),
-                              ),
-                         ),
-                     ),
-                ),  
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableProjectTaskAddedNotification',
-                                       'type' => 'ProjectTaskAddedNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableProjectTaskNewCommentNotification',
-                                       'type' => 'ProjectTaskNewCommentNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableProjectTaskStatusChangeNotification',
-                                       'type' => 'ProjectTaskStatusChangeNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableArchivedProjectNotification',
-                                       'type' => 'ArchivedProjectNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableGameRewardRedeemedNotification',
-                                       'type' => 'GameRewardRedeemedNotification',),
-                              ),
-                         ),
-                     ),
-                ), 
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableExportProcessCompletedNotification',
-                                       'type' => 'ExportProcessCompletedNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-                array('cells' =>
-                     array(
-                         array(
-                             'elements' => array(
-                                 array('attributeName' => 'enableEmailMessageArchivingEmailAddressNotMatchingNotification',
-                                       'type' => 'EmailMessageArchivingEmailAddressNotMatchingNotification',),
-                              ),
-                         ),
-                     ),
-                ),
-            );
-            if($user->isSuperAdministrator())
+            $userPanels = array();
+            foreach (UserNotificationUtil::getNotificationRulesTypesForCurrentUserByModule() as $module => $panel)
             {
-                return array_merge($tableHeadRow, $superAdministratorRows, $regularUserRows);
+                $tableHeadRow = array(
+                    array('cells' =>
+                        array(
+                            array(
+                                'elements' => array(
+                                    array('attributeName' => 'notificationConfigurationTableHead' . $module,
+                                        'type' => 'NotificationConfigurationTableHead',),
+                                ),
+                            ),
+                        ),
+                    ),
+                );
+                $userRows = array();
+                foreach ($panel as $type => $label)
+                {
+                    $userRows[] = array('cells' =>
+                                            array(
+                                                array(
+                                                    'elements' => array(
+                                                        array('attributeName' => UserNotificationUtil::getConfigurationAttributeByNotificationType($type),
+                                                              'type' => UserNotificationUtil::getConfigurationElementTypeByNotificationType($type)),
+                                                    ),
+                                                ),
+                                            ),
+                                        );
+
+                }
+                $userPanels[] = array('title' => $module, 'rows' => array_merge($tableHeadRow, $userRows));
             }
-            else
-            {
-                return array_merge($tableHeadRow, $regularUserRows);
-            }
+            return $userPanels;
         }
     }
 ?>

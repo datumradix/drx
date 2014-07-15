@@ -39,14 +39,32 @@
      */
     class MissionStatusChangeNotificationRules extends SimpleNotificationRules
     {
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('MissionsModule', 'A mission status has changed');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'MissionStatusChange';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('MissionsModule');
+        }
+
+        public function getTooltipId()
+        {
+            return 'mission-status-change-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when the status changes on one of my missions.');
         }
     }
 ?>

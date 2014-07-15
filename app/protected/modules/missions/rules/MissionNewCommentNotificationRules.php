@@ -41,15 +41,33 @@
     {
         protected $allowSendingEmail    = false;
         protected $allowDuplicates      = true;
-        
-        public static function getDisplayName()
+
+        public function getDisplayName()
         {
             return Zurmo::t('MissionsModule', 'Mission new comment');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'MissionNewComment';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('MissionsModule');
+        }
+
+        public function getTooltipId()
+        {
+            return 'mission-new-comment-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a comment is added to one of my missions.');
         }
     }
 ?>

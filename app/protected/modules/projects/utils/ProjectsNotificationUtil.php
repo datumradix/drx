@@ -48,7 +48,7 @@
          * @param null|Comment $comment
          * comment, it would be the user making the comment
          */
-        public static function submitProjectNotificationMessage(Project $project, $action, Task $task = null, 
+        public static function submitProjectNotificationMessage(Project $project, $action, Task $task = null,
                                                                 User $relatedUser = null, Comment $comment = null)
         {
             assert('is_string($action)');
@@ -101,7 +101,7 @@
          * @param Comment $comment
          * @return NotificationMessage
          */
-        protected static function getNotificationMessageByAction(Project $project, $action, Task $task = null, 
+        protected static function getNotificationMessageByAction(Project $project, $action, Task $task = null,
                                                                  User $relatedUser = null, Comment $comment = null)
         {
             assert('is_string($action)');
@@ -260,7 +260,7 @@
             assert('is_string($action)');
             $notificationSettingName = static::resolveNotificationSettingNameFromType($rule->getType());
             if ($notification->owner->primaryEmail->emailAddress !== null &&
-                UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($notification->owner, 
+                UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($notification->owner,
                                                                                 $notificationSettingName, 'email'))
             {
                 $emailMessage               = static::makeEmailMessage($rule, $action);
@@ -281,7 +281,7 @@
         }
 
         /**
-         * 
+         *
          * @param ProjectNotificationRules $rule
          * @param string $action
          * @return EmailMessage
@@ -347,7 +347,7 @@
         {
             return true;
         }
-        
+
         /**
          * Resolve the notification rules class name by action name
          * @param string $action

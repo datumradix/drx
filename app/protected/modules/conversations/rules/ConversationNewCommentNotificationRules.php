@@ -41,15 +41,33 @@
     {
         protected $allowSendingEmail    = false;
         protected $allowDuplicates      = true;
-        
-        public static function getDisplayName()
+
+        public function getDisplayName()
         {
             return Zurmo::t('ConversationsModule', 'Conversation new comment');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'ConversationNewComment';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('ConversationsModule');
+        }
+
+        public function getTooltipId()
+        {
+            return 'conversation-new-comment-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a comment is added to a conversation I am participating in.');
         }
     }
 ?>

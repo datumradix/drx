@@ -112,7 +112,7 @@
             }
             return $users;
         }
-        
+
         /**
          * Get default notifications settings for test user
          * All notifications are enabled by default.
@@ -123,15 +123,16 @@
          */
         public static function getDefaultNotificationSettingsValuesForTestUser()
         {
-            $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingNames();
+            $notificationSettingsAttributes = UserNotificationUtil::getAllNotificationSettingAttributes();
             $defaultNotificationSettings = array();
-            foreach($notificationSettingsNames as $settingName)
+            foreach($notificationSettingsAttributes as $attribute)
             {
-                $defaultNotificationSettings[$settingName] = array('inbox'=>true, 'email'=>true);
+                list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($attribute);
+                $defaultNotificationSettings[$settingName][$type] = true;
             }
             return $defaultNotificationSettings;
         }
-        
+
         /**
          * Set default notifications settings to be all enabled
          *

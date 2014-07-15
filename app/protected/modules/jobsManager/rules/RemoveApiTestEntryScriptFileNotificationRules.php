@@ -41,12 +41,16 @@
     {
         protected $critical    = false;
 
-        public static function getDisplayName()
+        protected $canBeConfiguredByUser = false;
+
+        protected $defaultValueForInboxSetting = true;
+
+        public function getDisplayName()
         {
             return Zurmo::t('JobsManagerModule', 'Remove the api test entry script for production use.');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'RemoveApiTestEntryScriptFile';
         }

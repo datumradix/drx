@@ -42,17 +42,27 @@
         /**
          * @returns Translated label that describes this rule type.
          */
-        public static function getDisplayName()
+        public function getDisplayName()
         {
-            return Zurmo::t('TasksModule', 'task');
+            return Zurmo::t('TasksModule', 'Rejected Tasks');
         }
 
         /**
          * @return The type of the NotificationRules
          */
-        public static function getType()
+        public function getType()
         {
             return 'RejectedTask';
+        }
+
+        public function getTooltipId()
+        {
+            return 'rejected-task-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when someone rejects a story that I own.');
         }
     }
 ?>

@@ -39,14 +39,29 @@
      */
     class JobCompletedWithErrorsNotificationRules extends JobsManagerAccessNotificationRules
     {
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('JobsManagerModule', 'A job was completed with errors.');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'JobCompletedWithErrors';
+        }
+
+        public function isSuperAdministratorNotification()
+        {
+            return true;
+        }
+
+        public function getTooltipId()
+        {
+            return 'job-completed-with-errors-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me if a scheduled job completes with errors.');
         }
     }
 ?>

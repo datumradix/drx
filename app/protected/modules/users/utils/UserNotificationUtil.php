@@ -44,17 +44,17 @@
             {
                 return $notificationSettings[$name][$type];
             }
-            else 
+            else
             {
                 return false;
             }
         }
-        
+
         public static function getNotificationSettingsByUser(User $user)
         {
             $defaultNotificationSettings = static::getNotificationSettingsDefaultValues();
             $notificationSettings = UserNotificationUtil::resolveAndGetValue($user, 'inboxAndEmailNotificationSettings', false);
-            
+
             if(is_array($notificationSettings) && !empty($notificationSettings))
             {
                 foreach($notificationSettings as $notificationName => $notificationSetting)
@@ -62,53 +62,46 @@
                     $defaultNotificationSettings[$notificationName] = $notificationSetting;
                 }
             }
-            
+
             return $defaultNotificationSettings;
         }
-        
-        public static function getAllNotificationSettingNames()
+
+        public static function getAllNotificationSettingAttributes()
         {
-            $defaultNotificationSettings = static::getNotificationSettingsDefaultValues();
-            return array_keys($defaultNotificationSettings);
+            $defaultNotificationSettings = array_keys(static::getNotificationSettingsDefaultValues());
+            $notificationSettingNames = array();
+            foreach ($defaultNotificationSettings as $defaultNotificationSetting)
+            {
+                $notificationSettingNames[] = $defaultNotificationSetting . 'Inbox';
+                $notificationSettingNames[] = $defaultNotificationSetting . 'Email';
+            }
+            return $notificationSettingNames;
         }
-        
+
         public static function getNotificationSettingsDefaultValues()
         {
-            $defaultNotificationSettings = array(
-                'enableStuckMonitorJobNotification'                     => array('inbox'=>false, 'email'=>false),
-                'enableStuckJobsNotification'                           => array('inbox'=>false, 'email'=>false),
-                'enableJobCompletedWithErrorsNotification'              => array('inbox'=>false, 'email'=>false),
-                'enableNewZurmoVersionAvailableNotification'            => array('inbox'=>false, 'email'=>false),
-                'enableEmailMessageOwnerNotExistNotification'           => array('inbox'=>false, 'email'=>false),
-                'enableWorkflowValidityCheckNotification'               => array('inbox'=>false, 'email'=>false),
-                'enableWorkflowMaximumDepthNotification'                => array('inbox'=>false, 'email'=>false),
-                'enableConversationInvitesNotification'                 => array('inbox'=>false, 'email'=>false),
-                'enableConversationNewCommentNotification'              => array('inbox'=>false, 'email'=>false),
-                'enableNewMissionNotification'                          => array('inbox'=>false, 'email'=>false),
-                'enableMissionStatusChangeNotification'                 => array('inbox'=>false, 'email'=>false),
-                'enableMissionNewCommentNotification'                   => array('inbox'=>false, 'email'=>false),
-                'enableNewTaskNotification'                             => array('inbox'=>false, 'email'=>false),
-                'enableDeliveredTaskNotification'                       => array('inbox'=>false, 'email'=>false),
-                'enableAcceptedTaskNotification'                        => array('inbox'=>false, 'email'=>false),
-                'enableRejectedTaskNotification'                        => array('inbox'=>false, 'email'=>false),
-                'enableTaskOwnerChangeNotification'                     => array('inbox'=>false, 'email'=>false),
-                'enableTaskNewCommentNotification'                      => array('inbox'=>false, 'email'=>false),
-                'enableNewProjectNotification'                          => array('inbox'=>false, 'email'=>false),
-                'enableProjectTaskAddedNotification'                    => array('inbox'=>false, 'email'=>false),
-                'enableProjectTaskNewCommentNotification'               => array('inbox'=>false, 'email'=>false),
-                'enableProjectTaskStatusChangeNotification'             => array('inbox'=>false, 'email'=>false),
-                'enableArchivedProjectNotification'                     => array('inbox'=>false, 'email'=>false),
-                'enableGameRewardRedeemedNotification'                  => array('inbox'=>false, 'email'=>false),
-                'enableExportProcessCompletedNotification'              => array('inbox'=>false, 'email'=>false),
-                'enableEmailMessageArchivingEmailAddressNotMatchingNotification' 
-                                                                        => array('inbox'=>false, 'email'=>false),
-                'enableRemoveApiTestEntryScriptFileNotification'        => array('inbox'=>true, 'email'=>false),
-                'enableEnableMinifyNotification'                        => array('inbox'=>true, 'email'=>false),
-                'enableClearAssetsFolderNotification'                   => array('inbox'=>true, 'email'=>false),
-            );
+            $defaultNotificationSettings = array();
+            $modules = Module::getModuleObjects();
+            foreach ($modules as $module)
+            {
+                $rulesClassNames = $module::getAllClassNamesByPathFolder('rules');
+                foreach ($rulesClassNames as $ruleClassName)
+                {
+                    $classToEvaluate     = new ReflectionClass($ruleClassName);
+                    if (is_subclass_of($ruleClassName, 'NotificationRules') && !$classToEvaluate->isAbstract())
+                    {
+                        $rule = new $ruleClassName();
+                        if ($rule->canBeConfiguredByUser())
+                        {
+                            $defaultValues = array('inbox' => $rule->getDefaultValue('inbox'), 'email' => $rule->getDefaultValue('email'));
+                            $defaultNotificationSettings[static::getConfigurationAttributeByNotificationType($rule->getType())] = $defaultValues;
+                        }
+                    }
+                }
+            }
             return $defaultNotificationSettings;
         }
-        
+
         public static function resolveAndGetValue(User $user, $key, $returnBoolean = true)
         {
             assert('$user instanceOf User && $user->id > 0');
@@ -125,7 +118,7 @@
             $value = ($saveBoolean)? (bool) $value : $value;
             ZurmoConfigurationUtil::setByUserAndModuleName($user, 'ZurmoModule', $key, $value);
         }
-        
+
         /**
          * Set notifications settings to be all disabled
          *
@@ -133,13 +126,129 @@
          */
         public static function setNotificationSettingsAllDisabledForUser($user)
         {
-            $notificationSettingsNames = static::getAllNotificationSettingNames();
+            $notificationSettingsAttributes = UserNotificationUtil::getAllNotificationSettingAttributes();
             $defaultNotificationSettings = array();
-            foreach($notificationSettingsNames as $settingName)
+            foreach($notificationSettingsAttributes as $attribute)
             {
-                $defaultNotificationSettings[$settingName] = array('inbox'=>false, 'email'=>false);
+                list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($attribute);
+                $defaultNotificationSettings[$settingName][$type] = false;
             }
             static::setValue($user, $defaultNotificationSettings, 'inboxAndEmailNotificationSettings', false);
+        }
+
+        /**
+         * Based on the current user, return the NotificationRules types and their display labels.
+         * Only include notification rules that the user has a right to access its corresponding module.
+         * @return array of notification rules types and display labels.
+         */
+        public static function getNotificationRulesTypesForCurrentUserByModule()
+        {
+            $notificationRulesTypes = array();
+            $modules = Module::getModuleObjects();
+            foreach ($modules as $module)
+            {
+                $rulesClassNames = $module::getAllClassNamesByPathFolder('rules');
+                foreach ($rulesClassNames as $ruleClassName)
+                {
+                    $classToEvaluate     = new ReflectionClass($ruleClassName);
+                    if (is_subclass_of($ruleClassName, 'NotificationRules') && !$classToEvaluate->isAbstract())
+                    {
+                        $rule = new $ruleClassName();
+                        $addToArray       = true;
+                        try
+                        {
+                            $moduleClassNames = $rule->getModuleClassNames();
+                            foreach ($moduleClassNames as $moduleClassNameToCheckAccess)
+                            {
+                                if (!RightsUtil::canUserAccessModule($moduleClassNameToCheckAccess,
+                                        Yii::app()->user->userModel) ||
+                                    !RightsUtil::
+                                        doesUserHaveAllowByRightName($moduleClassNameToCheckAccess,
+                                            $moduleClassNameToCheckAccess::getCreateRight(),
+                                            Yii::app()->user->userModel) ||
+                                    ($rule->isSuperAdministratorNotification() && !Yii::app()->user->userModel->isSuperAdministrator())
+                                    || !$rule->canBeConfiguredByUser())
+                                {
+                                    $addToArray = false;
+                                }
+                            }
+                        }
+                        catch (NotImplementedException $exception)
+                        {
+                            $addToArray = false;
+                        }
+                        if ($addToArray)
+                        {
+                            $label = $module::getModuleLabelByTypeAndLanguage('Plural');
+                            $notificationRulesTypes[$label][$rule->getType()] = $rule->getDisplayName();
+                        }
+                    }
+                }
+            }
+            return $notificationRulesTypes;
+        }
+
+        /**
+         * The element type to be used on the @see UserNotificationConfigurationEditView
+         * @param $type
+         * @return string
+         */
+        public static function getConfigurationElementTypeByNotificationType($type)
+        {
+            assert('is_string($type)');
+            return 'BaseNotification';
+        }
+
+        /**
+         * The attribute used on the @see UserNotificationConfigurationEditView
+         * @param $type
+         * @return string
+         */
+        public static function getConfigurationAttributeByNotificationType($type)
+        {
+            assert('is_string($type)');
+            return 'enable' . $type . 'Notification';
+        }
+
+        /**
+         * The tooltip id used on @see UserNotificationConfigurationEditView
+         * @param $attribute
+         * @return string
+         */
+        public static function getTooltipIdByAttribute($attribute)
+        {
+            assert('is_string($attribute)');
+            $notificationType = preg_replace("/enable(.*)Notification/", "$1", $attribute);
+            $rule = NotificationRulesFactory::createNotificationRulesByType($notificationType);
+            return $rule->getTooltipId();
+        }
+
+        /**
+         * The tooltip title used on @see UserNotificationConfigurationEditView
+         * @param $attribute
+         * @return string
+         */
+        public static function getTooltipTitleByAttribute($attribute)
+        {
+            assert('is_string($attribute)');
+            $notificationType = preg_replace("/enable(.*)Notification/", "$1", $attribute);
+            $rule = NotificationRulesFactory::createNotificationRulesByType($notificationType);
+            return $rule->getTooltipTitle();
+        }
+
+        public static function getSettingNameAndTypeBySuffixedConfigurationAttribute($suffixedConfigurationAttribute)
+        {
+            assert('is_string($suffixedConfigurationAttribute)');
+            $matches = array();
+            preg_match("/(.*)(Email|Inbox)$/", $suffixedConfigurationAttribute, $matches);
+            if (count($matches) == 3)
+            {
+                return array($matches[1], strtolower($matches[2]));
+            }
+            else
+            {
+                return $suffixedConfigurationAttribute;
+            }
         }
     }
 ?>
