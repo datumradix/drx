@@ -41,21 +41,31 @@
     {
         protected $allowSendingEmail    = false;
         protected $allowDuplicates      = true;
-        
+
         /**
          * @returns Translated label that describes this rule type.
          */
-        public static function getDisplayName()
+        public function getDisplayName()
         {
-            return Zurmo::t('TasksModule', 'task');
+            return Zurmo::t('TasksModule', 'New Task Comments');
         }
 
         /**
          * @return The type of the NotificationRules
          */
-        public static function getType()
+        public function getType()
         {
             return 'TaskNewComment';
+        }
+
+        public function getTooltipId()
+        {
+            return 'task-new-comment-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me of new comments on Tasks I am following.');
         }
     }
 ?>

@@ -43,7 +43,7 @@
         /**
          * @return string|The
          */
-        public static function getType()
+        public function getType()
         {
             return 'WorkflowValidityCheck';
         }
@@ -51,7 +51,7 @@
         /**
          * @return string|void
          */
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('WorkflowsModule', 'Workflows require attention.');
         }
@@ -70,6 +70,29 @@
                     $this->addUser($user);
                 }
             }
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('WorkflowsModule');
+        }
+
+        public function isSuperAdministratorNotification()
+        {
+            return true;
+        }
+
+        public function getTooltipId()
+        {
+            return 'workflow-validity-warnings-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when there is an issue with the validity of a workflow.');
         }
     }
 ?>

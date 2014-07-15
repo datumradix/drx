@@ -38,7 +38,7 @@
      * Display Notification Configuration head/title
      */
     class NotificationConfigurationTableHeadElement extends Element
-    {   
+    {
         protected function renderControlEditable()
         {
             $content = $this->renderEnableInboxAndEmailNotificationsCheckBoxes();
@@ -52,8 +52,7 @@
 
         protected function renderLabel()
         {
-            $content  = parent::renderLabel();
-            return $content;
+            return Zurmo::t('UsersModule', 'Notification');
         }
 
         protected function renderEnableInboxAndEmailNotificationsCheckBoxes()
@@ -61,14 +60,14 @@
             $content  = ZurmoHtml::tag('span', array(), 'Inbox');
             $content .= ZurmoHtml::tag('span', array(), 'Email');
             return $content;
-            
+
             $htmlOptions             = array();
             $htmlOptions['id']       = $this->getEditableInputId().'Inbox';
             $htmlOptions['name']     = $this->getEditableInputName($this->attribute.'Inbox');
             $htmlOptions['disabled'] = $this->getDisabledValue();
             $htmlOptions             = array_merge($this->getHtmlOptions(), $htmlOptions);
             $content                 = $this->form->checkBox($this->model, $this->attribute.'Inbox', $htmlOptions);
-            
+
             $htmlOptions             = array();
             $htmlOptions['id']       = $this->getEditableInputId().'Email';
             $htmlOptions['name']     = $this->getEditableInputName($this->attribute.'Email');

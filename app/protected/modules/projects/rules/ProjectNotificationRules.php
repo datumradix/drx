@@ -37,7 +37,7 @@
     /**
      * A  NotificationRules to manage events related to projects
      */
-    class ProjectNotificationRules extends NotificationRules
+    abstract class ProjectNotificationRules extends NotificationRules
     {
         protected $model;
         protected $additionalModel;
@@ -51,7 +51,7 @@
         {
             $this->model = $model;
         }
-        
+
         public function getAdditionalModel()
         {
             return $this->additionalModel;
@@ -63,19 +63,19 @@
         }
 
         /**
-         * @returns Translated label that describes this rule type.
+         * @return The type of the NotificationRules
          */
-        public static function getDisplayName()
+        public function getType()
         {
-            return 'project';
+            return 'Project';
         }
 
         /**
-         * @return The type of the NotificationRules
+         * @inheritdoc
          */
-        public static function getType()
+        public function getModuleClassNames()
         {
-            return 'Project';
+            return array('ProjectsModule');
         }
     }
 ?>

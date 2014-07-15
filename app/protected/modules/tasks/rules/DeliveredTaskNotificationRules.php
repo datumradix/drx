@@ -42,17 +42,27 @@
         /**
          * @returns Translated label that describes this rule type.
          */
-        public static function getDisplayName()
+        public function getDisplayName()
         {
-            return Zurmo::t('TasksModule', 'task');
+            return Zurmo::t('TasksModule', 'Delivered Tasks');
         }
 
         /**
          * @return The type of the NotificationRules
          */
-        public static function getType()
+        public function getType()
         {
             return 'DeliveredTask';
+        }
+
+        public function getTooltipId()
+        {
+            return 'delivered-task-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when someone delivers a story that I have requested.');
         }
     }
 ?>

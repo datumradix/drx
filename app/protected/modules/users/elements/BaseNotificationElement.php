@@ -39,8 +39,6 @@
      */
     class BaseNotificationElement extends Element
     {
-        protected static $tooltipId;
-        
         /**
          * Renders the checkboxes.
          * @return A string containing the element's content.
@@ -72,7 +70,7 @@
             $htmlOptions                = array_merge($this->getHtmlOptions(), $htmlOptions);
             $checkbox                   = $this->form->checkBox($this->model, $this->attribute.'Inbox', $htmlOptions);
             $content                    = ZurmoHtml::tag('span', array('class'=>'inboxNotificationsCheckbox'), $checkbox);
-            
+
             $htmlOptions                = array();
             $htmlOptions['id']          = $this->getEditableInputId().'Email';
             $htmlOptions['name']        = $this->getEditableInputName($this->attribute.'Email');
@@ -83,11 +81,11 @@
             return $content;
         }
 
-        protected static function renderTooltipContentForNotification()
+        protected function renderTooltipContentForNotification()
         {
-            $title       = static::getTitle();
+            $title       = UserNotificationUtil::getTooltipTitleByAttribute($this->attribute);
             $content     = ZurmoHtml::tag('span',
-                                          array('id'    => static::$tooltipId,
+                                          array('id'    => UserNotificationUtil::getTooltipIdByAttribute($this->attribute),
                                                 'class' => 'tooltip',
                                                 'title' => $title,
                                                ),
@@ -97,7 +95,7 @@
                                                                  'show'     => array('event' => 'click')
 
                 )));
-            $qtip->addQTip("#" . static::$tooltipId);
+            $qtip->addQTip("#" . UserNotificationUtil::getTooltipIdByAttribute($this->attribute));
             return $content;
         }
     }

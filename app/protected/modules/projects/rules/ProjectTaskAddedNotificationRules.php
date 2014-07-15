@@ -42,17 +42,27 @@
         /**
          * @returns Translated label that describes this rule type.
          */
-        public static function getDisplayName()
+        public function getDisplayName()
         {
-            return Zurmo::t('ProjectsModule', 'project');
+            return Zurmo::t('ProjectsModule', 'Project Task Added');
         }
 
         /**
          * @return The type of the NotificationRules
          */
-        public static function getType()
+        public function getType()
         {
             return 'ProjectTaskAdded';
+        }
+
+        public function getTooltipId()
+        {
+            return 'project-task-added-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a new task is added to a Project I own.');
         }
     }
 ?>

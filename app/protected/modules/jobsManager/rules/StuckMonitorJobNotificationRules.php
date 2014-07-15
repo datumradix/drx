@@ -41,14 +41,29 @@
     {
         protected $critical    = true;
 
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('JobsManagerModule', 'The monitor job is stuck.');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'StuckMonitorJob';
+        }
+
+        public function isSuperAdministratorNotification()
+        {
+            return true;
+        }
+
+        public function getTooltipId()
+        {
+            return 'stuck-monitor-job-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me if the Monitor job gets stuck.');
         }
     }
 ?>

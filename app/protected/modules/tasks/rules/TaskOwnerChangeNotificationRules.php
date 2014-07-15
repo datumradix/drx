@@ -42,17 +42,27 @@
         /**
          * @returns Translated label that describes this rule type.
          */
-        public static function getDisplayName()
+        public function getDisplayName()
         {
-            return Zurmo::t('TasksModule', 'task');
+            return Zurmo::t('TasksModule', 'Task Owner Change');
         }
 
         /**
          * @return The type of the NotificationRules
          */
-        public static function getType()
+        public function getType()
         {
             return 'TaskOwnerChange';
+        }
+
+        public function getTooltipId()
+        {
+            return 'task-owner-change-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when the owner changes on a task that I have requested.');
         }
     }
 ?>

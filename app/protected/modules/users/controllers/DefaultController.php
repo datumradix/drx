@@ -545,7 +545,7 @@
             $view = new UsersPageView($this->resolveZurmoDefaultOrAdminView($titleBarAndEditView, $breadCrumbLinks, 'UserBreadCrumbView'));
             echo $view->render();
         }
-        
+
         public function actionNotificationConfiguration($id, $redirectUrl = null)
         {
             UserAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
@@ -559,9 +559,9 @@
 
             if (isset($_POST[$postVariableName]))
             {
-                $userNotificationConfigurationForm->setAttributes($_POST[$postVariableName]);
+                $userNotificationConfigurationForm->setAttributes($_POST[$postVariableName], false);
                 if ($userNotificationConfigurationForm->validate())
-                {   
+                {
                     if ($user->id != Yii::app()->user->userModel->id)
                     {
                         UserNotificationConfigurationFormAdapter::setConfigurationFromForm($userNotificationConfigurationForm, $user);

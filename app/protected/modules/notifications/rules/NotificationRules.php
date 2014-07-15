@@ -40,6 +40,10 @@
      */
     abstract class NotificationRules
     {
+        protected $defaultValueForInboxSetting = false;
+
+        protected $defaultValueForEmailSetting = false;
+
         /**
          * Sets to true during @see NotificationRules::getUsers();
          * @var boolean
@@ -65,7 +69,7 @@
         * @var boolean
         */
         protected $allowDuplicates    = false;
-        
+
         /**
         * Defines whether an email will be sent along with the inbox notification.
         * @var boolean
@@ -73,9 +77,15 @@
         protected $allowSendingEmail    = true;
 
         /**
+         * Defined if the user can configure if the system should send this notification
+         * @var bool
+         */
+        protected $canBeConfiguredByUser = true;
+
+        /**
          * @returns Translated label that describes this rule type.
          */
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             throw new NotImplementedException();
         }
@@ -106,7 +116,16 @@
         {
             return $this->allowSendingEmail;
         }
-        
+
+        /**
+         * @return true/false whether the user can configure if the notification can be sent by the system
+         * created.
+         */
+        public function canBeConfiguredByUser()
+        {
+            return $this->canBeConfiguredByUser;
+        }
+
         /**
          * @return true/false whether the notification is considered critical, in which case an Email
          * will be sent out in addition to the notification.
@@ -130,9 +149,11 @@
         }
 
         /**
-         * @return The type of the NotificationRules
+         * The type of the NotificationRules
+         * @throws NotImplementedException
+         * @return string
          */
-        public static function getType()
+        public function getType()
         {
             throw new NotImplementedException();
         }
@@ -168,6 +189,51 @@
          */
         protected function loadUsers()
         {
+        }
+
+        /**
+         * If the notification can be enabled by super administrators only
+         * @return bool
+         */
+        public function isSuperAdministratorNotification()
+        {
+            return false;
+        }
+
+        /**
+         * Get module class names associated with the import rules.
+         * @throws NotImplementedException
+         * @return array
+         */
+        public function getModuleClassNames()
+        {
+            throw new NotImplementedException();
+        }
+
+        /**
+         * The Id for the tooltip used to show help about the notification
+         * @throws NotImplementedException
+         */
+        public function getTooltipId()
+        {
+            throw new NotImplementedException();
+        }
+
+        /**
+         * The title for the tooltip describing help for the notification
+         * @throws NotImplementedException
+         */
+        public function getTooltipTitle()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public function getDefaultValue($type)
+        {
+            assert('is_string($type)');
+            $attribute =  'defaultValueFor' . ucfirst($type) . 'Setting';
+            return $this->{$attribute};
         }
     }
 ?>

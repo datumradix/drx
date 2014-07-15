@@ -47,17 +47,15 @@
         {
             assert('$user instanceOf User && $user->id > 0');
             $form = new UserNotificationConfigurationForm($user);
-            
-            $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingNames();
+
+            $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingAttributes();
             $notificationSettings = UserNotificationUtil::getNotificationSettingsByUser($user);
-            foreach($notificationSettingsNames as $settingName)
+            foreach($notificationSettingsNames as $setting)
             {
-                $settingNameInbox = $settingName . 'Inbox';
-                $settingNameEmail = $settingName . 'Email';
-                $form->{$settingNameInbox} = (bool)$notificationSettings[$settingName]['inbox'];
-                $form->{$settingNameEmail} = (bool)$notificationSettings[$settingName]['email'];
+                list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($setting);
+                $form->{$setting} = (bool)$notificationSettings[$settingName][$type];
             }
-            
+
             return $form;
         }
 
@@ -67,17 +65,14 @@
         public static function setConfigurationFromForm(UserNotificationConfigurationForm $form, User $user)
         {
             assert('$user instanceOf User && $user->id > 0');
-            
-            $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingNames();
-            foreach($notificationSettingsNames as $settingName)
+
+            $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingAttributes();
+            foreach($notificationSettingsNames as $setting)
             {
-                $settingNameInbox = $settingName . 'Inbox';
-                $settingNameEmail = $settingName . 'Email';
-                $form->{$settingName}['inbox'] = (bool)$form->{$settingNameInbox};
-                $form->{$settingName}['email'] = (bool)$form->{$settingNameEmail};
-                $form->inboxAndEmailNotificationSettings[$settingName] = $form->{$settingName};
+                $form->{$setting} = (bool)$form->{$setting};
+                $form->{$setting} = (bool)$form->{$setting};
             }
-            
+
             UserNotificationUtil::
                     setValue($user, $form->inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
         }

@@ -42,14 +42,29 @@
     {
         protected $critical    = true;
 
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('JobsManagerModule', 'Scheduled jobs are stuck');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'StuckJobs';
+        }
+
+        public function isSuperAdministratorNotification()
+        {
+            return true;
+        }
+
+        public function getTooltipId()
+        {
+            return 'stuck-jobs-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me if any scheduled jobs are stuck.');
         }
     }
 ?>

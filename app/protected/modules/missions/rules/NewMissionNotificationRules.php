@@ -35,15 +35,38 @@
      ********************************************************************************/
 
     /**
-     * Element used in user notification configuration area.
+     * A NotificationRules to manage when a new mission is available
      */
-    class ArchivedProjectNotificationElement extends BaseNotificationElement
-    {   
-        protected static $tooltipId = 'user-archived-project-notification-tooltip';
-        
-        public static function getTitle()
+    class NewMissionNotificationRules extends SimpleNotificationRules
+    {
+        protected $allowDuplicates      = true;
+
+        public function getDisplayName()
         {
-            return Zurmo::t('UsersModule', 'Notify me when a Project is archived.');
+            return Zurmo::t('ConversationsModule', 'New Mission');
+        }
+
+        public function getType()
+        {
+            return 'NewMission';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('MissionsModule');
+        }
+
+        public function getTooltipId()
+        {
+            return 'new-mission-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a new mission becomes available.');
         }
     }
 ?>

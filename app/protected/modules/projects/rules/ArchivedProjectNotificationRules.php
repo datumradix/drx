@@ -42,17 +42,27 @@
         /**
          * @returns Translated label that describes this rule type.
          */
-        public static function getDisplayName()
+        public function getDisplayName()
         {
-            return Zurmo::t('ProjectsModule', 'project');
+            return Zurmo::t('ProjectsModule', 'Project Archived');
         }
 
         /**
          * @return The type of the NotificationRules
          */
-        public static function getType()
+        public function getType()
         {
             return 'ArchivedProject';
+        }
+
+        public function getTooltipId()
+        {
+            return 'archived-project-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a Project is archived.');
         }
     }
 ?>

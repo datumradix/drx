@@ -42,17 +42,27 @@
         /**
          * @returns Translated label that describes this rule type.
          */
-        public static function getDisplayName()
+        public function getDisplayName()
         {
-            return Zurmo::t('ProjectsModule', 'project');
+            return Zurmo::t('ProjectsModule', 'Project Task Comment Added');
         }
 
         /**
          * @return The type of the NotificationRules
          */
-        public static function getType()
+        public function getType()
         {
             return 'ProjectTaskNewComment';
+        }
+
+        public function getTooltipId()
+        {
+            return 'project-task-new-comment-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me of new comments on Tasks for Projects I own.');
         }
     }
 ?>
