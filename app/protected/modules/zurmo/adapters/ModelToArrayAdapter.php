@@ -65,8 +65,8 @@
                 $type             = ModelAttributeToMixedArrayTypeUtil::getType($this->model, $attributeName);
                 $adapterClassName = $type . 'RedBeanModelAttributeValueToArrayValueAdapter';
                 if ($type != null && @class_exists($adapterClassName) &&
-                   !($this->model->isRelation($attributeName) && $this->model->getRelationType($attributeName) !=
-                      RedBeanModel::HAS_ONE))
+                    !($this->model->isRelation($attributeName) && $this->model->getRelationType($attributeName) !=
+                        RedBeanModel::HAS_ONE))
                 {
                     $adapter = new $adapterClassName($this->model, $attributeName);
                     $adapter->resolveData($data);
@@ -85,12 +85,12 @@
                     {
                         $data[$attributeName] = null;
                     }
-                 }
-                 //We don't want to list properties from CustomFieldData objects
-                 //This is also case fo related models, not only for custom fields
-                 elseif ($this->model->isRelation($attributeName) &&
-                         $this->model->getRelationType($attributeName) == RedBeanModel::HAS_ONE)
-                 {
+                }
+                //We don't want to list properties from CustomFieldData objects
+                //This is also case fo related models, not only for custom fields
+                elseif ($this->model->isRelation($attributeName) &&
+                        $this->model->getRelationType($attributeName) == RedBeanModel::HAS_ONE)
+                {
                     if ($this->model->{$attributeName}->id > 0)
                     {
                         $data[$attributeName] = array('id' => $this->model->{$attributeName}->id);
@@ -99,7 +99,7 @@
                     {
                         $data[$attributeName] = null;
                     }
-                 }
+                }
             }
             return $data;
         }
