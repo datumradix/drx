@@ -33,36 +33,34 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-
-    class SearchAndListView extends GridView
+    /**
+     * Column adapter for status value for export list view.
+     */
+    class ExportStatusListViewColumnAdapter extends IntegerListViewColumnAdapter
     {
-        public function __construct($controllerId,
-                                    $moduleId,
-                                    ModelForm $searchModel,
-                                    RedBeanModel $listModel,
-                                    $moduleName,
-                                    CDataProvider $dataProvider,
-                                    $selectedIds)
+        public function renderGridViewData()
         {
-            parent::__construct(3, 1);
-            $moduleClassName = $moduleName . 'Module';
-            $titleBarView = new TitleBarView (  $moduleClassName::getModuleLabelByTypeAndLanguage('Plural'),
-                                                Zurmo::t('ZurmoModule', 'Home'), 1);
-            $this->setView($titleBarView, 0, 0);
-            $searchViewClassName = $moduleName . 'SearchView';
-            $this->setView(new $searchViewClassName($searchModel, get_class($listModel)), 1, 0);
-            $listViewClassName   = $moduleName . 'ListView';
-            $this->setView(new $listViewClassName($controllerId,
-                                                  $moduleId,
-                                                  get_class($listModel),
-                                                  $dataProvider,
-                                                  $selectedIds,
-                                                  null, array(), $searchModel->getListAttributesSelector()), 2, 0);
+            return array(
+                    'name'  => $this->attribute,
+                    'value' => 'ExportStatusListViewColumnAdapter::renderCompletedStatus((int)$data->isCompleted)',
+                    'type'  => 'raw',
+            );
         }
 
-        public function isUniqueToAPage()
+        public static function renderCompletedStatus($value)
         {
-            return true;
+            if($value == 1)
+            {
+                return Zurmo::t('ExportModule', 'Completed');
+            }
+            elseif($value == 0)
+            {
+                return Zurmo::t('ExportModule', 'Pending');
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
         }
     }
 ?>
