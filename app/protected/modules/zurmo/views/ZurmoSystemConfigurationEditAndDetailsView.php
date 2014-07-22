@@ -69,16 +69,6 @@
                                         ),
                                     )
                                 ),
-                                array('cells' =>
-                                      array(
-                                          array(
-                                              'elements' => array(
-                                                  array('attributeName' => 'campaignItemsToCreatePageSize',
-                                                        'type'          => 'BatchConfigInteger'),
-                                              ),
-                                          ),
-                                      )
-                                ),
                             ),
                         ),
                     ),

@@ -40,7 +40,6 @@
     class ZurmoSystemConfigurationForm extends ConfigurationForm
     {
         public $autoresponderOrCampaignBatchSize;
-        public $campaignItemsToCreatePageSize;
 
         public function rules()
         {
@@ -48,9 +47,6 @@
                 array('autoresponderOrCampaignBatchSize',       'required'),
                 array('autoresponderOrCampaignBatchSize',       'type',      'type' => 'integer'),
                 array('autoresponderOrCampaignBatchSize',       'numerical', 'min' => 1),
-                array('campaignItemsToCreatePageSize',          'required'),
-                array('campaignItemsToCreatePageSize',          'type',      'type' => 'integer'),
-                array('campaignItemsToCreatePageSize',          'numerical', 'min' => 1),
             );
         }
 
@@ -60,7 +56,6 @@
                 'autoresponderOrCampaignBatchSize'       => Zurmo::t('MarketingModule',
                                                                      'AutorespondersModuleSingularLabel/CampaignsModuleSingularLabel batch size',
                                                                      LabelUtil::getTranslationParamsForAllModules()),
-                'campaignItemsToCreatePageSize'          => Zurmo::t('MarketingModule', 'Campaign Items creation page size'),
             );
         }
     }
