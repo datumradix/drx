@@ -50,6 +50,11 @@
                     'moduleClassName' => $moduleClassName,
                     'rightName'       => ZurmoModule::RIGHT_ACCESS_GLOBAL_CONFIGURATION,
                ),
+               array(
+                    ZurmoBaseController::ROOT_USER_ACCESS_FILTER_PATH . ' + systemConfigurationEdit',
+                    'moduleClassName' => $moduleClassName,
+                    'rightName'       => ZurmoModule::RIGHT_ACCESS_GLOBAL_CONFIGURATION,
+               ),
             );
         }
 

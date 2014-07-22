@@ -35,8 +35,8 @@
      ********************************************************************************/
 
     /**
-     * Class to adapt system configuration values into a system configuration form.
-     * Saves global values from a system configuration form.
+     * Class to adapt system configuration values into a configuration form.
+     * Saves global values from a configuration form.
      */
     class ZurmoSystemConfigurationFormAdapter
     {
@@ -48,7 +48,6 @@
         {
             $form                                         = new ZurmoSystemConfigurationForm();
             $form->autoresponderOrCampaignBatchSize       = AutoresponderOrCampaignBatchSizeConfigUtil::getBatchSize();
-            $form->campaignItemsToCreatePageSize          = CampaignItemsUtil::getCreatePageSize();
             return $form;
         }
 
@@ -60,7 +59,6 @@
             if (Yii::app()->user->userModel->isRootUser)
             {
                 AutoresponderOrCampaignBatchSizeConfigUtil::setBatchSize((int)$form->autoresponderOrCampaignBatchSize);
-                CampaignItemsUtil::setCreatePageSize((int)$form->campaignItemsToCreatePageSize);
             }
         }
     }
