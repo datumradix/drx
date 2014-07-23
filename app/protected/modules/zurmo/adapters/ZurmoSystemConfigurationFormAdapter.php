@@ -34,29 +34,36 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ReadPermissionsOptimizationUtilTest extends ZurmoBaseTest
+    /**
+     * Class to adapt system configuration values into a configuration form.
+     * Saves global values from a configuration form.
+     */
+    class ZurmoSystemConfigurationFormAdapter
     {
-        public static function setUpBeforeClass()
+        /**
+         * Creates a form populated with the system configuration global stored values.
+         * @return ZurmoSystemConfigurationForm
+         */
+        public static function makeFormFromSystemConfiguration()
         {
-            parent::setUpBeforeClass();
-            SecurityTestHelper::createSuperAdmin();
+            $form                                         = new ZurmoSystemConfigurationForm();
+            $form->autoresponderOrCampaignBatchSize       = AutoresponderOrCampaignBatchSizeConfigUtil::getBatchSize();
+            $form->outboundEmailBatchSize                 = OutboundEmailBatchSizeConfigUtil::getBatchSize();
+            $form->listPageSizeMaxLimit                   = ZurmoSystemConfigurationUtil::getBatchSize();
+            return $form;
         }
 
-        public function setUp()
+        /**
+         * Given a SystemConfigurationForm, save the system configuration global values.
+         */
+        public static function setConfigurationFromForm(ZurmoSystemConfigurationForm $form)
         {
-            parent::setUp();
-            Yii::app()->user->userModel = User::getByUsername('super');
-        }
-
-        public function testGetMungeIdsByUserIncludesEveryoneGroup()
-        {
-            Yii::app()->user->userModel = User::getByUsername('super');
-            $mungeIds = ReadPermissionsOptimizationUtil::getMungeIdsByUser(Yii::app()->user->userModel);
-            $this->assertEquals(2, count($mungeIds));
-            $group = Group::getByName(Group::EVERYONE_GROUP_NAME);
-            $group->save();
-            $mungeIds = ReadPermissionsOptimizationUtil::getMungeIdsByUser(Yii::app()->user->userModel);
-            $this->assertEquals(3, count($mungeIds));
+            if (Yii::app()->user->userModel->isRootUser)
+            {
+                AutoresponderOrCampaignBatchSizeConfigUtil::setBatchSize((int)$form->autoresponderOrCampaignBatchSize);
+                OutboundEmailBatchSizeConfigUtil::setBatchSize((int)$form->outboundEmailBatchSize);
+                ZurmoSystemConfigurationUtil::setBatchSize((int)$form->listPageSizeMaxLimit);
+            }
         }
     }
 ?>

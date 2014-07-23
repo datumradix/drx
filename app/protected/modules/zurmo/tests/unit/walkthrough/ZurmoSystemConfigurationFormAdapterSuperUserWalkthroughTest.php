@@ -35,30 +35,47 @@
      ********************************************************************************/
 
     /**
-     * Controller Class for managing currency actions.
-     *
+     * Walkthrough for the super user of marketing configuration
      */
-    class ZurmoReadPermissionsController extends Controller
+    class ZurmoSystemConfigurationFormAdapterSuperUserWalkthroughTest extends ZurmoWalkthroughBaseTest
     {
-        public function filters()
+        public static function setUpBeforeClass()
         {
-            return array(
-                array(
-                    ZurmoBaseController::RIGHTS_FILTER_PATH,
-                    'moduleClassName' => 'ZurmoModule',
-                    'rightName' => ZurmoModule::RIGHT_ACCESS_ADMINISTRATION, //Use this right until a more specific right is in place.
-               ),
-            );
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+            $super = User::getByUsername('super');
+            $super->setIsRootUser();
+            Yii::app()->user->userModel = $super;
         }
 
-        public function actionRebuildMunge()
+        public function testSuperUserEditConfigurationForm()
         {
-            ReadPermissionsOptimizationUtil::rebuild();
-            echo Zurmo::t('ZurmoModule', 'Read permissions rebuild complete.') . "<BR>";
-            if (SHOW_QUERY_DATA)
-            {
-                echo PageView::makeShowQueryDataContent();
-            }
+            //checking with blank values for required fields
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $this->setPostArray(array('save'                    => 'Save',
+                    'ZurmoSystemConfigurationForm'  => array(
+                        'autoresponderOrCampaignBatchSize' => '',
+                        'outboundEmailBatchSize'           => '',
+                        'listPageSizeMaxLimit'             => '',
+                    )
+                )
+            );
+            $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/systemConfigurationEdit');
+            $this->assertFalse(strpos($content, 'Autoresponder/Campaign batch size cannot be blank.') === false);
+            $this->assertFalse(strpos($content, 'Outbound Email Message batch size cannot be blank.') === false);
+            $this->assertFalse(strpos($content, 'List page size maximum limit cannot be blank.') === false);
+
+            //checking with proper values for required fields
+            $this->setPostArray(array('save'                    => 'Save',
+                    'ZurmoSystemConfigurationForm'  => array(
+                        'autoresponderOrCampaignBatchSize' => '10',
+                        'outboundEmailBatchSize'           => '30',
+                        'listPageSizeMaxLimit'             => '10',
+                    )
+                )
+            );
+            $this->runControllerWithRedirectExceptionAndGetContent('zurmo/default/systemConfigurationEdit');
+            $this->assertEquals('System configuration saved successfully.', Yii::app()->user->getFlash('notification'));
         }
     }
 ?>

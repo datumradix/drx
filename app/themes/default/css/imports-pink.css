@@ -4604,12 +4604,12 @@ div.wide.form .errorMessage {
   left: -28000px;
   top: -28000px;
   display: none;
-  max-width: 280px;
   min-width: 50px;
   font-size: 10.5px;
   line-height: 12px;
   border-width: 1px;
   border-style: solid;
+  white-space: nowrap;
 }
 .ui-tooltip-fluid {
   display: block;
@@ -5864,8 +5864,6 @@ a.close-ModalGameNotification.simple-link {
   margin-right: 10px;
   margin-left: -35px;
   font-size: 11px;
-  line-height: 27px;
-  display: inline-block;
 }
 .UserSocialItemsForPortletView {
   margin-right: 20px !important;
@@ -7942,10 +7940,6 @@ body .overlay-view .after-form-details-content a:hover {
   top: 1px;
   color: #323232;
 }
-.tabs-nav .simple-link {
-  position: relative;
-  bottom: -9px;
-}
 .tabs-nav label {
   float: none;
   line-height: 26px;
@@ -8479,14 +8473,26 @@ a + .autoresponder-stats {
   border-left: 1px solid #bababa;
 }
 .gmail-user-stage-status.stage-true i,
+.gmail-user-stage-status.stage-running i,
 .import-item-stage-status.stage-true i,
-.email-recipient-stage-status.stage-true i {
+.import-item-stage-status.stage-running i,
+.email-recipient-stage-status.stage-true i,
+.email-recipient-stage-status.stage-running i {
   color: #97c43d;
   -webkit-text-shadow: 0 0 5px #97c43d;
   -moz-text-shadow: 0 0 5px #97c43d;
   -ms-text-shadow: 0 0 5px #97c43d;
   -o-text-shadow: 0 0 5px #97c43d;
   text-shadow: 0 0 5px #97c43d;
+}
+.gmail-user-stage-status.stage-running i,
+.import-item-stage-status.stage-running i,
+.email-recipient-stage-status.stage-running i {
+  -o-animation: led-throb 0.25s;
+  -ms-animation: led-throb 0.25s;
+  -moz-animation: led-throb 0.25s;
+  -webkit-animation: led-throb 0.25s;
+  animation: led-throb 0.25s;
 }
 .gmail-user-stage-status.stage-false i,
 .import-item-stage-status.stage-false i,
@@ -8498,8 +8504,11 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #c43d53;
   text-shadow: 0 0 5px #c43d53;
 }
+.gmail-user-stage-status.stage-pending,
 .gmail-user-stage-status i,
+.import-item-stage-status.stage-pending,
 .import-item-stage-status i,
+.email-recipient-stage-status.stage-pending,
 .email-recipient-stage-status i {
   font-weight: bold;
   line-height: 1;
@@ -8932,19 +8941,10 @@ a + .autoresponder-stats {
   background-size: 100%;
 }
 #kanban-board {
-  *zoom: 1;
   display: table;
   vertical-align: top;
   height: 100%;
   width: 100%;
-}
-#kanban-board:before,
-#kanban-board:after {
-  content: " ";
-  display: table;
-}
-#kanban-board:after {
-  clear: both;
 }
 .drop-zone-container {
   padding: 37px 2px 2px 2px;
@@ -10949,7 +10949,7 @@ div.special-pager .hidden.next:after {
   line-height: 1.5;
 }
 #game-notification a {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #ccc;
   font-size: 12px;
   line-height: 1;
   display: inline;
