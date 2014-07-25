@@ -39,6 +39,9 @@
         const EMAIL_CONFIGURATION_FILTER_PATH =
               'application.modules.emailMessages.controllers.filters.EmailConfigurationCheckControllerFilter';
 
+        const USER_SWITCHER_RIGHTS_FILTER_PATH =
+                'application.modules.zurmo.controllers.filters.UserSwitcherRightsControllerFilter';
+
         /**
          * Override to exclude modalSearchList and autoComplete
          * since these are available to all users regardless
@@ -51,9 +54,12 @@
         {
             $filters = array();
             $filters[] = array(
+                static::USER_SWITCHER_RIGHTS_FILTER_PATH . ' + switchTo',
+            );
+            $filters[] = array(
                     ZurmoBaseController::RIGHTS_FILTER_PATH .
-                    ' - modalList, autoComplete, details, profile, edit, auditEventsModalList, changePassword, ' .
-                    'configurationEdit, emailConfiguration, securityDetails, notificationConfiguration, ' .
+                    ' - modalList, - switchTo, autoComplete, details, profile, edit, auditEventsModalList, changePassword, ' .
+                    'configurationEdit, emailConfiguration, securityDetails, ' .
                     'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard',
                     'moduleClassName' => 'UsersModule',
                     'rightName' => UsersModule::getAccessRight(),
@@ -546,55 +552,6 @@
             echo $view->render();
         }
 
-        public function actionNotificationConfiguration($id, $redirectUrl = null)
-        {
-            UserAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
-            $user  = User::getById(intval($id));
-            UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
-            UserAccessUtil::resolveAccessingASystemUser($user);
-            $title = Zurmo::t('UsersModule', 'Notifications Configuration');
-            $breadCrumbLinks = array(strval($user) => array('default/details',  'id' => $id), $title);
-            $userNotificationConfigurationForm = UserNotificationConfigurationFormAdapter::makeFormFromUserConfigurationByUser($user);
-            $postVariableName           = get_class($userNotificationConfigurationForm);
-
-            if (isset($_POST[$postVariableName]))
-            {
-                $userNotificationConfigurationForm->setAttributes($_POST[$postVariableName], false);
-                if ($userNotificationConfigurationForm->validate())
-                {
-                    if ($user->id != Yii::app()->user->userModel->id)
-                    {
-                        UserNotificationConfigurationFormAdapter::setConfigurationFromForm($userNotificationConfigurationForm, $user);
-                    }
-                    else
-                    {
-                        UserNotificationConfigurationFormAdapter::setConfigurationFromFormForCurrentUser($userNotificationConfigurationForm);
-                    }
-                    Yii::app()->user->setFlash('notification',
-                        Zurmo::t('UsersModule', 'User notifications configuration saved successfully.')
-                    );
-
-                    if ($redirectUrl != null)
-                    {
-                        $this->redirect($redirectUrl);
-                    }
-                    else
-                    {
-                        $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
-                    }
-                }
-            }
-            $titleBarAndEditView = new UserActionBarAndNotificationConfigurationEditView(
-                                    $this->getId(),
-                                    $this->getModule()->getId(),
-                                    $user,
-                                    $userNotificationConfigurationForm
-            );
-            $titleBarAndEditView->setCssClasses(array('AdministrativeArea'));
-            $view = new UsersPageView($this->resolveZurmoDefaultOrAdminView($titleBarAndEditView, $breadCrumbLinks, 'UserBreadCrumbView'));
-            echo $view->render();
-        }
-
         protected static function getSearchFormClassName()
         {
             return 'UsersSearchForm';
@@ -703,6 +660,20 @@
         protected function resolveStateMetadataAdapterClassNameForExport()
         {
             return 'NonSystemUsersStateMetadataAdapter';
+        }
+
+        public function actionSwitchTo($username)
+        {
+            $identity   = new SwitchUserIdentity($username, null);
+            if ($identity->authenticate())
+            {
+                Yii::app()->user->login($identity);
+                $this->redirect(Yii::app()->user->returnUrl);
+            }
+            else
+            {
+                throw new NotSupportedException("Can not switch user");
+            }
         }
     }
 ?>

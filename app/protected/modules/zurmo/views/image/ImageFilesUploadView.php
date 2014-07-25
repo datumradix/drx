@@ -34,52 +34,58 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class GlobalMarketingFooterFooterConfigurationPreviewView extends View
+    /**
+     * View to display an upload element for images
+     * Class ImageFilesUploadView
+     */
+    class ImageFilesUploadView extends View
     {
-        protected $isHtmlContent;
+        protected $listViewGridId;
 
-        protected  $placeholderContent;
-
-        public function __construct($isHtmlContent, $content)
+        /**
+         * @param string $listViewGridId
+         */
+        public function __construct($listViewGridId)
         {
-            $this->isHtmlContent = $isHtmlContent;
-            $this->placeholderContent = $content;
+            assert('is_string($listViewGridId)');
+            $this->listViewGridId         = $listViewGridId;
         }
 
+        /**
+         * Renders the view content.
+         */
         protected function renderContent()
         {
-            $this->resolvePlaceholderContentForMergeTags();
-            $this->resolvePlaceholderContentForUnsubscribeAndManageSubscriptionsUrls();
-
-            $content        = ZurmoHtml::tag('div', array('id' => 'footer-preview-modal-content',
-                                                            'class' => 'footer-preview-modal'),
-                                                    $this->placeholderContent);
+            $content = $this->renderImagesUploadInput();
             return $content;
         }
 
-        protected function resolvePlaceholderContentForMergeTags()
+        protected function renderImagesUploadInput()
         {
-            $language           = null;
-            $type               = EmailTemplate::TYPE_WORKFLOW;
-            $model              = Yii::app()->user->userModel;
-            $util               = MergeTagsUtilFactory::make($type, $language, $this->placeholderContent);
-            $resolvedContent    = $util->resolveMergeTags($model);
-            if ($resolvedContent !== false)
-            {
-                $this->placeholderContent = $resolvedContent;
-            }
+            $inputNameAndId = 'file';
+            $cClipWidget = new CClipWidget();
+            $cClipWidget->beginClip("imageFilesElement");
+            $cClipWidget->widget('application.core.widgets.ImageFileUpload', array(
+                'uploadUrl'            => Yii::app()->createUrl("zurmo/imageModel/upload"),
+                'deleteUrl'            => Yii::app()->createUrl("zurmo/imageModel/delete"),
+                'inputName'            => $inputNameAndId,
+                'inputId'              => $inputNameAndId,
+                'hiddenInputName'      => 'filesIds',
+                'allowMultipleUpload'  => true,
+                'existingFiles'        => array(),
+                'maxSize'              => (int)InstallUtil::getMaxAllowedFileSize(),
+                'showMaxSize'          => true,
+                'id'                   => __CLASS__,
+                'onSuccessAction'      => "$('#{$this->listViewGridId}').yiiGridView('update');",
+            ));
+
+            $cClipWidget->endClip();
+            return $cClipWidget->getController()->clips['imageFilesElement'];
         }
 
-        protected function resolvePlaceholderContentForUnsubscribeAndManageSubscriptionsUrls()
+        protected function getViewStyle()
         {
-            EmailMessageActivityUtil::resolveUnsubscribeAndManageSubscriptionPlaceholders($this->placeholderContent,
-                                                                                            0,
-                                                                                            0,
-                                                                                            0,
-                                                                                            'AutoresponderItem',
-                                                                                            $this->isHtmlContent,
-                                                                                            true,
-                                                                                            true);
+            return " style=' display:none;'";
         }
     }
 ?>
