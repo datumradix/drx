@@ -59,7 +59,7 @@
             $filters[] = array(
                     ZurmoBaseController::RIGHTS_FILTER_PATH .
                     ' - modalList, - switchTo, autoComplete, details, profile, edit, auditEventsModalList, changePassword, ' .
-                    'configurationEdit, emailConfiguration, securityDetails, ' .
+                    'configurationEdit, emailConfiguration, securityDetails, notificationConfiguration, ' .
                     'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard',
                     'moduleClassName' => 'UsersModule',
                     'rightName' => UsersModule::getAccessRight(),
@@ -674,6 +674,55 @@
             {
                 throw new NotSupportedException("Can not switch user");
             }
+        }
+
+        public function actionNotificationConfiguration($id, $redirectUrl = null)
+        {
+            UserAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
+            $user  = User::getById(intval($id));
+            UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
+            UserAccessUtil::resolveAccessingASystemUser($user);
+            $title = Zurmo::t('UsersModule', 'Notifications Configuration');
+            $breadCrumbLinks = array(strval($user) => array('default/details',  'id' => $id), $title);
+            $userNotificationConfigurationForm = UserNotificationConfigurationFormAdapter::makeFormFromUserConfigurationByUser($user);
+            $postVariableName           = get_class($userNotificationConfigurationForm);
+
+            if (isset($_POST[$postVariableName]))
+            {
+                $userNotificationConfigurationForm->setAttributes($_POST[$postVariableName], false);
+                if ($userNotificationConfigurationForm->validate())
+                {
+                    if ($user->id != Yii::app()->user->userModel->id)
+                    {
+                        UserNotificationConfigurationFormAdapter::setConfigurationFromForm($userNotificationConfigurationForm, $user);
+                    }
+                    else
+                    {
+                        UserNotificationConfigurationFormAdapter::setConfigurationFromFormForCurrentUser($userNotificationConfigurationForm);
+                    }
+                    Yii::app()->user->setFlash('notification',
+                        Zurmo::t('UsersModule', 'User notifications configuration saved successfully.')
+                    );
+
+                    if ($redirectUrl != null)
+                    {
+                        $this->redirect($redirectUrl);
+                    }
+                    else
+                    {
+                        $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
+                    }
+                }
+            }
+            $titleBarAndEditView = new UserActionBarAndNotificationConfigurationEditView(
+                $this->getId(),
+                $this->getModule()->getId(),
+                $user,
+                $userNotificationConfigurationForm
+            );
+            $titleBarAndEditView->setCssClasses(array('AdministrativeArea'));
+            $view = new UsersPageView($this->resolveZurmoDefaultOrAdminView($titleBarAndEditView, $breadCrumbLinks, 'UserBreadCrumbView'));
+            echo $view->render();
         }
     }
 ?>
