@@ -228,9 +228,9 @@
                                                 'the Global Marketing Footer(Plain Text).</li>') !== false);
             $this->assertTrue(strpos($content, '<li><strong>[[GLOBAL^MARKETING^FOOTER^HTML]]</strong> : prints the ' .
                                                 'Global Marketing Footer(Rich Text).</li>') !== false);
-            $this->assertTrue(strpos($content, '<li><strong>{{UNSUBSCRIBE_URL}}</strong> : prints unsubscribe' .
+            $this->assertTrue(strpos($content, '<li><strong>' . GlobalMarketingFooterUtil::resolveUnsubscribeUrlMergeTag() . '</strong> : prints unsubscribe' .
                                                 ' url.</li>') !== false);
-            $this->assertTrue(strpos($content, '<li><strong>{{MANAGE_SUBSCRIPTIONS_URL}}</strong> : prints manage' .
+            $this->assertTrue(strpos($content, '<li><strong>' . GlobalMarketingFooterUtil::resolveManageSubscriptionsMergeTag() . '</strong> : prints manage' .
                                                 ' subscriptions url.</li>') !== false);
         }
 
@@ -1057,8 +1057,8 @@
             $contact         = ContactTestHelper::createContactByNameForOwner('test', $this->user);
             $emailTemplateId = self::getModelIdByModelNameAndName ('EmailTemplate', 'marketing 01');
             $emailTemplate   = EmailTemplate::getById($emailTemplateId);
-            $unsubscribePlaceholder         = GlobalMarketingFooterUtil::UNSUBSCRIBE_URL_PLACEHOLDER;
-            $manageSubscriptionsPlaceholder = GlobalMarketingFooterUtil::MANAGE_SUBSCRIPTIONS_URL_PLACEHOLDER;
+            $unsubscribePlaceholder         = GlobalMarketingFooterUtil::resolveUnsubscribeUrlMergeTag();
+            $manageSubscriptionsPlaceholder = GlobalMarketingFooterUtil::resolveManageSubscriptionsMergeTag();
             $emailTemplate->textContent = "Test text content with contact tag: [[FIRST^NAME]] {$unsubscribePlaceholder}";
             $emailTemplate->htmlContent = "Test html content with contact tag: [[FIRST^NAME]] {$manageSubscriptionsPlaceholder}";
             $this->assertTrue($emailTemplate->save());
@@ -1126,7 +1126,7 @@
             $this->assertTrue(strpos($content, '<div class="fileupload-buttonbar clearfix"><div ' .
                                                 'class="addfileinput-button">') !== false);
             $this->assertTrue(strpos($content, '<span>Y</span><strong class="add-label">Add Files</strong>') !== false);
-            $this->assertTrue(strpos($content, '<input id="ClassicEmailTemplateWizardForm_files" type="file"' .
+            $this->assertTrue(strpos($content, '<input id="ClassicEmailTemplateWizardForm_files" multiple="multiple" type="file"' .
                                                 ' name="ClassicEmailTemplateWizardForm_files"') !== false);
             $this->assertTrue(strpos($content, '<span class="max-upload-size">') !== false);
             $this->assertTrue(strpos($content, '</div><div class="fileupload-content"><table class="files">') !== false);
@@ -1295,7 +1295,7 @@
             $this->assertTrue(strpos($content, '<div class="fileupload-buttonbar clearfix"><div ' .
                                                 'class="addfileinput-button">') !== false);
             $this->assertTrue(strpos($content, '<span>Y</span><strong class="add-label">Add Files</strong>') !== false);
-            $this->assertTrue(strpos($content, '<input id="ClassicEmailTemplateWizardForm_files" type="file"' .
+            $this->assertTrue(strpos($content, '<input id="ClassicEmailTemplateWizardForm_files" multiple="multiple" type="file"' .
                                                 ' name="ClassicEmailTemplateWizardForm_files"') !== false);
             $this->assertTrue(strpos($content, '<span class="max-upload-size">') !== false);
             $this->assertTrue(strpos($content, '</div><div class="fileupload-content"><table class="files">') !== false);
@@ -1471,7 +1471,7 @@
             $this->assertTrue(strpos($content, '<div class="fileupload-buttonbar clearfix"><div ' .
                                                 'class="addfileinput-button">') !== false);
             $this->assertTrue(strpos($content, '<span>Y</span><strong class="add-label">Add Files</strong>') !== false);
-            $this->assertTrue(strpos($content, '<input id="BuilderEmailTemplateWizardForm_files" type="file"' .
+            $this->assertTrue(strpos($content, '<input id="BuilderEmailTemplateWizardForm_files" multiple="multiple" type="file"' .
                                                 ' name="BuilderEmailTemplateWizardForm_files"') !== false);
             $this->assertTrue(strpos($content, '<span class="max-upload-size">') !== false);
             $this->assertTrue(strpos($content, '</div><div class="fileupload-content"><table class="files">') !== false);
@@ -1556,7 +1556,7 @@
             $this->assertTrue(strpos($content, '<div class="pills">') !== false);
             $this->assertTrue(strpos($content, '<a href="#" class="filter-link active" ' .
                                                 'data-filter="1">Layouts</a>') !== false);
-            $this->assertTrue(strpos($content, '<a href="#" class="filter-link" data-filter="2">' .
+            $this->assertTrue(strpos($content, '<a href="#" id="saved-templates-link" class="filter-link" data-filter="2">' .
                                                 'Saved Templates</a>') !== false);
             $this->assertTrue(strpos($content, '<a class="simple-link closeme" href="#">') !== false);
             $this->assertTrue(strpos($content, '<span><i class="icon-x"></i></span>cancel</a></div>') !== false);
@@ -1796,7 +1796,7 @@
             $this->assertTrue(strpos($content, '<div class="fileupload-buttonbar clearfix"><div ' .
                                                 'class="addfileinput-button">') !== false);
             $this->assertTrue(strpos($content, '<span>Y</span><strong class="add-label">Add Files</strong>') !== false);
-            $this->assertTrue(strpos($content, '<input id="BuilderEmailTemplateWizardForm_files" type="file"' .
+            $this->assertTrue(strpos($content, '<input id="BuilderEmailTemplateWizardForm_files" multiple="multiple" type="file"' .
                                                 ' name="BuilderEmailTemplateWizardForm_files"') !== false);
             $this->assertTrue(strpos($content, '<span class="max-upload-size">') !== false);
             $this->assertTrue(strpos($content, '</div><div class="fileupload-content"><table class="files">') !== false);
@@ -1886,8 +1886,8 @@
             $this->assertTrue(strpos($content, '<div class="pills">') !== false);
             $this->assertTrue(strpos($content, '<a href="#" class="filter-link active" ' .
                                                 'data-filter="1">Layouts</a>') !== false);
-            $this->assertTrue(strpos($content, '<a href="#" class="filter-link" data-filter="2">' .
-                                                'Saved Templates</a>') !== false);
+            $this->assertTrue(strpos($content, '<a href="#" id="saved-templates-link" class="filter-link" data-filter="2">' .
+                                               'Saved Templates</a>') !== false);
             $this->assertTrue(strpos($content, '<a class="simple-link closeme" href="#">') !== false);
             $this->assertTrue(strpos($content, '<span><i class="icon-x"></i></span>cancel</a></div>') !== false);
             $this->assertTrue(strpos($content, '<div class="templates-chooser-list clearfix" id="BuilderEmail' .

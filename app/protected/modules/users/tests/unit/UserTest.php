@@ -764,7 +764,7 @@
             );
             $billPasswordForm->setAttributes($_FAKEPOST['UserPasswordForm']);
             $this->assertFalse($billPasswordForm->save());
-            $this->assertEquals(md5('abcdefg'), $bill->hash);
+
             $errors = array(
                 'newPassword' => array(
                     'The password must have at least one uppercase letter',
@@ -815,7 +815,7 @@
             //Now attempt to login as bill
             $bill->forget();
             $bill       = User::getByUsername('abcdefg');
-            $this->assertEquals(md5('abcdefgN4'), $bill->hash);
+            $this->assertEquals($bill, User::authenticate('abcdefg', 'abcdefgN4'));
             $identity = new UserIdentity('abcdefg', 'abcdefgN4');
             $authenticated = $identity->authenticate();
             $this->assertEquals(0, $identity->errorCode);
@@ -1438,6 +1438,23 @@
             $userB = User::getByUsername('dick');
             $this->assertTrue($userA->isSuperAdministrator());
             $this->assertFalse($userB->isSuperAdministrator());
+        }
+
+        public function testInactiveUsers()
+        {
+            $activeUserCount = User::getActiveUserCount();
+            $this->assertEquals(28, $activeUserCount);
+            $this->assertCount(28, User::getActiveUsers());
+            $user = new User();
+            $user->username           = 'inactiveuser';
+            $user->title->value       = 'Mr.';
+            $user->firstName          = 'My';
+            $user->lastName           = 'inactiveuser';
+            $user->setPassword('myuser');
+            $user->setIsSystemUser();
+            $this->assertTrue($user->save());
+            $this->assertEquals(28, $activeUserCount);
+            $this->assertCount(28, User::getActiveUsers());
         }
     }
 ?>

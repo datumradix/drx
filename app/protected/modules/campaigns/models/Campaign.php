@@ -282,15 +282,13 @@
             if ($this->supportsRichText && empty($this->htmlContent))
             {
                 $errorMessage = Zurmo::t('CampaignsModule', 'You choose to support HTML but didn\'t set any HTML content.');
-                $this->addError('htmlContent',
-                    Zurmo::t('CampaignsModule', $errorMessage));
+                $this->addError('htmlContent', Zurmo::t('CampaignsModule', $errorMessage));
                 return false;
             }
             if (!$this->supportsRichText && empty($this->textContent))
             {
                 $errorMessage = Zurmo::t('CampaignsModule', 'You choose not to support HTML but didn\'t set any text content.');
-                $this->addError('textContent',
-                    Zurmo::t('CampaignsModule', $errorMessage));
+                $this->addError('textContent', Zurmo::t('CampaignsModule', $errorMessage));
                 return false;
             }
             return true;
@@ -301,6 +299,17 @@
             Yii::app()->jobQueue->resolveToAddJobTypeByModelByDateTimeAttribute($this, 'sendOnDateTime',
                                                                                 'CampaignGenerateDueCampaignItems');
             parent::afterSave();
+        }
+
+        protected function afterDelete()
+        {
+            parent::afterDelete();
+            $campaignitems = CampaignItem::getByProcessedAndCampaignId(0, $this->id);
+            foreach ($campaignitems as $campaignitem)
+            {
+                ZurmoRedBean::exec("DELETE FROM campaignitemactivity WHERE campaignitem_id = " . $campaignitem->id);
+            }
+            ZurmoRedBean::exec("DELETE FROM campaignitem WHERE processed = 0 and campaign_id = " . $this->id);
         }
     }
 ?>

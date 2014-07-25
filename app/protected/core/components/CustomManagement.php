@@ -202,5 +202,26 @@
         {
             return $parentContent;
         }
+
+        /**
+         * Resolve rules class name
+         */
+        public function resolveComponentRulesClassNameByModule($moduleClassName, $rulesName)
+        {
+            return $moduleClassName::getPluralCamelCasedName() . $rulesName;
+        }
+
+        /**
+         * While populating Saved Layouts, featured templates would have respective icon and background color.
+         * @return null
+         */
+        public function resolveThumbnailForFeaturedEmailTemplate()
+        {
+            return null;
+        }
+
+        public function resolveAdditionalScriptContentForEmailTemplate($stepCount, & $script)
+        {
+        }
     }
 ?>
