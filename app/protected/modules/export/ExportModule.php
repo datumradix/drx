@@ -46,19 +46,19 @@
          * or to be exported via asynchronous via background job.
          * @var int
          */
-        public static $asynchronousThreshold = 3;
+        public static $asynchronousThreshold = 1000;
 
         /**
          * Page size for asynchronus paging when processing export
          * @var int
          */
-        public static $asynchronousPageSize  = 10;
+        public static $asynchronousPageSize  = 250;
 
         /**
          * How many total models to process in a given export job run
          * @var int
          */
-        public static $asynchronousMaximumModelsToProcess = 20;
+        public static $asynchronousMaximumModelsToProcess = 2500;
 
         public static function getTranslatedRightsLabels()
         {
@@ -92,23 +92,13 @@
             return Zurmo::t('ExportModule', 'Exports', array(), null, $language);
         }
 
+        /**
+         * @return array
+         */
         public static function getDefaultMetadata()
         {
             $metadata = array();
             $metadata['global'] = array(
-                'designerMenuItems' => array(
-                    'showFieldsLink' => true,
-                    'showGeneralLink' => true,
-                    'showLayoutsLink' => true,
-                    'showMenusLink' => true,
-                ),
-                'adminTabMenuItems' => array(
-                    array(
-                        'label' => "eval:Zurmo::t('ExportModule', 'Export')",
-                        'url'   => array('/export/default/list'),
-                        'right' => self::RIGHT_ACCESS_EXPORT,
-                    ),
-                ),
                 'configureMenuItems' => array(
                     array(
                         'category'         => ZurmoModule::ADMINISTRATION_CATEGORY_GENERAL,
@@ -117,10 +107,7 @@
                         'route'            => '/export/default/list',
                         'right'            => self::RIGHT_ACCESS_EXPORT,
                     ),
-                ),
-                'globalSearchAttributeNames' => array(
-                    'exportFileName',
-                ),
+                )
             );
             return $metadata;
         }
@@ -139,6 +126,14 @@
         public static function getGlobalSearchFormClassName()
         {
             return 'ExportSearchForm';
+        }
+
+        /**
+         * @return boolean
+         */
+        public static function modelsAreNeverGloballySearched()
+        {
+            return true;
         }
     }
 ?>

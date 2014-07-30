@@ -33,37 +33,49 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
+
     /**
-     * Column adapter for status value for job status for the export item.
+     * Walkthrough for the super user of marketing configuration
      */
-    class ExportJobStatusListViewColumnAdapter extends IntegerListViewColumnAdapter
+    class ZurmoSystemConfigurationFormAdapterSuperUserWalkthroughTest extends ZurmoWalkthroughBaseTest
     {
-        public function renderGridViewData()
+        public static function setUpBeforeClass()
         {
-            return array(
-                    'name'  => $this->attribute,
-                    'value' => 'ExportJobStatusListViewColumnAdapter::renderStatus($data)',
-                    'type'  => 'raw',
-            );
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+            $super = User::getByUsername('super');
+            $super->setIsRootUser();
+            Yii::app()->user->userModel = $super;
         }
 
-        public static function renderStatus($data)
+        public function testSuperUserEditConfigurationForm()
         {
-            $value = (int)$data->isJobRunning;
-            if($value == 0)
-            {
-                $url        = Yii::app()->createUrl('export/default/cancel', array('id' => $data->id));
-                $cancelBtn  = ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('Core', 'Cancel')), $url, array('class' => 'white-button'));
-                return Zurmo::t('ExportModule', 'Not Running');
-            }
-            elseif($value == 1)
-            {
-                return Zurmo::t('ExportModule', 'In Progress');
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
+            //checking with blank values for required fields
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $this->setPostArray(array('save'                    => 'Save',
+                    'ZurmoSystemConfigurationForm'  => array(
+                        'autoresponderOrCampaignBatchSize' => '',
+                        'outboundEmailBatchSize'           => '',
+                        'listPageSizeMaxLimit'             => '',
+                    )
+                )
+            );
+            $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/systemConfigurationEdit');
+            $this->assertFalse(strpos($content, 'Autoresponder/Campaign batch size cannot be blank.') === false);
+            $this->assertFalse(strpos($content, 'Outbound Email Message batch size cannot be blank.') === false);
+            $this->assertFalse(strpos($content, 'List page size maximum limit cannot be blank.') === false);
+
+            //checking with proper values for required fields
+            $this->setPostArray(array('save'                    => 'Save',
+                    'ZurmoSystemConfigurationForm'  => array(
+                        'autoresponderOrCampaignBatchSize' => '10',
+                        'outboundEmailBatchSize'           => '30',
+                        'listPageSizeMaxLimit'             => '10',
+                    )
+                )
+            );
+            $this->runControllerWithRedirectExceptionAndGetContent('zurmo/default/systemConfigurationEdit');
+            $this->assertEquals('System configuration saved successfully.', Yii::app()->user->getFlash('notification'));
         }
     }
 ?>

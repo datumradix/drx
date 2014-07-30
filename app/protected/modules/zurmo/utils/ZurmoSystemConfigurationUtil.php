@@ -34,56 +34,15 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ExportListView extends SecuredListView
-    {
-        public static function getDefaultMetadata()
-        {
-            $metadata = array(
-                'global' => array(
-                    'nonPlaceableAttributeNames' => array(
-                        'processOffset',
-                        'serializedData',
-                        'exportFileModel',
-                        'modelClassName',
-                        'isCompleted',
-                        'isJobRunning',
-                        'cancelExport'
-                    ),
-                    'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'exportFileName', 'type' => 'ExportFileName'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
+    /**
+     * Helper class for working with campaignItem
+     */
+    class ZurmoSystemConfigurationUtil extends BatchSizeConfigUtil
+    {   
+        const CONFIG_KEY             = 'ListPageSizeMaxLimit';
 
-            );
-            return $metadata;
-        }
-
-        /**
-         * @return bool
-         */
-        public function getRowsAreSelectable()
-        {
-            return false;
-        }
-
-        /**
-         * Override to remove the last column.
-         */
-        protected function getCGridViewLastColumn()
-        {
-            return array();
-        }
+        const CONFIG_MODULE_NAME     = 'ZurmoModule';
+        
+        const CONFIG_DEFAULT_VALUE   = 100;
     }
 ?>

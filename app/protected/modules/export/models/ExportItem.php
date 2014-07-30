@@ -88,7 +88,7 @@
                     array('isJobRunning',     'boolean'),
                     array('cancelExport',     'boolean'),
                 ),
-                'defaultSortAttribute' => 'modifiedDateTime',
+                'defaultSortAttribute' => 'id',
                 'noAudit' => array(
                     'modelClassName',
                     'processOffset',
@@ -96,9 +96,7 @@
                     'exportFileModel',
                 ),
                 'elements' => array(
-                    'isCompleted'     => 'ExportStatus',
-                    'isJobRunning'    => 'ExportJobStatus',
-                    'cancelExport'    => 'CancelExport'
+                    'exportFileName'  => 'ExportFileName'
                 ),
                 'globalSearchAttributeNames' => array(
                     'exportFileName',
@@ -134,9 +132,18 @@
             parent::afterSave();
         }
 
+        /**
+         * Get the export items which got cancelled.
+         * @return array
+         */
         public static function getCancelledItems()
         {
             return self::getSubset(null, null, null, "cancelExport = 1");
+        }
+
+        public static function hasReadPermissionsOptimization()
+        {
+            return true;
         }
     }
 ?>

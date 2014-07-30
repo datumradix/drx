@@ -33,34 +33,46 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-    /**
-     * Column adapter for status value for export list view.
-     */
-    class ExportStatusListViewColumnAdapter extends IntegerListViewColumnAdapter
+
+    class ProjectsForMixedModelsSearchListView extends SecuredListView
     {
-        public function renderGridViewData()
+        public static function getDefaultMetadata()
         {
-            return array(
-                    'name'  => $this->attribute,
-                    'value' => 'ExportStatusListViewColumnAdapter::renderCompletedStatus((int)$data->isCompleted)',
-                    'type'  => 'raw',
+            $metadata = array(
+                'global' => array(
+                    'panels' => array(
+                        array(
+                            'rows' => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'owner', 'type' => 'User'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+
             );
+            return $metadata;
         }
 
-        public static function renderCompletedStatus($value)
+        public static function getDesignerRulesType()
         {
-            if($value == 1)
-            {
-                return Zurmo::t('ExportModule', 'Completed');
-            }
-            elseif($value == 0)
-            {
-                return Zurmo::t('ExportModule', 'Pending');
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
+            return 'ForMixedModelsSearchListView';
         }
     }
 ?>
