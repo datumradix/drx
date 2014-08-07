@@ -443,7 +443,8 @@
             'maps',
             'contactWebForms',
             'projects',
-            'calendars'
+            'calendars',
+            'sendGrid'
         ),
 
         'params' => array(
