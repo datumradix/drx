@@ -44,8 +44,8 @@
      */
     class ZurmoDatabaseCompatibilityUtil
     {
+        // Begin Not Coding Standard
         private static $storedFunctions = array(
-
             // Permitables - Rights
 
             'create function get_permitable_explicit_actual_right(
@@ -642,7 +642,7 @@
             'create function create_item(user_id int)
             returns int
             begin
-              insert into `item` ( `id`, `createddatetime`,`modifieddatetime`,
+              insert into `item` ( `id`, `createddatetime`, `modifieddatetime`,
                     `createdbyuser__user_id`, `modifiedbyuser__user_id` )
                     VALUES ( NULL,  NOW() , NOW(), user_id, user_id  );
                return last_insert_id();
@@ -685,13 +685,12 @@
                 return @emailMessageId;
             end;',
         );
+        // End Not Coding Standard
 
         // MySQL functions cannot be recursive so we have
         // to do recursive functions with procedures.
-
         // Begin Not Coding Standard
         private static $storedProcedures = array(
-
             // Users - Rights
 
             'create procedure recursive_get_user_actual_right(
@@ -1691,8 +1690,8 @@
                   close cursor0;
             end;',
         );
-
         // End Not Coding Standard
+
         /**
          * @param $sql
          * @return string
