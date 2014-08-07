@@ -1173,14 +1173,12 @@
                                                 'ReadWriteModelPermissions][type]"') !== false);
             $this->assertTrue(strpos($content, '<label for="ClassicEmailTemplateWizardForm_explicitReadWriteModel'.
                                                 'Permissions_type_1">Owner and users in</label>') !== false);
-            // Begin Not Coding Standard
             $this->assertTrue(strpos($content, '<select id="ClassicEmailTemplateWizardForm_explicitReadWriteModel' .
                                                 'Permissions_nonEveryoneGroup" onclick="document.getElementById(' .
                                                 '&quot;ClassicEmailTemplateWizardForm_explicitReadWriteModel' .
-                                                'Permissions_type_1&quot;).checked=&quot;checked&quot;;" name="' .
+                                                'Permissions_type_1&quot;).checked=&quot;checked&quot;;" name="' . // Not Coding Standard
                                                 'ClassicEmailTemplateWizardForm[explicitReadWriteModelPermissions]' .
                                                 '[nonEveryoneGroup]"') !== false);
-            // End Not Coding Standard
             $this->assertContentHasDemoGroupNameOptionTags($content);
             $this->assertTrue(strpos($content, '<input id="ClassicEmailTemplateWizardForm_explicitReadWriteModel' .
                                                 'Permissions_type_2" value="') !== false);
@@ -1339,14 +1337,12 @@
                                                 'ReadWriteModelPermissions][type]"') !== false);
             $this->assertTrue(strpos($content, '<label for="ClassicEmailTemplateWizardForm_explicitReadWriteModel'.
                                                 'Permissions_type_1">Owner and users in</label>') !== false);
-            // Begin Not Coding Standard
             $this->assertTrue(strpos($content, '<select id="ClassicEmailTemplateWizardForm_explicitReadWriteModel' .
                                                 'Permissions_nonEveryoneGroup" onclick="document.getElementById(' .
                                                 '&quot;ClassicEmailTemplateWizardForm_explicitReadWriteModel' .
-                                                'Permissions_type_1&quot;).checked=&quot;checked&quot;;" name="' .
+                                                'Permissions_type_1&quot;).checked=&quot;checked&quot;;" name="' . // Not Coding Standard
                                                 'ClassicEmailTemplateWizardForm[explicitReadWriteModelPermissions]' .
                                                 '[nonEveryoneGroup]"') !== false);
-            // End Not Coding Standard
             $this->assertContentHasDemoGroupNameOptionTags($content);
             $this->assertTrue(strpos($content, '<input id="ClassicEmailTemplateWizardForm_explicitReadWriteModel' .
                                                 'Permissions_type_2" value="') !== false);
@@ -1515,14 +1511,12 @@
                                                 'ReadWriteModelPermissions][type]"') !== false);
             $this->assertTrue(strpos($content, '<label for="BuilderEmailTemplateWizardForm_explicitReadWriteModel'.
                                                 'Permissions_type_1">Owner and users in</label>') !== false);
-            // Begin Not Coding Standard
             $this->assertTrue(strpos($content, '<select id="BuilderEmailTemplateWizardForm_explicitReadWriteModel' .
                                                 'Permissions_nonEveryoneGroup" onclick="document.getElementById(' .
                                                 '&quot;BuilderEmailTemplateWizardForm_explicitReadWriteModel' .
-                                                'Permissions_type_1&quot;).checked=&quot;checked&quot;;" name="' .
+                                                'Permissions_type_1&quot;).checked=&quot;checked&quot;;" name="' . // Not Coding Standard
                                                 'BuilderEmailTemplateWizardForm[explicitReadWriteModelPermissions]' .
                                                 '[nonEveryoneGroup]"') !== false);
-            // End Not Coding Standard
             $this->assertContentHasDemoGroupNameOptionTags($content);
             $this->assertTrue(strpos($content, '<input id="BuilderEmailTemplateWizardForm_explicitReadWriteModel' .
                                                 'Permissions_type_2" value="') !== false);
@@ -1556,7 +1550,7 @@
             $this->assertTrue(strpos($content, '<div class="pills">') !== false);
             $this->assertTrue(strpos($content, '<a href="#" class="filter-link active" ' .
                                                 'data-filter="1">Layouts</a>') !== false);
-            $this->assertTrue(strpos($content, '<a href="#" class="filter-link" data-filter="2">' .
+            $this->assertTrue(strpos($content, '<a href="#" id="saved-templates-link" class="filter-link" data-filter="2">' .
                                                 'Saved Templates</a>') !== false);
             $this->assertTrue(strpos($content, '<a class="simple-link closeme" href="#">') !== false);
             $this->assertTrue(strpos($content, '<span><i class="icon-x"></i></span>cancel</a></div>') !== false);
@@ -1845,14 +1839,12 @@
                                                 'ReadWriteModelPermissions][type]"') !== false);
             $this->assertTrue(strpos($content, '<label for="BuilderEmailTemplateWizardForm_explicitReadWriteModel'.
                                                 'Permissions_type_1">Owner and users in</label>') !== false);
-            // Begin Not Coding Standard
             $this->assertTrue(strpos($content, '<select id="BuilderEmailTemplateWizardForm_explicitReadWriteModel' .
                                                 'Permissions_nonEveryoneGroup" onclick="document.getElementById(' .
                                                 '&quot;BuilderEmailTemplateWizardForm_explicitReadWriteModel' .
-                                                'Permissions_type_1&quot;).checked=&quot;checked&quot;;" name="' .
+                                                'Permissions_type_1&quot;).checked=&quot;checked&quot;;" name="' . // Not Coding Standard
                                                 'BuilderEmailTemplateWizardForm[explicitReadWriteModelPermissions]' .
                                                 '[nonEveryoneGroup]"') !== false);
-            // End Not Coding Standard
             $this->assertContentHasDemoGroupNameOptionTags($content);
             $this->assertTrue(strpos($content, '<input id="BuilderEmailTemplateWizardForm_explicitReadWriteModel' .
                                                 'Permissions_type_2" value="') !== false);
@@ -1886,8 +1878,8 @@
             $this->assertTrue(strpos($content, '<div class="pills">') !== false);
             $this->assertTrue(strpos($content, '<a href="#" class="filter-link active" ' .
                                                 'data-filter="1">Layouts</a>') !== false);
-            $this->assertTrue(strpos($content, '<a href="#" class="filter-link" data-filter="2">' .
-                                                'Saved Templates</a>') !== false);
+            $this->assertTrue(strpos($content, '<a href="#" id="saved-templates-link" class="filter-link" data-filter="2">' .
+                                               'Saved Templates</a>') !== false);
             $this->assertTrue(strpos($content, '<a class="simple-link closeme" href="#">') !== false);
             $this->assertTrue(strpos($content, '<span><i class="icon-x"></i></span>cancel</a></div>') !== false);
             $this->assertTrue(strpos($content, '<div class="templates-chooser-list clearfix" id="BuilderEmail' .

@@ -35,22 +35,16 @@
      ********************************************************************************/
 
     /**
-     * A job for processing outbound emails in the queue to be sent
+     * A job for updating read permission subscription table for accounts
      */
-    class ProcessOutboundEmailJob extends BaseJob
+    class ReadPermissionSubscriptionUpdateForAccountFromBuildTableJob extends ReadPermissionSubscriptionUpdateJob
     {
-        /**
-         * @see BaseJob::$loadJobQueueOnCleanupAndFallback
-         * @var bool
-         */
-        protected static $loadJobQueueOnCleanupAndFallback = true;
-
         /**
          * @returns Translated label that describes this job type.
          */
         public static function getDisplayName()
         {
-           return Zurmo::t('EmailMessagesModule', 'Process Outbound Email Job');
+            return Zurmo::t('ZurmoModule', 'Read Permission Subscription Update For Account Table Job - Process Items From Build Table');
         }
 
         /**
@@ -58,31 +52,22 @@
          */
         public static function getType()
         {
-            return 'ProcessOutboundEmail';
-        }
-
-        public static function getRecommendedRunFrequencyContent()
-        {
-            return Zurmo::t('EmailMessagesModule', 'Every 1 minute.');
+            return 'ReadPermissionSubscriptionUpdateForAccountFromBuildTable';
         }
 
         /**
-         * (non-PHPdoc)
-         * @see BaseJob::run()
+         * @returns bool if the job should appear in Job Manager list to be run manually.
+         * We should not show this job in list of manual jobs
          */
-        public function run()
+        public static function showInJobManagerToRunManually()
         {
-            $success = Yii::app()->emailHelper->sendQueued($this->resolveBatchSize());
-            if (Yii::app()->emailHelper->getQueuedCount() > 0)
-            {
-                static::loadJobQueue();
-            }
-            return $success;
+            return false;
         }
 
-        protected function resolveBatchSize()
+        public function run()
         {
-            return OutboundEmailBatchSizeConfigUtil::getBatchSize();
+            ReadPermissionsSubscriptionUtil::updateReadSubscriptionTableFromBuildTable($this->getMessageLogger(), 'Account');
+            return true;
         }
     }
 ?>

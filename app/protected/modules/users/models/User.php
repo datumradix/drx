@@ -266,8 +266,17 @@
                 $this->role != null && $this->role->id > 0)
             {
                 AllPermissionsOptimizationUtil::userAddedToRole($this);
+                ReadPermissionsSubscriptionUtil::userAddedToRole();
                 $this->onChangeRights();
                 $this->onChangePolicies();
+            }
+            if ($this->isNewModel)
+            {
+                ReadPermissionsSubscriptionUtil::userCreated();
+            }
+            if (isset($this->originalAttributeValues['role']) && $this->originalAttributeValues['role'][1] > 0)
+            {
+                ReadPermissionsSubscriptionUtil::userBeingRemovedFromRole();
             }
             if (isset($this->originalAttributeValues['language']) && Yii::app()->user->userModel != null &&
                 Yii::app()->user->userModel == $this)
@@ -308,6 +317,12 @@
             }
             AllPermissionsOptimizationUtil::userBeingDeleted($this);
             return true;
+        }
+
+        protected function afterDelete()
+        {
+            parent::afterDelete();
+            ReadPermissionsSubscriptionUtil::deleteUserItemsFromAllReadSubscriptionTables($this->id);
         }
 
         protected function logAuditEventsListForCreatedAndModifed($newModel)
