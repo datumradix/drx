@@ -48,6 +48,8 @@
         {
             $form                                         = new ZurmoSystemConfigurationForm();
             $form->autoresponderOrCampaignBatchSize       = AutoresponderOrCampaignBatchSizeConfigUtil::getBatchSize();
+            $form->outboundEmailBatchSize                 = OutboundEmailBatchSizeConfigUtil::getBatchSize();
+            $form->listPageSizeMaxLimit                   = ZurmoSystemConfigurationUtil::getBatchSize();
             return $form;
         }
 
@@ -59,6 +61,8 @@
             if (Yii::app()->user->userModel->isRootUser)
             {
                 AutoresponderOrCampaignBatchSizeConfigUtil::setBatchSize((int)$form->autoresponderOrCampaignBatchSize);
+                OutboundEmailBatchSizeConfigUtil::setBatchSize((int)$form->outboundEmailBatchSize);
+                ZurmoSystemConfigurationUtil::setBatchSize((int)$form->listPageSizeMaxLimit);
             }
         }
     }
