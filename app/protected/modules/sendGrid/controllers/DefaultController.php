@@ -43,7 +43,7 @@
         {
             return array(
                 array(
-                      ZurmoBaseController::RIGHTS_FILTER_PATH . ' + index, ConfigurationView',
+                      ZurmoBaseController::RIGHTS_FILTER_PATH . ' + index, ConfigurationView, configurationEditOutbound',
                       'moduleClassName'   => 'SendGridModule',
                       'rightName'         => SendGridModule::RIGHT_ACCESS_SENDGRID_ADMINISTRATION,
                 ),
@@ -63,14 +63,16 @@
             $breadCrumbLinks = array(
                 Zurmo::t('SendGridModule', 'SendGrid Configuration'),
             );
-            $configurationForm          = new SendGridConfigurationForm();
-            $postVariableName           = get_class($configurationForm);
+            $configurationForm                 = new SendGridConfigurationForm();
+            $configurationForm->enableSendgrid = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
+            $postVariableName                  = get_class($configurationForm);
             if (isset($_POST[$postVariableName]))
             {
+                $_POST[$postVariableName]['enableSendgrid'] = (bool)$_POST[$postVariableName]['enableSendgrid'];
                 $configurationForm->setAttributes($_POST[$postVariableName]);
                 if ($configurationForm->validate())
                 {
-                    ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', $configurationForm->enableSendGrid);
+                    ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', $configurationForm->enableSendgrid);
                     Yii::app()->user->setFlash('notification',
                                                 Zurmo::t('SendGridModule', 'Sendgrid configuration saved successfully.')
                     );
@@ -88,37 +90,37 @@
             echo $view->render();
         }
 
-        /**
-         * Render modal view for rendering map.
-         */
-        public function actionMapAndPoint($addressString, $latitude, $longitude)
+        public function actionConfigurationEditOutbound()
         {
-            $modalMapAddressData = array('query'     => $addressString,
-                                         'latitude'  => $latitude,
-                                         'longitude' => $longitude);
-
-            //Set ajax mode for modal map render view
-            Yii::app()->getClientScript()->setToAjaxMode();
-
-            echo $this->renderModalMapView($this, $modalMapAddressData);
-        }
-
-        /**
-         * Map modal view for map popup..
-         * @return rendered content from view as string.
-         */
-        protected function renderModalMapView(CController $controller,
-                                           $modalMapAddressData,
-                                           $stateMetadataAdapterClassName = null)
-        {
-            $renderAndMapModalView = new AddressMapModalView($controller->getId(),
-                                                             $controller->getModule()->getId(),
-                                                             $modalMapAddressData,
-                                                             'modal'
-                                         );
-
-            $view = new ModalView($controller, $renderAndMapModalView);
-            return $view->render();
+            $breadCrumbLinks = array(
+                Zurmo::t('SendGridModule', 'Outbound Email Configuration (SMTP)')
+            );
+            $configurationForm = EmailSmtpConfigurationFormAdapter::makeFormFromGlobalConfiguration();
+            $postVariableName   = get_class($configurationForm);
+            if (isset($_POST[$postVariableName]))
+            {
+                $configurationForm->setAttributes($_POST[$postVariableName]);
+                if ($configurationForm->validate())
+                {
+                    EmailSmtpConfigurationFormAdapter::setConfigurationFromForm($configurationForm);
+                    if (!Yii::app()->user->hasFlash('notification'))
+                    {
+                        Yii::app()->user->setFlash('notification',
+                            Zurmo::t('EmailMessagesModule', 'Email configuration saved successfully.')
+                        );
+                    }
+                    $this->redirect(Yii::app()->createUrl('configuration/default/index'));
+                }
+            }
+            $editView = new EmailSmtpConfigurationEditAndDetailsView(
+                                    'Edit',
+                                    $this->getId(),
+                                    $this->getModule()->getId(),
+                                    $configurationForm);
+            $editView->setCssClasses( array('AdministrativeArea') );
+            $view = new ZurmoConfigurationPageView(ZurmoDefaultAdminViewUtil::makeViewWithBreadcrumbsForCurrentUser(
+                    $this, $editView, $breadCrumbLinks, 'SettingsBreadCrumbView'));
+            echo $view->render();
         }
     }
 ?>
