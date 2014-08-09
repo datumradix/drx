@@ -35,30 +35,34 @@
      ********************************************************************************/
 
     /**
-     * Form to all editing and viewing of global configuration for sendgrid in the user interface.
+     * Class to adapt email api configuration values into a configuration form.
+     * Saves global values from a configuration form.
      */
-    class SendGridConfigurationForm extends ConfigurationForm
+    class SendgridApiConfigurationFormAdapter
     {
-        public $enableSendgrid;
-
         /**
-         * Rules for api key element in configuration.
+         * @return EmailSmtpConfigurationForm
          */
-        public function rules()
+        public static function makeFormFromGlobalConfiguration()
         {
-            return array(
-                array('enableSendgrid', 'type', 'type' => 'boolean'),
-            );
+            $form                                    = new EmailSmtpConfigurationForm();
+            $form->host                              = Yii::app()->emailHelper->outboundHost;
+            $form->port                              = Yii::app()->emailHelper->outboundPort;
+            $form->username                          = Yii::app()->emailHelper->outboundUsername;
+            $form->password                          = Yii::app()->emailHelper->outboundPassword;
+            return $form;
         }
 
         /**
-         * Attribute label name in configuration view.
+         * Given a EmailSmtpConfigurationForm, save the configuration global values.
          */
-        public function attributeLabels()
+        public static function setConfigurationFromForm(EmailSmtpConfigurationForm $form)
         {
-            return array(
-                'enableSendgrid' => Zurmo::t('SendGridModule', 'Enable SendGrid'),
-            );
-        }
+            Yii::app()->emailHelper->outboundHost      = $form->host;
+            Yii::app()->emailHelper->outboundPort      = $form->port;
+            Yii::app()->emailHelper->outboundUsername  = $form->username;
+            Yii::app()->emailHelper->outboundPassword  = $form->password;
+            Yii::app()->emailHelper->setOutboundSettings();
+       }
     }
 ?>
