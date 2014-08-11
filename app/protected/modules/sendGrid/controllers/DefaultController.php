@@ -93,26 +93,26 @@
         public function actionConfigurationEditOutbound()
         {
             $breadCrumbLinks = array(
-                Zurmo::t('SendGridModule', 'Outbound Email Configuration (SMTP)')
+                Zurmo::t('SendGridModule', 'WebAPI Configuration')
             );
-            $configurationForm = EmailSmtpConfigurationFormAdapter::makeFormFromGlobalConfiguration();
+            $configurationForm  = SendGridWebApiConfigurationFormAdapter::makeFormFromGlobalConfiguration();
             $postVariableName   = get_class($configurationForm);
             if (isset($_POST[$postVariableName]))
             {
                 $configurationForm->setAttributes($_POST[$postVariableName]);
                 if ($configurationForm->validate())
                 {
-                    EmailSmtpConfigurationFormAdapter::setConfigurationFromForm($configurationForm);
+                    SendGridWebApiConfigurationFormAdapter::setConfigurationFromForm($configurationForm);
                     if (!Yii::app()->user->hasFlash('notification'))
                     {
                         Yii::app()->user->setFlash('notification',
-                            Zurmo::t('EmailMessagesModule', 'Email configuration saved successfully.')
+                            Zurmo::t('SendGridModule', 'Sendgrid configuration saved successfully.')
                         );
                     }
-                    $this->redirect(Yii::app()->createUrl('configuration/default/index'));
+                    $this->redirect(Yii::app()->createUrl('sendGrid/default/configurationEditOutbound'));
                 }
             }
-            $editView = new EmailSmtpConfigurationEditAndDetailsView(
+            $editView = new SendGridConfigurationEditAndDetailsView(
                                     'Edit',
                                     $this->getId(),
                                     $this->getModule()->getId(),
@@ -121,6 +121,105 @@
             $view = new ZurmoConfigurationPageView(ZurmoDefaultAdminViewUtil::makeViewWithBreadcrumbsForCurrentUser(
                     $this, $editView, $breadCrumbLinks, 'SettingsBreadCrumbView'));
             echo $view->render();
+        }
+
+        /**
+         * Assumes before calling this, the sendgrid settings have been validated in the form.
+         * Todo: When new user interface is complete, this will be re-worked to be on page instead of modal.
+         */
+        public function actionSendTestMessage()
+        {
+            $configurationForm = SendGridWebApiConfigurationFormAdapter::makeFormFromGlobalConfiguration();
+            $postVariableName   = get_class($configurationForm);
+            if (isset($_POST[$postVariableName]) || (isset($_POST['UserSendGridConfigurationForm'])))
+            {
+                if (isset($_POST[$postVariableName]))
+                {
+                    $configurationForm->setAttributes($_POST[$postVariableName]);
+                }
+                else
+                {
+                    /*$configurationForm->host            = $_POST['UserEmailConfigurationForm']['outboundHost'];
+                    $configurationForm->port            = $_POST['UserEmailConfigurationForm']['outboundPort'];
+                    $configurationForm->username        = $_POST['UserEmailConfigurationForm']['outboundUsername'];
+                    $configurationForm->password        = $_POST['UserEmailConfigurationForm']['outboundPassword'];
+                    $configurationForm->security        = $_POST['UserEmailConfigurationForm']['outboundSecurity'];
+                    $configurationForm->aTestToAddress  = $_POST['UserEmailConfigurationForm']['aTestToAddress'];
+                    $fromNameToSendMessagesFrom         = $_POST['UserEmailConfigurationForm']['fromName'];
+                    $fromAddressToSendMessagesFrom      = $_POST['UserEmailConfigurationForm']['fromAddress'];*/
+                }
+                if ($configurationForm->aTestToAddress != null)
+                {
+                    $emailHelper = new SendGridEmailHelper();
+                    $emailHelper->loadDefaultFromAndToAddresses();
+                    $emailHelper->apiUsername     = $configurationForm->username;
+                    $emailHelper->apiPassword     = $configurationForm->password;
+                    if (isset($fromNameToSendMessagesFrom) && isset($fromAddressToSendMessagesFrom))
+                    {
+                        $from = array(
+                            'name'      => $fromNameToSendMessagesFrom,
+                            'address'   => $fromAddressToSendMessagesFrom
+                        );
+                        $emailMessage = ZurmoSendGridMailer::sendTestEmail($emailHelper, $from,
+                                                                      $configurationForm->aTestToAddress);
+                    }
+                    else
+                    {
+                        $user                   = BaseControlUserConfigUtil::getUserToRunAs();
+                        $userToSendMessagesFrom = User::getById((int)$user->id);
+                        $emailMessage           = ZurmoSendGridMailer::sendTestEmailFromUser($emailHelper, $userToSendMessagesFrom,
+                                                                      $configurationForm->aTestToAddress);
+                    }
+                    $messageContent  = null;
+                    if (!($emailMessage->hasErrors() || $emailMessage->hasSendError()))
+                    {
+                        $messageContent .= Zurmo::t('EmailMessagesModule', 'Message successfully sent') . "\n";
+                    }
+                    else
+                    {
+                        $messageContent .= Zurmo::t('EmailMessagesModule', 'Message failed to send') . "\n";
+                        if ($emailMessage->hasSendError())
+                        {
+                            $messageContent .= $emailMessage->error     . "\n";
+                        }
+                        else
+                        {
+                            //todo: refactor to use ZurmoHtml::errorSummary after this supports that method
+                            //todo: supports nested messages better.
+                            $errors = $emailMessage->getErrors();
+                            foreach ($errors as $attributeNameWithErrors)
+                            {
+                                foreach ($attributeNameWithErrors as $attributeError)
+                                {
+                                    if (is_array($attributeError))
+                                    {
+                                        foreach ($attributeError as $nestedAttributeError)
+                                        {
+                                            $messageContent .= reset($nestedAttributeError) . "\n";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        $messageContent .= reset($attributeError) . "\n";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    $messageContent = Zurmo::t('EmailMessagesModule', 'A test email address must be entered before you can send a test email.') . "\n";
+                }
+                Yii::app()->getClientScript()->setToAjaxMode();
+                $messageView = new TestConnectionView($messageContent);
+                $view = new ModalView($this, $messageView);
+                echo $view->render();
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
         }
     }
 ?>
