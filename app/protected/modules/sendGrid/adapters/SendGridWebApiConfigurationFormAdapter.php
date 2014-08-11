@@ -38,31 +38,27 @@
      * Class to adapt email api configuration values into a configuration form.
      * Saves global values from a configuration form.
      */
-    class SendgridApiConfigurationFormAdapter
+    class SendGridWebApiConfigurationFormAdapter
     {
         /**
-         * @return EmailSmtpConfigurationForm
+         * @return SendGridWebApiConfigurationForm
          */
         public static function makeFormFromGlobalConfiguration()
         {
-            $form                                    = new EmailSmtpConfigurationForm();
-            $form->host                              = Yii::app()->emailHelper->outboundHost;
-            $form->port                              = Yii::app()->emailHelper->outboundPort;
-            $form->username                          = Yii::app()->emailHelper->outboundUsername;
-            $form->password                          = Yii::app()->emailHelper->outboundPassword;
+            $form                                    = new SendGridWebApiConfigurationForm();
+            $form->username                          = Yii::app()->sendGridEmailHelper->apiUsername;
+            $form->password                          = Yii::app()->sendGridEmailHelper->apiPassword;
             return $form;
         }
 
         /**
-         * Given a EmailSmtpConfigurationForm, save the configuration global values.
+         * Given a SendGridWebApiConfigurationForm, save the configuration global values.
          */
-        public static function setConfigurationFromForm(EmailSmtpConfigurationForm $form)
+        public static function setConfigurationFromForm(SendGridWebApiConfigurationForm $form)
         {
-            Yii::app()->emailHelper->outboundHost      = $form->host;
-            Yii::app()->emailHelper->outboundPort      = $form->port;
-            Yii::app()->emailHelper->outboundUsername  = $form->username;
-            Yii::app()->emailHelper->outboundPassword  = $form->password;
-            Yii::app()->emailHelper->setOutboundSettings();
+            Yii::app()->sendGridEmailHelper->apiUsername  = $form->username;
+            Yii::app()->sendGridEmailHelper->apiPassword  = $form->password;
+            Yii::app()->sendGridEmailHelper->setApiSettings();
        }
     }
 ?>

@@ -370,6 +370,7 @@
                     'builder-iframe-tools.less'
                 ),
             ),
+            'sendGridEmailHelper' => array('class' => 'application.modules.sendGrid.components.SendGridEmailHelper'),
         ),
         'controllerMap' => array(
             'min' => 'application.extensions.minscript.controllers.ExtMinScriptController',
