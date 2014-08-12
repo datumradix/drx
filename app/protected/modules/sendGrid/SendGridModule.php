@@ -38,12 +38,6 @@
     {
         const RIGHT_ACCESS_SENDGRID_ADMINISTRATION = 'Access Sendgrid Administration';
 
-        protected function init()
-        {
-            parent::init();
-            Yii::createComponent(array('class' => 'application.modules.sendGrid.components.SendGridEmailHelper'));
-        }
-
         public function getDependencies()
         {
             return array(
