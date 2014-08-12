@@ -82,7 +82,7 @@
                                         array(
                                             'elements' => array(
                                                 array('attributeName' => 'aTestToAddress',
-                                                      'type' => 'SendATestEmailTo'),
+                                                      'type' => 'SendGridSendATestEmailTo'),
                                             ),
                                         ),
                                     )

@@ -33,9 +33,9 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-
-     Yii::import('ext.sendgrid.lib.SendGrid.Email');
-     Yii::import('ext.sendgrid.lib.Smtpapi.Header');
+     Yii::import('ext.sendgrid.lib.*');
+     Yii::import('ext.sendgrid.lib.SendGrid.*');
+     Yii::import('ext.sendgrid.lib.Smtpapi.*');
 
     /**
      * Class for Zurmo specific sendgrid functionality.
@@ -50,12 +50,19 @@
 
         protected $fromUserEmailData;
 
-        public function __construct(SendGridEmailHelper $emailHelper, User $userToSendMessagesFrom, $toAddress)
+        public function __construct(SendGridEmailHelper $emailHelper, $userToSendMessagesFrom, $toAddress)
         {
             SendGrid::register_autoloader();
             Smtpapi::register_autoloader();
             $this->emailHelper = $emailHelper;
-            $this->fromUser    = $userToSendMessagesFrom;
+            if(is_array($userToSendMessagesFrom))
+            {
+                $this->fromUserEmailData = $userToSendMessagesFrom;
+            }
+            elseif(is_object($userToSendMessagesFrom) && $userToSendMessagesFrom instanceof User)
+            {
+                $this->fromUser    = $userToSendMessagesFrom;
+            }
             $this->toAddress   = $toAddress;
         }
 
@@ -66,7 +73,7 @@
         public function sendTestEmailFromUser()
         {
             $this->fromUserEmailData = array(
-                'address'   => $this->emailHelper->resolveFromAddressByUser($this->fromUser),
+                'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($this->fromUser),
                 'name'      => strval($this->fromUser),
             );
             return $this->sendTestEmail();
@@ -101,9 +108,7 @@
             {
                 throw new NotSupportedException();
             }
-            $mailer           = $this->getOutboundMailer();
-            $this->populateMailer($mailer, $emailMessage);
-            $this->sendEmail($mailer, $emailMessage);
+            $this->sendEmail($emailMessage);
             $saved = $emailMessage->save();
             if (!$saved)
             {
@@ -111,22 +116,44 @@
             }
         }
 
-        public function sendEmail()
+        /**
+         * Send email.
+         * @param EmailMessage $emailMessage
+         */
+        public function sendEmail(EmailMessage $emailMessage)
         {
             $sendgrid = new SendGrid($this->emailHelper->apiUsername, $this->emailHelper->apiPassword, array("turn_off_ssl_verification" => true));
             $email    = new SendGrid\Email();
             $email->addTo($this->toAddress)->
-                   setFrom($from['address'])->
-                   setFromName($from['name'])->
-                   setSubject('[sendgrid-php-example] Owl named %yourname%')->
-                   setText('Owl are you doing?')->
-                   setHtml('<strong>%how% are you doing?</strong>')->
-                   addSubstitution("%yourname%", array("Mr. Owl"))->
-                   addSubstitution("%how%", array("Owl"))->
+                   setFrom($this->fromUserEmailData['address'])->
+                   setFromName($this->fromUserEmailData['name'])->
+                   setSubject($emailMessage->subject)->
+                   setText($emailMessage->content->textContent)->
+                   setHtml($emailMessage->content->htmlContent)->
                    addHeader('X-Sent-Using', 'SendGrid-API')->
                    addHeader('X-Transport', 'web');
-
             $response = $sendgrid->send($email);
+            if($response->message == 'success')
+            {
+                $emailMessage->error        = null;
+                $emailMessage->folder       = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
+                $emailMessage->sentDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+            }
+            elseif($response->message == 'error')
+            {
+                $content = Zurmo::t('EmailMessagesModule', 'Response from Server') . "\n";
+                foreach($response->errors as $error)
+                {
+                    $content .= $error;
+                }
+                $emailMessageSendError = new EmailMessageSendError();
+                $data                  = array();
+                $data['message']                       = $content;
+                $emailMessageSendError->serializedData = serialize($data);
+                $emailMessage->folder                  = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox,
+                                                                                      EmailFolder::TYPE_OUTBOX_ERROR);
+                $emailMessage->error                   = $emailMessageSendError;
+            }
         }
     }
 ?>

@@ -164,28 +164,5 @@
                 }
             }
         }
-
-        protected function getOutboundMailer()
-        {
-            $mailer = new ZurmoSwiftMailer();
-            $mailer->init();
-            return $mailer;
-        }
-
-        /**
-         * Send a test email from user using sendgrid configuration.
-         * @param SendGridEmailHelper $emailHelper
-         * @param User $userToSendMessagesFrom
-         * @param string $toAddress
-         */
-        public static function sendTestEmailFromUser(SendGridEmailHelper $emailHelper, User $userToSendMessagesFrom, $toAddress)
-        {
-            $from = array(
-                'address'   => $emailHelper->resolveFromAddressByUser($userToSendMessagesFrom),
-                'name'      => strval($userToSendMessagesFrom),
-            );
-            $emailMessage = static::sendTestEmail($emailHelper, $from, $toAddress);
-            return $emailMessage;
-        }
     }
 ?>

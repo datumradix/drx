@@ -566,5 +566,51 @@
             assert('is_string($defaultTestToAddress)');
             ZurmoConfigurationUtil::setByModuleName('ZurmoModule', 'defaultTestToAddress', $defaultTestToAddress);
         }
+
+        /**
+         * Prepare message content.
+         * @param EmailMessage $emailMessage
+         * @return string
+         */
+        public static function prepareMessageContent(EmailMessage $emailMessage)
+        {
+            $messageContent  = null;
+            if (!($emailMessage->hasErrors() || $emailMessage->hasSendError()))
+            {
+                $messageContent .= Zurmo::t('EmailMessagesModule', 'Message successfully sent') . "\n";
+            }
+            else
+            {
+                $messageContent .= Zurmo::t('EmailMessagesModule', 'Message failed to send') . "\n";
+                if ($emailMessage->hasSendError())
+                {
+                    $messageContent .= $emailMessage->error     . "\n";
+                }
+                else
+                {
+                    //todo: refactor to use ZurmoHtml::errorSummary after this supports that method
+                    //todo: supports nested messages better.
+                    $errors = $emailMessage->getErrors();
+                    foreach ($errors as $attributeNameWithErrors)
+                    {
+                        foreach ($attributeNameWithErrors as $attributeError)
+                        {
+                            if (is_array($attributeError))
+                            {
+                                foreach ($attributeError as $nestedAttributeError)
+                                {
+                                    $messageContent .= reset($nestedAttributeError) . "\n";
+                                }
+                            }
+                            else
+                            {
+                                $messageContent .= reset($attributeError) . "\n";
+                            }
+                        }
+                    }
+                }
+            }
+            return $messageContent;
+        }
     }
 ?>
