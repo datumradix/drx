@@ -34,46 +34,19 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Class to render link user configuration
-     */
-    class UserConfigurationMenuActionElement extends MenuActionElement
+    class UserActionBarAndSendGridConfigurationEditView extends GridView
     {
-        public function getActionType()
+        public function __construct(
+            $controllerId,
+            $moduleId,
+            User $user,
+            UserSendGridConfigurationForm $emailAccountForm
+            )
         {
-            return 'Edit';
-        }
-
-        protected function getMenuItems()
-        {
-            return array(array('label'   => Zurmo::t('Core', 'General'),
-                               'url'     => $this->getRouteFormMenuItems() . '/configurationEdit?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'abc')),
-                         array('label'   => Zurmo::t('EmailMessagesModule', 'Email'),
-                               'url'     => $this->getRouteFormMenuItems() . '/emailConfiguration?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'def')),
-                         array('label'   => Zurmo::t('UsersModule', 'Security Overview'),
-                               'url'     => $this->getRouteFormMenuItems() . '/securityDetails?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'ffff')),
-                         array('label'   => Zurmo::t('SendGridModule', 'SendGrid'),
-                               'url'     => $this->getRouteFormMenuItems() . '/sendGridConfiguration?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'ffff')),
-                         );
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('ConfigurationModule', 'Configuration');
-        }
-
-        protected function getDefaultRoute()
-        {
-            return null;
-        }
-
-        protected function getRouteFormMenuItems()
-        {
-            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/');
+            parent::__construct(2, 1);
+            $this->setView(new ActionBarForUserEditAndDetailsView ($controllerId, $moduleId, $user, 'UserConfigurationMenu'), 0, 0);
+            $title = strval($user) . ': ' . Zurmo::t('SendGridModule', 'SendGrid Configuration');
+            $this->setView(new UserSendGridConfigurationEditView($controllerId, $moduleId, $emailAccountForm, $title), 1, 0);
         }
     }
 ?>
