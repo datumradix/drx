@@ -47,7 +47,7 @@
         public function rules()
         {
             return array(
-                array('enableSendgrid', 'type', 'type' => 'boolean'),
+                array('enableSendgrid', 'boolean'),
             );
         }
 
