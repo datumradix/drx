@@ -34,12 +34,28 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    Yii::import('application.modules.zurmo.components.EndRequestBehavior');
-    class EndRequestTestBehavior extends EndRequestBehavior
+    abstract class RequestBehavior extends CBehavior
     {
-        protected function resolveDefaultRequestType($className)
+        abstract protected function resolveEventsBinderClassName();
+
+        abstract protected function resolveDefaultRequestType($className);
+
+        public function attach($owner)
         {
-            return $className::TEST_REQUEST;
+            $className      = $this->resolveEventsBinderClassName();
+            $requestType    = $this->resolveDefaultRequestType($className);
+
+            if ($this->resolveIsApiRequest())
+            {
+                $requestType    = $className::API_REQUEST;
+            }
+            $eventBinder  = new $className($requestType, $owner);
+            $eventBinder->bind();
         }
-    }
+
+        protected function resolveIsApiRequest()
+        {
+            return false;
+        }
+     }
 ?>
