@@ -139,14 +139,11 @@
                 }
                 else
                 {
-                    /*$configurationForm->host            = $_POST['UserEmailConfigurationForm']['outboundHost'];
-                    $configurationForm->port            = $_POST['UserEmailConfigurationForm']['outboundPort'];
-                    $configurationForm->username        = $_POST['UserEmailConfigurationForm']['outboundUsername'];
-                    $configurationForm->password        = $_POST['UserEmailConfigurationForm']['outboundPassword'];
-                    $configurationForm->security        = $_POST['UserEmailConfigurationForm']['outboundSecurity'];
-                    $configurationForm->aTestToAddress  = $_POST['UserEmailConfigurationForm']['aTestToAddress'];
-                    $fromNameToSendMessagesFrom         = $_POST['UserEmailConfigurationForm']['fromName'];
-                    $fromAddressToSendMessagesFrom      = $_POST['UserEmailConfigurationForm']['fromAddress'];*/
+                    $configurationForm->username        = $_POST['UserSendGridConfigurationForm']['apiUsername'];
+                    $configurationForm->password        = $_POST['UserSendGridConfigurationForm']['apiPassword'];
+                    $configurationForm->aTestToAddress  = $_POST['UserSendGridConfigurationForm']['aTestToAddress'];
+                    $fromNameToSendMessagesFrom         = $_POST['UserSendGridConfigurationForm']['fromName'];
+                    $fromAddressToSendMessagesFrom      = $_POST['UserSendGridConfigurationForm']['fromAddress'];
                 }
                 if ($configurationForm->aTestToAddress != null)
                 {

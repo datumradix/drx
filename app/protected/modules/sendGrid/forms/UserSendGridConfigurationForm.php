@@ -48,7 +48,7 @@
             return 'SendGridEmailAccount';
         }
 
-        public function __construct(EmailAccount $model)
+        public function __construct(SendGridEmailAccount $model)
         {
             $this->model = $model;
         }

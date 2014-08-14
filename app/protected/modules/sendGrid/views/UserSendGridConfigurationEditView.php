@@ -87,7 +87,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'username', 'type' => 'Text'),
+                                                array('attributeName' => 'apiUsername', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -96,7 +96,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'password', 'type' => 'Password'),
+                                                array('attributeName' => 'apiPassword', 'type' => 'Password'),
                                             ),
                                         ),
                                     )

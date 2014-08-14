@@ -131,8 +131,8 @@
                     'user'     => array(static::HAS_ONE,  'User'),
                 ),
                 'rules'     => array(
-                                  array('fromName',                  'required'),
-                                  array('fromAddress',               'required'),
+                                  array('apiUsername',               'required'),
+                                  array('apiPassword',               'required'),
                                   array('name',                      'type',      'type' => 'string'),
                                   array('fromName',                  'type',      'type' => 'string'),
                                   array('apiUsername',          'type',      'type' => 'string'),
@@ -180,8 +180,8 @@
                     'fromName'                  => Zurmo::t('SendGridModule', 'From Name',                     array(), null, $language),
                     'messages'                  => Zurmo::t('Core',                'Messages',                      array(), null, $language),
                     'name'                      => Zurmo::t('Core',                'Name',                          array(), null, $language),
-                    'apiPassword'               => Zurmo::t('SendGridModule', 'Outbound Password',             array(), null, $language),
-                    'apiUsername'               => Zurmo::t('SendGridModule', 'Outbound Username',             array(), null, $language),
+                    'apiPassword'               => Zurmo::t('SendGridModule', 'Api Password',             array(), null, $language),
+                    'apiUsername'               => Zurmo::t('SendGridModule', 'Api Username',             array(), null, $language),
                     'replyToAddress'            => Zurmo::t('SendGridModule', 'Reply To Address',              array(), null, $language),
                     'user'                      => Zurmo::t('UsersModule',         'User',                          array(), null, $language),
                 )
