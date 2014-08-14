@@ -41,6 +41,7 @@
     {
         public $autoresponderOrCampaignFooterPlainText;
         public $autoresponderOrCampaignFooterRichText;
+        public $useAutoresponderOrCampaignOwnerMailSettings;
 
         public function rules()
         {
@@ -49,6 +50,7 @@
                 array('autoresponderOrCampaignFooterPlainText', 'type',    'type' => 'string'),
                 array('autoresponderOrCampaignFooterRichText',  'required'),
                 array('autoresponderOrCampaignFooterRichText',  'type',    'type' => 'string'),
+                array('useAutoresponderOrCampaignOwnerMailSettings',  'boolean'),
             );
         }
 
@@ -60,6 +62,9 @@
                                                                      LabelUtil::getTranslationParamsForAllModules()),
                 'autoresponderOrCampaignFooterRichText'  => Zurmo::t('MarketingModule',
                                                                      'MarketingModuleSingularLabel Footer(Rich Text)',
+                                                                     LabelUtil::getTranslationParamsForAllModules()),
+                'useAutoresponderOrCampaignOwnerMailSettings'  => Zurmo::t('MarketingModule',
+                                                                     'Use autoresponder or campaign owner email settings',
                                                                      LabelUtil::getTranslationParamsForAllModules())
             );
         }
