@@ -99,23 +99,41 @@
 
         protected function attachApiRequestCommonEvents()
         {
+            $this->attachEventsByDefinitions($this->resolveApiRequestCommonEvents());
+        }
+
+        protected function resolveApiRequestCommonEvents()
+        {
             $eventDefinition    = array(
-                $this->resolveEventDefinition('handleSentryLogs'),
-                $this->resolveEventDefinition('handleApplicationCache'),
-                $this->resolveEventDefinition('validateCsrfToken', Yii::app()->request),
-                $this->resolveEventDefinition('handleImports'),
-                $this->resolveEventDefinition('handleSetupDatabaseConnection'),
-                $this->resolveEventDefinition('handleDisableGamification'),
+                                        $this->resolveEventDefinition('handleSentryLogs'),
+                                        $this->resolveEventDefinition('handleApplicationCache'),
+                                        $this->resolveEventDefinition('validateCsrfToken', Yii::app()->request),
+                                        $this->resolveEventDefinition('handleImports'),
+                                        $this->resolveEventDefinition('handleSetupDatabaseConnection'),
+                                        $this->resolveEventDefinition('handleDisableGamification')) +
+                                $this->resolveApiInitRequestCommonEvents() +
+                                array(
+                                        $this->resolveEventDefinition('handleLibraryCompatibilityCheck'),
+                                        $this->resolveEventDefinition('handleStartPerformanceClock'),
+                                    );
+            return $eventDefinition;
+        }
+
+        protected function resolveApiInitRequestCommonEvents()
+        {
+            $apiInitRequestCommonEventDefinition    = array(
                 $this->resolveEventDefinition('handleInitApiRequest'),
                 $this->resolveEventDefinition('handleBeginApiRequest'),
-                $this->resolveEventDefinition('handleLibraryCompatibilityCheck'),
-                $this->resolveEventDefinition('handleStartPerformanceClock'),
             );
-            $this->attachEventsByDefinitions($eventDefinition);
-
+            return $apiInitRequestCommonEventDefinition;
         }
 
         protected function attachApiRequestEventsForInstalledApplication()
+        {
+            $this->attachEventsByDefinitions($this->resolveApiRequestEventsForInstalledApplication());
+        }
+
+        protected function resolveApiRequestEventsForInstalledApplication()
         {
             $eventDefinition    = array(
                 $this->resolveEventDefinition('handleClearCache'),
@@ -128,10 +146,15 @@
                 $this->resolveEventDefinition('handleCheckAndUpdateCurrencyRates'),
                 $this->resolveEventDefinition('handleResolveCustomData'),
             );
-            $this->attachEventsByDefinitions($eventDefinition);
+            return $eventDefinition;
         }
 
         protected function attachApplicationRequestCommonEvents()
+        {
+            $this->attachEventsByDefinitions($this->resolveApplicationRequestCommonEvents());
+        }
+
+        protected function resolveApplicationRequestCommonEvents()
         {
             $eventDefinition    = array(
                 $this->resolveEventDefinition('handleSentryLogs'),
@@ -140,16 +163,21 @@
                 $this->resolveEventDefinition('handleLibraryCompatibilityCheck'),
                 $this->resolveEventDefinition('handleStartPerformanceClock'),
             );
-            $this->attachEventsByDefinitions($eventDefinition);
+            return $eventDefinition;
         }
 
         protected function attachApplicationRequestEventsForNonInstalledApplication()
+        {
+            $this->attachEventsByDefinitions($this->resolveApplicationRequestEventsForNonInstalledApplication());
+        }
+
+        protected function resolveApplicationRequestEventsForNonInstalledApplication()
         {
             $eventDefinition    = array(
                 $this->resolveEventDefinition('handleInstanceFolderCheck'),
                 $this->resolveEventDefinition('handleInstallCheck'),
             );
-            $this->attachEventsByDefinitions($eventDefinition);
+            return $eventDefinition;
         }
 
         /**
@@ -157,6 +185,11 @@
          * for the command behavior as well.
          */
         protected function attachApplicationRequestEventsForInstalledApplication()
+        {
+            $this->attachEventsByDefinitions($this->resolveApplicationRequestEventsForInstalledApplication());
+        }
+
+        protected function resolveApplicationRequestEventsForInstalledApplication()
         {
             $eventDefinition    = array(
                 $this->resolveEventDefinition('handleSetupDatabaseConnection'),
@@ -178,10 +211,15 @@
                 $this->resolveEventDefinition('handleResolveCustomData'),
                 $this->resolveEventDefinition('handlePublishLogoAssets'),
             );
-            $this->attachEventsByDefinitions($eventDefinition);
+            return $eventDefinition;
         }
 
         protected function attachCommandRequestCommonEvents()
+        {
+            $this->attachEventsByDefinitions($this->resolveCommandRequestCommonEvents());
+        }
+
+        protected function resolveCommandRequestCommonEvents()
         {
             $eventDefinition    = array(
                 $this->resolveEventDefinition('handleApplicationCache'),
@@ -191,10 +229,15 @@
                 $this->resolveEventDefinition('handleLoadLanguage'),
                 $this->resolveEventDefinition('handleLoadTimeZone'),
             );
-            $this->attachEventsByDefinitions($eventDefinition);
+            return $eventDefinition;
         }
 
         protected function attachCommandEventsForInstalledApplication()
+        {
+            $this->attachEventsByDefinitions($this->resolveCommandEventsForInstalledApplication());
+        }
+
+        protected function resolveCommandEventsForInstalledApplication()
         {
             $eventDefinition    = array(
                 $this->resolveEventDefinition('handleSetupDatabaseConnection'),
@@ -205,10 +248,15 @@
                 $this->resolveEventDefinition('handleLoadReadPermissionSubscriptionObserver'),
                 $this->resolveEventDefinition('handleLoadAccountContactAffiliationObserver'),
             );
-            $this->attachEventsByDefinitions($eventDefinition);
+            return $eventDefinition;
         }
 
         protected function attachTestRequestEvents()
+        {
+            $this->attachEventsByDefinitions($this->resolveTestRequestEvents());
+        }
+
+        protected function resolveTestRequestEvents()
         {
             $eventDefinition    = array(
                 $this->resolveEventDefinition('handleApplicationCache'),
@@ -216,7 +264,7 @@
                 $this->resolveEventDefinition('handleLoadWorkflowsObserver'),
                 $this->resolveEventDefinition('handleLoadReadPermissionSubscriptionObserver'),
             );
-            $this->attachEventsByDefinitions($eventDefinition);
+            return $eventDefinition;
         }
     }
 ?>
