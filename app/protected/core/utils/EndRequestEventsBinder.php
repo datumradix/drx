@@ -79,15 +79,25 @@
         {
             if ($this->installed)
             {
-                $eventDefinition    = array(
-                    $this->resolveEventDefinition('handleGamification'),
-                    $this->resolveEventDefinition('handleJobQueue'),
-                );
-                $this->attachEventsByDefinitions($eventDefinition);
+                $this->attachEventsByDefinitions($this->resolveInstallationApplicationRequestEvents());
             }
         }
 
+        protected function resolveInstallationApplicationRequestEvents()
+        {
+            $eventDefinition    = array(
+                $this->resolveEventDefinition('handleGamification'),
+                $this->resolveEventDefinition('handleJobQueue'),
+            );
+            return $eventDefinition;
+        }
+
         protected function attachApplicationRequestCommonEvents()
+        {
+            $this->attachEventsByDefinitions($this->resolveApplicationRequestCommonEvents());
+        }
+
+        protected function resolveApplicationRequestCommonEvents()
         {
             $eventDefinition    = array(
                 $this->resolveEventDefinition('handleSaveGlobalStateCheck'),
@@ -95,17 +105,22 @@
                 $this->resolveEventDefinition('handleResolveRedBeanQueriesToFile'),
                 $this->resolveEventDefinition('handleEndRequest'),
             );
-            $this->attachEventsByDefinitions($eventDefinition);
+            return $eventDefinition;
         }
 
         protected function attachTestRequestEvents()
+        {
+            $this->attachEventsByDefinitions($this->resolveTestRequestEvents());
+        }
+
+        protected function resolveTestRequestEvents()
         {
             $eventDefinition    = array(
                 $this->resolveEventDefinition('handleGamification'),
                 $this->resolveEventDefinition('handleJobQueue'),
                 $this->resolveEventDefinition('handleEndRequest'),
             );
-            $this->attachEventsByDefinitions($eventDefinition);
+            return $eventDefinition;
         }
     }
 ?>
