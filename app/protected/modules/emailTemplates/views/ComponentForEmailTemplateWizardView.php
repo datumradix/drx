@@ -221,6 +221,7 @@
                         $('.StepsAndProgressBarForWizardView').find('.current-step').removeClass('current-step')
                                                                 .next().addClass('current-step');
                         ";
+            Yii::app()->custom->resolveAdditionalScriptContentForEmailTemplate($stepCount, $script);
             return $script;
         }
 
@@ -257,7 +258,7 @@
             $ajaxArray['error']       = "js:function(data)
                                         {
                                             $('#FlashMessageBar').jnotifyAddMessage({
-                                                text: '" . $message . "',
+                                                text: \"" . $message . "\",
                                                 permanent: true,
                                                 clickOverlay : true,
                                                 showIcon: false,

@@ -33,13 +33,15 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-    class AutoresponderItemTest extends ZurmoBaseTest
+    class AutoresponderItemTest extends AutoresponderOrCampaignBaseTest
     {
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
             SecurityTestHelper::createSuperAdmin();
             SecurityTestHelper::createUsers();
+            // Delete item from jobQueue, that is created when new user is created
+            Yii::app()->jobQueue->deleteAll();
         }
 
         public function setUp()
@@ -59,7 +61,7 @@
             $this->assertTrue($autoresponderItem->unrestrictedSave());
             $jobs = Yii::app()->jobQueue->getAll();
             $this->assertCount(1, $jobs);
-            $this->assertEquals('AutoresponderQueueMessagesInOutbox', $jobs[$timeStamp - time() + 5][0]);
+            $this->assertEquals('AutoresponderQueueMessagesInOutbox', $jobs[$timeStamp - time() + 5][0]['jobType']);
             $id = $autoresponderItem->id;
             unset($autoresponderItem);
             $autoresponderItem = AutoresponderItem::getById($id);
@@ -74,7 +76,7 @@
             $this->assertTrue($autoresponderItem->unrestrictedSave());
             $jobs = Yii::app()->jobQueue->getAll();
             $this->assertCount(1, $jobs);
-            $this->assertEquals('AutoresponderQueueMessagesInOutbox', $jobs[$timeStamp - time() + 5][0]);
+            $this->assertEquals('AutoresponderQueueMessagesInOutbox', $jobs[$timeStamp - time() + 5][0]['jobType']);
         }
 
         /**

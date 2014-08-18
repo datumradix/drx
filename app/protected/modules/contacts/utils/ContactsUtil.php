@@ -370,7 +370,6 @@
          */
         public static function resolveMarketingListMembersByContact($contact)
         {
-            $contactId = $contact->id;
             if ($contact->id != null && $contact->id > 0)
             {
                 $marketingListMembers = MarketingListMember::getByContactId($contact->id);
@@ -378,6 +377,38 @@
                 {
                     $marketingListMember->delete();
                 }
+            }
+        }
+
+        /**
+         * If contact is lead then just return companyName field
+         * If contact is contact and do not have related account, return company name
+         * If contact is contact and have related account, return account name
+         * @param Contact $contact
+         * @return string
+         */
+        public static function resolveCompanyNameForRelatedAccountName(Contact $contact)
+        {
+            if (LeadsUtil::isStateALead($contact->state) ||
+                !isset($contact->account) || $contact->account->id <= 0)
+            {
+                return $contact->companyName;
+            }
+            elseif (isset($contact->account) && $contact->account->id > 0)
+            {
+                try
+                {
+                    $companyName = $contact->account->name;
+                }
+                catch (AccessDeniedSecurityException $e)
+                {
+                    $companyName = $contact->companyName;
+                }
+                return $companyName;
+            }
+            else
+            {
+                return null;
             }
         }
     }

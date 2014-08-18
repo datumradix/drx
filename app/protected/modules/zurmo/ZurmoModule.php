@@ -53,6 +53,7 @@
         const AUDIT_EVENT_ITEM_MODIFIED           = 'Item Modified';
         const AUDIT_EVENT_ITEM_DELETED            = 'Item Deleted';
         const AUDIT_EVENT_ITEM_VIEWED             = 'Item Viewed';
+        const AUDIT_EVENT_ITEM_NAME_CHANGED       = 'Item Name Changed';
 
         public static function getTranslatedRightsLabels()
         {
@@ -142,6 +143,13 @@
                         'route'            => '/zurmo/default/userInterfaceConfigurationEdit',
                         'right'            => self::RIGHT_ACCESS_GLOBAL_CONFIGURATION,
                     ),
+                    array(
+                        'category'         => ZurmoModule::ADMINISTRATION_CATEGORY_GENERAL,
+                        'titleLabel'       => "eval:Zurmo::t('ZurmoModule', 'System Configuration')",
+                        'descriptionLabel' => "eval:Zurmo::t('ZurmoModule', 'Manage System Configuration')",
+                        'route'            => '/zurmo/default/systemConfigurationEdit',
+                        'right'            => self::RIGHT_ACCESS_GLOBAL_CONFIGURATION,
+                    ),
                 ),
                 'headerMenuItems' => array(
                     array(
@@ -182,7 +190,7 @@
                     'users',
                     'roles',
                     'workflows',
-                    'contactWebForms',
+                    'contactWebForms'
                 ),
                 'tabMenuItemsModuleOrdering' => array(
                     'home',

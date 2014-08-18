@@ -265,9 +265,18 @@
             if (((isset($this->originalAttributeValues['role'])) || $this->isNewModel) &&
                 $this->role != null && $this->role->id > 0)
             {
-                ReadPermissionsOptimizationUtil::userAddedToRole($this);
+                AllPermissionsOptimizationUtil::userAddedToRole($this);
+                ReadPermissionsSubscriptionUtil::userAddedToRole();
                 $this->onChangeRights();
                 $this->onChangePolicies();
+            }
+            if ($this->isNewModel)
+            {
+                ReadPermissionsSubscriptionUtil::userCreated();
+            }
+            if (isset($this->originalAttributeValues['role']) && $this->originalAttributeValues['role'][1] > 0)
+            {
+                ReadPermissionsSubscriptionUtil::userBeingRemovedFromRole();
             }
             if (isset($this->originalAttributeValues['language']) && Yii::app()->user->userModel != null &&
                 Yii::app()->user->userModel == $this)
@@ -288,7 +297,7 @@
             {
                 if (isset($this->originalAttributeValues['role']) && $this->originalAttributeValues['role'][1] > 0)
                 {
-                    ReadPermissionsOptimizationUtil::userBeingRemovedFromRole($this, Role::getById($this->originalAttributeValues['role'][1]));
+                    AllPermissionsOptimizationUtil::userBeingRemovedFromRole($this, Role::getById($this->originalAttributeValues['role'][1]));
                     $this->onChangeRights();
                     $this->onChangePolicies();
                 }
@@ -306,8 +315,14 @@
             {
                 return false;
             }
-            ReadPermissionsOptimizationUtil::userBeingDeleted($this);
+            AllPermissionsOptimizationUtil::userBeingDeleted($this);
             return true;
+        }
+
+        protected function afterDelete()
+        {
+            parent::afterDelete();
+            ReadPermissionsSubscriptionUtil::deleteUserItemsFromAllReadSubscriptionTables($this->id);
         }
 
         protected function logAuditEventsListForCreatedAndModifed($newModel)
@@ -442,9 +457,11 @@
                 {
                     $avatar = unserialize($this->serializedAvatarData);
                 }
+                // Begin Not Coding Standard
                 $baseGravatarUrl = '//www.gravatar.com/avatar/%s?s=' . $size . '&r=g';
                 $gravatarUrlFormat        = $baseGravatarUrl . '&d=identicon';
                 $gravatarDefaultUrlFormat = $baseGravatarUrl . '&d=mm';
+                // End Not Coding Standard
                 if (isset($avatar['avatarType']) && $avatar['avatarType'] == static::AVATAR_TYPE_DEFAULT)
                 {
                     $avatarUrl = sprintf($gravatarDefaultUrlFormat, '');
@@ -471,9 +488,7 @@
                 }
                 else
                 {
-                    //Check connection to gravatar and return offline picture
-                    $htmlHeaders = @get_headers('http:' . $avatarUrl);
-                    if (preg_match("|200|", $htmlHeaders[0]))
+                    if (CurlUtil::urlExists('http:' . $avatarUrl))
                     {
                         $this->avatarImageUrl = $avatarUrl;
                     }
@@ -820,6 +835,11 @@
                 'noAudit' => array(
                     'serializedAvatarData',
                 ),
+                'indexes' => array(
+                    'permitable_id' => array(
+                        'members' => array('permitable_id'),
+                        'unique' => false),
+                ),
             );
             return $metadata;
         }
@@ -1097,14 +1117,69 @@
 
         /**
          * @return bool
+         * @throws NotSupportedException
          */
         public function isSuperAdministrator()
         {
-            $superGroup = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
-            if ($this->groups->contains($superGroup))
+            if ($this->id < 0)
             {
-                return true;
+                throw new NotSupportedException();
             }
-            return false;
+            return Group::isUserASuperAdministrator($this);
+        }
+
+        /**
+         * Make active users query search attributes data.
+         * @param bool $includeRootUser
+         * @return array
+         */
+        public static function makeActiveUsersQuerySearchAttributeData($includeRootUser = false)
+        {
+            assert('is_bool($includeRootUser)');
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'isActive',
+                    'operatorType'         => 'equals',
+                    'value'                => true,
+                ),
+                2 => array(
+                    'attributeName'        => 'isSystemUser',
+                    'operatorType'         => 'equals',
+                    'value'                => 0,
+                ),
+                3 => array(
+                    'attributeName'        => 'isSystemUser',
+                    'operatorType'         => 'isNull',
+                    'value'                => null,
+                ),
+            );
+            $searchAttributeData['structure'] = '1 and (2 or 3)';
+            if ($includeRootUser == false)
+            {
+                $searchAttributeData['clauses'][4] = array(
+                    'attributeName'        => 'isRootUser',
+                    'operatorType'         => 'equals',
+                    'value'                => 0,
+                );
+                $searchAttributeData['clauses'][5] = array(
+                    'attributeName'        => 'isRootUser',
+                    'operatorType'         => 'isNull',
+                    'value'                => null,
+                );
+                $searchAttributeData['structure'] = '1 and (2 or 3) and (4 or 5)';
+            }
+            return $searchAttributeData;
+        }
+
+        /**
+         * Get active users.
+         * @return array
+         */
+        public static function getActiveUsers($includeRootUser = false)
+        {
+            $searchAttributeData    = self::makeActiveUsersQuerySearchAttributeData($includeRootUser);
+            $joinTablesAdapter      = new RedBeanModelJoinTablesQueryAdapter('User');
+            $where                  = RedBeanModelDataProvider::makeWhere('User', $searchAttributeData, $joinTablesAdapter);
+            return User::getSubset($joinTablesAdapter, null, null, $where);
         }
     }

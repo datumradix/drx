@@ -202,11 +202,10 @@
         {
             $columns = $this->getCGridViewColumns();
             assert('is_array($columns)');
-            $listTypeCssClass = 'type-' . $this->moduleId;
             $params = array(
                 'id' => $this->getGridViewId(),
                 'htmlOptions' => array(
-                    'class' => 'cgrid-view ' . $listTypeCssClass
+                    'class' => 'cgrid-view ' . $this->getTypeCssClassForCGridView()
                 ),
                 'loadingCssClass'      => 'loading',
                 'dataProvider'         => $this->getDataProvider(),
@@ -228,6 +227,11 @@
                 'hideHeader'           => $this->isHeaderHidden()
             );
             return $this->resolveCGridViewParamsForKanbanBoard($params);
+        }
+
+        protected function getTypeCssClassForCGridView()
+        {
+            return 'type-' . $this->moduleId;
         }
 
         protected static function getGridTemplate()
@@ -485,7 +489,7 @@
             if (isset($metadata['global']['rowMenu']) && is_array($metadata['global']['rowMenu']['elements']))
             {
                 return array(
-                    'class'           => 'RowMenuColumn',
+                    'class'           => $this->resolveRowMenuColumnClass(),
                     'rowMenu'         => $metadata['global']['rowMenu'],
                     'listView'        => $this,
                     'redirectUrl'     => ArrayUtil::getArrayValue($this->params, 'redirectUrl'),
@@ -605,6 +609,15 @@
         protected function isHeaderHidden()
         {
             return false;
+        }
+
+        /**
+         * Resolve row menu column class.
+         * @return string
+         */
+        protected function resolveRowMenuColumnClass()
+        {
+            return 'RowMenuColumn';
         }
     }
 ?>
