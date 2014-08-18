@@ -252,6 +252,9 @@
             'phoneHelper' => array(
                 'class'          => 'application.core.components.PhoneHelper',
             ),
+            'readPermissionSubscriptionObserver' => array(
+                'class' => 'application.modules.zurmo.observers.ReadPermissionSubscriptionObserver',
+            ),
             'request' => array(
                 'class' => 'application.core.components.ZurmoHttpRequest',
                 'enableCsrfValidation' => true,
@@ -372,12 +375,12 @@
             'min' => 'application.extensions.minscript.controllers.ExtMinScriptController',
         ),
         'import' => array(
-            'application.modules.zurmo.components.BeginRequestBehavior',
+            'application.core.exceptions.NotFoundException',
+            'application.core.exceptions.NotSupportedException',
             'application.core.utils.ArrayUtil',
             'application.core.utils.FileUtil',
             'application.core.utils.ZurmoCache',
             'application.core.utils.GeneralCache',
-            'application.core.exceptions.NotFoundException',
             'application.core.components.ZurmoLocale',
             'application.core.utils.Zurmo',
             'application.modules.api.tests.unit.models.*',
@@ -390,6 +393,7 @@
             'application.extensions.wideImage.WideImage',
             'application.extensions.phaActiveColumn.*',
             'application.extensions.userinterface.UserInterface',
+            'application.modules.zurmo.components.BeginRequestBehavior',
         ),
         'modules' => array(
             'accountAccountAffiliations',
@@ -447,7 +451,7 @@
             'redBeanVersion'            => '3.2',
             'yiiVersion'                => '1.1.13',
             'memcacheServers'           => $memcacheServers,
-            // enable if you want to clear memcache data with clearCache=1
+            // enable if you want to clear memcache data with clearCache=1 // Not Coding Standard
             'hasDedicatedMemcachePool'  => false,
             'supportedLanguages'        => array(
                 'en' => 'English',
@@ -456,7 +460,10 @@
                 'fr' => 'French',
                 'de' => 'German',
             ),
-            'sentryDsn'                 => 'http://5232100222bc4404b368026413df2d9a:47f7a2f1542348d68bea7b00f2261ede@sentry.zurmo.com/2',
+            'sentryDsn'    => 'http://5232100222bc4404b368026413df2d9a:47f7a2f1542348d68bea7b00f2261ede@sentry.zurmo.com/2',
+            'processNamedSecurableActualPermissionsAsNonOptimized' => false,
+            'processReadMungeAsWriteMunge' => false,
+            'showFlashMessageWhenSecurityCacheShouldBeRebuilt' => false,
         ),
         'preload'                       => array(
             'browser',

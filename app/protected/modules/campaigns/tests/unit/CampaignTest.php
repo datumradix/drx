@@ -33,7 +33,7 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-    class CampaignTest extends ZurmoBaseTest
+    class CampaignTest extends AutoresponderOrCampaignBaseTest
     {
         public static $marketingList;
 
@@ -42,6 +42,8 @@
             parent::setUpBeforeClass();
             SecurityTestHelper::createSuperAdmin();
             SecurityTestHelper::createUsers();
+            // Delete item from jobQueue, that is created when new user is created
+            Yii::app()->jobQueue->deleteAll();
             self::$marketingList = MarketingListTestHelper::createMarketingListByName('a new list');
         }
 
@@ -80,7 +82,7 @@
             $this->assertTrue($campaign->save());
             $jobs = Yii::app()->jobQueue->getAll();
             $this->assertCount(1, $jobs);
-            $this->assertEquals('CampaignGenerateDueCampaignItems', $jobs[5][0]);
+            $this->assertEquals('CampaignGenerateDueCampaignItems', $jobs[5][0]['jobType']);
             $id                         = $campaign->id;
             unset($campaign);
             $campaign                   = Campaign::getById($id);
@@ -327,9 +329,31 @@
         {
             $campaigns = Campaign::getAll();
             $this->assertEquals(4, count($campaigns));
+
+            CampaignItemTestHelper::createCampaignItem(0, $campaigns[0]);
+            $campaignItems = CampaignItem::getAll();
+            $this->assertCount(1, $campaignItems);
+
+            $campaignItemActivity                           = new CampaignItemActivity();
+            $campaignItemActivity->type                     = CampaignItemActivity::TYPE_CLICK;
+            $campaignItemActivity->quantity                 = 1;
+            $campaignItemActivity->campaignItem             = $campaignItems[0];
+            $campaignItemActivity->latestSourceIP           = '121.212.122.112';
+            $this->assertTrue($campaignItemActivity->save());
+
+            $campaignItemActivities = CampaignItemActivity::getAll();
+            $this->assertCount(1, $campaignItemActivities);
+
             $campaigns[0]->delete();
+
             $campaigns = Campaign::getAll();
             $this->assertEquals(3, count($campaigns));
+
+            $campaignItems = CampaignItem::getAll();
+            $this->assertCount(0, $campaignItems);
+
+            $campaignItemActivities = CampaignItemActivity::getAll();
+            $this->assertCount(0, $campaignItemActivities);
         }
     }
 ?>

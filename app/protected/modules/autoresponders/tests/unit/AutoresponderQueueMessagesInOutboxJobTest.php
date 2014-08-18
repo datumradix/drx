@@ -33,7 +33,7 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-    class AutoresponderQueueMessagesInOutboxJobTest extends ZurmoBaseTest
+    class AutoresponderQueueMessagesInOutboxJobTest extends AutoresponderOrCampaignBaseTest
     {
         protected $user;
 
@@ -308,8 +308,8 @@
             $this->assertCount(5, $unprocessedItems);
             $jobs = Yii::app()->jobQueue->getAll();
             $this->assertCount(2, $jobs);
-            $this->assertEquals('ProcessOutboundEmail', $jobs[0][0]);
-            $this->assertEquals('AutoresponderQueueMessagesInOutbox', $jobs[5][0]);
+            $this->assertEquals('ProcessOutboundEmail', $jobs[0][0]['jobType']);
+            $this->assertEquals('AutoresponderQueueMessagesInOutbox', $jobs[5][0]['jobType']);
             AutoresponderOrCampaignBatchSizeConfigUtil::setBatchSize(3);
             $this->assertTrue($job->run());
             $unprocessedItems               = AutoresponderItem::getByProcessedAndAutoresponderId(
@@ -326,7 +326,7 @@
             $this->assertCount(0, $unprocessedItems);
             $jobs = Yii::app()->jobQueue->getAll();
             $this->assertCount(1, $jobs);
-            $this->assertEquals('ProcessOutboundEmail', $jobs[0][0]);
+            $this->assertEquals('ProcessOutboundEmail', $jobs[0][0]['jobType']);
         }
 
         /**

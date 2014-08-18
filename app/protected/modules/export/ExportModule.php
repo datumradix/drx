@@ -52,7 +52,7 @@
          * Page size for asynchronus paging when processing export
          * @var int
          */
-        public static $asynchronousPageSize  = 500;
+        public static $asynchronousPageSize  = 250;
 
         /**
          * How many total models to process in a given export job run
@@ -90,6 +90,50 @@
         protected static function getPluralModuleLabel($language)
         {
             return Zurmo::t('ExportModule', 'Exports', array(), null, $language);
+        }
+
+        /**
+         * @return array
+         */
+        public static function getDefaultMetadata()
+        {
+            $metadata = array();
+            $metadata['global'] = array(
+                'configureMenuItems' => array(
+                    array(
+                        'category'         => ZurmoModule::ADMINISTRATION_CATEGORY_GENERAL,
+                        'titleLabel'       => "eval:Zurmo::t('ExportModule', 'Export')",
+                        'descriptionLabel' => "eval:Zurmo::t('ExportModule', 'Export Items Status.')",
+                        'route'            => '/export/default/list',
+                        'right'            => self::RIGHT_ACCESS_EXPORT,
+                    ),
+                )
+            );
+            return $metadata;
+        }
+
+        /**
+         * @return string
+         */
+        public static function getPrimaryModelName()
+        {
+            return 'ExportItem';
+        }
+
+        /**
+         * @return string
+         */
+        public static function getGlobalSearchFormClassName()
+        {
+            return 'ExportSearchForm';
+        }
+
+        /**
+         * @return boolean
+         */
+        public static function modelsAreNeverGloballySearched()
+        {
+            return true;
         }
     }
 ?>

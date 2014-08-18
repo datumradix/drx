@@ -35,29 +35,34 @@
      ********************************************************************************/
 
     /**
-     * Controller Class for managing currency actions.
-     *
+     * Class to adapt system configuration values into a configuration form.
+     * Saves global values from a configuration form.
      */
-    class ZurmoReadPermissionsController extends Controller
+    class ZurmoSystemConfigurationFormAdapter
     {
-        public function filters()
+        /**
+         * Creates a form populated with the system configuration global stored values.
+         * @return ZurmoSystemConfigurationForm
+         */
+        public static function makeFormFromSystemConfiguration()
         {
-            return array(
-                array(
-                    ZurmoBaseController::RIGHTS_FILTER_PATH,
-                    'moduleClassName' => 'ZurmoModule',
-                    'rightName' => ZurmoModule::RIGHT_ACCESS_ADMINISTRATION, //Use this right until a more specific right is in place.
-               ),
-            );
+            $form                                         = new ZurmoSystemConfigurationForm();
+            $form->autoresponderOrCampaignBatchSize       = AutoresponderOrCampaignBatchSizeConfigUtil::getBatchSize();
+            $form->outboundEmailBatchSize                 = OutboundEmailBatchSizeConfigUtil::getBatchSize();
+            $form->listPageSizeMaxLimit                   = ZurmoSystemConfigurationUtil::getBatchSize();
+            return $form;
         }
 
-        public function actionRebuildMunge()
+        /**
+         * Given a SystemConfigurationForm, save the system configuration global values.
+         */
+        public static function setConfigurationFromForm(ZurmoSystemConfigurationForm $form)
         {
-            ReadPermissionsOptimizationUtil::rebuild();
-            echo Zurmo::t('ZurmoModule', 'Read permissions rebuild complete.') . "<BR>";
-            if (SHOW_QUERY_DATA)
+            if (Yii::app()->user->userModel->isRootUser)
             {
-                echo PageView::makeShowQueryDataContent();
+                AutoresponderOrCampaignBatchSizeConfigUtil::setBatchSize((int)$form->autoresponderOrCampaignBatchSize);
+                OutboundEmailBatchSizeConfigUtil::setBatchSize((int)$form->outboundEmailBatchSize);
+                ZurmoSystemConfigurationUtil::setBatchSize((int)$form->listPageSizeMaxLimit);
             }
         }
     }

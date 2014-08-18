@@ -413,6 +413,13 @@ table.configuration-list{
 	}
 }
 
+#GroupEditAndDetailsView,
+#RoleEditAndDetailsView{
+	.has-model-select input{
+		text-indent: 21px;
+	}
+}
+
 /*Jobs*/
 #JobsCollectionView{
 	div.wide.form{
@@ -1486,4 +1493,24 @@ table.configuration-list{
 }
 .security-adhoc-sharing{
 	.icon:before{ content: '\00EB'; }
+}
+
+/*Export Job*/
+.exported-filename{
+	line-height: 22px;
+	~ .secondary-button{
+		float: right;
+		margin-right: 5px;
+	}
+	~ .cancelled-export{
+		.smaller();
+		float: right;
+		position: relative;
+		top: 3px;
+		margin-right: 5px;
+		padding: 2px 4px;
+		.radius(3px);
+		color: #fff !important;
+		#gradient > .vertical(#c43d53, #a82d31 );
+	}
 }

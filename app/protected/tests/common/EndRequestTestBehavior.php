@@ -37,16 +37,9 @@
     Yii::import('application.modules.zurmo.components.EndRequestBehavior');
     class EndRequestTestBehavior extends EndRequestBehavior
     {
-        public function attach($owner)
+        protected function resolveDefaultRequestType($className)
         {
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleGamification'));
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleJobQueue'));
-            $owner->attachEventHandler('onEndRequest', array($this, 'handleEndRequest'));
-        }
-
-        public function handleEndRequest($event)
-        {
-            throw new ExitException();
+            return $className::TEST_REQUEST;
         }
     }
 ?>
