@@ -385,5 +385,30 @@
             }
             return false;
         }
+
+        /**
+         * @param int $emailMessageId
+         */
+        public static function getByEmailMessageId($emailMessageId)
+        {
+            assert('is_int($emailMessageId)');
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'             => 'emailMessage',
+                    'relatedAttributeName'      => 'id',
+                    'operatorType'              => 'equals',
+                    'value'                     => $emailMessageId,
+                ),
+            );
+            $searchAttributeData['structure'] = '(1)';
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            if ($countOnly)
+            {
+                return self::getCount($joinTablesAdapter, $where, get_called_class(), true);
+            }
+            return self::getSubset($joinTablesAdapter, null, null, $where, null);
+        }
     }
 ?>

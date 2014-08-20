@@ -251,7 +251,8 @@
 
         protected static function sendEmailMessage(EmailMessage & $emailMessage)
         {
-            Yii::app()->emailHelper->send($emailMessage, true, false);
+            //Yii::app()->emailHelper->send($emailMessage, true, false);
+            Yii::app()->custom->sendAutoresponderOrCampaignItemEmailMessage($emailMessage);
         }
 
         protected static function resolveExplicitPermissionsForEmailMessage(EmailMessage & $emailMessage, MarketingList $marketingList)

@@ -164,5 +164,63 @@
                 }
             }
         }
+
+        public static function sendMailUsingGlobalConfiguration(EmailMessage $emailMessage)
+        {
+            //Check for global sendgrid configuration
+            $username = ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'apiUsername');
+            $password = ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'apiPassword');
+            if($username != '' && $password != '')
+            {
+                $recipientTypeData = array();
+                foreach ($emailMessage->recipients as $recipient)
+                {
+                    $recipientTypeData[$recipient->type][] = array($recipient->toAddress => $recipient->toName);
+                }
+                $toAddresses    = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_TO, array());
+                $ccAddresses    = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_CC, array());
+                $bccAddresses   = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_BCC, array());
+                //Send email using sendgrid global
+                $emailHelper = new SendGridEmailHelper();
+                $mailer       = new ZurmoSendGridMailer($emailHelper, $emailMessage->sender, $toAddresses, $ccAddresses, $bccAddresses);
+                $emailMessage = $mailer->send();
+            }
+        }
+
+        /**
+         * Send an email message. This will queue up the email to be sent by the queue sending process. If you want to
+         * send immediately, consider using @sendImmediately
+         * @param EmailMessage $emailMessage
+         * @param bool $useSQL
+         * @param bool $validate
+         * @return bool|void
+         * @throws FailedToSaveModelException
+         * @throws NotFoundException
+         * @throws NotSupportedException
+         */
+        public function send(EmailMessage & $emailMessage, $useSQL = false, $validate = true)
+        {
+            static::isValidFolderType($emailMessage);
+            $folder     = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX);
+            $saved      = static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder, $validate);
+            if ($saved)
+            {
+                Yii::app()->jobQueue->add('ProcessSendGridOutboundEmail');
+            }
+            return $saved;
+        }
+
+        /**
+         * Call this method to process all email Messages in the queue. This is typically called by a scheduled job
+         * or cron.  This will process all emails in a TYPE_OUTBOX folder or TYPE_OUTBOX_ERROR folder. If the message
+         * has already been sent 3 times then it will be moved to a failure folder.
+         * @param bool|null $count
+         * @return bool number of queued messages to be sent
+         */
+        public function sendQueued($count = null)
+        {
+            EmailMessageUtil::processAndSendQueuedMessages($this, $count);
+            return true;
+        }
     }
 ?>

@@ -46,11 +46,19 @@
 
         protected $fromUser;
 
-        protected $toAddress;
+        protected $toAddresses;
+
+        protected $ccAddresses;
+
+        protected $bccAddresses;
 
         protected $fromUserEmailData;
 
-        public function __construct(SendGridEmailHelper $emailHelper, $userToSendMessagesFrom, $toAddress)
+        public function __construct(SendGridEmailHelper $emailHelper,
+                                    $userToSendMessagesFrom,
+                                    $toAddresses,
+                                    $ccAddresses = array(),
+                                    $bccAddresses = array())
         {
             SendGrid::register_autoloader();
             Smtpapi::register_autoloader();
@@ -63,7 +71,16 @@
             {
                 $this->fromUser    = $userToSendMessagesFrom;
             }
-            $this->toAddress   = $toAddress;
+            if(is_array($toAddresses))
+            {
+                $this->toAddresses  = $toAddresses;
+            }
+            else
+            {
+                $this->toAddresses  = array($toAddresses => null);
+            }
+            $this->ccAddresses      = $ccAddresses;
+            $this->bccAddresses     = $bccAddresses;
         }
 
         /**
@@ -85,7 +102,7 @@
          */
         public function sendTestEmail()
         {
-            $emailMessage              = EmailMessageHelper::processAndCreateEmailMessage($this->fromUserEmailData, $this->toAddress);
+            $emailMessage              = EmailMessageHelper::processAndCreateEmailMessage($this->fromUserEmailData, $this->toAddresses);
             $validated                 = $emailMessage->validate();
             if ($validated)
             {
@@ -124,14 +141,25 @@
         {
             $sendgrid = new SendGrid($this->emailHelper->apiUsername, $this->emailHelper->apiPassword, array("turn_off_ssl_verification" => true));
             $email    = new SendGrid\Email();
-            $email->addTo($this->toAddress)->
-                   setFrom($this->fromUserEmailData['address'])->
+            $email->setFrom($this->fromUserEmailData['address'])->
                    setFromName($this->fromUserEmailData['name'])->
                    setSubject($emailMessage->subject)->
                    setText($emailMessage->content->textContent)->
                    setHtml($emailMessage->content->htmlContent)->
                    addHeader('X-Sent-Using', 'SendGrid-API')->
                    addHeader('X-Transport', 'web');
+            foreach($this->toAddresses as $emailAddress => $name)
+            {
+                $email->addTo($emailAddress, $name);
+            }
+            foreach($this->ccAddresses as $emailAddress => $name)
+            {
+                $email->addCc($emailAddress);
+            }
+            foreach($this->bccAddresses as $emailAddress => $name)
+            {
+                $email->addBcc($emailAddress);
+            }
             $response = $sendgrid->send($email);
             if($response->message == 'success')
             {
