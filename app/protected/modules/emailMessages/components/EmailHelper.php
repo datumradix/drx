@@ -361,7 +361,7 @@
          */
         public function sendQueued($count = null)
         {
-            assert('is_int($count) || $count == null');
+            /*assert('is_int($count) || $count == null');
             $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
             foreach ($queuedEmailMessages as $emailMessage)
             {
@@ -389,7 +389,8 @@
                 {
                     $this->processMessageAsFailure($emailMessage);
                 }
-            }
+            }*/
+            EmailMessageUtil::processAndSendQueuedMessages($this, $count);
             return true;
         }
 

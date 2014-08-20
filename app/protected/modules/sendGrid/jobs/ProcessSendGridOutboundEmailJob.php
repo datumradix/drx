@@ -35,32 +35,38 @@
      ********************************************************************************/
 
     /**
-     * Class to adapt marketing global configuration values into a configuration form.
-     * Saves global values from a configuration form.
+     * A job for processing outbound emails in the queue to be sent using sendgrid
      */
-    class MarketingConfigurationFormAdapter
+    class ProcessSendGridOutboundEmailJob extends ProcessOutboundEmailJob
     {
         /**
-         * Creates a form populated with the marketing configuration global stored values.
-         * @return MarketingConfigurationForm
+         * @returns Translated label that describes this job type.
          */
-        public static function makeFormFromMarketingConfiguration()
+        public static function getDisplayName()
         {
-            $form                                         = new MarketingConfigurationForm();
-            $form->autoresponderOrCampaignFooterPlainText = GlobalMarketingFooterUtil::getContentByType(false);
-            $form->autoresponderOrCampaignFooterRichText  = GlobalMarketingFooterUtil::getContentByType(true);
-            $form->useAutoresponderOrCampaignOwnerMailSettings = ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-            return $form;
+           return Zurmo::t('SendGridModule', 'Process SendGrid Outbound Email Job');
         }
 
         /**
-         * Given a MarketingConfigurationForm, save the marketing configuration global values.
+         * @return The type of the NotificationRules
          */
-        public static function setConfigurationFromForm(MarketingConfigurationForm $form)
+        public static function getType()
         {
-            GlobalMarketingFooterUtil::setContentByType($form->autoresponderOrCampaignFooterPlainText, false);
-            GlobalMarketingFooterUtil::setContentByType($form->autoresponderOrCampaignFooterRichText, true);
-            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', $form->useAutoresponderOrCampaignOwnerMailSettings);
+            return 'ProcessSendGridOutboundEmail';
+        }
+
+        /**
+         * (non-PHPdoc)
+         * @see BaseJob::run()
+         */
+        public function run()
+        {
+            $success = Yii::app()->sendGridEmailHelper->sendQueued($this->resolveBatchSize());
+            if (Yii::app()->emailHelper->getQueuedCount() > 0)
+            {
+                static::loadJobQueue();
+            }
+            return $success;
         }
     }
 ?>
