@@ -40,7 +40,7 @@
     /**
      * Class for Zurmo specific sendgrid functionality.
      */
-    class ZurmoSendGridMailer extends CComponent
+    class ZurmoSendGridMailer extends Mailer
     {
         protected $emailHelper;
 
@@ -135,10 +135,12 @@
             $response = $sendgrid->send($email);
             if($response->message == 'success')
             {
+                //Here we need to check if
                 $emailMessage->error        = null;
                 $emailMessage->folder       = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
                 $emailMessage->sentDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
             }
+            //In case message is not delivered but there is no api related error than also flow would not enter here.
             elseif($response->message == 'error')
             {
                 $content = Zurmo::t('EmailMessagesModule', 'Response from Server') . "\n";
