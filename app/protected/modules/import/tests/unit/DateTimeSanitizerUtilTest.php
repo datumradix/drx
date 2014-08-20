@@ -34,51 +34,20 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    // This is the configuration for zurmoc console application.
-    // Any writable CConsoleApplication properties can be configured here.
-    $common_config = CMap::mergeArray(
-        require('main.php'),
-        array(
-            'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-            'name' => 'Zurmo Console Application',
-        )
-    );
-    $common_config['import'][] = 'application.core.utils.UpgradeUtil.php';
-    //Utilize a custom begin request behavior class.
-    $common_config['behaviors']['onBeginRequest'] = array(
-        'class' => 'application.modules.zurmo.components.CommandBeginRequestBehavior'
-    );
-
-    $common_config['components']['lessCompiler'] = array(
-        'class'                         => 'application.extensions.lessphp.LessCompiler',
-        'formatterName'                 => 'lessjs',
-        'themeColorDependentLessFilesToCompile' => array(
-            'zurmo.less',
-            'imports.less'
-        ),
-        'lessFilesToCompile'            => array(
-            'ie.less',
-            'mobile.less',
-            'webforms-external.less',
-            'builder-iframe-tools.less'
-        ),
-    );
-
-    //Turn off gamification
-    $common_config['components']['gamificationObserver']['enabled'] = false;
-    //Not applicable for console applications.
-    unset($common_config['defaultController']);
-    //Not applicable for console applications.
-    unset($common_config['controllerMap']);
-    //Not applicable for console applications.
-    unset($common_config['userInterface']);
-    if (file_exists(COMMON_ROOT . '/protected/config/commercialConsole.php'))
+    class DateTimeSanitizerUtilTest extends ZurmoBaseTest
     {
-        $common_config = CMap::mergeArray($common_config, require(COMMON_ROOT . '/protected/config/commercialConsole.php'));
+        public function testGetAcceptableFormats()
+        {
+            $expected = array(
+                    'yyyy-MM-dd hh:mm',
+                    'MM-dd-yyyy hh:mm',
+                    'dd-MM-yyyy hh:mm',
+                    'MM/dd/yyyy hh:mm',
+                    'M/d/yyyy hh:mm',
+                    'd/M/yyyy hh:mm',
+                    'yyyy-M-d hh:mm'
+            );
+            $this->assertEquals($expected, DateTimeSanitizerUtil::getAcceptableFormats());
+        }
     }
-    if (is_file(INSTANCE_ROOT . '/protected/config/customConsole.php'))
-    {
-        $common_config = CMap::mergeArray($common_config, require(COMMON_ROOT . '/protected/config/customConsole.php'));
-    }
-    return $common_config
 ?>
