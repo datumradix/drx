@@ -35,13 +35,13 @@
      ********************************************************************************/
 
     /**
-     * Edit and details view for the marketing global configuration view.
+     * Edit and details view for the admin configuration view for sendgrid.
      */
-    class MarketingConfigurationEditAndDetailsView extends EditAndDetailsView
+    class SendGridConfigurationView extends EditAndDetailsView
     {
         public function getTitle()
         {
-            return Zurmo::t('MarketingModule', 'Marketing Configuration');
+            return Zurmo::t('SendGridModule', 'SendGrid Configuration');
         }
 
         public static function getDefaultMetadata()
@@ -59,32 +59,12 @@
                     'panels' => array(
                         array(
                             'rows' => array(
-                                array('cells' =>
+                               array('cells' =>
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'autoresponderOrCampaignFooterPlainText',
-                                                      'type'          => 'TextAreaWithPreviewLink'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'autoresponderOrCampaignFooterRichText',
-                                                      'type'          => 'RedactorWithPreviewLink'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'useAutoresponderOrCampaignOwnerMailSettings',
-                                                      'type'          => 'CheckBox'),
+                                                array('attributeName' => 'enableSendgrid',
+                                                      'type' => 'CheckBox'),
                                             ),
                                         ),
                                     )

@@ -35,25 +35,22 @@
      ********************************************************************************/
 
     /**
-     * Edit and details view for the marketing global configuration view.
+     * Edit view for a user's sendgrid webapi configuration.
      */
-    class MarketingConfigurationEditAndDetailsView extends EditAndDetailsView
+    class UserSendGridConfigurationEditView extends EditView
     {
-        public function getTitle()
-        {
-            return Zurmo::t('MarketingModule', 'Marketing Configuration');
-        }
-
         public static function getDefaultMetadata()
         {
             $metadata = array(
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type' => 'SaveButton',        'renderType' => 'Edit'),
-                            array('type' => 'ConfigurationLink', 'label' => "eval:Zurmo::t('Core', 'Cancel')"),
-                            array('type' => 'EditLink',          'renderType' => 'Details'),
+                            array('type' => 'SaveButton'),
+                            array('type' => 'UserEmailConfigurationCancelLink'),
                         ),
+                    ),
+                    'derivedAttributeTypes' => array(
+                        'EmailMessageContent'
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
@@ -63,8 +60,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'autoresponderOrCampaignFooterPlainText',
-                                                      'type'          => 'TextAreaWithPreviewLink'),
+                                                array('attributeName' => 'fromName', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -73,8 +69,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'autoresponderOrCampaignFooterRichText',
-                                                      'type'          => 'RedactorWithPreviewLink'),
+                                                array('attributeName' => 'fromAddress', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -83,8 +78,44 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'useAutoresponderOrCampaignOwnerMailSettings',
-                                                      'type'          => 'CheckBox'),
+                                                array('attributeName' => 'replyToAddress', 'type' => 'Text'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'apiUsername', 'type' => 'Text'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'apiPassword', 'type' => 'Password'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'aTestToAddress',
+                                                      'type' => 'SendGridSendATestEmailTo'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'emailSignatureHtmlContent', 'type' => 'EmailSignature'),
                                             ),
                                         ),
                                     )
@@ -95,11 +126,6 @@
                 ),
             );
             return $metadata;
-        }
-
-        protected function getNewModelTitleLabel()
-        {
-            return null;
         }
     }
 ?>

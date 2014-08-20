@@ -675,5 +675,49 @@
                 throw new NotSupportedException("Can not switch user");
             }
         }
+
+        public function actionSendGridConfiguration($id, $redirectUrl = null)
+        {
+            UserAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
+            $user                           = User::getById(intval($id));
+            UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
+            UserAccessUtil::resolveAccessingASystemUser($user);
+            $title                          = Zurmo::t('SendGridModule', 'SendGrid Configuration');
+            $breadCrumbLinks                = array(strval($user) => array('default/details',  'id' => $id), $title);
+            $emailAccount                   = SendGridEmailAccount::resolveAndGetByUserAndName($user);
+            $userSendGridConfigurationForm  = new UserSendGridConfigurationForm($emailAccount);
+            $userSendGridConfigurationForm->emailSignatureHtmlContent = $user->getEmailSignature()->htmlContent;
+            $postVariableName               = get_class($userSendGridConfigurationForm);
+
+            if (isset($_POST[$postVariableName]))
+            {
+                $userSendGridConfigurationForm->setAttributes($_POST[$postVariableName]);
+                if ($userSendGridConfigurationForm->validate())
+                {
+                    $userSendGridConfigurationForm->save();
+                    Yii::app()->user->setFlash('notification',
+                        Zurmo::t('UsersModule', 'User sendgrid webapi configuration saved successfully.')
+                    );
+
+                    if ($redirectUrl != null)
+                    {
+                        $this->redirect($redirectUrl);
+                    }
+                    else
+                    {
+                        $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
+                    }
+                }
+            }
+            $titleBarAndEditView = new UserActionBarAndSendGridConfigurationEditView(
+                                    $this->getId(),
+                                    $this->getModule()->getId(),
+                                    $user,
+                                    $userSendGridConfigurationForm
+            );
+            $titleBarAndEditView->setCssClasses(array('AdministrativeArea'));
+            $view = new UsersPageView($this->resolveZurmoDefaultOrAdminView($titleBarAndEditView, $breadCrumbLinks, 'UserBreadCrumbView'));
+            echo $view->render();
+        }
     }
 ?>

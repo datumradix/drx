@@ -35,45 +35,56 @@
      ********************************************************************************/
 
     /**
-     * Class to render link user configuration
+     * Use this form when creating or modifying a user's sendgrid email account information
      */
-    class UserConfigurationMenuActionElement extends MenuActionElement
+    class UserSendGridConfigurationForm extends ModelForm
     {
-        public function getActionType()
+        public $aTestToAddress;
+
+        public $emailSignatureHtmlContent;
+
+        protected static function getRedBeanModelClassName()
         {
-            return 'Edit';
+            return 'SendGridEmailAccount';
         }
 
-        protected function getMenuItems()
+        public function __construct(SendGridEmailAccount $model)
         {
-            return array(array('label'   => Zurmo::t('Core', 'General'),
-                               'url'     => $this->getRouteFormMenuItems() . '/configurationEdit?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'abc')),
-                         array('label'   => Zurmo::t('EmailMessagesModule', 'Email'),
-                               'url'     => $this->getRouteFormMenuItems() . '/emailConfiguration?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'def')),
-                         array('label'   => Zurmo::t('UsersModule', 'Security Overview'),
-                               'url'     => $this->getRouteFormMenuItems() . '/securityDetails?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'ffff')),
-                         array('label'   => Zurmo::t('SendGridModule', 'SendGrid'),
-                               'url'     => $this->getRouteFormMenuItems() . '/sendGridConfiguration?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'ffff')),
-                         );
+            $this->model = $model;
         }
 
-        protected function getDefaultLabel()
+        public function rules()
         {
-            return Zurmo::t('ConfigurationModule', 'Configuration');
+            return array(
+                array('aTestToAddress',                    'email'),
+                array('emailSignatureHtmlContent', 'type', 'type' => 'string'),
+            );
         }
 
-        protected function getDefaultRoute()
+        public function attributeLabels()
         {
-            return null;
+            return array_merge($this->model->attributeLabels(), array(
+                'aTestToAddress'            => Zurmo::t('EmailMessagesModule', 'Send a test email to'),
+                'emailSignatureHtmlContent' => Zurmo::t('EmailMessagesModule', 'Email Signature')
+            ));
         }
 
-        protected function getRouteFormMenuItems()
+        /**
+         * Save the emailSignatureHtmlContent
+         */
+        public function save($runValidation = true, array $attributeNames = null)
         {
-            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/');
+            if (parent::save(false))
+            {
+                $emailSignature              = $this->model->user->getEmailSignature();
+                $emailSignature->htmlContent = $this->emailSignatureHtmlContent;
+                $this->model->user->save();
+            }
+            else
+            {
+                return false;
+            }
+            return true;
         }
     }
 ?>

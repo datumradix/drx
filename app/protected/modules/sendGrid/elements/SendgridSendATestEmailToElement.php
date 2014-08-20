@@ -35,45 +35,27 @@
      ********************************************************************************/
 
     /**
-     * Class to render link user configuration
+     * Utilize this element to display a text input and button that can be used to send a test email while setting
+     * up the outbound email configuration.
      */
-    class UserConfigurationMenuActionElement extends MenuActionElement
+    class SendGridSendATestEmailToElement extends SendATestEmailToElement
     {
-        public function getActionType()
+        /**
+         * Render a test button. This link calls a modal
+         * popup.
+         * @return The element's content as a string.
+         */
+        protected function renderTestButton()
         {
-            return 'Edit';
-        }
-
-        protected function getMenuItems()
-        {
-            return array(array('label'   => Zurmo::t('Core', 'General'),
-                               'url'     => $this->getRouteFormMenuItems() . '/configurationEdit?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'abc')),
-                         array('label'   => Zurmo::t('EmailMessagesModule', 'Email'),
-                               'url'     => $this->getRouteFormMenuItems() . '/emailConfiguration?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'def')),
-                         array('label'   => Zurmo::t('UsersModule', 'Security Overview'),
-                               'url'     => $this->getRouteFormMenuItems() . '/securityDetails?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'ffff')),
-                         array('label'   => Zurmo::t('SendGridModule', 'SendGrid'),
-                               'url'     => $this->getRouteFormMenuItems() . '/sendGridConfiguration?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'ffff')),
-                         );
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('ConfigurationModule', 'Configuration');
-        }
-
-        protected function getDefaultRoute()
-        {
-            return null;
-        }
-
-        protected function getRouteFormMenuItems()
-        {
-            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/');
+            $content  = '<span>';
+            $content .= ZurmoHtml::ajaxLink(
+                ZurmoHtml::wrapLabel(Zurmo::t('EmailMessagesModule', 'Send Test Email')),
+                Yii::app()->createUrl('sendGrid/default/sendTestMessage/', array()),
+                static::resolveAjaxOptionsForTestEmailSettings($this->form->getId()),
+                array('id' => 'SendATestEmailToButton', 'class' => 'EmailTestingButton z-button')
+            );
+            $content .= '</span>';
+            return $content;
         }
     }
 ?>

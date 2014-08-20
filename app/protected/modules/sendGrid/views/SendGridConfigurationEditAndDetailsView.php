@@ -35,13 +35,13 @@
      ********************************************************************************/
 
     /**
-     * Edit and details view for the marketing global configuration view.
+     * Edit and details view for the sendgrid global configuration view.
      */
-    class MarketingConfigurationEditAndDetailsView extends EditAndDetailsView
+    class SendGridConfigurationEditAndDetailsView extends EditAndDetailsView
     {
         public function getTitle()
         {
-            return Zurmo::t('MarketingModule', 'Marketing Configuration');
+            return Zurmo::t('SendGridModule', 'WebAPI Configuration');
         }
 
         public static function getDefaultMetadata()
@@ -50,9 +50,9 @@
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type' => 'SaveButton',        'renderType' => 'Edit'),
-                            array('type' => 'ConfigurationLink', 'label' => "eval:Zurmo::t('Core', 'Cancel')"),
-                            array('type' => 'EditLink',          'renderType' => 'Details'),
+                            array('type' => 'SaveButton',    'renderType' => 'Edit'),
+                            array('type' => 'ConfigurationLink'),
+                            array('type' => 'EditLink',      'renderType' => 'Details'),
                         ),
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
@@ -63,8 +63,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'autoresponderOrCampaignFooterPlainText',
-                                                      'type'          => 'TextAreaWithPreviewLink'),
+                                                array('attributeName' => 'username', 'type' => 'Text'),
                                             ),
                                         ),
                                     )
@@ -73,8 +72,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'autoresponderOrCampaignFooterRichText',
-                                                      'type'          => 'RedactorWithPreviewLink'),
+                                                array('attributeName' => 'password', 'type' => 'Password'),
                                             ),
                                         ),
                                     )
@@ -83,8 +81,8 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'useAutoresponderOrCampaignOwnerMailSettings',
-                                                      'type'          => 'CheckBox'),
+                                                array('attributeName' => 'aTestToAddress',
+                                                      'type' => 'SendGridSendATestEmailTo'),
                                             ),
                                         ),
                                     )
@@ -95,11 +93,6 @@
                 ),
             );
             return $metadata;
-        }
-
-        protected function getNewModelTitleLabel()
-        {
-            return null;
         }
     }
 ?>

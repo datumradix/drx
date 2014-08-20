@@ -35,45 +35,30 @@
      ********************************************************************************/
 
     /**
-     * Class to render link user configuration
+     * Class to adapt email api configuration values into a configuration form.
+     * Saves global values from a configuration form.
      */
-    class UserConfigurationMenuActionElement extends MenuActionElement
+    class SendGridWebApiConfigurationFormAdapter
     {
-        public function getActionType()
+        /**
+         * @return SendGridWebApiConfigurationForm
+         */
+        public static function makeFormFromGlobalConfiguration()
         {
-            return 'Edit';
+            $form                                    = new SendGridWebApiConfigurationForm();
+            $form->username                          = Yii::app()->sendGridEmailHelper->apiUsername;
+            $form->password                          = Yii::app()->sendGridEmailHelper->apiPassword;
+            return $form;
         }
 
-        protected function getMenuItems()
+        /**
+         * Given a SendGridWebApiConfigurationForm, save the configuration global values.
+         */
+        public static function setConfigurationFromForm(SendGridWebApiConfigurationForm $form)
         {
-            return array(array('label'   => Zurmo::t('Core', 'General'),
-                               'url'     => $this->getRouteFormMenuItems() . '/configurationEdit?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'abc')),
-                         array('label'   => Zurmo::t('EmailMessagesModule', 'Email'),
-                               'url'     => $this->getRouteFormMenuItems() . '/emailConfiguration?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'def')),
-                         array('label'   => Zurmo::t('UsersModule', 'Security Overview'),
-                               'url'     => $this->getRouteFormMenuItems() . '/securityDetails?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'ffff')),
-                         array('label'   => Zurmo::t('SendGridModule', 'SendGrid'),
-                               'url'     => $this->getRouteFormMenuItems() . '/sendGridConfiguration?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'ffff')),
-                         );
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('ConfigurationModule', 'Configuration');
-        }
-
-        protected function getDefaultRoute()
-        {
-            return null;
-        }
-
-        protected function getRouteFormMenuItems()
-        {
-            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/');
-        }
+            Yii::app()->sendGridEmailHelper->apiUsername  = $form->username;
+            Yii::app()->sendGridEmailHelper->apiPassword  = $form->password;
+            Yii::app()->sendGridEmailHelper->setApiSettings();
+       }
     }
 ?>

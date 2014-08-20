@@ -35,45 +35,32 @@
      ********************************************************************************/
 
     /**
-     * Class to render link user configuration
+     * Form to all editing and viewing of email SMTP configuration values in the user interface.
      */
-    class UserConfigurationMenuActionElement extends MenuActionElement
+    class SendGridWebApiConfigurationForm extends ConfigurationForm
     {
-        public function getActionType()
+        public $username;
+        public $password;
+        public $aTestToAddress;
+
+        public function rules()
         {
-            return 'Edit';
+            return array(
+                array('username',                          'type',      'type' => 'string'),
+                array('username',                          'length',    'min'  => 1, 'max' => 64),
+                array('password',                          'type',      'type' => 'string'),
+                array('password',                          'length',    'min'  => 1, 'max' => 64),
+                array('aTestToAddress',                    'email'),
+            );
         }
 
-        protected function getMenuItems()
+        public function attributeLabels()
         {
-            return array(array('label'   => Zurmo::t('Core', 'General'),
-                               'url'     => $this->getRouteFormMenuItems() . '/configurationEdit?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'abc')),
-                         array('label'   => Zurmo::t('EmailMessagesModule', 'Email'),
-                               'url'     => $this->getRouteFormMenuItems() . '/emailConfiguration?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'def')),
-                         array('label'   => Zurmo::t('UsersModule', 'Security Overview'),
-                               'url'     => $this->getRouteFormMenuItems() . '/securityDetails?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'ffff')),
-                         array('label'   => Zurmo::t('SendGridModule', 'SendGrid'),
-                               'url'     => $this->getRouteFormMenuItems() . '/sendGridConfiguration?id=' . $this->modelId,
-                               'itemOptions' => array( 'id'   => 'ffff')),
-                         );
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('ConfigurationModule', 'Configuration');
-        }
-
-        protected function getDefaultRoute()
-        {
-            return null;
-        }
-
-        protected function getRouteFormMenuItems()
-        {
-            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/');
+            return array(
+                'username'                             => Zurmo::t('ZurmoModule', 'Username'),
+                'password'                             => Zurmo::t('ZurmoModule', 'Password'),
+                'aTestToAddress'                       => Zurmo::t('SendGridModule', 'Send a test email to')
+            );
         }
     }
 ?>
