@@ -107,6 +107,10 @@
             $this->defaultTestToAddress = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
         }
 
+        /**
+         * Loads api settings.
+         * @return void
+         */
         protected function loadApiSettings()
         {
             foreach ($this->settingsToLoad as $keyName)
@@ -172,14 +176,7 @@
             $password = ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'apiPassword');
             if($username != '' && $password != '')
             {
-                $recipientTypeData = array();
-                foreach ($emailMessage->recipients as $recipient)
-                {
-                    $recipientTypeData[$recipient->type][] = array($recipient->toAddress => $recipient->toName);
-                }
-                $toAddresses    = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_TO, array());
-                $ccAddresses    = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_CC, array());
-                $bccAddresses   = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_BCC, array());
+                list($toAddresses, $ccAddresses, $bccAddresses) = self::resolveRecipientAddressesByType($emailMessage);
                 //Send email using sendgrid global
                 $emailHelper = new SendGridEmailHelper();
                 $mailer       = new ZurmoSendGridMailer($emailHelper, $emailMessage->sender, $toAddresses, $ccAddresses, $bccAddresses);
@@ -221,6 +218,49 @@
         {
             EmailMessageUtil::processAndSendQueuedMessages($this, $count);
             return true;
+        }
+
+        /**
+         * Use this method to send immediately, instead of putting an email in a queue to be processed by a scheduled
+         * job.
+         * @param EmailMessage $emailMessage
+         * @throws NotSupportedException - if the emailMessage does not properly save.
+         * @throws FailedToSaveModelException
+         * @return null
+         */
+        public function sendImmediately(EmailMessage $emailMessage)
+        {
+            if ($emailMessage->folder->type == EmailFolder::TYPE_SENT)
+            {
+                throw new NotSupportedException();
+            }
+            $from         = array($emailMessage->sender->fromAddress => $emailMessage->sender->fromName);
+            list($toAddresses, $ccAddresses, $bccAddresses) = self::resolveRecipientAddressesByType($emailMessage);
+            $mailer       = new ZurmoSendGridMailer($this, $from, $toAddresses, $ccAddresses, $bccAddresses);
+            $emailMessage = $mailer->send();
+            $saved = $emailMessage->save();
+            if (!$saved)
+            {
+                throw new FailedToSaveModelException();
+            }
+        }
+
+        /**
+         * Resolve recipient address by type.
+         * @param EmailMessage $emailMessage
+         * @return array
+         */
+        public static function resolveRecipientAddressesByType(EmailMessage $emailMessage)
+        {
+            $recipientTypeData = array();
+            foreach ($emailMessage->recipients as $recipient)
+            {
+                $recipientTypeData[$recipient->type][] = array($recipient->toAddress => $recipient->toName);
+            }
+            $toAddresses    = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_TO, array());
+            $ccAddresses    = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_CC, array());
+            $bccAddresses   = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_BCC, array());
+            return array($toAddresses, $ccAddresses, $bccAddresses);
         }
     }
 ?>
