@@ -561,7 +561,11 @@
             {
                 return $this->resolveJoinsForForARelationAttributeThatIsManyToMany($onTableAliasName);
             }
-            elseif ($this->modelAttributeToDataProviderAdapter->isRelationTypeAHasManyVariant())
+            elseif ($this->modelAttributeToDataProviderAdapter->getRelationType() == RedBeanModel::HAS_MANY_BELONGS_TO)
+            {
+                return $this->resolveJoinsForForARelationAttributeThatIsAHasManyBelongsTo($onTableAliasName);
+            }
+            elseif ($this->modelAttributeToDataProviderAdapter->getRelationType() == RedBeanModel::HAS_MANY)
             {
                 $onTableAliasName = $this->resolveJoinsForForARelationAttributeThatIsAHasManyVariant($onTableAliasName);
                 $this->resolveSettingDistinctForARelationAttributeThatIsHasMany();
@@ -570,6 +574,10 @@
             elseif ($this->modelAttributeToDataProviderAdapter->getRelationType() == RedBeanModel::HAS_ONE)
             {
                 return $this->resolveJoinsForForARelationAttributeThatIsAHasOne($onTableAliasName);
+            }
+            elseif ($this->modelAttributeToDataProviderAdapter->getRelationType() == RedBeanModel::HAS_ONE_BELONGS_TO)
+            {
+                return $this->resolveJoinsForForARelationAttributeThatIsAHasOneBelongsTo($onTableAliasName);
             }
             else
             {
@@ -644,6 +652,16 @@
          * @param $onTableAliasName
          * @return null|string
          */
+        protected function resolveJoinsForForARelationAttributeThatIsAHasManyBelongsTo($onTableAliasName)
+        {
+            // This behaves the same as a HAS_ONE relationship
+            return $this->resolveJoinsForForARelationAttributeThatIsAHasOne($onTableAliasName);
+        }
+
+        /**
+         * @param $onTableAliasName
+         * @return null|string
+         */
         protected function resolveJoinsForForARelationAttributeThatIsAHasOne($onTableAliasName)
         {
             assert('is_string($onTableAliasName)');
@@ -655,6 +673,16 @@
                                   $onTableAliasName,
                                   $tableJoinIdName);
             return $onTableAliasName;
+        }
+
+        /**
+         * @param $onTableAliasName
+         * @return null|string
+         */
+        protected function resolveJoinsForForARelationAttributeThatIsAHasOneBelongsTo($onTableAliasName)
+        {
+            // This behaves the same as a HAS_ONE relationship
+            return $this->resolveJoinsForForARelationAttributeThatIsAHasOne($onTableAliasName);
         }
 
         /**
