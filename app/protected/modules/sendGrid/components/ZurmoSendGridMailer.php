@@ -146,8 +146,7 @@
                    setSubject($emailMessage->subject)->
                    setText($emailMessage->content->textContent)->
                    setHtml($emailMessage->content->htmlContent)->
-                   addHeader('X-Sent-Using', 'SendGrid-API')->
-                   addHeader('X-Transport', 'web');
+                   setHeaders($emailMessage->headers);
             foreach($this->toAddresses as $emailAddress => $name)
             {
                 $email->addTo($emailAddress, $name);
@@ -160,6 +159,16 @@
             {
                 $email->addBcc($emailAddress);
             }
+            /*
+            TODO: Need to close on attachement as path is not there in file model.
+            if (isset($emailMessage->files) && !empty($emailMessage->files))
+            {
+                foreach ($emailMessage->files as $file)
+                {
+                    $email->setAttachments($file->fileContent->content, $file->name, $file->type);
+                    //$emailMessage->attach($attachment);
+                }
+            }*/
             $response = $sendgrid->send($email);
             if($response->message == 'success')
             {
