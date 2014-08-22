@@ -1,4 +1,4 @@
-    <?php
+<?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
      * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
@@ -35,33 +35,32 @@
      ********************************************************************************/
 
     /**
-     * ElevateCommand allows a user to be elevated to the 'root' user. There can only be one root
-     * user in the application.
+     * Reset stuck jobs
      */
-    class ElevateCommand extends CConsoleCommand
+    class ResetStuckJobsCommand extends CConsoleCommand
     {
         public function getHelp()
         {
             return <<<EOD
     USAGE
-      zurmoc elevate <username>
+      zurmoc resetStuckJobs <username> <jobType>
 
     DESCRIPTION
-      This command will elevate the specified user to 'root' unless there is already a root user.  The user specified
-      must be in the super administrator group.
+      This command will reset all stuck jobs(remove them from jobsInProgress table)
 
     PARAMETERS
-     * username: username to elevate to root.
+     * username: username which run command.
+     * jobType: jobType to reset, or 'All' to reset all jobs in JobInProcess table
 EOD;
-    }
+        }
 
         /**
-         * Execute the action.
-         * @param array command line parameters specific for this command
+         * Execute the action
+         * @param array $args - command line parameters specific for this command
+         * @return int|void
          */
         public function run($args)
         {
-            set_time_limit('900');
             if (!isset($args[0]))
             {
                 $this->usageError('A username must be specified.');
@@ -79,25 +78,59 @@ EOD;
             {
                 $this->usageError('The specified user is not a super administrator.');
             }
-            if (User::getRootUserCount() > 0)
+
+            if (!isset($args[1]))
             {
-                echo 'There is already a root user. A new one cannot be specified.';
-                Yii::app()->end();
+                $this->usageError('JobType must be provided and must be existing jobType!');
             }
-            Yii::app()->user->userModel->setIsRootUser();
-            Yii::app()->user->userModel->hideFromSelecting   = true;
-            Yii::app()->user->userModel->hideFromLeaderboard = true;
-            $saved = Yii::app()->user->userModel->save();
-            if (!$saved)
+            else
             {
-                throw new FailedToSaveModelException();
+                $jobType = $args[1];
             }
+
             $template        = "{message}\n";
             $messageStreamer = new MessageStreamer($template);
             $messageStreamer->setExtraRenderBytes(0);
             $messageStreamer->add('');
-            $messageStreamer->add(Zurmo::t('Commands', 'User with username {username} elevated to root.',
-                                                        array('{username}' => Yii::app()->user->userModel->username)));
+
+            if ($jobType == 'All')
+            {
+                $messageStreamer->add("Reset all jobs.");
+                $jobsInProcess = JobInProcess::getAll();
+                if (is_array($jobsInProcess) && count($jobsInProcess) > 0)
+                {
+                    foreach ($jobsInProcess as $jobInProcess)
+                    {
+                        $jobInProcess->delete();
+                        $messageStreamer->add("The job {$jobInProcess->type} has been reset.");
+                    }
+                }
+                else
+                {
+                    $messageStreamer->add("There are no jobs in process to be reset.");
+                }
+            }
+            else
+            {
+                $jobClassName = $jobType . 'Job';
+                if (!@class_exists($jobClassName))
+                {
+                    $messageStreamer->add("Error! The {$jobClassName} does not exist.");
+                }
+                else
+                {
+                    try
+                    {
+                        $jobInProcess      = JobInProcess::getByType($jobType);
+                        $jobInProcess->delete();
+                        $messageStreamer->add("The job {$jobClassName} has been reset.");
+                    }
+                    catch (NotFoundException $e)
+                    {
+                        $messageStreamer->add("The job {$jobClassName} was not found to be stuck and therefore was not reset.");
+                    }
+                }
+            }
         }
     }
 ?>
