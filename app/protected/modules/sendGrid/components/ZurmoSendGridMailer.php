@@ -106,31 +106,9 @@
             $validated                 = $emailMessage->validate();
             if ($validated)
             {
-                $this->sendImmediately($emailMessage);
+                Yii::app()->sendGridEmailHelper->sendImmediately($emailMessage);
             }
             return $emailMessage;
-        }
-
-        /**
-         * Use this method to send immediately, instead of putting an email in a queue to be processed by a scheduled
-         * job.
-         * @param EmailMessage $emailMessage
-         * @throws NotSupportedException - if the emailMessage does not properly save.
-         * @throws FailedToSaveModelException
-         * @return null
-         */
-        public function sendImmediately(EmailMessage $emailMessage)
-        {
-            if ($emailMessage->folder->type == EmailFolder::TYPE_SENT)
-            {
-                throw new NotSupportedException();
-            }
-            $this->sendEmail($emailMessage);
-            $saved = $emailMessage->save();
-            if (!$saved)
-            {
-                throw new FailedToSaveModelException();
-            }
         }
 
         /**
