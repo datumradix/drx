@@ -160,22 +160,22 @@
                 $style->outertext = '';
             }
 
-            $css_blocks = $this->processStylesCleanup($html);
+            $cssBlocks = $this->processStylesCleanup($html);
 
-            $raw_css = '';
+            $rawCss = '';
             if (!empty($cssUrls))
             {
-                $raw_css .= $this->getCSSFromFiles($cssUrls);
+                $rawCss .= $this->getCSSFromFiles($cssUrls);
             }
-            if (!empty($css_blocks))
+            if (!empty($cssBlocks))
             {
-                $raw_css .= $css_blocks;
+                $rawCss .= $cssBlocks;
             }
 
             // Get the CSS rules by decreasing order of specificity.
             // This is an array with, amongst other things, the keys 'properties', which hold the CSS properties
             // and the 'selector', which holds the CSS selector
-            $rules = $this->parseCSS($raw_css);
+            $rules = $this->parseCSS($rawCss);
 
             // We loop over each rule by increasing order of specificity, find the nodes matching the selector
             // and apply the CSS properties
@@ -251,14 +251,14 @@
 
         protected function processStylesCleanup($html)
         {
-            $css_blocks = '';
+            $cssBlocks = '';
             // Find all <style> blocks and cut styles from them (leaving media queries)
             foreach ($html->find('style') as $style)
             {
-                list($_css_to_parse, $_css_to_keep) = self::splitMediaQueries($style->innertext());
-                $css_blocks .= $_css_to_parse;
+                list($cssToParse, $cssToKeep) = self::splitMediaQueries($style->innertext());
+                $cssBlocks .= $cssToParse;
             }
-            return $css_blocks;
+            return $cssBlocks;
         }
 
         public static function calculateCSSSpecifity($selector)
