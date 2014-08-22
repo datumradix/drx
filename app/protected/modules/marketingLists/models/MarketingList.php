@@ -276,5 +276,14 @@
             }
             return $marketingListModels;
         }
+
+        protected function beforeDelete()
+        {
+            foreach ($this->autoresponders as $autoresponder)
+            {
+                $autoresponder->delete();
+            }
+            return parent::beforeDelete();
+        }
     }
 ?>
