@@ -69,9 +69,9 @@
             }
         }
 
-        public function handleLoadReadPermissionSubscriptionObserver($event)
+        public function handleLoadReadPermissionSubscriptionObserver()
         {
-            parent::handleLoadReadPermissionSubscriptionObserver($event);
+            parent::handleLoadReadPermissionSubscriptionObserver();
             Yii::app()->readPermissionSubscriptionObserver->enabled = false;
         }
     }

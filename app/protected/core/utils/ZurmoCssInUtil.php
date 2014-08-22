@@ -151,21 +151,21 @@
                 $cloneNodesArray[] = clone $node;
             }
 
-            $css_urls = array();
+            $cssUrls = array();
 
             // Find all stylesheets and determine their absolute URLs to retrieve them
             foreach ($html->find('link[rel="stylesheet"]') as $style)
             {
-                $css_urls[] = self::absolutify($url, $style->href);
+                $cssUrls[] = self::absolutify($url, $style->href);
                 $style->outertext = '';
             }
 
             $css_blocks = $this->processStylesCleanup($html);
 
             $raw_css = '';
-            if (!empty($css_urls))
+            if (!empty($cssUrls))
             {
-                $raw_css .= $this->getCSSFromFiles($css_urls);
+                $raw_css .= $this->getCSSFromFiles($cssUrls);
             }
             if (!empty($css_blocks))
             {
@@ -343,6 +343,51 @@
         public static function splitMediaQueries($css)
         {
             return parent::splitMediaQueries(' ' . $css . ' ');
+        }
+
+        public static function absolutify($pageUrl, $relativeUrl)
+        {
+            // if relative url starts with // then its schema-less url
+            if(preg_match('/^\/\//', $relativeUrl))
+            {
+                $absoluteUrl    = 'http:' . $relativeUrl;
+            }
+            else
+            {
+                $parsedUrl          = parse_url($pageUrl);
+                $parsedRelativeUrl  = parse_url($relativeUrl);
+                if (isset($parsedUrl['scheme']))
+                {
+                    $parsedUrl['scheme']    .= '://';
+                }
+                $qualifiedHost      = @$parsedUrl['scheme'] . @$parsedUrl['host'];
+
+                // If $relativeUrl has a host it is actually absolute, return it.
+                if(isset($parsedRelativeUrl['host']))
+                {
+                    $absoluteUrl    = $relativeUrl;
+                }
+                // If $relativeUrl begins with / then it is a path relative to the $pageUrl's host
+                else if(preg_match('/^\//', $parsedRelativeUrl['path']))
+                {
+                    $absoluteUrl    = $qualifiedHost . $parsedRelativeUrl['path'];
+                }
+                // No leading slash: append the path of $relativeUrl to the 'folder' path of $pageUrl
+                else
+                {
+                    $absoluteUrl    = $qualifiedHost . dirname($parsedUrl['path']) . '/' . $parsedRelativeUrl['path'];
+                }
+            }
+            return $absoluteUrl;
+        }
+
+        public function getCSS($url)
+        {
+            if(!isset($cssFiles[$url]))
+            {
+                $cssFiles[$url]	= @file_get_contents($url);
+            }
+            return $cssFiles[$url];
         }
     }
 ?>
