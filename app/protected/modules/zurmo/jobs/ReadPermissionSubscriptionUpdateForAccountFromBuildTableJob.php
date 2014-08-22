@@ -34,38 +34,40 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class IntegerAttributeForm extends MinMaxValueAttributeForm
+    /**
+     * A job for updating read permission subscription table for accounts
+     */
+    class ReadPermissionSubscriptionUpdateForAccountFromBuildTableJob extends ReadPermissionSubscriptionUpdateJob
     {
-        public function __construct(RedBeanModel $model = null, $attributeName = null)
+        /**
+         * @returns Translated label that describes this job type.
+         */
+        public static function getDisplayName()
         {
-            $this->maxLength = 11;
-            parent::__construct($model, $attributeName);
+            return Zurmo::t('ZurmoModule', 'Read Permission Subscription Update For Account Table Job - Process Items From Build Table');
         }
 
-        public function rules()
+        /**
+         * @return The type of the NotificationRules
+         */
+        public static function getType()
         {
-            return array_merge(parent::rules(), array(
-                array('defaultValue',  'numerical', 'integerOnly' => true),
-            ));
-        }
-        public static function getAttributeTypeDisplayName()
-        {
-            return Zurmo::t('DesignerModule', 'Integer');
+            return 'ReadPermissionSubscriptionUpdateForAccountFromBuildTable';
         }
 
-        public static function getAttributeTypeDisplayDescription()
+        /**
+         * @returns bool if the job should appear in Job Manager list to be run manually.
+         * We should not show this job in list of manual jobs
+         */
+        public static function showInJobManagerToRunManually()
         {
-            return Zurmo::t('DesignerModule', 'An integer field');
+            return false;
         }
 
-        public function getAttributeTypeName()
+        public function run()
         {
-            return 'Integer';
-        }
-
-        public function getModelAttributePartialRule()
-        {
-            return array('type', 'type' => 'integer');
+            ReadPermissionsSubscriptionUtil::updateReadSubscriptionTableFromBuildTable($this->getMessageLogger(), 'Account');
+            return true;
         }
     }
 ?>
