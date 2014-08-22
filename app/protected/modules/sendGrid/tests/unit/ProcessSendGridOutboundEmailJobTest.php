@@ -34,44 +34,51 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * A job for processing outbound emails in the queue to be sent using sendgrid
-     */
-    class ProcessSendGridOutboundEmailJob extends ProcessOutboundEmailJob
+    class ProcessSendGridOutboundEmailJobTest extends ZurmoBaseTest
     {
-        protected $sendGridEmailHelper;
-
-        /**
-         * @returns Translated label that describes this job type.
-         */
-        public static function getDisplayName()
+        public static function setUpBeforeClass()
         {
-           return Zurmo::t('SendGridModule', 'Process SendGrid Outbound Email Job');
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+            UserTestHelper::createBasicUser('billy');
         }
 
-        /**
-         * @return The type of the NotificationRules
-         */
-        public static function getType()
+        public function testRun()
         {
-            return 'ProcessSendGridOutboundEmail';
-        }
+            $super                      = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $billy                      = User::getByUsername('billy');
 
-        /**
-         * (non-PHPdoc)
-         * @see BaseJob::run()
-         */
-        public function run()
-        {
-            $this->sendGridEmailHelper = new SendGridEmailHelper();
-            $this->sendGridEmailHelper->apiUsername = 'msinghai';
-            $this->sendGridEmailHelper->apiPassword = 'abc123';
-            $success = $this->sendGridEmailHelper->sendQueued($this->resolveBatchSize());
-            if (Yii::app()->emailHelper->getQueuedCount() > 0)
-            {
-                static::loadJobQueue();
-            }
-            return $success;
+            $box = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
+            $outboxFolder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX);
+            $sentFolder   = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_SENT);
+
+            $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('My Email Message', $super);
+            $emailMessage->folder       = $outboxFolder;
+            $saved                      = $emailMessage->save();
+            $this->assertTrue($saved);
+            $emailMessageId            = $emailMessage->id;
+            $emailMessage->forget();
+            unset($emailMessage);
+
+            $emailMessage2 = EmailMessageTestHelper::createDraftSystemEmail('My Email Message', $super);
+            $emailMessage2->folder      = $outboxFolder;
+            $saved                      = $emailMessage2->save();
+            $this->assertTrue($saved);
+            $emailMessage2Id            = $emailMessage2->id;
+            $emailMessage2->forget();
+            unset($emailMessage2);
+            $this->assertEquals(2, EmailMessage::getCount());
+
+            $job = new ProcessSendGridOutboundEmailJob();
+            $this->assertTrue($job->run());
+            $emailMessages = EmailMessage::getAll();
+            $this->assertEquals(2, count($emailMessages));
+
+            $emailMessage   = EmailMessage::getById($emailMessageId);
+            $this->assertEquals($sentFolder, $emailMessage->folder);
+            $emailMessage2  = EmailMessage::getById($emailMessage2Id);
+            $this->assertEquals($sentFolder, $emailMessage2->folder);
         }
     }
 ?>

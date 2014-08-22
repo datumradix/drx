@@ -178,7 +178,7 @@
             {
                 list($toAddresses, $ccAddresses, $bccAddresses) = self::resolveRecipientAddressesByType($emailMessage);
                 //Send email using sendgrid global
-                $emailHelper = new SendGridEmailHelper();
+                $emailHelper  = new SendGridEmailHelper();
                 $mailer       = new ZurmoSendGridMailer($emailHelper, $emailMessage->sender, $toAddresses, $ccAddresses, $bccAddresses);
                 $emailMessage = $mailer->send();
             }
@@ -234,11 +234,11 @@
             {
                 throw new NotSupportedException();
             }
-            $from         = array($emailMessage->sender->fromAddress => $emailMessage->sender->fromName);
+            $from         = array('address' => $emailMessage->sender->fromAddress, 'name' => $emailMessage->sender->fromName);
             list($toAddresses, $ccAddresses, $bccAddresses) = self::resolveRecipientAddressesByType($emailMessage);
             $mailer       = new ZurmoSendGridMailer($this, $from, $toAddresses, $ccAddresses, $bccAddresses);
-            $emailMessage = $mailer->send();
-            $saved = $emailMessage->save();
+            $mailer->sendEmail($emailMessage);
+            $saved        = $emailMessage->save();
             if (!$saved)
             {
                 throw new FailedToSaveModelException();
