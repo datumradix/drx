@@ -248,7 +248,7 @@
          * @param EmailMessage $emailMessage
          * @throws NotSupportedException
          */
-        protected static function isValidFolderType(EmailMessage $emailMessage)
+        public static function isValidFolderType(EmailMessage $emailMessage)
         {
             if ($emailMessage->folder->type == EmailFolder::TYPE_OUTBOX ||
                 $emailMessage->folder->type == EmailFolder::TYPE_SENT ||
@@ -268,7 +268,7 @@
          * @return bool|void
          * @throws FailedToSaveModelException
          */
-        protected static function updateFolderForEmailMessage(EmailMessage & $emailMessage, $useSQL,
+        public static function updateFolderForEmailMessage(EmailMessage & $emailMessage, $useSQL,
                                                               EmailFolder $folder, $validate = true)
         {
             // we don't have syntax to support saving related records and other attributes for emailMessage, yet.

@@ -102,7 +102,8 @@
          */
         public function sendTestEmail()
         {
-            $emailMessage              = EmailMessageHelper::processAndCreateEmailMessage($this->fromUserEmailData, $this->toAddresses);
+            $toAddresses               = array_keys($this->toAddresses);
+            $emailMessage              = EmailMessageHelper::processAndCreateEmailMessage($this->fromUserEmailData, $toAddresses[0]);
             $validated                 = $emailMessage->validate();
             if ($validated)
             {
