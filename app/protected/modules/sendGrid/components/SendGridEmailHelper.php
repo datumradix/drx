@@ -197,13 +197,17 @@
          */
         public function send(EmailMessage & $emailMessage, $useSQL = false, $validate = true)
         {
-            static::isValidFolderType($emailMessage);
+            EmailHelper::isValidFolderType($emailMessage);
             $folder     = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX);
-            $saved      = static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder, $validate);
+            $saved      = EmailHelper::updateFolderForEmailMessage($emailMessage, $useSQL, $folder, $validate);
             if ($saved)
             {
+                print "Folder id is " . $folder->id . "\n";
+                print "Update Folder id is " . $emailMessage->folder->id . "\n";
+                print "Message id is " . $emailMessage->id . "\n";
                 Yii::app()->jobQueue->add('ProcessSendGridOutboundEmail');
             }
+
             return $saved;
         }
 

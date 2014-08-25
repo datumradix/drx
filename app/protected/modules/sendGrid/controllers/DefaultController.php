@@ -129,7 +129,7 @@
          */
         public function actionSendTestMessage()
         {
-            $configurationForm = SendGridWebApiConfigurationFormAdapter::makeFormFromGlobalConfiguration();
+            $configurationForm  = SendGridWebApiConfigurationFormAdapter::makeFormFromGlobalConfiguration();
             $postVariableName   = get_class($configurationForm);
             if (isset($_POST[$postVariableName]) || (isset($_POST['UserSendGridConfigurationForm'])))
             {

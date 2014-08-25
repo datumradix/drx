@@ -224,7 +224,7 @@
         {
         }
 
-        public function sendAutoresponderOrCampaignItemEmailMessage(EmailMessage $emailMessage)
+        public function sendAutoresponderOrCampaignItemEmailMessage(EmailMessage & $emailMessage)
         {
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             if($sendGridPluginEnabled)
