@@ -35,79 +35,69 @@
      ********************************************************************************/
 
     /**
-     * A job for testing that the outbound connection to SMTP is still working correctly.
+     * Test RowsAndColumnsReportToExportAdapter for EmailMessage
      */
-    class TestOutboundEmailJob extends BaseJob
+    class EmailMessagesRowsAndColumnsReportToExportAdapterTest extends ZurmoBaseTest
     {
-        /**
-         * @returns Translated label that describes this job type.
-         */
-        public static function getDisplayName()
+        public static function setUpBeforeClass()
         {
-           return Zurmo::t('EmailMessagesModule', 'Testing Outbound Email Connection Job');
+            parent::setUpBeforeClass();
+            $super = SecurityTestHelper::createSuperAdmin();
         }
 
-        /**
-         * @return The type of the NotificationRules
-         */
-        public static function getType()
+        public function setUp()
         {
-            return 'TestOutboundEmail';
+            parent::setUp();
+            Yii::app()->user->userModel = User::getByUsername('super');
+            DisplayAttributeForReportForm::resetCount();
         }
 
-        public static function getRecommendedRunFrequencyContent()
+        public function testExportRelationAttributes()
         {
-            return Zurmo::t('JobsManagerModule', 'Once a day, early in the morning.');
-        }
+            $report = new Report();
+            $report->setType(Report::TYPE_ROWS_AND_COLUMNS);
+            $report->setModuleClassName('EmailMessagesModule');
+            $report->setFiltersStructure('');
 
-        /**
-         *
-         * (non-PHPdoc)
-         * @see BaseJob::run()
-         */
-        public function run()
-        {
-            $messageContent            = null;
-            $userToSendMessagesFrom    = BaseControlUserConfigUtil::getUserToRunAs();
             $emailMessage              = new EmailMessage();
             $emailMessage->owner       = Yii::app()->user->userModel;
-            $emailMessage->subject     = Zurmo::t('EmailMessagesModule', 'A test email from Zurmo',
-                                         LabelUtil::getTranslationParamsForAllModules());
+            $emailMessage->subject     = 'A test email';
             $emailContent              = new EmailMessageContent();
-            $emailContent->textContent = Zurmo::t('EmailMessagesModule', 'A test text message from Zurmo.',
-                                         LabelUtil::getTranslationParamsForAllModules());
-            $emailContent->htmlContent = Zurmo::t('EmailMessagesModule', 'A test text message from Zurmo.',
-                                         LabelUtil::getTranslationParamsForAllModules());
+            $emailContent->textContent = 'A test text message from Zurmo.';
+            $emailContent->htmlContent = 'A test text message from Zurmo.';
             $emailMessage->content     = $emailContent;
             $sender                    = new EmailMessageSender();
-            $sender->fromAddress       = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
-            $sender->fromName          = strval($userToSendMessagesFrom);
+            $sender->fromAddress       = 'super@zurmo.com';
+            $sender->fromName          = 'super';
+            $sender->personsOrAccounts->add(Yii::app()->user->userModel);
             $emailMessage->sender      = $sender;
             $recipient                 = new EmailMessageRecipient();
-            $recipient->toAddress      = Yii::app()->emailHelper->defaultTestToAddress;
+            $recipient->toAddress      = 'billy@joe.com';
             $recipient->toName         = 'Test Recipient';
             $recipient->type           = EmailMessageRecipient::TYPE_TO;
             $emailMessage->recipients->add($recipient);
             $box                       = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
-            $emailMessage->folder      = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
-            $validatedAndSaved          = $emailMessage->save();
-            if (!$validatedAndSaved)
-            {
-                throw new NotSupportedException();
-            }
-            Yii::app()->emailHelper->sendImmediately($emailMessage);
-            if (!$emailMessage->hasSendError())
-            {
-                $messageContent .= Zurmo::t('EmailMessagesModule', 'Message successfully sent') . "\n";
-                return true;
-            }
-            else
-            {
-                $messageContent .= Zurmo::t('EmailMessagesModule', 'Message failed to send') . "\n";
-                $messageContent .= $emailMessage->error     . "\n";
-                $this->errorMessage = $messageContent;
-                return false;
-            }
+            $emailMessage->folder      = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_SENT);
+            $this->assertTrue($emailMessage->save());
+
+            $displayAttribute1    = new DisplayAttributeForReportForm('EmailMessagesModule', 'EmailMessage',
+                                            Report::TYPE_ROWS_AND_COLUMNS);
+            $displayAttribute1->setModelAliasUsingTableAliasName('relatedModel');
+            $displayAttribute1->attributeIndexOrDerivedType = 'sender___User__personsOrAccounts__Inferred___firstName';
+            $report->addDisplayAttribute($displayAttribute1);
+
+            $displayAttribute2    = new DisplayAttributeForReportForm('EmailMessagesModule', 'EmailMessage',
+                                            Report::TYPE_ROWS_AND_COLUMNS);
+            $displayAttribute2->setModelAliasUsingTableAliasName('relatedModel');
+            $displayAttribute2->attributeIndexOrDerivedType = 'sender___Contact__personsOrAccounts__Inferred___firstName';
+            $report->addDisplayAttribute($displayAttribute2);
+
+            $dataProvider       = new RowsAndColumnsReportDataProvider($report);
+            $adapter            = ReportToExportAdapterFactory::createReportToExportAdapter($report, $dataProvider);
+            $compareHeaderData  = array('Sender >> Users >> First Name', 'Sender >> Contacts >> First Name');
+            $compareRowData     = array(array('Clark', ''));
+            $this->assertEquals($compareHeaderData, $adapter->getHeaderData());
+            $this->assertEquals($compareRowData, $adapter->getData());
         }
     }
 ?>

@@ -34,50 +34,20 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ProcessOutboundEmailJobTest extends ZurmoBaseTest
+    class DateTimeSanitizerUtilTest extends ZurmoBaseTest
     {
-        public static function setUpBeforeClass()
+        public function testGetAcceptableFormats()
         {
-            parent::setUpBeforeClass();
-            SecurityTestHelper::createSuperAdmin();
-            UserTestHelper::createBasicUser('billy');
-        }
-
-        public function testRun()
-        {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
-
-            $box = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
-            $outboxFolder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX);
-            $sentFolder   = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_SENT);
-
-            $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('My Email Message', $super);
-            $emailMessage->folder       = $outboxFolder;
-            $saved                      = $emailMessage->save();
-            $this->assertTrue($saved);
-            $emailMessageId            = $emailMessage->id;
-            $emailMessage->forget();
-            unset($emailMessage);
-
-            $emailMessage2 = EmailMessageTestHelper::createDraftSystemEmail('My Email Message', $super);
-            $emailMessage2->folder      = $outboxFolder;
-            $saved                      = $emailMessage2->save();
-            $this->assertTrue($saved);
-            $emailMessage2Id            = $emailMessage2->id;
-            $emailMessage2->forget();
-            unset($emailMessage2);
-            $this->assertEquals(2, EmailMessage::getCount());
-
-            $job = new ProcessOutboundEmailJob();
-            $this->assertTrue($job->run());
-            $emailMessages = EmailMessage::getAll();
-            $this->assertEquals(2, count($emailMessages));
-
-            $emailMessage   = EmailMessage::getById($emailMessageId);
-            $this->assertEquals($sentFolder, $emailMessage->folder);
-            $emailMessage2  = EmailMessage::getById($emailMessage2Id);
-            $this->assertEquals($sentFolder, $emailMessage2->folder);
+            $expected = array(
+                    'yyyy-MM-dd hh:mm',
+                    'MM-dd-yyyy hh:mm',
+                    'dd-MM-yyyy hh:mm',
+                    'MM/dd/yyyy hh:mm',
+                    'M/d/yyyy hh:mm',
+                    'd/M/yyyy hh:mm',
+                    'yyyy-M-d hh:mm'
+            );
+            $this->assertEquals($expected, DateTimeSanitizerUtil::getAcceptableFormats());
         }
     }
 ?>
