@@ -297,7 +297,7 @@
             assert('is_string($action)');
             $notificationSettingName = static::resolveNotificationSettingNameFromType($rule->getType());
             if ($notification->owner->primaryEmail->emailAddress !== null &&
-                UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($notification->owner, 
+                UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($notification->owner,
                                                                                 $notificationSettingName, 'email'))
             {
                 $emailMessage               = static::makeEmailMessage($notification, $rule, $action);
@@ -383,7 +383,7 @@
         {
             return true;
         }
-        
+
         /**
          * Resolve the notification rules class name by action name
          * @return string

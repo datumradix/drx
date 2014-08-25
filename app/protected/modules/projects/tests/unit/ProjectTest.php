@@ -223,5 +223,42 @@
             }
             $this->assertEquals('ProjectPermissionTest', $model->name);
         }
+
+        public function testProjectNotifications()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $super->primaryEmail->emailAddress = 'super@zurmo.com';
+            $super->save();
+            Yii::app()->user->userModel = $super;
+            $user = UserTestHelper::createBasicUser('ProjectUser');
+            Notification::deleteAll();
+            EmailMessage::deleteAll();
+            $project                  = new Project();
+            $project->name            = 'Project For Notifications Test';
+            $project->owner           = $super;
+            $project->description     = 'Description';
+            $this->assertTrue($project->save());
+            //New project notification
+            $notifications = Notification::getAll();
+            $emailMessages = EmailMessage::getAll();
+            $this->assertCount(1, $notifications);
+            $this->assertCount(1, $emailMessages);
+            $this->assertContains("The project, 'Project For Notifications Test', is now owned by you.",
+                                    $notifications[0]->notificationMessage->textContent);
+            $this->assertContains("The project, 'Project For Notifications Test', is now owned by you.",
+                                    $emailMessages[0]->content->textContent);
+            //Project archived notification
+            $project->status = Project::STATUS_ARCHIVED;
+            $this->assertTrue($project->save());
+            $notifications = Notification::getAll();
+            $emailMessages = EmailMessage::getAll();
+            $this->assertCount(2, $notifications);
+            $this->assertCount(2, $emailMessages);
+            $this->assertContains("The project, 'Project For Notifications Test', is now archived.",
+                                    $notifications[1]->notificationMessage->textContent);
+            $this->assertContains("The project, 'Project For Notifications Test', is now archived.",
+                                    $emailMessages[1]->content->textContent);
+        }
     }
 ?>

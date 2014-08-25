@@ -43,7 +43,7 @@
 
         protected $canBeConfiguredByUser = false;
 
-        protected $defaultValueForInboxSetting = true;
+        protected $defaultValueForEmailSetting = false;
 
         public function getDisplayName()
         {
