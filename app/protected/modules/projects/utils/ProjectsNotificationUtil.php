@@ -165,7 +165,7 @@
          * @param Task $task
          * @return string
          */
-        public static function getProjectEmailSubject(Project $project, $action, Task $task)
+        public static function getProjectEmailSubject(Project $project, $action, Task $task = null)
         {
             assert('$project instanceof Project');
             $params = array('{project}'         => strval($project),

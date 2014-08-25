@@ -40,9 +40,9 @@
      */
     abstract class NotificationRules
     {
-        protected $defaultValueForInboxSetting = false;
+        protected $defaultValueForInboxSetting = true;
 
-        protected $defaultValueForEmailSetting = false;
+        protected $defaultValueForEmailSetting = true;
 
         /**
          * Sets to true during @see NotificationRules::getUsers();

@@ -333,8 +333,11 @@
                         TasksNotificationUtil::TASK_STATUS_BECOMES_COMPLETED,
                         Yii::app()->user->userModel);
                 }
-                ProjectsNotificationUtil::submitProjectNotificationMessage($this->project, ProjectAuditEvent::TASK_STATUS_CHANGED,
-                                                                           $this, Yii::app()->user->userModel);
+                if (!$this->isNewModel && $this->project->id > 0)
+                {
+                    ProjectsNotificationUtil::submitProjectNotificationMessage($this->project, ProjectAuditEvent::TASK_STATUS_CHANGED,
+                                                                               $this, Yii::app()->user->userModel);
+                }
             }
             if ($this->isNewModel)
             {
