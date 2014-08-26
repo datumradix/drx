@@ -107,7 +107,14 @@
             $validated                 = $emailMessage->validate();
             if ($validated)
             {
-                Yii::app()->sendGridEmailHelper->sendImmediately($emailMessage);
+                //Yii::app()->sendGridEmailHelper->sendImmediately($emailMessage);
+                list($toAddresses, $ccAddresses, $bccAddresses) = SendGridEmailHelper::resolveRecipientAddressesByType($emailMessage);
+                $this->sendEmail($emailMessage);
+                $saved        = $emailMessage->save();
+                if (!$saved)
+                {
+                    throw new FailedToSaveModelException();
+                }
             }
             return $emailMessage;
         }
@@ -173,6 +180,31 @@
                                                                                       EmailFolder::TYPE_OUTBOX_ERROR);
                 $emailMessage->error                   = $emailMessageSendError;
             }
+        }
+
+        public function getBouncedData($startDate, $endDate, $startTime, $endTime)
+        {
+            $url = 'https://api.sendgrid.com/';
+            $user = $this->emailHelper->apiUsername;
+            $pass = $this->emailHelper->apiPassword;
+
+            $request =  $url . 'api/bounces.get.json?api_user=' . $user . '&api_key=' . $pass . '&date=1';
+
+            // Generate curl request
+            $curl = curl_init($request);
+            // Tell curl not to return headers, but do return the response
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+
+            // obtain response
+            if(!$response = curl_exec($curl))
+            {
+                trigger_error(curl_error($curl));
+            }
+            curl_close($curl);
+            $data = json_decode($response);
         }
     }
 ?>

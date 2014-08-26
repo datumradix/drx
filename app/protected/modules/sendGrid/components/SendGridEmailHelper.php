@@ -254,13 +254,24 @@
         public static function resolveRecipientAddressesByType(EmailMessage $emailMessage)
         {
             $recipientTypeData = array();
+            $toAddresses    = array();
+            $ccAddresses    = array();
+            $bccAddresses   = array();
             foreach ($emailMessage->recipients as $recipient)
             {
-                $recipientTypeData[$recipient->type][] = array($recipient->toAddress => $recipient->toName);
+                if($recipient->type == EmailMessageRecipient::TYPE_TO)
+                {
+                    $toAddresses[$recipient->toAddress] = $recipient->toName;
+                }
+                if($recipient->type == EmailMessageRecipient::TYPE_CC)
+                {
+                    $ccAddresses[$recipient->toAddress] = $recipient->toName;
+                }
+                if($recipient->type == EmailMessageRecipient::TYPE_BCC)
+                {
+                    $bccAddresses[$recipient->toAddress] = $recipient->toName;
+                }
             }
-            $toAddresses    = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_TO, array());
-            $ccAddresses    = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_CC, array());
-            $bccAddresses   = ArrayUtil::getArrayValue($recipientTypeData, EmailMessageRecipient::TYPE_BCC, array());
             return array($toAddresses, $ccAddresses, $bccAddresses);
         }
     }
