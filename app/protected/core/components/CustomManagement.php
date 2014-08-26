@@ -224,19 +224,6 @@
         {
         }
 
-        public function sendAutoresponderOrCampaignItemEmailMessage(EmailMessage & $emailMessage)
-        {
-            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
-            if($sendGridPluginEnabled)
-            {
-                Yii::app()->sendGridEmailHelper->send($emailMessage, true, false);
-            }
-            else
-            {
-                Yii::app()->emailHelper->send($emailMessage, true, false);
-            }
-        }
-
         /*public function sendAutoresponderOrCampaignItemEmailMessage(EmailMessage $emailMessage)
         {
             $campaignItems = CampaignItem::getByEmailMessageId($emailMessage->id);
