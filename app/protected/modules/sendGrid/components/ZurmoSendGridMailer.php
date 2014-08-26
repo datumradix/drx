@@ -125,7 +125,8 @@
                    setSubject($emailMessage->subject)->
                    setText($emailMessage->content->textContent)->
                    setHtml($emailMessage->content->htmlContent)->
-                   setHeaders($emailMessage->headers);
+                   addHeader('X-Sent-Using', 'SendGrid-API')->
+                   addHeader('X-Transport', 'web');
             foreach($this->toAddresses as $emailAddress => $name)
             {
                 $email->addTo($emailAddress, $name);

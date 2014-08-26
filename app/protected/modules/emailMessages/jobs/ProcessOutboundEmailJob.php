@@ -72,7 +72,17 @@
          */
         public function run()
         {
-            $success = Yii::app()->emailHelper->sendQueued($this->resolveBatchSize());
+            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
+            if($sendGridPluginEnabled)
+            {
+                $sendGridEmailHelper = new SendGridEmailHelper();
+                $sendGridEmailHelper->init();
+                $success = $sendGridEmailHelper->sendQueued($this->resolveBatchSize());
+            }
+            else
+            {
+                $success = Yii::app()->emailHelper->sendQueued($this->resolveBatchSize());
+            }
             if (Yii::app()->emailHelper->getQueuedCount() > 0)
             {
                 static::loadJobQueue();
