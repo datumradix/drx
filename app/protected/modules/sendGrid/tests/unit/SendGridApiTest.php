@@ -38,8 +38,8 @@
      Yii::import('ext.sendgrid.lib.Unirest');
     class SendGridApiTest extends ZurmoBaseTest
     {
-        protected static $apiUserName = 'apiusername';
-        protected static $apiPassword = 'apipassword';
+        protected static $apiUserName = 'msinghai';
+        protected static $apiPassword = 'abc123';
 
         public static function setUpBeforeClass()
         {
@@ -50,30 +50,30 @@
             Smtpapi::register_autoloader();
         }
 
-//        public function testBouncedEmail()
-//        {
-//            $user = static::$apiUserName;
-//            $pass = static::$apiPassword;
-//            Yii::import('ext.sendgrid.lib.SendGrid.Email');
-//            Yii::import('ext.sendgrid.lib.Smtpapi.Header');
-//            $sendgrid = new SendGrid($user, $pass, array("turn_off_ssl_verification" => true));
-//            $email    = new SendGrid\Email();
-//            $to       = 'xyz@yahoo.com';
-//            $email->addTo($to)->
-//                   setFrom('rajusinghai80@gmail.com')->
-//                   setSubject('[sendgrid-php-example] Owl named %yourname%')->
-//                   setText('Owl are you doing?')->
-//                   setHtml('<strong>%how% are you doing?</strong>')->
-//                   addSubstitution("%yourname%", array("Mr. Owl"))->
-//                   addSubstitution("%how%", array("Owl"))->
-//                   addHeader('X-Sent-Using', 'SendGrid-API')->
-//                   addHeader('X-Transport', 'web');
-//
-//            $response = $sendgrid->send($email);
-//            var_dump($response);
-//        }
+        public function testBouncedEmail()
+        {
+            $user = static::$apiUserName;
+            $pass = static::$apiPassword;
+            Yii::import('ext.sendgrid.lib.SendGrid.Email');
+            Yii::import('ext.sendgrid.lib.Smtpapi.Header');
+            $sendgrid = new SendGrid($user, $pass, array("turn_off_ssl_verification" => true));
+            $email    = new SendGrid\Email();
+            $to       = 'hellorajuj@gmail.com';
+            $email->addTo($to)->
+                   setFrom('rajusinghai80@gmail.com')->
+                   setSubject('[sendgrid-php-example] Owl named %yourname%')->
+                   setText('Owl are you doing?')->
+                   setHtml('<strong>%how% are you doing?</strong>')->
+                   addSubstitution("%yourname%", array("Mr. Owl"))->
+                   addSubstitution("%how%", array("Owl"))->
+                   addHeader('X-Sent-Using', 'SendGrid-API')->
+                   addHeader('X-Transport', 'web');
 
-        public function testGetBouncedEmails()
+            $response = $sendgrid->send($email);
+            var_dump($response);
+        }
+
+        /*public function testGetBouncedEmails()
         {
             $url = 'https://api.sendgrid.com/';
             $user = static::$apiUserName;
@@ -141,6 +141,6 @@
             // print everything out
             $data = json_decode($response);
             $this->assertTrue(count($data) == 0);
-        }
+        }*/
     }
 ?>
