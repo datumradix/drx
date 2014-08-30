@@ -35,16 +35,13 @@
      ********************************************************************************/
 
     /**
-     * Class used by reporting to show available ordering either ascending or descending
+     * Class to render link to mass subscribe from a listview for leads module
      */
-    class OrderByStaticDropDownElement extends DataFromFormStaticDropDownFormElement
+    class MassSubscribeLeadMenuActionElement extends MassSubscribeMenuActionElement
     {
-        /**
-         * @return string
-         */
-        protected function getDataAndLabelsModelPropertyName()
+        public function getActionType()
         {
-            return 'getOrderValuesAndLabels';
+            return 'MassSubscribeLead';
         }
     }
 ?>

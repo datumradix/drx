@@ -35,16 +35,14 @@
      ********************************************************************************/
 
     /**
-     * Class used by reporting to show available ordering either ascending or descending
+     * 'MassSubscribeLeadActionSecurity' takes the user to a form
+     * where they can choose marketingList to subscribe many models at once. This is also known as bulk write or mass subscribe.
      */
-    class OrderByStaticDropDownElement extends DataFromFormStaticDropDownFormElement
+    class MassSubscribeLeadActionSecurity extends ActionSecurity
     {
-        /**
-         * @return string
-         */
-        protected function getDataAndLabelsModelPropertyName()
+        protected function getRightToCheck()
         {
-            return 'getOrderValuesAndLabels';
+            return array('LeadsModule', LeadsModule::getMassSubscribeRight());
         }
     }
 ?>

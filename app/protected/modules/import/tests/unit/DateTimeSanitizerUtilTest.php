@@ -34,17 +34,20 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Class used by reporting to show available ordering either ascending or descending
-     */
-    class OrderByStaticDropDownElement extends DataFromFormStaticDropDownFormElement
+    class DateTimeSanitizerUtilTest extends ZurmoBaseTest
     {
-        /**
-         * @return string
-         */
-        protected function getDataAndLabelsModelPropertyName()
+        public function testGetAcceptableFormats()
         {
-            return 'getOrderValuesAndLabels';
+            $expected = array(
+                    'yyyy-MM-dd hh:mm',
+                    'MM-dd-yyyy hh:mm',
+                    'dd-MM-yyyy hh:mm',
+                    'MM/dd/yyyy hh:mm',
+                    'M/d/yyyy hh:mm',
+                    'd/M/yyyy hh:mm',
+                    'yyyy-M-d hh:mm'
+            );
+            $this->assertEquals($expected, DateTimeSanitizerUtil::getAcceptableFormats());
         }
     }
 ?>
