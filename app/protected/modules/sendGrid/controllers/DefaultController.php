@@ -183,5 +183,24 @@
                 throw new NotSupportedException();
             }
         }
+
+        /**
+         * @see https://github.com/michaelp85/TS-SendGrid-Event-Webhook-Notifier/blob/master/mod.ts_sendgrid_event_webhook_notifier.php
+         */
+        public function actionWebHook()
+        {
+            $data = array();
+            $content = file_get_contents('http://ushainformatique.info/dump.log');
+            preg_match_all('/\[{(.*?)}\]/i', $content, $matches);
+            foreach($matches[1] as $string)
+            {
+                $data[] = json_decode('{' . $string . '}', true);
+            }
+            print "<pre>";
+            print_r($data);
+            print "</pre>";
+            exit;
+        }
+
     }
 ?>
