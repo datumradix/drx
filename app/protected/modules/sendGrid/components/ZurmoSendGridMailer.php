@@ -133,7 +133,8 @@
                    setText($emailMessage->content->textContent)->
                    setHtml($emailMessage->content->htmlContent)->
                    addHeader('X-Sent-Using', 'SendGrid-API')->
-                   addHeader('X-Transport', 'web');
+                   addHeader('X-Transport', 'web')->
+                   addUniqueArg("campaign-id", "10");
             foreach($this->toAddresses as $emailAddress => $name)
             {
                 $email->addTo($emailAddress, $name);
