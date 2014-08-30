@@ -125,5 +125,47 @@
             $folder             = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
             return $folder;
         }
+
+        protected function resolveEmailMessage($subject = 'Subject', $textContent = 'My First Message',
+                                           $htmlContent = 'Some fake HTML content', $fromAddress = 'zurmo@zurmo.org',
+                                           $fromName = 'Zurmo', $toAddress = 'bob.message@zurmotest.com',
+                                           $toName = null, $contact = null)
+        {
+            if (!isset($contact))
+            {
+                $contact    = ContactTestHelper::createContactByNameForOwner('emailContact', Yii::app()->user->userModel);
+            }
+            $emailMessage               = new EmailMessage();
+            $emailMessage->owner        = $contact->owner;
+            $emailMessage->subject      = $subject;
+            $emailContent               = new EmailMessageContent();
+            $emailContent->textContent  = $textContent;
+            $emailContent->htmlContent  = $htmlContent;
+            $emailMessage->content      = $emailContent;
+            $sender                     = new EmailMessageSender();
+            $sender->fromAddress        = $fromAddress;
+            $sender->fromName           = $fromName;
+            $sender->personsOrAccounts->add(Yii::app()->user->userModel);
+            $emailMessage->sender       = $sender;
+            $recipient                  = new EmailMessageRecipient();
+            $recipient->toAddress       = $toAddress;
+            if (!isset($toName))
+            {
+                $toName                 = strval($contact);
+            }
+            $recipient->toName          = $toName;
+            $recipient->personsOrAccounts->add($contact);
+            $recipient->type            = EmailMessageRecipient::TYPE_TO;
+            $emailMessage->recipients->add($recipient);
+            $emailBox = EmailBoxUtil::getDefaultEmailBoxByUser(Yii::app()->user->userModel);
+            $emailMessage->folder       = EmailFolder::getByBoxAndType($emailBox, EmailFolder::TYPE_OUTBOX);
+            $saved = $emailMessage->save();
+            if (!$saved)
+            {
+                var_dump($emailMessage->getErrors());
+                throw new FailedToSaveModelException();
+            }
+            return $emailMessage;
+        }
     }
 ?>

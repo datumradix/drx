@@ -201,7 +201,7 @@
                     array('fromAddress',            'email'),
                     array('subject',                'required'),
                     array('subject',                'type',    'type' => 'string'),
-                    array('subject',                'length',  'min'  => 1, 'max' => 64),
+                    array('subject',                'length',  'min'  => 1, 'max' => 255),
                     array('htmlContent',            'type',    'type' => 'string'),
                     array('textContent',            'type',    'type' => 'string'),
                     array('htmlContent',            'StripDummyHtmlContentFromOtherwiseEmptyFieldValidator'),
@@ -303,13 +303,11 @@
 
         protected function afterDelete()
         {
-            parent::afterDelete();
-            $campaignitems = CampaignItem::getByProcessedAndCampaignId(0, $this->id);
-            foreach ($campaignitems as $campaignitem)
+            foreach ($this->campaignItems as $item)
             {
-                ZurmoRedBean::exec("DELETE FROM campaignitemactivity WHERE campaignitem_id = " . $campaignitem->id);
+                $item->delete();
             }
-            ZurmoRedBean::exec("DELETE FROM campaignitem WHERE processed = 0 and campaign_id = " . $this->id);
+            return parent::afterDelete();
         }
     }
 ?>
