@@ -66,5 +66,58 @@
             $mediaQuery = ZurmoCssInUtil::splitMediaQueries($css);
             $this->assertEquals(" @media {}\n", $mediaQuery[1]);
         }
+
+        public function testReferencedInvalidCSSFilePathsAndUrls()
+        {
+            // test for invalid file paths
+            // test for 404 urls
+            $htmlContent    = <<<CSS
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <base href="http://www.zurmo.com/images/" target="_blank">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Zurmo CRM &mdash; Gamified, Social, Intuitive Customer Relationship Management</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <meta name="google-site-verification" content="RAKz9Hv052t8VptkOvCyFCryGJ72VRfVVnSR-ZhkhFo" />
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="shortcut icon" href="icons/favicon.ico">
+        <link href="//fonts.googleapis.com/css?family=Lato:100,400,700,400italic" rel="stylesheet" type="text/css">
+        <link href="//fonts.googleapis.com/css?family=Arvo:400,400italic" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+        <!--[if lt IE 9]><script src="js/vendor/html5shiv.js"></script><![endif]-->
+        <link rel="stylesheet" type="text/css" href="../fusion.css">
+        <link rel="stylesheet" type="text/css" href="/../style.css">
+        <link href="css/zurmo.css" rel="stylesheet"  media="screen" type="text/css">
+        <link href="http://www.zurmo.com/css/zurmo.css" rel="stylesheet"  media="screen" type="text/css">
+        <link href="http://www.zurmo.com/css/zurmo-invalid.css" rel="stylesheet"  media="screen" type="text/css">
+        <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://zurmo.com/wordpress/xmlrpc.php?rsd" />
+        <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://zurmo.com/wordpress/wp-includes/wlwmanifest.xml" />
+        <meta name="generator" content="WordPress 3.8.4" />
+        <script type="text/javascript">
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			  ga('create', 'UA-38681687-1', 'auto');
+			  ga('send', 'pageview');
+		</script>
+    </head>
+    <body id="home" class="com">
+    </body>
+</html>
+CSS;
+
+            $cssInUtil = new ZurmoCssInUtil();
+            $cssInUtil->setMoveStyleBlocksToBody();
+            $convertedhtmlContent = $cssInUtil->inlineCSS(null, $htmlContent);
+        }
     }
 ?>

@@ -94,7 +94,7 @@
                 'rules' => array(
                     array('subject',                'required'),
                     array('subject',                'type',    'type' => 'string'),
-                    array('subject',                'length',  'min'  => 1, 'max' => 64),
+                    array('subject',                'length',  'min'  => 1, 'max' => 255),
                     array('htmlContent',            'type',    'type' => 'string'),
                     array('textContent',            'type',    'type' => 'string'),
                     array('htmlContent',            'StripDummyHtmlContentFromOtherwiseEmptyFieldValidator'),
@@ -212,13 +212,11 @@
 
         protected function afterDelete()
         {
-            parent::afterDelete();
-            $autoresponderitems = AutoresponderItem::getByProcessedAndAutoresponderId(0, $this->id);
-            foreach ($autoresponderitems as $autoresponderitem)
+            foreach ($this->autoresponderItems as $item)
             {
-                ZurmoRedBean::exec("DELETE FROM autoresponderitemactivity WHERE autoresponderitem_id = " . $autoresponderitem->id);
+                $item->delete();
             }
-            ZurmoRedBean::exec("DELETE FROM autoresponderitem WHERE processed = 0 and autoresponder_id = " . $this->id);
+            return parent::afterDelete();
         }
     }
 ?>
