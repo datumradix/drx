@@ -124,6 +124,7 @@
             $validated                 = $emailMessage->validate();
             if ($validated)
             {
+                $emailMessage->save();
                 $emailHelper->sendImmediately($emailMessage);
             }
             return $emailMessage;

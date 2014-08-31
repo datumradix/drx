@@ -107,7 +107,6 @@
             $validated                 = $emailMessage->validate();
             if ($validated)
             {
-                //Yii::app()->sendGridEmailHelper->sendImmediately($emailMessage);
                 list($toAddresses, $ccAddresses, $bccAddresses) = SendGridEmailHelper::resolveRecipientAddressesByType($emailMessage);
                 $this->sendEmail($emailMessage);
                 $saved        = $emailMessage->save();
@@ -125,7 +124,24 @@
          */
         public function sendEmail(EmailMessage $emailMessage)
         {
-            $sendgrid = new SendGrid($this->emailHelper->apiUsername, $this->emailHelper->apiPassword, array("turn_off_ssl_verification" => true));
+            $itemData       = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($emailMessage);
+            $apiUser        = $this->emailHelper->apiUsername;
+            $apiPassword    = $this->emailHelper->apiPassword;
+            if($itemData != null)
+            {
+                list($itemId, $itemClass, $personId) = $itemData;
+                $campaignOrAutoresponderItem = $itemClass::getById($itemId);
+                $userEmailAccount            = SendGridEmailAccount::getByUserAndName($campaignOrAutoresponderItem->campaign->owner, null);
+                $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
+                if($userEmailAccount->apiUsername != ''
+                    && $userEmailAccount->apiPassword != ''
+                        && $useAutoresponderOrCampaignOwnerMailSettings === true)
+                {
+                    $apiUser        = $userEmailAccount->apiUsername;
+                    $apiPassword    = ZurmoPasswordSecurityUtil::decrypt($userEmailAccount->apiPassword);
+                }
+            }
+            $sendgrid = new SendGrid($apiUser, $apiPassword, array("turn_off_ssl_verification" => true));
             $email    = new SendGrid\Email();
             $email->setFrom($this->fromUserEmailData['address'])->
                    setFromName($this->fromUserEmailData['name'])->
@@ -133,8 +149,14 @@
                    setText($emailMessage->content->textContent)->
                    setHtml($emailMessage->content->htmlContent)->
                    addHeader('X-Sent-Using', 'SendGrid-API')->
-                   addHeader('X-Transport', 'web')->
-                   addUniqueArg("campaign-id", "10");
+                   addHeader('X-Transport', 'web');
+            //Check if campaign and if yes, associate to email.
+            if($itemData != null)
+            {
+                $email->addUniqueArg("itemId", $itemId);
+                $email->addUniqueArg("itemClass", $itemClass);
+                $email->addUniqueArg("personId", $personId);
+            }
             foreach($this->toAddresses as $emailAddress => $name)
             {
                 $email->addTo($emailAddress, $name);
@@ -157,6 +179,7 @@
                     //$emailMessage->attach($attachment);
                 }
             }*/
+            $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
             $response = $sendgrid->send($email);
             if($response->message == 'success')
             {
@@ -181,31 +204,6 @@
                                                                                       EmailFolder::TYPE_OUTBOX_ERROR);
                 $emailMessage->error                   = $emailMessageSendError;
             }
-        }
-
-        public function getBouncedData($startDate, $endDate, $startTime, $endTime)
-        {
-            $url = 'https://api.sendgrid.com/';
-            $user = $this->emailHelper->apiUsername;
-            $pass = $this->emailHelper->apiPassword;
-
-            $request =  $url . 'api/bounces.get.json?api_user=' . $user . '&api_key=' . $pass . '&date=1';
-
-            // Generate curl request
-            $curl = curl_init($request);
-            // Tell curl not to return headers, but do return the response
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_HEADER, 0);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-
-            // obtain response
-            if(!$response = curl_exec($curl))
-            {
-                trigger_error(curl_error($curl));
-            }
-            curl_close($curl);
-            $data = json_decode($response);
         }
     }
 ?>
