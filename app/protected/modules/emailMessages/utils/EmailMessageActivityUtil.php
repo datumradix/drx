@@ -246,5 +246,28 @@
                 }
             }
         }
+
+        /**
+         * Get campaign or autoresponder item class by email message.
+         * @param int $emailMessageId
+         * @return array
+         */
+        public static function getByEmailMessageId($itemModelClass, $emailMessageId)
+        {
+            assert('is_int($emailMessageId)');
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'             => 'emailMessage',
+                    'relatedAttributeName'      => 'id',
+                    'operatorType'              => 'equals',
+                    'value'                     => $emailMessageId,
+                ),
+            );
+            $searchAttributeData['structure'] = '(1)';
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter($itemModelClass);
+            $where = RedBeanModelDataProvider::makeWhere($itemModelClass, $searchAttributeData, $joinTablesAdapter);
+            return $itemModelClass::getSubset($joinTablesAdapter, null, null, $where, null);
+        }
     }
 ?>

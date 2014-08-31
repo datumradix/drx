@@ -92,12 +92,15 @@
          * @param mixed $name null or String representing the email account name
          * @return EmailAccount
          */
-        public static function resolveAndGetByUserAndName(User $user, $name = null)
+        public static function resolveAndGetByUserAndName(User $user, $name = null, $decrypt = true)
         {
             try
             {
                 $emailAccount = static::getByUserAndName($user, $name);
-                $emailAccount->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($emailAccount->outboundPassword);
+                if($decrypt === true)
+                {
+                    $emailAccount->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($emailAccount->outboundPassword);
+                }
             }
             catch (NotFoundException $e)
             {

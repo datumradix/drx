@@ -312,5 +312,27 @@
                 }
             }
         }
+
+        /**
+         * Resolve and check campaign email message.
+         * @param EmailMessage $emailMessage
+         */
+        public static function getCampaignOrAutoresponderDataByEmailMessage(EmailMessage $emailMessage)
+        {
+            $campaignItems = EmailMessageActivityUtil::getByEmailMessageId("CampaignItem", $emailMessage->id);
+            if(!empty($campaignItems))
+            {
+                return array($campaignItems[0]->id, 'CampaignItem', $campaignItems[0]->contact->getClassId('Person'));
+            }
+            else
+            {
+                $autoResponderItems = EmailMessageActivityUtil::getByEmailMessageId("AutoresponderItem", $emailMessage->id);
+                if(!empty($autoResponderItems))
+                {
+                    return array($autoResponderItems[0]->id, 'AutoresponderItem', $campaignItems[0]->contact->getClassId('Person'));
+                }
+            }
+            return null;
+        }
     }
 ?>

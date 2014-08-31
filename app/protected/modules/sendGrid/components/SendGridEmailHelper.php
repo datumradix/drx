@@ -253,7 +253,6 @@
          */
         public static function resolveRecipientAddressesByType(EmailMessage $emailMessage)
         {
-            $recipientTypeData = array();
             $toAddresses    = array();
             $ccAddresses    = array();
             $bccAddresses   = array();

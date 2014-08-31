@@ -93,7 +93,7 @@
         public function actionConfigurationEditOutbound()
         {
             $breadCrumbLinks = array(
-                Zurmo::t('SendGridModule', 'WebAPI Configuration')
+                Zurmo::t('SendGridModule', 'SendGrid Configuration')
             );
             $configurationForm  = SendGridWebApiConfigurationFormAdapter::makeFormFromGlobalConfiguration();
             $postVariableName   = get_class($configurationForm);
@@ -174,8 +174,8 @@
                     $messageContent = Zurmo::t('EmailMessagesModule', 'A test email address must be entered before you can send a test email.') . "\n";
                 }
                 Yii::app()->getClientScript()->setToAjaxMode();
-                $messageView = new TestConnectionView($messageContent);
-                $view = new ModalView($this, $messageView);
+                $messageView    = new TestConnectionView($messageContent);
+                $view           = new ModalView($this, $messageView);
                 echo $view->render();
             }
             else
@@ -196,10 +196,29 @@
             {
                 $data[] = json_decode('{' . $string . '}', true);
             }
-            print "<pre>";
-            print_r($data);
-            print "</pre>";
-            exit;
+            foreach($data as $value)
+            {
+                if($value['event'] == 'bounce' || $value['event'] == 'spamreport')
+                {
+                    $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
+                    $activityUtilClassName      = $activityClassName . 'Util';
+                    $type                       = $activityClassName::TYPE_BOUNCE;
+                    $activityData               = array('modelId'   => $value['itemId'],
+                                                        'modelType' => $value['itemClass'],
+                                                        'personId'  => $value['personId'],
+                                                        'url'       => null,
+                                                        'type'      => $type);
+                    $activityCreatedOrUpdated   = $activityUtilClassName::createOrUpdateActivity($activityData);
+                    $emailMessageActivities     = $activityClassName::getByTypeAndModelIdAndPersonIdAndUrl($type, $value['itemId'], $value['personId'], null);
+                    $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
+                    $externalApiEmailMessageActivity->emailMessageActivity = $emailMessageActivities[0];
+                    $externalApiEmailMessageActivity->api       = 'sendgrid';
+                    $externalApiEmailMessageActivity->type      = $type;
+                    $externalApiEmailMessageActivity->reason    = $value['reason'];
+                    $externalApiEmailMessageActivity->itemClass = $value['itemClass'];
+                    $externalApiEmailMessageActivity->save();
+                }
+            }
         }
 
     }

@@ -38,8 +38,8 @@
      Yii::import('ext.sendgrid.lib.Unirest');
     class SendGridApiTest extends ZurmoBaseTest
     {
-        protected static $apiUserName = 'msinghai';
-        protected static $apiPassword = 'abc123';
+        protected static $apiUserName = 'apiUsername';
+        protected static $apiPassword = 'apiPassword';
 
         public static function setUpBeforeClass()
         {

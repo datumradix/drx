@@ -472,11 +472,12 @@
         {
             try
             {
+                $this->resolveMailerByCampaignOrAutoresponderEmailAccount($mailer, $emailMessage);
                 $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
                 $acceptedRecipients         = $mailer->send();
                 // Code below is quick fix, we need to think about better solution
                 // Here is related PT story: https://www.pivotaltracker.com/projects/380027#!/stories/45841753
-                //if ($acceptedRecipients != $emailMessage->recipients->count())
+                if ($acceptedRecipients != $emailMessage->recipients->count())
                 if ($acceptedRecipients <= 0)
                 {
                     $content = Zurmo::t('EmailMessagesModule', 'Response from Server') . "\n";
@@ -631,6 +632,31 @@
                 }
             }
             return $messageContent;
+        }
+
+        /**
+         * Resolve mailer by campaign or autoresponder email account setting if marketing option is configured.
+         * @param Mailer $mailer
+         * @param EmailMessage $emailMessage
+         */
+        protected function resolveMailerByCampaignOrAutoresponderEmailAccount(Mailer $mailer, EmailMessage $emailMessage)
+        {
+            if(($itemData = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($emailMessage)) != null)
+            {
+                list($itemId, $itemClass, $personId) = $itemData;
+                $campaignOrAutoresponderItem = $itemClass::getById($itemId);
+                $userEmailAccount = EmailAccount::getByUserAndName($campaignOrAutoresponderItem->campaign->owner, null);
+                $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
+                if($userEmailAccount->outboundUsername != ''
+                        && $userEmailAccount->outboundPassword != ''
+                            && $useAutoresponderOrCampaignOwnerMailSettings === true)
+                {
+                    $mailer->username = $userEmailAccount->outboundUsername;
+                    $mailer->password = ZurmoPasswordSecurityUtil::decrypt($userEmailAccount->outboundPassword);
+                    $mailer->host     = $userEmailAccount->outboundHost;
+                    $mailer->port     = $userEmailAccount->outboundPort;
+                }
+            }
         }
     }
 ?>
