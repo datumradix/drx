@@ -41,16 +41,19 @@
     {
         public $username;
         public $password;
+        public $eventWebhookUrl;
         public $aTestToAddress;
 
         public function rules()
         {
             return array(
+                array('username, password, eventWebhookUrl', 'required'),
                 array('username',                          'type',      'type' => 'string'),
                 array('username',                          'length',    'min'  => 1, 'max' => 64),
                 array('password',                          'type',      'type' => 'string'),
                 array('password',                          'length',    'min'  => 1, 'max' => 64),
                 array('aTestToAddress',                    'email'),
+                array('eventWebhookUrl',                   'url'),
             );
         }
 
@@ -59,7 +62,8 @@
             return array(
                 'username'                             => Zurmo::t('ZurmoModule', 'Username'),
                 'password'                             => Zurmo::t('ZurmoModule', 'Password'),
-                'aTestToAddress'                       => Zurmo::t('SendGridModule', 'Send a test email to')
+                'aTestToAddress'                       => Zurmo::t('SendGridModule', 'Send a test email to'),
+                'eventWebhookUrl'                      => Zurmo::t('SendGridModule', 'Event webhook url')
             );
         }
     }

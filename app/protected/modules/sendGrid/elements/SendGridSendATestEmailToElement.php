@@ -35,32 +35,27 @@
      ********************************************************************************/
 
     /**
-     * Class to adapt email api configuration values into a configuration form.
-     * Saves global values from a configuration form.
+     * Utilize this element to display a text input and button that can be used to send a test email while setting
+     * up the outbound email configuration.
      */
-    class SendGridWebApiConfigurationFormAdapter
+    class SendGridSendATestEmailToElement extends SendATestEmailToElement
     {
         /**
-         * @return SendGridWebApiConfigurationForm
+         * Render a test button. This link calls a modal
+         * popup.
+         * @return The element's content as a string.
          */
-        public static function makeFormFromGlobalConfiguration()
+        protected function renderTestButton()
         {
-            $form                                    = new SendGridWebApiConfigurationForm();
-            $form->username                          = Yii::app()->sendGridEmailHelper->apiUsername;
-            $form->password                          = Yii::app()->sendGridEmailHelper->apiPassword;
-            $form->eventWebhookUrl                   = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
-            return $form;
+            $content  = '<span>';
+            $content .= ZurmoHtml::ajaxLink(
+                ZurmoHtml::wrapLabel(Zurmo::t('EmailMessagesModule', 'Send Test Email')),
+                Yii::app()->createUrl('sendGrid/default/sendTestMessage/', array()),
+                static::resolveAjaxOptionsForTestEmailSettings($this->form->getId()),
+                array('id' => 'SendATestEmailToButton', 'class' => 'EmailTestingButton z-button')
+            );
+            $content .= '</span>';
+            return $content;
         }
-
-        /**
-         * Given a SendGridWebApiConfigurationForm, save the configuration global values.
-         */
-        public static function setConfigurationFromForm(SendGridWebApiConfigurationForm $form)
-        {
-            Yii::app()->sendGridEmailHelper->apiUsername  = $form->username;
-            Yii::app()->sendGridEmailHelper->apiPassword  = $form->password;
-            Yii::app()->sendGridEmailHelper->eventWebhookUrl  = $form->eventWebhookUrl;
-            Yii::app()->sendGridEmailHelper->setApiSettings();
-       }
     }
 ?>
