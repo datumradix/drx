@@ -346,6 +346,7 @@
             $this->populateMailer($mailer, $emailMessage);
             $this->sendEmail($mailer, $emailMessage);
             $this->updateEmailMessageForSending($emailMessage);
+            $emailMessage->forgetAll();
         }
 
         /**
@@ -356,7 +357,8 @@
         {
             if ($emailMessage->id < 0)
             {
-                throw new FailedToSaveModelException("Email message should already be saved by this point");
+                Yii::log("EmailMessage should have been saved by this point. Anyways, saving now", CLogger::LEVEL_WARNING);
+                $emailMessage->save(false);
             }
             $sendAttempts       = ($emailMessage->sendAttempts)? $emailMessage->sendAttempts : 1;
             $sentDateTime       = ($emailMessage->sentDateTime)? "'" . $emailMessage->sentDateTime . "'" : 'null';
