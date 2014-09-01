@@ -105,5 +105,32 @@
             }
             return false;
         }
+
+        public static function getByTypeAndEmailMessageActivity($type, $itemActivity)
+        {
+            $modelClassName = get_class($itemActivity);
+            $tableName      = $modelClassName::getTableName();
+            $rows           = ZurmoRedBean::getAll('select emailmessageactivity_id from ' . $tableName .
+                                    ' where id = ?', array($itemActivity->id));
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'][1] = array(
+                'attributeName'             => 'type',
+                'operatorType'              => 'equals',
+                'value'                     => $type,
+            );
+            $structure = '1';
+            $clauseNumber = count($searchAttributeData['clauses']) + 1;
+            $searchAttributeData['clauses'][$clauseNumber] = array(
+                    'attributeName'             => 'emailMessageActivity',
+                    'relatedAttributeName'      => 'id',
+                    'operatorType'              => 'equals',
+                    'value'                     => intval($rows[0]['emailmessageactivity_id']),
+            );
+            $structure .= ' and ' . $clauseNumber;
+            $searchAttributeData['structure'] = "({$structure})";
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            return self::getCount($joinTablesAdapter, $where, get_called_class(), false);
+        }
     }
 ?>
