@@ -198,7 +198,7 @@
             }
             foreach($data as $value)
             {
-                if($value['event'] == 'bounce' || $value['event'] == 'spamreport')
+                if($value['event'] == 'bounce' || $value['event'] == 'spamreport' || $value['event'] == 'dropped')
                 {
                     $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
                     $activityUtilClassName      = $activityClassName . 'Util';
