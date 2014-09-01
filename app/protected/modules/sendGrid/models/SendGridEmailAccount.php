@@ -123,7 +123,8 @@
                     'fromName',
                     'replyToAddress',
                     'apiUsername',
-                    'apiPassword'
+                    'apiPassword',
+                    'eventWebhookUrl'
                 ),
                 'relations' => array(
                     'messages' => array(static::HAS_MANY, 'EmailMessage', static::NOT_OWNED,
@@ -133,15 +134,17 @@
                 'rules'     => array(
                                   array('apiUsername',               'required'),
                                   array('apiPassword',               'required'),
+                                  array('eventWebhookUrl',           'required'),
                                   array('name',                      'type',      'type' => 'string'),
                                   array('fromName',                  'type',      'type' => 'string'),
-                                  array('apiUsername',          'type',      'type' => 'string'),
-                                  array('apiPassword',          'type',      'type' => 'string'),
+                                  array('apiUsername',               'type',      'type' => 'string'),
+                                  array('apiPassword',               'type',      'type' => 'string'),
                                   array('fromName',                  'length',    'max' => 64),
-                                  array('apiUsername',          'length',    'max' => 64),
-                                  array('apiPassword',          'length',    'max' => 128),
+                                  array('apiUsername',               'length',    'max' => 64),
+                                  array('apiPassword',               'length',    'max' => 128),
                                   array('fromAddress',               'email'),
                                   array('replyToAddress',            'email'),
+                                  array('eventWebhookUrl',           'url'),
                 )
             );
             return $metadata;
@@ -184,6 +187,7 @@
                     'apiUsername'               => Zurmo::t('SendGridModule', 'Api Username',             array(), null, $language),
                     'replyToAddress'            => Zurmo::t('SendGridModule', 'Reply To Address',              array(), null, $language),
                     'user'                      => Zurmo::t('UsersModule',         'User',                          array(), null, $language),
+                    'eventWebhookUrl'           => Zurmo::t('SendGridModule', 'Event webhook url',             array(), null, $language),
                 )
             );
         }

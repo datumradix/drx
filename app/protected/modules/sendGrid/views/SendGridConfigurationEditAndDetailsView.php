@@ -41,7 +41,7 @@
     {
         public function getTitle()
         {
-            return Zurmo::t('SendGridModule', 'WebAPI Configuration');
+            return Zurmo::t('SendGridModule', 'Global SendGrid Configuration');
         }
 
         public static function getDefaultMetadata()
@@ -73,6 +73,15 @@
                                         array(
                                             'elements' => array(
                                                 array('attributeName' => 'password', 'type' => 'Password'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'eventWebhookUrl', 'type' => 'Text'),
                                             ),
                                         ),
                                     )

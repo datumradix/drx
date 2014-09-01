@@ -93,7 +93,7 @@
         public function actionConfigurationEditOutbound()
         {
             $breadCrumbLinks = array(
-                Zurmo::t('SendGridModule', 'SendGrid Configuration')
+                Zurmo::t('SendGridModule', 'SendGrid Global Configuration')
             );
             $configurationForm  = SendGridWebApiConfigurationFormAdapter::makeFormFromGlobalConfiguration();
             $postVariableName   = get_class($configurationForm);
@@ -183,43 +183,5 @@
                 throw new NotSupportedException();
             }
         }
-
-        /**
-         * @see https://github.com/michaelp85/TS-SendGrid-Event-Webhook-Notifier/blob/master/mod.ts_sendgrid_event_webhook_notifier.php
-         */
-        public function actionWebHook()
-        {
-            $data = array();
-            $content = file_get_contents('http://ushainformatique.info/dump.log');
-            preg_match_all('/\[{(.*?)}\]/i', $content, $matches);
-            foreach($matches[1] as $string)
-            {
-                $data[] = json_decode('{' . $string . '}', true);
-            }
-            foreach($data as $value)
-            {
-                if($value['event'] == 'bounce' || $value['event'] == 'spamreport' || $value['event'] == 'dropped')
-                {
-                    $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
-                    $activityUtilClassName      = $activityClassName . 'Util';
-                    $type                       = $activityClassName::TYPE_BOUNCE;
-                    $activityData               = array('modelId'   => $value['itemId'],
-                                                        'modelType' => $value['itemClass'],
-                                                        'personId'  => $value['personId'],
-                                                        'url'       => null,
-                                                        'type'      => $type);
-                    $activityCreatedOrUpdated   = $activityUtilClassName::createOrUpdateActivity($activityData);
-                    $emailMessageActivities     = $activityClassName::getByTypeAndModelIdAndPersonIdAndUrl($type, $value['itemId'], $value['personId'], null);
-                    $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
-                    $externalApiEmailMessageActivity->emailMessageActivity = $emailMessageActivities[0];
-                    $externalApiEmailMessageActivity->api       = 'sendgrid';
-                    $externalApiEmailMessageActivity->type      = $type;
-                    $externalApiEmailMessageActivity->reason    = $value['reason'];
-                    $externalApiEmailMessageActivity->itemClass = $value['itemClass'];
-                    $externalApiEmailMessageActivity->save();
-                }
-            }
-        }
-
     }
 ?>

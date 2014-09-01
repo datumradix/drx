@@ -696,7 +696,7 @@
                 {
                     $userSendGridConfigurationForm->save();
                     Yii::app()->user->setFlash('notification',
-                        Zurmo::t('UsersModule', 'User sendgrid webapi configuration saved successfully.')
+                        Zurmo::t('UsersModule', 'User SendGrid API configuration saved successfully.')
                     );
 
                     if ($redirectUrl != null)

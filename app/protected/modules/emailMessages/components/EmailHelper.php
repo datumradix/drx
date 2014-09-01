@@ -382,35 +382,6 @@
          */
         public function sendQueued($count = null)
         {
-            /*assert('is_int($count) || $count == null');
-            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                $this->sendImmediately($emailMessage);
-            }
-            if ($count == null)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
-            }
-            elseif (count($queuedEmailMessages) < $count)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - count($queuedEmailMessages));
-            }
-            else
-            {
-                $queuedEmailMessages = array();
-            }
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                if ($emailMessage->sendAttempts < 3)
-                {
-                    $this->sendImmediately($emailMessage);
-                }
-                else
-                {
-                    $this->processMessageAsFailure($emailMessage);
-                }
-            }*/
             EmailMessageUtil::processAndSendQueuedMessages($this, $count);
             return true;
         }

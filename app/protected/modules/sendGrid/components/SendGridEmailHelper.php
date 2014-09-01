@@ -39,16 +39,14 @@
      */
     class SendGridEmailHelper extends CApplicationComponent
     {
-        const WEBAPI = 'webapi';
-
         /**
-         * WebAPI username.
+         * API username.
          * @var string
          */
         public $apiUsername;
 
         /**
-         * WebAPI password.
+         * API password.
          * @var string
          */
         public $apiPassword;
@@ -66,13 +64,20 @@
         public $fromAddress;
 
         /**
+         * Event webhook url.
+         * @var string
+         */
+        public $eventWebhookUrl;
+
+        /**
          * Contains array of settings to load during initialization from the configuration table.
          * @see loadApiSettings
          * @var array
          */
         protected $settingsToLoad = array(
             'apiUsername',
-            'apiPassword'
+            'apiPassword',
+            'eventWebhookUrl'
         );
 
         /**
@@ -166,21 +171,6 @@
                 {
                     ZurmoConfigurationUtil::setByModuleName('SendGridModule', $keyName, $this->$keyName);
                 }
-            }
-        }
-
-        public static function sendMailUsingGlobalConfiguration(EmailMessage $emailMessage)
-        {
-            //Check for global sendgrid configuration
-            $username = ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'apiUsername');
-            $password = ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'apiPassword');
-            if($username != '' && $password != '')
-            {
-                list($toAddresses, $ccAddresses, $bccAddresses) = self::resolveRecipientAddressesByType($emailMessage);
-                //Send email using sendgrid global
-                $emailHelper  = new SendGridEmailHelper();
-                $mailer       = new ZurmoSendGridMailer($emailHelper, $emailMessage->sender, $toAddresses, $ccAddresses, $bccAddresses);
-                $emailMessage = $mailer->send();
             }
         }
 
