@@ -39,14 +39,24 @@
      */
     class MissionUnreadCommentNotificationRules extends SimpleNotificationRules
     {
-        public static function getDisplayName()
+        protected $canBeConfiguredByUser = false;
+
+        public function getDisplayName()
         {
             return Zurmo::t('MissionsModule', 'At least one mission has unread content');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'MissionUnreadComment';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('MissionsModule');
         }
     }
 ?>

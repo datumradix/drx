@@ -41,12 +41,16 @@
     {
         protected $critical    = false;
 
-        public static function getDisplayName()
+        protected $canBeConfiguredByUser = false;
+
+        protected $defaultValueForEmailSetting = false;
+
+        public function getDisplayName()
         {
             return Zurmo::t('JobsManagerModule', 'Enable Minify for CSS and JavaScript files.');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'EnableMinify';
         }

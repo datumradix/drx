@@ -43,12 +43,12 @@
 
         protected $allowDuplicates = true;
 
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('EmailMessagesModule', 'Owner Of The Message Does Not Exist');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'EmailMessageOwnerNotExist';
         }
@@ -66,6 +66,29 @@
                     $this->addUser($user);
                 }
             }
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('EmailMessagesModule');
+        }
+
+        public function isSuperAdministratorNotification()
+        {
+            return true;
+        }
+
+        public function getTooltipId()
+        {
+            return 'email-message-owner-not-exist-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a non-zurmo user attempts to archive an email.');
         }
     }
 ?>

@@ -48,16 +48,31 @@
         public static function sendNotificationOnNewComment(RedBeanModel $relatedModel, Comment $comment, $senderPerson, $peopleToSendNotification)
         {
             if (count($peopleToSendNotification) > 0)
-            {
+            {   
+                $notificationSettingName = static::resolveOnNewCommentNotificationSettingNameByModel($relatedModel);
+                $notificationRulesClassName = static::resolveNotificationRulesClassByModel($relatedModel);
+                $rules = new $notificationRulesClassName();
+                
                 foreach ($peopleToSendNotification as $people)
                 {
+                    
                     if ($people->primaryEmail->emailAddress !== null &&
-                    !UserConfigurationFormAdapter::resolveAndGetValue($people, 'turnOffEmailNotifications'))
+                        UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($people, $notificationSettingName, 'email'))
                     {
                         $subject = self::getEmailSubject($relatedModel);
                         $content = self::getEmailContent($relatedModel, $comment, $people);
                         EmailNotificationUtil::resolveAndSendEmail($senderPerson, array($people), $subject, $content);
                     }
+                    if ($people->primaryEmail->emailAddress !== null &&
+                        UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($people, $notificationSettingName, 'inbox'))
+                    {
+                        $rules->addUser($people);
+                    }
+                }
+                $peopleToSendNotificationOnly = $rules->getUsers();
+                if (count($peopleToSendNotificationOnly) > 0)
+                {
+                    static::sendNotificationWithoutEmail($rules, $comment);
                 }
             }
             else
@@ -138,6 +153,40 @@
             {
                 return Yii::app()->createAbsoluteUrl('tasks/default/details/', array('id' => $model->id));
             }
+        }
+        
+        /**
+         * Send notification without email
+         * @param NotificationRules $rules
+         * @param Comment $comment
+         * @return string
+         */
+        protected static function sendNotificationWithoutEmail(NotificationRules $rules, Comment $comment)
+        {
+            $textContent = $comment;
+            $htmlContent = $comment;
+            $notificationMessage                    = new NotificationMessage();
+            $notificationMessage->textContent       = $textContent;
+            $notificationMessage->htmlContent       = DataUtil::purifyHtml($htmlContent);
+            NotificationsUtil::submit($notificationMessage, $rules);
+        }
+        
+        /**
+         * Resolve the notification setting name by model
+         * @return string
+         */
+        protected static function resolveOnNewCommentNotificationSettingNameByModel(RedBeanModel $model)
+        {
+            return 'enable' . get_class($model) . 'NewCommentNotification';
+        }
+        
+        /**
+         * Resolve the notification rules class name by model
+         * @return string
+         */
+        protected static function resolveNotificationRulesClassByModel(RedBeanModel $model)
+        {
+            return get_class($model) . 'NewCommentNotificationRules';
         }
     }
 ?>

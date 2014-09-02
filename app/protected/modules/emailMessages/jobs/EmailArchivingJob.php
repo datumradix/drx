@@ -326,6 +326,13 @@
             {
                 $emailMessage->folder  = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_ARCHIVED_UNMATCHED);
                 $notificationMessage                    = new NotificationMessage();
+                $notificationMessage->textContent       = Zurmo::t('EmailMessagesModule', 'At least one archived email message does ' .
+                                                                   'not match any records in the system. ' .
+                                                                   'To manually match them use this link: {url}.',
+                    array(
+                        '{url}'      => Yii::app()->createUrl('emailMessages/default/matchingList'),
+                    )
+                );
                 $notificationMessage->htmlContent       = Zurmo::t('EmailMessagesModule', 'At least one archived email message does ' .
                                                                  'not match any records in the system. ' .
                                                                  '<a href="{url}">Click here</a> to manually match them.',

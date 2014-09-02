@@ -56,7 +56,7 @@
                                         $rules->getType(),
                                         $users,
                                         $rules->allowDuplicates(),
-                                        $rules->isCritical());
+                                        $rules->allowSendingEmail());
         }
 
         /**
@@ -169,18 +169,24 @@
         }
 
         protected static function processNotification(NotificationMessage $message, $type, $users,
-                                                      $allowDuplicates, $isCritical)
+                                                      $allowDuplicates, $allowSendingEmail)
         {
             assert('is_string($type) && $type != ""');
             assert('is_array($users) && count($users) > 0');
             assert('is_bool($allowDuplicates)');
-            assert('is_bool($isCritical)');
+            assert('is_bool($allowSendingEmail)');
             $notifications = static::resolveAndGetNotifications($users, $type, $message, $allowDuplicates);
-            if (static::resolveShouldSendEmailIfCritical() && $isCritical)
+            if (static::resolveShouldSendEmailIfCritical())
             {
                 foreach ($notifications as $notification)
                 {
-                    static::sendEmail($notification);
+                    $notificationSettingName = static::resolveNotificationSettingNameFromType($notification->type);
+                    if ($allowSendingEmail &&
+                        UserNotificationUtil::
+                            isEnabledByUserAndNotificationNameAndType($notification->owner, $notificationSettingName, 'email'))
+                    {
+                        static::sendEmail($notification);
+                    }
                 }
             }
         }
@@ -192,8 +198,7 @@
 
         protected static function sendEmail(Notification $notification)
         {
-            if ($notification->owner->primaryEmail->emailAddress !== null &&
-                !UserConfigurationFormAdapter::resolveAndGetValue($notification->owner, 'turnOffEmailNotifications'))
+            if ($notification->owner->primaryEmail->emailAddress !== null)
             {
                 $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
                 $emailMessage               = new EmailMessage();
@@ -254,7 +259,9 @@
                     $notification->owner               = $user;
                     $notification->type                = $type;
                     $notification->notificationMessage = $message;
-                    if (static::resolveToSaveNotification())
+                    $notificationSettingName = static::resolveNotificationSettingNameFromType($type);
+                    if (static::resolveToSaveNotification() && 
+                        UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($user, $notificationSettingName, 'inbox'))
                     {
                         $saved = $notification->save();
                         if (!$saved)
@@ -275,6 +282,17 @@
         protected static function resolveToSaveNotification()
         {
             return true;
+        }
+        
+        /**
+         * Resolve notification setting name from its type
+         * @param string $type
+         * @return string
+         */
+        protected static function resolveNotificationSettingNameFromType($type)
+        {
+            assert('is_string($type) && $type != ""');
+            return 'enable'.$type.'Notification';
         }
     }
 ?>

@@ -56,8 +56,6 @@
 
         public $hideWelcomeView = false;
 
-        public $turnOffEmailNotifications = false;
-
         public $enableDesktopNotifications = true;
 
         public $defaultPermissionSetting;
@@ -114,7 +112,6 @@
                 array('themeColor',                     'type',      'type' => 'string'),
                 array('backgroundTexture',              'type',      'type' => 'string'),
                 array('hideWelcomeView',                'boolean'),
-                array('turnOffEmailNotifications',      'boolean'),
                 array('enableDesktopNotifications',     'boolean'),
                 array('hideFromSelecting',              'boolean'),
                 array('hideFromLeaderboard',            'boolean'),
@@ -136,7 +133,6 @@
                 'hideWelcomeView'               => Zurmo::t('UsersModule', 'Hide welcome page'),
                 'hideFromSelecting'             => Zurmo::t('UsersModule', 'Hide from selecting'),
                 'hideFromLeaderboard'           => Zurmo::t('UsersModule', 'Hide from leaderboard'),
-                'turnOffEmailNotifications'     => Zurmo::t('UsersModule', 'Turn off email notifications'),
                 'enableDesktopNotifications'    => Zurmo::t('UsersModule', 'Enable Desktop notifications')
             );
         }

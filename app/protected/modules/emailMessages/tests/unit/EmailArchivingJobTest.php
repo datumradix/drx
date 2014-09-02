@@ -168,9 +168,16 @@
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(2, EmailMessage::getCount());
             $emailMessages = EmailMessage::getAll();
+
+            //Message with unmatched notification
             $emailMessage = $emailMessages[0];
+            $this->assertEquals('Match archived emails', $emailMessage->subject);
+            $this->assertContains('At least one archived email message does not match any records in the system', trim($emailMessage->content->textContent));
+            $this->assertContains('At least one archived email message does not match any records in the system', trim($emailMessage->content->htmlContent));
+
+            $emailMessage = $emailMessages[1];
 
             $this->assertEquals('Email from Steve', $emailMessage->subject);
             $this->assertEquals('Email from Steve', trim($emailMessage->content->textContent));

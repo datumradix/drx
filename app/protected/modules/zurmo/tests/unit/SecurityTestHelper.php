@@ -72,6 +72,7 @@
                 $user->setPassword('super');
                 $saved = $user->save();
                 assert('$saved');
+                UserTestHelper::setDefaultNotificationSettingsForUser($user);
 
                 $group = Group::getByName('Super Administrators');
                 $group->users->add($user);
@@ -94,6 +95,7 @@
                 $user->setPassword($username);
                 $saved = $user->save();
                 assert('$saved');
+                UserTestHelper::setDefaultNotificationSettingsForUser($user);
             }
         }
 

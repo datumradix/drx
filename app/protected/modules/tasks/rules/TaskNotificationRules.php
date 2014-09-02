@@ -37,7 +37,7 @@
     /**
      * A  NotificationRules to manage when a new task is created
      */
-    class TaskNotificationRules extends NotificationRules
+    abstract class TaskNotificationRules extends NotificationRules
     {
         protected $model;
 
@@ -52,19 +52,19 @@
         }
 
         /**
-         * @returns Translated label that describes this rule type.
+         * @return The type of the NotificationRules
          */
-        public static function getDisplayName()
+        public function getType()
         {
-            return 'task';
+            return 'Task';
         }
 
         /**
-         * @return The type of the NotificationRules
+         * @inheritdoc
          */
-        public static function getType()
+        public function getModuleClassNames()
         {
-            return 'Task';
+            return array('TasksModule');
         }
     }
 ?>
