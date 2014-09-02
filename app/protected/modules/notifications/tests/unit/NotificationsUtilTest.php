@@ -77,17 +77,34 @@
             $rules->addUser($billy);
             NotificationsUtil::submit($message, $rules);
 
-            //It should not send an email because it is non-critical
+            //Critical email are not used anymore, all emails are sent based on the user configuration
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
-            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            $this->assertEquals(2, Yii::app()->emailHelper->getSentCount());
             $notifications              = Notification::getAll();
-            $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
-            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            $this->assertCount(2, $notifications);
         }
 
         public function testSubmittingDuplicateNotifications()
         {
-            //todo:
+            $super                                    = User::getByUsername('super');
+            Notification::deleteAll();
+            EmailMessage::deleteAll();
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content';
+            $message->htmlContent       = 'html content';
+            $rules                      = new SimpleNotificationRules();
+            $rules->setAllowDuplicates(false);
+            $rules->addUser($super);
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals(1, Yii::app()->emailHelper->getSentCount());
+            $this->assertCount (1, Notification::getAll());
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals(1, Yii::app()->emailHelper->getSentCount());
+            $this->assertCount (1, Notification::getAll());
+            $rules->setAllowDuplicates(true);
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals(2, Yii::app()->emailHelper->getSentCount());
+            $this->assertCount (2, Notification::getAll());
         }
     }
 ?>
