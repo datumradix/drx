@@ -38,8 +38,9 @@
      Yii::import('ext.sendgrid.lib.Unirest');
     class SendGridApiTest extends ZurmoBaseTest
     {
-        protected static $apiUserName = 'apiUsername';
-        protected static $apiPassword = 'apiPassword';
+        protected static $apiUsername;
+        protected static $apiPassword;
+        protected static $testEmailAddress;
 
         public static function setUpBeforeClass()
         {
@@ -48,99 +49,28 @@
             Yii::app()->user->userModel = $super;
             SendGrid::register_autoloader();
             Smtpapi::register_autoloader();
+            if (SendGridTestHelper::isSetSendGridAccountTestConfiguration())
+            {
+                static::$apiUsername        = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiUsername'];
+                static::$apiPassword        = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiPassword'];
+                static::$testEmailAddress   = Yii::app()->params['emailTestAccounts']['testEmailAddress'];
+            }
         }
 
-        public function testBouncedEmail()
+        /**
+         * @covers ZurmoSendGridMailer::sendTestEmailFromUser
+         * @covers ZurmoSendGridMailer::sendTestEmail
+         * @covers ZurmoSendGridMailer::sendEmail
+         */
+        public function testSendEmail()
         {
-            $user = static::$apiUserName;
-            $pass = static::$apiPassword;
-            Yii::import('ext.sendgrid.lib.SendGrid.Email');
-            Yii::import('ext.sendgrid.lib.Smtpapi.Header');
-            $sendgrid = new SendGrid($user, $pass, array("turn_off_ssl_verification" => true));
-            $email    = new SendGrid\Email();
-            $to       = 'hellorajuj@gmail.com';
-            $email->addTo($to)->
-                   setFrom('rajusinghai80@gmail.com')->
-                   setSubject('[sendgrid-php-example] Owl named %yourname%')->
-                   setText('Owl are you doing?')->
-                   setHtml('<strong>%how% are you doing?</strong>')->
-                   addSubstitution("%yourname%", array("Mr. Owl"))->
-                   addSubstitution("%how%", array("Owl"))->
-                   addHeader('X-Sent-Using', 'SendGrid-API')->
-                   addHeader('X-Transport', 'web');
-
-            $response = $sendgrid->send($email);
-            var_dump($response);
+            $emailHelper    = new SendGridEmailHelper();
+            $emailHelper->apiUsername = static::$apiUsername;
+            $emailHelper->apiPassword = static::$apiPassword;
+            $mailer         = new ZurmoSendGridMailer($emailHelper, Yii::app()->user->userModel, static::$testEmailAddress);
+            $emailMessage   = $mailer->sendTestEmailFromUser();
+            $this->assertEquals('EmailMessage', get_class($emailMessage));
+            $this->assertEquals(EmailFolder::TYPE_SENT, $emailMessage->folder->type);
         }
-
-        /*public function testGetBouncedEmails()
-        {
-            $url = 'https://api.sendgrid.com/';
-            $user = static::$apiUserName;
-            $pass = static::$apiPassword;
-
-            $request =  $url . 'api/bounces.get.json?api_user=' . $user . '&api_key=' . $pass . '&date=1';
-
-            // Generate curl request
-            $curl = curl_init($request);
-            // Tell curl not to return headers, but do return the response
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_HEADER, 0);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-
-            // obtain response
-            if(!$response = curl_exec($curl))
-            {
-                trigger_error(curl_error($curl));
-            }
-            curl_close($curl);
-
-            // print everything out
-            $data = json_decode($response);
-            $this->assertTrue(count($data) > 0);
-
-            $request =  $url . 'api/bounces.get.json?api_user=' . $user . '&api_key=' . $pass . '&date=1&type=hard';
-
-            // Generate curl request
-            $curl = curl_init($request);
-            // Tell curl not to return headers, but do return the response
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_HEADER, 0);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-
-            // obtain response
-            if(!$response = curl_exec($curl))
-            {
-                trigger_error(curl_error($curl));
-            }
-            curl_close($curl);
-
-            // print everything out
-            $data = json_decode($response);
-            $this->assertTrue(count($data) > 0);
-
-            $request =  $url . 'api/bounces.get.json?api_user=' . $user . '&api_key=' . $pass . '&date=1&type=soft';
-
-            // Generate curl request
-            $curl = curl_init($request);
-            // Tell curl not to return headers, but do return the response
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_HEADER, 0);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-
-            // obtain response
-            if(!$response = curl_exec($curl))
-            {
-                trigger_error(curl_error($curl));
-            }
-            curl_close($curl);
-
-            // print everything out
-            $data = json_decode($response);
-            $this->assertTrue(count($data) == 0);
-        }*/
     }
 ?>
