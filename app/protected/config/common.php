@@ -252,13 +252,15 @@
             'phoneHelper' => array(
                 'class'          => 'application.core.components.PhoneHelper',
             ),
+            'readPermissionSubscriptionObserver' => array(
+                'class' => 'application.modules.zurmo.observers.ReadPermissionSubscriptionObserver',
+            ),
             'request' => array(
                 'class' => 'application.core.components.ZurmoHttpRequest',
                 'enableCsrfValidation' => true,
                 'enableCookieValidation' => false, //keep off until we can fix it on linux/windows servers.
                 'excludeCsrfValidationRoutes' => array(
                     array('route' => 'contacts/external/', 'tokenEnabled' => true),
-                    array('route' => 'zurmo/imageModel/upload/', 'tokenEnabled' => false), //TODO: @sergio: Remove this when implemented outside redactor
                 ),
             ),
             'sanitizer' => array(
@@ -358,8 +360,9 @@
             'lessCompiler' => array(
                 'class'                 => 'application.extensions.lessphp.LessCompiler',
                 'formatterName'         => 'lessjs',
-                'primaryLessFileToCompile' => 'zurmo.less',
-                'secondaryLessFileToCompile' => 'imports.less',
+                'themeColorDependentLessFilesToCompile' => array(
+                    'zurmo.less', 'imports.less'
+                ),
                 'lessFilesToCompile'    => array(
                     'ie.less',
                     'mobile.less',
@@ -456,7 +459,10 @@
                 'fr' => 'French',
                 'de' => 'German',
             ),
-            'sentryDsn'                 => 'http://5232100222bc4404b368026413df2d9a:47f7a2f1542348d68bea7b00f2261ede@sentry.zurmo.com/2',
+            'sentryDsn'    => 'http://5232100222bc4404b368026413df2d9a:47f7a2f1542348d68bea7b00f2261ede@sentry.zurmo.com/2',
+            'processNamedSecurableActualPermissionsAsNonOptimized' => false,
+            'processReadMungeAsWriteMunge' => false,
+            'showFlashMessageWhenSecurityCacheShouldBeRebuilt' => false,
         ),
         'preload'                       => array(
             'browser',

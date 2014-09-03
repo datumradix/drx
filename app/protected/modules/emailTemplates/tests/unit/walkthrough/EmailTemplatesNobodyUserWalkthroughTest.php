@@ -72,7 +72,6 @@
             $this->user = $this->logoutCurrentUserLoginNewUserAndGetByUsername('nobody');
         }
 
-
         public function testAllDefaultControllerActions()
         {
             $this->user->setRight('ContactsModule', ContactsModule::getAccessRight());
@@ -121,7 +120,9 @@
 
             $this->setGetArray(array('id' => static::$templateOwnedBySuper->id));
             $this->runControllerShouldResultInAccessFailureAndGetContent('emailTemplates/default/edit');
+            RedBeanModel::forgetAll();
             $this->runControllerShouldResultInAccessFailureAndGetContent('emailTemplates/default/details');
+            RedBeanModel::forgetAll();
             $this->runControllerShouldResultInAccessFailureAndGetContent('emailTemplates/default/delete');
         }
 
