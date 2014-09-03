@@ -96,10 +96,11 @@
             if ($this->model->id > 0)
             {
                 $moduleClassName = $this->model->moduleClassName;
+                $modulesArr = Report::getReportableModulesAndLabelsForCurrentUser();
                 $typesAndLabels  = Report::getTypeDropDownArray();
                 return strval($this->model) . ' - ' .
                        Zurmo::t('ReportsModule', '{moduleLabel} {typeLabel} Report',
-                              array('{moduleLabel}' => $moduleClassName::getModuleLabelByTypeAndLanguage('Singular'),
+                              array('{moduleLabel}' => $modulesArr[$moduleClassName],
                                     '{typeLabel}'   => $typesAndLabels[$this->model->type]));
             }
             else
