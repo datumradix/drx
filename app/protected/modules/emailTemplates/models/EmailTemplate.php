@@ -155,6 +155,7 @@
                     'htmlContent',
                     'textContent',
                     'serializedData',
+                    'isFeatured',
                 ),
                 'rules' => array(
                     array('type',                       'required'),
@@ -174,7 +175,7 @@
                     array('name',                       'length',  'min'  => 1, 'max' => 64),
                     array('subject',                    'required'),
                     array('subject',                    'type',    'type' => 'string'),
-                    array('subject',                    'length',  'min'  => 1, 'max' => 64),
+                    array('subject',                    'length',  'min'  => 1, 'max' => 255),
                     array('language',                   'type',    'type' => 'string'),
                     array('language',                   'length',  'min' => 2, 'max' => 2),
                     array('language',                   'SetToUserDefaultLanguageValidator'),
@@ -186,6 +187,7 @@
                     array('textContent',                'EmailTemplateMergeTagsValidator'),
                     array('serializedData',             'type', 'type' => 'string'),
                     array('serializedData',             'EmailTemplateSerializedDataValidator'),
+                    array('isFeatured',                 'type',     'type'  => 'boolean'),
                 ),
                 'elements' => array(
                     'htmlContent'                   => 'TextArea',
@@ -284,16 +286,19 @@
             return parent::bypassReadPermissionsOptimizationToSqlQueryBasedOnWhere($where);
         }
 
-        protected function checkPermissionsHasAnyOf($requiredPermissions)
+        public function checkPermissionsHasAnyOf($requiredPermissions, User $user = null)
         {
-            $currentUser = Yii::app()->user->userModel;
-            $effectivePermissions = $this->getEffectivePermissions($currentUser);
+            if ($user == null)
+            {
+                $user = Yii::app()->user->userModel;
+            }
+            $effectivePermissions = $this->getEffectivePermissions($user);
             if (($effectivePermissions & $requiredPermissions) == 0)
             {
                 $this->setTreatCurrentUserAsOwnerForPermissions(true);
                 if (!$this->isPredefinedBuilderTemplate())
                 {
-                    throw new AccessDeniedSecurityException($currentUser, $requiredPermissions, $effectivePermissions);
+                    throw new AccessDeniedSecurityException($user, $requiredPermissions, $effectivePermissions);
                 }
                 else
                 {
