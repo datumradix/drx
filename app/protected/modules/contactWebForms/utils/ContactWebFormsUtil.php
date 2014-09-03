@@ -264,8 +264,8 @@
                 {
                     if (isset($attributeData['label']))
                     {
-                        $customLabelAttributes[$attributeId] = Zurmo::t('ContactWebFormsModule',
-                                                                         $attributeData['label']);
+                        $customLabelAttributes[$attributeId] = Zurmo::t('ContactWebFormsModule', '{label}',
+                                                                       array('{label}' => $attributeData['label']));
                     }
                 }
             }

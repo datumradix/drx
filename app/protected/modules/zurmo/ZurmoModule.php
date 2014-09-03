@@ -210,7 +210,7 @@
                 case self::AUDIT_EVENT_ITEM_DELETED:
                     if ($format == 'short')
                     {
-                        return Zurmo::t('ZurmoModule', $auditEvent->eventName);
+                        return Zurmo::t('ZurmoModule', '{name}', array('{name}' => $auditEvent->eventName));
                     }
                     $s   .= strval($auditEvent);
                     $name = unserialize($auditEvent->serializedData);

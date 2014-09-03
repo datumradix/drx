@@ -192,7 +192,7 @@
             {
                 foreach ($item['additionalOptionMenuItems'] as $additionalOptionMenuItem)
                 {
-                    $menuItems['items'][] = array('label' => Zurmo::t('Core', $additionalOptionMenuItem['label']),
+                    $menuItems['items'][] = array('label' => $additionalOptionMenuItem['label'],
                             'url' => $additionalOptionMenuItem['url']);
                 }
             }

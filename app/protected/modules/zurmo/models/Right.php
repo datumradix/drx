@@ -89,7 +89,7 @@
         {
             $s  = self::rightToString($this->type);
             $s .= ':';
-            $s .= Zurmo::t('ZurmoModule', $this->name);
+            $s .= Zurmo::t('ZurmoModule', '{name}', array('{name}' => $this->name));
             return $s;
         }
 
