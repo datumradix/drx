@@ -223,46 +223,5 @@
         public function resolveAdditionalScriptContentForEmailTemplate($stepCount, & $script)
         {
         }
-
-        /*public function sendAutoresponderOrCampaignItemEmailMessage(EmailMessage $emailMessage)
-        {
-            $campaignItems = CampaignItem::getByEmailMessageId($emailMessage->id);
-            if(count($campaignItems) > 0)
-            {
-                $campaignItem = $campaignItems[0];
-                $campaignOwner = $campaignItem->campaign->owner;
-                //Check the marketing configuration
-                $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                if($useAutoresponderOrCampaignOwnerMailSettings)
-                {
-                    $emailAccount = SendGridEmailAccount::resolveAndGetByUserAndName($campaignOwner);
-                    //Check if api credentials are there or not
-                    if($emailAccount->apiUsername == '' || $emailAccount->apiPassword == '')
-                    {
-                        //Check for global sendgrid configuration
-                        $username = ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'apiUsername');
-                        $password = ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'apiPassword');
-                        if($username != '' && $password != '')
-                        {
-                            //Send email using sendgrid global
-                        }
-                    }
-                    else
-                    {
-                        //Send email using sendgrid user config
-                    }
-                }
-                else
-                {
-                    //Check for global sendgrid configuration
-                    $username = ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'apiUsername');
-                    $password = ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'apiPassword');
-                    if($username != '' && $password != '')
-                    {
-                        //Send email using sendgrid global
-                    }
-                }
-            }
-        }*/
     }
 ?>
