@@ -34,15 +34,20 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * 'MassSubscribe' takes the user to a form
-     * where they can choose marketingList to subscribe many models at once. This is also known as bulk write or mass subscribe.
-     */
-    class MassSubscribeActionSecurity extends ActionSecurity
+    class DateTimeSanitizerUtilTest extends ZurmoBaseTest
     {
-        protected function getRightToCheck()
+        public function testGetAcceptableFormats()
         {
-            return array('MarketingListsModule', MarketingListsModule::RIGHT_ACCESS_MARKETING_LISTS);
+            $expected = array(
+                    'yyyy-MM-dd hh:mm',
+                    'MM-dd-yyyy hh:mm',
+                    'dd-MM-yyyy hh:mm',
+                    'MM/dd/yyyy hh:mm',
+                    'M/d/yyyy hh:mm',
+                    'd/M/yyyy hh:mm',
+                    'yyyy-M-d hh:mm'
+            );
+            $this->assertEquals($expected, DateTimeSanitizerUtil::getAcceptableFormats());
         }
     }
 ?>
