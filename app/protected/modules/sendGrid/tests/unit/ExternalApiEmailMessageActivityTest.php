@@ -83,7 +83,7 @@
                                                 'type'      => CampaignItemActivity::TYPE_OPEN);
             $activityCreatedOrUpdated   = CampaignItemActivityUtil::createOrUpdateActivity($activityData);
             $emailMessageActivities     = CampaignItemActivity::getByTypeAndModelIdAndPersonIdAndUrl(CampaignItemActivity::TYPE_OPEN, $campaignItem->id, $personId, null);
-            $externalMessageActivityCount = ExternalApiEmailMessageActivity::getCountByTypeAndEmailMessageActivity(CampaignItemActivity::TYPE_OPEN, $emailMessageActivities[0]);
+            $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity(CampaignItemActivity::TYPE_OPEN, $emailMessageActivities[0]);
             $this->assertEquals(0, $externalMessageActivityCount);
 
             $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
@@ -94,7 +94,7 @@
             $externalApiEmailMessageActivity->itemClass = 'CampaignItem';
             $this->assertTrue($externalApiEmailMessageActivity->save());
             $id          = $externalApiEmailMessageActivity->id;
-            $externalMessageActivityCount = ExternalApiEmailMessageActivity::getCountByTypeAndEmailMessageActivity(CampaignItemActivity::TYPE_OPEN, $emailMessageActivities[0]);
+            $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity(CampaignItemActivity::TYPE_OPEN, $emailMessageActivities[0]);
             $this->assertEquals(1, $externalMessageActivityCount);
             $externalApiActivity = ExternalApiEmailMessageActivity::getById($id);
             $externalApiActivity->reason = 'New reason 1';

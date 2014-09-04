@@ -116,7 +116,7 @@
          * @param EmailMessageActivity $itemActivity
          * @return int
          */
-        public static function getCountByTypeAndEmailMessageActivity($type, $itemActivity)
+        public static function getByTypeAndEmailMessageActivity($type, $itemActivity, $isCount = true)
         {
             $modelClassName = get_class($itemActivity);
             $tableName      = $modelClassName::getTableName();
@@ -140,7 +140,11 @@
             $searchAttributeData['structure'] = "({$structure})";
             $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
             $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
-            return self::getCount($joinTablesAdapter, $where, get_called_class(), false);
+            if($isCount)
+            {
+                return self::getCount($joinTablesAdapter, $where, get_called_class(), false);
+            }
+            return self::getSubset($joinTablesAdapter, $where, get_called_class(), false);
         }
     }
 ?>

@@ -98,7 +98,7 @@
                                                                     'type'      => $type);
                                 $activityCreatedOrUpdated   = $activityUtilClassName::createOrUpdateActivity($activityData);
                                 $emailMessageActivities     = $activityClassName::getByTypeAndModelIdAndPersonIdAndUrl($type, $value['itemId'], $value['personId'], null);
-                                $externalMessageActivityCount = ExternalApiEmailMessageActivity::getCountByTypeAndEmailMessageActivity($type, $emailMessageActivities[0]);
+                                $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity($type, $emailMessageActivities[0]);
                                 if($externalMessageActivityCount == 0)
                                 {
                                     $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
