@@ -50,6 +50,9 @@
             return $this->name;
         }
 
+        /**
+         * @return string
+         */
         public static function getModuleClassName()
         {
             return 'SendGridModule';
@@ -113,6 +116,9 @@
             return $emailAccount;
         }
 
+        /**
+         * @return array
+         */
         public static function getDefaultMetadata()
         {
             $metadata = parent::getDefaultMetadata();
@@ -128,13 +134,14 @@
                 ),
                 'relations' => array(
                     'messages' => array(static::HAS_MANY, 'EmailMessage', static::NOT_OWNED,
-                                            static::LINK_TYPE_SPECIFIC, 'account'),
+                                            static::LINK_TYPE_SPECIFIC, 'sendgridAccount'),
                     'user'     => array(static::HAS_ONE,  'User'),
                 ),
                 'rules'     => array(
                                   array('apiUsername',               'required'),
                                   array('apiPassword',               'required'),
-                                  array('eventWebhookUrl',           'required'),
+                                  array('fromName',                  'required'),
+                                  array('fromAddress',               'required'),
                                   array('name',                      'type',      'type' => 'string'),
                                   array('fromName',                  'type',      'type' => 'string'),
                                   array('apiUsername',               'type',      'type' => 'string'),
@@ -150,6 +157,9 @@
             return $metadata;
         }
 
+        /**
+         * @return boolean
+         */
         public static function isTypeDeletable()
         {
             return true;
@@ -194,6 +204,7 @@
 
         /**
          * Encrypt password beforeSave
+         * @return void
          */
         public function afterValidate()
         {

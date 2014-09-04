@@ -676,6 +676,12 @@
             }
         }
 
+        /**
+         * Configure sendgrid options.
+         * @param int $id
+         * @param string $redirectUrl
+         * @return void
+         */
         public function actionSendGridConfiguration($id, $redirectUrl = null)
         {
             UserAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
