@@ -96,6 +96,10 @@
             return Zurmo::t('SendGridModule', 'External Api Email Message Activity', array(), null, $language);
         }
 
+        /**
+         * Before saving the model.
+         * @return boolean
+         */
         public function beforeSave()
         {
             if (parent::beforeSave())
@@ -106,7 +110,13 @@
             return false;
         }
 
-        public static function getByTypeAndEmailMessageActivity($type, $itemActivity)
+        /**
+         * Get by type and email message activity
+         * @param int $type
+         * @param EmailMessageActivity $itemActivity
+         * @return int
+         */
+        public static function getCountByTypeAndEmailMessageActivity($type, $itemActivity)
         {
             $modelClassName = get_class($itemActivity);
             $tableName      = $modelClassName::getTableName();
