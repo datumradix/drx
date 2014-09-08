@@ -34,38 +34,37 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Inform user that owner of the message could not be determinated
-     */
-    class EmailMessageOwnerNotExistNotificationRules extends NotificationRules
+    class PushDashboardEditView extends EditView
     {
-        protected $critical        = false;
-
-        protected $allowDuplicates = true;
-
-        public static function getDisplayName()
+        public static function getDefaultMetadata()
         {
-            return Zurmo::t('EmailMessagesModule', 'Owner Of The Message Does Not Exist');
-        }
-
-        public static function getType()
-        {
-            return 'EmailMessageOwnerNotExist';
-        }
-
-        /**
-         * Any user who has access to the scheduler module is added to receive a
-         * notification.
-         */
-        protected function loadUsers()
-        {
-            foreach (User::getActiveUsers(true) as $user)
-            {
-                if ($user->isSuperAdministrator())
-                {
-                    $this->addUser($user);
-                }
-            }
+            $metadata = array(
+                'global' => array(
+                    'toolbar' => array(
+                        'elements' => array(
+                            array('type' => 'SaveButton'),
+                            array('type' => 'CancelLink'),
+                        ),
+                    ),
+                    'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
+                    'panels' => array(
+                        array(
+                            'rows' => array(
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'null', 'type' => 'MultipleGroupsAndUsers'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                            ),
+                         ),
+                    ),
+                ),
+            );
+            return $metadata;
         }
     }
 ?>

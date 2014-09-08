@@ -34,38 +34,26 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Inform user that owner of the message could not be determinated
-     */
-    class EmailMessageOwnerNotExistNotificationRules extends NotificationRules
+    class PushDashboardLinkActionElement extends MenuActionElement
     {
-        protected $critical        = false;
-
-        protected $allowDuplicates = true;
-
-        public static function getDisplayName()
+        public function getActionType()
         {
-            return Zurmo::t('EmailMessagesModule', 'Owner Of The Message Does Not Exist');
+            return 'Edit';
         }
 
-        public static function getType()
+        protected function getDefaultLabel()
         {
-            return 'EmailMessageOwnerNotExist';
+            return Zurmo::t('HomeModule', 'Push Dashboard');
         }
 
-        /**
-         * Any user who has access to the scheduler module is added to receive a
-         * notification.
-         */
-        protected function loadUsers()
+        protected function getDefaultRoute()
         {
-            foreach (User::getActiveUsers(true) as $user)
-            {
-                if ($user->isSuperAdministrator())
-                {
-                    $this->addUser($user);
-                }
-            }
+            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/pushDashboard/', array('id' => $this->modelId));
+        }
+
+        public function getElementValue()
+        {
+            return $this->route;
         }
     }
 ?>

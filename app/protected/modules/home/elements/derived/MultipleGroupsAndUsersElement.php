@@ -35,37 +35,72 @@
      ********************************************************************************/
 
     /**
-     * Inform user that owner of the message could not be determinated
+     * User interface element for selecting multiple groups and users using type ahead element
+     *
      */
-    class EmailMessageOwnerNotExistNotificationRules extends NotificationRules
+    class MultipleGroupsAndUsersElement extends MultiSelectRelatedModelsAutoCompleteElement
     {
-        protected $critical        = false;
+        protected function getFormName()
+        {
+            return null;
+        }
 
-        protected $allowDuplicates = true;
+        protected function getUnqualifiedNameForIdField()
+        {
+            return '[GroupsAndUsers][ids]';
+        }
+
+        protected function getUnqualifiedIdForIdField()
+        {
+            return '_GroupsAndUsers_ids';
+        }
+
+        protected function assertModelType()
+        {
+            assert('$this->model instanceof RedBeanModel');
+        }
+
+        protected function getFormattedAttributeLabel()
+        {
+            return Yii::app()->format->text(Zurmo::t('ZurmoModule', 'Groups And Users'));
+        }
 
         public static function getDisplayName()
         {
-            return Zurmo::t('EmailMessagesModule', 'Owner Of The Message Does Not Exist');
+            return Zurmo::t('ZurmoModule', 'Groups And Users');
         }
 
-        public static function getType()
+        protected function getWidgetSourceUrl()
         {
-            return 'EmailMessageOwnerNotExist';
+            return  Yii::app()->createUrl('home/default/autoCompleteGroupsAndUsers');
         }
 
-        /**
-         * Any user who has access to the scheduler module is added to receive a
-         * notification.
-         */
-        protected function loadUsers()
+        protected function getWidgetHintText()
         {
-            foreach (User::getActiveUsers(true) as $user)
-            {
-                if ($user->isSuperAdministrator())
-                {
-                    $this->addUser($user);
-                }
-            }
+            return Zurmo::t('ZurmoModule', 'Type a group name or user email address',
+                                            LabelUtil::getTranslationParamsForAllModules());
+        }
+
+        protected function getRelatedRecords()
+        {
+            return array();
+        }
+
+        protected function getRelationName()
+        {
+            return null;
+        }
+
+        protected function getEditableInputId($attributeName = null, $relationAttributeName = null)
+        {
+            $inputPrefix = $this->resolveInputIdPrefix();
+            return $inputPrefix . $this->getUnqualifiedIdForIdField();
+        }
+
+        protected function getEditableInputName($attributeName = null, $relationAttributeName = null)
+        {
+            $inputPrefix = $this->resolveInputNamePrefix();
+            return $inputPrefix . $this->getUnqualifiedNameForIdField();
         }
     }
 ?>
