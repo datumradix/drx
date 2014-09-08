@@ -54,7 +54,7 @@
         }
 
         /**
-         * Returns either a singluar or plural model label depending on input count
+         * Returns either a singular or plural model label depending on input count
          */
         public static function getUncapitalizedModelLabelByCountAndModelClassName($count, $modelClassName)
         {

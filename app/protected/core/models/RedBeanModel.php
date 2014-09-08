@@ -755,12 +755,11 @@
                         if ($relationType == self::HAS_MANY_BELONGS_TO &&
                            strtolower($relationName) != strtolower($relationModelClassName))
                         {
-                            $label = 'Relations of type HAS_MANY_BELONGS_TO must have the relation name ' .
-                                     'the same as the related model class name. Relation: {relationName} ' .
-                                     'Relation model class name: {relationModelClassName}';
-                            throw new NotSupportedException(Zurmo::t('Core', $label,
-                                      array('{relationName}' => $relationName,
-                                            '{relationModelClassName}' => $relationModelClassName)));
+                            throw new NotSupportedException(Zurmo::t('Core', 'Relations of type HAS_MANY_BELONGS_TO must have the relation name ' .
+                                                                             'the same as the related model class name. Relation: {relationName} ' .
+                                                                             'Relation model class name: {relationModelClassName}',
+                                                                              array('{relationName}' => $relationName,
+                                                                                    '{relationModelClassName}' => $relationModelClassName)));
                         }
                         if (count($relationTypeModelClassNameAndOwns) >= 3 &&
                             $relationTypeModelClassNameAndOwns[2] == self::OWNED)
@@ -1978,12 +1977,11 @@
                                 elseif ($relationType == static::HAS_MANY_BELONGS_TO ||
                                         $relationType == static::HAS_ONE_BELONGS_TO)
                                 {
-                                    $label = 'Relations of type HAS_MANY_BELONGS_TO OR HAS_ONE_BELONGS_TO must have the relation name ' .
-                                             'the same as the related model class name. Relation: {relationName} ' .
-                                             'Relation model class name: {relationModelClassName}';
-                                    throw new NotSupportedException(Zurmo::t('Core', $label,
-                                              array('{relationName}' => $linkName,
-                                                    '{relationModelClassName}' => $relatedModelClassName)));
+                                    throw new NotSupportedException(Zurmo::t('Core', 'Relations of type HAS_MANY_BELONGS_TO OR HAS_ONE_BELONGS_TO must have the relation name ' .
+                                                                                     'the same as the related model class name. Relation: {relationName} ' .
+                                                                                     'Relation model class name: {relationModelClassName}',
+                                                                                      array('{relationName}' => $linkName,
+                                                                                            '{relationModelClassName}' => $relatedModelClassName)));
                                 }
                                 //Needed to exclude HAS_ONE_BELONGS_TO because an additional column was being created
                                 //on the wrong side.
@@ -2518,7 +2516,7 @@
             {
                 //This is a last resort if the translated attribute was not located.  Make sure to define all
                 //attributes in translatedAttributeLabels($language)
-                $label = Zurmo::t('Core', static::generateAnAttributeLabel($attributeName), array(), null, $language);
+                $label = static::generateAnAttributeLabel($attributeName);
             }
             static::$attributeLabelsByLanguage[$language][$attributeName] = $label;
             return $label;
