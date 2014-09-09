@@ -38,14 +38,14 @@
      * A job for processing bounced emails from sendgrid.
      * @see https://github.com/michaelp85/TS-SendGrid-Event-Webhook-Notifier/blob/master/mod.ts_sendgrid_event_webhook_notifier.php
      */
-    class SendGridTestEmailBounceJob extends SendGridEmailBounceJob
+    class SendGridTestEmailEventsJob extends SendGridEmailEventsJob
     {
         /**
          * @return The type of the NotificationRules
          */
         public static function getType()
         {
-            return 'SendGridTestEmailBounce';
+            return 'SendGridTestEmailEvents';
         }
 
         /**
@@ -55,7 +55,6 @@
         public function run()
         {
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
-            $emailMessageActivity = $this->createEmailMessageActivity();
             if($sendGridPluginEnabled)
             {
                 $data = array();
@@ -71,12 +70,26 @@
                     {
                         if(ArrayUtil::getArrayValue($value, 'itemClass'))
                         {
+                            $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
+                            $activityUtilClassName      = $activityClassName . 'Util';
+                            if($value['event'] == 'bounce' || $value['event'] == 'dropped')
+                            {
+                                $type                       = $activityClassName::TYPE_BOUNCE;
+                                $emailMessageActivity       = $this->createBounceEmailMessageActivity();
+                            }
+                            else
+                            {
+                                $type                       = $activityClassName::TYPE_SPAM;
+                                $emailMessageActivity       = $this->createSpamEmailMessageActivity();
+                            }
+                            static::resolveAndUpdateEventInformationByStatus($value);
                             $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
                             $externalApiEmailMessageActivity->emailMessageActivity = $emailMessageActivity;
-                            $externalApiEmailMessageActivity->api       = 'sendgrid';
-                            $externalApiEmailMessageActivity->type      = EmailMessageActivity::TYPE_BOUNCE;
-                            $externalApiEmailMessageActivity->reason    = $value['reason'];
-                            $externalApiEmailMessageActivity->itemClass = $value['itemClass'];
+                            $externalApiEmailMessageActivity->api           = 'sendgrid';
+                            $externalApiEmailMessageActivity->type          = $value['type'];
+                            $externalApiEmailMessageActivity->reason        = $value['reason'];
+                            $externalApiEmailMessageActivity->itemClass     = $value['itemClass'];
+                            $externalApiEmailMessageActivity->emailAddress  = $value['email'];
                             $externalApiEmailMessageActivity->save();
                         }
                     }
@@ -85,10 +98,19 @@
             return true;
         }
 
-        protected function createEmailMessageActivity()
+        protected function createBounceEmailMessageActivity()
         {
             $emailMessageActivity                          = new EmailMessageActivity();
             $emailMessageActivity->type                    = EmailMessageActivity::TYPE_BOUNCE;
+            $emailMessageActivity->quantity                = 10;
+            $emailMessageActivity->save();
+            return $emailMessageActivity;
+        }
+
+        protected function createSpamEmailMessageActivity()
+        {
+            $emailMessageActivity                          = new EmailMessageActivity();
+            $emailMessageActivity->type                    = EmailMessageActivity::TYPE_SPAM;
             $emailMessageActivity->quantity                = 10;
             $emailMessageActivity->save();
             return $emailMessageActivity;

@@ -58,7 +58,8 @@
                     'type',
                     'datetime',
                     'reason',
-                    'itemClass'
+                    'itemClass',
+                    'emailAddress'
                 ),
                 'relations' => array(
                     'emailMessageActivity' => array(static::HAS_ONE, 'EmailMessageActivity')
@@ -66,11 +67,13 @@
                 'rules'     => array(
                                   array('api',                 'required'),
                                   array('type',                'required'),
+                                  array('emailAddress',        'required'),
                                   array('type',                'type', 'type' => 'integer'),
                                   array('datetime',            'type', 'type' => 'datetime'),
                                   array('reason',              'type', 'type' => 'string'),
                                   array('itemClass',           'type', 'type' => 'string'),
                                   array('api',                 'type', 'type' => 'string'),
+                                  array('emailAddress',        'email'),
                 )
             );
             return $metadata;
@@ -114,9 +117,10 @@
          * Get by type and email message activity
          * @param int $type
          * @param EmailMessageActivity $itemActivity
+         * @param api string
          * @return int
          */
-        public static function getByTypeAndEmailMessageActivity($type, $itemActivity, $isCount = true)
+        public static function getByTypeAndEmailMessageActivity($type, $itemActivity, $api, $isCount = true)
         {
             $modelClassName = get_class($itemActivity);
             $tableName      = $modelClassName::getTableName();
@@ -137,6 +141,13 @@
                     'value'                     => intval($rows[0]['emailmessageactivity_id']),
             );
             $structure .= ' and ' . $clauseNumber;
+            $clauseNumber = count($searchAttributeData['clauses']) + 1;
+            $searchAttributeData['clauses'][$clauseNumber] = array(
+                    'attributeName'             => 'api',
+                    'operatorType'              => 'equals',
+                    'value'                     => $api,
+            );
+            $structure .= ' and ' . $clauseNumber;
             $searchAttributeData['structure'] = "({$structure})";
             $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
             $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
@@ -144,7 +155,76 @@
             {
                 return self::getCount($joinTablesAdapter, $where, get_called_class(), false);
             }
-            return self::getSubset($joinTablesAdapter, $where, get_called_class(), false);
+            return self::getSubset($joinTablesAdapter, null, null, $where, 'datetime', get_called_class(), false);
+        }
+
+        /**
+         * Get by email address.
+         * @param string $email
+         * @param api string
+         * @return array
+         */
+        public static function getByEmailAddress($email, $api, $isCount = true)
+        {
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'][1] = array(
+                'attributeName'             => 'emailAddress',
+                'operatorType'              => 'equals',
+                'value'                     => $email,
+            );
+            $structure = '1';
+            $clauseNumber = count($searchAttributeData['clauses']) + 1;
+            $searchAttributeData['clauses'][$clauseNumber] = array(
+                    'attributeName'             => 'api',
+                    'operatorType'              => 'equals',
+                    'value'                     => $api,
+            );
+            $structure .= ' and ' . $clauseNumber;
+            $searchAttributeData['structure'] = "({$structure})";
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            if($isCount)
+            {
+                return self::getCount($joinTablesAdapter, $where, get_called_class(), false);
+            }
+            return self::getSubset($joinTablesAdapter, null, 1, $where, 'datetime', get_called_class(), false);
+        }
+
+        /**
+         * Get by email message activity
+         * @param EmailMessageActivity $itemActivity
+         * @param api string
+         * @return int
+         */
+        public static function getByEmailMessageActivity($itemActivity, $api, $isCount = true)
+        {
+            $modelClassName = get_class($itemActivity);
+            $tableName      = $modelClassName::getTableName();
+            $rows           = ZurmoRedBean::getAll('select emailmessageactivity_id from ' . $tableName .
+                                    ' where id = ?', array($itemActivity->id));
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'][1] = array(
+                'attributeName'             => 'emailMessageActivity',
+                    'relatedAttributeName'      => 'id',
+                    'operatorType'              => 'equals',
+                    'value'                     => intval($rows[0]['emailmessageactivity_id']),
+            );
+            $structure = '1';
+            $clauseNumber = count($searchAttributeData['clauses']) + 1;
+            $searchAttributeData['clauses'][$clauseNumber] = array(
+                    'attributeName'             => 'api',
+                    'operatorType'              => 'equals',
+                    'value'                     => $api,
+            );
+            $structure .= ' and ' . $clauseNumber;
+            $searchAttributeData['structure'] = "({$structure})";
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            if($isCount)
+            {
+                return self::getCount($joinTablesAdapter, $where, get_called_class(), false);
+            }
+            return self::getSubset($joinTablesAdapter, null, null, $where, 'datetime', get_called_class(), false);
         }
     }
 ?>
