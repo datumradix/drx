@@ -45,90 +45,142 @@
 
         public static function getDependentTestModelClassNames()
         {
-            return array('TestHasManyAndHasOneSide', 'TestHasManyBelongsToSide', 'TestHasOneBelongsToSide');
+            return array('TestModelJoinHasManyAndHasOneBelongsToSide', 'TestModelJoinHasManySide',
+                'TestModelJoinHasOneSide', 'TestModelJoinManyManySide', 'TestModelJoinManyManySideTwo');
+        }
+
+        protected function validJoinHelper($modelClassName, $attributeName, $relatedAttributeName) {
+            $quote                  = DatabaseCompatibilityUtil::getQuote();
+
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => $attributeName,
+                    'relatedAttributeName' => $relatedAttributeName,
+                    'operatorType'         => OperatorRules::TYPE_IS_NOT_NULL,
+                    'value'                => null
+                )
+            );
+            $searchAttributeData['structure'] = '1';
+
+            $searchAttributeDataAndClassNames   = array(
+                array($modelClassName => $searchAttributeData)
+            );
+
+            $sql = RedBeanModelsDataProvider::makeUnionSql( $searchAttributeDataAndClassNames,
+                null,
+                true);
+
+            echo "\n" . "-------------" . "\n";
+            echo $sql . "\n";
+
+            $result = ZurmoRedBean::GetAll($sql);
+
+            $this->assertTrue(is_array($result));
+
+            print_r($result);
+
+
+
+            /*$joinMatch = "left join {$quote}{$rightTableName}{$quote} on {$quote}{$rightTableName}{$quote}.{$quote}{$rightJoinId}{$quote} = {$quote}{$leftTableName}{$quote}.{$quote}{$leftJoinId}{$quote}";
+            echo $joinMatch ."\n";
+            echo $sql . "\n";
+            $joinTest = strpos($sql, $joinMatch);
+            echo $joinTest;
+            echo "\n" . "-------------" . "\n";
+            $this->assertTrue('$joinTest === true');*/
         }
 
         public function testGettingValidJoinForHasManyBelongsTo()
         {
-            $metadata = TestHasManyAndHasOneSide::getDefaultMetadata();
-            $metadata['TestHasManyAndHasOneSide']['defaultSortAttribute'] = 'testHasManyBelongsToSide';
-            TestHasManyAndHasOneSide::setMetadata($metadata);
+            $model                  = 'TestModelJoinHasManyAndHasOneBelongsToSide';
+            $attributeName          = 'testModelJoinHasManySide';
+            $relatedAttributeName   = 'hasManyField';
 
-            $searchAttributeData = array();
-            $searchAttributeData['clauses'] = array(
-                1 => array(
-                    'attributeName'        => 'name',
-                    'operatorType'         => 'equals',
-                    'value'                => 'Parent',
-                )
-            );
-            $searchAttributeData['structure'] = '1';
-            $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter('TestHasManyAndHasOneSide');
-
-            $searchAttributeDataAndClassNames = array(array('TestHasManyAndHasOneSide' => $searchAttributeData));
-            $sortAttributesAndClassNames = array('TestHasManyAndHasOneSide' => RedBeanModelDataProvider::getSortAttributeName('TestHasManyAndHasOneSide'));
-
-            $sql = RedBeanModelsDataProvider::makeUnionSql(
-                $searchAttributeDataAndClassNames,
-                $sortAttributesAndClassNames,
-                true);
-
-            echo $sql;
-            //$compareWhere  = "({$quote}analias{$quote}.{$quote}imember{$quote} = 'somevalue1')";
-            //$this->assertEquals($compareWhere, $where);
+            $this->validJoinHelper($model, $attributeName, $relatedAttributeName);
         }
 
         public function testGettingValidJoinForHasOneBelongsTo()
         {
-            $metadata = TestHasManyAndHasOneSide::getDefaultMetadata();
-            $metadata['TestHasManyAndHasOneSide']['defaultSortAttribute'] = 'testHasOneBelongsToSide';
-            TestHasManyAndHasOneSide::setMetadata($metadata);
+            $model                  = 'TestModelJoinHasManyAndHasOneBelongsToSide';
+            $attributeName          = 'testModelJoinHasOneSide';
+            $relatedAttributeName   = 'hasOneField';
 
-            $searchAttributeData = array();
-            $searchAttributeData['clauses'] = array(
-                1 => array(
-                    'attributeName'        => 'name',
-                    'operatorType'         => 'equals',
-                    'value'                => 'Parent',
-                )
-            );
-            $searchAttributeData['structure'] = '1';
-            $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter('TestHasManyAndHasOneSide');
+            $this->validJoinHelper($model, $attributeName, $relatedAttributeName);
+        }
 
-            $searchAttributeDataAndClassNames = array(array('TestHasManyAndHasOneSide' => $searchAttributeData));
-            $sortAttributesAndClassNames = array('TestHasManyAndHasOneSide' => RedBeanModelDataProvider::getSortAttributeName('TestHasManyAndHasOneSide'));
+        public function testGettingValidJoinForHasOne()
+        {
+            $model                  = 'TestModelJoinHasOneSide';
+            $attributeName          = 'testModelJoinHasManyAndHasOneBelongsToSide';
+            $relatedAttributeName   = 'hasManyAndHasOneField';
 
-            $sql = RedBeanModelsDataProvider::makeUnionSql(
-                $searchAttributeDataAndClassNames,
-                $sortAttributesAndClassNames,
-                true);
+            $this->validJoinHelper($model, $attributeName, $relatedAttributeName);
+        }
 
-            echo $sql;
-            die();
-            //$compareWhere  = "({$quote}analias{$quote}.{$quote}imember{$quote} = 'somevalue1')";
-            //$this->assertEquals($compareWhere, $where);
+        public function testGettingValidJoinForHasMany()
+        {
+            $model                  = 'TestModelJoinHasManySide';
+            $attributeName          = 'testHasMany';
+            $relatedAttributeName   = 'hasManyAndHasOneField';
+
+            $this->validJoinHelper($model, $attributeName, $relatedAttributeName);
+        }
+
+        public function testGettingValidJoinForManyMany()
+        {
+            $model                  = 'TestModelJoinManyManySide';
+            $attributeName          = 'testModelJoinManyManySideTwos';
+            $relatedAttributeName   = 'manyManyTwoField';
+
+            $this->validJoinHelper($model, $attributeName, $relatedAttributeName);
         }
 
         protected static function buildRelationModels()
         {
-            $modelParent                                        = new TestHasManyAndHasOneSide();
-            $modelParent->name                                  = "Parent";
-            $modelParent->hasManyAndHasOneField                 = "hasManyAndHasOne";
-            $modelHasManyBelongsTo1                             = new TestHasManyBelongsToSide();
-            $modelHasManyBelongsTo1->name                       = "ChildMany1";
-            $modelHasManyBelongsTo1->hasManyBelongsToField      = "hasManyBelongsTo1";
-            $modelHasManyBelongsTo2                             = new TestHasManyBelongsToSide();
-            $modelHasManyBelongsTo2->name                       = "ChildMany2";
-            $modelHasManyBelongsTo2->hasManyBelongsToField      = "hasManyBelongsTo2";
-            $modelHasOneBelongsTo                               = new TestHasOneBelongsToSide();
-            $modelHasOneBelongsTo->name                         = "ChildOne";
-            $modelHasOneBelongsTo->hasOneBelongsToField         = "hasOneBelongsTo";
+            $modelForListing1                                   = new TestModelJoinHasManyAndHasOneBelongsToSide();
+            $modelForListing1->name                             = "ModelForListing1";
+            $modelForListing1->hasManyAndHasOneField            = "belongsTo1";
+            $modelForListing2                                   = new TestModelJoinHasManyAndHasOneBelongsToSide();
+            $modelForListing2->name                             = "ModelForListing2";
+            $modelForListing2->hasManyAndHasOneField            = "belongsTo2";
+            $modelHasManyOfListItem                             = new TestModelJoinHasManySide();
+            $modelHasManyOfListItem->name                       = "Has List Items 1 and 2";
+            $modelHasManyOfListItem->hasManyField               = "hasMany";
+            $modelHasOneOfListItem                              = new TestModelJoinHasOneSide();
+            $modelHasOneOfListItem->name                        = "Has List Item 1";
+            $modelHasOneOfListItem->hasOneField                 = "hasOne";
+            $modelManyManyItem1                                 = new TestModelJoinManyManySide();
+            $modelManyManyItem1->name                           = "Many Many 1-1";
+            $modelManyManyItem1->manyManyField                  = "hasMany1";
+            $modelManyManyItem2                                 = new TestModelJoinManyManySide();
+            $modelManyManyItem2->name                           = "Many Many 1-2";
+            $modelManyManyItem2->manyManyField                  = "hasMany1";
+            $modelManyManySideTwoItem1                          = new TestModelJoinManyManySideTwo();
+            $modelManyManySideTwoItem1->name                    = "Many Many 2-1";
+            $modelManyManySideTwoItem1->manyManyTwoField        = "hasMany2";
+            $modelManyManySideTwoItem2                          = new TestModelJoinManyManySideTwo();
+            $modelManyManySideTwoItem2->name                    = "Many Many 2-2";
+            $modelManyManySideTwoItem2->manyManyTwoField        = "hasMany2";
 
-            $modelParent->testHasManyBelongsToSide->add($modelHasManyBelongsTo1);
-            $modelParent->testHasManyBelongsToSide->add($modelHasManyBelongsTo2);
-            $modelParent->testHasOneBelongsToSide = $modelHasOneBelongsTo;
+            $modelHasManyOfListItem->testHasMany->add($modelForListing1);
+            $modelHasManyOfListItem->testHasMany->add($modelForListing2);
+            $modelHasOneOfListItem->testModelJoinHasManyAndHasOneBelongsToSide = $modelForListing1;
+            $modelManyManyItem1->testModelJoinManyManySideTwos->add($modelManyManySideTwoItem1);
+            $modelManyManyItem1->testModelJoinManyManySideTwos->add($modelManyManySideTwoItem2);
+            $modelManyManySideTwoItem1->testModelJoinManyManySides->add($modelManyManyItem1);
+            $modelManyManySideTwoItem1->testModelJoinManyManySides->add($modelManyManyItem2);
 
-            $saved = $modelParent->save();
+            $saved = $modelHasManyOfListItem->save();
+            assert('$saved');
+
+            $saved = $modelHasOneOfListItem->save();
+            assert('$saved');
+
+            $saved = $modelManyManyItem1->save();
+            assert('$saved');
+
+            $saved = $modelManyManyItem2->save();
             assert('$saved');
         }
     }
