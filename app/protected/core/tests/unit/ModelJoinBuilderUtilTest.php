@@ -50,21 +50,19 @@
 
         public function testGettingValidJoinForHasManyBelongsTo()
         {
+            $metadata = TestHasManyAndHasOneSide::getDefaultMetadata();
+            $metadata['TestHasManyAndHasOneSide']['defaultSortAttribute'] = 'testHasManyBelongsToSide';
+            TestHasManyAndHasOneSide::setMetadata($metadata);
+
             $searchAttributeData = array();
             $searchAttributeData['clauses'] = array(
                 1 => array(
                     'attributeName'        => 'name',
                     'operatorType'         => 'equals',
                     'value'                => 'Parent',
-                ),
-                2 => array(
-                    'attributeName'        => 'testHasManyBelongsToSide',
-                    'relatedAttributeName' => 'hasManyBelongsToField',
-                    'operatorType'         => 'equals',
-                    'value'                => 'hasManyBelongsTo1'
                 )
             );
-            $searchAttributeData['structure'] = '1 and 2';
+            $searchAttributeData['structure'] = '1';
             $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter('TestHasManyAndHasOneSide');
 
             $searchAttributeDataAndClassNames = array(array('TestHasManyAndHasOneSide' => $searchAttributeData));
@@ -76,6 +74,37 @@
                 true);
 
             echo $sql;
+            //$compareWhere  = "({$quote}analias{$quote}.{$quote}imember{$quote} = 'somevalue1')";
+            //$this->assertEquals($compareWhere, $where);
+        }
+
+        public function testGettingValidJoinForHasOneBelongsTo()
+        {
+            $metadata = TestHasManyAndHasOneSide::getDefaultMetadata();
+            $metadata['TestHasManyAndHasOneSide']['defaultSortAttribute'] = 'testHasOneBelongsToSide';
+            TestHasManyAndHasOneSide::setMetadata($metadata);
+
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'name',
+                    'operatorType'         => 'equals',
+                    'value'                => 'Parent',
+                )
+            );
+            $searchAttributeData['structure'] = '1';
+            $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter('TestHasManyAndHasOneSide');
+
+            $searchAttributeDataAndClassNames = array(array('TestHasManyAndHasOneSide' => $searchAttributeData));
+            $sortAttributesAndClassNames = array('TestHasManyAndHasOneSide' => RedBeanModelDataProvider::getSortAttributeName('TestHasManyAndHasOneSide'));
+
+            $sql = RedBeanModelsDataProvider::makeUnionSql(
+                $searchAttributeDataAndClassNames,
+                $sortAttributesAndClassNames,
+                true);
+
+            echo $sql;
+            die();
             //$compareWhere  = "({$quote}analias{$quote}.{$quote}imember{$quote} = 'somevalue1')";
             //$this->assertEquals($compareWhere, $where);
         }

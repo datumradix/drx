@@ -53,7 +53,6 @@
                     'testHasManyBelongsToSide'  => array(static::HAS_MANY,  'TestHasManyBelongsToSide', static::OWNED),
                     'testHasOneBelongsToSide'   => array(static::HAS_ONE,   'TestHasOneBelongsToSide', static::OWNED),
                 ),
-                'defaultSortAttribute' => 'testHasManyBelongsToSide',
                 'rules' => array(
                     array('name',                   'type',     'type' => 'string'),
                     array('hasManyAndHasOneField',  'type',     'type' => 'string'),
