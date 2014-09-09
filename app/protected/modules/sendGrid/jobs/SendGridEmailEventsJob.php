@@ -38,14 +38,14 @@
      * A job for processing bounced emails from sendgrid.
      * @see https://github.com/michaelp85/TS-SendGrid-Event-Webhook-Notifier/blob/master/mod.ts_sendgrid_event_webhook_notifier.php
      */
-    class SendGridEmailBounceJob extends BaseJob
+    class SendGridEmailEventsJob extends BaseJob
     {
         /**
          * @returns Translated label that describes this job type.
          */
         public static function getDisplayName()
         {
-           return Zurmo::t('SendGridModule', 'SendGrid Email Bounce Job');
+           return Zurmo::t('SendGridModule', 'SendGrid Email Events Job');
         }
 
         /**
@@ -53,7 +53,7 @@
          */
         public static function getType()
         {
-            return 'SendGridEmailBounce';
+            return 'SendGridEmailEvents';
         }
 
         public static function getRecommendedRunFrequencyContent()
@@ -90,7 +90,14 @@
                             {
                                 $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
                                 $activityUtilClassName      = $activityClassName . 'Util';
-                                $type                       = $activityClassName::TYPE_BOUNCE;
+                                if($value['event'] == 'bounce' || $value['event'] == 'dropped')
+                                {
+                                    $type                       = $activityClassName::TYPE_BOUNCE;
+                                }
+                                else
+                                {
+                                    $type                       = $activityClassName::TYPE_SPAM;
+                                }
                                 $activityData               = array('modelId'   => $value['itemId'],
                                                                     'modelType' => $value['itemClass'],
                                                                     'personId'  => $value['personId'],
@@ -98,15 +105,17 @@
                                                                     'type'      => $type);
                                 $activityCreatedOrUpdated   = $activityUtilClassName::createOrUpdateActivity($activityData);
                                 $emailMessageActivities     = $activityClassName::getByTypeAndModelIdAndPersonIdAndUrl($type, $value['itemId'], $value['personId'], null);
-                                $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity($type, $emailMessageActivities[0]);
+                                self::resolveAndUpdateEventInformationByStatus($value);
+                                $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity($value['type'], $emailMessageActivities[0], "sendgrid");
                                 if($externalMessageActivityCount == 0)
                                 {
                                     $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
                                     $externalApiEmailMessageActivity->emailMessageActivity = $emailMessageActivities[0];
-                                    $externalApiEmailMessageActivity->api       = 'sendgrid';
-                                    $externalApiEmailMessageActivity->type      = $type;
-                                    $externalApiEmailMessageActivity->reason    = $value['reason'];
-                                    $externalApiEmailMessageActivity->itemClass = $value['itemClass'];
+                                    $externalApiEmailMessageActivity->api           = 'sendgrid';
+                                    $externalApiEmailMessageActivity->type          = $value['type'];
+                                    $externalApiEmailMessageActivity->reason        = $value['reason'];
+                                    $externalApiEmailMessageActivity->itemClass     = $value['itemClass'];
+                                    $externalApiEmailMessageActivity->emailAddress  = $value['email'];
                                     $externalApiEmailMessageActivity->save();
                                 }
                             }
@@ -115,10 +124,46 @@
                 }
                 else
                 {
-                    echo Yii::t('SendGridModule', 'Webhook event url is missing for user ' . $user->username) . "\n";
+                    echo Zurmo::t('SendGridModule', 'Webhook event url is missing for user ' . $user->username) . "\n";
                 }
             }
             return true;
+        }
+
+        /**
+         * Resolve and update event information by status of the message.
+         * @param array $value
+         */
+        protected static function resolveAndUpdateEventInformationByStatus(& $value)
+        {
+            if($value['event'] == 'spamreport')
+            {
+                $value['type']      = EmailMessageActivity::TYPE_SPAM;
+                $value['reason']    = Zurmo::t('SendGridModule', 'Marked as spam');
+            }
+            if($value['event'] == 'bounce')
+            {
+                if(strpos($value['status'], "4") == 0)
+                {
+                    $value['type'] = EmailMessageActivity::TYPE_SOFT_BOUNCE;
+                }
+                if(strpos($value['status'], "5") == 0)
+                {
+                    $value['type'] = EmailMessageActivity::TYPE_HARD_BOUNCE;
+                }
+            }
+            if($value['event'] == 'dropped')
+            {
+                $models = ExternalApiEmailMessageActivity::getByEmailAddress($value['email'], "sendgrid", false);
+                if(count($models) == 1)
+                {
+                    $value['type'] = $models[0]->type;
+                }
+                else
+                {
+                    $value['type'] = EmailMessageActivity::TYPE_BOUNCE;
+                }
+            }
         }
     }
 ?>

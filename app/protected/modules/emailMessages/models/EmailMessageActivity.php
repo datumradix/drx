@@ -49,6 +49,12 @@
 
         const TYPE_SKIP                       = 5;
 
+        const TYPE_SPAM                       = 6;
+
+        const TYPE_SOFT_BOUNCE                = 7;
+
+        const TYPE_HARD_BOUNCE                = 8;
+
         public static function getTypesArray()
         {
             return array(
@@ -57,6 +63,9 @@
                 static::TYPE_UNSUBSCRIBE        => Zurmo::t('Core',                'Unsubscribe'),
                 static::TYPE_BOUNCE             => Zurmo::t('EmailMessagesModule', 'Bounce'),
                 static::TYPE_SKIP               => Zurmo::t('Core', 'Skipped'),
+                static::TYPE_SPAM               => Zurmo::t('Core', 'Spammed'),
+                static::TYPE_SOFT_BOUNCE        => Zurmo::t('EmailMessagesModule', 'Soft Bounce'),
+                static::TYPE_HARD_BOUNCE        => Zurmo::t('EmailMessagesModule', 'Hard Bounce'),
             );
         }
 

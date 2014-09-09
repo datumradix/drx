@@ -34,7 +34,7 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class SendGridEmailBounceJobTest extends ZurmoBaseTest
+    class SendGridEmailEventsJobTest extends ZurmoBaseTest
     {
         protected $user;
 
@@ -56,12 +56,12 @@
         {
             $count  = ExternalApiEmailMessageActivity::getCount();
             $this->assertEquals(0, $count);
-            $job    = new SendGridTestEmailBounceJob();
+            $job    = new SendGridTestEmailEventsJob();
             $this->assertTrue($job->run());
             $activities  = ExternalApiEmailMessageActivity::getAll();
             $this->assertEquals(3, count($activities));
-            $this->assertEquals("Invalid Address", $activities[0]->reason);
-            $this->assertEquals("Invalid address already in the list", $activities[1]->reason);
+            $this->assertEquals("550 No Such User Here", trim($activities[0]->reason));
+            $this->assertEquals("Bounced Address", trim($activities[1]->reason));
             $this->assertEquals("Marked as spam", $activities[2]->reason);
         }
     }
