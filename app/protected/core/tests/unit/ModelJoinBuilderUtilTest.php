@@ -67,9 +67,15 @@
             $searchAttributeData['structure'] = '1 and 2';
             $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter('TestHasManyAndHasOneSide');
 
-            $quote         = DatabaseCompatibilityUtil::getQuote();
-            $where         = ModelDataProviderUtil::makeWhere('TestHasManyAndHasOneSide', $searchAttributeData, $joinTablesAdapter);
-            echo $where;
+            $searchAttributeDataAndClassNames = array(array('TestHasManyAndHasOneSide' => $searchAttributeData));
+            $sortAttributesAndClassNames = array('TestHasManyAndHasOneSide' => RedBeanModelDataProvider::getSortAttributeName('TestHasManyAndHasOneSide'));
+
+            $sql = RedBeanModelsDataProvider::makeUnionSql(
+                $searchAttributeDataAndClassNames,
+                $sortAttributesAndClassNames,
+                true);
+
+            echo $sql;
             //$compareWhere  = "({$quote}analias{$quote}.{$quote}imember{$quote} = 'somevalue1')";
             //$this->assertEquals($compareWhere, $where);
         }
