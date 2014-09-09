@@ -35,7 +35,7 @@
      ********************************************************************************/
 
     /**
-     * Form to all editing and viewing of email SMTP configuration values in the user interface.
+     * Form to all editing and viewing of mail related configuration values in the user interface.
      */
     class SendGridWebApiConfigurationForm extends ConfigurationForm
     {

@@ -35,7 +35,7 @@
      ********************************************************************************/
 
     /**
-     * A job for processing bounced emails from sendgrid.
+     * A job for processing email activities performed on the email send using sendgrid.
      * @see https://github.com/michaelp85/TS-SendGrid-Event-Webhook-Notifier/blob/master/mod.ts_sendgrid_event_webhook_notifier.php
      */
     class SendGridEmailEventsJob extends BaseJob

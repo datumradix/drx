@@ -35,7 +35,7 @@
      ********************************************************************************/
 
     /**
-     * Model for user's email accounts
+     * Model for user's sendgrid email accounts.
      */
     class SendGridEmailAccount extends Item
     {
@@ -185,6 +185,9 @@
             return Zurmo::t('SendGridModule', 'SendGrid Email Accounts', array(), null, $language);
         }
 
+        /**
+         * @return array
+         */
         protected static function translatedAttributeLabels($language)
         {
             return array_merge(parent::translatedAttributeLabels($language),

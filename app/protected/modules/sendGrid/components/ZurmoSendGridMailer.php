@@ -38,7 +38,7 @@
      Yii::import('ext.sendgrid.lib.Smtpapi.*');
 
     /**
-     * Class for Zurmo specific sendgrid functionality.
+     * Mailer class for Zurmo specific sendgrid functionality.
      */
     class ZurmoSendGridMailer extends Mailer
     {
@@ -54,6 +54,13 @@
 
         protected $fromUserEmailData;
 
+        /**
+         * @param SendGridEmailHelper $emailHelper
+         * @param User $userToSendMessagesFrom
+         * @param array $toAddresses
+         * @param array $ccAddresses
+         * @param array $bccAddresses
+         */
         public function __construct(SendGridEmailHelper $emailHelper,
                                     $userToSendMessagesFrom,
                                     $toAddresses,

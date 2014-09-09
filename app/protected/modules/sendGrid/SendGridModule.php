@@ -38,6 +38,9 @@
     {
         const RIGHT_ACCESS_SENDGRID_ADMINISTRATION = 'Access Sendgrid Administration';
 
+        /**
+         * @return array
+         */
         public function getDependencies()
         {
             return array(
@@ -46,11 +49,17 @@
             );
         }
 
+        /**
+         * @return array
+         */
         public function getRootModelNames()
         {
             return array('User');
         }
 
+        /**
+         * @return array
+         */
         public static function getTranslatedRightsLabels()
         {
             $labels                                             = array();
@@ -58,6 +67,9 @@
             return $labels;
         }
 
+        /**
+         * @return array
+         */
         public static function getDefaultMetadata()
         {
             $metadata = array();
@@ -84,21 +96,33 @@
             return $metadata;
         }
 
+        /**
+         * @return string
+         */
         public static function getPrimaryModelName()
         {
             return 'User';
         }
 
+        /**
+         * @return string
+         */
         public static function getAccessRight()
         {
             return self::RIGHT_ACCESS_SENDGRID_ADMINISTRATION;
         }
 
+        /**
+         * @return string
+         */
         protected static function getSingularModuleLabel($language)
         {
             return Zurmo::t('SendGridModule', 'Sendgrid', array(), null, $language);
         }
 
+        /**
+         * @return string
+         */
         protected static function getPluralModuleLabel($language)
         {
             return Zurmo::t('SendGridModule', 'Sendgrid', array(), null, $language);

@@ -39,11 +39,17 @@
      */
     class SendGridConfigurationEditAndDetailsView extends EditAndDetailsView
     {
+        /**
+         * @return string
+         */
         public function getTitle()
         {
             return Zurmo::t('SendGridModule', 'Global SendGrid Configuration');
         }
 
+        /**
+         * @return array
+         */
         public static function getDefaultMetadata()
         {
             $metadata = array(
