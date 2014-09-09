@@ -83,7 +83,7 @@
                                                 'type'      => CampaignItemActivity::TYPE_OPEN);
             $activityCreatedOrUpdated   = CampaignItemActivityUtil::createOrUpdateActivity($activityData);
             $emailMessageActivities     = CampaignItemActivity::getByTypeAndModelIdAndPersonIdAndUrl(CampaignItemActivity::TYPE_OPEN, $campaignItem->id, $personId, null);
-            $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity(CampaignItemActivity::TYPE_OPEN, $emailMessageActivities[0]);
+            $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity(CampaignItemActivity::TYPE_OPEN, $emailMessageActivities[0], "sendgrid");
             $this->assertEquals(0, $externalMessageActivityCount);
 
             $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
@@ -91,10 +91,11 @@
             $externalApiEmailMessageActivity->api       = 'sendgrid';
             $externalApiEmailMessageActivity->type      = CampaignItemActivity::TYPE_OPEN;
             $externalApiEmailMessageActivity->reason    = 'Test reason';
+            $externalApiEmailMessageActivity->emailAddress    = 'abc@yahoo.com';
             $externalApiEmailMessageActivity->itemClass = 'CampaignItem';
             $this->assertTrue($externalApiEmailMessageActivity->save());
             $id          = $externalApiEmailMessageActivity->id;
-            $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity(CampaignItemActivity::TYPE_OPEN, $emailMessageActivities[0]);
+            $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity(CampaignItemActivity::TYPE_OPEN, $emailMessageActivities[0], "sendgrid");
             $this->assertEquals(1, $externalMessageActivityCount);
             $externalApiActivity = ExternalApiEmailMessageActivity::getById($id);
             $externalApiActivity->reason = 'New reason 1';
