@@ -253,7 +253,6 @@
             $this->assertTrue(strpos($content, '<span class="button-label">Add Contact/Lead</span>') !== false);
             $this->assertTrue(strpos($content, 'From Contacts/Leads</label>') !== false);
             $this->assertTrue(strpos($content, 'From Report</label>') !== false);
-            $this->assertTrue(strpos($content, '<span class="button-label">Subscribe</span>') !== false);
             $this->assertTrue(strpos($content, '<span class="button-label">Unsubscribe</span>') !== false);
             $this->assertTrue(strpos($content, '<span class="button-label">Delete</span>') !== false);
         }
