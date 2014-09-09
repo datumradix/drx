@@ -49,9 +49,8 @@
                 'TestModelJoinHasOneSide', 'TestModelJoinManyManySide', 'TestModelJoinManyManySideTwo');
         }
 
-        protected function validJoinHelper($modelClassName, $attributeName, $relatedAttributeName) {
-            $quote                  = DatabaseCompatibilityUtil::getQuote();
-
+        protected function validJoinHelper($modelClassName, $attributeName, $relatedAttributeName)
+        {
             $searchAttributeData = array();
             $searchAttributeData['clauses'] = array(
                 1 => array(
