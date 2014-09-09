@@ -64,6 +64,30 @@
             );
         }
 
+        public function isStartedButNotCompleted()
+        {
+            return ($this->status == static::STATUS_PROCESSING || $this->status == static::STATUS_PAUSED);
+        }
+
+        public function hasAtLeastOneQueuedMessage()
+        {
+            $campaignItemTableName  = CampaignItem::getTableName();
+            $emailMessageTableName  = EmailMessage::getTableName();
+            $emailFolderTableName   = EmailFolder::getTableName();
+            $campaignForeignKey     = RedBeanModel::getForeignKeyName('CampaignItem', 'campaign');
+            $emailMessageForeignKey = RedBeanModel::getForeignKeyName('CampaignItem', 'emailMessage');
+            $folderForeignKey       = RedBeanModel::getForeignKeyName('EmailMessage', 'folder');
+            $sentFolder             = EmailFolder::TYPE_SENT;
+
+            $query  = "SELECT COUNT(*) FROM `${emailMessageTableName}`, `${emailFolderTableName}` ";
+            $query  .= "WHERE `${emailMessageTableName}`.`${folderForeignKey}` = `${emailFolderTableName}`.`id` ";
+            $query  .= "AND `${emailFolderTableName}`.`type` != '${sentFolder}' AND ";
+            $query  .= "`${emailMessageTableName}`.`id` IN (SELECT `${emailMessageForeignKey}` FROM ";
+            $query  .= "`${campaignItemTableName}` WHERE `${campaignForeignKey}` = " . $this->id . " )";
+            $count                  = ZurmoRedBean::getCell($query);
+            return $count > 0;
+        }
+
         public function __toString()
         {
             try
