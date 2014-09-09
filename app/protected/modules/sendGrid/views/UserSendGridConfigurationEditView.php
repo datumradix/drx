@@ -35,10 +35,13 @@
      ********************************************************************************/
 
     /**
-     * Edit view for a user's sendgrid webapi configuration.
+     * Edit view for a user's sendgrid configuration.
      */
     class UserSendGridConfigurationEditView extends EditView
     {
+        /**
+         * @return array
+         */
         public static function getDefaultMetadata()
         {
             $metadata = array(

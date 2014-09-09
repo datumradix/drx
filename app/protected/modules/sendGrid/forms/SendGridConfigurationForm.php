@@ -35,7 +35,7 @@
      ********************************************************************************/
 
     /**
-     * Form to all editing and viewing of global configuration for sendgrid in the user interface.
+     * Form to all editing and viewing of global configuration for sendgrid plugin in the user interface.
      */
     class SendGridConfigurationForm extends ConfigurationForm
     {

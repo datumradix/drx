@@ -35,7 +35,7 @@
      ********************************************************************************/
 
     /**
-     * Component for working with outbound and inbound email transport
+     * Helper class consisting of functions related to sending emails using sendgrid.
      */
     class SendGridEmailHelper extends CApplicationComponent
     {

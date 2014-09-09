@@ -35,10 +35,13 @@
      ********************************************************************************/
 
     /**
-     * Sendgrid default controller for configuration view.
+     * Sendgrid default controller.
      */
     class SendGridDefaultController extends ZurmoModuleController
     {
+        /**
+         * @return array
+         */
         public function filters()
         {
             return array(
@@ -50,13 +53,16 @@
             );
         }
 
+        /**
+         * Index action.
+         */
         public function actionIndex()
         {
             $this->actionConfigurationView();
         }
 
         /**
-         * Admin configuration action for entering the google map api key.
+         * Admin configuration action for enabling sendgrid plugin.
          */
         public function actionConfigurationView()
         {
@@ -90,6 +96,9 @@
             echo $view->render();
         }
 
+        /**
+         * Action to configure sendgrid outbound settings.
+         */
         public function actionConfigurationEditOutbound()
         {
             $breadCrumbLinks = array(
@@ -125,7 +134,6 @@
 
         /**
          * Assumes before calling this, the sendgrid settings have been validated in the form.
-         * Todo: When new user interface is complete, this will be re-worked to be on page instead of modal.
          */
         public function actionSendTestMessage()
         {

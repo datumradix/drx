@@ -33,9 +33,17 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-
+     /**
+      * User action bar for sendgrid configuration edit view.
+      */
     class UserActionBarAndSendGridConfigurationEditView extends GridView
     {
+        /**
+         * @param string $controllerId
+         * @param string $moduleId
+         * @param User $user
+         * @param UserSendGridConfigurationForm $emailAccountForm
+         */
         public function __construct(
             $controllerId,
             $moduleId,

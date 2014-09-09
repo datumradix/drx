@@ -39,11 +39,17 @@
      */
     class SendGridConfigurationView extends EditAndDetailsView
     {
+        /**
+         * @return string
+         */
         public function getTitle()
         {
             return Zurmo::t('SendGridModule', 'SendGrid Configuration');
         }
 
+        /**
+         * @return array
+         */
         public static function getDefaultMetadata()
         {
             $metadata = array(
@@ -77,6 +83,9 @@
             return $metadata;
         }
 
+        /**
+         * @return mixed
+         */
         protected function getNewModelTitleLabel()
         {
             return null;

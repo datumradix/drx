@@ -35,8 +35,7 @@
      ********************************************************************************/
 
     /**
-     * A job for processing bounced emails from sendgrid.
-     * @see https://github.com/michaelp85/TS-SendGrid-Event-Webhook-Notifier/blob/master/mod.ts_sendgrid_event_webhook_notifier.php
+     * A test job for sendgrid events job.
      */
     class SendGridTestEmailEventsJob extends SendGridEmailEventsJob
     {
@@ -49,6 +48,7 @@
         }
 
         /**
+         * Override so that job could be tested with test data.
          * (non-PHPdoc)
          * @see BaseJob::run()
          */
@@ -98,6 +98,9 @@
             return true;
         }
 
+        /**
+         * @return \EmailMessageActivity
+         */
         protected function createBounceEmailMessageActivity()
         {
             $emailMessageActivity                          = new EmailMessageActivity();
@@ -107,6 +110,9 @@
             return $emailMessageActivity;
         }
 
+        /**
+         * @return \EmailMessageActivity
+         */
         protected function createSpamEmailMessageActivity()
         {
             $emailMessageActivity                          = new EmailMessageActivity();

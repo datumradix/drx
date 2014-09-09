@@ -39,16 +39,25 @@
      */
     class ExternalApiEmailMessageActivity extends Item
     {
+        /**
+         * @return string
+         */
         public static function getModuleClassName()
         {
             return 'SendGridModule';
         }
 
+        /**
+         * @return bool
+         */
         public static function canSaveMetadata()
         {
             return false;
         }
 
+        /**
+         * @return array
+         */
         public static function getDefaultMetadata()
         {
             $metadata = parent::getDefaultMetadata();

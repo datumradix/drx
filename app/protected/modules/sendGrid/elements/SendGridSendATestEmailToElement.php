@@ -36,7 +36,7 @@
 
     /**
      * Utilize this element to display a text input and button that can be used to send a test email while setting
-     * up the outbound email configuration.
+     * up the outbound email configuration for sendgrid.
      */
     class SendGridSendATestEmailToElement extends SendATestEmailToElement
     {

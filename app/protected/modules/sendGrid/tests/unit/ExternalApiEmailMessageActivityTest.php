@@ -102,6 +102,9 @@
             $this->assertTrue($externalApiActivity->save());
             $externalApiActivity = ExternalApiEmailMessageActivity::getById($id);
             $this->assertEquals('New reason 1', $externalApiActivity->reason);
+            $activities = ExternalApiEmailMessageActivity::getByEmailAddress('abc@yahoo.com', "sendgrid", false);
+            $this->assertEquals(1, count($activities));
+            $this->assertEquals('New reason 1', $activities[0]->reason);
         }
     }
 ?>
