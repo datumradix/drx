@@ -71,24 +71,9 @@
                 null,
                 true);
 
-            echo "\n" . "-------------" . "\n";
-            echo $sql . "\n";
-
             $result = ZurmoRedBean::GetAll($sql);
 
             $this->assertTrue(is_array($result));
-
-            print_r($result);
-
-
-
-            /*$joinMatch = "left join {$quote}{$rightTableName}{$quote} on {$quote}{$rightTableName}{$quote}.{$quote}{$rightJoinId}{$quote} = {$quote}{$leftTableName}{$quote}.{$quote}{$leftJoinId}{$quote}";
-            echo $joinMatch ."\n";
-            echo $sql . "\n";
-            $joinTest = strpos($sql, $joinMatch);
-            echo $joinTest;
-            echo "\n" . "-------------" . "\n";
-            $this->assertTrue('$joinTest === true');*/
         }
 
         public function testGettingValidJoinForHasManyBelongsTo()
@@ -180,7 +165,7 @@
             $saved = $modelManyManyItem1->save();
             assert('$saved');
 
-            $saved = $modelManyManyItem2->save();
+            $saved = $modelManyManySideTwoItem1->save();
             assert('$saved');
         }
     }
