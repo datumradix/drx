@@ -157,7 +157,8 @@
 
         public function testResolveRecipientAddressesByType()
         {
-            $super                      = User::getByUsername('super');
+            $super                     = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
             $emailMessage              = new EmailMessage();
             $emailMessage->owner       = $super;
             $emailMessage->subject     = "Hello";
