@@ -34,7 +34,7 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class TestHasManyBelongsToSide extends RedBeanModel
+    class TestModelJoinManyManySide extends RedBeanModel
     {
         public static function canSaveMetadata()
         {
@@ -47,15 +47,14 @@
             $metadata[__CLASS__] = array(
                 'members' => array(
                     'name',
-                    'hasManyBelongsToField'
+                    'manyManyField'
                 ),
-                'defaultSortAttribute' => 'hasManyBelongsToField',
                 'relations' => array(
-                    'testHasManyAndHasOneSide'            => array(static::HAS_MANY_BELONGS_TO,   'TestHasManyAndHasOneSide' ),
+                    'testModelJoinManyManySideTwos'      => array(static::MANY_MANY,   'TestModelJoinManyManySideTwo' ),
                 ),
                 'rules' => array(
-                    array('name',                     'type',     'type' => 'string'),
-                    array('hasManyBelongsToField',    'type',     'type' => 'string'),
+                    array('name',             'type',     'type' => 'string'),
+                    array('manyManyField',    'type',     'type' => 'string'),
                 ),
             );
             return $metadata;
