@@ -69,6 +69,16 @@
         {
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             $user = Yii::app()->user->userModel;
+            $processingCampaigns    = Campaign::getByStatus(Campaign::STATUS_PROCESSING);
+            $campaignItemsList      = array();
+            foreach($processingCampaigns as $processingCampaign)
+            {
+                $items = CampaignItem::getByProcessedAndCampaignId(1, $processingCampaign->id);
+                foreach ($items as $item)
+                {
+                    $campaignItemsList[] = $item->id;
+                }
+            }
             if($sendGridPluginEnabled)
             {
                 $data = array();
@@ -86,7 +96,9 @@
                     {
                         if($value['event'] == 'bounce' || $value['event'] == 'spamreport' || $value['event'] == 'dropped')
                         {
-                            if(ArrayUtil::getArrayValue($value, 'itemClass'))
+                            if(ArrayUtil::getArrayValue($value, 'itemClass', false) !== false &&
+                                ArrayUtil::getArrayValue($value, 'itemId', false) !== false &&
+                                    in_array($value['itemId'], $campaignItemsList))
                             {
                                 $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
                                 $activityUtilClassName      = $activityClassName . 'Util';
