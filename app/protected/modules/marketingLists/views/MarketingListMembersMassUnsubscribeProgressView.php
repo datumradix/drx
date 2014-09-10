@@ -34,7 +34,7 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMembersMassUnsubscribeProgressView extends MarketingListMembersMassSubscribeProgressView
+    class MarketingListMembersMassUnsubscribeProgressView extends MassEditProgressView
     {
         protected function getMessagePrefix()
         {

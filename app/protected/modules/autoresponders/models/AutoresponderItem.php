@@ -268,5 +268,15 @@
             $this->originalAttributeValues = array();
             $this->isNewModel = false; //reset.
         }
+
+        protected function afterDelete()
+        {
+            $this->emailMessage->delete();
+            foreach ($this->autoresponderItemActivities as $activity)
+            {
+                $activity->delete();
+            }
+            return parent::afterDelete();
+        }
     }
 ?>
