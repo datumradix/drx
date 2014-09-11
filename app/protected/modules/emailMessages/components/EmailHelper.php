@@ -452,8 +452,8 @@
                 $acceptedRecipients         = $mailer->send();
                 // Code below is quick fix, we need to think about better solution
                 // Here is related PT story: https://www.pivotaltracker.com/projects/380027#!/stories/45841753
-                if ($acceptedRecipients != $emailMessage->recipients->count())
-                if ($acceptedRecipients <= 0)
+                if ($acceptedRecipients != $emailMessage->recipients->count() && $acceptedRecipients <= 0)
+                //if ($acceptedRecipients <= 0)
                 {
                     $content = Zurmo::t('EmailMessagesModule', 'Response from Server') . "\n";
                     foreach ($mailer->getSendResponseLog() as $logMessage)
