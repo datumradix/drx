@@ -211,12 +211,24 @@
             $tableName      = $modelClassName::getTableName();
             $rows           = ZurmoRedBean::getAll('select emailmessageactivity_id from ' . $tableName .
                                     ' where id = ?', array($itemActivity->id));
+            return self::resolveAndGetByEmailMessageActivityId($rows[0]['emailmessageactivity_id'], $api, $isCount);
+        }
+
+        /**
+         * Resolve and get by email message activity id.
+         * @param int $emailMessageActivityId
+         * @param string $api
+         * @param bool $isCount
+         * @return array
+         */
+        public static function resolveAndGetByEmailMessageActivityId($emailMessageActivityId, $api, $isCount = true)
+        {
             $searchAttributeData = array();
             $searchAttributeData['clauses'][1] = array(
-                'attributeName'             => 'emailMessageActivity',
+                    'attributeName'             => 'emailMessageActivity',
                     'relatedAttributeName'      => 'id',
                     'operatorType'              => 'equals',
-                    'value'                     => intval($rows[0]['emailmessageactivity_id']),
+                    'value'                     => intval($emailMessageActivityId),
             );
             $structure = '1';
             $clauseNumber = count($searchAttributeData['clauses']) + 1;
