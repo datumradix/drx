@@ -344,5 +344,25 @@
                                 'unique' => false)
                         );
         }
+
+        /**
+         * Get by campaign or autoresponder item.
+         * @param OwnedModel $item
+         * @return int
+         */
+        public static function getIdByCampaignOrAutoresponderItem($item)
+        {
+            $itemClassName  = get_class($item);
+            $type           = strtolower($itemClassName);
+            $modelClassName = $itemClassName . 'Activity';
+            $tableName      = $modelClassName::getTableName();
+            $rows           = ZurmoRedBean::getRow('select emailmessageactivity_id from ' . $tableName .
+                                    ' where ' . $type . '_id = ?', array($item->id));
+            if(!empty($rows))
+            {
+                return $rows['emailmessageactivity_id'];
+            }
+            return null;
+        }
     }
 ?>

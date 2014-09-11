@@ -88,6 +88,7 @@
             elseif ($campaignItem->isSent())
             {
                 $content = static::getSentContentForDrillDown($campaignItem->emailMessage);
+                $emailMessageActivityId = EmailMessageActivity::getIdByCampaignOrAutoresponderItem($campaignItem);
                 $tableRows = null;
                 if ($campaignItem->hasAtLeastOneOpenActivity())
                 {
@@ -103,24 +104,24 @@
                 }
                 if ($campaignItem->hasAtLeastOneBounceActivity())
                 {
-                    if($sendGridPluginEnabled)
+                    if($emailMessageActivityId != null)
                     {
-                        $tableRows .= static::getBouncedContentForDrillDown($campaignItem);
-                    }
-                    else
-                    {
-                        $content .= static::getBouncedContentForDrillDown($campaignItem);
+                        $count = ExternalApiEmailMessageActivity::resolveAndGetByEmailMessageActivityId($emailMessageActivityId, 'sendgrid', true);
+                        if($count > 0)
+                        {
+                            $tableRows .= static::getBouncedContentForDrillDown($campaignItem);
+                        }
                     }
                 }
                 if($campaignItem->hasAtLeastOneEventActivity(CampaignItemActivity::TYPE_SPAM))
                 {
-                    if($sendGridPluginEnabled)
+                    if($emailMessageActivityId != null)
                     {
-                        $tableRows .= static::getSpamContentForDrillDown($campaignItem);
-                    }
-                    else
-                    {
-                        $content .= static::getSpamContentForDrillDown($campaignItem);
+                        $count = ExternalApiEmailMessageActivity::resolveAndGetByEmailMessageActivityId($emailMessageActivityId, 'sendgrid', true);
+                        if($count > 0)
+                        {
+                            $tableRows .= static::getSpamContentForDrillDown($campaignItem);
+                        }
                     }
                 }
                 $content .= static::getWrapperTable($tableRows);
@@ -446,15 +447,14 @@
             return ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status stage-false'), $content);
         }
 
+        /**
+         * Get bounced content for drilldown.
+         * @param CampaignItem $campaignItem
+         * @return string
+         */
         protected static function getBouncedContentForDrillDown(CampaignItem $campaignItem)
         {
-            $content = null;
-            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
-            if($sendGridPluginEnabled)
-            {
-                $content = self::resolveContentForSendGridBounceOrSpamEventActivity($campaignItem, CampaignItemActivity::TYPE_BOUNCE);
-            }
-            return $content;
+            return self::resolveContentForSendGridBounceOrSpamEventActivity($campaignItem, CampaignItemActivity::TYPE_BOUNCE);
         }
 
         protected static function getAwaitingQueueingContent()
