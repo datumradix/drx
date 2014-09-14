@@ -40,7 +40,7 @@
      */
     class MessageUtil
     {
-        const GOOD_YII_T = '/\bYii|Zurmo::t\s*\(\s*[\'"](.*?(?<!\\\\))[\'"]\s*,\s*[\'"](.*?(?<!\\\\))[\'"]\s*[,\)]/s'; // Not Coding Standard
+        const GOOD_YII_T = '/\bYii::|Zurmo::t\s*\(\s*[\'"](.*?(?<!\\\\))[\'"]\s*,\s*[\'"](.*?(?<!\\\\))[\'"]\s*[,\)]/s'; // Not Coding Standard
 
         const GOOD_YII_T_WITH_LINEBREAK = '/\bYii|Zurmo::t\([\'"](.*?)[\'"], *[\'"](.*?)[\'"]\s[.]/'; // Not Coding Standard
 

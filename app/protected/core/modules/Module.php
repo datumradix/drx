@@ -156,7 +156,7 @@
         {
             $name = static::getPluralModuleLabel($language);
             $name = substr($name, 0, strlen($name) - 1);
-            return $name;
+            return Zurmo::t('Core', $name, array(), null, $language);;
         }
 
         /**
@@ -170,7 +170,7 @@
             $calledClassName = get_called_class();
             $name = $calledClassName::getDirectoryName();
             $name = preg_replace('/([A-Z])/', ' \1', $name);
-            return ucfirst($name);
+            return Zurmo::t('Core', ucfirst($name), array(), null, $language);;
         }
 
         public static function getModuleLabelByTypeAndLanguage($type, $language = null)
