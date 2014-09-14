@@ -33,13 +33,24 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
+    class AddressElementTest extends ZurmoBaseTest
+    {
+        public static function setUpBeforeClass()
+        {
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+        }
 
-    define('MAJOR_VERSION', 2);                          // Update for marketing purposes.
-    define('MINOR_VERSION', 8);                          // Update when functionality changes.
-    define('PATCH_VERSION', 2);                          // Update when fixes are made that does not change functionality.
-    define('REPO_ID',       '$Revision$'); // Updated by Mercurial. Numbers like 3650 have no meaning across
-                                                          // clones. This tells us the actual changeset that is universally
-                                                          // meaningful.
-
-    define('VERSION', join('.', array(MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION)) . ' (' . substr(REPO_ID, strlen('$Revision: '), -2) . ')');
+        public function testRenderCorrectStateTranslationAfterCallingContactStateLabel()
+        {
+            $super                 = User::getByUsername('super');
+            $contact               = ContactTestHelper::createContactByNameForOwner('test', $super);
+            ZurmoHtml::activeLabel($contact, 'state');
+            $element               = new AddressElement($contact, 'primaryAddress', new ZurmoActiveForm());
+            $this->assertContains(
+                '<label for="Contact_primaryAddress_state">State</label>',
+                $element->render()
+            );
+        }
+    }
 ?>
