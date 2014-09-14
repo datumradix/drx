@@ -2516,7 +2516,7 @@
             {
                 //This is a last resort if the translated attribute was not located.  Make sure to define all
                 //attributes in translatedAttributeLabels($language)
-                $label = static::generateAnAttributeLabel($attributeName);
+                $label = Zurmo::t('Core', static::generateAnAttributeLabel($attributeName), array(), null, $language);
             }
             static::$attributeLabelsByLanguage[$language][get_called_class()][$attributeName] = $label;
             return $label;
