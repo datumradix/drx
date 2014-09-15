@@ -68,7 +68,7 @@
             $account                = AccountTestHelper::createAccountByNameForOwner('account', $super);
             static::$contact        = ContactTestHelper::createContactWithAccountByNameForOwner('contact', $super, $account);
             static::$marketingList  = MarketingListTestHelper::createMarketingListByName('marketingList', 'description',
-                                                                                    'fromName', 'from@domain.com',true);
+                                                                                    'fromName', 'from@domain.com', true);
             static::$marketingListMember    = MarketingListMemberTestHelper::createMarketingListMember(1,
                                                                                                 static::$marketingList,
                                                                                                 static::$contact);
