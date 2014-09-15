@@ -176,16 +176,25 @@
             {
                 $email->addBcc($emailAddress);
             }
-            /*
-            TODO: Need to close on attachement as path is not there in file model.
+            //Attachments
+            $attachmentsData = array();
+            $tempAttachmentPath = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'emailAttachments';
+            if(!file_exists($tempAttachmentPath))
+            {
+                mkdir($tempAttachmentPath);
+            }
             if (isset($emailMessage->files) && !empty($emailMessage->files))
             {
                 foreach ($emailMessage->files as $file)
                 {
-                    $email->setAttachments($file->fileContent->content, $file->name, $file->type);
-                    //$emailMessage->attach($attachment);
+                    $filePath   = $tempAttachmentPath . DIRECTORY_SEPARATOR . $file->name;
+                    $fp         = fopen($filePath, 'w+');
+                    fwrite($fp, $file->fileContent->content);
+                    fclose($fp);
+                    $email->addAttachment($filePath);
+                    $attachmentsData[] = $filePath;
                 }
-            }*/
+            }
             $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
             $response = $sendgrid->send($email);
             if($response->message == 'success')
@@ -210,6 +219,13 @@
                 $emailMessage->folder                  = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox,
                                                                                       EmailFolder::TYPE_OUTBOX_ERROR);
                 $emailMessage->error                   = $emailMessageSendError;
+            }
+            if(count($attachmentsData) > 0)
+            {
+                foreach($attachmentsData as $path)
+                {
+                    unlink($path);
+                }
             }
         }
     }
