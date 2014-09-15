@@ -96,17 +96,28 @@
             if ($this->model->id > 0)
             {
                 $moduleClassName = $this->model->moduleClassName;
-                $modulesArr = Report::getReportableModulesAndLabelsForCurrentUser();
+                $moduleLabel = $this->getPuralModuleLabelForReportTitle($moduleClassName);
                 $typesAndLabels  = Report::getTypeDropDownArray();
                 return strval($this->model) . ' - ' .
                        Zurmo::t('ReportsModule', '{moduleLabel} {typeLabel} Report',
-                              array('{moduleLabel}' => $modulesArr[$moduleClassName],
+                              array('{moduleLabel}' => $moduleLabel,
                                     '{typeLabel}'   => $typesAndLabels[$this->model->type]));
             }
             else
             {
                 throw new NotSupportedException();
             }
+        }
+        
+        public function getPuralModuleLabelForReportTitle($moduleClassName)
+        {
+            $moduleLabels = Report::getReportableModulesAndLabelsForCurrentUser();
+            $moduleLabel = $moduleClassName::getModuleLabelByTypeAndLanguage('Plural');
+            if (isset($moduleLabels[$moduleClassName]))
+            {
+                $moduleLabel = $moduleLabels[$moduleClassName];
+            }
+            return $moduleLabel;
         }
 
         public function registerScripts()
