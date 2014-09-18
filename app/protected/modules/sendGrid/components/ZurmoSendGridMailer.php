@@ -183,16 +183,16 @@
             {
                 mkdir($tempAttachmentPath);
             }
-            if (isset($emailMessage->files) && !empty($emailMessage->files))
+            if (!empty($emailMessage->files))
             {
                 foreach ($emailMessage->files as $file)
                 {
-                    $filePath   = $tempAttachmentPath . DIRECTORY_SEPARATOR . $file->name;
-                    $fp         = fopen($filePath, 'w+');
+                    $fileName   = tempnam($tempAttachmentPath, 'zurmo_');
+                    $fp         = fopen($fileName, 'wb');
                     fwrite($fp, $file->fileContent->content);
                     fclose($fp);
-                    $email->addAttachment($filePath);
-                    $attachmentsData[] = $filePath;
+                    $email->addAttachment($fileName, $file->name);
+                    $attachmentsData[] = $fileName;
                 }
             }
             $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
