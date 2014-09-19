@@ -87,6 +87,14 @@
                     'showLayoutsLink' => true,
                     'showMenusLink' => true,
                 ),
+                'shortcutsCreateMenuItems' => array(
+                    array(
+                        'label'  => "eval:Zurmo::t('ProjectsModule', 'ProjectsModuleSingularLabel', \$translationParams)",
+                        'url'    => array('/projects/default/create'),
+                        'right'  => self::RIGHT_CREATE_PROJECTS,
+                        'mobile' => true,
+                    ),
+                ),
                 'globalSearchAttributeNames' => array(
                     'name'
                 ),

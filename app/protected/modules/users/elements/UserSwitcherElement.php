@@ -91,7 +91,7 @@
 
         protected function resolveExcludeRootUserOptions()
         {
-            $options        = array('excludeRootUsers' => true);
+            $options        = array('excludeRootUsers' => true, 'excludeCurrentUser' => true);
             $encodedOptions = ArrayUtil::encodeAutoCompleteOptionsArray($options);
             return $encodedOptions;
         }

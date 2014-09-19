@@ -668,7 +668,7 @@
             if ($identity->authenticate())
             {
                 Yii::app()->user->login($identity);
-                $this->redirect(Yii::app()->user->returnUrl);
+                $this->redirect(Yii::app()->homeUrl);
             }
             else
             {

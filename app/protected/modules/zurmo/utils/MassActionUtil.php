@@ -56,11 +56,6 @@
             return (strpos($actionId, 'Progress') !== false);
         }
 
-        public static function isMassSubscribeOrUnsubscribeLikeAction($actionId)
-        {
-            return (static::isMassSubscribeLikeAction($actionId) || static::isMassUnsubscribeLikeAction($actionId));
-        }
-
         public static function isMassSubscribeLikeAction($actionId)
         {
             return (strpos($actionId, 'massSubscribe') === 0);
