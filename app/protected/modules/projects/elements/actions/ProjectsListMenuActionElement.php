@@ -44,7 +44,7 @@
          */
         protected function getDefaultLabel()
         {
-            return Zurmo::t('ProjectsModule', 'Projects');
+            return Zurmo::t('ProjectsModule', 'ProjectsModulePluralLabel', LabelUtil::getTranslationParamsForAllModules());
         }
 
         /**
@@ -72,7 +72,7 @@
             if (RightsUtil::doesUserHaveAllowByRightName('ProjectsModule', ProjectsModule::getCreateRight(),
                 Yii::app()->user->userModel))
             {
-                $items[] = array('label'   => Zurmo::t('ProjectsModule', 'Create Project'),
+                $items[] = array('label'   => Zurmo::t('ProjectsModule', 'Create ProjectsModuleSingularLowerCaseLabel', LabelUtil::getTranslationParamsForAllModules()),
                                  'url'     => Yii::app()->createUrl('projects/default/create'));
                 return $items;
             }
