@@ -36,6 +36,10 @@
 
     class Role extends Item
     {
+        protected static $roleIdToRoleCache     = array();
+
+        protected static $groupIdToRoleIdCache  = array();
+
         /**
          * @param string $name
          * @throws NotFoundException
@@ -61,6 +65,38 @@
                 return Zurmo::t('Core', '(Unnamed)');
             }
             return $this->name;
+        }
+
+        public static function getIdsByUsersMemberOfGroup($groupId)
+        {
+            if (!isset(static::$groupIdToRoleIdCache[$groupId]))
+            {
+                $searchAttributeData['clauses'] = array(
+                    1 => array(
+                        'attributeName'             => 'users',
+                        'relatedModelData'          => array(
+                                'attributeName'             => 'groups',
+                                'relatedAttributeName'      => 'id',
+                                'operatorType'              => 'equals',
+                                'value'                     => $groupId,
+                        ),
+                    ),
+                );
+                $searchAttributeData['structure'] = '1';
+                $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+                $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+                static::$groupIdToRoleIdCache[$groupId] = static::getSubsetIds($joinTablesAdapter, null, null, $where);
+            }
+            return static::$groupIdToRoleIdCache[$groupId];
+        }
+
+        public static function getFromCacheOrDatabase($roleId)
+        {
+            if (!isset(static::$roleIdToRoleCache[$roleId]))
+            {
+                static::$roleIdToRoleCache[$roleId] = static::getById($roleId);
+            }
+            return static::$roleIdToRoleCache[$roleId];
         }
 
         protected static function translatedAttributeLabels($language)
