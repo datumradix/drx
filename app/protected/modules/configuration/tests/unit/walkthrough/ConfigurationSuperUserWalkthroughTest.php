@@ -64,7 +64,6 @@
             ZurmoRedBean::exec("SHOW TABLES");
             $countBefore  = ZurmoRedBean::getCell("SELECT FOUND_ROWS();");
             $content = $this->runControllerWithNoExceptionsAndGetContent('configuration/default/runDiagnostic');
-            file_put_contents('/tmp/a', $content);
             $this->assertContains("Failed Required Services", $content);
             $this->assertContains("<span class=\"fail\">FAIL</span>", $content);
             $this->assertContains("Zurmo runs only on Apache 2.2.1 and higher or Microsoft-IIS 5.0.0 or higher web servers.", $content);
