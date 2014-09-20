@@ -69,6 +69,7 @@
 
         public static function getIdsByUsersMemberOfGroup($groupId)
         {
+            $groupId    = intval($groupId);
             if (!isset(static::$groupIdToRoleIdCache[$groupId]))
             {
                 $searchAttributeData['clauses'] = array(
@@ -92,6 +93,7 @@
 
         public static function getFromCacheOrDatabase($roleId)
         {
+            $roleId     = intval($roleId);
             if (!isset(static::$roleIdToRoleCache[$roleId]))
             {
                 static::$roleIdToRoleCache[$roleId] = static::getById($roleId);
