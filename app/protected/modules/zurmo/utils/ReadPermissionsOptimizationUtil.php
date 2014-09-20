@@ -330,12 +330,11 @@
             $mungeTableName = self::getMungeTableName($modelClassName);
             $securableItemId = $securableItem->getClassId('SecurableItem');
             self::incrementCount($mungeTableName, $securableItemId, $group);
-            foreach ($group->users as $user)
+            $roleIds        = Role::getIdsByUsersMemberOfGroup($group->id);
+            foreach ($roleIds as $roleId)
             {
-                if ($user->role->id > 0)
-                {
-                    self::incrementParentRolesCounts($mungeTableName, $securableItemId, $user->role);
-                }
+                $role       = Role::getFromCacheOrDatabase($roleId);
+                self::incrementParentRolesCounts($mungeTableName, $securableItemId, $role);
             }
             foreach ($group->groups as $subGroup)
             {
