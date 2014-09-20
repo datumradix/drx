@@ -36,6 +36,18 @@
 
     abstract class ReadPermissionsOptimizationUtil
     {
+        protected static $roleIdToRoleCache     = array();
+
+        protected static function getFromCacheOrDatabase($roleId)
+        {
+            $roleId     = intval($roleId);
+            if (!isset(static::$roleIdToRoleCache[$roleId]))
+            {
+                static::$roleIdToRoleCache[$roleId] = Role::getById($roleId);
+            }
+            return static::$roleIdToRoleCache[$roleId];
+        }
+
         /**
          * At some point if performance is a problem with rebuilding activity models, then the stored procedure
          * needs to be refactored to somehow support more joins dynamically.
@@ -333,13 +345,14 @@
             $roleIds        = Role::getIdsByUsersMemberOfGroup($group->id);
             foreach ($roleIds as $roleId)
             {
-                $role       = Role::getFromCacheOrDatabase($roleId);
+                $role       = static::getFromCacheOrDatabase($roleId);
                 self::incrementParentRolesCounts($mungeTableName, $securableItemId, $role);
             }
             foreach ($group->groups as $subGroup)
             {
                 self::securableItemGivenPermissionsForGroup($securableItem, $subGroup);
             }
+            static::$roleIdToRoleCache  = array();
         }
 
         /**

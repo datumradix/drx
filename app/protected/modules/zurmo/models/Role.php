@@ -36,8 +36,6 @@
 
     class Role extends Item
     {
-        protected static $roleIdToRoleCache     = array();
-
         /**
          * @param string $name
          * @throws NotFoundException
@@ -84,17 +82,7 @@
             $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
             return static::getSubsetIds($joinTablesAdapter, null, null, $where);
         }
-
-        public static function getFromCacheOrDatabase($roleId)
-        {
-            $roleId     = intval($roleId);
-            if (!isset(static::$roleIdToRoleCache[$roleId]))
-            {
-                static::$roleIdToRoleCache[$roleId] = static::getById($roleId);
-            }
-            return static::$roleIdToRoleCache[$roleId];
-        }
-
+        
         protected static function translatedAttributeLabels($language)
         {
             return array_merge(parent::translatedAttributeLabels($language), array(
