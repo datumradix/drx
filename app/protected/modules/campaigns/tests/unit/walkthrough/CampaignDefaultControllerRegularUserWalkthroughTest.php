@@ -91,53 +91,48 @@
             $this->user->setRight('CampaignsModule', CampaignsModule::getAccessRight());
             $this->assertTrue($this->user->save());
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default');
-            $this->assertTrue(strpos($content, '<p>To manage campaigns you must have access to email templates and ' .
-                                    'marketing lists. Contact the CRM administrator about this issue.</p>') !== false);
+            $this->assertContains('<p>To manage campaigns you must have access to email templates and ' .
+                                    'marketing lists. Contact the CRM administrator about this issue.</p>', $content);
             $this->user->setRight('MarketingListsModule', MarketingListsModule::getAccessRight());
             $this->user->setRight('EmailTemplatesModule', EmailTemplatesModule::getAccessRight());
             $this->assertTrue($this->user->save());
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default');
-            $this->assertTrue(strpos($content, '<p>To manage campaigns you must have access to email templates and ' .
-                                    'marketing lists. Contact the CRM administrator about this issue.</p>') === false);
+            $this->assertNotContains('<p>To manage campaigns you must have access to email templates and ' .
+                                    'marketing lists. Contact the CRM administrator about this issue.</p>', $content);                        
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/index');
-            $this->assertTrue(strpos($content, '<p>To manage campaigns you must have access to email templates and ' .
-                                    'marketing lists. Contact the CRM administrator about this issue.</p>') === false);
+            $this->assertNotContains('<p>To manage campaigns you must have access to email templates and ' .
+                                    'marketing lists. Contact the CRM administrator about this issue.</p>', $content);                        
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
-            $this->assertTrue(strpos($content, '<p>To manage campaigns you must have access to email templates and ' .
-                                    'marketing lists. Contact the CRM administrator about this issue.</p>') === false);
-
+            $this->assertNotContains('<p>To manage campaigns you must have access to email templates and ' .
+                                    'marketing lists. Contact the CRM administrator about this issue.</p>', $content);
             $this->setGetArray(array('id' => $campaign->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/details');
-            $this->assertTrue(strpos($content, '<p>To manage campaigns you must have access to email templates and ' .
-                                    'marketing lists. Contact the CRM administrator about this issue.</p>') === false);
+            $this->assertNotContains('<p>To manage campaigns you must have access to email templates and ' .
+                                    'marketing lists. Contact the CRM administrator about this issue.</p>', $content);                        
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/details');
-            $this->assertTrue(strpos($content, '<p>To manage campaigns you must have access to email templates and ' .
-                                    'marketing lists. Contact the CRM administrator about this issue.</p>') === false);
-
+            $this->assertNotContains('<p>To manage campaigns you must have access to email templates and ' .
+                                    'marketing lists. Contact the CRM administrator about this issue.</p>', $content);
             $this->resetGetArray();
             $this->user->setRight('CampaignsModule', CampaignsModule::getCreateRight());
             $this->assertTrue($this->user->save());
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/create');
-            $this->assertTrue(strpos($content, '<p>To manage campaigns you must have access to email templates and ' .
-                                    'marketing lists. Contact the CRM administrator about this issue.</p>') === false);
-
+            $this->assertNotContains('<p>To manage campaigns you must have access to email templates and ' .
+                                    'marketing lists. Contact the CRM administrator about this issue.</p>', $content);
             $this->setGetArray(array('id' => $campaign->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/details');
-            $this->assertTrue(strpos($content, '<p>To manage campaigns you must have access to email templates and ' .
-                                    'marketing lists. Contact the CRM administrator about this issue.</p>') === false);
+            $this->assertNotContains('<p>To manage campaigns you must have access to email templates and ' .
+                                    'marketing lists. Contact the CRM administrator about this issue.</p>', $content);                       
             $this->resetGetArray();
 
             $this->user->setRight('CampaignsModule', CampaignsModule::getCreateRight());
             $this->assertTrue($this->user->save());
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/create');
-            $this->assertTrue(strpos($content, '<p>To manage campaigns you must have access to email templates and ' .
-                                    'marketing lists. Contact the CRM administrator about this issue.</p>') === false);
-
+            $this->assertNotContains('<p>To manage campaigns you must have access to email templates and ' .
+                                    'marketing lists. Contact the CRM administrator about this issue.</p>', $content);
             $this->setGetArray(array('id' => $campaign->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/edit');
-            $this->assertTrue(strpos($content, '<p>To manage campaigns you must have access to email templates and ' .
-                                    'marketing lists. Contact the CRM administrator about this issue.</p>') === false);
-
+            $this->assertNotContains('<p>To manage campaigns you must have access to email templates and ' .
+                                    'marketing lists. Contact the CRM administrator about this issue.</p>', $content);
             $this->user->setRight('CampaignsModule', CampaignsModule::getDeleteRight());
             $this->assertTrue($this->user->save());
             $this->runControllerWithRedirectExceptionAndGetUrl('campaigns/default/delete');
