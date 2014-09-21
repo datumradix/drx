@@ -42,6 +42,9 @@
         const USER_SWITCHER_RIGHTS_FILTER_PATH =
                 'application.modules.zurmo.controllers.filters.UserSwitcherRightsControllerFilter';
 
+        const SENDGRID_EMAIL_CONFIGURATION_FILTER_PATH =
+              'application.modules.sendGrid.controllers.filters.SendGridEmailConfigurationCheckControllerFilter';
+
         /**
          * Override to exclude modalSearchList and autoComplete
          * since these are available to all users regardless
@@ -60,7 +63,7 @@
                     ZurmoBaseController::RIGHTS_FILTER_PATH .
                     ' - modalList, - switchTo, autoComplete, details, profile, edit, auditEventsModalList, changePassword, ' .
                     'configurationEdit, emailConfiguration, securityDetails, ' .
-                    'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard',
+                    'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard, sendGridConfiguration',
                     'moduleClassName' => 'UsersModule',
                     'rightName' => UsersModule::getAccessRight(),
             );
@@ -76,6 +79,10 @@
             );
             $filters[] = array(
                         self::EMAIL_CONFIGURATION_FILTER_PATH . ' + emailConfiguration',
+                         'controller' => $this,
+            );
+            $filters[] = array(
+                        self::SENDGRID_EMAIL_CONFIGURATION_FILTER_PATH . ' + sendGridConfiguration',
                          'controller' => $this,
             );
             return $filters;
@@ -684,10 +691,8 @@
          */
         public function actionSendGridConfiguration($id, $redirectUrl = null)
         {
-            UserAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
+            SendGridAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
             $user                           = User::getById(intval($id));
-            UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
-            UserAccessUtil::resolveAccessingASystemUser($user);
             $title                          = Zurmo::t('SendGridModule', 'SendGrid Configuration');
             $breadCrumbLinks                = array(strval($user) => array('default/details',  'id' => $id), $title);
             $emailAccount                   = SendGridEmailAccount::resolveAndGetByUserAndName($user);
