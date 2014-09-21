@@ -79,29 +79,28 @@
         public function testRegularUserAllActionsWithNoMarketingListRight()
         {
             $content    = $this->runControllerWithNoExceptionsAndGetContent('autoresponders/default/create');
-            $this->assertTrue(strpos($content, '<div id="UserIsMissingMarketingListAccessSplashView"') !== false);
-            $this->assertTrue(strpos($content, '<div class="Warning"><h2>Not so fast!</h2>') !== false);
-            $this->assertTrue(strpos($content, '<p>To manage Marketing Lists related features you must have access ' .
-                                                'to marketing lists first. Contact the CRM administrator' .
-                                                ' about this issue.</p>') !== false);
+            $this->assertContains('<div id="UserIsMissingMarketingListAccessSplashView"', $content);
+            $this->assertContains('<div class="Warning"><h2>Not so fast!</h2>', $content);
+            $this->assertContains('<p>To manage Marketing Lists related features you must have access ' .
+                                  'to marketing lists first. Contact the CRM administrator' .
+                                  ' about this issue.</p>', $content);                                                                
             $content    = $this->runControllerWithNoExceptionsAndGetContent('autoresponders/default/edit');
-            $this->assertTrue(strpos($content, '<div id="UserIsMissingMarketingListAccessSplashView"') !== false);
-            $this->assertTrue(strpos($content, '<div class="Warning"><h2>Not so fast!</h2>') !== false);
-            $this->assertTrue(strpos($content, '<p>To manage Marketing Lists related features you must have access ' .
-                                                'to marketing lists first. Contact the CRM administrator' .
-                                                ' about this issue.</p>') !== false);
+            $this->assertContains('<div id="UserIsMissingMarketingListAccessSplashView"', $content);
+            $this->assertContains('<div class="Warning"><h2>Not so fast!</h2>', $content);
+            $this->assertContains('<p>To manage Marketing Lists related features you must have access ' .
+                                  'to marketing lists first. Contact the CRM administrator' .
+                                  ' about this issue.</p>', $content);                                                                      
             $content    = $this->runControllerWithNoExceptionsAndGetContent('autoresponders/default/details');
-            $this->assertTrue(strpos($content, '<div id="UserIsMissingMarketingListAccessSplashView"') !== false);
-            $this->assertTrue(strpos($content, '<div class="Warning"><h2>Not so fast!</h2>') !== false);
-            $this->assertTrue(strpos($content, '<p>To manage Marketing Lists related features you must have access ' .
-                                                'to marketing lists first. Contact the CRM administrator' .
-                                                ' about this issue.</p>') !== false);
+            $this->assertContains('<div id="UserIsMissingMarketingListAccessSplashView"', $content);
+            $this->assertContains('<div class="Warning"><h2>Not so fast!</h2>', $content);                              
+            $this->assertContains('<p>To manage Marketing Lists related features you must have access ' .
+                                  'to marketing lists first. Contact the CRM administrator' .
+                                  ' about this issue.</p>', $content);                                    
             $content    = $this->runControllerWithNoExceptionsAndGetContent('autoresponders/default/delete');
-            $this->assertTrue(strpos($content, '<div id="UserIsMissingMarketingListAccessSplashView"') !== false);
-            $this->assertTrue(strpos($content, '<div class="Warning"><h2>Not so fast!</h2>') !== false);
-            $this->assertTrue(strpos($content, '<p>To manage Marketing Lists related features you must have access ' .
-                                                'to marketing lists first. Contact the CRM administrator' .
-                                                ' about this issue.</p>') !== false);
+            $this->assertContains('<div class="Warning"><h2>Not so fast!</h2>', $content);
+            $this->assertContains('<p>To manage Marketing Lists related features you must have access ' .
+                                  'to marketing lists first. Contact the CRM administrator' .
+                                  ' about this issue.</p>', $content);                                                                      
         }
 
         public function testRegularUserActionsWithMarketingListRightButInsufficientPermission()
@@ -113,18 +112,18 @@
                 'redirectUrl'           => 'http://www.zurmo.com/',
             ));
             $content    = $this->runControllerWithExitExceptionAndGetContent('autoresponders/default/create');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
 
             $this->setGetArray(array(
                 'id'            => static::$superUserAutoresponderId,
                 'redirectUrl'           => 'http://www.zurmo.com/',
             ));
             $content    = $this->runControllerWithExitExceptionAndGetContent('autoresponders/default/edit');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
             $content    = $this->runControllerWithExitExceptionAndGetContent('autoresponders/default/details');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
             $content    = $this->runControllerWithExitExceptionAndGetContent('autoresponders/default/delete');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
       }
 
         public function testRegularUserActionsWithMarketingListRightAndRequiredPermissions()

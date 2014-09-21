@@ -137,8 +137,8 @@
             //Confirm Mary got the email invite and it was correctly setup with a valid conversation id
             $emailMessages = EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX);
             $this->assertEquals(1, count($emailMessages));
-            $this->assertfalse(strpos($emailMessages[0]->content->textContent,
-                                       'conversations/default/details?id=' . $conversations[0]->id . '">') === true);
+            $this->assertNotContains('conversations/default/details?id=' . $conversations[0]->id . '">', 
+                                     $emailMessages[0]->content->textContent);                           
 
             //Confirm Mary is the only one with explicit permissions on the conversation
             $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
@@ -414,19 +414,19 @@
             }
             $super   = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $content = $this->runControllerWithNoExceptionsAndGetContent('conversations/default/list');
-            $this->assertfalse(strpos($content, 'Conversations') === false);
+            $this->assertContains('Conversations', $content);
             $this->setGetArray(array(
                 'type' => ConversationsSearchDataProviderMetadataAdapter::LIST_TYPE_CREATED));
             $content = $this->runControllerWithNoExceptionsAndGetContent('conversations/default/list');
-            $this->assertfalse(strpos($content, 'Conversations') === false);
+            $this->assertContains('Conversations', $content);
             $this->setGetArray(array(
                 'type' => ConversationsSearchDataProviderMetadataAdapter::LIST_TYPE_PARTICIPANT));
             $content = $this->runControllerWithNoExceptionsAndGetContent('conversations/default/list');
-            $this->assertfalse(strpos($content, 'Conversations') === false);
+            $this->assertContains('Conversations', $content);
             $this->setGetArray(array(
                 'type' => ConversationsSearchDataProviderMetadataAdapter::LIST_TYPE_CLOSED));
             $content = $this->runControllerWithNoExceptionsAndGetContent('conversations/default/list');
-            $this->assertfalse(strpos($content, 'Conversations') === false);
+            $this->assertContains('Conversations', $content);
         }
 
         /**

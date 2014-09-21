@@ -56,16 +56,16 @@
             //Test all default controller actions that do not require any POST/GET variables to be passed.
             //This does not include portlet controller actions.
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertfalse(strpos($content, 'Leaderboard') === false);
+            $this->assertContains('Leaderboard', $content);
             $this->setGetArray(array('type' => GamePointUtil::LEADERBOARD_TYPE_WEEKLY));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertfalse(strpos($content, 'Leaderboard') === false);
+            $this->assertContains('Leaderboard', $content);
             $this->setGetArray(array('type' => GamePointUtil::LEADERBOARD_TYPE_MONTHLY));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertfalse(strpos($content, 'Leaderboard') === false);
+            $this->assertContains('Leaderboard', $content);
             $this->setGetArray(array('type' => GamePointUtil::LEADERBOARD_TYPE_OVERALL));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertfalse(strpos($content, 'Leaderboard') === false);
+            $this->assertContains('Leaderboard', $content);
         }
 
         public function testGameNotificationsComingUpCorrectly()
@@ -76,7 +76,7 @@
             $this->assertEquals(0, count(GameNotification::getAllByUser($super)));
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertTrue(strpos($content, 'ModalGameNotification0') === false);
+            $this->assertNotContains('ModalGameNotification0', $content);
 
             //Level up notification
             $gameNotification           = new GameNotification();
@@ -89,15 +89,15 @@
             $this->assertEquals(1, count(GameNotification::getAllByUser($super)));
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertFalse(strpos($content, 'ModalGameNotification0') === false);
-            $this->assertTrue(strpos($content, 'ModalGameNotification1') === false);
+            $this->assertContains('ModalGameNotification0', $content);
+            $this->assertNotContains('ModalGameNotification1', $content);
 
             $this->assertEquals(0, GameNotification::getCount());
             $this->assertEquals(0, count(GameNotification::getAllByUser($super)));
             Yii::app()->clientScript->reset();
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertTrue(strpos($content, 'ModalGameNotification0') === false);
+            $this->assertNotContains('ModalGameNotification0', $content);
 
             //New badge notification
             $gameNotification           = new GameNotification();
@@ -116,8 +116,8 @@
             Yii::app()->clientScript->reset();
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertFalse(strpos($content, 'ModalGameNotification0') === false);
-            $this->assertFalse(strpos($content, 'ModalGameNotification1') === false);
+            $this->assertContains('ModalGameNotification0', $content);
+            $this->assertContains('ModalGameNotification1', $content);
         }
 
         public function testCollectRandomCoin()
@@ -137,7 +137,7 @@
             $this->assertEquals(1, $gameCoin->value);
             $this->setGetArray(array('id' => $super->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/refreshGameDashboardCoinContainer');
-            $this->assertfalse(strpos($content, '1 coin') === false);
+            $this->assertContains('1 coin', $content);
         }
 
         public function testRedeemCollection()
@@ -163,7 +163,7 @@
             $this->assertEquals($itemsData, unserialize($gameCollection->serializedData));
             $this->setGetArray(array('id' => $gameCollection->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/redeemCollection');
-            $this->assertfalse(strpos($content, 'Basketball Collection') === false);
+            $this->assertContains('Basketball Collection', $content);
         }
     }
 ?>
