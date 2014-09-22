@@ -348,6 +348,14 @@
                         }
                     }
                 }
+
+                if (Yii::app()->isApplicationInSandboxMode())
+                {
+                    if (!$isUrlAllowedToGuests)
+                    {
+                        Yii::app()->user->setFlash('notification', Zurmo::t('ZurmoModule', 'Application is in sandbox mode.'));
+                    }
+                }
             }
         }
 
