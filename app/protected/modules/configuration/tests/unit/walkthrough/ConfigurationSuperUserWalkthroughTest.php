@@ -69,13 +69,17 @@
             $this->assertContains("Zurmo runs only on Apache 2.2.1 and higher or Microsoft-IIS 5.0.0 or higher web servers.", $content);
             $this->assertContains("\$_SERVER does not have HTTP_HOST, SERVER_NAME, SERVER_PORT, HTTP_ACCEPT, HTTP_USER_AGENT", $content);
             $criticalFailureCount   = substr_count($content, "<span class=\"fail\">FAIL</span>");
-            $this->assertContains($criticalFailureCount, array(2,3));
+            $this->assertThat(true, $this->logicalOr($this->equalTo(2, $criticalFailureCount), $this->equalTo(3, $criticalFailureCount)));
             if ($criticalFailureCount === 3)
             {
-                // this can happen if minScript dir does not exist
-                $this->assertContains("The application.log runtime file is writable.<br />\n" .
-                                        "The /minScript/cache runtime directory is not writable.<br />\n" .
-                                        "The debug.php file is present.", $content);
+                $this->assertTrue(
+                    // this can happen if minScript dir does not exist
+                    strpos($content, "The application.log runtime file is writable.<br />\n" .
+                                            "The /minScript/cache runtime directory is not writable.<br />\n" .
+                                            "The debug.php file is present.") !== false ||
+                    // this happens on CI servers
+                    strpos($content, "Host Info/Script Url is incorrectly configured.") !== false
+                );
             }
             $this->assertFileExists(realpath(INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'perInstance.php'));
             $this->assertFileExists(realpath(INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'debug.php'));
