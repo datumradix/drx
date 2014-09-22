@@ -58,7 +58,7 @@
 
         public function testRecordSharingPerformanceTimeForOneUserGroup()
         {
-            $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(1);
+            $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(1, 3);
         }
 
         /**
@@ -117,14 +117,11 @@
             $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(1000);
         }
 
-        protected function ensureTimeSpentIsLessOrEqualThanExpectedForCount($count)
+        protected function ensureTimeSpentIsLessOrEqualThanExpectedForCount($count, $expectedTime = 1.5)
         {
             $timeSpent      = $this->resolveRecordSharingPerformanceTime($count);
             echo PHP_EOL. $count . ' user(s) group took ' . $timeSpent . ' seconds';
-            // no need to multiply by $count
-            // this is all sql with no php in the core logic of generation so the time spent
-            // remains constant for the most part.
-            //$this->assertLessThanOrEqual($this->singleItemExpectedTime, $timeSpent);
+            $this->assertLessThanOrEqual($expectedTime, $timeSpent);
         }
 
         public function resolveRecordSharingPerformanceTime($count)
