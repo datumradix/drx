@@ -1032,8 +1032,13 @@
             }
             if ($this->isActive != $isActive)
             {
-               $this->unrestrictedSet('isActive', $isActive);
-               $this->save();
+                $data = array(strval($this), array('isActive'),
+                                BooleanUtil::boolToString((boolean) $this->isActive),
+                                BooleanUtil::boolToString((boolean) $isActive));
+                AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_MODIFIED,
+                    $data, $this);
+                $this->unrestrictedSet('isActive', $isActive);
+                $this->save();
             }
         }
 
