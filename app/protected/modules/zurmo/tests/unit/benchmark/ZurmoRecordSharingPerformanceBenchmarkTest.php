@@ -54,6 +54,15 @@
         {
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             Contact::deleteAll();
+            $this->clearAllCaches();
+        }
+
+        protected function clearAllCaches()
+        {
+            ForgetAllCacheUtil::forgetAllCaches();
+            PermissionsCache::forgetAll(true);
+            RightsCache::forgetAll(true);
+            Role::forgetRoleIdToRoleCache();
         }
 
         public function testRecordSharingPerformanceTimeForOneUserGroup()
@@ -126,7 +135,6 @@
 
         public function resolveRecordSharingPerformanceTime($count)
         {
-            ForgetAllCacheUtil::forgetAllCaches();
             $groupMembers       = array();
             // create group
             $this->resetGetArray();
@@ -182,6 +190,7 @@
                 $this->assertTrue(RightsUtil::doesUserHaveAllowByRightName('ContactsModule', ContactsModule::getDeleteRight(), $user));
             }
 
+            $this->clearAllCaches();
             // go ahead and create contact with group given readwrite, use group's first member to confirm he has create access
             $this->logoutCurrentUserLoginNewUserAndGetByUsername($groupMembers['usernames'][0]);
             $this->resetGetArray();
@@ -206,6 +215,7 @@
             $content                        = $this->runControllerWithNoExceptionsAndGetContent('/contacts/default/details');
             $this->assertContains('Who can read and write ' . strval($group), $content);
 
+            $this->clearAllCaches();
             $this->resetPostArray();
             // ensure group members have access
             foreach ($groupMembers['usernames'] as $member)
