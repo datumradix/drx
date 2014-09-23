@@ -172,6 +172,7 @@
                 $groupMembers['usernames'][] = $user->username;
                 $groupMembers['ids'][] = $user->id;
             }
+            $this->assertCount($count, $groupMembers['ids']);
 
             // set user's group
             $this->setGetArray(array('id' => $groupId));
@@ -181,6 +182,7 @@
             $this->runControllerWithRedirectExceptionAndGetUrl('/zurmo/group/editUserMembership');
             $group->forgetAll();
             $group          = Group::getById($groupId);
+            $this->assertCount($count, $group->users);
             foreach ($groupMembers['ids'] as $userId)
             {
                 $user       = User::getById($userId);
