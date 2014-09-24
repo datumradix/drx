@@ -54,11 +54,20 @@
         {
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             Contact::deleteAll();
+            $this->clearAllCaches();
+        }
+
+        protected function clearAllCaches()
+        {
+            ForgetAllCacheUtil::forgetAllCaches();
+            PermissionsCache::forgetAll(true);
+            RightsCache::forgetAll(true);
+            Role::forgetRoleIdToRoleCache();
         }
 
         public function testRecordSharingPerformanceTimeForOneUserGroup()
         {
-            $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(1);
+            $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(1, 3);
         }
 
         /**
@@ -117,19 +126,15 @@
             $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(1000);
         }
 
-        protected function ensureTimeSpentIsLessOrEqualThanExpectedForCount($count)
+        protected function ensureTimeSpentIsLessOrEqualThanExpectedForCount($count, $expectedTime = 1.5)
         {
             $timeSpent      = $this->resolveRecordSharingPerformanceTime($count);
             echo PHP_EOL. $count . ' user(s) group took ' . $timeSpent . ' seconds';
-            // no need to multiply by $count
-            // this is all sql with no php in the core logic of generation so the time spent
-            // remains constant for the most part.
-            //$this->assertLessThanOrEqual($this->singleItemExpectedTime, $timeSpent);
+            $this->assertLessThanOrEqual($expectedTime, $timeSpent);
         }
 
         public function resolveRecordSharingPerformanceTime($count)
         {
-            ForgetAllCacheUtil::forgetAllCaches();
             $groupMembers       = array();
             // create group
             $this->resetGetArray();
@@ -167,6 +172,7 @@
                 $groupMembers['usernames'][] = $user->username;
                 $groupMembers['ids'][] = $user->id;
             }
+            $this->assertCount($count, $groupMembers['ids']);
 
             // set user's group
             $this->setGetArray(array('id' => $groupId));
@@ -176,6 +182,7 @@
             $this->runControllerWithRedirectExceptionAndGetUrl('/zurmo/group/editUserMembership');
             $group->forgetAll();
             $group          = Group::getById($groupId);
+            $this->assertCount($count, $group->users);
             foreach ($groupMembers['ids'] as $userId)
             {
                 $user       = User::getById($userId);
@@ -185,6 +192,7 @@
                 $this->assertTrue(RightsUtil::doesUserHaveAllowByRightName('ContactsModule', ContactsModule::getDeleteRight(), $user));
             }
 
+            $this->clearAllCaches();
             // go ahead and create contact with group given readwrite, use group's first member to confirm he has create access
             $this->logoutCurrentUserLoginNewUserAndGetByUsername($groupMembers['usernames'][0]);
             $this->resetGetArray();
@@ -209,6 +217,7 @@
             $content                        = $this->runControllerWithNoExceptionsAndGetContent('/contacts/default/details');
             $this->assertContains('Who can read and write ' . strval($group), $content);
 
+            $this->clearAllCaches();
             $this->resetPostArray();
             // ensure group members have access
             foreach ($groupMembers['usernames'] as $member)
