@@ -95,12 +95,15 @@
          * @param mixed $name null or String representing the email account name
          * @return SendGridEmailAccount
          */
-        public static function resolveAndGetByUserAndName(User $user, $name = null)
+        public static function resolveAndGetByUserAndName(User $user, $name = null, $decrypt = true)
         {
             try
             {
                 $emailAccount = static::getByUserAndName($user, $name);
-                $emailAccount->apiPassword = ZurmoPasswordSecurityUtil::decrypt($emailAccount->apiPassword);
+                if($decrypt === true)
+                {
+                    $emailAccount->apiPassword = ZurmoPasswordSecurityUtil::decrypt($emailAccount->apiPassword);
+                }
             }
             catch (NotFoundException $e)
             {
