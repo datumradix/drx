@@ -619,7 +619,7 @@
             {
                 list($itemId, $itemClass, $personId) = $itemData;
                 $campaignOrAutoresponderItem = $itemClass::getById($itemId);
-                $userEmailAccount = EmailAccount::getByUserAndName($campaignOrAutoresponderItem->campaign->owner, null);
+                $userEmailAccount = EmailAccount::resolveAndGetByUserAndName($campaignOrAutoresponderItem->campaign->owner, null);
                 $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
                 if($userEmailAccount->outboundUsername != ''
                         && $userEmailAccount->outboundPassword != ''
