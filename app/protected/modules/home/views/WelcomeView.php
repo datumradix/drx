@@ -59,6 +59,26 @@
             return $content;
         }
 
+        protected static function resolveAndRenderSubscriptionContent()
+        {
+            if (Yii::app()->edition != 'Community')
+            {
+                return;
+            }
+            $content  = '<div class="help-section">';
+            $content .= '<h3>' . Zurmo::t('HomeModule', 'Achieve more with a Zurmo subscription') . '</h3>';
+            $content .= '<ul>';
+            $content .= '<li>';
+            $content .= Zurmo::t('HomeModule', 'Get more features, proactive support, access ' .
+                                               'to training and consulting, blazing fast hosting, ' .
+                                               'and in-depth documentation with a Zurmo subscription.');
+            $content .= '<BR><a href="http://www.zurmo.com/needSupport.php?s=about">' .
+                        Zurmo::t('ZurmoModule', 'Learn More' . '</a>');
+            $content .= '</ul>';
+            $content .= '</div>';
+            return $content;
+        }
+
         protected static function renderSocialLinksContent()
         {
             return AboutView::renderSocialLinksContent();
@@ -93,6 +113,7 @@
             $content    .= '</p>';
             $content    .= $this->renderDashboardLinkContent();
             $content    .= '</div>';
+            $content    .= static::resolveAndRenderSubscriptionContent();
             $content    .= static::renderHelpfulLinksContent();
             $content    .= $this->renderTipsContent();
             $content    .= $this->renderHideLinkContent();

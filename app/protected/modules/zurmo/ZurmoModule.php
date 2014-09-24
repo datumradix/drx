@@ -162,8 +162,8 @@
                         'mobile' => false,
                     ),
                     array(
-                        'label'  => "eval:Zurmo::t('ZurmoModule', 'Need Support?')",
-                        'url'    => 'http://www.zurmo.com/needSupport.php',
+                        'label'  => "eval:Zurmo::t('ZurmoModule', 'Get More')",
+                        'url'    => 'http://www.zurmo.com/needSupport.php?s=menu',
                         'order'  => 9,
                         'mobile' => true,
                     ),
