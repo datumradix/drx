@@ -263,5 +263,16 @@
             }
             return array($toAddresses, $ccAddresses, $bccAddresses);
         }
+
+        /**
+         * Process message as failure.
+         * @param EmailMessage $emailMessage
+         * @param bool $useSQL
+         */
+        public function processMessageAsFailure(EmailMessage $emailMessage, $useSQL = false)
+        {
+            $folder = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_FAILURE);
+            static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder);
+        }
     }
 ?>
