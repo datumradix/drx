@@ -94,6 +94,9 @@ EOD;
         {
             $this->usageError('The installation is marked as being already completed.  Cannot run the installer.');
         }
+        // set hostInfo and scriptUrl for code that uses createUrl, createAbsoluteUrl, themeManager->baseUrl, etc...
+        Yii::app()->request->hostInfo   = $args[6];
+        Yii::app()->request->scriptUrl  = $args[7];
         echo "\n";
         InstallUtil::runFromInstallCommand($args, true);
     }

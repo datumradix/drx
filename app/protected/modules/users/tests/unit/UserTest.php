@@ -1579,5 +1579,43 @@
             $this->assertEquals(28, $activeUserCount);
             $this->assertCount(28, User::getActiveUsers(true));
         }
+
+        public function testLogAuditEventsForIsActive()
+        {
+            $user = new User();
+            $user->username           = 'testlogauditforisactive';
+            $user->title->value       = 'Mr.';
+            $user->firstName          = 'My';
+            $user->lastName           = 'testlogauditforisactive';
+            $user->setPassword('testlogauditforisactive');
+            $this->assertTrue($user->save());
+            unset($user);
+
+            $user = User::getByUsername('testlogauditforisactive');
+            $this->assertEquals(1, $user->isActive);
+            unset($user);
+
+            AuditEvent::deleteAll();
+
+            //Change the user's status to inactive and confirm new audit event is created
+            $user = User::getByUsername('testlogauditforisactive');
+            $user->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB, RIGHT::DENY);
+            $this->assertTrue($user->save());
+            $this->assertEquals(0, $user->isActive);
+            $auditEvents = AuditEvent::getAll();
+            $this->assertCount(1, $auditEvents);
+            $this->assertContains('Item Modified', strval($auditEvents[0]));
+            unset($user);
+
+            //Now change the user's status back to active and confirm new audit event is created
+            $user = User::getByUsername('testlogauditforisactive');
+            $user->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB, RIGHT::ALLOW);
+            $this->assertTrue($user->save());
+            $this->assertEquals(1, $user->isActive);
+            $auditEvents = AuditEvent::getAll();
+            $this->assertCount(2, $auditEvents);
+            $this->assertContains('Item Modified', strval($auditEvents[1]));
+            unset($user);
+        }
     }
 ?>

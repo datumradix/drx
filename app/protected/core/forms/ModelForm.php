@@ -314,5 +314,17 @@
             }
             return false;
         }
+
+        /**
+         * Override to fix the defect where modelform consist of a model whose attributes are displayed on the form.
+         * @see UserConfigurationForm or UserSendGridConfigurationForm
+         * @param string $attribute attribute name.
+         * @return string the error message. Null is returned if no error.
+         */
+        public function getError($attribute)
+        {
+            $errors = $this->getErrors();
+            return isset($errors[$attribute]) ? reset($errors[$attribute]) : null;
+        }
     }
 ?>
