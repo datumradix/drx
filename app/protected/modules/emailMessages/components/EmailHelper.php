@@ -388,7 +388,7 @@
             return true;
         }
 
-        protected function processMessageAsFailure(EmailMessage $emailMessage, $useSQL = false)
+        public function processMessageAsFailure(EmailMessage $emailMessage, $useSQL = false)
         {
             $folder = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_FAILURE);
             static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder);
