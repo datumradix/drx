@@ -169,9 +169,9 @@
             $this->assertNotNull($content);
             $this->assertContains('"some[prefix][operator]"', $content);
             $this->assertContains('"some[prefix][value]"', $content);
-            $this->assertTrue (strpos($content,  '"some[prefix][secondValue]"')        === false);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
             $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
-            $this->assertTrue (strpos($content,  'multiple="multiple"') === false);
+            $this->assertNotContains('multiple="multiple"', $content);
 
             //Test a float attribute
             $model->attributeIndexOrDerivedType = 'float';
@@ -213,9 +213,9 @@
             $this->assertNotNull($content);
             $this->assertContains('"some[prefix][operator]"', $content);
             $this->assertContains('"some[prefix][value]"', $content);
-            $this->assertTrue (strpos($content,  '"some[prefix][secondValue]"')        === false);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
             $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
-            $this->assertTrue (strpos($content,  'multiple="multiple"') === false);
+            $this->assertNotContains('multiple="multiple"', $content);
 
             //Test a phone attribute
             $model->attributeIndexOrDerivedType = 'phone';
@@ -245,9 +245,9 @@
             $this->assertNotNull($content);
             $this->assertContains('"some[prefix][operator]"', $content);
             $this->assertContains('"some[prefix][value]"', $content);
-            $this->assertTrue (strpos($content,  '"some[prefix][secondValue]"')        === false);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
             $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
-            $this->assertTrue (strpos($content,  'multiple="multiple"') === false);
+            $this->assertNotContains('multiple="multiple"', $content);
 
             //Test a string attribute
             $model->attributeIndexOrDerivedType = 'string';
@@ -312,9 +312,9 @@
             $this->assertNotNull($content);
             $this->assertContains('"some[prefix][operator]"', $content);
             $this->assertContains('"some[prefix][value]"', $content);
-            $this->assertTrue (strpos($content,  '"some[prefix][secondValue]"')        === false);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
             $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
-            $this->assertTrue (strpos($content,  'multiple="multiple"') === false);
+            $this->assertNotContains('multiple="multiple"', $content);
         }
 
         /**

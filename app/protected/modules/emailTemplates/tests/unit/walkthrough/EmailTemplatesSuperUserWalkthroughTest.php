@@ -108,8 +108,8 @@
         public function testListForMarketingAction()
         {
             $content = $this->runControllerWithNoExceptionsAndGetContent('emailTemplates/default/listForMarketing');
-            $this->assertTrue   (strpos($content,       'Email Templates</title></head>') !== false);
-            $this->assertTrue   (strpos($content,       '1 result') !== false);
+            $this->assertContains('Email Templates</title></head>', $content);
+            $this->assertContains('1 result', $content);
             $this->assertEquals (substr_count($content, 'Test Name1'), 1);
             $this->assertEquals (substr_count($content, strval($this->user)), 2);
             $this->assertEquals (substr_count($content, '<td>HTML</td>'), 1);
@@ -123,8 +123,8 @@
         public function testListForWorkflowAction()
         {
             $content = $this->runControllerWithNoExceptionsAndGetContent('emailTemplates/default/listForWorkflow');
-            $this->assertTrue   (strpos($content,       'Email Templates</title></head>') !== false);
-            $this->assertTrue   (strpos($content,       '1 result') !== false);
+            $this->assertContains('Email Templates</title></head>', $content);
+            $this->assertContains('1 result', $content);
             $this->assertEquals (substr_count($content, 'Test Name'), 1);
             $this->assertEquals (substr_count($content, strval($this->user)), 2);
             $this->assertEquals (substr_count($content, '<td>HTML</td>'), 1);
