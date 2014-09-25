@@ -547,6 +547,10 @@
                         $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
                     }
                 }
+                else
+                {
+                    $userEmailConfigurationForm->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($userEmailConfigurationForm->outboundPassword);
+                }
             }
             $titleBarAndEditView = new UserActionBarAndEmailConfigurationEditView(
                                     $this->getId(),
@@ -699,7 +703,6 @@
             $userSendGridConfigurationForm  = new UserSendGridConfigurationForm($emailAccount);
             $userSendGridConfigurationForm->emailSignatureHtmlContent = $user->getEmailSignature()->htmlContent;
             $postVariableName               = get_class($userSendGridConfigurationForm);
-
             if (isset($_POST[$postVariableName]))
             {
                 $userSendGridConfigurationForm->setAttributes($_POST[$postVariableName]);
@@ -718,6 +721,10 @@
                     {
                         $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
                     }
+                }
+                else
+                {
+                    $userSendGridConfigurationForm->apiPassword = ZurmoPasswordSecurityUtil::decrypt($userSendGridConfigurationForm->apiPassword);
                 }
             }
             $titleBarAndEditView = new UserActionBarAndSendGridConfigurationEditView(
