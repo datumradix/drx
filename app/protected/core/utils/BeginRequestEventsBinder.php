@@ -99,23 +99,23 @@
 
         protected function attachApiRequestCommonEvents()
         {
-            $this->attachEventsByDefinitions($this->resolveApiRequestCommonEvents());
+            $this->resolveEventsAttachment($this->resolveApiRequestCommonEvents());
         }
 
         protected function resolveApiRequestCommonEvents()
         {
-            $eventDefinition    = array(
+            $eventDefinition    = CMap::mergeArray(array(
                                         $this->resolveEventDefinition('handleSentryLogs'),
                                         $this->resolveEventDefinition('handleApplicationCache'),
-                                        $this->resolveEventDefinition('validateCsrfToken', Yii::app()->request),
+                                        $this->resolveEventDefinition('validateCsrfToken', Yii::app()->request, true),
                                         $this->resolveEventDefinition('handleImports'),
                                         $this->resolveEventDefinition('handleSetupDatabaseConnection'),
-                                        $this->resolveEventDefinition('handleDisableGamification')) +
-                                $this->resolveApiInitRequestCommonEvents() +
+                                        $this->resolveEventDefinition('handleDisableGamification')),
+                                $this->resolveApiInitRequestCommonEvents(),
                                 array(
                                         $this->resolveEventDefinition('handleLibraryCompatibilityCheck'),
                                         $this->resolveEventDefinition('handleStartPerformanceClock'),
-                                    );
+                                    ));
             return $eventDefinition;
         }
 
@@ -130,7 +130,7 @@
 
         protected function attachApiRequestEventsForInstalledApplication()
         {
-            $this->attachEventsByDefinitions($this->resolveApiRequestEventsForInstalledApplication());
+            $this->resolveEventsAttachment($this->resolveApiRequestEventsForInstalledApplication());
         }
 
         protected function resolveApiRequestEventsForInstalledApplication()
@@ -151,7 +151,7 @@
 
         protected function attachApplicationRequestCommonEvents()
         {
-            $this->attachEventsByDefinitions($this->resolveApplicationRequestCommonEvents());
+            $this->resolveEventsAttachment($this->resolveApplicationRequestCommonEvents());
         }
 
         protected function resolveApplicationRequestCommonEvents()
@@ -168,7 +168,7 @@
 
         protected function attachApplicationRequestEventsForNonInstalledApplication()
         {
-            $this->attachEventsByDefinitions($this->resolveApplicationRequestEventsForNonInstalledApplication());
+            $this->resolveEventsAttachment($this->resolveApplicationRequestEventsForNonInstalledApplication());
         }
 
         protected function resolveApplicationRequestEventsForNonInstalledApplication()
@@ -186,7 +186,7 @@
          */
         protected function attachApplicationRequestEventsForInstalledApplication()
         {
-            $this->attachEventsByDefinitions($this->resolveApplicationRequestEventsForInstalledApplication());
+            $this->resolveEventsAttachment($this->resolveApplicationRequestEventsForInstalledApplication());
         }
 
         protected function resolveApplicationRequestEventsForInstalledApplication()
@@ -216,7 +216,7 @@
 
         protected function attachCommandRequestCommonEvents()
         {
-            $this->attachEventsByDefinitions($this->resolveCommandRequestCommonEvents());
+            $this->resolveEventsAttachment($this->resolveCommandRequestCommonEvents());
         }
 
         protected function resolveCommandRequestCommonEvents()
@@ -234,7 +234,7 @@
 
         protected function attachCommandEventsForInstalledApplication()
         {
-            $this->attachEventsByDefinitions($this->resolveCommandEventsForInstalledApplication());
+            $this->resolveEventsAttachment($this->resolveCommandEventsForInstalledApplication());
         }
 
         protected function resolveCommandEventsForInstalledApplication()
@@ -253,7 +253,7 @@
 
         protected function attachTestRequestEvents()
         {
-            $this->attachEventsByDefinitions($this->resolveTestRequestEvents());
+            $this->resolveEventsAttachment($this->resolveTestRequestEvents());
         }
 
         protected function resolveTestRequestEvents()
