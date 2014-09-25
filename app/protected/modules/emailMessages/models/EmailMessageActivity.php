@@ -335,5 +335,11 @@
                                 'unique' => false)
                         );
         }
+
+        protected function afterDelete()
+        {
+            $this->emailMessageUrl->delete();
+            return parent::afterDelete();
+        }
     }
 ?>

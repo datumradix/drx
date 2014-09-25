@@ -45,21 +45,21 @@
          */
         protected function renderIntroContent()
         {
-            $content  = '<h1>' . Zurmo::t('ProjectsModule', 'How do Projects work in Zurmo?', LabelUtil::getTranslationParamsForAllModules()). '</h1>';
+            $content  = '<h1>' . Zurmo::t('ProjectsModule', 'How do ProjectsModulePluralLabel work in Zurmo?', LabelUtil::getTranslationParamsForAllModules()). '</h1>';
             $content .= '<div id="projects-intro-steps" class="module-intro-steps clearfix">';
             $content .= '<div class="third project-create"><span class="icon"></span>';
             $content .= '<p><strong>' . Zurmo::t('Core', 'Create') . '</strong>';
-            $content .= Zurmo::t('ProjectsModule', 'Create projects, add tasks and work using an agile methodology');
+            $content .= Zurmo::t('ProjectsModule', 'Create ProjectsModulePluralLowerCaseLabel, add TasksModulePluralLowerCaseLabel and work using an agile methodology', LabelUtil::getTranslationParamsForAllModules());
             $content .= '</p>';
             $content .= '</div>';
             $content .= '<div class="third project-collaborate"><span class="icon"></span>';
             $content .= '<p><strong>' . Zurmo::t('Core', 'Collaborate') . '</strong>';
-            $content .= Zurmo::t('ProjectsModule', 'Collaborate with users on tasks to get things done');
+            $content .= Zurmo::t('ProjectsModule', 'Collaborate with UsersModulePluralLowerCaseLabel on TasksModulePluralLowerCaseLabel to get things done', LabelUtil::getTranslationParamsForAllModules());
             $content .= '</p>';
             $content .= '</div>';
             $content .= '<div class="third project-track"><span class="icon"></span>';
             $content .= '<p><strong>' . Zurmo::t('Core', 'Track') . '</strong>';
-            $content .= Zurmo::t('ProjectsModule', 'Subscribe to notifications and track progress against milestones');
+            $content .= Zurmo::t('ProjectsModule', 'Subscribe to NotificationsModulePluralLowerCaseLabel and track progress against milestones', LabelUtil::getTranslationParamsForAllModules());
             $content .= '</p>';
             $content .= '</div>';
             $content .= '</div>';

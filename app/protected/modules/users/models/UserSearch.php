@@ -190,5 +190,20 @@
                 $where  = "  ((_user.isrootuser is null OR _user.isrootuser = 0) and (${where}))";
             }
         }
+
+        /**
+         * Updates `where` part of query to exclude current user
+         * @param $exclude bool
+         * @param RedBeanModelJoinTablesQueryAdapter $joinTablesAdapter
+         * @param $where
+         */
+        protected static function excludeCurrentUser($exclude, RedBeanModelJoinTablesQueryAdapter & $joinTablesAdapter,
+                                                   & $where)
+        {
+            if ($exclude)
+            {
+                $where  = "  ((_user.id != " . Yii::app()->user->userModel->id . ") and (${where}))";
+            }
+        }
     }
 ?>
