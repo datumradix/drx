@@ -144,6 +144,14 @@
                     && $userEmailAccount->apiPassword != ''
                         && $useAutoresponderOrCampaignOwnerMailSettings === true)
                 {
+                    $associatedCampaign          = $campaignOrAutoresponderItem->campaign;
+                    //If not already updated
+                    if($associatedCampaign->mailer == null)
+                    {
+                        $associatedCampaign->mailer         = 'sendgrid';
+                        $associatedCampaign->useOwnerSmtp   = true;
+                        $associatedCampaign->save();
+                    }
                     $apiUser        = $userEmailAccount->apiUsername;
                     $apiPassword    = ZurmoPasswordSecurityUtil::decrypt($userEmailAccount->apiPassword);
                 }

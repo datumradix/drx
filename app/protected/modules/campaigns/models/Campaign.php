@@ -180,7 +180,7 @@
                     'fromName',
                     'fromAddress',
                     'mailer',
-                    'ownerSettings'
+                    'useOwnerSmtp'
                 ),
                 'rules' => array(
                     array('name',                   'required'),
@@ -231,6 +231,8 @@
                     'enableTracking'   => 'CheckBox',
                     'sendOnDateTime'   => 'DateTime',
                     'status'           => 'CampaignStatus',
+                    'useOwnerSmtp'     => 'CheckBox',
+                    'mailer'           => 'Text'
                 ),
                 'defaultSortAttribute' => 'name',
             );
