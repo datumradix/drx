@@ -67,10 +67,8 @@
          */
         public function run()
         {
-            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             $user = Yii::app()->user->userModel;
             $processingCampaigns    = Campaign::getByStatus(Campaign::STATUS_PROCESSING);
-            //$campaignItemsList      = array();
             foreach($processingCampaigns as $processingCampaign)
             {
                 $campaignItemsList      = array();
@@ -89,12 +87,9 @@
                     }
                     else
                     {
-                        //$emailAccount                   = SendGridEmailAccount::getByUserAndName($processingCampaign->owner);
                         $bounceEventWebhookUrl          = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
                     }
                     $data = array();
-                    //$emailAccount                   = SendGridEmailAccount::getByUserAndName(Yii::app()->user->userModel);
-                    //$bounceEventWebhookUrl          = $emailAccount->eventWebhookUrl;
                     if($bounceEventWebhookUrl != null)
                     {
                         $content = file_get_contents($bounceEventWebhookUrl);
@@ -103,8 +98,6 @@
                         {
                             $data[] = json_decode('{' . $string . '}', true);
                         }
-                        print_r($data);
-                        exit;
                         foreach($data as $value)
                         {
                             if($value['event'] == 'bounce' || $value['event'] == 'spamreport' || $value['event'] == 'dropped')
