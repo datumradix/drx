@@ -92,8 +92,6 @@
                         //$emailAccount                   = SendGridEmailAccount::getByUserAndName($processingCampaign->owner);
                         $bounceEventWebhookUrl          = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
                     }
-                    print $bounceEventWebhookUrl;
-                    exit;
                     $data = array();
                     //$emailAccount                   = SendGridEmailAccount::getByUserAndName(Yii::app()->user->userModel);
                     //$bounceEventWebhookUrl          = $emailAccount->eventWebhookUrl;
