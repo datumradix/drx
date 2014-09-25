@@ -689,5 +689,56 @@
             $this->assertEquals  ('There is 1 possible match. <span class="underline">Click here</span> to view.', $object->message);
             $this->assertContains('CreateModelsToMergeListAndChartView',       $object->content);
         }
+        public function testSuperUserConvertActionWithTagCloud()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            Account::deleteAll();
+            DesignerTestHelper::createTagCloudAttribute('tagcloud', false, 'Account');
+            $this->setGetArray(array('moduleClassName' => 'AccountsModule',
+                'viewClassName'   => 'AccountConvertToView'));
+            $layout = array(
+                'panels' => array(
+                    array(
+                        'title' => 'Panel Title',
+                        'panelDetailViewOnly' => 1,
+                        'rows' => array(
+                            array('cells' =>
+                                array(
+                                    array(
+                                        'element' => 'name',
+                                    ),
+                                )
+                            ),
+                            array('cells' =>
+                                array(
+                                    array(
+                                        'element' => 'tagcloudCstm',
+                                    ),
+                                )
+                            ),
+                        ),
+                    ),
+                ),
+            );
+            $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
+            $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
+            $this->assertContains('Layout saved successfully', $content);
+
+            $lead = LeadTestHelper::createLeadbyNameForOwner('convertwithtagcloud', $super);
+            $this->setGetArray(array('id' => $lead->id));
+            $this->setPostArray(
+                array(
+                    'Account' => array(
+                        'name' => 'mynewaccountfromleadtagcloudconvert',
+                        'tagcloudCstm' => array('values' => 'English,French')
+                    )
+                )
+            );
+            $this->assertEquals(0, Account::getCount());
+            $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convert');
+            $this->assertEquals(1, Account::getCount());
+            $accounts = Account::getAll();
+            $this->assertEquals('English, French', strval($accounts[0]->tagcloudCstm));
+        }
     }
 ?>
