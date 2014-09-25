@@ -82,7 +82,7 @@
 
                 if($processingCampaign->mailer == 'sendgrid')
                 {
-                    if($processingCampaign->useOwnerSettings)
+                    if($processingCampaign->useOwnerSmtp)
                     {
                         $emailAccount                   = SendGridEmailAccount::getByUserAndName($processingCampaign->owner);
                         $bounceEventWebhookUrl          = $emailAccount->eventWebhookUrl;
