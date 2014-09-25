@@ -58,7 +58,7 @@
             $user->firstName = 'James';
             $user->lastName  = 'Boondog';
             assert($user->save()); // Not Coding Standard
-            assert(AuditEvent::getCount() == 4); // Not Coding Standard
+            assert(AuditEvent::getCount() == 6); // Not Coding Standard
         }
 
         public function testResolveNewRecentlyViewedModel()
