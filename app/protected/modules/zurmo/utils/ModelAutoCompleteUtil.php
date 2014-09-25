@@ -198,6 +198,7 @@
         {
             $autoCompleteResults = array();
             $joinTablesAdapter = null;
+            static::sanitizeSearchTerm($partialName);
             $where = "name like lower('{$partialName}%')";
             static::handleAutoCompleteOptions($joinTablesAdapter, $where, $autoCompleteOptions);
             $models = $modelClassName::getSubset($joinTablesAdapter, null, $pageSize, $where, 'name');

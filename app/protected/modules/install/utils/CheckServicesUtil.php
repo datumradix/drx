@@ -81,14 +81,39 @@
             );
         }
 
+        private static function getServicesToCheckOnlyAfterInstallation()
+        {
+            return array(
+                'FilePermissionsAfterInstall',
+                'HostInfo',
+            );
+        }
+
+        private static function getServicesToExcludeCheckAfterInstallation()
+        {
+            return array(
+                'FilePermissions'
+            );
+        }
+
+        private static function sanitizeServicesToExcludeCheckAfterInstallation(array & $services)
+        {
+            $servicesToExclude  = static::getServicesToExcludeCheckAfterInstallation();
+            foreach ($servicesToExclude as $serviceName)
+            {
+                if (($key = array_search($serviceName, $services)) !== false)
+                {
+                    unset($services[$key]);
+                }
+            }
+        }
+
         private static function getServicesToCheckAfterInstallation()
         {
-	    $services = CMap::mergeArray(static::getServicesToCheck(), static::getAdditionalServicesToCheck());
-            if (($key = array_search('FilePermissions', $services)) !== false)
-            {
-                unset($services[$key]);
-            }
-            $services[] = 'FilePermissionsAfterInstall';
+            $services = CMap::mergeArray(static::getServicesToCheck(),
+                                            static::getAdditionalServicesToCheck(),
+                                            static::getServicesToCheckOnlyAfterInstallation());
+            static::sanitizeServicesToExcludeCheckAfterInstallation($services);
             return $services;
         }
 
