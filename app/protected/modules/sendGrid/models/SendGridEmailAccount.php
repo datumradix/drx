@@ -145,6 +145,7 @@
                                   array('apiPassword',               'required'),
                                   array('fromName',                  'required'),
                                   array('fromAddress',               'required'),
+                                  array('eventWebhookUrl',           'required'),
                                   array('name',                      'type',      'type' => 'string'),
                                   array('fromName',                  'type',      'type' => 'string'),
                                   array('apiUsername',               'type',      'type' => 'string'),
