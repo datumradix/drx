@@ -179,6 +179,8 @@
                     'textContent',
                     'fromName',
                     'fromAddress',
+                    'mailer',
+                    'ownerSettings'
                 ),
                 'rules' => array(
                     array('name',                   'required'),
@@ -211,6 +213,9 @@
                     array('enableTracking',         'boolean'),
                     array('enableTracking',         'default', 'value' => false),
                     array('marketingList',          'required'),
+                    array('mailer',                 'type',    'type' => 'string'),
+                    array('useOwnerSmtp',           'boolean'),
+                    array('useOwnerSmtp',           'default', 'value' => false),
                 ),
                 'relations' => array(
                     'campaignItems'     => array(static::HAS_MANY, 'CampaignItem'),
