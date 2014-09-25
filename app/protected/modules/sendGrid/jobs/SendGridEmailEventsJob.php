@@ -92,6 +92,8 @@
                     {
                         $data[] = json_decode('{' . $string . '}', true);
                     }
+                    print_r($data);
+                    exit;
                     foreach($data as $value)
                     {
                         if($value['event'] == 'bounce' || $value['event'] == 'spamreport' || $value['event'] == 'dropped')
