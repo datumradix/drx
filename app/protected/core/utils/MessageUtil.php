@@ -271,7 +271,7 @@
             return $problems;
         }
 
-        public static function findFileNameToCategoryToMessage($path, $forcedCategory = '')
+        public static function findFileNameToCategoryToMessage($path, $forcedCategory = '', $forTesting = false)
         {
             assert('is_string($path)');
             assert('is_dir   ($path)');
@@ -396,7 +396,7 @@
                             }
                         }
                         //Avoid picking up any models or anything in the test folders
-                        if ( strpos($path, '/tests') === false)
+                        if ( $forTesting || strpos($path, '/tests') === false)
                         {
                             $content = file_get_contents($fullEntryName);
                             $content = str_replace('\\\'', '\'', $content);
