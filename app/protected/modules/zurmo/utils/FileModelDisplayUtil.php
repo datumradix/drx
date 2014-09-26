@@ -78,12 +78,23 @@
             $content .= '<span class="ui-icon ui-icon-document" style="display:inline-block;"></span>';
             $content .= ZurmoHtml::link(
                     Yii::app()->format->text($fileModel->name),
-                    Yii::app()->createUrl('zurmo/fileModel/download/',
-                        array('modelId' => $model->id,
-                              'modelClassName' => get_class($model),
-                              'id' => $fileModel->id))
-            );
+                    static::resolveDownloadUrlByRelationModelIdAndRelationModelClassNameAndFileIdAndFileName($model->id,
+                                                                                                            get_class($model),
+                                                                                                            $fileModel->id));
             return $content;
+        }
+
+        /**
+         * @param $modelId
+         * @param $modelClass
+         * @param $fileId
+         * @return mixed
+         */
+        public static function resolveDownloadUrlByRelationModelIdAndRelationModelClassNameAndFileIdAndFileName($modelId, $modelClass, $fileId)
+        {
+            return Yii::app()->createUrl('zurmo/fileModel/download/', array('modelId' => $modelId,
+                                                                            'modelClassName' => $modelClass,
+                                                                                'id' => $fileId));
         }
 
         /**
