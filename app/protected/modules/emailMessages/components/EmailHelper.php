@@ -248,7 +248,7 @@
          * @param EmailMessage $emailMessage
          * @throws NotSupportedException
          */
-        protected static function isValidFolderType(EmailMessage $emailMessage)
+        public static function isValidFolderType(EmailMessage $emailMessage)
         {
             if ($emailMessage->folder->type == EmailFolder::TYPE_OUTBOX ||
                 $emailMessage->folder->type == EmailFolder::TYPE_SENT ||
@@ -268,7 +268,7 @@
          * @return bool|void
          * @throws FailedToSaveModelException
          */
-        protected static function updateFolderForEmailMessage(EmailMessage & $emailMessage, $useSQL,
+        public static function updateFolderForEmailMessage(EmailMessage & $emailMessage, $useSQL,
                                                               EmailFolder $folder, $validate = true)
         {
             // we don't have syntax to support saving related records and other attributes for emailMessage, yet.
@@ -386,39 +386,11 @@
          */
         public function sendQueued($count = null)
         {
-            assert('is_int($count) || $count == null');
-            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                $this->sendImmediately($emailMessage);
-            }
-            if ($count == null)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
-            }
-            elseif (count($queuedEmailMessages) < $count)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - count($queuedEmailMessages));
-            }
-            else
-            {
-                $queuedEmailMessages = array();
-            }
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                if ($emailMessage->sendAttempts < 3)
-                {
-                    $this->sendImmediately($emailMessage);
-                }
-                else
-                {
-                    $this->processMessageAsFailure($emailMessage);
-                }
-            }
+            EmailMessageUtil::processAndSendQueuedMessages($this, $count);
             return true;
         }
 
-        protected function processMessageAsFailure(EmailMessage $emailMessage, $useSQL = false)
+        public function processMessageAsFailure(EmailMessage $emailMessage, $useSQL = false)
         {
             $folder = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_FAILURE);
             static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder);
@@ -477,12 +449,12 @@
         {
             try
             {
+                $this->resolveMailerByCampaignOrAutoresponderEmailAccount($mailer, $emailMessage);
                 $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
                 $acceptedRecipients         = $mailer->send();
                 // Code below is quick fix, we need to think about better solution
                 // Here is related PT story: https://www.pivotaltracker.com/projects/380027#!/stories/45841753
-                //if ($acceptedRecipients != $emailMessage->recipients->count())
-                if ($acceptedRecipients <= 0)
+                if ($acceptedRecipients != $emailMessage->recipients->count() && $acceptedRecipients <= 0)
                 {
                     $content = Zurmo::t('EmailMessagesModule', 'Response from Server') . "\n";
                     foreach ($mailer->getSendResponseLog() as $logMessage)
@@ -590,6 +562,77 @@
         {
             assert('is_string($defaultTestToAddress)');
             ZurmoConfigurationUtil::setByModuleName('ZurmoModule', 'defaultTestToAddress', $defaultTestToAddress);
+        }
+
+        /**
+         * Prepare message content.
+         * @param EmailMessage $emailMessage
+         * @return string
+         */
+        public static function prepareMessageContent(EmailMessage $emailMessage)
+        {
+            $messageContent  = null;
+            if (!($emailMessage->hasErrors() || $emailMessage->hasSendError()))
+            {
+                $messageContent .= Zurmo::t('EmailMessagesModule', 'Message successfully sent') . "\n";
+            }
+            else
+            {
+                $messageContent .= Zurmo::t('EmailMessagesModule', 'Message failed to send') . "\n";
+                if ($emailMessage->hasSendError())
+                {
+                    $messageContent .= $emailMessage->error     . "\n";
+                }
+                else
+                {
+                    //todo: refactor to use ZurmoHtml::errorSummary after this supports that method
+                    //todo: supports nested messages better.
+                    $errors = $emailMessage->getErrors();
+                    foreach ($errors as $attributeNameWithErrors)
+                    {
+                        foreach ($attributeNameWithErrors as $attributeError)
+                        {
+                            if (is_array($attributeError))
+                            {
+                                foreach ($attributeError as $nestedAttributeError)
+                                {
+                                    $messageContent .= reset($nestedAttributeError) . "\n";
+                                }
+                            }
+                            else
+                            {
+                                $messageContent .= reset($attributeError) . "\n";
+                            }
+                        }
+                    }
+                }
+            }
+            return $messageContent;
+        }
+
+        /**
+         * Resolve mailer by campaign or autoresponder email account setting if marketing option is configured.
+         * @param Mailer $mailer
+         * @param EmailMessage $emailMessage
+         */
+        protected function resolveMailerByCampaignOrAutoresponderEmailAccount(Mailer $mailer, EmailMessage $emailMessage)
+        {
+            if(($itemData = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($emailMessage)) != null)
+            {
+                list($itemId, $itemClass, $personId) = $itemData;
+                $campaignOrAutoresponderItem = $itemClass::getById($itemId);
+                $userEmailAccount = EmailAccount::resolveAndGetByUserAndName($campaignOrAutoresponderItem->campaign->owner, null, false);
+                $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
+                if($userEmailAccount->outboundUsername != ''
+                        && $userEmailAccount->outboundPassword != ''
+                            && $useAutoresponderOrCampaignOwnerMailSettings === true)
+                {
+                    $mailer->username = $userEmailAccount->outboundUsername;
+                    $mailer->password = ZurmoPasswordSecurityUtil::decrypt($userEmailAccount->outboundPassword);
+                    $mailer->host     = $userEmailAccount->outboundHost;
+                    $mailer->port     = $userEmailAccount->outboundPort;
+                }
+            }
         }
     }
 ?>

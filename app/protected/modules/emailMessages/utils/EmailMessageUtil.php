@@ -274,5 +274,65 @@
            }
            return $textContent;
         }
+
+        /**
+         * Process and send queued messages using email helper.
+         * @param Object $emailHelper EmailHelper or SendGridEmailHelper
+         * @param int $count
+         */
+        public static function processAndSendQueuedMessages($emailHelper, $count = null)
+        {
+            assert('is_int($count) || $count == null');
+            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
+            foreach ($queuedEmailMessages as $emailMessage)
+            {
+                $emailHelper->sendImmediately($emailMessage);
+            }
+            if ($count == null)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
+            }
+            elseif (count($queuedEmailMessages) < $count)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - count($queuedEmailMessages));
+            }
+            else
+            {
+                $queuedEmailMessages = array();
+            }
+            foreach ($queuedEmailMessages as $emailMessage)
+            {
+                if ($emailMessage->sendAttempts < 3)
+                {
+                    $emailHelper->sendImmediately($emailMessage);
+                }
+                else
+                {
+                    $emailHelper->processMessageAsFailure($emailMessage);
+                }
+            }
+        }
+
+        /**
+         * Resolve and check campaign email message.
+         * @param EmailMessage $emailMessage
+         */
+        public static function getCampaignOrAutoresponderDataByEmailMessage(EmailMessage $emailMessage)
+        {
+            $campaignItems = EmailMessageActivityUtil::getByEmailMessageId("CampaignItem", $emailMessage->id);
+            if(!empty($campaignItems))
+            {
+                return array($campaignItems[0]->id, 'CampaignItem', $campaignItems[0]->contact->getClassId('Person'));
+            }
+            else
+            {
+                $autoResponderItems = EmailMessageActivityUtil::getByEmailMessageId("AutoresponderItem", $emailMessage->id);
+                if(!empty($autoResponderItems))
+                {
+                    return array($autoResponderItems[0]->id, 'AutoresponderItem', $campaignItems[0]->contact->getClassId('Person'));
+                }
+            }
+            return null;
+        }
     }
 ?>

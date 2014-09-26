@@ -120,6 +120,24 @@
          */
         public static function sendTestEmail(EmailHelper $emailHelper, Array $from, $toAddress)
         {
+            $emailMessage              = self::processAndCreateEmailMessage($from, $toAddress);
+            $validated                 = $emailMessage->validate();
+            if ($validated)
+            {
+                $emailMessage->save();
+                $emailHelper->sendImmediately($emailMessage);
+            }
+            return $emailMessage;
+        }
+
+        /**
+         * Process and create email message.
+         * @param array $from
+         * @param string $toAddress
+         * @return \EmailMessage
+         */
+        public static function processAndCreateEmailMessage(Array $from, $toAddress)
+        {
             assert('is_string($from["name"])');
             assert('is_string($from["address"])');
             $emailMessage              = new EmailMessage();
@@ -147,11 +165,6 @@
             $emailMessage->recipients->add($recipient);
             $box                       = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder      = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
-            $validated                 = $emailMessage->validate();
-            if ($validated)
-            {
-                $emailHelper->sendImmediately($emailMessage);
-            }
             return $emailMessage;
         }
     }

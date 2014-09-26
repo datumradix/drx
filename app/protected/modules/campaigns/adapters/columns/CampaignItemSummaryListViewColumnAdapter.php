@@ -70,6 +70,7 @@
          */
         public static function resolveDrillDownMetricsSummaryContent(CampaignItem $campaignItem)
         {
+            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             $isQueued              = $campaignItem->isQueued();
             $isSkipped             = $campaignItem->isSkipped();
             if ($isQueued)
@@ -87,6 +88,7 @@
             elseif ($campaignItem->isSent())
             {
                 $content = static::getSentContentForDrillDown($campaignItem->emailMessage);
+                $emailMessageActivityId = EmailMessageActivity::getIdByCampaignOrAutoresponderItem($campaignItem);
                 $tableRows = null;
                 if ($campaignItem->hasAtLeastOneOpenActivity())
                 {
@@ -96,15 +98,33 @@
                 {
                     $tableRows .= static::getClickedContentForDrillDown($campaignItem);
                 }
-                $content .= static::getWrapperTable($tableRows);
                 if ($campaignItem->hasAtLeastOneUnsubscribeActivity())
                 {
                     $content .= static::getUnsubscribedContentForDrillDown();
                 }
                 if ($campaignItem->hasAtLeastOneBounceActivity())
                 {
-                    $content .= static::getBouncedContentForDrillDown();
+                    if($emailMessageActivityId != null)
+                    {
+                        $count = ExternalApiEmailMessageActivity::resolveAndGetByEmailMessageActivityId($emailMessageActivityId, 'sendgrid', true);
+                        if($count > 0)
+                        {
+                            $tableRows .= static::getBouncedContentForDrillDown($campaignItem);
+                        }
+                    }
                 }
+                if($campaignItem->hasAtLeastOneEventActivity(CampaignItemActivity::TYPE_SPAM))
+                {
+                    if($emailMessageActivityId != null)
+                    {
+                        $count = ExternalApiEmailMessageActivity::resolveAndGetByEmailMessageActivityId($emailMessageActivityId, 'sendgrid', true);
+                        if($count > 0)
+                        {
+                            $tableRows .= static::getSpamContentForDrillDown($campaignItem);
+                        }
+                    }
+                }
+                $content .= static::getWrapperTable($tableRows);
             }
             else //still awaiting queueing
             {
@@ -427,9 +447,14 @@
             return ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status stage-false'), $content);
         }
 
-        protected static function getBouncedContentForDrillDown()
+        /**
+         * Get bounced content for drilldown.
+         * @param CampaignItem $campaignItem
+         * @return string
+         */
+        protected static function getBouncedContentForDrillDown(CampaignItem $campaignItem)
         {
-            return null;
+            return self::resolveContentForSendGridBounceOrSpamEventActivity($campaignItem, CampaignItemActivity::TYPE_BOUNCE);
         }
 
         protected static function getAwaitingQueueingContent()
@@ -465,6 +490,56 @@
             $tableContent .= $tableRows;
             $tableContent .= '</table>';
             return $tableContent;
+        }
+
+        /**
+         * Get spam content for drill down.
+         * @param CampaignItem $campaignItem
+         * @return string
+         */
+        protected static function getSpamContentForDrillDown(CampaignItem $campaignItem)
+        {
+            $content = null;
+            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
+            if($sendGridPluginEnabled)
+            {
+                $content = self::resolveContentForSendGridBounceOrSpamEventActivity($campaignItem, CampaignItemActivity::TYPE_SPAM);
+            }
+            return $content;
+        }
+
+        /**
+         * Resolve content for sendgrid bounce or spam email activity.
+         * @param CampaignItem $campaignItem
+         * @param int $type
+         * @return string
+         */
+        protected static function resolveContentForSendGridBounceOrSpamEventActivity(CampaignItem $campaignItem, $type)
+        {
+            $typesArray = CampaignItemActivity::getTypesArray();
+            $campaignItemActivities = CampaignItemActivity::getByTypeAndModelIdAndPersonIdAndUrl(
+                                                        $type,
+                                                        $campaignItem->id,
+                                                        $campaignItem->contact->getClassId('Person'),
+                                                        null,
+                                                        'latestDateTime'
+                                                    );
+            $content = null;
+            foreach ($campaignItemActivities as $campaignItemActivity)
+            {
+                $externalMessageActivities = ExternalApiEmailMessageActivity::getByEmailMessageActivity($campaignItemActivity, "sendgrid", false);
+                foreach($externalMessageActivities as $externalMessageActivity)
+                {
+                    $content .= '<tr>';
+                    $content .= '<td>' . $typesArray[$externalMessageActivity->type] . '</td>';
+                    $content .= '<td>' . DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay($campaignItemActivity->latestDateTime) . '</td>';
+                    $content .= '<td>' . $campaignItemActivity->quantity . '</td>';
+                    $content .= '<td>' . $campaignItemActivity->latestSourceIP . '</td>';
+                    $content .= '<td></td>';
+                    $content .= '</tr>';
+                }
+            }
+            return $content;
         }
     }
 ?>
