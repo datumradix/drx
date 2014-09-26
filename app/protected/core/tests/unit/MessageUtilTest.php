@@ -34,52 +34,27 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class TestModule extends Module
+    /**
+     * Test class to test the MessageUtil class.
+     */
+    class MessageUtilTest extends BaseTest
     {
-        public function getDependencies()
+        public function testFindFileNameToCategoryToMessage()
         {
-            return array(
+            $path = Zurmo::getPathOfAlias('application.core.tests.unit.modules');
+            $result = MessageUtil::findFileNameToCategoryToMessage($path, '', true);
+            $this->assertContains(
+                'A message for test translation with no line break',
+                $result[$path . '/TestModule.php']['Core']
             );
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = array();
-            $metadata['global'] = array(
-                'tabMenuItems' => array(
-                ),
-                'designerMenuItems' => array(
-                ),
-                'a' => 1,
-                'b' => 2,
-                'c' => 3,
-                //globalSearchAttributeNames is used by A model.
-                'globalSearchAttributeNames' => array('a', 'name')
+            $this->assertContains(
+                'A message for test translation with two line breaks',
+                $result[$path . '/TestModule.php']['Core']
             );
-            return $metadata;
-        }
-
-        public static function getPrimaryModelName()
-        {
-            return 'A';
-        }
-
-        public static function getGlobalSearchFormClassName()
-        {
-            return 'ASearchFormTestModel';
-        }
-
-        protected function dumbMethodToTestTranslations()
-        {
-            Zurmo::t('Core', 'A message for test translation with no line break');
-            Zurmo::t('Core', 'A message for test translation with ' .
-                                'two line breaks');
-            Zurmo::t('Core', 'A message' .
-                             ' for test' .
-                             ' translation with' .
-                             ' many' .
-                             ' line' .
-                             ' breaks');
+            $this->assertContains(
+                'A message for test translation with many line breaks',
+                $result[$path . '/TestModule.php']['Core']
+            );
         }
     }
 ?>
