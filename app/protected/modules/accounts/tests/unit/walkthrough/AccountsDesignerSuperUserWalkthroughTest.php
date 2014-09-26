@@ -252,6 +252,14 @@
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
             $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+
+            //Add all fields to AccountConvertToView.
+            $this->setGetArray(array('moduleClassName' => 'AccountsModule',
+                'viewClassName'   => 'AccountConvertToView'));
+            $layout = AccountsDesignerWalkthroughHelperUtil::getAccountEditAndDetailsViewLayoutWithAllCustomFieldsPlaced();
+            $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
+            $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
+            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
         }
 
         /**

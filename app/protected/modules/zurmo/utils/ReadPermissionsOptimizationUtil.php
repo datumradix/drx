@@ -325,17 +325,20 @@
          */
         public static function securableItemGivenPermissionsForGroup(SecurableItem $securableItem, Group $group)
         {
+            // need this to fix some failures in AccountReadPermissionsOptimizationScenariosTest
+            // find a better way to deal with this
+            Role::forgetRoleIdToRoleCache();
+
             $modelClassName = get_class($securableItem);
             assert('$modelClassName != "OwnedSecurableItem"');
             $mungeTableName = self::getMungeTableName($modelClassName);
             $securableItemId = $securableItem->getClassId('SecurableItem');
             self::incrementCount($mungeTableName, $securableItemId, $group);
-            foreach ($group->users as $user)
+            $roleIds        = Role::getIdsByUsersMemberOfGroup($group->id);
+            foreach ($roleIds as $roleId)
             {
-                if ($user->role->id > 0)
-                {
-                    self::incrementParentRolesCounts($mungeTableName, $securableItemId, $user->role);
-                }
+                $role       = Role::getFromCacheOrDatabase($roleId);
+                self::incrementParentRolesCounts($mungeTableName, $securableItemId, $role);
             }
             foreach ($group->groups as $subGroup)
             {

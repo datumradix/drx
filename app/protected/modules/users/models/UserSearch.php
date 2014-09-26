@@ -48,6 +48,7 @@
         {
             assert('is_string($partialName)');
             assert('is_int($pageSize)');
+            static::sanitizeSearchTerm($partialName);
             $personTableName   = Person::getTableName();
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('User');
             $joinTablesAdapter->addFromTableAndGetAliasName($personTableName, "{$personTableName}_id");
@@ -166,6 +167,7 @@
         protected static function getWherePartForPartialNameSearchByPartialName($partialName)
         {
             assert('is_string($partialName)');
+            static::sanitizeSearchTerm($partialName);
             $fullNameSql = DatabaseCompatibilityUtil::concat(array('person.firstname',
                                                                    '\' \'',
                                                                    'person.lastname'));

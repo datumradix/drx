@@ -304,17 +304,22 @@
             assert('is_int($clausePosition)');
             assert('is_array($clauseInformation["relatedModelData"]) && count($clauseInformation["relatedModelData"]) > 0');
             assert('is_string($onTableAliasName) || $onTableAliasName == null');
+            $relatedAttributeName = null;
+            if (isset($clauseInformation['relatedModelData']['attributeName']))
+            {
+                $relatedAttributeName =  $clauseInformation['relatedModelData']['attributeName'];
+            }
             $modelAttributeToDataProviderAdapter = new RedBeanModelAttributeToDataProviderAdapter(
                                                    $modelClassName,
                                                    $clauseInformation['attributeName'],
-                                                   $clauseInformation['relatedModelData']['attributeName']);
+                                                   $relatedAttributeName);
             $builder                             = new ModelWhereAndJoinBuilder($modelAttributeToDataProviderAdapter,
                                                    $joinTablesAdapter, true);
                                                    $builder->resolveJoins($onTableAliasName,
                                                    self::resolveCanUseFromJoins($onTableAliasName));
             $relationModelClassName              = $modelAttributeToDataProviderAdapter->getRelationModelClassName();
             //if there is no more relatedModelData then we know this is the end of the nested information.
-            if (isset($clauseInformation['relatedModelData']['relatedModelData']))
+            if (isset($clauseInformation['relatedModelData']['relatedModelData']) || isset($clauseInformation['relatedModelData']['concatedAttributeNames']))
             {
                 return static::processMetadataClause($relationModelClassName, $clausePosition,
                                                      $clauseInformation['relatedModelData'],
