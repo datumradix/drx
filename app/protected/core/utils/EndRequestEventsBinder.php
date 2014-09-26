@@ -79,7 +79,7 @@
         {
             if ($this->installed)
             {
-                $this->attachEventsByDefinitions($this->resolveInstallationApplicationRequestEvents());
+                $this->resolveEventsAttachment($this->resolveInstallationApplicationRequestEvents());
             }
         }
 
@@ -94,7 +94,7 @@
 
         protected function attachApplicationRequestCommonEvents()
         {
-            $this->attachEventsByDefinitions($this->resolveApplicationRequestCommonEvents());
+            $this->resolveEventsAttachment($this->resolveApplicationRequestCommonEvents());
         }
 
         protected function resolveApplicationRequestCommonEvents()
@@ -110,7 +110,7 @@
 
         protected function attachTestRequestEvents()
         {
-            $this->attachEventsByDefinitions($this->resolveTestRequestEvents());
+            $this->resolveEventsAttachment($this->resolveTestRequestEvents());
         }
 
         protected function resolveTestRequestEvents()

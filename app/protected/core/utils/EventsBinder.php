@@ -34,6 +34,7 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
+    Yii::import('application.core.utils.StringUtil');
     /**
      * Class responsible for attaching appropriate events
      */
@@ -59,15 +60,17 @@
             $this->resolveDefaultHandler();
         }
 
-        protected function attachEventsByDefinitions(array $definitions)
+        protected function resolveEventsAttachment(array $definitions)
         {
-            array_walk($definitions, array($this, 'attachEvent'));
+            array_walk($definitions, array($this, 'resolveEventAttachment'));
         }
 
-        protected function attachEvent(array $definition)
+        protected function resolveEventAttachment(array $definition)
         {
+            // we don't need the following 3 methods, just put here to avoid IDE warnings.
             $method     = null;
-            $handler    = $this->defaultHandler;
+            $detach     = false;
+            $handler    = null;
             extract($definition);
             if (!isset($method))
             {
@@ -81,17 +84,23 @@
             {
                 throw new NotSupportedException('Event Name must be specified.');
             }
-            $this->owner->attachEventHandler(static::EVENT_NAME, array($handler, $method));
+            if ($detach)
+            {
+                $this->owner->detachEventHandler(static::EVENT_NAME, array($handler, $method));
+            }
+            else
+            {
+                $this->owner->attachEventHandler(static::EVENT_NAME, array($handler, $method));
+            }
         }
 
-        protected function resolveEventDefinition($method, $handler = null)
+        protected function resolveEventDefinition($method, $handler = null, $detach = false)
         {
-            $definition = array('method' => $method);
-            if ($handler)
+            if (!isset($handler))
             {
-                $definition['handler'] = $handler;
+                $handler    = $this->defaultHandler;
             }
-            return $definition;
+            return compact('method', 'handler', 'detach');
         }
 
         protected function resolveDefaultHandler()

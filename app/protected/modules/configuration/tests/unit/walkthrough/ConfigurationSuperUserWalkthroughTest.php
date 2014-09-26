@@ -48,12 +48,44 @@
             SecurityTestHelper::createSuperAdmin();
         }
 
+        public function setup()
+        {
+            $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+        }
+
         public function testSuperUserAllDefaultControllerActions()
         {
-            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $this->runControllerWithNoExceptionsAndGetContent('configuration/default');
             $this->runControllerWithNoExceptionsAndGetContent('configuration/default/index');
-            //$this->runControllerWithNoExceptionsAndGetContent('configuration/default/runDiagnostic'); //can only run through browser
+        }
+
+        public function testRunDiagnostic()
+        {
+            ZurmoRedBean::exec("SHOW TABLES");
+            $countBefore  = ZurmoRedBean::getCell("SELECT FOUND_ROWS();");
+            $content = $this->runControllerWithNoExceptionsAndGetContent('configuration/default/runDiagnostic');
+            $this->assertContains("Failed Required Services", $content);
+            $this->assertContains("<span class=\"fail\">FAIL</span>", $content);
+            $this->assertContains("Zurmo runs only on Apache 2.2.1 and higher or Microsoft-IIS 5.0.0 or higher web servers.", $content);
+            $this->assertContains("\$_SERVER does not have HTTP_HOST, SERVER_NAME, SERVER_PORT, HTTP_ACCEPT, HTTP_USER_AGENT", $content);
+            $criticalFailureCount   = substr_count($content, "<span class=\"fail\">FAIL</span>");
+            $this->assertThat(true, $this->logicalOr($this->equalTo(2, $criticalFailureCount), $this->equalTo(3, $criticalFailureCount)));
+            if ($criticalFailureCount === 3)
+            {
+                $this->assertTrue(
+                    // this can happen if minScript dir does not exist
+                    strpos($content, "The application.log runtime file is writable.<br />\n" .
+                                            "The /minScript/cache runtime directory is not writable.<br />\n" .
+                                            "The debug.php file is present.") !== false ||
+                    // this happens on CI servers
+                    strpos($content, "Host Info/Script Url is incorrectly configured.") !== false
+                );
+            }
+            $this->assertFileExists(realpath(INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'perInstance.php'));
+            $this->assertFileExists(realpath(INSTANCE_ROOT . DIRECTORY_SEPARATOR . 'protected' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'debug.php'));
+            ZurmoRedBean::exec("SHOW TABLES");
+            $countAfter  = ZurmoRedBean::getCell("SELECT FOUND_ROWS();");
+            $this->assertEquals($countBefore, $countAfter);
         }
     }
 ?>

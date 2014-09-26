@@ -34,12 +34,34 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    define('MAJOR_VERSION', 2);                          // Update for marketing purposes.
-    define('MINOR_VERSION', 8);                          // Update when functionality changes.
-    define('PATCH_VERSION', 2);                          // Update when fixes are made that does not change functionality.
-    define('REPO_ID',       '$Revision$'); // Updated by Mercurial. Numbers like 3650 have no meaning across
-                                                          // clones. This tells us the actual changeset that is universally
-                                                          // meaningful.
+    class LanguageStaticDropDownListViewColumnAdapter extends ListViewColumnAdapter
+    {
+        public function renderGridViewData()
+        {
+            return array(
+                'name'  => $this->attribute,
+                'value' => array($this, 'renderDataCellContent'),
+                'type'  => 'text',
+            );
+        }
 
-    define('VERSION', join('.', array(MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION)) . ' (' . substr(REPO_ID, strlen('$Revision: '), -2) . ')');
+        public function renderDataCellContent($data, $row)
+        {
+            return $this->renderValue($data->{$this->attribute});
+        }
+
+        public function renderValue($value)
+        {
+            if ($value == null)
+            {
+                return Zurmo::t('ZurmoModule', 'Default language');
+            }
+            else
+            {
+                $activeLanguages = Yii::app()->languageHelper->getActiveLanguagesData();
+                $languageData = $activeLanguages[$value];
+                return $languageData['label'];
+            }
+        }
+    }
 ?>
