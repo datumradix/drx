@@ -40,11 +40,11 @@
      */
     class MessageUtil
     {
-        const GOOD_YII_T = '/[Yii|Zurmo]::t\([\'"](.*?)[\'"], *[\'"]((.*?)|(.*\s.\s*[\'"].*))[\'"][,)]/'; // Not Coding Standard
+        const GOOD_YII_T = '/\bYii::|Zurmo::t\s*\(\s*[\'"](.*?(?<!\\\\))[\'"]\s*,\s*[\'"](.*?(?<!\\\\))[\'"]\s*[,\)]/s'; // Not Coding Standard
 
-        const GOOD_YII_T_WITH_LINEBREAK = '/[Yii|Zurmo]::t\([\'"](.*?)[\'"], *[\'"](.*?)[\'"]\s[.]/'; // Not Coding Standard
+        const GOOD_YII_T_WITH_LINEBREAK = '/\bYii|Zurmo::t\([\'"](.*?)[\'"], *[\'"](.*?)[\'"]\s[.]/'; // Not Coding Standard
 
-        const ALL_YII_TS = '/[Yii|Zurmo]::t\\([\'"][a-zA-Z]+[\'"], [\'"].*/'; // Not Coding Standard
+        const ALL_YII_TS = '/\bYii|Zurmo::t\\([\'"][a-zA-Z]+[\'"], [\'"].*/'; // Not Coding Standard
 
         /**
          * Returns the messages made by aggregating in order
@@ -271,7 +271,7 @@
             return $problems;
         }
 
-        public static function findFileNameToCategoryToMessage($path, $forcedCategory = '')
+        public static function findFileNameToCategoryToMessage($path, $forcedCategory = '', $forTesting = false)
         {
             assert('is_string($path)');
             assert('is_dir   ($path)');
@@ -396,7 +396,7 @@
                             }
                         }
                         //Avoid picking up any models or anything in the test folders
-                        if ( strpos($path, '/tests') === false)
+                        if ( $forTesting || strpos($path, '/tests') === false)
                         {
                             $content = file_get_contents($fullEntryName);
                             $content = str_replace('\\\'', '\'', $content);
@@ -404,25 +404,33 @@
                             {
                                 foreach ($matches[1] as $index => $category)
                                 {
-                                    if ($forcedCategory
-                                        AND is_string($forcedCategory)
-                                        AND strlen($forcedCategory))
+                                    if (preg_match_all('/^\w*$/', $category) != 1)
                                     {
-                                        $category = $forcedCategory;
+                                        echo 'This is not a valid category: ' . $category . "\n";
                                     }
-                                    if (!isset($fileNamesToCategoriesToMessages[$fullEntryName][$category]))
+                                    else
                                     {
-                                        $fileNamesToCategoriesToMessages[$fullEntryName][$category] = array();
+                                        if ($forcedCategory
+                                            AND is_string($forcedCategory)
+                                            AND strlen($forcedCategory))
+                                        {
+                                            $category = $forcedCategory;
+                                        }
+                                        if (!isset($fileNamesToCategoriesToMessages[$fullEntryName][$category]))
+                                        {
+                                            $fileNamesToCategoriesToMessages[$fullEntryName][$category] = array();
+                                        }
+                                        //Remove extra lines caused by ' . ' which is used for line breaks in php. Minimum 3 spaces
+                                        //will avoid catching 2 spaces between words which can be legitimate.
+                                        $massagedString = preg_replace('/[\p{Z}\s]{3,}/u', ' ', $matches[2][$index]); // Not Coding Standard
+                                        $massagedString = str_replace("' . '", '', $massagedString);
+                                        $fileNamesToCategoriesToMessages[$fullEntryName][$category][] = $massagedString;
+                                        if ($matches[2][$index] != $massagedString && strpos($matches[2][$index], "' .") === false && strpos($matches[2][$index], ".") > 0)
+                                        {
+                                            echo 'The following message should be using proper line breaks: ' . $matches[2][$index] . "\n";
+                                        }
                                     }
-                                    //Remove extra lines caused by ' . ' which is used for line breaks in php. Minimum 3 spaces
-                                    //will avoid catching 2 spaces between words which can be legitimate.
-                                    $massagedString = preg_replace('/[\p{Z}\s]{3,}/u', ' ', $matches[2][$index]); // Not Coding Standard
-                                    $massagedString = str_replace("' . '", '', $massagedString);
-                                    $fileNamesToCategoriesToMessages[$fullEntryName][$category][] = $massagedString;
-                                    if ($matches[2][$index] != $massagedString && strpos($matches[2][$index], "' .") === false)
-                                    {
-                                        echo 'The following message should be using proper line breaks: ' . $matches[2][$index] . "\n";
-                                    }
+
                                 }
                             }
                         }

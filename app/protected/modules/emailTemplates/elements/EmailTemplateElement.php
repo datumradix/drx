@@ -316,8 +316,7 @@
 
         protected function getEditableHtmlOptions()
         {
-            $moduleName         = $this->getModuleId() . 'Module';
-            $prompt             = array('prompt' => Zurmo::t($moduleName, 'Select a template'));
+            $prompt             = array('prompt' => Zurmo::t('EmailTemplatesModule', 'Select a template'));
             $parentHtmlOptions  = parent::getEditableHtmlOptions();
             $htmlOptions        = CMap::mergeArray($parentHtmlOptions, $prompt);
             return $htmlOptions;
