@@ -42,7 +42,8 @@
         protected function getHomeLinkLabel()
         {
             $pluralLabel = ProductCategory::getModelLabelByTypeAndLanguage('Plural');
-            return Zurmo::t('ProductTemplatesModule', $pluralLabel . ' Home');
+            $pluralLabel = Zurmo::t('ProductTemplatesModule', $pluralLabel, LabelUtil::getTranslationParamsForAllModules());
+            return Zurmo::t('ProductTemplatesModule', '{pluralLabel} Home', array('{pluralLabel}' => $pluralLabel));
         }
     }
 ?>
