@@ -219,7 +219,7 @@
                 case self::AUDIT_EVENT_USER_LOGGED_OUT:
                     if ($format == 'short')
                     {
-                        return Zurmo::t('UsersModule', $auditEvent->eventName);
+                        return $auditEvent->eventName;
                     }
                     else
                     {
@@ -229,7 +229,7 @@
                 case self::AUDIT_EVENT_USER_PASSWORD_CHANGED:
                     if ($format == 'short')
                     {
-                        return Zurmo::t('UsersModule', $auditEvent->eventName);
+                        return $auditEvent->eventName;
                     }
                     $s       .= strval($auditEvent);
                     $username = unserialize($auditEvent->serializedData);
