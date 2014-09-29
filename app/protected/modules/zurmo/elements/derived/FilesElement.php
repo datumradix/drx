@@ -40,6 +40,8 @@
      */
     class FilesElement extends ModelsElement implements DerivedElementInterface, ElementActionTypeInterface
     {
+        const ALLOW_DOWNLOAD_ON_EDITABLE_KEY    = 'allowDownloadOnEditable';
+
         protected function renderControlNonEditable()
         {
             assert('$this->model instanceof Item || $this->model->getModel() instanceof Item');
@@ -70,27 +72,36 @@
             $existingFilesInformation = array();
             foreach ($this->model->files as $existingFile)
             {
-                $existingFilesInformation[] = array('name' => $existingFile->name,
+                $existingFileInformation    = array('name' => $existingFile->name,
                                                     'size' => FileModelDisplayUtil::convertSizeToHumanReadableAndGet(
                                                                                     (int)$existingFile->size),
                                                     'id'   => $existingFile->id);
+                if ($this->getAllowDownloadOnEditable())
+                {
+                    $existingFileInformation['filelink'] = FileModelDisplayUtil:: resolveDownloadUrlByRelationModelIdAndRelationModelClassNameAndFileIdAndFileName(
+                                                                                                $this->model->id,
+                                                                                                get_class($this->model),
+                                                                                                $existingFile->id);
+                }
+                $existingFilesInformation[] = $existingFileInformation;
             }
             $inputNameAndId = $this->getEditableInputId('files');
             $cClipWidget = new CClipWidget();
             $cClipWidget->beginClip("filesElement");
             $cClipWidget->widget('application.core.widgets.FileUpload', array(
-                'uploadUrl'            => Yii::app()->createUrl("zurmo/fileModel/upload",
-                                                        array('filesVariableName' => $inputNameAndId)),
-                'deleteUrl'            => Yii::app()->createUrl("zurmo/fileModel/delete"),
-                'inputName'            => $inputNameAndId,
-                'inputId'              => $inputNameAndId,
-                'hiddenInputName'      => 'filesIds',
-                'formName'             => $this->form->id,
-                'allowMultipleUpload'  => true,
-                'existingFiles'        => $existingFilesInformation,
-                'maxSize'              => (int)InstallUtil::getMaxAllowedFileSize(),
-                'showMaxSize'          => $this->getShowMaxSize(),
-                'id'                   => $this->getId(),
+                'uploadUrl'                 => Yii::app()->createUrl("zurmo/fileModel/upload",
+                                                                        array('filesVariableName' => $inputNameAndId)),
+                'deleteUrl'                 => Yii::app()->createUrl("zurmo/fileModel/delete"),
+                'inputName'                 => $inputNameAndId,
+                'inputId'                   => $inputNameAndId,
+                'hiddenInputName'           => 'filesIds',
+                'formName'                  => $this->form->id,
+                'allowMultipleUpload'       => true,
+                'existingFiles'             => $existingFilesInformation,
+                'maxSize'                   => (int)InstallUtil::getMaxAllowedFileSize(),
+                'showMaxSize'               => $this->getShowMaxSize(),
+                'id'                        => $this->getId(),
+                'renderFileDownloadLinks'   => $this->getAllowDownloadOnEditable(),
             ));
 
             $cClipWidget->endClip();
@@ -168,6 +179,18 @@
                          'return false;">' . Zurmo::t('Core', 'Add Files') . '</a>' .
                          '</td>';
             // End Not Coding Standard
+        }
+
+        public function getAllowDownloadOnEditable()
+        {
+            return ArrayUtil::getArrayValue($this->params,
+                                            static::ALLOW_DOWNLOAD_ON_EDITABLE_KEY,
+                                            $this->getAllowDownloadOnEditableDefault());
+        }
+
+        public function getAllowDownloadOnEditableDefault()
+        {
+            return true;
         }
     }
 ?>
