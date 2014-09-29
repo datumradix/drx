@@ -71,6 +71,12 @@
         public $allowMultipleUpload = false;
 
         /**
+         * Render download links
+         * @var boolean
+         */
+        public $renderFileDownloadLinks = false;
+
+        /**
          * Data to pass to the file upload script.
          * @see https://github.com/blueimp/jQuery-File-Upload/wiki/Options
          * @var array
@@ -282,10 +288,11 @@ EOD;
 
         protected function makeDownloadRowScriptContent()
         {
-            $deleteLabel = 'Delete';
-            $removeLabel = Zurmo::t('Core', 'Remove');
-            $insertLabel = Zurmo::t('ZurmoModule', 'Insert Image');
-            $linkForInsertClass = Redactor::LINK_FOR_INSERT_CLASS;
+            $deleteLabel                = 'Delete';
+            $removeLabel                = Zurmo::t('Core', 'Remove');
+            $insertLabel                = Zurmo::t('ZurmoModule', 'Insert Image');
+            $linkForInsertClass         = Redactor::LINK_FOR_INSERT_CLASS;
+            $renderFileDownloadLinks    = intval($this->renderFileDownloadLinks);
 $scriptContent = <<<EOD
 <script id="{$this->getDownloadTemplateId()}" type="text/x-jquery-tmpl">
     <tr class="{$this->getDownloadTemplateId()}{{if error}} ui-state-error{{/if}}">
@@ -299,7 +306,18 @@ $scriptContent = <<<EOD
                     <span class="file-name"><strong>\${name}</strong></span>
                     <span class="insert-link"><a href="\${insert_link}" class="mini-button {$linkForInsertClass}" data-url="\${filelink}">{$insertLabel}</a></span>
                 {{else}}
-                    \${name} <span class="file-size">(\${size})</span>
+                    <span class="icon-attachment"></span>
+                    <span class="ui-icon ui-icon-document" style="display:inline-block;"></span>
+                    {{if $renderFileDownloadLinks}}
+                        {{if filelink}}
+                            <a href="\${filelink}">\${name}</a></span>
+                        {{else}}
+                            \${name}
+                        {{/if}}
+                    {{else}}
+                        \${name}
+                    {{/if}}
+                    <span class="file-size">(\${size})</span>
                     <span class="upload-actions delete">
                     <button class="icon-delete" title="{$removeLabel}" data-url="{$this->deleteUrl}?id=\${id}"><span><!--{$deleteLabel}--><span></button>
                 </span>
