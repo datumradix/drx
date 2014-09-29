@@ -170,7 +170,7 @@
             $calledClassName = get_called_class();
             $name = $calledClassName::getDirectoryName();
             $name = preg_replace('/([A-Z])/', ' \1', $name);
-            return Zurmo::t('Core', ucfirst($name), array(), null, $language);;
+            return Zurmo::t('Core', ucfirst($name), array(), null, $language);
         }
 
         public static function getModuleLabelByTypeAndLanguage($type, $language = null)
