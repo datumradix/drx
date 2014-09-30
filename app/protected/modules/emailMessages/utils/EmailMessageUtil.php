@@ -276,44 +276,6 @@
         }
 
         /**
-         * Process and send queued messages using email helper.
-         * @param Object $emailHelper EmailHelper or SendGridEmailHelper
-         * @param int $count
-         */
-        public static function processAndSendQueuedMessages($emailHelper, $count = null)
-        {
-            assert('is_int($count) || $count == null');
-            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                $emailHelper->sendImmediately($emailMessage);
-            }
-            if ($count == null)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
-            }
-            elseif (count($queuedEmailMessages) < $count)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - count($queuedEmailMessages));
-            }
-            else
-            {
-                $queuedEmailMessages = array();
-            }
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                if ($emailMessage->sendAttempts < 3)
-                {
-                    $emailHelper->sendImmediately($emailMessage);
-                }
-                else
-                {
-                    $emailHelper->processMessageAsFailure($emailMessage);
-                }
-            }
-        }
-
-        /**
          * Resolve and check campaign email message.
          * @param EmailMessage $emailMessage
          */
@@ -333,6 +295,22 @@
                 }
             }
             return null;
+        }
+
+        /**
+         * Resolve and get email helper instance.
+         */
+        public static function resolveAndGetEmailHelperInstance()
+        {
+            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
+            if($sendGridPluginEnabled)
+            {
+                return Yii::app()->sendGridEmailHelper;
+            }
+            else
+            {
+                return Yii::app()->emailHelper;
+            }
         }
     }
 ?>

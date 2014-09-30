@@ -52,8 +52,8 @@
             $form->subListPageSize                        = Yii::app()->pagination->getGlobalValueByType('subListPageSize');
             $form->modalListPageSize                      = Yii::app()->pagination->getGlobalValueByType('modalListPageSize');
             $form->dashboardListPageSize                  = Yii::app()->pagination->getGlobalValueByType('dashboardListPageSize');
-            $form->defaultFromEmailAddress                = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
-            $form->defaultTestToEmailAddress              = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
+            $form->defaultFromEmailAddress                = EmailHelper::resolveAndGetDefaultFromAddress();
+            $form->defaultTestToEmailAddress              = EmailHelper::resolveAndGetDefaultTestToAddress();
             $form->gamificationModalNotificationsEnabled  = Yii::app()->gameHelper->modalNotificationsEnabled;
             $form->gamificationModalCollectionsEnabled    = Yii::app()->gameHelper->modalCollectionsEnabled;
             $form->gamificationModalCoinsEnabled          = Yii::app()->gameHelper->modalCoinsEnabled;
@@ -69,13 +69,13 @@
         public static function setConfigurationFromForm(ZurmoConfigurationForm $form)
         {
             ZurmoConfigurationUtil::setByModuleName('ZurmoModule', 'applicationName', $form->applicationName);
-            Yii::app()->timeZoneHelper  ->setGlobalValue(                         (string)$form->timeZone);
+            Yii::app()->timeZoneHelper->setGlobalValue((string)$form->timeZone);
             Yii::app()->pagination->setGlobalValueByType('listPageSize',          (int)   $form->listPageSize);
             Yii::app()->pagination->setGlobalValueByType('subListPageSize',       (int)   $form->subListPageSize);
             Yii::app()->pagination->setGlobalValueByType('modalListPageSize',     (int)   $form->modalListPageSize);
             Yii::app()->pagination->setGlobalValueByType('dashboardListPageSize', (int)   $form->dashboardListPageSize);
-            Yii::app()->emailHelper->setDefaultFromAddress($form->defaultFromEmailAddress);
-            Yii::app()->emailHelper->setDefaultTestToAddress($form->defaultTestToEmailAddress);
+            EmailHelper::setDefaultFromAddress($form->defaultFromEmailAddress);
+            EmailHelper::setDefaultTestToAddress($form->defaultTestToEmailAddress);
             ZurmoConfigurationUtil::setByModuleName('ZurmoModule',
                                                     'gamificationModalNotificationsEnabled',
                                                     (boolean) $form->gamificationModalNotificationsEnabled);
