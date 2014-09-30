@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -29,6 +39,8 @@
      */
     class RequiredAttributesViewValidityWalkthroughTest extends ZurmoWalkthroughBaseTest
     {
+        public static $activateDefaultLanguages = true;
+
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
@@ -60,8 +72,77 @@
             $this->setGetArray (array('id' => $account->id));
             $content = $this->runControllerWithExitExceptionAndGetContent('accounts/default/edit');
             $this->assertFalse(strpos($content, 'There are required fields missing from the following layout') === false);
+
+            //Remove the new field.
+            $modelAttributesAdapterClassName = TextAttributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
+            $adapter = new $modelAttributesAdapterClassName(new Account());
+            $adapter->removeAttributeMetadata('text');
+            RequiredAttributesValidViewUtil::resolveToRemoveAttributeAsMissingRequiredAttribute('Account', 'text');
+            $account = new Account();
+            $this->assertFalse($account->isAttribute('text'));
+            unset($account);
         }
 
+        /**
+         * @depends testRequiredAttributesAreMissingFromLayout
+         */
+        public function testMakingAlreadyPlacedNonrequiredStandardAttributeRequiredAndThenMakingItUnrequired()
+        {
+            $super   = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/create');
+            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+
+            //Now make industry required.
+            $attributeForm = AttributesFormFactory::createAttributeFormByAttributeName(new Account(), 'industry');
+            $this->assertFalse($attributeForm->isRequired);
+            $attributeForm->isRequired       = true;
+            $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
+            $adapter = new $modelAttributesAdapterClassName(new Account());
+            try
+            {
+                $adapter->setAttributeMetadataFromForm($attributeForm);
+            }
+            catch (FailedDatabaseSchemaChangeException $e)
+            {
+                echo $e->getMessage();
+                $this->fail();
+            }
+            RequiredAttributesValidViewUtil::resolveToSetAsMissingRequiredAttributesByModelClassName('Account', 'industry');
+            RedBeanModelsCache::forgetAll();
+
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/create');
+            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+
+            //Now make industry unrequired.
+            $attributeForm = AttributesFormFactory::createAttributeFormByAttributeName(new Account(), 'industry');
+            $this->assertTrue($attributeForm->isRequired);
+            $attributeForm->isRequired       = false;
+            $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
+            $adapter = new $modelAttributesAdapterClassName(new Account());
+            try
+            {
+                $adapter->setAttributeMetadataFromForm($attributeForm);
+            }
+            catch (FailedDatabaseSchemaChangeException $e)
+            {
+                echo $e->getMessage();
+                $this->fail();
+            }
+            RequiredAttributesValidViewUtil::resolveToRemoveAttributeAsMissingRequiredAttribute('Account', 'industry');
+            RedBeanModelsCache::forgetAll();
+
+            //Confirm industry is truly unrequired.
+            $attributeForm = AttributesFormFactory::createAttributeFormByAttributeName(new Account(), 'industry');
+            $this->assertFalse($attributeForm->isRequired);
+
+            //Now the layout should not show an error message.
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/create');
+            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+        }
+
+        /**
+         * @depends testMakingAlreadyPlacedNonrequiredStandardAttributeRequiredAndThenMakingItUnrequired
+         */
         public function testRequiredContactAttributesProperlyAreRequiredToBePlacedInLeadLayouts()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
@@ -103,9 +184,8 @@
             $this->assertFalse(strpos($content, 'There are required fields missing from the following layout') === false);
         }
 
-        //todo: test switching existing attribute to required.
-        //todo: test switching existing attribute to not required from required.
         //todo: test note inlineEditSave
+        //todo: testing calculated and dependent dropdown attributes, that they do not affect this at all.
         //todo: test out multiple custom fields not placed, make sure array of config for RequiredAttributesValidViewUtil is working ok.
     }
 ?>

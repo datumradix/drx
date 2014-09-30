@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     class ImportWizardUtilTest extends ImportBaseTest
@@ -42,8 +52,7 @@
 
             //Test an import object with existing data and a data element that does not go into the form.
             $import                 = new Import();
-            $dataToSerialize        = array('importRulesType' => 'test', 'anElementToIgnore' => 'something',
-                                            'dataAnalyzerMessagesData' => 'ttt');
+            $dataToSerialize        = array('importRulesType' => 'test', 'anElementToIgnore' => 'something');
             $import->serializedData = serialize($dataToSerialize);
             $form                   = ImportWizardUtil::makeFormByImport($import);
             $this->assertTrue  ($form instanceof ImportWizardForm);
@@ -52,7 +61,6 @@
             $this->assertEquals(null,    $form->firstRowIsHeaderRow);
             $this->assertTrue($form->explicitReadWriteModelPermissions instanceof ExplicitReadWriteModelPermissions);
             $this->assertEquals(null,    $form->mappingData);
-            $this->assertEquals('ttt',   $form->dataAnalyzerMessagesData);
             $this->assertFalse ($form->isAttribute('anElementToIgnore'));
         }
 
@@ -67,8 +75,7 @@
                                                                 'fileUploadData'       => array('a' => 'b'),
                                                                 'firstRowIsHeaderRow'  => false,
                                                                 'explicitReadWriteModelPermissions'     => 'z',
-                                                                'mappingData'          => array('x' => 'y'),
-                                                                'dataAnalyzerMessagesData' => array('h'));
+                                                                'mappingData'          => array('x' => 'y'));
             $import->serializedData                     = serialize($dataToSerialize);
             $importWizardForm                           = new ImportWizardForm();
             $importWizardForm->importRulesType          = 'xx';
@@ -76,7 +83,6 @@
             $importWizardForm->firstRowIsHeaderRow      = true;
             $importWizardForm->explicitReadWriteModelPermissions = $explicitReadWriteModelPermissions;
             $importWizardForm->mappingData              = array('xx' => 'yy');
-            $importWizardForm->dataAnalyzerMessagesData = array('hhh');
             ImportWizardUtil::setImportSerializedDataFromForm($importWizardForm, $import);
             $compareDataToSerialize                 = array( 'importRulesType' => 'xx',
                                                              'fileUploadData'       => array('aa' => 'bb'),
@@ -84,8 +90,7 @@
                                                              'rowColumnEnclosure'  => '"',
                                                              'firstRowIsHeaderRow'  => true,
                                                              'explicitReadWriteModelPermissions'     => null,
-                                                             'mappingData'          => array('xx' => 'yy'),
-                                                             'dataAnalyzerMessagesData' => array('hhh'));
+                                                             'mappingData'          => array('xx' => 'yy'));
             $this->assertEquals(unserialize($import->serializedData), $compareDataToSerialize);
         }
 
@@ -127,7 +132,7 @@
             $this->assertEquals(1, $explicitReadWriteModelPermissions->getReadOnlyPermitablesCount());
             $fileUploadData                                      = array('a', 'b');
             $testTableName                                       = 'testimporttable';
-            $this->assertTrue(ImportTestHelper::createTempTableByFileNameAndTableName('importTest.csv', $testTableName));
+            $this->assertTrue(ImportTestHelper::createTempTableByFileNameAndTableName('importTest.csv', $testTableName, true));
             $importWizardForm                                    = new ImportWizardForm();
             $importWizardForm->importRulesType                   = 'testAbc';
             $importWizardForm->explicitReadWriteModelPermissions = $explicitReadWriteModelPermissions;
@@ -168,7 +173,8 @@
             $this->assertTrue($import->save());
             $this->assertTrue(ImportTestHelper::
                               createTempTableByFileNameAndTableName('headerRowOnlyImportTest.csv',
-                                                                    $import->getTempTableName()));
+                                                                    $import->getTempTableName(),
+                                                                    true));
             $importWizardForm = new ImportWizardForm();
             $this->assertTrue(ImportWizardUtil::
                               importFileHasAtLeastOneImportRow($importWizardForm, $import));
@@ -176,7 +182,7 @@
             $importWizardForm->firstRowIsHeaderRow = true;
             $this->assertFalse(ImportWizardUtil::
                               importFileHasAtLeastOneImportRow($importWizardForm, $import));
-            ImportDatabaseUtil::dropTableByTableName($import->getTempTableName());
+            ZurmoRedBean::$writer->dropTableByTableName($import->getTempTableName());
         }
 
         /**

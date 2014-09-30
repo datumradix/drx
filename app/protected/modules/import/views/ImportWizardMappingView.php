@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -43,6 +53,17 @@
 
         protected $requiredAttributesLabelsData;
 
+        /**
+         * @param string $controllerId
+         * @param string $moduleId
+         * @param ImportWizardForm $model
+         * @param null $sampleColumnPagerContent
+         * @param array $mappingDataMetadata
+         * @param array $mappingDataMappingRuleFormsAndElementTypes
+         * @param array $mappableAttributeIndicesAndDerivedTypes
+         * @param array $requiredAttributesLabelsData
+         * @param $title
+         */
         public function __construct($controllerId,
                                     $moduleId,
                                     ImportWizardForm $model,
@@ -50,7 +71,8 @@
                                     $mappingDataMetadata,
                                     $mappingDataMappingRuleFormsAndElementTypes,
                                     $mappableAttributeIndicesAndDerivedTypes,
-                                    $requiredAttributesLabelsData)
+                                    $requiredAttributesLabelsData,
+                                    $title)
         {
             assert('is_string($controllerId)');
             assert('is_string($moduleId)');
@@ -67,6 +89,7 @@
             $this->mappingDataMappingRuleFormsAndElementTypes = $mappingDataMappingRuleFormsAndElementTypes;
             $this->mappableAttributeIndicesAndDerivedTypes    = $mappableAttributeIndicesAndDerivedTypes;
             $this->requiredAttributesLabelsData               = $requiredAttributesLabelsData;
+            $this->title                                      = $title;
         }
 
         /**
@@ -92,20 +115,20 @@
             assert('count($headerColumns) > 0');
 
             $content  = $form->errorSummary($this->model);
-            $content .= '<h3>' . Yii::t('Default', 'Please map the fields you would like to import.') . '</h3>';
+            $content .= '<h3>' . Zurmo::t('ImportModule', 'Please map the fields you would like to import.') . '</h3>';
             $content .= $this->renderRequiredAttributesLabelsDataContent();
             $content .= '<table>';
             $content .= '<colgroup>';
-            $content .= '<col style="width:20%" />';
-            $content .= '<col style="width:20%" />';
-            if (count($headerColumns) == 4)
+            if (count($headerColumns) == 3)
             {
+                $content .= '<col style="width:60%" />';
                 $content .= '<col style="width:20%" />';
-                $content .= '<col style="width:40%" />';
+                $content .= '<col style="width:20%" />';
             }
             else
             {
-                $content .= '<col style="width:60%" />';
+                $content .= '<col style="width:70%" />';
+                $content .= '<col style="width:30%" />';
             }
             $content .= '</colgroup>';
             $content .= '<tbody>';
@@ -124,39 +147,47 @@
             $content .= '</tr>';
             $content .= '</tbody>';
             $content .= '</table>';
-            $content .= $this->renderActionLinksContent();
             return $content;
         }
 
         protected function renderRequiredAttributesLabelsDataContent()
         {
-            $content = null;
+            $content = '<div class="required-fields">';
             if (count($this->requiredAttributesLabelsData) > 0)
             {
-                $content .= '<b>' . Yii::t('Default', 'Required Fields') . '</b>' . '<br/>';
+                $content .= '<strong>' . Zurmo::t('ZurmoModule', 'Required Fields') . ':</strong>' . '<br/>';
                 foreach ($this->requiredAttributesLabelsData as $label)
                 {
                     $content .= $label. '<br/>';
                 }
                 $content .= '<br/>';
             }
+            $content .= '</div>';
             return $content;
         }
 
         protected function getFormLayoutHeaderColumnsContent()
         {
             $headerColumns = array();
-            $headerColumns[] = Yii::t('Default', 'Zurmo Field');
+            $headerColumns[] = Zurmo::t('ImportModule', 'Zurmo Field', LabelUtil::getTranslationParamsForAllModules());
             if ($this->model->firstRowIsHeaderRow)
             {
-                $headerColumns[] = Yii::t('Default', 'Header');
+                $headerColumns[] = Zurmo::t('Core', 'Header');
             }
-            $headerColumns[] = '<div id="' . MappingFormLayoutUtil::getSampleColumnHeaderId() . '">' .
-                               $this->sampleColumnPagerContent . '</div>';
-            $headerColumns[] = Yii::t('Default', 'Rules');
+            $headerColumns[] = ZurmoHtml::tag('div',
+                               array('id' =>  MappingFormLayoutUtil::getSampleColumnHeaderId(),
+                                     'class' => 'clearfix'), $this->sampleColumnPagerContent);
             return $headerColumns;
         }
 
+        /**
+         * @param $mappingFormLayoutUtil
+         * @param $mappingDataMetadata
+         * @param $firstRowIsHeaderRow
+         * @param $importRulesType
+         * @param $id
+         * @return array
+         */
         protected function resolveMappingDataMetadataWithRenderedElements($mappingFormLayoutUtil, $mappingDataMetadata,
                                                                           $firstRowIsHeaderRow, $importRulesType, $id)
         {
@@ -170,11 +201,20 @@
                 assert('$mappingDataRow["type"] == "importColumn" || $mappingDataRow["type"] == "extraColumn"');
                 $row          = array();
                 $row['cells'] = array();
-                $row['cells'][] = $mappingFormLayoutUtil->renderAttributeAndColumnTypeContent(
+                $firstCell    = $mappingFormLayoutUtil->renderAttributeAndColumnTypeContent(
                                                                        $columnName,
                                                                        $mappingDataRow['type'],
                                                                        $mappingDataRow['attributeIndexOrDerivedType'],
                                                                        $ajaxOnChangeUrl);
+
+                $firstCell   .= $mappingFormLayoutUtil->renderMappingRulesElements(
+                                      $columnName,
+                                      $mappingDataRow['attributeIndexOrDerivedType'],
+                                      $importRulesType,
+                                      $mappingDataRow['type'],
+                                      $this->resolveMappingRuleFormsAndElementTypesByColumn($columnName));
+                $row['cells'][] = $firstCell;
+
                 if ($firstRowIsHeaderRow)
                 {
                     assert('$mappingDataRow["headerValue"] == null || is_string($mappingDataRow["headerValue"])');
@@ -183,17 +223,15 @@
                 }
                 $row['cells'][] = $mappingFormLayoutUtil->renderImportColumnContent ($columnName,
                                                                                  $mappingDataRow['sampleValue']);
-                $row['cells'][] = $mappingFormLayoutUtil->renderMappingRulesElements(
-                                      $columnName,
-                                      $mappingDataRow['attributeIndexOrDerivedType'],
-                                      $importRulesType,
-                                      $mappingDataRow['type'],
-                                      $this->resolveMappingRuleFormsAndElementTypesByColumn($columnName));
                 $metadata['rows'][] = $row;
             }
             return $metadata;
         }
 
+        /**
+         * @param int $columnCount
+         * @return string
+         */
         protected function renderAddExtraColumnContent($columnCount)
         {
             assert('is_int($columnCount)');
@@ -201,20 +239,31 @@
             $hiddenInputName     = 'columnCounter';
             $ajaxOnChangeUrl     = Yii::app()->createUrl("import/default/mappingAddExtraMappingRow",
                                    array('id' => $this->model->id));
-            $content             = CHtml::hiddenField($hiddenInputName, $columnCount, $idInputHtmlOptions);
+            $content             = ZurmoHtml::hiddenField($hiddenInputName, $columnCount, $idInputHtmlOptions);
             // Begin Not Coding Standard
-            $content            .= CHtml::ajaxButton(Yii::t('Default', 'Add Field'), $ajaxOnChangeUrl,
+            $aContent            = ZurmoHtml::wrapLink(Zurmo::t('ImportModule', 'Add Field'));
+            $content            .= ZurmoHtml::ajaxLink($aContent,
+                                    $ajaxOnChangeUrl,
                                     array('type' => 'GET',
                                           'data' => 'js:\'columnCount=\' + $(\'#columnCounter\').val()',
+                                          'complete'   => 'js:function(){$("#addExtraColumnButton").removeClass("loading");
+                                                                         $("#addExtraColumnButton").removeClass("loading-ajax-submit");}',
                                           'success' => 'js:function(data){
                                             $(\'#columnCounter\').val(parseInt($(\'#columnCounter\').val()) + 1)
                                             $(\'#addExtraColumnButton\').parent().parent().prev().after(data);
                                           }'),
-                                    array('id' => 'addExtraColumnButton'));
+                                    array('id'      => 'addExtraColumnButton', 'class' => 'attachLoading z-button',
+                                          'onclick' => 'js:if ($(this).hasClass("loading")) {return false;}
+                                                        $(this).addClass("loading").addClass("loading-ajax-submit");
+                                                        $(this).makeOrRemoveLoadingSpinner(true, "#" + $(this).attr("id"));'));
             // End Not Coding Standard
             return $content;
         }
 
+        /**
+         * @param string $columnName
+         * @return array
+         */
         protected function resolveMappingRuleFormsAndElementTypesByColumn($columnName)
         {
             assert('is_string($columnName)');
@@ -242,6 +291,24 @@
                 $previousStep = 'step3';
             }
             return $this->getPreviousPageLinkContentByControllerAction($previousStep);
+        }
+
+        protected function renderPreviousPageLinkLabel()
+        {
+            $importRulesClassName  = ImportRulesUtil::getImportRulesClassNameByType($this->model->importRulesType);
+            if (!is_subclass_of($importRulesClassName::getModelClassName(), 'SecurableItem'))
+            {
+                return Zurmo::t('ZurmoModule', 'Upload File');
+            }
+            else
+            {
+                return Zurmo::t('ZurmoModule', 'Select Permissions');
+            }
+        }
+
+        protected function renderNextPageLinkLabel()
+        {
+            return Zurmo::t('ImportModule', 'Analyze Data');
         }
     }
 ?>

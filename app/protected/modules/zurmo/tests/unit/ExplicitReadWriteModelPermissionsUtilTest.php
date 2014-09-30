@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,23 +12,34 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ExplicitReadWriteModelPermissionsUtilTest extends BaseTest
+    class ExplicitReadWriteModelPermissionsUtilTest extends ZurmoBaseTest
     {
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
+            AllPermissionsOptimizationUtil::rebuild();
             SecurityTestHelper::createSuperAdmin();
             $everyoneGroup        = Group::getByName(Group::EVERYONE_GROUP_NAME);
             assert($everyoneGroup->save()); // Not Coding Standard
@@ -63,10 +74,10 @@
             $this->assertEquals(1, $explicitReadWriteModelPermissions->getReadOnlyPermitablesCount());
             $this->assertEquals(2, $explicitReadWriteModelPermissions->getReadWritePermitablesCount());
             $readOnlyPermitables  = $explicitReadWriteModelPermissions->getReadOnlyPermitables();
-            $this->assertEquals($group1, $readOnlyPermitables[$group1->id]);
+            $this->assertEquals($group1, $readOnlyPermitables[$group1->getClassId('Permitable')]);
             $readWritePermitables = $explicitReadWriteModelPermissions->getReadWritePermitables();
-            $this->assertEquals($group2, $readWritePermitables[$group2->id]);
-            $this->assertEquals($group3, $readWritePermitables[$group3->id]);
+            $this->assertEquals($group2, $readWritePermitables[$group2->getClassId('Permitable')]);
+            $this->assertEquals($group3, $readWritePermitables[$group3->getClassId('Permitable')]);
         }
 
         public function testMakeMixedPermitablesDataByExplicitReadWriteModelPermissions()
@@ -111,7 +122,7 @@
             $this->assertEquals(1, $explicitReadWriteModelPermissions->getReadWritePermitablesCount());
             $readWritePermitables = $explicitReadWriteModelPermissions->getReadWritePermitables();
             $everyoneGroup        = Group::getByName(Group::EVERYONE_GROUP_NAME);
-            $this->assertEquals($everyoneGroup, $readWritePermitables[$everyoneGroup->id]);
+            $this->assertEquals($everyoneGroup, $readWritePermitables[$everyoneGroup->getClassId('Permitable')]);
 
             //Test selecting a group that is not the everyone group.
             $group2 = Group::getByName('group2');
@@ -121,7 +132,7 @@
             $this->assertEquals(0, $explicitReadWriteModelPermissions->getReadOnlyPermitablesCount());
             $this->assertEquals(1, $explicitReadWriteModelPermissions->getReadWritePermitablesCount());
             $readWritePermitables = $explicitReadWriteModelPermissions->getReadWritePermitables();
-            $this->assertEquals($group2, $readWritePermitables[$group2->id]);
+            $this->assertEquals($group2, $readWritePermitables[$group2->getClassId('Permitable')]);
         }
 
         public function testMakeBySecurableItem()
@@ -146,8 +157,8 @@
             $readOnlyPermitables  = $explicitReadWriteModelPermissions->getReadOnlyPermitables();
             $this->assertEquals(1, count($readWritePermitables));
             $this->assertEquals(1, count($readOnlyPermitables));
-            $this->assertEquals($group3, $readOnlyPermitables[$group3->id]);
-            $this->assertEquals($group2, $readWritePermitables[$group2->id]);
+            $this->assertEquals($group3, $readOnlyPermitables[$group3->getClassId('Permitable')]);
+            $this->assertEquals($group2, $readWritePermitables[$group2->getClassId('Permitable')]);
         }
 
         /**
@@ -176,8 +187,23 @@
             $readOnlyPermitables               = $explicitReadWriteModelPermissions->getReadOnlyPermitables();
             $this->assertEquals(2, count($readWritePermitables));
             $this->assertEquals(0, count($readOnlyPermitables));
-            $this->assertEquals($group2, $readWritePermitables[$group2->id]);
-            $this->assertEquals($group4, $readWritePermitables[$group4->id]);
+            $this->assertEquals($group2, $readWritePermitables[$group2->getClassId('Permitable')]);
+            $this->assertEquals($group4, $readWritePermitables[$group4->getClassId('Permitable')]);
+
+            //Test adding group4 again. The _read count should be the same
+            $account = Account::getById($accountId);
+            $sanitizedData = array();
+            $sanitizedData['explicitReadWriteModelPermissions'] =
+                            array('type' => ExplicitReadWriteModelPermissionsUtil::MIXED_TYPE_NONEVERYONE_GROUP,
+                                  'nonEveryoneGroup' => $group4->id);
+            $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::
+                                                 resolveByPostDataAndModelThenMake($sanitizedData, $account);
+            ExplicitReadWriteModelPermissionsUtil::resolveExplicitReadWriteModelPermissions($account,
+                                                   $explicitReadWriteModelPermissions);
+            $this->assertEquals(array(
+                    array('G' . $group4->id, 1),
+                ),
+            AccountReadPermissionsOptimizationBaseTest::getAccountMungeRows($account));
         }
 
         public function testRemoveIfExistsFromPostData()
@@ -210,7 +236,7 @@
             $readOnlyPermitables               = $explicitReadWriteModelPermissions->getReadOnlyPermitables();
             $this->assertEquals(1, count($readWritePermitables));
             $this->assertEquals(0, count($readOnlyPermitables));
-            $this->assertEquals($group3, $readWritePermitables[$group3->id]);
+            $this->assertEquals($group3, $readWritePermitables[$group3->getClassId('Permitable')]);
         }
     }
 ?>

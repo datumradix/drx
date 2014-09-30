@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,121 +12,60 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
      * View used during the installation to show in the user interface what services are correctly or incorrectly
      * installed or missing.  This is the second step during the installation process.
      */
-    class InstallCheckServicesView extends View
+    class InstallCheckServicesView extends CheckServicesView
     {
-        private $controlerId;
-
-        private $moduleId;
-
-        private $checkResultsDisplayData;
-
-        public function __construct($controllerId, $moduleId, $checkResultsDisplayData)
+        protected function renderIntroductionContent()
         {
-            assert('is_string($controllerId) && $controllerId != ""');
-            assert('is_string($moduleId) && $moduleId != ""');
-            assert('is_array($checkResultsDisplayData)');
-            $this->controllerId = $controllerId;
-            $this->moduleId     = $moduleId;
-            $this->checkResultsDisplayData = $checkResultsDisplayData;
-        }
-
-        protected function renderContent()
-        {
-            $failedIndexId   = CheckServicesUtil::CHECK_FAILED;
-            $passedIndexId   = CheckServicesUtil::CHECK_PASSED;
-            $warningIndexId  = CheckServicesUtil::CHECK_WARNING;
-            $requiredIndexId = ServiceHelper::REQUIRED_SERVICE;
-            $optionalIndexId = ServiceHelper::OPTIONAL_SERVICE;
-            $currentPageUrl  = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/checkSystem/');
-            $nextPageUrl     = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/settings/');
-            $content  = '<div class="MetadataView">';
-            $content .= '<table>';
-            $content .= '<tr><td>';
-            $content .= Yii::t('Default', 'Below you will find the results of the system check. If any required ' .
-                                          'services are not setup correctly, you will need to make sure they are ' .
-                                          'installed correctly before you can continue.');
+            $content  = Zurmo::t('InstallModule', 'Below you will find the results of the system check. If any required ' .
+                'services are not setup correctly, you will need to make sure they are ' .
+                'installed correctly before you can continue.');
             $content .= '<br/><br/>';
-            $content .= Yii::t('Default', 'It is highly recommended that all optional services are installed and ' .
-                                          'working before continuing.');
-            $content .= '<br/><br/>';
-            if (count($this->checkResultsDisplayData[$failedIndexId]) > 0)
-            {
-                if (count($this->checkResultsDisplayData[$failedIndexId][$requiredIndexId]) > 0)
-                {
-                    $content .= $this->renderServiceGroupDisplayByServiceDataAndCheckResult(
-                                            Yii::t('Default', 'Failed Required Services'),
-                                            $this->checkResultsDisplayData[$failedIndexId][$requiredIndexId],
-                                            Yii::t('Default', 'FAIL'));
-                    $content .= '<br/><br/>';
-                }
-                if (count($this->checkResultsDisplayData[$failedIndexId][$optionalIndexId]) > 0)
-                {
-                    $content .= $this->renderServiceGroupDisplayByServiceDataAndCheckResult(
-                                            Yii::t('Default', 'Failed Optional Services'),
-                                            $this->checkResultsDisplayData[$failedIndexId][$optionalIndexId],
-                                            Yii::t('Default', 'FAIL'));
-                    $content .= '<br/>';
-                }
-            }
-            if (count($this->checkResultsDisplayData[$warningIndexId]) > 0)
-            {
-                $content .= $this->renderServiceGroupDisplayByServiceDataAndCheckResult(
-                                        Yii::t('Default', 'Service Status Partially Known'),
-                                        $this->checkResultsDisplayData[$warningIndexId],
-                                        Yii::t('Default', 'WARNING'));
-                $content .= '<br/>';
-            }
-
-            if (count($this->checkResultsDisplayData[$passedIndexId]) > 0)
-            {
-                $content .= $this->renderServiceGroupDisplayByServiceDataAndCheckResult(
-                                        Yii::t('Default', 'Correctly Installed Services'),
-                                        $this->checkResultsDisplayData[$passedIndexId],
-                                        Yii::t('Default', 'PASS'));
-            }
-            $content .= '<br/><br/>';
-            $content .= CHtml::link(Yii::t('Default', 'Recheck System'), $currentPageUrl);
-            if (count($this->checkResultsDisplayData[$failedIndexId][$requiredIndexId]) == 0)
-            {
-                $content .= ' ' . Yii::t('Default', 'or') . ' ';
-                $content .= CHtml::link(Yii::t('Default', 'Continue'), $nextPageUrl);
-            }
-            $content .= '</td></tr></table>';
-            $content .= '</div>';
+            $content .= Zurmo::t('InstallModule', 'It is highly recommended that all optional services are installed and ' .
+                'working before continuing.');
             return $content;
         }
 
-        protected function renderServiceGroupDisplayByServiceDataAndCheckResult($groupLabel, $groupData,
-                                                                                $checkResultLabel)
+        protected function renderActionBarContent()
         {
-            assert('is_string($groupLabel) && $groupLabel != ""');
-            assert('is_array($groupData)');
-            assert('is_string($checkResultLabel) && $checkResultLabel != ""');
-            $content  = '<table>' . "\n";
-            $content .= '<colgroup><col/><col style="width:100px;" /></colgroup>' . "\n";
-            $content .= '<tr><td>' . $groupLabel . '</td><td></td></tr>' . "\n";
-            foreach ($groupData as $serviceDisplayData)
+            $failedIndexId   = CheckServicesUtil::CHECK_FAILED;
+            $requiredIndexId = ServiceHelper::REQUIRED_SERVICE;
+            $currentPageUrl  = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/checkSystem/');
+            $nextPageUrl     = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/settings/');
+            $content = '<br/><br/>';
+            $content .= ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('InstallModule', 'Recheck System')),
+                $currentPageUrl, array('class' => 'default-btn'));
+            if (count($this->checkResultsDisplayData[$failedIndexId][$requiredIndexId]) == 0)
             {
-                $content .= '<tr><td>' . Yii::app()->format->formatNtext($serviceDisplayData['message']) . '</td>' . "\n";
-                $content .= '<td>' . $checkResultLabel . '</td></tr>' . "\n";
+                $content .= ' <span class="install-or">' . Zurmo::t('Core', 'or') . '</span> ';
+                $content .= ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('Core', 'Continue')),
+                    $nextPageUrl, array('class' => 'z-button'));
             }
-            $content .= '</table>' . "\n";
             return $content;
         }
     }

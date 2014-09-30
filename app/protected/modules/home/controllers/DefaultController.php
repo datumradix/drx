@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     class HomeDefaultController extends ZurmoBaseController
@@ -31,7 +41,7 @@
             return array_merge(parent::filters(),
                 array(
                     array(
-                        ZurmoBaseController::RIGHTS_FILTER_PATH . ' - index',
+                        ZurmoBaseController::RIGHTS_FILTER_PATH . ' - index, welcome, hideWelcome, getTip',
                         'moduleClassName' => 'HomeModule',
                         'rightName' => HomeModule::RIGHT_ACCESS_DASHBOARDS,
                    ),
@@ -45,6 +55,11 @@
                         'moduleClassName' => 'HomeModule',
                         'rightName' => HomeModule::RIGHT_DELETE_DASHBOARDS,
                    ),
+                    array(
+                        ZurmoBaseController::RIGHTS_FILTER_PATH . ' + pushDashboard',
+                        'moduleClassName' => 'ZurmoModule',
+                        'rightName' => ZurmoModule::RIGHT_PUSH_DASHBOARD_OR_LAYOUT,
+                    ),
                )
             );
         }
@@ -56,13 +71,60 @@
                 HomeModule::RIGHT_ACCESS_DASHBOARDS,
                 Yii::app()->user->userModel))
             {
-                $this->actionDashboardDetails(-1);
+                $id = Yii::app()->request->getQuery('id', -1);
+                $this->actionDashboardDetails($id);
             }
             else
             {
-                $view = new HomePageView($this, new WelcomeView());
-                echo $view->render();
+                $this->actionWelcome();
             }
+        }
+
+        public function actionWelcome()
+        {
+            $hasDashboardAccess = true;
+            if (!RightsUtil::doesUserHaveAllowByRightName(
+                                'HomeModule',
+                                HomeModule::RIGHT_ACCESS_DASHBOARDS,
+                                Yii::app()->user->userModel)
+            )
+            {
+                $hasDashboardAccess = false;
+            }
+            $welcomeView = new HomeView();
+            if ($this->hideWelcomeViewGlobally() || UserConfigurationFormAdapter::resolveAndGetValue(Yii::app()->user->userModel, 'hideWelcomeView'))
+            {
+                //If you can see dashboards, then go there, otherwise stay here since the user has limited access.
+                if ($hasDashboardAccess)
+                {
+                    $this->redirect(array($this->getId() . '/index'));
+                }
+            }
+            else
+            {
+                $tipContent                = ZurmoTipsUtil::getRandomTipResolvedForCurrentUser();
+
+                if (Yii::app()->userInterface->isMobile())
+                {
+                    $welcomeView               = new MobileWelcomeView($tipContent, $hasDashboardAccess);
+                }
+                else
+                {
+                    $welcomeView               = new WelcomeView($tipContent, $hasDashboardAccess);
+                }
+            }
+            $view                      = new HomePageView(ZurmoDefaultViewUtil::
+                                             makeStandardViewForCurrentUser($this, $welcomeView));
+            echo $view->render();
+        }
+
+        public function actionHideWelcome()
+        {
+            $configurationForm = UserConfigurationFormAdapter::
+                                 makeFormFromUserConfigurationByUser(Yii::app()->user->userModel);
+            $configurationForm->hideWelcomeView = true;
+            UserConfigurationFormAdapter::setConfigurationFromForm($configurationForm, Yii::app()->user->userModel);
+            $this->redirect(array($this->getId() . '/index'));
         }
 
         public function actionDashboardDetails($id)
@@ -82,13 +144,15 @@
                 'moduleId'     => $this->getModule()->getId(),
             );
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($dashboard);
-            $view = new HomePageView($this, new HomeTitleBarAndDashboardView(
-                $this->getId(),
-                $this->getModule()->getId(),
-                'HomeDashboard' . $layoutId,
-                $dashboard,
-                $params)
-            );
+            Portlet::resolvePortletCollectionColumnIndexes($layoutId);
+            $homeTitleBarAndDashboardView = new HomeTitleBarAndDashboardView(
+                                                    $this->getId(),
+                                                    $this->getModule()->getId(),
+                                                    'HomeDashboard' . $layoutId,
+                                                    $dashboard,
+                                                    $params);
+            $view = new HomePageView(ZurmoDefaultViewUtil::
+                                         makeStandardViewForCurrentUser($this, $homeTitleBarAndDashboardView));
             echo $view->render();
         }
 
@@ -103,10 +167,13 @@
                 assert('in_array($dashboard->layoutType, array_keys(Dashboard::getLayoutTypesData()))');
                 if ($dashboard->save())
                 {
+                    GeneralCache::forgetAll(); //Ensure menu refreshes
                     $this->redirect(array('default/dashboardDetails', 'id' => $dashboard->id));
                 }
             }
-            $view = new HomePageView($this, new DashboardTitleBarAndEditView($this->getId(), $this->getModule()->getId(), $dashboard));
+            $editView = new DashboardEditView($this->getId(), $this->getModule()->getId(), $dashboard,
+                                              Zurmo::t('HomeModule', 'Create Dashboard'));
+            $view     = new HomePageView(ZurmoDefaultViewUtil::makeStandardViewForCurrentUser($this, $editView));
             echo $view->render();
         }
 
@@ -132,10 +199,13 @@
                         $portletCollection = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition($uniqueLayoutId, Yii::app()->user->userModel->id, array());
                         Portlet::shiftPositionsBasedOnColumnReduction($portletCollection, 1);
                     }
+                    GeneralCache::forgetAll(); //Ensure menu refreshes
                     $this->redirect(array('default/dashboardDetails', 'id' => $dashboard->id));
                 }
             }
-            $view = new HomePageView($this, new DashboardTitleBarAndEditView($this->getId(), $this->getModule()->getId(), $dashboard));
+            $editView = new DashboardEditView($this->getId(), $this->getModule()->getId(), $dashboard, strval($dashboard));
+            $view     = new AccountsPageView(ZurmoDefaultViewUtil::
+                                         makeStandardViewForCurrentUser($this, $editView));
             echo $view->render();
         }
 
@@ -162,6 +232,73 @@
             $dashboard->delete();
             unset($dashboard);
             $this->redirect(array('default/index'));
+        }
+
+        /**
+         * Retrieves a random tip
+         */
+        public function actionGetTip()
+        {
+            $tipContent = ZurmoTipsUtil::getRandomTipResolvedForCurrentUser();
+            echo CJSON::encode($tipContent);
+        }
+
+        protected function hideWelcomeViewGlobally()
+        {
+            if (null != $hideWelcomeViewGlobally = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'hideWelcomeViewGlobally'))
+            {
+                return $hideWelcomeViewGlobally;
+            }
+            else
+            {
+                return (bool)$hideWelcomeViewGlobally;
+            }
+        }
+
+        public function actionPushDashboard($id)
+        {
+            $dashboard = Dashboard::getById(intval($id));
+            $modelClassName = get_class($dashboard);
+            if (isset($_POST[$modelClassName]))
+            {
+                $groupsAndUsers = PushDashboardUtil::resolveGroupsAndUsersFromPost($_POST[$modelClassName]);
+                PushDashboardUtil::pushDashboardToUsers($dashboard, $groupsAndUsers);
+                Yii::app()->user->setFlash('notification', Zurmo::t('HomeModule', 'Dashboard pushed successfully'));
+                $this->redirect(array('default/dashboardDetails', 'id' => $dashboard->id));
+            }
+            $editView = new PushDashboardEditView($this->getId(), $this->getModule()->getId(), $dashboard,
+                        Zurmo::t('HomeModule', 'Push Dashboard'));
+            $view     = new HomePageView(ZurmoDefaultViewUtil::makeStandardViewForCurrentUser($this, $editView));
+            echo $view->render();
+        }
+
+        public function actionAutoCompleteGroupsAndUsers($term)
+        {
+            $pageSize = Yii::app()->pagination->resolveActiveForCurrentUserByType(
+                        'autoCompleteListPageSize', get_class($this->getModule()));
+            $groups   = ModelAutoCompleteUtil::getByPartialName('Group', $term, $pageSize);
+            $users    = UserSearch::getUsersByPartialFullNameOrAnyEmailAddress($term, $pageSize, null);
+            $autoCompleteResults = array();
+            foreach ($groups as $group)
+            {
+                $autoCompleteResults[] = array(
+                    'id'   => PushDashboardUtil::GROUP_PREFIX . $group['id'],
+                    'name' => $group['value']
+                );
+            }
+            foreach ($users as $user)
+            {
+                $autoCompleteResults[] = array(
+                    'id'   => PushDashboardUtil::USER_PREFIX . $user->id,
+                    'name' => MultipleContactsForMeetingElement::renderHtmlContentLabelFromUserAndKeyword($user, $term)
+                );
+            }
+            echo CJSON::encode($autoCompleteResults);
+        }
+
+        public function actionDetails($id)
+        {
+            $this->actionDashboardDetails($id);
         }
     }
 ?>

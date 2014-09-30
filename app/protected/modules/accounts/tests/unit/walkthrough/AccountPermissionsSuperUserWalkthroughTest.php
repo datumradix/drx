@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -35,6 +45,7 @@
         {
             parent::setUpBeforeClass();
             SecurityTestHelper::createSuperAdmin();
+            ContactsModule::loadStartingData();
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
 
@@ -70,7 +81,7 @@
                 array('explicitReadWriteModelPermissions' => $postData)));
             //Make sure the redirect is to the details view and not the list view.
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/default/edit',
-                        Yii::app()->getUrlManager()->getBaseUrl() . '?r=accounts/default/details&id=' . $superAccountId); // Not Coding Standard
+                        Yii::app()->createUrl('accounts/default/details', array('id' => $superAccountId)));
             //Confirm the permissions are set right based on how the account was saved.
             $accounts[0]->forget();
             $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::
@@ -79,7 +90,7 @@
             $readOnlyPermitables  = $explicitReadWriteModelPermissions->getReadOnlyPermitables();
             $this->assertEquals(1, count($readWritePermitables));
             $this->assertEquals(0, count($readOnlyPermitables));
-            $this->assertEquals($group1, $readWritePermitables[$group1->id]);
+            $this->assertEquals($group1, $readWritePermitables[$group1->getClassId('Permitable')]);
 
             //Change the permissions to Everyone group
             $this->setGetArray(array('id' => $superAccountId));
@@ -88,7 +99,7 @@
                 array('explicitReadWriteModelPermissions' => $postData)));
             //Make sure the redirect is to the details view and not the list view.
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/default/edit',
-                        Yii::app()->getUrlManager()->getBaseUrl() . '?r=accounts/default/details&id=' . $superAccountId); // Not Coding Standard
+                        Yii::app()->createUrl('accounts/default/details', array('id' => $superAccountId)));
             //Confirm the permissions are set right based on how the account was saved.
             $accounts[0]->forget();
             $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::
@@ -97,7 +108,7 @@
             $readOnlyPermitables  = $explicitReadWriteModelPermissions->getReadOnlyPermitables();
             $this->assertEquals(1, count($readWritePermitables));
             $this->assertEquals(0, count($readOnlyPermitables));
-            $this->assertEquals($everyoneGroup, $readWritePermitables[$everyoneGroup->id]);
+            $this->assertEquals($everyoneGroup, $readWritePermitables[$everyoneGroup->getClassId('Permitable')]);
 
             //Remove all explicit permissions.
             $this->setGetArray(array('id' => $superAccountId));
@@ -106,7 +117,7 @@
                 array('explicitReadWriteModelPermissions' => $postData)));
             //Make sure the redirect is to the details view and not the list view.
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/default/edit',
-                        Yii::app()->getUrlManager()->getBaseUrl() . '?r=accounts/default/details&id=' . $superAccountId); // Not Coding Standard
+                        Yii::app()->createUrl('accounts/default/details', array('id' => $superAccountId)));
             //Confirm the permissions are set right based on how the account was saved.
             $accounts[0]->forget();
             $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::
@@ -163,7 +174,7 @@
             $readOnlyPermitables  = $explicitReadWriteModelPermissions->getReadOnlyPermitables();
             $this->assertEquals(1, count($readWritePermitables));
             $this->assertEquals(0, count($readOnlyPermitables));
-            $this->assertEquals($everyoneGroup, $readWritePermitables[$everyoneGroup->id]);
+            $this->assertEquals($everyoneGroup, $readWritePermitables[$everyoneGroup->getClassId('Permitable')]);
 
             //Create a new account with a non-everyone group explicitly added.
             $this->resetGetArray();
@@ -185,7 +196,61 @@
             $readOnlyPermitables  = $explicitReadWriteModelPermissions->getReadOnlyPermitables();
             $this->assertEquals(1, count($readWritePermitables));
             $this->assertEquals(0, count($readOnlyPermitables));
-            $this->assertEquals($group1, $readWritePermitables[$group1->id]);
+            $this->assertEquals($group1, $readWritePermitables[$group1->getClassId('Permitable')]);
+        }
+
+        public function testWorkflowDoesLinkRelatedModelWhenPermissionsIsSetToOwner()
+        {
+            $super         = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $contactStates = ContactState::getAll();
+            $this->assertEquals(0, Contact::getCount());
+
+            //Create workflow
+            $workflow = new Workflow();
+            $workflow->setDescription    ('aDescription');
+            $workflow->setIsActive       (true);
+            $workflow->setOrder          (5);
+            $workflow->setModuleClassName('AccountsModule');
+            $workflow->setName           ('myFirstWorkflow');
+            $workflow->setTriggerOn      (Workflow::TRIGGER_ON_NEW_AND_EXISTING);
+            $workflow->setType           (Workflow::TYPE_ON_SAVE);
+            $workflow->setTriggersStructure('1');
+            //Add action
+            $action                       = new ActionForWorkflowForm('Account', Workflow::TYPE_ON_SAVE);
+            $action->type                 = ActionForWorkflowForm::TYPE_CREATE;
+            $action->relation             = 'contacts';
+            $attributes                   = array(  'lastName' => array('shouldSetValue'    => '1',
+                'type'   => WorkflowActionAttributeForm::TYPE_STATIC,
+                'value'  => 'smith'),
+                'firstName' => array('shouldSetValue'    => '1',
+                    'type'     => WorkflowActionAttributeForm::TYPE_STATIC,
+                    'value'    => 'john'),
+                'owner__User'     => array('shouldSetValue'    => '1',
+                    'type'     => WorkflowActionAttributeForm::TYPE_STATIC,
+                    'value'    => Yii::app()->user->userModel->id),
+                'state'       => array('shouldSetValue'    => '1',
+                    'type'   => WorkflowActionAttributeForm::TYPE_STATIC,
+                    'value'  => $contactStates[0]->id),
+            );
+            $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
+            $workflow->addAction($action);
+            //Create the saved Workflow
+            $savedWorkflow = new SavedWorkflow();
+            SavedWorkflowToWorkflowAdapter::resolveWorkflowToSavedWorkflow($workflow, $savedWorkflow);
+            $saved = $savedWorkflow->save();
+            $this->assertTrue($saved);
+
+            $account = new Account();
+            $account->name = 'myTestAccount';
+            $account->owner = $super;
+            $account->save();
+
+            RedBeanModel::forgetAll();
+            $contacts = Contact::getAll();
+            $this->assertCount(1, $contacts);
+            $this->assertEquals('myTestAccount', $contacts[0]->account->name);
+            $this->assertEquals('john smith', strval($account->contacts[0]));
+            $this->assertTrue($account->contacts[0]->id > 0);
         }
     }
 ?>

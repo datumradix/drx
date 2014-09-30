@@ -4,21 +4,22 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/" />
-<title>StickyCheckBoxUsingPagination</title>
+<title>MassEditOpportunities</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Mass Edit</td></tr>
+<tr><td rowspan="1" colspan="3">Mass Edit Opportunities</td></tr>
 </thead><tbody>
 <tr>
-	<td>setSpeed</td>
-	<td>3000</td>
-	<td></td>
+    <td>setTimeout</td>
+    <td>45000</td>
+    <td></td>
 </tr>
+<!--Go to opportunities list-->
 <tr>
 	<td>open</td>
-	<td>index.php?r=opportunities/default</td>
+	<td>index.php/opportunities/default</td>
 	<td></td>
 </tr>
 <tr>
@@ -27,249 +28,231 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Advanced Search</td>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Create</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>off</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>list-view-rowSelector_0</td>
+	<td>assertTextPresent</td>
+	<td>Update</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>on</td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>index.php?r=opportunities/default</td>
+	<td>assertTextPresent</td>
+	<td>Export</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=2</td>
+	<td>assertTextPresent</td>
+	<td>Delete</td>
 	<td></td>
 </tr>
+<!--checkbox checked and unchecked-->
 <tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>off</td>
+    <td>verifyValue</td>
+    <td>list-view-rowSelector_0</td>
+    <td>off</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
+    <td>click</td>
+    <td>list-view-rowSelector_0</td>
+    <td></td>
 </tr>
 <tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>on</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>index.php?r=opportunities/default</td>
-	<td></td>
+    <td>verifyValue</td>
+    <td>list-view-rowSelector_0</td>
+    <td>on</td>
+</tr>
+<!--select opportunities for mass edit-->
+<tr>
+    <td>open</td>
+    <td>index.php/opportunities/default</td>
+    <td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='MenuView']/div/div/ul/li[5]/ul/li[2]/a/span</td>
-	<td></td>
+    <td>assertEditable</td>
+    <td>list-view-rowSelector_0</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertEditable</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
+    <td>assertEditable</td>
+    <td>list-view-rowSelector_1</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertEditable</td>
-	<td>list-view-rowSelector_1</td>
-	<td></td>
+    <td>click</td>
+    <td>list-view-rowSelector_all</td>
+    <td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>list-view-rowSelector_all</td>
-	<td></td>
+    <td>verifyValue</td>
+    <td>list-view-rowSelector_0</td>
+    <td>on</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>list-view-select-all-rows-link</td>
-	<td></td>
+    <td>verifyValue</td>
+    <td>list-view-rowSelector_1</td>
+    <td>on</td>
 </tr>
 <tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
+    <td>open</td>
+    <td>index.php/opportunities/default</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_1</td>
-	<td></td>
+    <td>click</td>
+    <td>list-view-rowSelector_0</td>
+    <td></td>
 </tr>
 <tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>on</td>
+    <td>click</td>
+    <td>list-view-rowSelector_1</td>
+    <td></td>
+</tr>
+<!--mass edit opportunities-->
+<tr>
+    <td>clickAndWait</td>
+    <td>//li[@id='list-view-massActionSelected']/a</td>
+    <td></td>
 </tr>
 <tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_1</td>
-	<td>on</td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_1</td>
-	<td></td>
+    <td>waitForTextPresent</td>
+    <td>2 records selected for updating</td>
+    <td></td>
+</tr>
+<!--check validation-->
+<tr>
+    <td>click</td>
+    <td>MassEdit_owner</td>
+    <td></td>
 </tr>
 <tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>on</td>
+    <td>clickAndWait</td>
+    <td>save</td>
+    <td></td>
 </tr>
 <tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_1</td>
-	<td>on</td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_1</td>
-	<td></td>
+    <td>waitForTextPresent</td>
+    <td>Owner cannot be blank.</td>
+    <td></td>
 </tr>
 <tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>on</td>
+    <td>click</td>
+    <td>MassEdit_owner</td>
+    <td></td>
 </tr>
 <tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_1</td>
-	<td>on</td>
+    <td>click</td>
+    <td>MassEdit_source</td>
+    <td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>index.php?r=opportunities/default</td>
-	<td></td>
+    <td>select</td>
+    <td>Opportunity_source_value</td>
+    <td>label=Inbound Call</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='MenuView']/div/div/ul/li[5]/ul/li[2]/a/span</td>
-	<td></td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
+    <td>clickAndWait</td>
+    <td>save</td>
+    <td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>list-view-rowSelector_1</td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>selectAndWait</td>
-	<td>list-view-massAction</td>
-	<td>label=Update Selected</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--verify values after mass editing opportunities-->
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[3]/a</td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForTextPresent</td>
-	<td>2 records selected for updating</td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>MassEdit_owner</td>
-	<td></td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>save</td>
-	<td></td>
+    <td>waitForText</td>
+    <td>//div[@id='OpportunityDetailsPortletView']/div/div/div/table/tbody/tr[7]/td</td>
+    <td>Inbound Call</td>
+</tr>
+<!--clear search result-->
+<tr>
+    <td>open</td>
+    <td>index.php/opportunities/default</td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForTextPresent</td>
-	<td>Owner cannot be blank and must validate.</td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>MassEdit_owner</td>
-	<td></td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--check mass edit without selecting opportunity-->
+<tr>
+    <td>click</td>
+    <td>//li[@id='list-view-massActionSelected']/a</td>
+    <td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>MassEdit_source</td>
-	<td></td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>Opportunity_source_value</td>
-	<td>label=Inbound Call</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>save</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>Successfully updated 2 records</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='list-view']/table/tbody/tr[1]/td[6]/a/img</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Inbound Call</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>index.php?r=opportunities/default</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='MenuView']/div/div/ul/li[5]/ul/li[2]/a/span</td>
-	<td></td>
-</tr>
-<tr>
-	<td>select</td>
-	<td>list-view-massAction</td>
-	<td>label=Update Selected</td>
-</tr>
-<tr>
-	<td>assertAlert</td>
-	<td>You must select at least one record</td>
-	<td></td>
+    <td>assertAlert</td>
+    <td>At least 1 record must be selected</td>
+    <td></td>
 </tr>
 </tbody></table>
 </body>

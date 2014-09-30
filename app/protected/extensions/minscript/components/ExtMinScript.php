@@ -50,6 +50,8 @@ class ExtMinScript extends CApplicationComponent {
       } else if (!is_writable($cachePath)) {
         throw new CException('ext.minScript: ' . $cachePath . ' is not writable.');
       }
+      chmod(Yii::app() -> runtimePath . '/minScript' , 0777);
+      chmod(Yii::app() -> runtimePath . '/minScript/cache' , 0777);
     }
     if (!is_writable($minifyDir . '/groupsConfig.php')) {
       throw new CException('ext.minScript: ' . $minifyDir . '/groupsConfig.php is not writable.');
@@ -155,6 +157,8 @@ class ExtMinScript extends CApplicationComponent {
       $params['g'] = $group;
       //Files
       foreach ($groupMap[$group] as $path) {
+        // Replace THEME_NAME with real theme
+        $path = str_replace('THEME_NAME', Yii::app()->theme->name, $path);
         $filemtime = @filemtime($path);
         if ($filemtime !== false) {
           $filemtimes[] = $filemtime;

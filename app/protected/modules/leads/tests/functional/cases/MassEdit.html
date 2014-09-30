@@ -4,21 +4,61 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/" />
-<title>StickyCheckBoxUsingPagination</title>
+<title>MassEditLeads</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Mass Edit</td></tr>
+<tr><td rowspan="1" colspan="3">Mass Edit Leads</td></tr>
 </thead><tbody>
 <tr>
-	<td>setSpeed</td>
-	<td>3000</td>
+	<td>setTimeout</td>
+	<td>45000</td>
 	<td></td>
 </tr>
 <tr>
 	<td>open</td>
-	<td>index.php?r=leads/default</td>
+	<td>index.php/leads/default</td>
+	<td></td>
+</tr>
+<tr>
+     <td>waitForPageToLoad</td>
+     <td></td>
+     <td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Advanced</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>list-view-rowSelector_0</td>
+	<td>off</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>list-view-rowSelector_0</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>list-view-rowSelector_0</td>
+	<td>on</td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>index.php/leads/default</td>
 	<td></td>
 </tr>
 <tr>
@@ -27,59 +67,9 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Advanced Search</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>off</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>on</td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>index.php?r=leads/default</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=2</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>off</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>on</td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>index.php?r=leads/default</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='MenuView']/div/div/ul/li[4]/ul/li[2]/a/span</td>
-	<td></td>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
 </tr>
 <tr>
 	<td>assertEditable</td>
@@ -97,61 +87,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>list-view-select-all-rows-link</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_1</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>on</td>
-</tr>
-<tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_1</td>
-	<td>on</td>
-</tr>
-<tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_1</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_0</td>
-	<td>on</td>
-</tr>
-<tr>
-	<td>verifyValue</td>
-	<td>list-view-rowSelector_1</td>
-	<td>on</td>
-</tr>
-<tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_0</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertNotEditable</td>
-	<td>list-view-rowSelector_1</td>
-	<td></td>
-</tr>
-<tr>
 	<td>verifyValue</td>
 	<td>list-view-rowSelector_0</td>
 	<td>on</td>
@@ -163,13 +98,18 @@
 </tr>
 <tr>
 	<td>open</td>
-	<td>index.php?r=leads/default</td>
+	<td>index.php/leads/default</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='MenuView']/div/div/ul/li[4]/ul/li[2]/a/span</td>
+	<td>waitForPageToLoad</td>
 	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -182,9 +122,19 @@
 	<td></td>
 </tr>
 <tr>
-	<td>selectAndWait</td>
-	<td>list-view-massAction</td>
-	<td>label=Update Selected</td>
+	<td>clickAndWait</td>
+	<td>//li[@id='list-view-massActionSelected']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
@@ -202,8 +152,13 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
 	<td>waitForTextPresent</td>
-	<td>Owner cannot be blank and must validate.</td>
+	<td>Owner cannot be blank.</td>
 	<td></td>
 </tr>
 <tr>
@@ -215,6 +170,11 @@
 	<td>click</td>
 	<td>MassEdit_source</td>
 	<td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
 </tr>
 <tr>
 	<td>select</td>
@@ -232,13 +192,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForTextPresent</td>
-	<td>Successfully updated 2 records</td>
-	<td></td>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='list-view']/table/tbody/tr[1]/td[6]/a/img</td>
+	<td>clickAndWait</td>   
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[3]/a</td>
 	<td></td>
 </tr>
 <tr>
@@ -247,28 +207,38 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
 	<td>Inbound Call</td>
 	<td></td>
 </tr>
 <tr>
 	<td>open</td>
-	<td>index.php?r=leads/default</td>
+	<td>index.php/leads/default</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='MenuView']/div/div/ul/li[4]/ul/li[2]/a/span</td>
+	<td>waitForPageToLoad</td>
+	<td></td>
 	<td></td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>list-view-massAction</td>
-	<td>label=Update Selected</td>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
 </tr>
 <tr>
-	<td>assertAlert</td>
-	<td>You must select at least one record</td>
+	<td>click</td>
+	<td>//li[@id='list-view-massActionSelected']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForAlert</td>
+	<td>At least 1 record must be selected</td>
 	<td></td>
 </tr>
 </tbody></table>

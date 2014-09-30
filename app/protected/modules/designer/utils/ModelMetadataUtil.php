@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -29,6 +39,31 @@
      */
     class ModelMetadataUtil
     {
+        /**
+         * @param $name
+         * @return string
+         */
+        public static function resolveName($name)
+        {
+            assert('is_string($name)');
+            return $name . 'Cstm'; // . 'Custom';
+        }
+
+        /**
+         * @param string $modelClassName
+         * @param string $memberName
+         * @param array $attributeLabels
+         * @param $defaultValue
+         * @param int $maxLength
+         * @param int $minValue
+         * @param int $maxValue
+         * @param int $precision
+         * @param bool $isRequired
+         * @param bool $isAudited
+         * @param string $elementType
+         * @param array $partialTypeRule
+         * @param array $mixedRule
+         */
         public static function addOrUpdateMember($modelClassName,
                                                  $memberName,
                                                  $attributeLabels,
@@ -52,12 +87,17 @@
             assert('is_bool($isRequired)');
             assert('is_bool($isAudited)');
             assert('$mixedRule === null || is_array($mixedRule)');
-            $metadata = $modelClassName::getMetadata();
+            $metadata   = $modelClassName::getMetadata();
             assert('isset($metadata[$modelClassName])');
-            if (!isset   (             $metadata[$modelClassName]['members']) ||
+            if (!isset($metadata[$modelClassName]['members']) ||
                 !in_array($memberName, $metadata[$modelClassName]['members']))
             {
+                $memberName = self::resolveName($memberName);
                 $metadata[$modelClassName]['members'][] = $memberName;
+            }
+            if (!ArrayUtil::isArrayNotUnique($metadata[$modelClassName]['members']))
+            {
+                throw new NotSupportedException("Model metadata contains duplicate members");
             }
             static::resolveAddOrRemoveNoAuditInformation($isAudited, $metadata[$modelClassName], $memberName);
             $metadata[$modelClassName]['elements'][$memberName] = $elementType;
@@ -71,6 +111,13 @@
         /**
          * Updating existing relation attributes and add new has_one relations that are owned only.
          * Currently does not support setting the default value.
+         * @param string $modelClassName
+         * @param string $relationName
+         * @param array $attributeLabels
+         * @param string $elementType
+         * @param bool $isRequired
+         * @param bool $isAudited
+         * @param string $relationModelClassName
          */
         public static function addOrUpdateRelation($modelClassName,
                                               $relationName,
@@ -93,20 +140,37 @@
                  !array_key_exists($relationName, $metadata[$modelClassName]['relations']))
             {
                 //assumes HAS_ONE for now and RedBeanModel::OWNED.
+                $relationName = self::resolveName($relationName);
                 $metadata[$modelClassName]['relations'][$relationName] = array(
                                                                             RedBeanModel::HAS_ONE,
                                                                             $relationModelClassName,
-                                                                            RedBeanModel::OWNED);
+                                                                            RedBeanModel::OWNED,
+                                                                            RedBeanModel::LINK_TYPE_SPECIFIC,
+                                                                            $relationName);
             }
             static::resolveAddOrRemoveNoAuditInformation($isAudited, $metadata[$modelClassName], $relationName);
             $metadata[$modelClassName]['elements'][$relationName] = $elementType;
             self::resolveAttributeLabelsMetadata($attributeLabels, $metadata, $modelClassName, $relationName);
             self::addOrUpdateRules($modelClassName, $relationName, null, null, null,
                                    null, null, $isRequired, array(), $metadata);
-
             $modelClassName::setMetadata($metadata);
         }
 
+        /**
+         * @param string $modelClassName
+         * @param string $relationName
+         * @param array $attributeLabels
+         * @param $defaultValue
+         * @param bool $isRequired
+         * @param bool $isAudited
+         * @param string $elementType
+         * @param string $customFieldDataName
+         * @param null $customFieldDataData
+         * @param null $customFieldDataLabels
+         * @param string $relationModelClassName
+         * @param bool $owned
+         * @throws NotSupportedException
+         */
         public static function addOrUpdateCustomFieldRelation($modelClassName,
                                                               $relationName,
                                                               $attributeLabels,
@@ -115,7 +179,10 @@
                                                               $isAudited,
                                                               $elementType,
                                                               $customFieldDataName,
-                                                              $customFieldDataData = null)
+                                                              $customFieldDataData = null,
+                                                              $customFieldDataLabels = null,
+                                                              $relationModelClassName = 'OwnedCustomField',
+                                                              $owned = true)
         {
             assert('is_string($modelClassName)      && $modelClassName != ""');
             assert('is_string($relationName)        && $relationName != ""');
@@ -123,12 +190,41 @@
             assert('is_bool($isRequired)');
             assert('is_bool($isAudited)');
             assert('is_string($customFieldDataName) && $customFieldDataName != ""');
+            assert('is_array($customFieldDataLabels) || $customFieldDataLabels == null');
+            assert('in_array($relationModelClassName, array("CustomField", "OwnedCustomField",
+                             "OwnedMultipleValuesCustomField", "MultipleValuesCustomField"))');
             $metadata = $modelClassName::getMetadata();
             assert('isset($metadata[$modelClassName])');
+            if ($owned)
+            {
+                if (!in_array($relationModelClassName, array("OwnedCustomField", "OwnedMultipleValuesCustomField")))
+                {
+                    throw new NotSupportedException();
+                }
+            }
+            else
+            {
+                if (!in_array($relationModelClassName, array("CustomField", "MultipleValuesCustomField")))
+                {
+                    throw new NotSupportedException();
+                }
+            }
             if (!isset           (               $metadata[$modelClassName]['relations']) ||
                  !array_key_exists($relationName, $metadata[$modelClassName]['relations']))
             {
-                $metadata[$modelClassName]['relations'][$relationName] = array(RedBeanModel::HAS_ONE,  'CustomField');
+                $relationName = self::resolveName($relationName);
+                $metadata[$modelClassName]['relations'][$relationName] = array(RedBeanModel::HAS_ONE,
+                                                                               $relationModelClassName);
+                if ($owned)
+                {
+                    $metadata[$modelClassName]['relations'][$relationName][2] = RedBeanModel::OWNED;
+                }
+                else
+                {
+                    $metadata[$modelClassName]['relations'][$relationName][2] = RedBeanModel::NOT_OWNED;
+                }
+                $metadata[$modelClassName]['relations'][$relationName][3] = RedBeanModel::LINK_TYPE_SPECIFIC;
+                $metadata[$modelClassName]['relations'][$relationName][4] = $relationName;
             }
             $metadata[$modelClassName]['elements'][$relationName] = $elementType;
             self::resolveAttributeLabelsMetadata($attributeLabels, $metadata, $modelClassName, $relationName);
@@ -140,10 +236,18 @@
             static::resolveAddOrRemoveNoAuditInformation($isAudited, $metadata[$modelClassName], $relationName);
             if ($customFieldDataData !== null)
             {
-                $customFieldData = CustomFieldData::getByName($customFieldDataName);
-                $customFieldData->serializedData = serialize($customFieldDataData);
+                $customFieldData                   = CustomFieldData::getByName($customFieldDataName);
+                $customFieldData->serializedData   = serialize($customFieldDataData);
+                if ($customFieldDataLabels !== null)
+                {
+                    $customFieldData->serializedLabels = serialize($customFieldDataLabels);
+                }
                 $saved = $customFieldData->save();
                 assert('$saved');
+            }
+            elseif ($customFieldDataLabels !== null)
+            {
+                throw new NotSupportedException();
             }
             self::addOrUpdateRules($modelClassName, $relationName, $defaultValue, null, null,
                                    null, null, $isRequired, array(), $metadata);
@@ -295,6 +399,10 @@
             $metadata[$modelClassName]['rules'] = array_values($metadata[$modelClassName]['rules']);
         }
 
+        /**
+         * @param $modelClassName
+         * @param $attributeName
+         */
         public static function removeAttribute($modelClassName,
                                                $attributeName)
         {

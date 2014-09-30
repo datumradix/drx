@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     class MetadataViewEditView extends View
@@ -34,7 +44,7 @@
         protected $designerRules;
         protected $attributeCollection;
         protected $designerLayoutAttributes;
-        protected $breadcrumbLinks;
+        protected $title;
 
         public function __construct($controllerId,
             $moduleId,
@@ -44,7 +54,7 @@
             DesignerRules $designerRules,
             $attributeCollection,
             DesignerLayoutAttributes $designerLayoutAttributes,
-            $breadcrumbLinks
+            $title
         )
         {
             assert('is_array($editableMetadata)');
@@ -57,7 +67,7 @@
             $this->designerRules            = $designerRules;
             $this->attributeCollection      = $attributeCollection;
             $this->designerLayoutAttributes = $designerLayoutAttributes;
-            $this->breadcrumbLinks          = $breadcrumbLinks;
+            $this->title                    = $title;
         }
 
         public function isUniqueToAPage()
@@ -67,22 +77,17 @@
 
         protected function renderContent()
         {
-            $titleDisplay    = $this->designerRules->resolveDisplayNameByView($this->metadataViewClassName);
-            $titleBarView    = new TitleBarView(
-                                        Yii::t('Default', 'Edit Layout'), $titleDisplay);
-            $content         = $titleBarView->render();
-            $breadcrumbView  = new DesignerBreadCrumbView(
-                                        $this->controllerId, $this->moduleId, $this->breadcrumbLinks);
-            $content        .= $breadcrumbView->render();
-            $content        .= '<div class="horizontal-line"></div>' . "\n";
-            $content        .= $this->renderForm();
+            $content = $this->renderForm();
             $this->renderStickyAnchorScript();
             return $content;
         }
 
         protected function renderForm()
         {
-            $content = '<div class="wide form">';
+            $content  = '<div class="wrapper">';
+            $content .= $this->renderTitleContent();
+            $content .= '<div class="wide form">';
+            $content .= '<div class="left-column full-width">';
             $clipWidget = new ClipWidget();
             list($form, $formStart) = $clipWidget->renderBeginWidget(
                                                                 'ZurmoActiveForm',
@@ -92,37 +97,59 @@
                                                                 )
                                                             );
             $content .= $formStart;
-            $content .= '<div class="view-toolbar">';
-            $content .= $this->renderNotificationBar('NotifcationBar');
-            $content .= $this->renderSaveLayoutButton('NotifcationBar');
+            $content .= '<div class="designer-toolbar">';
             if ($this->designerRules->canConfigureLayoutPanelsType())
             {
                 $content .= $this->renderLayoutPanelsType($form);
             }
             $content .= '</div>';
             $content .= $this->renderDesignerLayoutEditorWidget();
-            $formEnd = $clipWidget->renderEndWidget();
-            $content .= $formEnd;
+            $content .= '<div class="view-toolbar-container clearfix"><div class="form-toolbar">';
+            $content .= $this->renderSaveLayoutButton('FlashMessageBar');
+            $content .= $this->renderCancelLink();
+            $content .= '</div></div>';
 
-            $content .= '</div>';
+            $formEnd  = $clipWidget->renderEndWidget();
+            $content .= $formEnd;
+            $content .= '</div></div></div>';
             return $content;
         }
 
         protected function renderSaveLayoutButton($notificationBarId)
         {
-            return CHtml::ajaxSubmitButton(Yii::t('Default', 'Save Layout'), null, array(
-                    //designer.AfterSaveLayoutUpdateFlashBar(data, flashBarId)
+            Yii::app()->clientScript->registerScriptFile(
+                Yii::app()->getAssetManager()->publish(
+                    Yii::getPathOfAlias('application.core.views.assets')
+                    ) . '/FormUtils.js',
+                CClientScript::POS_END
+            );
+            $htmlOptions             = array();
+            $htmlOptions['id']       = 'saveLayout';
+            $htmlOptions['name']     = 'saveLayout';
+            $htmlOptions['class']    = 'attachLoading z-button';
+            $aContent                = ZurmoHtml::wrapLink(Zurmo::t('DesignerModule', 'Save Layout'));
+            return ZurmoHtml::ajaxLink($aContent, '', array(
                     'data' => 'js:designer.prepareSaveLayout("edit-form")',
                     'dataType' => 'json',
+                    'type' => 'POST',
+                    'beforeSend' => 'js:function(){$(this).attachLoadingOnSubmit("edit-form");}',
+                    'complete'   => 'js:function(){$(this).detachLoadingOnSubmit("edit-form");}',
                     'success' => 'function(data){designer.updateFlashBarAfterSaveLayout(data, "' . $notificationBarId . '")}', // Not Coding Standard
                     'error' => 'function(data){ ' . // Not Coding Standard
                         'var data = {' . // Not Coding Standard
-                        '   "message" : "' . Yii::t('Default', 'There was an error processing your request.'). '",
+                        '   "message" : "' . Zurmo::t('Core', 'There was an error processing your request'). '",
                             "type"    : "error"
                         };
                         designer.updateFlashBarAfterSaveLayout(data, "' . $notificationBarId . '")
                     }',
-                ));
+                ), $htmlOptions);
+        }
+
+        protected function renderCancelLink()
+        {
+            $route = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/moduleLayoutsList/',
+                                                 array('moduleClassName' => $this->moduleClassName));
+            return ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('Core', 'Cancel')), $route, array('class' => 'cancel-button'));
         }
 
         /**
@@ -132,10 +159,11 @@
         {
             $formModel = PanelsDisplayTypeLayoutMetadataUtil::makeFormFromEditableMetadata($this->editableMetadata);
             //$this->editableMetadata populate if it exists.
-            $content = '&#160;&#160;&#160;';
+            $content = null;
             $element  = new LayoutPanelsTypeStaticDropDownElement($formModel, 'type', $form);
-            $element->editableTemplate = Yii::t('Default', 'Panels Configuration') . ' {content}{error}';
+            $element->editableTemplate = '{content}';
             $content .= $element->render();
+            DropDownUtil::registerScripts();
             return $content;
         }
 
@@ -143,7 +171,7 @@
         {
             $cClipWidget = new CClipWidget();
             $cClipWidget->beginClip("designerLayoutEditor");
-            $cClipWidget->widget('ext.zurmoinc.framework.widgets.DesignerLayoutEditor', array(
+            $cClipWidget->widget('application.core.widgets.DesignerLayoutEditor', array(
                 'designerLayoutAttributes'      => $this->designerLayoutAttributes,
                 'canAddRows'                    => $this->designerRules->canAddRows(),
                 'canMoveRows'                   => $this->designerRules->canMoveRows(),
@@ -163,24 +191,11 @@
             return $cClipWidget->getController()->clips['designerLayoutEditor'];
         }
 
-        protected function renderNotificationBar($barId)
-        {
-                $content = '<div id = "' . $barId . '"></div>';
-                $cClipWidget = new CClipWidget();
-                $cClipWidget->beginClip("metadataViewEditViewNotificationMessage");
-                $cClipWidget->widget('ext.zurmoinc.framework.widgets.JNotify', array(
-                    'statusBarId' => $barId,
-                ));
-                $cClipWidget->endClip();
-                $content .= $cClipWidget->getController()->clips['metadataViewEditViewNotificationMessage'];
-                return $content;
-        }
-
         protected function renderStickyAnchorScript()
         {
             Yii::app()->getClientScript()->registerScriptFile(
                 Yii::app()->getAssetManager()->publish(
-                    Yii::getPathOfAlias('ext.zurmoinc.framework.views.assets') . '/StickyUtils.jquery.js'
+                    Yii::getPathOfAlias('application.core.views.assets') . '/StickyUtils.jquery.js'
                 ),
                 CClientScript::POS_END
             );

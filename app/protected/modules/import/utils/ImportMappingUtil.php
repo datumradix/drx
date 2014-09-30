@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -39,7 +49,7 @@
         public static function makeMappingDataByTableName($tableName)
         {
             assert('is_string($tableName)');
-            $firstRowData = ImportDatabaseUtil::getFirstRowByTableName($tableName);
+            $firstRowData = ZurmoRedBean::$writer->getFirstRowByTableName($tableName);
 
             if (count($firstRowData) == 1 || count($firstRowData) == 0)
             {
@@ -156,29 +166,6 @@
         }
 
         /**
-         * Given an array of import instructions data, merge this data into the mapping data.
-         * @param array $mappingData
-         * @param array $importInstructionsData
-         */
-        public static function resolveImportInstructionsDataIntoMappingData($mappingData, $importInstructionsData)
-        {
-            assert('is_array($mappingData)');
-            assert('is_array($importInstructionsData) || $importInstructionsData == null');
-            foreach ($mappingData as $columnName => $columnMappingData)
-            {
-                if ($importInstructionsData == null && isset($columnMappingData['importInstructionsData']))
-                {
-                    unset($mappingData[$columnName]['importInstructionsData']);
-                }
-                elseif ($importInstructionsData != null && isset($importInstructionsData[$columnName]))
-                {
-                    $mappingData[$columnName]['importInstructionsData'] = $importInstructionsData[$columnName];
-                }
-            }
-            return $mappingData;
-        }
-
-        /**
          *
          * Make an array of index/values that are the column names and their respective labels.
          * @param array $mappingData
@@ -204,6 +191,228 @@
                 }
             }
             return $columnNamesAndAttributeIndexOrDerivedTypeLabels;
+        }
+
+        public static function makeBooleanColumnMappingData($attributeName)
+        {
+            return array('attributeIndexOrDerivedType' => $attributeName,
+                         'type'                        => 'importColumn');
+        }
+
+        /**
+         * @param string $attributeName
+         * @param Currency $currency
+         * @param null $defaultValue
+         * @param int $rateToBase
+         * @return array
+         */
+        public static function makeCurrencyColumnMappingData($attributeName, $currency, $defaultValue = null, $rateToBase = 1)
+        {
+            return array('attributeIndexOrDerivedType' => $attributeName,
+                         'type'                        => 'importColumn',
+                         'mappingRulesData'            => array(
+                             'DefaultValueModelAttributeMappingRuleForm' =>
+                             array('defaultValue' => $defaultValue),
+                             'CurrencyRateToBaseModelAttributeMappingRuleForm' =>
+                                 array('rateToBase' => $rateToBase),
+                             'CurrencyIdModelAttributeMappingRuleForm' =>
+                                 array('id' => $currency->id)));
+        }
+
+        /**
+         * @param string $attributeName
+         * @param null $defaultValue
+         * @param string $format
+         * @return array
+         */
+        public static function makeDateColumnMappingData($attributeName, $defaultValue = null,
+                                                             $format = 'MM-dd-yyyy')
+        {
+            return array('attributeIndexOrDerivedType'               => $attributeName,
+                         'type'                                      => 'importColumn',
+                         'mappingRulesData'                          => array(
+                         'DefaultValueModelAttributeMappingRuleForm' => array('defaultValue' => $defaultValue),
+                          'ValueFormatMappingRuleForm'               => array('format' => $format)));
+        }
+
+        /**
+         * @param string $attributeName
+         * @param null $defaultValue
+         * @param string $format
+         * @return array
+         */
+        public static function makeDateTimeColumnMappingData($attributeName, $defaultValue = null,
+                                                             $format = 'MM-dd-yyyy hh:mm')
+        {
+            return array('attributeIndexOrDerivedType'               => $attributeName,
+                         'type'                                      => 'importColumn',
+                         'mappingRulesData'                          => array(
+                         'DefaultValueModelAttributeMappingRuleForm' => array('defaultValue' => $defaultValue),
+                          'ValueFormatMappingRuleForm'               => array('format' => $format)));
+        }
+
+        /**
+         * @param string $attributeName
+         * @param null $defaultValue
+         * @param null $importInstructionsData
+         * @return array
+         */
+        public static function makeDropDownColumnMappingData($attributeName, $defaultValue = null,
+                                                             $customFieldsInstructionData = null)
+        {
+            if ($customFieldsInstructionData == null)
+            {
+                $customFieldsInstructionData = array(CustomFieldsInstructionData::ADD_MISSING_VALUES => array());
+            }
+            return array('attributeIndexOrDerivedType'  => $attributeName,
+                         'type'                         => 'importColumn',
+                         'mappingRulesData'             => array('DefaultValueDropDownModelAttributeMappingRuleForm' =>
+                                                           array('defaultValue' => $defaultValue)),
+                         'customFieldsInstructionData' => $customFieldsInstructionData);
+        }
+
+        /**
+         * @param string $attributeName
+         * @param null $defaultValue
+         * @param null $importInstructionsData
+         * @return array
+         */
+        public static function makeMultiSelectDropDownColumnMappingData($attributeName, $defaultValue = null,
+                                                                        $customFieldsInstructionData = null)
+        {
+            if ($customFieldsInstructionData == null)
+            {
+                $customFieldsInstructionData = array(CustomFieldsInstructionData::ADD_MISSING_VALUES => array());
+            }
+            return array('attributeIndexOrDerivedType'  => $attributeName,
+                         'type'                         => 'importColumn',
+                         'mappingRulesData'             => array('DefaultValueMultiSelectDropDownModelAttributeMappingRuleForm' =>
+                                                           array('defaultValue' => $defaultValue)),
+                         'customFieldsInstructionData' => $customFieldsInstructionData);
+        }
+
+        /**
+         * @param string $attributeName
+         * @param null $defaultValue
+         * @param null $importInstructionsData
+         * @return array
+         */
+        public static function makeTagCloudColumnMappingData($attributeName, $defaultValue = null,
+                                                             $customFieldsInstructionData = null)
+        {
+            if ($customFieldsInstructionData == null)
+            {
+                $customFieldsInstructionData = array(CustomFieldsInstructionData::ADD_MISSING_VALUES => array());
+            }
+            return array('attributeIndexOrDerivedType'  => $attributeName,
+                         'type'                         => 'importColumn',
+                         'mappingRulesData'             => array('DefaultValueMultiSelectDropDownModelAttributeMappingRuleForm' =>
+                                                           array('defaultValue' => $defaultValue)),
+                         'customFieldsInstructionData' => $customFieldsInstructionData);
+        }
+
+        /**
+         * @param string $attributeName
+         * @param null $defaultValue
+         * @return array
+         */
+        public static function makeEmailColumnMappingData($attributeName, $defaultValue = null)
+        {
+            return array('attributeIndexOrDerivedType' => $attributeName,
+                         'type'                        => 'importColumn',
+                         'mappingRulesData'            => array(
+                             'DefaultValueModelAttributeMappingRuleForm' =>
+                             array('defaultValue' => $defaultValue)));
+        }
+
+        /**
+         * @param string $attributeName
+         * @param null $defaultValue
+         * @return array
+         */
+        public static function makeFloatColumnMappingData($attributeName, $defaultValue = null)
+        {
+            return array('attributeIndexOrDerivedType' => $attributeName,
+                         'type'                        => 'importColumn',
+                         'mappingRulesData'            => array(
+                             'DefaultValueModelAttributeMappingRuleForm' =>
+                             array('defaultValue' => $defaultValue)));
+        }
+
+        public static function makeIntegerColumnMappingData($attributeName, $defaultValue = null)
+        {
+            return array('attributeIndexOrDerivedType' => $attributeName,
+                         'type'                        => 'importColumn',
+                         'mappingRulesData'            => array(
+                             'DefaultValueModelAttributeMappingRuleForm' =>
+                             array('defaultValue' => $defaultValue)));
+        }
+
+        /**
+         * @param string $attributeName
+         * @param $type
+         * @return array
+         */
+        public static function makeHasOneColumnMappingData($attributeName,
+                                                           $type = RelatedModelValueTypeMappingRuleForm::ZURMO_MODEL_ID)
+        {
+            return array('attributeIndexOrDerivedType'          => $attributeName,
+                         'type'                                 => 'importColumn',
+                         'mappingRulesData'                     => array(
+                         'RelatedModelValueTypeMappingRuleForm' => array('type' => $type)));
+        }
+
+        /**
+         * @param string $derivedAttributeName
+         * @param $type
+         * @return array
+         */
+        public static function makeModelDerivedColumnMappingData($derivedAttributeName,
+                                                                 $type = IdValueTypeMappingRuleForm::EXTERNAL_SYSTEM_ID)
+        {
+            return array('attributeIndexOrDerivedType'                        => $derivedAttributeName,
+                         'type'                                               => 'importColumn',
+                         'mappingRulesData'                                   => array(
+                         'IdValueTypeMappingRuleForm'                         => array('type' => $type),
+                         'DefaultModelNameIdDerivedAttributeMappingRuleForm'  => array('defaultModelId' => null)));
+        }
+
+        /**
+         * @param string $attributeName
+         * @param null $defaultValue
+         * @return array
+         */
+        public static function makeStringColumnMappingData($attributeName, $defaultValue = null)
+        {
+            return array('attributeIndexOrDerivedType' => $attributeName,
+                         'type'                        => 'importColumn',
+                         'mappingRulesData'            => array(
+                             'DefaultValueModelAttributeMappingRuleForm' =>
+                             array('defaultValue' => $defaultValue)));
+        }
+
+        /**
+         * @param string $attributeName
+         * @return array
+         */
+        public static function makeTextAreaColumnMappingData($attributeName)
+        {
+            return array('attributeIndexOrDerivedType' => $attributeName,
+                         'type'                        => 'importColumn');
+        }
+
+        /**
+         * @param string $attributeName
+         * @param null $defaultValue
+         * @return array
+         */
+        public static function makeUrlColumnMappingData($attributeName, $defaultValue = null)
+        {
+            return array('attributeIndexOrDerivedType' => $attributeName,
+                         'type'                        => 'importColumn',
+                         'mappingRulesData'            => array(
+                             'DefaultValueModelAttributeMappingRuleForm' =>
+                             array('defaultValue' => $defaultValue)));
         }
     }
 ?>

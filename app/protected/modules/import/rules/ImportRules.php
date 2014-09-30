@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,30 +12,48 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
      * Base class of import rules that assist with importing data from an external system.  Extend this class to make
-     * a set of ImportRules that is for a specific module or a combiniation of modules and/or models.
+     * a set of ImportRules that is for a specific module or a combination of modules and/or models.
      */
     abstract class ImportRules
     {
         /**
-         * Array of cached data to avoid multiple calls to make the attriubte import rules data.  Indexed by the model
+         * Array of cached data to avoid multiple calls to make the attribute import rules data.  Indexed by the model
          * class name.
          * @var array
          */
         private static $attributeImportRulesDataByModelAndImportRulesClassName = array();
+
+        /**
+         * Used for testing.
+         */
+        public static function resetCache()
+        {
+            self::$attributeImportRulesDataByModelAndImportRulesClassName = null;
+        }
 
         /**
          * @return string - If the class name is TestImportRules, then 'Test' will be returned.
@@ -124,7 +142,7 @@
             $model                                   = new $modelClassName(false);
             foreach ($attributesCollection as $attributeIndex => $attributeData)
             {
-                if (!in_array($attributeData['attributeName'], static::getNonImportableAttributeNames()) &&
+                if (!static::resolveIsAttributeANonImportableAttributeName($attributeData) &&
                     !in_array($attributeData['attributeImportRulesType'], static::getNonImportableAttributeImportRulesTypes()))
                 {
                     $mappableAttributeIndicesAndDerivedTypes[$attributeIndex] = $attributeData['attributeLabel'];
@@ -137,8 +155,29 @@
                 assert('$attributeImportRules instanceof DerivedAttributeImportRules');
                 $mappableAttributeIndicesAndDerivedTypes[$derivedType] = $attributeImportRules->getDisplayLabel();
             }
-            asort($mappableAttributeIndicesAndDerivedTypes);
+            natcasesort($mappableAttributeIndicesAndDerivedTypes);
             return $mappableAttributeIndicesAndDerivedTypes;
+        }
+
+        /**
+         * Resolves for relationAttributeNames as well.
+         * Inside static::getNonImportableAttributeNames() you could have billingAddress__latitude for example,
+         * and this would resolve correctly against the attributeName as billingAddress and the relationAttributeName
+         * as latitude
+         */
+        protected static function resolveIsAttributeANonImportableAttributeName($attributeData)
+        {
+            if (in_array($attributeData['attributeName'], static::getNonImportableAttributeNames()))
+            {
+                return true;
+            }
+            if (isset($attributeData['relationAttributeName']) &&
+               in_array($attributeData['attributeName'] . FormModelUtil::DELIMITER . $attributeData['relationAttributeName'],
+                        static::getNonImportableAttributeNames()))
+            {
+                return true;
+            }
+            return false;
         }
 
         /**
@@ -150,8 +189,14 @@
         protected static function getAttributesCollectionByModelClassName($modelClassName)
         {
             assert('$modelClassName != null && is_string($modelClassName)');
-            $modelAttributesAdapter = new ModelAttributesImportMappingAdapter(new $modelClassName(false));
+            $modelAttributesAdapter = static::getModelAttributesImportMappingAdapterByModelClassName($modelClassName);
             return $modelAttributesAdapter->getAttributes();
+        }
+
+        protected static function getModelAttributesImportMappingAdapterByModelClassName($modelClassName)
+        {
+            assert('$modelClassName != null && is_string($modelClassName)');
+            return new ModelAttributesImportMappingAdapter(new $modelClassName(false));
         }
 
         /**
@@ -176,7 +221,7 @@
         }
 
         /**
-         * Given an attribute index or derived type, return the class name of the appropriate attribute rules type.
+         * Given an attribute index or derived type, return the appropriate attribute rules type.
          * @param string $attributeIndexOrDerivedType
          * @throws NotSupportedException
          * @return string - attribute rules type.
@@ -190,7 +235,8 @@
             {
                 return $attributeImportRulesData[$attributeIndexOrDerivedType];
             }
-            throw new NotSupportedException();
+            throw new NotSupportedException('Model Class Name' . $modelClassName .
+                                            'Attribute Name or Derived Type: ' . $attributeIndexOrDerivedType);
         }
 
         /**
@@ -250,7 +296,7 @@
          *
          * For this set of import rules, get only the required attributes indexed by attribute index in an attribute
          * collection array. This will filter out any required attributes that are read only on their respective
-         * models.
+         * models.  Owner is not marked as required because it will default to the person importing.
          * @return array
          */
         public static function getRequiredAttributesCollectionNotIncludingReadOnly()
@@ -261,12 +307,52 @@
             $requireAttributesCollection           = array();
             foreach ($attributesCollection as $attributeIndex => $attributeData)
             {
-                if ($attributeData['isRequired'] && !$model->isAttributeReadOnly($attributeData['attributeName']))
+                if ($attributeData['attributeName'] != 'owner' &&
+                    !in_array($attributeData['attributeName'], static::getNonImportableAttributeNames()) &&
+                    !in_array($attributeData['attributeImportRulesType'], static::getNonImportableAttributeImportRulesTypes()) &&
+                    $attributeData['isRequired'] &&
+                    !$model->isAttributeReadOnly($attributeData['attributeName']))
                 {
                     $requireAttributesCollection[$attributeIndex] = $attributeData;
                 }
             }
+            static::resolveRequiredDerivedAttributesCollection($requireAttributesCollection);
             return $requireAttributesCollection;
+        }
+
+        /**
+         * If there is any derived attribute with a real attribute required that is not yeat in
+         * the attributesCollection, if populate the Collection with the date from the derived attribute
+         * @param Array $attributesCollection
+         */
+        protected static function resolveRequiredDerivedAttributesCollection(& $attributesCollection)
+        {
+            $modelClassName = static::getModelClassName();
+            $model          = new $modelClassName(false);
+            foreach (static::getDerivedAttributeTypes() as $derivedType)
+            {
+                $attributeImportRulesClassName = $derivedType . 'AttributeImportRules';
+                $attributeImportRules          = new $attributeImportRulesClassName($model);
+                assert('$attributeImportRules instanceof DerivedAttributeImportRules');
+                $displayLabel                  = $attributeImportRules->getDisplayLabel();
+                $realAttributes                = $attributeImportRules->getRealModelAttributeNames();
+                foreach ($realAttributes as $realAttribute)
+                {
+                    if (!in_array($realAttribute, array_keys($attributesCollection)) &&
+                       $model->isAttributeRequired($realAttribute))
+                    {
+                        ModelAttributeImportMappingCollectionUtil::populateCollection(
+                            $attributesCollection,
+                            $realAttribute,
+                            $displayLabel,
+                            $realAttribute,
+                            $derivedType,
+                            null,
+                            true
+                        );
+                    }
+                }
+            }
         }
 
         /**
@@ -281,6 +367,15 @@
                 $labelsData[] = $attributeData['attributeLabel'];
             }
             return $labelsData;
+        }
+
+        /**
+         * Get fields for which dedupe ruled would be executed
+         * @return array
+         */
+        public static function getDedupeAttributes()
+        {
+            return array();
         }
     }
 ?>

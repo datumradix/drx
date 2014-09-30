@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -41,13 +51,13 @@
             $aUser = UserTestHelper::createBasicUser('aUser');
             $aUser->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB);
             $saved = $aUser->save();
-            if(!$saved)
+            if (!$saved)
             {
                 throw new NotSupportedException();
             }
-            $bUser = UserTestHelper::createBasicUser('bUser');
-            $cUser = UserTestHelper::createBasicUser('cUser');
-            $dUser = UserTestHelper::createBasicUser('dUser');
+            UserTestHelper::createBasicUser('bUser');
+            UserTestHelper::createBasicUser('cUser');
+            UserTestHelper::createBasicUser('dUser');
         }
 
         public function testSuperUserAllDefaultControllerActions()
@@ -60,6 +70,10 @@
             $this->runControllerWithNoExceptionsAndGetContent('users/default/index');
             $this->runControllerWithNoExceptionsAndGetContent('users/default/list');
             $this->runControllerWithNoExceptionsAndGetContent('users/default/create');
+            $this->runControllerWithNoExceptionsAndGetContent('users/default/profile');
+
+            //Access to admin configuration should be allowed.
+            $this->runControllerWithNoExceptionsAndGetContent('configuration');
 
             //Default Controller actions requiring some sort of parameter via POST or GET
             //Load Model Edit Views
@@ -69,8 +83,32 @@
             $bUser = User::getByUsername('buser');
             $cUser = User::getByUsername('cuser');
             $dUser = User::getByUsername('duser');
+            $super = User::getByUsername('super');
+
+            $this->setGetArray(array('id' => $super->id));
+            //Access to allowed to view Audit Trail.
+            $this->runControllerWithNoExceptionsAndGetContent('users/default/auditEventsModalList');
+
             $this->setGetArray(array('id' => $aUser->id));
-            $this->runControllerWithNoExceptionsAndGetContent('users/default/edit');
+            //Access to allowed to view Audit Trail.
+            $this->runControllerWithNoExceptionsAndGetContent('users/default/auditEventsModalList');
+
+            $this->setGetArray(array('id' => $bUser->id));
+            //Access to allowed to view Audit Trail.
+            $this->runControllerWithNoExceptionsAndGetContent('users/default/auditEventsModalList');
+
+            $this->setGetArray(array('id' => $super->id));
+            //Access to User Role edit link and control available.
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/edit');
+            $this->assertTrue(strpos($content, 'User_role_SelectLink') !== false);
+            $this->assertTrue(strpos($content, 'User_role_name') !== false);
+
+            $this->setGetArray(array('id' => $aUser->id));
+            //Access to User Role edit link and control available.
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/edit');
+            $this->assertTrue(strpos($content, 'User_role_SelectLink') !== false);
+            $this->assertTrue(strpos($content, 'User_role_name') !== false);
+
             $users = User::getAll();
             $this->assertEquals(5, count($users));
             //Save user.
@@ -104,9 +142,18 @@
             $this->setGetArray(array('id' => $aUser->id));
             $this->resetPostArray();
             $this->runControllerWithNoExceptionsAndGetContent('users/default/details');
+            //Load game dashboard view
+            $this->setGetArray(array('id' => $aUser->id));
+            $this->resetPostArray();
+            $this->runControllerWithNoExceptionsAndGetContent('users/default/gameDashboard');
 
             //Load Model Security Detail View
             $this->setGetArray(array('id' => $aUser->id));
+            $this->resetPostArray();
+            $this->runControllerWithNoExceptionsAndGetContent('users/default/securityDetails');
+
+            //Load Model Security Detail View for super user
+            $this->setGetArray(array('id' => $super->id));
             $this->resetPostArray();
             $this->runControllerWithNoExceptionsAndGetContent('users/default/securityDetails');
 
@@ -137,12 +184,11 @@
             $this->setGetArray(array(
                 'selectedIds'  => $aUser->id . ',' . $bUser->id, // Not Coding Standard
                 'selectAll'    => '',
-                'User_page' => 1));
+                'User_page'    => 1));
             $this->setPostArray(array(
                 'User'      => array('officePhone' => '7788'),
                 'MassEdit'     => array('officePhone' => 1)
             ));
-
             $this->runControllerWithRedirectExceptionAndGetContent('users/default/massEdit');
 
             //Test that the 2 contacts have the new office phone number and the other contacts do not.
@@ -202,7 +248,7 @@
 
             //actionModalList
             $this->setGetArray(array(
-                'modalTransferInformation' => array('sourceIdFieldId' => 'x', 'sourceNameFieldId' => 'y')
+                'modalTransferInformation' => array('sourceIdFieldId' => 'x', 'sourceNameFieldId' => 'y', 'modalId' => 'z')
             ));
             $this->runControllerWithNoExceptionsAndGetContent('users/default/modalList');
 
@@ -305,28 +351,29 @@
             $this->assertTrue(Right::NONE == $user->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB));
             $this->assertTrue(Right::NONE == $user->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_MOBILE));
             $this->assertTrue(Right::NONE == $user->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API));
+            $this->assertEquals(1, $user->isActive);
 
-            //Change the user's status to inactive and confirm the changes in rights.
+            //Change the user's status to inactive and confirm the changes in rights and isActive attribute.
             $this->setGetArray(array('id' => $user->id));
             $this->setPostArray(array('User' => array('userStatus'  => UserStatusUtil::INACTIVE)));
             $this->runControllerWithRedirectExceptionAndGetContent('users/default/edit');
-
             $userId     = $user->id;
             $user       = User::getById($userId);
             $this->assertTrue(Right::DENY == $user->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB));
             $this->assertTrue(Right::DENY == $user->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_MOBILE));
             $this->assertTrue(Right::DENY == $user->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API));
+            $this->assertEquals(0, $user->isActive);
 
             //Now change the user's status back to active.
             $this->setGetArray(array('id' => $user->id));
             $this->setPostArray(array('User' => array('userStatus'  => UserStatusUtil::ACTIVE)));
             $this->runControllerWithRedirectExceptionAndGetContent('users/default/edit');
-
             $userId     = $user->id;
             $user       = User::getById($userId);
             $this->assertTrue(Right::NONE == $user->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB));
             $this->assertTrue(Right::NONE == $user->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_MOBILE));
             $this->assertTrue(Right::NONE == $user->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API));
+            $this->assertEquals(1, $user->isActive);
         }
 
         /**
@@ -363,6 +410,330 @@
             $user = User::getByUsername('somenewuser');
             $this->assertEquals('Some', $user->firstName);
             $this->assertEquals('Body', $user->lastName);
+        }
+
+        public function testSuperUserChangeAvatar()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $aUser = User::getByUsername('auser');
+
+            //Super user as access to change every users avatar
+            $this->setGetArray(array('id' => $aUser->id));
+            $this->runControllerWithNoExceptionsAndGetContent('users/default/changeAvatar');
+
+            //Failed change avatar validation
+            $this->setGetArray(array('id' => $aUser->id));
+            $this->setPostArray(array('ajax'           => 'edit-form',
+                                      'UserAvatarForm' => array('avatarType'               => '3',
+                                                                'customAvatarEmailAddress' => ''))
+                                );
+            $content = $this->runControllerWithExitExceptionAndGetContent('users/default/changeAvatar');
+            $this->assertContains('You need to choose an email address', $content);
+
+            //Successful change avatar validation
+            $this->setGetArray (array('id'      => $aUser->id));
+            $this->setPostArray(array('ajax'           => 'edit-form',
+                                      'UserAvatarForm' => array('avatarType'               => '1',
+                                                                'customAvatarEmailAddress' => ''))
+                                );
+            $content = $this->runControllerWithExitExceptionAndGetContent('users/default/changeAvatar');
+            $this->assertContains('[]', $content);
+
+            //Successful save avatar change.
+            $this->setGetArray(array('id' => $aUser->id));
+            $this->setPostArray(array('save'           => 'Save',
+                                      'UserAvatarForm' => array('avatarType'               => '2',
+                                                                'customAvatarEmailAddress' => ''))
+                                );
+            $this->runControllerWithRedirectExceptionAndGetContent('users/default/changeAvatar');
+        }
+
+        public function testSuperUserChangeOtherUserEmailSignature()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $aUser = User::getByUsername('auser');
+            $this->assertEquals(0, $aUser->emailSignatures->count());
+            $this->assertEquals($aUser, $aUser->getEmailSignature()->user);
+
+            //Change email settings
+            $this->setPostArray(array('EmailSmtpConfigurationForm' => array(
+                                    'host'                              => 'abc',
+                                    'port'                              => '565',
+                                    'username'                          => 'myuser',
+                                    'password'                          => 'apassword',
+                                    'security'                          => 'ssl')));
+            $this->runControllerWithRedirectExceptionAndGetContent('emailMessages/default/configurationEditOutbound');
+            $this->assertEquals('Email configuration saved successfully.',
+                                Yii::app()->user->getFlash('notification'));
+
+            //Change aUser email signature
+            $this->setGetArray(array('id' => $aUser->id));
+            $this->resetPostArray();
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/emailConfiguration');
+            $this->assertNotContains('abc email signature', $content);
+            $this->setPostArray(array('UserEmailConfigurationForm' => array(
+                                    'fromName'                          => 'abc',
+                                    'fromAddress'                       => 'abc@zurmo.org',
+                                    'useCustomOutboundSettings'         => 0,
+                                    'emailSignatureHtmlContent'         => 'abc email signature')));
+            $this->runControllerWithRedirectExceptionAndGetContent('users/default/emailConfiguration');
+            $this->assertEquals('User email configuration saved successfully.',
+                                Yii::app()->user->getFlash('notification'));
+            $aUser = User::getByUsername('auser');
+            $this->assertEquals(1, $aUser->emailSignatures->count());
+            $this->assertEquals('abc email signature', $aUser->emailSignatures[0]->htmlContent);
+            $this->resetPostArray();
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/emailConfiguration');
+            $this->assertContains('abc email signature', $content);
+        }
+
+        /**
+         * This would check resolveCanCurrentUserAccessRootUser and resolveAccessingASystemUser
+         * in a walkthrough test
+         */
+        public function testSuperUserChangeAvatarForPermissionsAsRootAndSystemUser()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $aUser = User::getByUsername('auser');
+            $aUser->setIsSystemUser();
+            //$aUser->setIsRootUser();
+            $this->assertTrue($aUser->save());
+            unset($aUser);
+
+            $aUser = User::getByUsername('auser');
+            $this->assertFalse((bool)$aUser->isRootUser);
+            $this->assertTrue((bool)$aUser->isSystemUser);
+
+            //Super user as access to change every users avatar
+            $this->setGetArray(array('id' => $aUser->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/changeAvatar');
+            $this->assertTrue(strpos($content, 'You have tried to access a page') > 0);
+
+            $aUser->setIsNotSystemUser();
+            $aUser->setIsRootUser();
+            $this->assertTrue($aUser->save());
+            unset($aUser);
+
+            $aUser = User::getByUsername('auser');
+            $this->assertFalse((bool)$aUser->isSystemUser);
+            $this->assertTrue((bool)$aUser->isRootUser);
+
+            //Super user as access to change every users avatar
+            $this->setGetArray(array('id' => $aUser->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/changeAvatar');
+            $this->assertTrue(strpos($content, 'You have tried to access a page') > 0);
+
+            $aUser->setIsNotSystemUser();
+            $aUser->setIsNotRootUser();
+            $this->assertTrue($aUser->save());
+            unset($aUser);
+
+            $aUser = User::getByUsername('auser');
+            $this->assertFalse((bool)$aUser->isSystemUser);
+            $this->assertFalse((bool)$aUser->isRootUser);
+
+            //Super user as access to change every users avatar
+            $this->setGetArray(array('id' => $aUser->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/changeAvatar');
+            $this->assertFalse(strpos($content, 'You have tried to access a page') > 0);
+        }
+
+        //TODO: need to clarify with Jason
+        public function testCanCurrentUserViewALinkRequiringElevatedAccess()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $aUser = User::getByUsername('auser');
+            $this->setGetArray(array('id' => $aUser->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/details');
+            $this->assertTag(
+                array(
+                    'tag'       => 'span',
+                    'content'   => 'Details',
+                    'ancestor'  => array(
+                        'id'  => 'UserDetailsAndRelationsView',
+                    )
+                ), $content
+            );
+            $this->assertTag(
+                array(
+                    'tag'       => 'span',
+                    'content'   => 'Edit',
+                    'ancestor'  => array(
+                        'id'  => 'UserDetailsAndRelationsView',
+                    )
+                ), $content
+            );
+            $this->assertTag(
+                array(
+                    'tag'       => 'span',
+                    'content'   => 'Audit Trail',
+                    'ancestor'  => array(
+                        'id'  => 'UserDetailsAndRelationsView',
+                    )
+                ), $content
+            );
+            $this->assertTag(
+                array(
+                    'tag'       => 'span',
+                    'content'   => 'Change Password',
+                    'ancestor'  => array(
+                        'id'  => 'UserDetailsAndRelationsView',
+                    )
+                ), $content
+            );
+            $this->assertTag(
+                array(
+                    'tag'       => 'span',
+                    'content'   => 'Configuration',
+                    'ancestor'  => array(
+                        'id'  => 'UserDetailsAndRelationsView',
+                    )
+                ), $content
+            );
+
+            $aUser = User::getByUsername('auser');
+            $aUser->setIsRootUser();
+            $this->assertTrue($aUser->save());
+            unset($aUser);
+
+            $aUser = User::getByUsername('auser');
+            $this->assertTrue((bool)$aUser->isRootUser);
+            $this->assertFalse((bool)$aUser->isSystemUser);
+
+            $this->setGetArray(array('id' => $aUser->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/details');
+            $this->runControllerWithNoExceptionsAndGetContent('users/default/gameDashboard');
+
+            //Normal user should only see details of other users
+            $this->logoutCurrentUserLoginNewUserAndGetByUsername('bUser');
+            $this->setGetArray(array('id' => $aUser->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/details');
+            $this->assertTag(
+                array(
+                    'tag'       => 'span',
+                    'content'   => 'Details',
+                    'ancestor'  => array(
+                        'id'  => 'UserDetailsAndRelationsView',
+                    )
+                ), $content
+            );
+            $this->assertNotTag(
+                array(
+                    'tag'       => 'span',
+                    'content'   => 'Edit',
+                    'ancestor'  => array(
+                        'id'  => 'UserDetailsAndRelationsView',
+                    )
+                ), $content
+            );
+            $this->assertNotTag(
+                array(
+                    'tag'       => 'span',
+                    'content'   => 'Audit Trail',
+                    'ancestor'  => array(
+                        'id'  => 'UserDetailsAndRelationsView',
+                    )
+                ), $content
+            );
+            $this->assertNotTag(
+                array(
+                    'tag'       => 'span',
+                    'content'   => 'Change Password',
+                    'ancestor'  => array(
+                        'id'  => 'UserDetailsAndRelationsView',
+                    )
+                ), $content
+            );
+            $this->assertNotTag(
+                array(
+                    'tag'       => 'span',
+                    'content'   => 'Configuration',
+                    'ancestor'  => array(
+                        'id'  => 'UserDetailsAndRelationsView',
+                    )
+                ), $content
+            );
+        }
+
+        public function testExplicitLoginPermissions()
+        {
+            $aUser = User::getByUsername('auser');
+            $aUser->setIsSystemUser();
+            $aUser->setIsNotRootUser();
+            $this->assertTrue($aUser->save());
+            unset($aUser);
+
+            $aUser = User::getByUsername('auser');
+            $this->assertFalse((bool)$aUser->isRootUser);
+            $this->assertTrue((bool)$aUser->isSystemUser);
+            $this->setPostArray(array('LoginForm' => array(
+                                                        'username' => $aUser->username,
+                                                        'password' => 'bNewPassword',
+                                                        'rememberMe' => '0')));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/login');
+            $this->assertTrue(strpos($content, 'Incorrect username or password') > 0);
+
+            $aUser->setIsNotSystemUser();
+            $this->assertTrue($aUser->save());
+            unset($aUser);
+
+            $aUser = User::getByUsername('auser');
+            $this->assertFalse((bool)$aUser->isRootUser);
+            $this->assertFalse((bool)$aUser->isSystemUser);
+            $this->setPostArray(array('LoginForm' => array(
+                                                        'username' => $aUser->username,
+                                                        'password' => 'bNewPassword',
+                                                        'rememberMe' => '0')));
+            if (Yii::app()->edition == 'Community')
+            {
+                $this->runControllerWithRedirectExceptionAndGetContent('zurmo/default/login');
+            }
+            else
+            {
+                //Proper handling of license key infrastructure
+                $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/login');
+            }
+        }
+
+        public function testDateAttributeIsSanitizedCorrectly()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            $metadata = User::getMetadata();
+            if (!in_array('birthday', $metadata['User']['members']))
+            {
+                $metadata['User']['members'][]  = 'birthday';
+            }
+            if (!in_array(array('birthday', 'type', 'type' => 'date'), $metadata['User']['rules']))
+            {
+                $metadata['User']['rules'][]    = array('birthday', 'type', 'type' => 'date');
+                $metadata['User']['elements']['birthday'] = 'Date';
+            }
+            unset($metadata['Person']);
+            User::setMetadata($metadata);
+
+            $messageLogger = new MessageLogger();
+            RedBeanModelsToTablesAdapter::generateTablesFromModelClassNames(array('User'), $messageLogger);
+
+            UserTestHelper::createBasicUser('dateUser');
+            $dateUser = User::getByUsername('dateuser');
+            $this->setGetArray(array('id' => $dateUser->id));
+            $this->setPostArray(array('User' => array('birthday' => '12/05/2000')));
+            $this->runControllerWithRedirectExceptionAndGetContent('users/default/edit');
+            $dateUser = User::getById($dateUser->id);
+            $this->assertEquals('2000-12-05',  $dateUser->birthday);
+        }
+
+        public function testAuditEventsModalList()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            AuditEvent::logAuditEvent('UsersModule', UsersModule::AUDIT_EVENT_USER_LOGGED_IN);
+            AuditEvent::logAuditEvent('UsersModule', UsersModule::AUDIT_EVENT_USER_LOGGED_OUT);
+            $this->setGetArray(array('id' => $super->id));
+            $this->resetPostArray();
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/auditEventsModalList');
+            $this->assertContains('User Logged In', $content);
+            $this->assertContains('User Logged Out', $content);
         }
     }
 ?>

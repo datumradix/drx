@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -29,16 +39,6 @@
      */
     class NumberSanitizerUtil extends SanitizerUtil
     {
-        public static function supportsSqlAttributeValuesDataAnalysis()
-        {
-            return false;
-        }
-
-        public static function getBatchAttributeValueDataAnalyzerType()
-        {
-            return 'Number';
-        }
-
         /**
          * If a number value is invalid, then skip the entire row during import.
          */
@@ -48,40 +48,76 @@
         }
 
         /**
-         * Given a value, resolve that the value is a correctly formatted number. If not, an
-         * InvalidValueToSanitizeException is thrown.
-         * @param string $modelClassName
-         * @param string $attributeName
-         * @param mixed $value
-         * @param array $mappingRuleData
+         * @param RedBean_OODBBean $rowBean
          */
-        public static function sanitizeValue($modelClassName, $attributeName, $value, $mappingRuleData)
+        public function analyzeByRow(RedBean_OODBBean $rowBean)
         {
-            assert('is_string($modelClassName)');
-            assert('is_string($attributeName)');
-            assert('$mappingRuleData == null');
-            if ($value == null)
+            if ($rowBean->{$this->columnName} == null)
             {
-                return $value;
+                return;
             }
-            $model    = new $modelClassName(false);
-            $type     = ModelAttributeToMixedTypeUtil::getType($model, $attributeName);
+            $type      = $this->resolveType();
             $validator = new RedBeanModelNumberValidator();
-            if ($validator->integerOnly === true)
+            if ($type == 'Integer')
             {
-                if (!preg_match($validator->integerPattern, $value))
+                if (!preg_match($validator->integerPattern, $rowBean->{$this->columnName}))
                 {
-                    throw new InvalidValueToSanitizeException(Yii::t('Default', 'Invalid integer format.'));
+                    $label = Zurmo::t('ImportModule', 'Is invalid.');
+                    $this->shouldSkipRow      = true;
+                    $this->analysisMessages[] = $label;
                 }
             }
             else
             {
-                if (!preg_match($validator->numberPattern, $value))
+                if (!preg_match($validator->numberPattern, $rowBean->{$this->columnName}))
                 {
-                    throw new InvalidValueToSanitizeException(Yii::t('Default', 'Invalid number format.'));
+                    $label = Zurmo::t('ImportModule', 'Is invalid.');
+                    $this->shouldSkipRow      = true;
+                    $this->analysisMessages[] = $label;
                 }
             }
-            return $value;
+        }
+
+        /**
+         * Given a value, resolve that the value is a correctly formatted number. If not, an
+         * InvalidValueToSanitizeException is thrown.
+         * @param mixed $value
+         * @return sanitized value
+         * @throws InvalidValueToSanitizeException
+         */
+        public function sanitizeValue($value)
+        {
+            assert('$this->mappingRuleData == null');
+            if ($value == null)
+            {
+                return $value;
+            }
+            $sanitizedValue = str_replace('$', '', $value);
+            $sanitizedValue = str_replace(',', '', $sanitizedValue); // Not Coding Standard
+            $type           = $this->resolveType();
+            $validator      = new RedBeanModelNumberValidator();
+            if ($type == 'Integer')
+            {
+                if (!preg_match($validator->integerPattern, $sanitizedValue))
+                {
+                    throw new InvalidValueToSanitizeException(Zurmo::t('ImportModule', 'Invalid integer format.'));
+                }
+            }
+            else
+            {
+                if (!preg_match($validator->numberPattern, $sanitizedValue))
+                {
+                    throw new InvalidValueToSanitizeException(Zurmo::t('ImportModule', 'Invalid number format.'));
+                }
+            }
+            return $sanitizedValue;
+        }
+
+        protected function resolveType()
+        {
+            $modelClassName = $this->modelClassName;
+            $model          = new $modelClassName(false);
+            return ModelAttributeToMixedTypeUtil::getType($model, $this->attributeName);
         }
     }
 ?>

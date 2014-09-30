@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,19 +12,29 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ImportDefaultController extends Controller
+    class ImportDefaultController extends ZurmoBaseController
     {
         public function filters()
         {
@@ -62,13 +72,20 @@
                 ImportWizardUtil::setFormByPostForStep1($importWizardForm, $_POST[get_class($importWizardForm)]);
                 $this->attemptToValidateImportWizardFormAndSave($importWizardForm, $import, 'step2');
             }
-            $importView = new GridView(2, 1);
-            $importView->setView(new TitleBarView(Yii::t('Default', 'Import Wizard: Step 1 of 6')), 0, 0);
-            $importView->setView(new ImportWizardImportRulesView($this->getId(),
-                                                                       $this->getModule()->getId(),
-                                                                       $importWizardForm), 1, 0);
-            $view       = new ImportPageView($this, $importView);
-            echo $view->render();
+            $title = Zurmo::t('ImportModule', 'Import Wizard - Select Module');
+            if ($importWizardForm->importRulesType != null)
+            {
+                $importRulesClassName  = ImportRulesUtil::getImportRulesClassNameByType($importWizardForm->importRulesType);
+            }
+            else
+            {
+                $importRulesClassName  = null;
+            }
+            $progressBarAndStepsView = new ImportStepsAndProgressBarForWizardView($importRulesClassName, 0);
+            $importView = new ImportWizardImportRulesView($this->getId(),
+                                                          $this->getModule()->getId(),
+                                                          $importWizardForm, $title);
+            echo $this->getImportPageView($progressBarAndStepsView, $importView)->render();
         }
 
         /**
@@ -85,19 +102,19 @@
                 if ($importWizardForm->fileUploadData == null)
                 {
                     $importWizardForm->addError('fileUploadData',
-                    Yii::t('Default', 'A file must be uploaded in order to continue the import process.'));
+                    Zurmo::t('ImportModule', 'A file must be uploaded in order to continue the import process.'));
                 }
                 elseif (!ImportWizardUtil::importFileHasAtLeastOneImportRow($importWizardForm, $import))
                 {
                     if ($importWizardForm->firstRowIsHeaderRow)
                     {
                         $importWizardForm->addError('fileUploadData',
-                        Yii::t('Default', 'The file that has been uploaded only has a header row and no additional rows to import.'));
+                        Zurmo::t('ImportModule', 'The file that has been uploaded only has a header row and no additional rows to import.'));
                     }
                     else
                     {
                         $importWizardForm->addError('fileUploadData',
-                        Yii::t('Default', 'A file must be uploaded with at least one row to import.'));
+                        Zurmo::t('ImportModule', 'A file must be uploaded with at least one row to import.'));
                     }
                 }
                 else
@@ -114,13 +131,12 @@
                     $this->attemptToValidateImportWizardFormAndSave($importWizardForm, $import, $nextStep);
                 }
             }
-            $importView = new GridView(2, 1);
-            $importView->setView(new TitleBarView(Yii::t('Default', 'Import Wizard: Step 2 of 6')), 0, 0);
-            $importView->setView(new ImportWizardUploadFileView($this->getId(),
-                                                                $this->getModule()->getId(),
-                                                                $importWizardForm), 1, 0);
-            $view       = new ImportPageView($this, $importView);
-            echo $view->render();
+            $title = Zurmo::t('ImportModule', 'Import Wizard - Upload File');
+            $importRulesClassName  = ImportRulesUtil::getImportRulesClassNameByType($importWizardForm->importRulesType);
+            $progressBarAndStepsView = new ImportStepsAndProgressBarForWizardView($importRulesClassName, 1);
+            $importView = new ImportWizardUploadFileView($this->getId(), $this->getModule()->getId(),
+                                                         $importWizardForm, $title);
+            echo $this->getImportPageView($progressBarAndStepsView, $importView)->render();
         }
 
         /**
@@ -135,13 +151,13 @@
                 ImportWizardUtil::setFormByPostForStep3($importWizardForm, $_POST[get_class($importWizardForm)]);
                 $this->attemptToValidateImportWizardFormAndSave($importWizardForm, $import, 'step4');
             }
-            $importView = new GridView(2, 1);
-            $importView->setView(new TitleBarView(Yii::t('Default', 'Import Wizard: Step 3 of 6')), 0, 0);
-            $importView->setView(new ImportWizardSetModelPermissionsView($this->getId(),
-                                                                         $this->getModule()->getId(),
-                                                                         $importWizardForm), 1, 0);
-            $view       = new ImportPageView($this, $importView);
-            echo $view->render();
+            $title      = Zurmo::t('ImportModule', 'Import Wizard - Select Permissions');
+            $importRulesClassName  = ImportRulesUtil::getImportRulesClassNameByType($importWizardForm->importRulesType);
+            $progressBarAndStepsView = new ImportStepsAndProgressBarForWizardView($importRulesClassName, 2);
+            $importView = new ImportWizardSetModelPermissionsView($this->getId(),
+                                                                  $this->getModule()->getId(),
+                                                                  $importWizardForm, $title);
+            echo $this->getImportPageView($progressBarAndStepsView, $importView)->render();
         }
 
         /**
@@ -152,7 +168,6 @@
             $import               = Import::getById((int)$id);
             $importWizardForm     = ImportWizardUtil::makeFormByImport($import);
             $importWizardForm->setScenario('saveMappingData');
-            $tempTableName        = $import->getTempTableName();
             $importRulesClassName = ImportRulesUtil::getImportRulesClassNameByType($importWizardForm->importRulesType);
             if (isset($_POST[get_class($importWizardForm)]))
             {
@@ -179,7 +194,7 @@
                 else
                 {
                     $importWizardForm->validate();
-                    $importWizardForm->addError('mappingData', Yii::t('Default',
+                    $importWizardForm->addError('mappingData', Zurmo::t('ImportModule',
                                                 'There are errors with some of your mapping rules. Please fix.'));
                 }
             }
@@ -194,7 +209,7 @@
                                                               (bool)$importWizardForm->firstRowIsHeaderRow);
             if ($importWizardForm->firstRowIsHeaderRow)
             {
-                $headerRow = ImportDatabaseUtil::getFirstRowByTableName($import->getTempTableName());
+                $headerRow = ZurmoRedBean::$writer->getFirstRowByTableName($import->getTempTableName());
                 assert('$headerRow != null');
             }
             else
@@ -213,19 +228,22 @@
                                                               $sample, $headerRow);
             $mappableAttributeIndicesAndDerivedTypes        = $importRulesClassName::
                                                               getMappableAttributeIndicesAndDerivedTypes();
-            $importView                                     = new GridView(2, 1);
-            $importView->setView(new TitleBarView(Yii::t('Default', 'Import Wizard: Step 4 of 6')), 0, 0);
-            $importView->setView(new ImportWizardMappingView($this->getId(),
-                                                             $this->getModule()->getId(),
-                                                             $importWizardForm,
-                                                             $pagerContent,
-                                                             $mappingDataMetadata,
-                                                             $mappingDataMappingRuleFormsAndElementTypes,
-                                                             $mappableAttributeIndicesAndDerivedTypes,
-                                                             $importRulesClassName::getRequiredAttributesLabelsData()),
-                                                             1, 0);
-            $view                                           = new ImportPageView($this, $importView);
-            echo $view->render();
+            $title                                          = Zurmo::t('ImportModule', 'Import Wizard - Map Fields');
+            $importRulesClassName                           = ImportRulesUtil::getImportRulesClassNameByType(
+                                                              $importWizardForm->importRulesType);
+            $stepToUse = ImportStepsAndProgressBarForWizardView::resolveAfterUploadStepByImportClassName(3, $importRulesClassName);
+            $progressBarAndStepsView                        = new ImportStepsAndProgressBarForWizardView(
+                                                              $importRulesClassName, $stepToUse);
+            $importView                                     = new ImportWizardMappingView($this->getId(),
+                                                              $this->getModule()->getId(),
+                                                              $importWizardForm,
+                                                              $pagerContent,
+                                                              $mappingDataMetadata,
+                                                              $mappingDataMappingRuleFormsAndElementTypes,
+                                                              $mappableAttributeIndicesAndDerivedTypes,
+                                                              $importRulesClassName::getRequiredAttributesLabelsData(),
+                                                              $title);
+            echo $this->getImportPageView($progressBarAndStepsView, $importView)->render();
         }
 
         /**
@@ -233,11 +251,12 @@
          * @param integer id - Import model id
          * @param string $step
          */
-        function actionStep5($id, $step = null)
+        public function actionStep5($id, $step = null, $pageSize = null)
         {
-            if (isset($_GET['nextParams']))
+            $getData              = GetUtil::getData();
+            if (isset($getData['nextParams']))
             {
-                $nextParams = $_GET['nextParams'];
+                $nextParams = $getData['nextParams'];
             }
             else
             {
@@ -245,62 +264,108 @@
             }
             assert('$step == null || is_string($step)');
             assert('$nextParams == null || is_array($nextParams)');
-
             $import               = Import::getById((int)$id);
             $importWizardForm     = ImportWizardUtil::makeFormByImport($import);
             $unserializedData     = unserialize($import->serializedData);
-            $pageSize             = Yii::app()->pagination->resolveActiveForCurrentUserByType('importPageSize');
+            if ($pageSize == null)
+            {
+                $pageSize = Yii::app()->pagination->resolveActiveForCurrentUserByType('importPageSize');
+            }
             $config               = array('pagination' => array('pageSize' => $pageSize));
+            $filteredByStatus     = $this->resolveFilteredByStatus();
             $dataProvider         = new ImportDataProvider($import->getTempTableName(),
                                                            (bool)$importWizardForm->firstRowIsHeaderRow,
-                                                           $config);
+                                                           $config, null, $filteredByStatus);
             $sequentialProcess    = new ImportDataAnalysisSequentialProcess($import, $dataProvider);
             $sequentialProcess->run($step, $nextParams);
-            $nextStep             = $sequentialProcess->getNextStep();
             $route                = $this->getModule()->getId() . '/' . $this->getId() . '/step5';
             if ($sequentialProcess->isComplete())
             {
+                $this->resolveResettingPageOnCompletion($dataProvider);
                 $columnNamesAndAttributeIndexOrDerivedTypeLabels = ImportMappingUtil::
                                                                   makeColumnNamesAndAttributeIndexOrDerivedTypeLabels(
                                                                   $unserializedData['mappingData'],
                                                                   $unserializedData['importRulesType']);
-                $dataAnalysisCompleteView = new ImportWizardDataAnalysisCompleteView($this->getId(),
-                                                $this->getModule()->getId(),
-                                                $importWizardForm,
-                                                $columnNamesAndAttributeIndexOrDerivedTypeLabels);
-
-                $sequenceView = new ContainedViewCompleteSequentialProcessView($dataAnalysisCompleteView);
+                if (isset($getData['ajax']) && $getData['ajax'] == 'import-temp-table-list-view')
+                {
+                    $resolvedView = new AnalysisResultsImportTempTableListView(
+                                        $this->getId(),
+                                        $this->getModule()->getId(),
+                                        $dataProvider,
+                                        $unserializedData['mappingData'],
+                                        $importWizardForm->importRulesType,
+                                        ImportWizardDataAnalysisCompleteView::resolveConfigurationForm(),
+                                        new ZurmoActiveForm(),
+                                        $import->id);
+                }
+                else
+                {
+                    $dataAnalysisCompleteView = new ImportWizardDataAnalysisCompleteView($this->getId(),
+                                                    $this->getModule()->getId(),
+                                                    $importWizardForm,
+                                                    $columnNamesAndAttributeIndexOrDerivedTypeLabels,
+                                                    $dataProvider,
+                                                    $unserializedData['mappingData']);
+                    $resolvedView = new ContainedViewCompleteSequentialProcessView($dataAnalysisCompleteView);
+                }
             }
             else
             {
-                $sequenceView = SequentialProcessViewFactory::makeBySequentialProcess($sequentialProcess, $route);
+                $resolvedView = SequentialProcessViewFactory::makeBySequentialProcess($sequentialProcess, $route);
             }
             if ($step == null)
             {
-                $gridView     = new GridView(2, 1);
-                $titleBarView = new TitleBarView (Yii::t('Default', 'Import Wizard: Step 5 of 6'));
-                $wrapperView  = new ImportSequentialProcessContainerView($sequenceView, $sequentialProcess->getAllStepsMessage());
-                $gridView->setView($titleBarView, 0, 0);
-                $gridView->setView($wrapperView, 1, 0);
-                $view        = new ImportPageView($this, $gridView);
+                $title                   = Zurmo::t('ImportModule', 'Import Wizard - Analyze Data');
+                $importRulesClassName    = ImportRulesUtil::getImportRulesClassNameByType($importWizardForm->importRulesType);
+                $stepToUse = ImportStepsAndProgressBarForWizardView::resolveAfterUploadStepByImportClassName(4, $importRulesClassName);
+                $progressBarAndStepsView = new ImportStepsAndProgressBarForWizardView($importRulesClassName, $stepToUse);
+                $wrapperView  = new ImportSequentialProcessContainerView($resolvedView,
+                                                                         $sequentialProcess->getAllStepsMessage(),
+                                                                         $title);
+                $wrapperView->setCssClasses(array('DetailsView'));
+                $view = $this->getImportPageView($progressBarAndStepsView, $wrapperView);
             }
             else
             {
-                $view        = new AjaxPageView($sequenceView);
+                $view        = new AjaxPageView($resolvedView);
             }
             echo $view->render();
         }
 
+        protected function resolveFilteredByStatus()
+        {
+            $getData = GetUtil::getData();
+            if (isset($getData['ImportResultsConfigurationForm']) &&
+               !empty($getData['ImportResultsConfigurationForm']['filteredByStatus']) &&
+                $getData['ImportResultsConfigurationForm']['filteredByStatus'] !=
+                ImportResultsConfigurationForm::FILTERED_BY_ALL)
+            {
+                return $getData['ImportResultsConfigurationForm']['filteredByStatus'];
+            }
+            return null;
+        }
+
+        protected function resolveResettingPageOnCompletion(ImportDataProvider $dataProvider)
+        {
+            $getData = GetUtil::getData();
+            if (!isset($getData['ajax']))
+            {
+                $dataProvider->getPagination()->setCurrentPage(0);
+            }
+        }
+
         /**
          * Step 6. Sanitize and create/update models using a sequential process.
-         * @param integer id - Import model id
-         * @param string $step
+         * @param integer $id - Import model id
+         * @param null|string $step
+         * @param null|int $pageSize
          */
-        function actionStep6($id, $step = null)
+        public function actionStep6($id, $step = null, $pageSize = null)
         {
-            if (isset($_GET['nextParams']))
+            $getData              = GetUtil::getData();
+            if (isset($getData['nextParams']))
             {
-                $nextParams = $_GET['nextParams'];
+                $nextParams = $getData['nextParams'];
             }
             else
             {
@@ -308,48 +373,90 @@
             }
             assert('$step == null || is_string($step)');
             assert('$nextParams == null || is_array($nextParams)');
-
             $import               = Import::getById((int)$id);
             $importWizardForm     = ImportWizardUtil::makeFormByImport($import);
+            $cs                   = Yii::app()->getClientScript();
+            $cs->registerCoreScript('bbq');
             $unserializedData     = unserialize($import->serializedData);
-            $pageSize             = Yii::app()->pagination->resolveActiveForCurrentUserByType('importPageSize');
+            $passedInPageSize     = $pageSize;
+            if ($pageSize == null)
+            {
+                $pageSize             = Yii::app()->pagination->resolveActiveForCurrentUserByType('importPageSize');
+            }
             $config               = array('pagination' => array('pageSize' => $pageSize));
+            $filteredByStatus     = $this->resolveFilteredByStatus();
             $dataProvider         = new ImportDataProvider($import->getTempTableName(),
                                                            (bool)$importWizardForm->firstRowIsHeaderRow,
-                                                           $config);
+                                                           $config, (int)$filteredByStatus);
             $sequentialProcess    = new ImportCreateUpdateModelsSequentialProcess($import, $dataProvider);
+            Yii::app()->gameHelper->muteScoringModelsOnSave();
             $sequentialProcess->run($step, $nextParams);
+            Yii::app()->gameHelper->unmuteScoringModelsOnSave();
             $nextStep             = $sequentialProcess->getNextStep();
             $route                = $this->getModule()->getId() . '/' . $this->getId() . '/step6';
             if ($sequentialProcess->isComplete())
             {
-                $dataAnalysisCompleteView = new ImportWizardCreateUpdateModelsCompleteView($this->getId(),
-                                                $this->getModule()->getId(),
-                                                $importWizardForm,
-                                                (int)ImportRowDataResultsUtil::getCreatedCount($import->getTempTableName()),
-                                                (int)ImportRowDataResultsUtil::getUpdatedCount($import->getTempTableName()),
-                                                (int)ImportRowDataResultsUtil::getErrorCount($import->getTempTableName()));
-
-                $sequenceView = new ContainedViewCompleteSequentialProcessView($dataAnalysisCompleteView);
+                $this->resolveResettingPageOnCompletion($dataProvider);
+                $importingIntoModelClassName = $unserializedData['importRulesType'] . 'ImportRules';
+                Yii::app()->gameHelper->triggerImportEvent($importingIntoModelClassName::getModelClassName());
+                if (isset($getData['ajax']) && $getData['ajax'] == 'import-temp-table-list-view')
+                {
+                    $resolvedView = new ImportResultsImportTempTableListView(
+                                        $this->getId(),
+                                        $this->getModule()->getId(),
+                                        $dataProvider,
+                                        $unserializedData['mappingData'],
+                                        $importWizardForm->importRulesType,
+                                        ImportWizardDataAnalysisCompleteView::resolveConfigurationForm(),
+                                        new ZurmoActiveForm(),
+                                        $import->id);
+                }
+                else
+                {
+                    $importCompleteView          = $this->makeImportCompleteView($import, $importWizardForm, $dataProvider, true, $passedInPageSize);
+                    $resolvedView                = new ContainedViewCompleteSequentialProcessView($importCompleteView);
+                }
             }
             else
             {
-                $sequenceView = SequentialProcessViewFactory::makeBySequentialProcess($sequentialProcess, $route);
+                $resolvedView = SequentialProcessViewFactory::makeBySequentialProcess($sequentialProcess, $route);
             }
             if ($step == null)
             {
-                $gridView     = new GridView(2, 1);
-                $titleBarView = new TitleBarView (Yii::t('Default', 'Import Wizard: Step 6 of 6'));
-                $wrapperView  = new ImportSequentialProcessContainerView($sequenceView, $sequentialProcess->getAllStepsMessage());
-                $gridView->setView($titleBarView, 0, 0);
-                $gridView->setView($wrapperView, 1, 0);
-                $view        = new ImportPageView($this, $gridView);
+                $title = Zurmo::t('ImportModule', 'Import Wizard - Import Data');
+                $importRulesClassName    = ImportRulesUtil::getImportRulesClassNameByType($importWizardForm->importRulesType);
+                $stepToUse = ImportStepsAndProgressBarForWizardView::resolveAfterUploadStepByImportClassName(5, $importRulesClassName);
+                $progressBarAndStepsView = new ImportStepsAndProgressBarForWizardView($importRulesClassName, $stepToUse);
+                $wrapperView  = new ImportSequentialProcessContainerView($resolvedView, $sequentialProcess->getAllStepsMessage(), $title);
+                $wrapperView->setCssClasses(array('DetailsView'));
+                $view =  $this->getImportPageView($progressBarAndStepsView, $wrapperView);
             }
             else
             {
-                $view        = new AjaxPageView($sequenceView);
+                $view        = new AjaxPageView($resolvedView);
             }
             echo $view->render();
+        }
+
+        protected function makeImportCompleteView(Import $import, ImportWizardForm $importWizardForm, ImportDataProvider $dataProvider,
+                                                  $setCurrentPageToFirst = false, $pageSize = null)
+        {
+            if ($pageSize == null)
+            {
+                $pageSize             = Yii::app()->pagination->resolveActiveForCurrentUserByType('listPageSize');
+            }
+            $config               = array('pagination' => array('pageSize' => $pageSize));
+            $unserializedData     = unserialize($import->serializedData);
+
+            $importCompleteView       = new ImportWizardCreateUpdateModelsCompleteView($this->getId(),
+                                            $this->getModule()->getId(),
+                                            $importWizardForm,
+                                            $dataProvider,
+                                            $unserializedData['mappingData'],
+                                            (int)ImportRowDataResultsUtil::getCreatedCount($import->getTempTableName()),
+                                            (int)ImportRowDataResultsUtil::getUpdatedCount($import->getTempTableName()),
+                                            (int)ImportRowDataResultsUtil::getErrorCount($import->getTempTableName()));
+            return $importCompleteView;
         }
 
         /**
@@ -370,13 +477,13 @@
                                                        new ZurmoActiveForm(),
                                                        $importWizardForm->importRulesType,
                                                        $mappableAttributeIndicesAndDerivedTypes);
-
             $content                                 = $mappingFormLayoutUtil->renderMappingRulesElements(
                                                        $columnName,
                                                        $attributeIndexOrDerivedType,
                                                        $importWizardForm->importRulesType,
                                                        $columnType,
                                                        array());
+            DropDownUtil::registerScripts(CClientScript::POS_END);
             Yii::app()->getClientScript()->setToAjaxMode();
             Yii::app()->getClientScript()->render($content);
             echo $content;
@@ -445,13 +552,13 @@
             $import           = Import::getById((int)$id);
             $importWizardForm = ImportWizardUtil::makeFormByImport($import);
             $importWizardForm->setAttributes($_POST['ImportWizardForm']);
-            if (!$importWizardForm->validate(array('rowColumnDelimiter')))
+            if (!$importWizardForm->validateRowColumnDelimeterIsNotEmpty())
             {
-                $fileUploadData = array('error' => Yii::t('Default', 'Error: Invalid delimiter'));
+                $fileUploadData = array('error' => Zurmo::t('ImportModule', 'Error: Invalid delimiter'));
             }
-            elseif (!$importWizardForm->validate(array('rowColumnDelimiter')))
+            elseif (!$importWizardForm->validateRowColumnEnclosureIsNotEmpty())
             {
-                $fileUploadData = array('error' => Yii::t('Default', 'Error: Invalid qualifier'));
+                $fileUploadData = array('error' => Zurmo::t('ImportModule', 'Error: Invalid qualifier'));
             }
             else
             {
@@ -459,16 +566,30 @@
                 {
                     $uploadedFile = ImportUploadedFileUtil::getByNameCatchErrorAndEnsureFileIsACSV($filesVariableName);
                     assert('$uploadedFile instanceof CUploadedFile');
+                    ImportUploadedFileUtil::convertWindowsAndMacLineEndingsIntoUnixLineEndings($uploadedFile->getTempName());
                     $fileHandle  = fopen($uploadedFile->getTempName(), 'r');
                     if ($fileHandle !== false)
                     {
                         $tempTableName = $import->getTempTableName();
-                        if (!ImportDatabaseUtil::
-                            makeDatabaseTableByFileHandleAndTableName($fileHandle, $tempTableName,
-                                                                      $importWizardForm->rowColumnDelimiter,
-                                                                      $importWizardForm->rowColumnEnclosure))
+                        try
                         {
-                            throw new FailedFileUploadException(Yii::t('Default', 'Failed to create temporary database table from CSV.'));
+                            $tableCreated = ImportDatabaseUtil::makeDatabaseTableByFileHandleAndTableName($fileHandle,
+                                                                                    $tempTableName,
+                                                                                    $importWizardForm->rowColumnDelimiter,
+                                                                                    $importWizardForm->rowColumnEnclosure,
+                                                                                    $importWizardForm->firstRowIsHeaderRow);
+                            if (!$tableCreated)
+                            {
+                                throw new FailedFileUploadException(Zurmo::t('ImportModule', 'Failed to create temporary database table from CSV.'));
+                            }
+                        }
+                        catch (BulkInsertFailedException $e)
+                        {
+                            throw new FailedFileUploadException($e->getMessage());
+                        }
+                        catch (TooManyColumnsFailedException $e)
+                        {
+                            throw new FailedFileUploadException($e->getMessage());
                         }
                         $fileUploadData = array(
                             'name' => $uploadedFile->getName(),
@@ -480,20 +601,18 @@
                         ImportWizardUtil::setImportSerializedDataFromForm($importWizardForm, $import);
                         if (!$import->save())
                         {
-                            throw new FailedFileUploadException(Yii::t('Default', 'Import model failed to save.'));
+                            throw new FailedFileUploadException(Zurmo::t('ImportModule', 'Import model failed to save.'));
                         }
                     }
                     else
                     {
-                        throw new FailedFileUploadException(Yii::t('Default', 'Failed to open the uploaded file.'));
+                        throw new FailedFileUploadException(Zurmo::t('ImportModule', 'Failed to open the uploaded file.'));
                     }
-                    $fileUploadData['humanReadableSize'] = FileModelDisplayUtil::convertSizeToHumanReadableAndGet(
-                                                           $fileUploadData['size']);
                     $fileUploadData['id']                = $import->id;
                 }
                 catch (FailedFileUploadException $e)
                 {
-                    $fileUploadData = array('error' => Yii::t('Default', 'Error') . ' ' . $e->getMessage());
+                    $fileUploadData = array('error' => Zurmo::t('Core', 'Error') . ' ' . $e->getMessage());
                     ImportWizardUtil::clearFileAndRelatedDataFromImport($import);
                 }
             }
@@ -532,20 +651,52 @@
                 }
                 else
                 {
-                    $messageView = new ErrorView(Yii::t('Default', 'There was an error processing this import.'));
-                    $view        = new ErrorPageView($messageView);
+                    $view        = new ErrorPageView(Zurmo::t('ImportModule', 'There was an error processing this import.'));
                     echo $view->render();
                     Yii::app()->end(0, false);
                 }
             }
         }
 
+        /**
+         * @param Import $import
+         * @param bool $firstRowIsHeaderRow
+         * @return ImportDataProvider
+         */
         protected function makeDataProviderForSampleRow($import, $firstRowIsHeaderRow)
         {
             assert('$import instanceof Import');
             assert('is_bool($firstRowIsHeaderRow)');
             $config = array('pagination' => array('pageSize' => 1));
             return    new ImportDataProvider($import->getTempTableName(), $firstRowIsHeaderRow, $config);
+        }
+
+        public function actionUpdate($id, $attribute, $item, $value)
+        {
+            assert('$id != null && $id != ""');
+            assert('$attribute != null && $attribute != ""');
+            assert('$item != null && $item != ""');
+            $id     = intval($id);
+            $item   = intval($item);
+            $import = Import::getById($id);
+            ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($import);
+            ImportDatabaseUtil::updateRowValue($import->getTempTableName(), $item, $attribute, $value);
+        }
+
+        protected function getImportPageView($progressBarAndStepsView, $importView)
+        {
+            $breadCrumbLinks = array(
+                Zurmo::t('ZurmoModule',  'Import'),
+                Zurmo::t('Core',         'Create')
+            );
+            $view       = new ImportPageView(ZurmoDefaultAdminViewUtil::makeTwoViewsWithBreadcrumbsForCurrentUser(
+                $this,
+                $progressBarAndStepsView,
+                $importView,
+                $breadCrumbLinks,
+                'SettingsBreadCrumbView'
+            ));
+            return $view;
         }
     }
 ?>

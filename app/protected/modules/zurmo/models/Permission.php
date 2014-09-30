@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     class Permission extends OwnedModel
@@ -48,6 +58,12 @@
         const READ_WRITE_CHANGE_PERMISSIONS              = 0xB;
         const READ_WRITE_CHANGE_PERMISSIONS_CHANGE_OWNER = 0x1B;
 
+        /**
+         * PHP Caching array utilized to save calls to get already casted down models
+         * @var array
+         */
+        protected static $cachedCastedDownPermitables = array();
+
         protected function constructDerived($bean, $setDefaults)
         {
             assert('$bean === null || $bean instanceof RedBean_OODBBean');
@@ -62,14 +78,16 @@
         public static function removeForPermitable(Permitable $permitable)
         {
             PermissionsCache::forgetAll();
-            R::exec("delete from permission where permitable_id = :id;",
+            AllPermissionsOptimizationCache::forgetAll();
+            ZurmoRedBean::exec("delete from permission where permitable_id = :id;",
                     array('id' => $permitable->getClassId('Permitable')));
         }
 
-        public static function removeAll()
+        public static function deleteAll()
         {
             PermissionsCache::forgetAll();
-            R::exec("delete from permission;");
+            AllPermissionsOptimizationCache::forgetAll();
+            parent::deleteAll();
         }
 
         public static function permissionsToString($permissions)
@@ -93,11 +111,11 @@
             }
             catch (NotFoundException $e)
             {
-                $s = Yii::t('Default', '(Unknown)');
+                $s = Zurmo::t('ZurmoModule', '(Unknown)');
             }
             $s .= ':';
-            $s .= $this->type == self::ALLOW ? Yii::t('Default', 'Allow') :
-                                               Yii::t('Default', 'Deny');
+            $s .= $this->type == self::ALLOW ? Zurmo::t('ZurmoModule', 'Allow') :
+                                               Zurmo::t('ZurmoModule', 'Deny');
             $s .= ':' . self::permissionsToString($this->permissions);
             return $s;
         }
@@ -166,18 +184,30 @@
             return Permission::NONE;
         }
 
-        // See comments on RedBeanModel::castDown() and
-        // RedBeanModel::testDownCast() to see why
-        // this (apparent/actual dodginess) is needed.
+        /**
+         * See comments on RedBeanModel::castDown() and
+         * RedBeanModel::testDownCast() to see why
+         * this (apparent/actual dodginess) is needed.
+         *
+         * Attempts to get from local php cache first.
+         */
         public function castDownPermitable()
         {
-            if (get_class($this->permitable) == 'Permitable')
+            if (get_class($this->permitable) == 'Permitable' &&
+               isset(self::$cachedCastedDownPermitables[$this->permitable->id]))
+            {
+                $permitableId = $this->permitable->id;
+                $this->permitable = null;
+                $this->permitable = self::$cachedCastedDownPermitables[$permitableId];
+            }
+            elseif (get_class($this->permitable) == 'Permitable')
             {
                 //Set the permitable to null first otherwise it will not take the new casted down permitable and
                 //remains uncasted down.
                 $permitable = $this->permitable->castDown(array('Group', 'User'));
                 $this->permitable = null;
                 $this->permitable = $permitable;
+                self::$cachedCastedDownPermitables[$this->permitable->getClassId('Permitable')] = $permitable;
             }
         }
 
@@ -210,21 +240,21 @@
             $metadata = parent::getDefaultMetadata();
             $metadata[__CLASS__] = array(
                 'members' => array(
-                    'type',
                     'permissions',
+                    'type',
                 ),
                 'relations' => array(
-                    'permitable'     => array(RedBeanModel::HAS_ONE,             'Permitable'),
-                    'securableItem'  => array(RedBeanModel::HAS_MANY_BELONGS_TO, 'SecurableItem'),
+                    'permitable'     => array(static::HAS_ONE,             'Permitable'),
+                    'securableItem'  => array(static::HAS_MANY_BELONGS_TO, 'SecurableItem'),
                 ),
                 'rules' => array(
-                    array('type',        'required'),
-                    array('type',        'type', 'type' => 'integer'),
-                    array('type',        'numerical', 'min' => 1, 'max' => 2),
                     array('permissions', 'required'),
                     array('permissions', 'type', 'type' => 'integer'),
                     array('permissions', 'numerical', 'min' => 0, 'max' => 31),
                     array('permitable',  'required'),
+                    array('type',        'required'),
+                    array('type',        'type', 'type' => 'integer'),
+                    array('type',        'numerical', 'min' => 1, 'max' => 2),
                 ),
             );
             return $metadata;
@@ -233,6 +263,11 @@
         public static function isTypeDeletable()
         {
             return true;
+        }
+
+        public static function resetCaches()
+        {
+            static::$cachedCastedDownPermitables = array();
         }
     }
 ?>

@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -32,7 +42,24 @@
     class GroupUserMembershipFormUtil
     {
         /**
-         * @return a GroupUserMembershipForm
+         * Used to properly type cast incoming POST data
+         */
+        public static function typeCastPostData($postData)
+        {
+            assert('is_array($postData)');
+            if (isset($postData['userMembershipData']))
+            {
+                foreach ($postData['userMembershipData'] as $index => $userId)
+                {
+                    $postData['userMembershipData'][$index] = intval($userId);
+                }
+            }
+            return $postData;
+        }
+
+        /**
+         * @param $group
+         * @return GroupUserMembershipForm
          */
         public static function makeFormFromGroup($group)
         {
@@ -48,8 +75,33 @@
         }
 
         /**
+         * @param GroupUserMembershipForm $form
+         * @param Group $group
+         * @return null|string $message. If message present than validation failed.
+         */
+        public static function validateMembershipChange(GroupUserMembershipForm $form, Group $group)
+        {
+            if ($group->name == Group::SUPER_ADMINISTRATORS_GROUP_NAME)
+            {
+                if (count($form->userMembershipData) == 0)
+                {
+                    return Zurmo::t('ZurmoModule', 'There must be at least one super administrator');
+                }
+                foreach ($group->users as $index => $user)
+                {
+                    if (empty($form->userMembershipData[$user->id]) && ($user->isRootUser))
+                    {
+                        return Zurmo::t('ZurmoModule', 'You cannot remove {user} from this group', array('{user}' => strval($user)));
+                    }
+                }
+            }
+        }
+
+        /**
          * Takes post data and prepares it for setting the membership on the group.
          * Adds and removes users to group based on a form's userMembershipData
+         * @param $form
+         * @param $group
          * @return boolean. True if membership was set successfully.
          */
         public static function setMembershipFromForm($form, $group)
@@ -60,11 +112,14 @@
             $addedUsers   = array();
             foreach ($group->users as $index => $user)
             {
-                if (empty($form->userMembershipData[$user->id]))
+                if (empty($form->userMembershipData[$user->id]) && !$user->isSystemUser && !$user->isRootUser)
                 {
-                    $group->users->removeByIndex($index);
                     $removedUsers[] = $user;
                 }
+            }
+            foreach ($removedUsers as $user)
+            {
+                $group->users->remove($user);
             }
             $users = GroupUserMembershipFormUtil::makeUsersFromUserMembershipData($form->userMembershipData);
             foreach ($users as $user)
@@ -78,17 +133,28 @@
             $group->save();
             foreach ($removedUsers as $user)
             {
-                ReadPermissionsOptimizationUtil::userRemovedFromGroup($group, $user);
+                AllPermissionsOptimizationUtil::userRemovedFromGroup($group, $user);
             }
             foreach ($addedUsers as $user)
             {
-                ReadPermissionsOptimizationUtil::userAddedToGroup($group, $user);
+                AllPermissionsOptimizationUtil::userAddedToGroup($group, $user);
+            }
+            if (!empty($removedUsers))
+            {
+                ReadPermissionsSubscriptionUtil::userRemovedFromGroup();
+            }
+            if (!empty($addedUsers))
+            {
+                ReadPermissionsSubscriptionUtil::userAddedToGroup();
             }
             return true;
         }
 
         /**
          * Set the userMembershipData attribute on the GroupUserMembershipForm
+         * @param GroupUserMembershipForm $membershipForm
+         * @param array $postData
+         * @return GroupUserMembershipForm
          */
         public static function setFormFromCastedPost(GroupUserMembershipForm $membershipForm, array $postData)
         {
@@ -110,7 +176,10 @@
             $data = array();
             foreach ($users as $user)
             {
-                $data[$user->id] = strval($user);
+                if (!$user->isSystemUser)
+                {
+                    $data[$user->id] = strval($user);
+                }
             }
             return $data;
         }
@@ -131,25 +200,12 @@
             $data     = array();
             foreach ($allUsers as $user)
             {
-                if (empty($userData[$user->id]))
+                if (empty($userData[$user->id]) && !$user->isSystemUser)
                 {
                     $data[$user->id] = strval($user);
                 }
             }
             return $data;
-        }
-
-        /**
-         * Used to properly type cast incoming POST data
-         */
-        public static function typeCastPostData($postData)
-        {
-            assert('is_array($postData)');
-            foreach ($postData['userMembershipData'] as $index => $userId)
-            {
-                $postData['userMembershipData'][$index] = intval($userId);
-            }
-            return $postData;
         }
     }
 ?>

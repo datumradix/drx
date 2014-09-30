@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,22 +12,32 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
      * Zurmo models RedBeanModelDataProvider Documentation test.  Demonstrates the different scenarios of search.
      */
-    class ZurmoModelsDataProviderDocumentationTest extends BaseTest
+    class ZurmoModelsDataProviderDocumentationTest extends ZurmoBaseTest
     {
         public static function setUpBeforeClass()
         {
@@ -83,30 +93,23 @@
 
             //Is the where clause constructed correctly?
             $where = RedBeanModelDataProvider::makeWhere('Account', $searchAttributeData, $joinTablesAdapter);
-            $this->assertEquals("({$quote}customfield$quote.{$quote}value$quote like lower('Automotive%'))", $where);
+            $this->assertEquals("({$quote}customfield$quote.{$quote}value$quote = 'Automotive')", $where);
 
             //Is the join information correct?
             $leftTablesAndAliases = $joinTablesAdapter->getLeftTablesAndAliases();
-            $this->assertEquals('ownedcustomfield',             $leftTablesAndAliases[0]['tableName']);
-            $this->assertEquals('ownedcustomfield',             $leftTablesAndAliases[0]['tableAliasName']);
+            $this->assertEquals('customfield',                  $leftTablesAndAliases[0]['tableName']);
+            $this->assertEquals('customfield',                  $leftTablesAndAliases[0]['tableAliasName']);
             $this->assertEquals('id',                           $leftTablesAndAliases[0]['tableJoinIdName']);
             $this->assertEquals('account',                      $leftTablesAndAliases[0]['onTableAliasName']);
-            $this->assertEquals('industry_ownedcustomfield_id', $leftTablesAndAliases[0]['onTableJoinIdName']);
-            $this->assertEquals('customfield',                  $leftTablesAndAliases[1]['tableName']);
-            $this->assertEquals('customfield',                  $leftTablesAndAliases[1]['tableAliasName']);
-            $this->assertEquals('id',                           $leftTablesAndAliases[1]['tableJoinIdName']);
-            $this->assertEquals('ownedcustomfield',             $leftTablesAndAliases[1]['onTableAliasName']);
-            $this->assertEquals('customfield_id',               $leftTablesAndAliases[1]['onTableJoinIdName']); //this is going to fail.... need to fix.
+            $this->assertEquals('industry_customfield_id',      $leftTablesAndAliases[0]['onTableJoinIdName']);
 
             //Is the entire query correct? It should be.
             $subsetSql = Account::makeSubsetOrCountSqlQuery('account', $joinTablesAdapter, 1, 5, $where);
             $compareSubsetSql  = "select {$quote}account{$quote}.{$quote}id{$quote} id ";
             $compareSubsetSql .= "from {$quote}account{$quote} ";
-            $compareSubsetSql .= "left join {$quote}ownedcustomfield{$quote} on ";
-            $compareSubsetSql .= "{$quote}ownedcustomfield$quote.{$quote}id{$quote} = {$quote}account$quote.{$quote}industry_ownedcustomfield_id{$quote} ";
             $compareSubsetSql .= "left join {$quote}customfield{$quote} on ";
-            $compareSubsetSql .= "{$quote}customfield$quote.{$quote}id{$quote} = {$quote}ownedcustomfield$quote.{$quote}customfield_id{$quote}";
-            $compareSubsetSql .= " where ({$quote}customfield{$quote}.{$quote}value{$quote} like lower('Automotive%')) ";
+            $compareSubsetSql .= "{$quote}customfield$quote.{$quote}id{$quote} = {$quote}account$quote.{$quote}industry_customfield_id{$quote}";
+            $compareSubsetSql .= " where ({$quote}customfield{$quote}.{$quote}value{$quote} = 'Automotive') ";
             $compareSubsetSql .= "limit 5 offset 1";
             $this->assertEquals($compareSubsetSql, $subsetSql);
         }
@@ -120,24 +123,27 @@
 
             $dataProvider = new RedBeanModelDataProvider('User', 'username');
             $users = $dataProvider->getData();
-            $this->assertEquals(3, count($users));
-            $this->assertEquals('billy',  $users[0]->username);
-            $this->assertEquals('dicky',  $users[1]->username);
-            $this->assertEquals('super', $users[2]->username);
+            $this->assertEquals(4, count($users));
+            $this->assertEquals(BaseControlUserConfigUtil::USERNAME, $users[0]->username);
+            $this->assertEquals('billy',  $users[1]->username);
+            $this->assertEquals('dicky',  $users[2]->username);
+            $this->assertEquals('super', $users[3]->username);
 
             $dataProvider = new RedBeanModelDataProvider('User', 'username', false);
             $users = $dataProvider->getData();
-            $this->assertEquals(3, count($users));
-            $this->assertEquals('billy',  $users[0]->username);
-            $this->assertEquals('dicky',  $users[1]->username);
-            $this->assertEquals('super', $users[2]->username);
+            $this->assertEquals(4, count($users));
+            $this->assertEquals(BaseControlUserConfigUtil::USERNAME, $users[0]->username);
+            $this->assertEquals('billy',  $users[1]->username);
+            $this->assertEquals('dicky',  $users[2]->username);
+            $this->assertEquals('super', $users[3]->username);
 
             $dataProvider = new RedBeanModelDataProvider('User', 'username', true);
             $users = $dataProvider->getData();
-            $this->assertEquals(3, count($users));
+            $this->assertEquals(4, count($users));
             $this->assertEquals('super', $users[0]->username);
             $this->assertEquals('dicky',  $users[1]->username);
             $this->assertEquals('billy',  $users[2]->username);
+            $this->assertEquals(BaseControlUserConfigUtil::USERNAME, $users[3]->username);
         }
 
        /**
@@ -150,8 +156,8 @@
             $quote = DatabaseCompatibilityUtil::getQuote();
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('Account');
             $orderByColumnName = RedBeanModelDataProvider::resolveSortAttributeColumnName('Account', $joinTablesAdapter, 'owner');
-            $this->assertEquals("{$quote}person{$quote}.{$quote}lastname{$quote}", $orderByColumnName);
-
+            $this->assertEquals("{$quote}person{$quote}.{$quote}lastname{$quote}",
+                                $orderByColumnName);
             $leftTablesAndAliases = $joinTablesAdapter->getLeftTablesAndAliases();
             $this->assertEquals('person',    $leftTablesAndAliases[1]['tableName']);
             $this->assertEquals('person',    $leftTablesAndAliases[1]['tableAliasName']);
@@ -206,7 +212,7 @@
             $quote = DatabaseCompatibilityUtil::getQuote();
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('Account');
             $where = RedBeanModelDataProvider::makeWhere('Account', $searchAttributeData, $joinTablesAdapter);
-            $this->assertEquals("({$quote}account$quote.{$quote}name$quote like lower('Vomitorio Corp%'))", $where);
+            $this->assertEquals("({$quote}account$quote.{$quote}name$quote like 'Vomitorio Corp%')", $where);
             $this->assertEquals(0, $joinTablesAdapter->getFromTableJoinCount());
             $this->assertEquals(0, $joinTablesAdapter->getLeftTableJoinCount());
 
@@ -220,8 +226,8 @@
             $searchAttributeData = $metadataAdapter->getAdaptedMetadata();
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('Account');
             $where = RedBeanModelDataProvider::makeWhere('Account', $searchAttributeData, $joinTablesAdapter);
-            $this->assertEquals("({$quote}account$quote.{$quote}name$quote like lower('Vomitorio Corp%')) and " .
-                                "({$quote}account$quote.{$quote}officephone$quote like lower('123456789%'))",
+            $this->assertEquals("({$quote}account$quote.{$quote}name$quote like 'Vomitorio Corp%') and " .
+                                "({$quote}account$quote.{$quote}officephone$quote like '123456789%')",
                                 $where);
             $this->assertEquals(0, $joinTablesAdapter->getFromTableJoinCount());
             $this->assertEquals(0, $joinTablesAdapter->getLeftTableJoinCount());
@@ -237,9 +243,9 @@
             $searchAttributeData = $metadataAdapter->getAdaptedMetadata();
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('Account');
             $where = RedBeanModelDataProvider::makeWhere('Account', $searchAttributeData, $joinTablesAdapter);
-            $compareWhere = "({$quote}account$quote.{$quote}name$quote like lower('Vomitorio Corp%')) and " .
-                                "({$quote}account$quote.{$quote}officephone$quote like lower('123456789%')) and " .
-                                "({$quote}address$quote.{$quote}country$quote like lower('Countralia%'))";
+            $compareWhere = "({$quote}account$quote.{$quote}name$quote like 'Vomitorio Corp%') and " .
+                                "({$quote}account$quote.{$quote}officephone$quote like '123456789%') and " .
+                                "({$quote}address$quote.{$quote}country$quote like 'Countralia%')";
             $this->assertEquals($compareWhere, $where);
 
             //Now test that the joinTablesAdapter has correct information.
@@ -269,10 +275,10 @@
             $searchAttributeData = $metadataAdapter->getAdaptedMetadata();
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('Account');
             $where = RedBeanModelDataProvider::makeWhere('Account', $searchAttributeData, $joinTablesAdapter);
-            $compareWhere = "({$quote}account$quote.{$quote}name$quote like lower('Vomitorio Corp%')) and " .
-                                "({$quote}account$quote.{$quote}officephone$quote like lower('123456789%')) and " .
-                                "({$quote}address$quote.{$quote}city$quote like lower('Buffalo Grove%')) and " .
-                                "({$quote}address$quote.{$quote}country$quote like lower('Countralia%'))";
+            $compareWhere = "({$quote}account$quote.{$quote}name$quote like 'Vomitorio Corp%') and " .
+                                "({$quote}account$quote.{$quote}officephone$quote like '123456789%') and " .
+                                "({$quote}address$quote.{$quote}city$quote like 'Buffalo Grove%') and " .
+                                "({$quote}address$quote.{$quote}country$quote like 'Countralia%')";
             $this->assertEquals($compareWhere, $where);
 
             //Now test that the joinTablesAdapter has correct information.
@@ -301,11 +307,11 @@
             $searchAttributeData = $metadataAdapter->getAdaptedMetadata();
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('Account');
             $where = RedBeanModelDataProvider::makeWhere('Account', $searchAttributeData, $joinTablesAdapter);
-            $compareWhere = "({$quote}account$quote.{$quote}name$quote like lower('Vomitorio Corp%')) and " .
-                                "({$quote}account$quote.{$quote}officephone$quote like lower('123456789%')) and " .
-                                "({$quote}address$quote.{$quote}city$quote like lower('Buffalo Grove%')) and " .
-                                "({$quote}address$quote.{$quote}country$quote like lower('Countralia%')) and " .
-                                "({$quote}address1$quote.{$quote}city$quote like lower('Chicago%'))";
+            $compareWhere = "({$quote}account$quote.{$quote}name$quote like 'Vomitorio Corp%') and " .
+                                "({$quote}account$quote.{$quote}officephone$quote like '123456789%') and " .
+                                "({$quote}address$quote.{$quote}city$quote like 'Buffalo Grove%') and " .
+                                "({$quote}address$quote.{$quote}country$quote like 'Countralia%') and " .
+                                "({$quote}address1$quote.{$quote}city$quote like 'Chicago%')";
             $this->assertEquals($compareWhere, $where);
 
             //Now test that the joinTablesAdapter has correct information.
@@ -355,7 +361,7 @@
 
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('User');
             $where = RedBeanModelDataProvider::makeWhere('User', $searchAttributeData, $joinTablesAdapter);
-            $compareWhere = "({$quote}person$quote.{$quote}firstname$quote like lower('billy%'))";
+            $compareWhere = "({$quote}person$quote.{$quote}firstname$quote like 'billy%')";
             $this->assertEquals($compareWhere, $where);
             //Now test that the joinTablesAdapter has correct information.
             $this->assertEquals(1, $joinTablesAdapter->getFromTableJoinCount());
