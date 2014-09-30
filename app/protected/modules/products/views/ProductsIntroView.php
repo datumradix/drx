@@ -41,7 +41,7 @@
     {
         protected function renderIntroContent()
         {
-            $content  = '<h1>' . Zurmo::t('ProductsModule', 'How do Products work in Zurmo?', LabelUtil::getTranslationParamsForAllModules()). '</h1>';
+            $content  = '<h1>' . Zurmo::t('ProductsModule', 'How do ProductsPluralLabel work in Zurmo?', LabelUtil::getTranslationParamsForAllModules()). '</h1>';
             $content .= '<div id="products-intro-steps" class="module-intro-steps clearfix">';
             $content .= '<div class="third catalog-description"><span class="icon"></span>';
             $content .= '<p><strong>' . Zurmo::t('ProductsModule', 'Catalog') . '</strong>';
@@ -51,14 +51,15 @@
             $content .= '<div class="third catalog-item-description"><span class="icon"></span>';
             $content .= '<p><strong>' . Zurmo::t('ProductTemplatesModule', 'Catalog Item') . '</strong>';
             $content .= Zurmo::t('ProductsModule', 'Create a <em>Catalog Item</em> that describes and categorizes your ' .
-                                                   'item and lists preset pricing information');
+                                 'item and lists preset pricing information');
             $content .= '</p>';
             $content .= '</div>';
             $content .= '<div class="third product-description"><span class="icon"></span>';
-            $content .= '<p><strong>' . Zurmo::t('ProductsModule', 'Product') . '</strong>';
-            $content .= Zurmo::t('ProductsModule', 'A <em>Product</em> record is an actual customer order. ' .
-                                                   'Select an existing item from the catalog or create a ' .
-                                                   'free-standing product');
+            $content .= '<p><strong>' . Zurmo::t('ProductsModule', 'ProductsSingularLabel', LabelUtil::getTranslationParamsForAllModules()) . '</strong>';
+            $content .= Zurmo::t('ProductsModule', 'A <em>ProductsSingularLabel</em> record is an actual customer order. ' .
+                                                   'Select an existing item from the catalog or create a free-standing ' .
+                                                   'SingularLowerCaseLabel',
+                                                   LabelUtil::getTranslationParamsForAllModules());
             $content .= '</p>';
             $content .= '</div>';
             $content .= '</div>';
