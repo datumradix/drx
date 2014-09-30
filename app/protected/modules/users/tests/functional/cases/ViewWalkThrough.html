@@ -4,7 +4,7 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/" />
-<title>ViewWalkThrough</title>
+<title>View Walk Through</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
@@ -12,14 +12,19 @@
 <tr><td rowspan="1" colspan="3">ViewWalkThrough</td></tr>
 </thead><tbody>
 <tr>
-    <td>setSpeed</td>
-    <td>1000</td>
+    <td>setTimeout</td>
+    <td>45000</td>
     <td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>index.php?r=configuration</td>
-	<td></td>
+  <td>assertText</td>
+  <td>link=My Profile</td>
+  <td>My Profile</td>
+</tr>
+<tr>
+  <td>click</td>
+  <td>link=My Profile</td>
+  <td></td>
 </tr>
 <tr>
     <td>waitForPageToLoad</td>
@@ -27,24 +32,109 @@
     <td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Admin</td>
-	<td></td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Users</td>
-	<td></td>
+  <td>assertText</td>
+  <td>link=Users</td>
+  <td>Users</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Sally Smith</td>
-	<td></td>
+  <td>clickAndWait</td>
+  <td>link=Users</td>
+  <td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Edit</td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+  <td>assertTextPresent</td>
+  <td>Advanced</td>
+  <td></td>
+</tr>
+<tr>
+  <td>type</td>
+  <td>UsersSearchForm_anyMixedAttributes</td>
+  <td>Sally Smith</td>
+</tr>
+<tr>
+  <td>keyUp</td>
+  <td>UsersSearchForm_anyMixedAttributes</td>
+  <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+  <td>waitForTextPresent</td>
+  <td>Sally Smith</td>
+  <td></td>
+</tr>
+<tr>
+  <td>verifyTextPresent</td>
+  <td>Sally Smith</td>
+  <td></td>
+</tr>
+<tr>
+  <td>assertText</td>
+  <td>link=Sally Smith</td>
+  <td>Sally Smith</td>
+</tr>
+<tr>
+  <td>clickAndWait</td>
+  <td>link=Sally Smith</td>
+  <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+  <td>setSpeed</td>
+  <td>3000</td>
+  <td></td>
+</tr>
+<tr>
+  <td>assertText</td>
+  <td>link=Edit</td>
+  <td>Edit</td>
+</tr>
+<tr>
+  <td>clickAndWait</td>
+  <td>link=Edit</td>
+  <td></td>
+</tr>
+<tr>
+  <td>setSpeed</td>
+  <td>0</td>
+  <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 </tbody></table>
 </body>

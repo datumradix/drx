@@ -12,19 +12,24 @@
 <tr><td rowspan="1" colspan="3">Test User Type Ahead</td></tr>
 </thead><tbody>
 <tr>
-	<td>setSpeed</td>
-	<td>1000</td>
+	<td>setTimeout</td>
+	<td>45000</td>
 	<td></td>
 </tr>
 <tr>
 	<td>open</td>
-	<td>index.php?r=accounts/default/create</td>
+	<td>index.php/accounts/default/create</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForPageToLoad</td>
 	<td></td>
 	<td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
 </tr>
 <tr>
 	<td>assertValue</td>
@@ -44,26 +49,26 @@
 <tr>
 	<td>type</td>
 	<td>Account_owner_name</td>
-	<td></td>
+	<td>sa</td>
 </tr>
 <tr>
 	<td>typeKeys</td>
 	<td>Account_owner_name</td>
-	<td>sam</td>
+	<td>m</td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>//html/body/ul/li/a[. = &quot;Sam Smith (sam)&quot;]</td>
+	<td>//div[@id='owner-box']/ul/li/a[. = &quot;Sam Smith (sam)&quot;]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>mouseOver</td>
-	<td>//html/body/ul/li/a[. = &quot;Sam Smith (sam)&quot;]</td>
+	<td>//div[@id='owner-box']/ul/li/a[. = &quot;Sam Smith (sam)&quot;]</td>
 	<td><br /></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>//html/body/ul/li/a[. = &quot;Sam Smith (sam)&quot;]</td>
+	<td>//div[@id='owner-box']/ul/li/a[. = &quot;Sam Smith (sam)&quot;]</td>
 	<td><br /></td>
 </tr>
 <tr>

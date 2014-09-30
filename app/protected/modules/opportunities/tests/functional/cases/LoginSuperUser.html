@@ -4,7 +4,7 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/" />
-<title>Create</title>
+<title>Login</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
@@ -12,19 +12,24 @@
 <tr><td rowspan="1" colspan="3">Login as Super User</td></tr>
 </thead><tbody>
 <tr>
-    <td>setSpeed</td>
-    <td>1000</td>
-    <td></td>
+	<td>setTimeout</td>
+	<td>45000</td>
+	<td></td>
 </tr>
 <tr>
     <td>open</td>
-    <td>index.php?r=zurmo/default/login</td>
+    <td>index.php/zurmo/default/login</td>
     <td></td>
 </tr>
 <tr>
     <td>waitForPageToLoad</td>
     <td></td>
     <td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
 </tr>
 <tr>
     <td>type</td>
@@ -47,9 +52,14 @@
     <td></td>
 </tr>
 <tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
     <td>waitForText</td>
-    <td>//div[@id='HeaderLinksView']/div/ul/li[1]</td>
-    <td>Welcome, Super</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
 </tr>
 </tbody></table>
 </body>

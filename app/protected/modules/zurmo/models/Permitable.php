@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     class Permitable extends Item
@@ -45,6 +55,11 @@
             return $this->isSame($permitable);
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $rightName
+         * @return mixed
+         */
         public function getEffectiveRight($moduleName, $rightName)
         {
             assert('is_string($moduleName)');
@@ -54,6 +69,12 @@
             return $this->getActualRight($moduleName, $rightName) == Right::ALLOW ? Right::ALLOW : Right::DENY;
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $rightName
+         * @return int
+         * @throws NotSupportedException
+         */
         public function getActualRight($moduleName, $rightName)
         {
             assert('is_string($moduleName)');
@@ -83,6 +104,11 @@
             }
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $rightName
+         * @return int
+         */
         public function getExplicitActualRight($moduleName, $rightName)
         {
             assert('is_string($moduleName)');
@@ -94,17 +120,24 @@
                 // The slow way will remain here as documentation
                 // for what the optimized way is doing.
                 $combinedRight = Right::NONE;
-                foreach ($this->rights as $right)
+                try
                 {
-                    if ($right->moduleName == $moduleName &&
-                        $right->name       == $rightName)
+                    foreach ($this->rights as $right)
                     {
-                        $combinedRight |= $right->type;
-                        if ($right->type == Right::DENY)
+                        if ($right->moduleName == $moduleName &&
+                            $right->name       == $rightName)
                         {
-                            break; // Shortcircuit.
+                            $combinedRight |= $right->type;
+                            if ($right->type == Right::DENY)
+                            {
+                                break; // Shortcircuit.
+                            }
                         }
                     }
+                }
+                catch (NotSupportedException $e)
+                {
+                    //Super Administrator group for example doesn't allow right retrieval.
                 }
                 if (($combinedRight & Right::DENY) == Right::DENY)
                 {
@@ -129,6 +162,12 @@
             throw new NotSupportedException();
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $rightName
+         * @return int
+         * @throws NotSupportedException
+         */
         public function getInheritedActualRight($moduleName, $rightName)
         {
             assert('is_string($moduleName)');
@@ -227,36 +266,42 @@
         protected function afterSave()
         {
             parent::afterSave();
-            if($this->rightsChanged)
+            if ($this->rightsChanged)
             {
                 RightsCache::forgetAll();
                 $this->rightsChanged = false;
             }
-            if($this->policiesChanged)
+            if ($this->policiesChanged)
             {
                 PoliciesCache::forgetAll();
                 $this->policiesChanged = false;
             }
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $policyName
+         * @return mixed|null|string
+         */
         public function getEffectivePolicy($moduleName, $policyName)
         {
             assert('is_string($moduleName)');
             assert('is_string($policyName)');
             assert('$moduleName != ""');
             assert('$policyName != ""');
-            // A permitable gets the default policy until it is saved.
-            if ($this->id > 0)
+            $value = $this->getActualPolicy($moduleName, $policyName);
+            if ($value !== null)
             {
-                $value = $this->getActualPolicy($moduleName, $policyName);
-                if ($value !== null)
-                {
-                    return $value;
-                }
+                return $value;
             }
             return $moduleName::getPolicyDefault($policyName);
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $policyName
+         * @return mixed|null|string
+         */
         public function getActualPolicy($moduleName, $policyName)
         {
             assert('is_string($moduleName)');
@@ -282,6 +327,7 @@
                 $permitableName = 'Everyone';
                 try
                 {
+                    // not using $default to save cpu cycles, else default value would have to be computed every time.
                     return PoliciesCache::getEntry($permitableName . $moduleName . $policyName .  'ActualPolicy');
                 }
                 catch (NotFoundException $e)
@@ -296,6 +342,11 @@
             }
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $policyName
+         * @return mixed|null|string
+         */
         public function getExplicitActualPolicy($moduleName, $policyName)
         {
             assert('is_string($moduleName)');
@@ -321,11 +372,11 @@
                 $permitableId = $this->getClassId('Permitable');
                 try
                 {
+                    // not using $default because computing default value would involve extra cpu cycles each time.
                     return PoliciesCache::getEntry($permitableId . $moduleName . $policyName .  'ExplicitActualPolicy');
                 }
                 catch (NotFoundException $e)
                 {
-
                     $explictActualPolicy =  ZurmoDatabaseCompatibilityUtil::
                                             callFunction("get_permitable_explicit_actual_policy(
                                                          $permitableId, '$moduleName', '$policyName')");
@@ -336,6 +387,11 @@
             }
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $policyName
+         * @return mixed|null|string
+         */
         public function getInheritedActualPolicy($moduleName, $policyName)
         {
             assert('is_string($moduleName)');
@@ -350,6 +406,11 @@
             return Group::getByName(Group::EVERYONE_GROUP_NAME)->getExplicitActualPolicy($moduleName, $policyName);
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $policyName
+         * @param $value
+         */
         public function setPolicy($moduleName, $policyName, $value)
         {
             assert('is_string($moduleName)');
@@ -381,6 +442,10 @@
             }
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $policyName
+         */
         public function removePolicy($moduleName, $policyName)
         {
             assert('is_string($moduleName)');
@@ -413,11 +478,16 @@
             $metadata = parent::getDefaultMetadata();
             $metadata[__CLASS__] = array(
                 'relations' => array(
-                    'rights'      => array(RedBeanModel::HAS_MANY, 'Right',  RedBeanModel::OWNED),
-                    'policies'    => array(RedBeanModel::HAS_MANY, 'Policy', RedBeanModel::OWNED),
+                    'policies'    => array(static::HAS_MANY, 'Policy', static::OWNED),
+                    'rights'      => array(static::HAS_MANY, 'Right',  static::OWNED),
                 ),
                 'foreignRelations' => array(
                     'Permission',
+                ),
+                'indexes' => array(
+                    'item_id' => array(
+                        'members' => array('item_id'),
+                        'unique' => false),
                 ),
             );
             return $metadata;

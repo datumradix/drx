@@ -4,72 +4,92 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/" />
-<title>Search</title>
+<title>SearchLeads</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Search</td></tr>
+<tr><td rowspan="1" colspan="3">Search Leads</td></tr>
 </thead><tbody>
 <tr>
-	<td>setSpeed</td>
-	<td>1000</td>
+	<td>setTimeout</td>
+	<td>45000</td>
 	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>index.php?r=leads/default</td>
-	<td></td>
+  <td>open</td>
+  <td>index.php/leads/default</td>
+  <td></td>
 </tr>
 <tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Leads: Home</td>
-	<td></td>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Advanced Search</td>
-	<td></td>
+  <td>verifyTextPresent</td>
+  <td>Create</td>
+  <td></td>
 </tr>
 <tr>
-	<td>type</td>
-	<td>LeadsSearchForm_fullName</td>
-	<td>Sally ${randomSuffix}</td>
+  <td>verifyTextPresent</td>
+  <td>Advanced</td>
+  <td></td>
+</tr>
+<tr>
+  <td>type</td>
+  <td>LeadsSearchForm_anyMixedAttributes</td>
+  <td>Sally ${randomSuffix}</td>
+</tr>
+<tr>
+  <td>keyUp</td>
+  <td>LeadsSearchForm_anyMixedAttributes</td>
+  <td>\10</td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
+  <td>waitForText</td>
+  <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[3]/a</td>
+  <td>Silly Sally ${randomSuffix}</td>
+</tr>
+<tr>
+  <td>verifyTextPresent</td>
+  <td>Silly Sally ${randomSuffix}</td>
+  <td></td>
+</tr>
+<tr>
+  <td>verifyValue</td>
+  <td>LeadsSearchForm_anyMixedAttributes</td>
+  <td>Sally ${randomSuffix}</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>search</td>
+	<td>id=clear-search-link</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForTextPresent</td>
-	<td>Displaying 1-1 of 1 result</td>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>waitForTextNotPresent</td>
+	<td>Criteria Selected</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Silly Sally ${randomSuffix}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyValue</td>
-	<td>LeadsSearchForm_fullName</td>
-	<td>Sally ${randomSuffix}</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Clear Search</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyValue</td>
-	<td>LeadsSearchForm_fullName</td>
-	<td></td>
+  <td>verifyValue</td>
+  <td>LeadsSearchForm_anyMixedAttributes</td>
+  <td></td>
 </tr>
 </tbody></table>
 </body>

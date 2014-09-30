@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,19 +12,29 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class GroupTest extends BaseTest
+    class GroupTest extends ZurmoBaseTest
     {
         public static function setUpBeforeClass()
         {
@@ -51,7 +61,12 @@
                 $user->lastName     = "Uuuuuu{$i}son";
                 $user->setPassword("uuuuu$i");
                 $this->assertTrue($user->save());
-                $u[] = $user;
+                // Clear cache of user so the groups properly get accounted for later.
+                // This was needed after we added isActive which calls save twice when a user is
+                // created
+                $id = $user->id;
+                $user->forget();
+                $u[] = User::getById($id);
             }
 
             $a = new Group();
@@ -213,11 +228,14 @@
             $this->assertTrue($a->contains($c));
             $this->assertTrue($a->contains($d));
 
-            $this->assertTrue(self::fastContainsUserByGroupName('AAA', $u[0]->id));
-            $this->assertTrue(self::fastContainsUserByGroupName('AAA', $u[1]->id));
-            $this->assertTrue(self::fastContainsUserByGroupName('AAA', $u[2]->id));
-            $this->assertTrue(self::fastContainsUserByGroupName('AAA', $u[3]->id));
-            $this->assertTrue(self::fastContainsUserByGroupName('AAA', $u[4]->id));
+            if (SECURITY_OPTIMIZED)
+            {
+                $this->assertTrue(self::fastContainsUserByGroupName('AAA', $u[0]->id));
+                $this->assertTrue(self::fastContainsUserByGroupName('AAA', $u[1]->id));
+                $this->assertTrue(self::fastContainsUserByGroupName('AAA', $u[2]->id));
+                $this->assertTrue(self::fastContainsUserByGroupName('AAA', $u[3]->id));
+                $this->assertTrue(self::fastContainsUserByGroupName('AAA', $u[4]->id));
+            }
 
             $this->assertTrue($b->contains($u[1]));
             $this->assertTrue($b->contains($u[2]));
@@ -226,40 +244,55 @@
             $this->assertTrue($b->contains($c));
             $this->assertTrue($b->contains($d));
 
-            $this->assertTrue(self::fastContainsUserByGroupName('BBB', $u[1]->id));
-            $this->assertTrue(self::fastContainsUserByGroupName('BBB', $u[2]->id));
-            $this->assertTrue(self::fastContainsUserByGroupName('BBB', $u[3]->id));
-            $this->assertTrue(self::fastContainsUserByGroupName('BBB', $u[4]->id));
+            if (SECURITY_OPTIMIZED)
+            {
+                $this->assertTrue(self::fastContainsUserByGroupName('BBB', $u[1]->id));
+                $this->assertTrue(self::fastContainsUserByGroupName('BBB', $u[2]->id));
+                $this->assertTrue(self::fastContainsUserByGroupName('BBB', $u[3]->id));
+                $this->assertTrue(self::fastContainsUserByGroupName('BBB', $u[4]->id));
+            }
 
             $this->assertTrue($c->contains($u[3]));
             $this->assertTrue($d->contains($u[4]));
 
-            $this->assertTrue(self::fastContainsUserByGroupName('CCC', $u[3]->id));
-            $this->assertTrue(self::fastContainsUserByGroupName('DDD', $u[4]->id));
+            if (SECURITY_OPTIMIZED)
+            {
+                $this->assertTrue(self::fastContainsUserByGroupName('CCC', $u[3]->id));
+                $this->assertTrue(self::fastContainsUserByGroupName('DDD', $u[4]->id));
+            }
 
             $this->assertFalse($b->contains($u[0]));
 
-            $this->assertFalse(self::fastContainsUserByGroupName('BBB', $u[0]->id));
+            if (SECURITY_OPTIMIZED)
+            {
+                $this->assertFalse(self::fastContainsUserByGroupName('BBB', $u[0]->id));
+            }
 
             $this->assertFalse($c->contains($u[0]));
             $this->assertFalse($c->contains($u[1]));
             $this->assertFalse($c->contains($u[2]));
             $this->assertFalse($c->contains($u[4]));
 
-            $this->assertFalse(self::fastContainsUserByGroupName('CCC', $u[0]->id));
-            $this->assertFalse(self::fastContainsUserByGroupName('CCC', $u[1]->id));
-            $this->assertFalse(self::fastContainsUserByGroupName('CCC', $u[2]->id));
-            $this->assertFalse(self::fastContainsUserByGroupName('CCC', $u[4]->id));
+            if (SECURITY_OPTIMIZED)
+            {
+                $this->assertFalse(self::fastContainsUserByGroupName('CCC', $u[0]->id));
+                $this->assertFalse(self::fastContainsUserByGroupName('CCC', $u[1]->id));
+                $this->assertFalse(self::fastContainsUserByGroupName('CCC', $u[2]->id));
+                $this->assertFalse(self::fastContainsUserByGroupName('CCC', $u[4]->id));
+            }
 
             $this->assertFalse($d->contains($u[0]));
             $this->assertFalse($d->contains($u[1]));
             $this->assertFalse($d->contains($u[2]));
             $this->assertFalse($d->contains($u[3]));
 
-            $this->assertFalse(self::fastContainsUserByGroupName('DDD', $u[0]->id));
-            $this->assertFalse(self::fastContainsUserByGroupName('DDD', $u[1]->id));
-            $this->assertFalse(self::fastContainsUserByGroupName('DDD', $u[2]->id));
-            $this->assertFalse(self::fastContainsUserByGroupName('DDD', $u[3]->id));
+            if (SECURITY_OPTIMIZED)
+            {
+                $this->assertFalse(self::fastContainsUserByGroupName('DDD', $u[0]->id));
+                $this->assertFalse(self::fastContainsUserByGroupName('DDD', $u[1]->id));
+                $this->assertFalse(self::fastContainsUserByGroupName('DDD', $u[2]->id));
+                $this->assertFalse(self::fastContainsUserByGroupName('DDD', $u[3]->id));
+            }
 
             $this->assertFalse($b->contains($a));
             $this->assertFalse($c->contains($a));
@@ -294,112 +327,7 @@
         {
             assert('is_int($groupId) && $groupId > 0'); // Not Coding Standard
             assert('is_int($userId)  && $userId  > 0'); // Not Coding Standard
-            return R::getCell("select group_contains_user($groupId, $userId);") == 1;
-        }
-
-        /**
-         * @depends testGroupsContainingGroupsAndContains
-         */
-        public function testPerformanceOfFastContainsUserByGroupName()
-        {
-            $runs = 10;
-
-            $u = array();
-            for ($i = 0; $i < 5; $i++)
-            {
-                $u[$i] = User::getByUsername("uuuuu$i");
-            }
-
-            $startTime = microtime(true);
-            for ($i = 0; $i < $runs; $i++)
-            {
-                RedBeanModel::forgetAll();
-                $a = Group::getByName('AAA');
-
-                $this->assertTrue($a->contains($u[0]));
-                $this->assertTrue($a->contains($u[1]));
-                $this->assertTrue($a->contains($u[2]));
-                $this->assertTrue($a->contains($u[3]));
-                $this->assertTrue($a->contains($u[4]));
-            }
-            $endTime = microtime(true);
-            $totalTimeSlow = $endTime - $startTime;
-
-            $userId0 = User::getByUsername("uuuuu0")->id;
-            $userId1 = User::getByUsername("uuuuu1")->id;
-            $userId2 = User::getByUsername("uuuuu2")->id;
-            $userId3 = User::getByUsername("uuuuu3")->id;
-            $userId4 = User::getByUsername("uuuuu4")->id;
-
-            $startTime = microtime(true);
-            for ($i = 0; $i < $runs; $i++)
-            {
-                $this->assertTrue(self::fastContainsUserByGroupName('AAA', $userId0));
-                $this->assertTrue(self::fastContainsUserByGroupName('AAA', $userId1));
-                $this->assertTrue(self::fastContainsUserByGroupName('AAA', $userId2));
-                $this->assertTrue(self::fastContainsUserByGroupName('AAA', $userId3));
-                $this->assertTrue(self::fastContainsUserByGroupName('AAA', $userId4));
-            }
-            $endTime = microtime(true);
-            $totalTimeOptimized = $endTime - $startTime;
-
-            $ratio = $totalTimeSlow / $totalTimeOptimized;
-
-            $expectedMinimumRatio = 20;
-            $this->assertGreaterThan($expectedMinimumRatio, $ratio);
-        }
-
-        /**
-         * @depends testGroupsContainingGroupsAndContains
-         */
-        public function testPerformanceOfFastContainsUserByGroupId()
-        {
-            $runs = 10;
-
-            $u = array();
-            for ($i = 0; $i < 5; $i++)
-            {
-                $u[$i] = User::getByUsername("uuuuu$i");
-            }
-
-            $startTime = microtime(true);
-            for ($i = 0; $i < $runs; $i++)
-            {
-                RedBeanModel::forgetAll();
-                $a = Group::getByName('AAA');
-
-                $this->assertTrue($a->contains($u[0]));
-                $this->assertTrue($a->contains($u[1]));
-                $this->assertTrue($a->contains($u[2]));
-                $this->assertTrue($a->contains($u[3]));
-                $this->assertTrue($a->contains($u[4]));
-            }
-            $endTime = microtime(true);
-            $totalTimeSlow = $endTime - $startTime;
-
-            $groupId = Group::getByName('AAA')->id;
-            $userId0 = User::getByUsername("uuuuu0")->id;
-            $userId1 = User::getByUsername("uuuuu1")->id;
-            $userId2 = User::getByUsername("uuuuu2")->id;
-            $userId3 = User::getByUsername("uuuuu3")->id;
-            $userId4 = User::getByUsername("uuuuu4")->id;
-
-            $startTime = microtime(true);
-            for ($i = 0; $i < $runs; $i++)
-            {
-                $this->assertTrue(self::fastContainsUserByGroupId($groupId, $userId0));
-                $this->assertTrue(self::fastContainsUserByGroupId($groupId, $userId1));
-                $this->assertTrue(self::fastContainsUserByGroupId($groupId, $userId2));
-                $this->assertTrue(self::fastContainsUserByGroupId($groupId, $userId3));
-                $this->assertTrue(self::fastContainsUserByGroupId($groupId, $userId4));
-            }
-            $endTime = microtime(true);
-            $totalTimeOptimized = $endTime - $startTime;
-
-            $ratio = $totalTimeSlow / $totalTimeOptimized;
-
-            $expectedMinimumRatio = 20;
-            $this->assertGreaterThan($expectedMinimumRatio, $ratio);
+            return ZurmoRedBean::getCell("select group_contains_user($groupId, $userId);") == 1;
         }
 
         /**
@@ -531,7 +459,7 @@
 
         public function testEveryoneOnlyCanExistOnce()
         {
-            $groupCountBefore = count(Group::getAll());
+            $groupCountBefore = Group::getCount();
             $group1 = Group::getByName(Group::EVERYONE_GROUP_NAME);
             $this->assertTrue($group1->save());
             $groups = Group::getAll();
@@ -543,7 +471,7 @@
 
         public function testSuperAdministratorsOnlyCanExistOnce()
         {
-            $groupCountBefore = count(Group::getAll());
+            $groupCountBefore = Group::getCount();
             $group1 = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
             $this->assertTrue($group1->save());
             $this->assertEquals($groupCountBefore, Group::getCount());
@@ -638,6 +566,22 @@
             $group = $groups[0];
             $everyone = Group::getByName(Group::EVERYONE_GROUP_NAME);
             $this->assertFalse($everyone->canModifyMemberships());
+        }
+
+        /**
+         * @depends testCannotModifyGroupMembershipForTheTheEveryoneGroup
+         */
+        public function testNonSuperAdministratorsCannotModifyGroupMembershipForTheTheSuperAdministratorsGroup()
+        {
+            $superAdministrators = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
+            $this->assertTrue($superAdministrators->canModifyMemberships());
+
+            $user = UserTestHelper::createBasicUser('jack');
+            $user->setRight('GroupsModule', GroupsModule::RIGHT_ACCESS_GROUPS);
+            $user->setRight('GroupsModule', GroupsModule::RIGHT_CREATE_GROUPS);
+            $user->setRight('GroupsModule', GroupsModule::RIGHT_DELETE_GROUPS);
+            Yii::app()->user->userModel = $user;
+            $this->assertFalse($superAdministrators->canModifyMemberships());
         }
 
         /**
@@ -842,6 +786,21 @@
 
             // Which shows the group having been deleted.
             $this->assertEquals(0, count($user->groups));
+        }
+
+        public function testIsUserASuperAdministrator()
+        {
+            $this->assertEquals('super', Yii::app()->user->userModel->username);
+            $this->assertTrue(Group::isUserASuperAdministrator(Yii::app()->user->userModel));
+            $user = User::getByUsername('dood1');
+            $this->assertFalse(Group::isUserASuperAdministrator($user));
+        }
+
+        public function resolveEveryoneDisplayLabel()
+        {
+            $this->assertEquals('Everyone', GroupsModule::resolveEveryoneDisplayLabel());
+            GroupsModule::setEveryoneDisplayLabel('test');
+            $this->assertEquals('test', GroupsModule::resolveEveryoneDisplayLabel());
         }
     }
 ?>

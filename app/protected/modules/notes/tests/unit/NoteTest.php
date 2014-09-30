@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,19 +12,29 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class NoteTest extends BaseTest
+    class NoteTest extends ZurmoBaseTest
     {
         public static function setUpBeforeClass()
         {
@@ -35,6 +45,44 @@
             AccountTestHelper::createAccountByNameForOwner('anAccount', $super);
         }
 
+        /**
+         * This test specifically looks at when searching a note's owner.  Because note extends mashableactivity which
+         * does not have a bean, the query is constructed slightly different than if mashableactivity had a bean.
+         */
+        public function testQueryIsProperlyGeneratedForNoteWithRelatedOwnerSearch()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+
+            $_FAKEPOST = array(
+                'Note' => array(
+                    'owner'   => array( 'id' => Yii::app()->user->userModel->id)
+                ),
+            );
+            $metadataAdapter = new SearchDataProviderMetadataAdapter(
+                new Note(false),
+                1,
+                $_FAKEPOST['Note']
+            );
+            $_GET['Note_sort'] = 'description.desc';
+            $searchAttributeData = $metadataAdapter->getAdaptedMetadata();
+            $quote               = DatabaseCompatibilityUtil::getQuote();
+            $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter('Note');
+            $where               = RedBeanModelDataProvider::makeWhere('Note', $searchAttributeData, $joinTablesAdapter);
+            $orderByColumnName   = RedBeanModelDataProvider::resolveSortAttributeColumnName('Note', $joinTablesAdapter, 'description');
+            $subsetSql           = Note::makeSubsetOrCountSqlQuery('note', $joinTablesAdapter, 1, 5, $where, $orderByColumnName);
+            $compareSubsetSql    = "select {$quote}note{$quote}.{$quote}id{$quote} id ";
+            $compareSubsetSql   .= "from ({$quote}note{$quote}, {$quote}activity{$quote}, {$quote}ownedsecurableitem{$quote})";
+            $compareSubsetSql   .= " where ({$quote}ownedsecurableitem{$quote}.{$quote}owner__user_id{$quote} = " . Yii::app()->user->userModel->id . ")";
+            $compareSubsetSql   .= " and {$quote}activity{$quote}.{$quote}id{$quote} =";
+            $compareSubsetSql   .= " {$quote}note{$quote}.{$quote}activity_id{$quote}";
+            $compareSubsetSql   .= " and {$quote}ownedsecurableitem{$quote}.{$quote}id{$quote} = {$quote}activity{$quote}.{$quote}ownedsecurableitem_id{$quote}";
+            $compareSubsetSql   .= " order by {$quote}note{$quote}.{$quote}description{$quote} limit 5 offset 1";
+            $this->assertEquals($compareSubsetSql, $subsetSql);
+        }
+
+        /**
+         * @depends testQueryIsProperlyGeneratedForNoteWithRelatedOwnerSearch
+         */
         public function testCreateAndGetNoteById()
         {
             Yii::app()->user->userModel = User::getByUsername('super');
@@ -179,8 +227,8 @@
         /**
          * @depends testAutomatedOccurredOnDateTimeAndLatestDateTimeChanges
          */
-        public function testNobodyCanReadWriteDeleteAndStrValOfNoteFunctionsCorrectly() {
-
+        public function testNobodyCanReadWriteDeleteAndStrValOfNoteFunctionsCorrectly()
+        {
             Yii::app()->user->userModel = User::getByUsername('super');
 
             $fileModel    = ZurmoTestHelper::createFileModel();
@@ -210,6 +258,7 @@
             //add nobody permission to read, write and delete the note
             $note->addPermissions($nobody, Permission::READ_WRITE_DELETE);
             $this->assertTrue($note->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($note, $nobody);
 
             //now acces to the notes read by nobody should not fail
             Yii::app()->user->userModel = $nobody;
@@ -219,8 +268,8 @@
         /**
          * @depends testNobodyCanReadWriteDeleteAndStrValOfNoteFunctionsCorrectly
          */
-        public function testAUserCanDeleteANoteNotOwnedButHasExplicitDeletePermission() {
-
+        public function testAUserCanDeleteANoteNotOwnedButHasExplicitDeletePermission()
+        {
             //Create superAccount owned by user super.
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
@@ -238,11 +287,78 @@
             $nobody = User::getByUsername('nobody');
             $note->addPermissions($nobody, Permission::READ_WRITE_DELETE);
             $this->assertTrue($note->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($note, $nobody);
             Yii::app()->user->userModel = User::getByUsername('nobody');
             $noteId = $note->id;
             $note->forget();
             $note = Note::getById($noteId);
             $note->delete();
+        }
+
+        /**
+         * @depends testCreateAndGetNoteById
+         */
+        public function testNoteActivityItemsAreSameAfterLoadNote()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+
+            $note = NoteTestHelper::createNoteByNameForOwner('Another note with relations', $super);
+            $contact = ContactTestHelper::createContactByNameForOwner('Tom', $super);
+
+            $note->activityItems->add($contact);
+            $note->save();
+
+            $this->assertEquals(1, count($note->activityItems));
+            $this->assertEquals($contact->id, $note->activityItems[0]->id);
+            $noteId = $note->id;
+            $note->forget();
+            $contactItemId = $contact->getClassId('Item');
+
+            $note = Note::getById($noteId);
+            $this->assertEquals(1, count($note->activityItems));
+            $this->assertEquals($contactItemId, $note->activityItems[0]->id);
+        }
+
+        /**
+         * @depends testCreateAndGetNoteById
+         */
+        public function testRemoveActivityItemFromActivity()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+
+            $firstNote  = NoteTestHelper::createNoteByNameForOwner('Note with relations', $super);
+            $secondNote = NoteTestHelper::createNoteByNameForOwner('Second note with relations', $super);
+
+            $thirdContact  = ContactTestHelper::createContactByNameForOwner('Third', $super);
+            $firstContact  = ContactTestHelper::createContactByNameForOwner('First', $super);
+            $secondContact = ContactTestHelper::createContactByNameForOwner('Second', $super);
+
+            $firstNote->activityItems->add($firstContact);
+            $firstNote->activityItems->add($secondContact);
+            $firstNote->save();
+
+            $this->assertEquals(2, count($firstNote->activityItems));
+            $this->assertEquals($firstContact->id, $firstNote->activityItems[0]->id);
+            $this->assertEquals($secondContact->id, $firstNote->activityItems[1]->id);
+
+            $noteId = $firstNote->id;
+            $firstNote->forget();
+            $firstNote = Note::getById($noteId);
+            $this->assertEquals(2, count($firstNote->activityItems));
+            $this->assertEquals($firstContact->getClassId('Item'), $firstNote->activityItems[0]->id);
+            $this->assertEquals($secondContact->getClassId('Item'), $firstNote->activityItems[1]->id);
+
+            $firstNote->activityItems->remove($firstContact);
+            $firstNote->save();
+            $this->assertEquals(1, count($firstNote->activityItems));
+            $this->assertEquals($secondContact->getClassId('Item'), $firstNote->activityItems[0]->id);
+
+            $firstNote->forget();
+            $firstNote = Note::getById($noteId);
+            $this->assertEquals(1, count($firstNote->activityItems));
+            $this->assertEquals($secondContact->getClassId('Item'), $firstNote->activityItems[0]->id);
         }
 
         public function testGetModelClassNames()

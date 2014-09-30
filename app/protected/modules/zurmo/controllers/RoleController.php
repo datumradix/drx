@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,28 +12,38 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     class ZurmoRoleController extends ZurmoModuleController
     {
-        public function filters()
+        public function resolveModuleClassNameForFilters()
         {
-            return array(
-                array(
-                    ZurmoBaseController::RIGHTS_FILTER_PATH,
-                    'moduleClassName' => 'RolesModule',
-               ),
-            );
+            return 'RolesModule';
+        }
+
+        public function resolveAndGetModuleId()
+        {
+            return 'roles';
         }
 
         public function actionIndex()
@@ -43,12 +53,19 @@
 
         public function actionList()
         {
-            $titleAndTreeView = new RolesTitleBarAndTreeView(
+            $title           = Zurmo::t('ZurmoModule', 'Roles');
+            $breadCrumbLinks = array(
+                 $title,
+            );
+            $introView = new SecurityIntroView('ZurmoModule');
+            $actionBarAndTreeView = new RolesActionBarAndTreeListView(
                 $this->getId(),
                 $this->getModule()->getId(),
-                Role::getAll('name')
+                Role::getAll('name'),
+                $introView
             );
-            $view = new RolesPageView($this, $titleAndTreeView);
+            $view = new RolesPageView(ZurmoDefaultAdminViewUtil::
+                                         makeViewWithBreadcrumbsForCurrentUser($this, $actionBarAndTreeView, $breadCrumbLinks, 'RoleBreadCrumbView'));
             echo $view->render();
         }
 
@@ -59,27 +76,30 @@
 
         public function actionCreate()
         {
-            $titleBarAndEditView = new TitleBarAndEditAndDetailsView(
-                $this->getId(),
-                $this->getModule()->getId(),
-                $this->attemptToSaveModelFromPost(new Role()),
-                RolesModule::getPluralCamelCasedName(),
-                'Edit'
-            );
-            $view = new RolesPageView($this, $titleBarAndEditView);
+            $title           = Zurmo::t('ZurmoModule', 'Create Role');
+            $breadCrumbLinks = array($title);
+            $editView = new RoleEditAndDetailsView('Edit',
+                                                   $this->getId(),
+                                                   $this->getModule()->getId(),
+                                                   $this->attemptToSaveModelFromPost(new Role()));
+            $editView->setCssClasses(array('AdministrativeArea'));
+            $view     = new RolesPageView(ZurmoDefaultAdminViewUtil::
+                                          makeViewWithBreadcrumbsForCurrentUser($this, $editView, $breadCrumbLinks, 'RoleBreadCrumbView'));
             echo $view->render();
         }
 
         public function actionEdit($id)
         {
-            $titleBarAndEditView = new TitleBarAndEditAndDetailsView(
-                $this->getId(),
-                $this->getModule()->getId(),
-                $this->attemptToSaveModelFromPost(Role::getById(intval($id))),
-                RolesModule::getPluralCamelCasedName(),
-                'Edit'
-            );
-            $view = new RolesPageView($this, $titleBarAndEditView);
+            $role            = Role::getById(intval($id));
+            $title           = Zurmo::t('Core', 'Edit');
+            $breadCrumbLinks = array(strval($role) => array('role/edit',  'id' => $id), $title);
+            $editView = new RoleEditAndDetailsView('Edit',
+                                                   $this->getId(),
+                                                   $this->getModule()->getId(),
+                                                   $this->attemptToSaveModelFromPost($role));
+            $editView->setCssClasses(array('AdministrativeArea'));
+            $view     = new RolesPageView(ZurmoDefaultAdminViewUtil::
+                                          makeViewWithBreadcrumbsForCurrentUser($this, $editView, $breadCrumbLinks, 'RoleBreadCrumbView'));
             echo $view->render();
         }
 
@@ -94,6 +114,7 @@
             PermissionsCache::forgetAll();
             RightsCache::forgetAll();
             PoliciesCache::forgetAll();
+            AllPermissionsOptimizationCache::forgetAll();
             parent::actionAfterSuccessfulModelSave($model, $modelToStringValue, $redirectUrlParams);
         }
 
@@ -101,13 +122,13 @@
         public function actionModalParentList()
         {
             echo $this->renderModalList(
-                'SelectParentRoleModalTreeView', Yii::t('Default', 'Select a Parent Role'));
+                'SelectParentRoleModalTreeListView', Zurmo::t('ZurmoModule', 'Select a Parent Role'));
         }
 
         public function actionModalList()
         {
             echo $this->renderModalList(
-                'RolesModalTreeView', Yii::t('Default', 'Select a Role'));
+                'RolesModalTreeListView', Zurmo::t('ZurmoModule', 'Select a Role'));
         }
 
         protected function renderModalList($modalViewName, $pageTitle)
@@ -115,34 +136,28 @@
             $rolesModalTreeView = new $modalViewName(
                 $this->getId(),
                 $this->getModule()->getId(),
-                $_GET['modalTransferInformation']['sourceModelId'],
+                isset($_GET['modalTransferInformation']['sourceModelId']) ? $_GET['modalTransferInformation']['sourceModelId'] : null,
                 Role::getAll('name'),
                 $_GET['modalTransferInformation']['sourceIdFieldId'],
-                $_GET['modalTransferInformation']['sourceNameFieldId']
+                $_GET['modalTransferInformation']['sourceNameFieldId'],
+                $_GET['modalTransferInformation']['modalId']
             );
-            $view = new ModalView(
-                            $this,
-                            $rolesModalTreeView,
-                            'modalContainer',
-                            $pageTitle);
+            Yii::app()->getClientScript()->setToAjaxMode();
+            $view = new ModalView($this, $rolesModalTreeView);
             return $view->render();
         }
 
         public function actionDelete($id)
         {
             $role = Role::GetById(intval($id));
-            $role->users->removeAll();
-            $role->roles->removeAll();
-            $role->save();
             $role->delete();
             unset($role);
             $this->redirect(array($this->getId() . '/index'));
         }
 
-        public function actionAutoComplete($term)
+        public function actionAutoComplete($term, $autoCompleteOptions = null)
         {
-            $modelClassName = RolesModule::getPrimaryModelName();
-            echo $this->renderAutoCompleteResults($modelClassName, $term);
+            echo $this->renderAutoCompleteResults(RolesModule::getPrimaryModelName(), $term, $autoCompleteOptions);
         }
 
         /**
@@ -155,6 +170,16 @@
                 $redirectUrlParams = array($this->getId() . '/list', 'id' => $modelId);
             }
             $this->redirect($redirectUrlParams);
+        }
+
+        public function actionUsersInRoleModalList($id)
+        {
+            $model = Role::getById((int)$id);
+            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($model);
+            $searchAttributeData = UsersByModelModalListControllerUtil::makeModalSearchAttributeDataByModel($model, 'role');
+            $dataProvider = UsersByModelModalListControllerUtil::makeDataProviderBySearchAttributeData($searchAttributeData);
+            Yii::app()->getClientScript()->setToAjaxMode();
+            echo UsersByModelModalListControllerUtil::renderList($this, $dataProvider, 'usersInRoleModalList');
         }
     }
 ?>

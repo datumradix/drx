@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     class Group extends Permitable
@@ -39,11 +49,16 @@
         protected $isEveryone            = false;
         protected $isSuperAdministrators = false;
 
+        /**
+         * @param string $name
+         * @return An|Group
+         * @throws NotFoundException
+         */
         public static function getByName($name)
         {
             assert('is_string($name)');
             assert('$name != ""');
-            $bean = R::findOne('_group', "name = '$name'");
+            $bean = ZurmoRedBean::findOne('_group', "name = :name ", array(':name' => $name));
             assert('$bean === false || $bean instanceof RedBean_OODBBean');
             if ($bean === false)
             {
@@ -70,6 +85,27 @@
             return $group;
         }
 
+        public static function isUserASuperAdministrator(User $user)
+        {
+            if ($user->id < 0)
+            {
+                throw new NotSupportedException();
+            }
+            $superGroup   = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
+            if ($user->groups->contains($superGroup))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /**
+         * @param RedBean_OODBBean $bean
+         * @param bool $setDefaults
+         */
         protected function constructDerived($bean, $setDefaults)
         {
             assert('$bean === null || $bean instanceof RedBean_OODBBean');
@@ -91,6 +127,10 @@
 
         public function canModifyMemberships()
         {
+            if (!static::isUserASuperAdministrator(Yii::app()->user->userModel) && $this->isSuperAdministrators)
+            {
+                return false;
+            }
             return !$this->isEveryone;
         }
 
@@ -151,7 +191,15 @@
             assert('$this->name === null || is_string($this->name)');
             if ($this->name === null)
             {
-                return Yii::t('Default', '(Unnamed)');
+                return Zurmo::t('Core', '(Unnamed)');
+            }
+            if ($this->name == self::EVERYONE_GROUP_NAME)
+            {
+                return GroupsModule::resolveEveryoneDisplayLabel();
+            }
+            elseif ($this->name == self::SUPER_ADMINISTRATORS_GROUP_NAME)
+            {
+                return Zurmo::t('ZurmoModule', 'Super Administrators');
             }
             return $this->name;
         }
@@ -161,10 +209,13 @@
             return true;
         }
 
-        protected function untranslatedAttributeLabels()
+        protected static function translatedAttributeLabels($language)
         {
-            return array_merge(parent::untranslatedAttributeLabels(), array(
-                'group' => 'Parent Group',
+            return array_merge(parent::translatedAttributeLabels($language), array(
+                'group'  => Zurmo::t('ZurmoModule', 'Parent Group', array(), null, $language),
+                'groups' => Zurmo::t('ZurmoModule', 'Groups', array(), null, $language),
+                'name'   => Zurmo::t('Core', 'Name', array(), null, $language),
+                'users'  => Zurmo::t('UsersModule', 'Users', array(), null, $language)
             ));
         }
 
@@ -172,10 +223,6 @@
         {
             if ($this->isEveryone)
             {
-                if ($attributeName == 'name')
-                {
-                    return Yii::t('Default', self::EVERYONE_GROUP_NAME);
-                }
                 if ($attributeName == 'group')
                 {
                     return null;
@@ -187,10 +234,6 @@
             }
             if ($this->isSuperAdministrators)
             {
-                if ($attributeName == 'name')
-                {
-                    return Yii::t('Default', self::SUPER_ADMINISTRATORS_GROUP_NAME);
-                }
                 if ($attributeName == 'rights')
                 {
                     throw new NotSupportedException();
@@ -218,6 +261,11 @@
             return $this->getActualRight($moduleName, $rightName) == Right::ALLOW ? Right::ALLOW : Right::DENY;
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $rightName
+         * @return int
+         */
         public function getActualRight($moduleName, $rightName)
         {
             assert('is_string($moduleName)');
@@ -247,6 +295,11 @@
             return Right::NONE;
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $rightName
+         * @return int
+         */
         public function getInheritedActualRight($moduleName, $rightName)
         {
             assert('is_string($moduleName)');
@@ -271,6 +324,12 @@
             }
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $rightName
+         * @return int|void
+         * @throws NotSupportedException
+         */
         protected function getInheritedActualRightIgnoringEveryone($moduleName, $rightName)
         {
             assert('is_string($moduleName)');
@@ -303,6 +362,11 @@
             }
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $policyName
+         * @return mixed|null|string
+         */
         public function getInheritedActualPolicy($moduleName, $policyName)
         {
             assert('is_string($moduleName)');
@@ -316,6 +380,11 @@
             return parent::getInheritedActualPolicy($moduleName, $policyName);
         }
 
+        /**
+         * @param string $moduleName
+         * @param string $policyName
+         * @return null
+         */
         public function getInheritedActualPolicyIgnoringEveryone($moduleName, $policyName)
         {
             assert('is_string($moduleName)');
@@ -346,15 +415,15 @@
                     'name',
                 ),
                 'relations' => array(
-                    'users'  => array(RedBeanModel::MANY_MANY,           'User'),
-                    'group'  => array(RedBeanModel::HAS_MANY_BELONGS_TO, 'Group'),
-                    'groups' => array(RedBeanModel::HAS_MANY,            'Group'),
+                    'group'  => array(static::HAS_MANY_BELONGS_TO, 'Group'),
+                    'groups' => array(static::HAS_MANY,            'Group'),
+                    'users'  => array(static::MANY_MANY,           'User'),
                 ),
                 'rules' => array(
                     array('name', 'required'),
                     array('name', 'unique'),
                     array('name', 'type',   'type' => 'string'),
-                    array('name', 'length', 'min'  => 3, 'max' => 64),
+                    array('name', 'length', 'min'  => 2, 'max' => 64),
                 ),
                 'defaultSortAttribute' => 'name'
             );
@@ -380,7 +449,7 @@
                 ($name == strtolower(Group::SUPER_ADMINISTRATORS_GROUP_NAME) && $this->id != $group2->id)
             )
             {
-                $this->addError('name', Yii::t('Default', 'This name is reserved. Please pick a different name.'));
+                $this->addError('name', Zurmo::t('ZurmoModule', 'This name is reserved. Please pick a different name.'));
                 return false;
             }
             return true;
@@ -391,12 +460,25 @@
             return 'GroupsModule';
         }
 
+        protected function forgetPermissionsRightsAndPoliciesCache()
+        {
+            PermissionsCache::forgetAll();
+            Permission::resetCaches();
+            RightsCache::forgetAll();
+            PoliciesCache::forgetAll();
+        }
+
         protected function afterSave()
         {
             if (((isset($this->originalAttributeValues['group'])) || $this->isNewModel) &&
                 $this->group != null && $this->group->id > 0)
             {
-                ReadPermissionsOptimizationUtil::groupAddedToGroup($this);
+                AllPermissionsOptimizationUtil::groupAddedToGroup($this);
+                ReadPermissionsSubscriptionUtil::groupParentHasChanged();
+            }
+            if (isset($this->originalAttributeValues['group']) && $this->originalAttributeValues['group'][1] > 0)
+            {
+                $this->forgetPermissionsRightsAndPoliciesCache();
             }
             parent::afterSave();
         }
@@ -412,7 +494,7 @@
                     //utilize the groupBeingRemovedFromGroup method.
                     $group = unserialize(serialize($this));
                     $group->group = Group::getById($this->originalAttributeValues['group'][1]);
-                    ReadPermissionsOptimizationUtil::groupBeingRemovedFromGroup($group);
+                    AllPermissionsOptimizationUtil::groupBeingRemovedFromGroup($group);
                     assert('$this->originalAttributeValues["group"][1] != $this->group->id');
                 }
                 return true;
@@ -425,15 +507,90 @@
 
         protected function beforeDelete()
         {
-            parent::beforeDelete();
-            ReadPermissionsOptimizationUtil::groupBeingDeleted($this);
+            if (!parent::beforeDelete())
+            {
+                return false;
+            }
+            AllPermissionsOptimizationUtil::groupBeingDeleted($this);
+            return true;
         }
 
         protected function afterDelete()
         {
-            PermissionsCache::forgetAll();
-            RightsCache::forgetAll();
-            PoliciesCache::forgetAll();
+            $this->forgetPermissionsRightsAndPoliciesCache();
+            ReadPermissionsSubscriptionUtil::groupHasBeenDeleted();
+            AllPermissionsOptimizationCache::forgetAll();
+        }
+
+        /**
+         * Return number of users in group except system users
+         * @return int
+         */
+        public function getUserCountExceptSystemUsers()
+        {
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'isSystemUser',
+                    'operatorType'         => 'equals',
+                    'value'                => 0,
+                ),
+                2 => array(
+                    'attributeName'        => 'isSystemUser',
+                    'operatorType'         => 'isNull',
+                    'value'                => null,
+                )
+            );
+            if ($this->name == Group::EVERYONE_GROUP_NAME)
+            {
+                $searchAttributeData['structure'] = '1 or 2';
+            }
+            else
+            {
+                $searchAttributeData['clauses'][3] = array(
+                    'attributeName'        => 'groups',
+                    'relatedAttributeName' => 'id',
+                    'operatorType'         => 'equals',
+                    'value'                => $this->id,
+                );
+                $searchAttributeData['structure'] = '(1 or 2) and 3';
+            }
+            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('User');
+            $where = RedBeanModelDataProvider::makeWhere('User', $searchAttributeData, $joinTablesAdapter);
+
+            return User::getCount($joinTablesAdapter, $where);
+        }
+
+        public function getUsersExceptSystemUsers()
+        {
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'isSystemUser',
+                    'operatorType'         => 'equals',
+                    'value'                => 0,
+                ),
+                2 => array(
+                    'attributeName'        => 'isSystemUser',
+                    'operatorType'         => 'isNull',
+                    'value'                => null,
+                )
+            );
+            if ($this->name == Group::EVERYONE_GROUP_NAME)
+            {
+                $searchAttributeData['structure'] = '1 or 2';
+            }
+            else
+            {
+                $searchAttributeData['clauses'][3] = array(
+                    'attributeName'        => 'groups',
+                    'relatedAttributeName' => 'id',
+                    'operatorType'         => 'equals',
+                    'value'                => $this->id,
+                );
+                $searchAttributeData['structure'] = '(1 or 2) and 3';
+            }
+            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('User');
+            $where = RedBeanModelDataProvider::makeWhere('User', $searchAttributeData, $joinTablesAdapter);
+            return User::getSubset($joinTablesAdapter, null, null, $where);
         }
     }
 ?>

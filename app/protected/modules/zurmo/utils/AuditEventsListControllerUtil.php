@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -32,11 +42,9 @@
         /**
          * @return rendered content from view as string.
          */
-        public static function renderList(CController $controller, $dataProvider, $pageTitle = null)
+        public static function renderList(CController $controller, $dataProvider)
         {
             assert('$dataProvider instanceof RedBeanModelDataProvider');
-            assert('$pageTitle == null || is_string($pageTitle)');
-            $userId = Yii::app()->user->userModel->id;
             $auditEventsListView = new AuditEventsModalListView(
                 $controller->getId(),
                 $controller->getModule()->getId(),
@@ -44,10 +52,7 @@
                 $dataProvider,
                 'modal'
             );
-            $view = new ModalView($controller,
-                $auditEventsListView,
-                'modalContainer',
-                $pageTitle);
+            $view = new ModalView($controller, $auditEventsListView);
             return $view->render();
         }
 
@@ -56,7 +61,7 @@
          * @param object $model AuditEvent
          * @return array $searchAttributeData
          */
-        public static function makeSearchAttributeDataByAuditedModel($model)
+        public static function makeModalSearchAttributeDataByAuditedModel($model)
         {
             assert('$model instanceof Item');
             $searchAttributeData = array();
@@ -78,6 +83,25 @@
                 )
             );
             $searchAttributeData['structure'] = '1 and 2 and 3';
+            if ($model instanceof User)
+            {
+                $searchAttributeData['clauses'][4] = array(
+                    'attributeName'        => 'eventName',
+                    'operatorType'         => 'equals',
+                    'value'                => UsersModule::AUDIT_EVENT_USER_LOGGED_IN,
+                );
+                $searchAttributeData['clauses'][5] = array(
+                    'attributeName'        => 'eventName',
+                    'operatorType'         => 'equals',
+                    'value'                => UsersModule::AUDIT_EVENT_USER_LOGGED_OUT,
+                );
+                $searchAttributeData['clauses'][6] = array(
+                    'attributeName'        => 'user',
+                    'operatorType'         => 'equals',
+                    'value'                => $model->id,
+                );
+                $searchAttributeData['structure'] .= ' or ((4 or 5) and 6)';
+            }
             return $searchAttributeData;
         }
 

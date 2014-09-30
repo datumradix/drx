@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -40,6 +50,11 @@
             Yii::app()->user->userModel = $super;
         }
 
+        public static function getDependentTestModelClassNames()
+        {
+            return array('ModelWithAttachmentTestItem');
+        }
+
         public function testSuperUserAllDefaultControllerActions()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
@@ -47,7 +62,6 @@
             //Test all default controller actions that do not require any POST/GET variables to be passed.
             //This does not include portlet controller actions.
             $this->runControllerWithNoExceptionsAndGetContent     ('zurmo/default/about');
-            $this->runControllerWithNoExceptionsAndGetContent     ('zurmo/default/recentlyViewed');
             $this->runControllerWithNoExceptionsAndGetContent     ('zurmo/group');
             $this->runControllerWithNoExceptionsAndGetContent     ('zurmo/group/create');
             $this->runControllerWithNoExceptionsAndGetContent     ('zurmo/group/index');
@@ -155,7 +169,7 @@
         public function testFileControllerActions()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
-            $this->assertEquals(0, count(FileModel::getAll()));
+            $this->assertEquals(0, FileModel::getCount());
             $pathToFiles = Yii::getPathOfAlias('application.modules.zurmo.tests.unit.files');
             $filePath    = $pathToFiles . DIRECTORY_SEPARATOR . 'testNote.txt';
             $contents    = file_get_contents($pathToFiles . DIRECTORY_SEPARATOR . 'testNote.txt');
@@ -168,49 +182,149 @@
             $content = $this->runControllerWithExitExceptionAndGetContent('zurmo/fileModel/upload');
             //Confirm the file has actually been uploaded
             $files = FileModel::getAll();
-            $compareJsonString = '[{"name":"testNote.txt","type":"text\/plain","size":"6.34KB","id":' . // Not Coding Standard
-                                    $files[0]->id . '}]';
+            // Begin Not Coding Standard
+            $compareJsonString = '[{"name":"testNote.txt","type":"text\/plain","size":"6.34KB","id":' .
+                                    $files[0]->id . ',"thumbnail_url":null}]';
+            // End Not Coding Standard
             $this->assertEquals($compareJsonString, $content);
             $fileModels = FileModel::getAll();
             $this->assertEquals(1, count($fileModels));
             $this->assertEquals($contents, $fileModels[0]->fileContent->content);
-            if (!RedBeanDatabase::isFrozen())
-            {
-                //add fileModel to a model.
-                $model = new ModelWithAttachmentTestItem();
-                $model->member = 'test';
-                $model->files->add($fileModels[0]);
-                $this->assertTrue($model->save());
-                $modelId = $model->id;
-                $model->forget();
+            //add fileModel to a model.
+            $model = new ModelWithAttachmentTestItem();
+            $model->member = 'test';
+            $model->files->add($fileModels[0]);
+            $this->assertTrue($model->save());
+            $modelId = $model->id;
+            $model->forget();
 
-                //download a file.
-                $this->setGetArray(array('id' => $fileModels[0]->id, 'modelId' => $modelId,
-                                         'modelClassName' => 'ModelWithAttachmentTestItem'));
-                $this->resetPostArray();
-                $content = $this->runControllerWithExitExceptionAndGetContent('zurmo/fileModel/download');
-                $compareContent = 'Testing download.';
-                $this->assertEquals($compareContent, $content);
-            }
+            //download a file.
+            $this->setGetArray(array('id' => $fileModels[0]->id, 'modelId' => $modelId,
+                                     'modelClassName' => 'ModelWithAttachmentTestItem'));
+            $this->resetPostArray();
+            $content = $this->runControllerWithExitExceptionAndGetContent('zurmo/fileModel/download');
+            $compareContent = 'Testing download.';
+            $this->assertEquals($compareContent, $content);
             //todo: test all file errors.
 
             //Test deleting a file.
-            $this->assertEquals(1, count(FileModel::getAll()));
-            $this->assertEquals(1, count(FileContent::getAll()));
+            $this->assertEquals(1, FileModel::getCount());
+            $this->assertEquals(1, FileContent::getCount());
             $this->setGetArray(array('id' => $fileModels[0]->id));
             $this->resetPostArray();
             $this->runControllerWithNoExceptionsAndGetContent('zurmo/fileModel/delete', true);
 
             //Now confirm that there are no file models or content in the system.
-            $this->assertEquals(0, count(FileModel::getAll()));
-            $this->assertEquals(0, count(FileContent::getAll()));
+            $this->assertEquals(0, FileModel::getCount());
+            $this->assertEquals(0, FileContent::getCount());
 
             //Test GlobalSearchAutoComplete
             $this->assertTrue(ContactsModule::loadStartingData());
             $this->setGetArray(array('term' => 'something'));
             $this->resetPostArray();
-            $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/globalSearchAutoComplete');
-            $this->assertEquals(CJSON::encode(array(array('href' => '', 'label' => 'No Results Found'))), $content);
+            $content        = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/globalSearchAutoComplete');
+            $compareContent = '[{"href":"","label":"No Results Found","iconClass":""}'; // Not Coding Standard
+            $this->assertContains($compareContent, $content);
+        }
+
+        /*
+        * Test for isActive attribute in advance search
+        */
+        public function testDynamicSearchIsActiveAttribute()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            //to test whether isActive attribute is in the field list
+            $this->setGetArray(array(   'viewClassName'               => 'UsersSearchView',
+                                        'modelClassName'              => 'User',
+                                        'formModelClassName'          => 'UsersSearchForm',
+                                        'rowNumber'                   => 0,
+                                        'attributeIndexOrDerivedType' => 'isActive'));
+            $this->resetPostArray();
+            $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/dynamicSearchAttributeInput');
+
+            //to test whether isActive works efficiently
+            $this->setGetArray(array(   'viewClassName'               => 'UsersSearchView',
+                                        'modelClassName'              => 'User',
+                                        'formModelClassName'          => 'UsersSearchForm'));
+            $this->setPostArray(array('ajax'               => 'search-form',
+                                        'UsersSearchForm'  => array(
+                                            'dynamicStructure' => '1',
+                                            'dynamicClauses'   => array(
+                                                array('structurePosition'           => '1',
+                                                      'attributeIndexOrDerivedType' => 'isActive',
+                                                      'isActive' => '1')))));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/validateDynamicSearch', true);
+            $this->assertEmpty($content);
+        }
+
+        /**
+         * Test for the desktopNotifications managed by the ZurmoNotificationUtil
+         */
+        public function testDesktopNotifications()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/about');
+            $this->assertNotContains('startAutoUpdater', $content);
+            ZurmoConfigurationUtil::setByModuleName('ZurmoModule',
+                                                    'realtimeUpdatesEnabled',
+                                                    (boolean) true);
+            $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/about');
+            $this->assertContains('startAutoUpdater', $content);
+        }
+
+        public function testToggleStar()
+        {
+            $super                = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $account              = new Account();
+            $account->owner       = $super;
+            $account->name        = 'Test Account';
+            $account->officePhone = '1234567890';
+            $this->assertTrue($account->save());
+
+            $this->setGetArray(array('modelClassName' => 'Account',
+                                     'modelId' => $account->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/toggleStar');
+            $this->assertEquals('icon-star starred', $content);
+            $this->assertTrue(StarredUtil::isModelStarred($account));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/toggleStar');
+            $this->assertEquals('icon-star unstarred', $content);
+            $this->assertFalse(StarredUtil::isModelStarred($account));
+        }
+
+        public function testSuperUserEditUserMembershipAction()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $group = Group::getByName('Super Administrators');
+            //Test all default controller actions that do not require any POST/GET variables to be passed.
+            //This does not include portlet controller actions.
+            $this->setGetArray(array('id' => $group->id));
+            $user1 = UserTestHelper::createBasicUser('Test User');
+            $user2 = UserTestHelper::createBasicUser('Test User2');
+
+            $this->setPostArray(array(
+                'GroupUserMembershipForm' => array($user1->id, $user2->id)
+            ));
+
+            $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/group/editUserMembership');
+            $pos     = strpos($content, 'There must be at least one super administrator');
+            $this->assertTrue($pos > 0);
+
+            $user2->setIsSystemUser();
+            $this->assertTrue($user2->save());
+
+            $group->users->add($user1);
+            $saved = $group->save();
+            $this->assertTrue($saved);
+            $group->users->add($user2);
+            $saved = $group->save();
+            $this->assertTrue($saved);
+
+            $this->setPostArray(array(
+                'GroupUserMembershipForm' => array('userMembershipData' => array($user1->id, $user2->id)
+            )));
+
+            $this->runControllerWithRedirectExceptionAndGetContent('zurmo/group/editUserMembership');
         }
     }
 ?>

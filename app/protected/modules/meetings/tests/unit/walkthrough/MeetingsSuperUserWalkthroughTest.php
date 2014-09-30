@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -42,6 +52,27 @@
             ContactTestHelper::createContactWithAccountByNameForOwner('superContact', $super, $account);
             ContactTestHelper::createContactWithAccountByNameForOwner('superContact2', $super, $account);
             ContactTestHelper::createContactWithAccountByNameForOwner('superContact3', $super, $account);
+        }
+
+        public function testDaysMeetingsFromCalendarModalListAction()
+        {
+            $super           = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $superAccountId  = self::getModelIdByModelNameAndName ('Account', 'superAccount');
+            $this->setGetArray(array(   'relationModelClassName' => 'Account',
+                                        'relationModelId'        => $superAccountId,
+                                        'redirectUrl'            => 'someRedirect',
+                                        'stringTime'             => '2013-03-15'));
+            $this->runControllerWithNoExceptionsAndGetContent('meetings/default/daysMeetingsFromCalendarModalList');
+
+            //Setting ownerOnly to true
+            $this->setGetArray(array(   'ownerOnly'         => '1',
+                                        'redirectUrl'       => 'someRedirect',
+                                        'stringTime'        => '2013-03-15'));
+            $this->runControllerWithNoExceptionsAndGetContent('meetings/default/daysMeetingsFromCalendarModalList');
+
+            //Not specifying a relationModelId
+            $this->setGetArray(array('redirectUrl' => 'someRedirect', 'stringTime' => '2013-03-15'));
+            $this->runControllerWithNoExceptionsAndGetContent('meetings/default/daysMeetingsFromCalendarModalList');
         }
 
         public function testSuperUserAllDefaultControllerActions()
@@ -73,7 +104,7 @@
             $this->setGetArray(array(   'relationAttributeName' => 'Account', 'relationModelId' => $superAccountId,
                                         'relationModuleId'      => 'accounts', 'redirectUrl' => 'someRedirect'));
             $this->setPostArray(array('ActivityItemForm' => $activityItemPostData,
-                                      'Meeting' => array('name' => 'myMeeting', 'startDateTime' => '11/1/11 7:45 PM')));
+                                      'Meeting' => array('name' => 'myMeeting', 'startDateTime' => '11/1/2011 7:45 PM')));
             $this->runControllerWithRedirectExceptionAndGetContent('meetings/default/createFromRelation');
 
             //now test that the new meeting exists, and is related to the account.
@@ -131,13 +162,16 @@
             $this->assertEquals(0, count($meetings));
 
             //Test adding a meeting with multiple contacts
+            $contactItemPrefix    = Meeting::CONTACT_ATTENDEE_PREFIX;
+            $meetingAttendeesData = $contactItemPrefix . $superContactId . ',' . // Not Coding Standard
+                                    $contactItemPrefix . $superContactId2 . ',' . // Not Coding Standard
+                                    $contactItemPrefix . $superContactId3;
             $activityItemPostData = array('Account' => array('id' => $superAccountId),
-                                          'Contact' => array('ids' =>
-                                                $superContactId . ',' . $superContactId2 . ',' . $superContactId3)); // Not Coding Standard
+                                          'Contact' => array('ids' => $meetingAttendeesData)); // Not Coding Standard
             $this->setGetArray(array(   'relationAttributeName' => 'Account', 'relationModelId' => $superAccountId,
                                         'relationModuleId'      => 'accounts', 'redirectUrl' => 'someRedirect'));
             $this->setPostArray(array('ActivityItemForm' => $activityItemPostData,
-                                      'Meeting' => array('name' => 'myMeeting2', 'startDateTime' => '11/1/11 7:45 PM')));
+                                      'Meeting' => array('name' => 'myMeeting2', 'startDateTime' => '11/1/2011 7:45 PM')));
             $this->runControllerWithRedirectExceptionAndGetContent('meetings/default/createFromRelation');
 
             //now test that the new meeting exists, and is related to the account.
@@ -147,6 +181,19 @@
             $this->assertEquals(4, $meetings[0]->activityItems->count());
             $activityItem1 = $meetings[0]->activityItems->offsetGet(0);
             $this->assertEquals($account, $activityItem1);
+        }
+
+        /**
+         * @depends testSuperUserAllDefaultControllerActions
+         */
+        public function testCreateMeetingWithTimeZoneAdjustment()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $this->setGetArray(array('redirectUrl' => 'someRedirect',
+                                     'startDate'   => '2014-03-03'));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('meetings/default/createMeeting');
+            $this->assertTrue(strpos($content, '3/3/2014 12:00 AM') !== false);
+            $this->assertFalse(strpos($content, '3/2/2014 11:00 PM') !== false);
         }
     }
 ?>

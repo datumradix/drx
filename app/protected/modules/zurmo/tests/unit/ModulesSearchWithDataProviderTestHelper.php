@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -88,51 +98,56 @@
             */
         }
 
-        public static function createCheckBoxAttribute(RedBeanModel $model, $name)
+        public static function createCheckBoxAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new CheckBoxAttributeForm();
             $attributeForm->attributeName    = $name;
             $attributeForm->attributeLabels  = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired       = $isRequired;
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
             $adapter = new $modelAttributesAdapterClassName($model);
             $adapter->setAttributeMetadataFromForm($attributeForm);
         }
 
-        public static function createCurrencyValueAttribute(RedBeanModel $model, $name)
+        public static function createCurrencyValueAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new CurrencyValueAttributeForm();
             $attributeForm->attributeName    = $name;
             $attributeForm->attributeLabels  = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired       = $isRequired;
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
             $adapter = new $modelAttributesAdapterClassName($model);
             $adapter->setAttributeMetadataFromForm($attributeForm);
         }
 
-        public static function createDateAttribute(RedBeanModel $model, $name)
+        public static function createDateAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new DateAttributeForm();
             $attributeForm->attributeName    = $name;
             $attributeForm->attributeLabels  = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired       = $isRequired;
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
             $adapter = new $modelAttributesAdapterClassName($model);
             $adapter->setAttributeMetadataFromForm($attributeForm);
         }
 
-        public static function createDateTimeAttribute(RedBeanModel $model, $name)
+        public static function createDateTimeAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new DateTimeAttributeForm();
             $attributeForm->attributeName    = $name;
             $attributeForm->attributeLabels  = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired       = $isRequired;
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
             $adapter = new $modelAttributesAdapterClassName($model);
             $adapter->setAttributeMetadataFromForm($attributeForm);
         }
 
-        public static function createDecimalAttribute(RedBeanModel $model, $name)
+        public static function createDecimalAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new DecimalAttributeForm();
             $attributeForm->attributeName    = $name;
             $attributeForm->attributeLabels  = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired          = $isRequired;
             $attributeForm->maxLength        = 6;
             $attributeForm->precisionLength  = 2;
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
@@ -140,11 +155,12 @@
             $adapter->setAttributeMetadataFromForm($attributeForm);
         }
 
-        public static function createDropDownAttribute(RedBeanModel $model, $name)
+        public static function createDropDownAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new DropDownAttributeForm();
             $attributeForm->attributeName       = $name;
             $attributeForm->attributeLabels     = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired          = $isRequired;
             $attributeForm->customFieldDataData = self::createCustomFieldData($name . 'List');
             $attributeForm->customFieldDataName = $name . 'List';
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
@@ -152,11 +168,12 @@
             $adapter->setAttributeMetadataFromForm($attributeForm);
         }
 
-        public static function createIntegerAttribute(RedBeanModel $model, $name)
+        public static function createIntegerAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new IntegerAttributeForm();
             $attributeForm->attributeName    = $name;
             $attributeForm->attributeLabels  = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired       = $isRequired;
             $attributeForm->maxLength        = 11;
             $attributeForm->minValue         = -500000;
             $attributeForm->maxValue          = 500000;
@@ -170,22 +187,24 @@
             //todo: once multiSelect is completed.
         }
 
-        public static function createPhoneAttribute(RedBeanModel $model, $name)
+        public static function createPhoneAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new PhoneAttributeForm();
             $attributeForm->attributeName    = $name;
             $attributeForm->attributeLabels  = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired       = $isRequired;
             $attributeForm->maxLength        = 20;
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
             $adapter = new $modelAttributesAdapterClassName($model);
             $adapter->setAttributeMetadataFromForm($attributeForm);
         }
 
-        public static function createRadioDropDownAttribute(RedBeanModel $model, $name)
+        public static function createRadioDropDownAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new RadioDropDownAttributeForm();
             $attributeForm->attributeName       = $name;
             $attributeForm->attributeLabels     = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired          = $isRequired;
             $attributeForm->customFieldDataData = self::createCustomFieldData($name . 'List');
             $attributeForm->customFieldDataName = $name . 'List';
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
@@ -193,32 +212,35 @@
             $adapter->setAttributeMetadataFromForm($attributeForm);
         }
 
-        public static function createTextAttribute(RedBeanModel $model, $name)
+        public static function createTextAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new TextAttributeForm();
             $attributeForm->attributeName    = $name;
             $attributeForm->attributeLabels  = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired       = $isRequired;
             $attributeForm->maxLength        = 50;
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
             $adapter = new $modelAttributesAdapterClassName($model);
             $adapter->setAttributeMetadataFromForm($attributeForm);
         }
 
-        public static function createTextAreaAttribute(RedBeanModel $model, $name)
+        public static function createTextAreaAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new TextAreaAttributeForm();
             $attributeForm->attributeName    = $name;
             $attributeForm->attributeLabels  = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired       = $isRequired;
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
             $adapter = new $modelAttributesAdapterClassName($model);
             $adapter->setAttributeMetadataFromForm($attributeForm);
         }
 
-        public static function createUrlAttribute(RedBeanModel $model, $name)
+        public static function createUrlAttribute(RedBeanModel $model, $name, $isRequired = false)
         {
             $attributeForm = new UrlAttributeForm();
             $attributeForm->attributeName    = $name;
             $attributeForm->attributeLabels  = self::generateAtrributeLabelsByName($name);
+            $attributeForm->isRequired       = $isRequired;
             $attributeForm->maxLength        = 50;
             $modelAttributesAdapterClassName = $attributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
             $adapter = new $modelAttributesAdapterClassName($model);

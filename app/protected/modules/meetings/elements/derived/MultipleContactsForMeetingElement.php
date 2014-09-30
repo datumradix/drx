@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -29,101 +39,78 @@
      * specifically for the 'contact' relation. This is utilized by the meeting model.
      *
      */
-    class MultipleContactsForMeetingElement extends Element implements DerivedElementInterface
+    class MultipleContactsForMeetingElement extends MultiSelectRelatedModelsAutoCompleteElement
     {
-        protected function renderControlNonEditable()
+        protected $modelDerivationPathToItemFromContact = null;
+
+        protected function getFormName()
         {
-            $content  = null;
-            $contacts = $this->getExistingContactRelationsIdsAndLabels();
-            foreach ($contacts as $contactData)
-            {
-                if ($content != null)
-                {
-                    $content .= ', ';
-                }
-                $content .= $contactData['name'];
-            }
-            return $content;
+            return 'ActivityItemForm';
         }
 
-        protected function renderControlEditable()
+        protected function getUnqualifiedNameForIdField()
+        {
+            return '[Contact][ids]';
+        }
+
+        protected function getUnqualifiedIdForIdField()
+        {
+            return '_Contact_ids';
+        }
+
+        protected function assertModelType()
         {
             assert('$this->model instanceof Activity');
-            $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("ModelElement");
-            $cClipWidget->widget('ext.zurmoinc.framework.widgets.MultiSelectAutoComplete', array(
-                'name'        => $this->getNameForIdField(),
-                'id'          => $this->getIdForIdField(),
-                'jsonEncodedIdsAndLabels'   => CJSON::encode($this->getExistingContactRelationsIdsAndLabels()),
-                'sourceUrl'   => Yii::app()->createUrl('contacts/variableContactState/autoCompleteAllContactsForMultiSelectAutoComplete'),
-                'htmlOptions' => array(
-                    'disabled' => $this->getDisabledValue(),
-                    ),
-                'hintText' => Yii::t('Default', 'Type a ContactsModuleSingularLowerCaseLabel ' .
-                                                'or LeadsModuleSingularLowerCaseLabel: name or email address',
-                                LabelUtil::getTranslationParamsForAllModules())
-            ));
-            $cClipWidget->endClip();
-            $content = $cClipWidget->getController()->clips['ModelElement'];
-            return $content;
         }
 
-        protected function renderError()
+        protected function getFormattedAttributeLabel()
         {
+            return Yii::app()->format->text(Zurmo::t('MeetingsModule', 'Attendees'));
         }
 
-        protected function renderLabel()
+        public static function getDisplayName()
         {
-            return Yii::t('Default', 'Attendees');
+            return Zurmo::t('MeetingsModule', 'Related ContactsModulePluralLabel and LeadsModulePluralLabel',
+                LabelUtil::getTranslationParamsForAllModules());
         }
 
-         public static function getDisplayName()
+        protected function getWidgetSourceUrl()
         {
-            return Yii::t('Default', 'Related ContactsModulePluralLabel and LeadsModulePluralLabel',
-                       LabelUtil::getTranslationParamsForAllModules());
+            return  Yii::app()->createUrl('contacts/variableContactState/autoCompleteAllContactsOrUsersForMultiSelectAutoComplete');
         }
 
-        /**
-         * Get the attributeNames of attributes used in
-         * the derived element. For this element, there are no attributes from the model.
-         * @return array - empty
-         */
-        public static function getModelAttributeNames()
+        protected function getWidgetHintText()
         {
-            return array();
+            return Zurmo::t('MeetingsModule', 'Type a person: name or email address',
+                                            LabelUtil::getTranslationParamsForAllModules());
         }
 
-        protected function getNameForIdField()
+        protected function getRelationName()
         {
-                return 'ActivityItemForm[contact][ids]';
+            return 'activityItems';
         }
 
-        protected function getIdForIdField()
+        protected function resolveIdAndNameByModel(RedBeanModel $model)
         {
-            return 'ActivityItemForm_contact_ids';
-        }
-
-        protected function getExistingContactRelationsIdsAndLabels()
-        {
-            $existingContacts = array();
-            $modelDerivationPathToItem = ActivitiesUtil::getModelDerivationPathToItem('Contact');
-            foreach ($this->model->activityItems as $item)
+            $existingContact = null;
+            if (!isset($this->modelDerivationPathToItemFromContact))
             {
-                try
+                $this->modelDerivationPathToItemFromContact = RuntimeUtil::getModelDerivationPathToItem('Contact');
+            }
+            try
+            {
+                $contact = $model->castDown(array($this->modelDerivationPathToItemFromContact));
+                if (get_class($contact) == 'Contact')
                 {
-                    $contact = $item->castDown(array($modelDerivationPathToItem));
-                    if (get_class($contact) == 'Contact')
-                    {
-                        $existingContacts[] = array('id' => $contact->id,
-                                                    'name' => self::renderHtmlContentLabelFromContactAndKeyword($contact, null));
-                    }
-                }
-                catch (NotFoundException $e)
-                {
-                    //do nothing
+                    $existingContact = array('id' => Meeting::CONTACT_ATTENDEE_PREFIX . $contact->id,
+                                            'name' => self::renderHtmlContentLabelFromContactAndKeyword($contact, null));
                 }
             }
-            return $existingContacts;
+            catch (NotFoundException $e)
+            {
+                //do nothing
+            }
+            return $existingContact;
         }
 
         /**
@@ -137,23 +124,63 @@
         {
             assert('$contact instanceof Contact && $contact->id > 0');
             assert('$keyword == null || is_string($keyword)');
+            try
+            {
+                if (substr($contact->secondaryEmail->emailAddress, 0, strlen($keyword)) === $keyword)
+                {
+                    $emailAddressToUse = $contact->secondaryEmail->emailAddress;
+                }
+                else
+                {
+                    $emailAddressToUse = $contact->primaryEmail->emailAddress;
+                }
+                if ($emailAddressToUse != null)
+                {
+                    return strval($contact) . '&#160&#160<b>' . strval($emailAddressToUse) . '</b>';
+                }
+                else
+                {
+                    return strval($contact);
+                }
+            }
+            catch (AccessDeniedSecurityException $exception)
+            {
+                return Zurmo::t('Core', 'Restricted');
+            }
+        }
 
-            if (substr($contact->secondaryEmail->emailAddress, 0, strlen($keyword)) === $keyword)
+        public static function renderHtmlContentLabelFromUserAndKeyword($user, $keyword)
+        {
+            assert('$user instanceof User && $user->id > 0');
+            assert('$keyword == null || is_string($keyword)');
+            try
             {
-                $emailAddressToUse = $contact->secondaryEmail->emailAddress;
+                if (substr($user->primaryEmail->emailAddress, 0, strlen($keyword)) === $keyword)
+                {
+                    $emailAddressToUse = $user->primaryEmail->emailAddress;
+                    return strval($user) . '&#160&#160<b>' . strval($emailAddressToUse) . '</b>';
+                }
+                else
+                {
+                    return strval($user);
+                }
             }
-            else
+            catch (AccessDeniedSecurityException $exception)
             {
-                $emailAddressToUse = $contact->primaryEmail->emailAddress;
+                return Zurmo::t('Core', 'Restricted');
             }
-            if ($emailAddressToUse != null)
+        }
+
+        protected function getExistingIdsAndLabels()
+        {
+            $existingRecords = parent::getExistingIdsAndLabels();
+            $userAttendees   = $this->model->userAttendees;
+            foreach ($userAttendees as $user)
             {
-                return strval($contact) . '&#160&#160<b>' . strval($emailAddressToUse) . '</b>';
+                $existingRecords[] = array('id'   => Meeting::USER_ATTENDEE_PREFIX . $user->id,
+                                           'name' => self::renderHtmlContentLabelFromUserAndKeyword($user, null));
             }
-            else
-            {
-                return strval($contact);
-            }
+            return $existingRecords;
         }
     }
 ?>

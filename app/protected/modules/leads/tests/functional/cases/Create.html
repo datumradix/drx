@@ -4,21 +4,26 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://localhost/" />
-<title>CreateAndConvert</title>
+<title>CreateLeads</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">CreateAndConvert</td></tr>
+<tr><td rowspan="1" colspan="3">Create Leads</td></tr>
 </thead><tbody>
 <tr>
-    <td>setSpeed</td>
-    <td>1000</td>
-    <td></td>
+	<td>setTimeout</td>
+	<td>45000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeGlobal</td>
+	<td>javascript{Math.floor(Math.random()*11000)}</td>
+	<td>randomSuffix</td>
 </tr>
 <tr>
 	<td>open</td>
-	<td>index.php?r=accounts/default/create</td>
+	<td>index.php/accounts/default/create</td>
 	<td></td>
 </tr>
 <tr>
@@ -27,9 +32,14 @@
 	<td></td>
 </tr>
 <tr>
-	<td>storeGlobal</td>
-	<td>javascript{Math.floor(Math.random()*11000)}</td>
-	<td>randomSuffix</td>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Create Account</td>
+	<td></td>
 </tr>
 <tr>
 	<td>type</td>
@@ -47,23 +57,48 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
 	<td>waitForTextPresent</td>
 	<td>my account ${randomSuffix}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>open</td>
-	<td>index.php?r=leads/default</td>
+	<td>index.php/leads/default</td>
 	<td></td>
 </tr>
 <tr>
-    <td>waitForPageToLoad</td>
-    <td></td>
-    <td></td>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='MenuView']/div/div/ul/li[3]/ul/li[1]/a/span</td>
+	<td>//div[@id='SecuredActionBarForLeadsSearchAndListView']/div[1]/nav/div[1]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Create Lead</td>
 	<td></td>
 </tr>
 <tr>
@@ -112,34 +147,39 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForTextPresent</td>
-	<td>User Search</td>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>UsersSearchForm_anyMixedAttributes</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>User[firstName]</td>
-	<td>Sam</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>User[lastName]</td>
-	<td>Smith</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>search</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>Displaying 1-1 of 1 result(s).</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
+	<td>UsersSearchForm_anyMixedAttributes</td>
 	<td>Sam Smith</td>
-	<td></td>
+</tr>
+<tr>
+	<td>keyUp</td>
+	<td>UsersSearchForm_anyMixedAttributes</td>
+	<td>\10</td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//div[@id='list-viewmodal']/div[2]/table/tbody/tr[1]/td/a</td>
+	<td>Sam Smith</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>link=Sam Smith</td>
+	<td>Sam Smith</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -252,43 +292,175 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForPageToLoad</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<tr>
 	<td>waitForText</td>
-	<td>//div[@id='ZurmoDefaultView']/div/div[4]/div/div/div[1]/div/h1</td>
-	<td>exact:Leads: Silly Sally ${randomSuffix}</td>
+	<td>//div[@id='LeadDetailsAndRelationsView']/div[2]/div/ul[1]/li[1]/div[1]/h3</td>
+	<td>exact:Details</td>
+</tr>
+<!--Business Card View-->
+<tr>
+	<td>assertTextPresent</td>
+	<td>Mrs. Silly Sally ${randomSuffix}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='LeadDetailsAndRelationsView']/div[2]/div/ul[1]/li[3]/div[1]/div/div/div/ul/li/ul/li/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Compose Email</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
+	<td></td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[1]/td[1]</td>
-	<td>Mrs. Silly Sally ${randomSuffix}</td>	
+	<td>link=123 Main Street Suite 500 Chicago IL, 60614 USA</td>
+	<td>123 Main Street Suite 500 Chicago IL, 60614 USA</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=123 Main Street Suite 500 Chicago IL, 60614 USA</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='businessCardView']/div[@class='contact-details']/span[@class='icon-office-phone']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='businessCardView']/div[@class='contact-details']/span[@class='icon-mobile-phone']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='businessCardView']/div[@class='contact-details']/span[@class='icon-email']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='businessCardView']/img[@class='gravatar']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[1]/td</td>
+	<td>Mrs. Silly Sally ${randomSuffix}</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[2]/td</td>
+	<td>In Progress</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[4]/td</td>
+	<td>Rabbit Technology</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[8]/td</td>
+	<td>888999888</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[9]/td</td>
+	<td>5679076543</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[13]/td</td>
+	<td>456 Bee Street<br /> Suite 400<br /> Gary Indiana, 67898<br /> USA</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>link=exact:http://www.rabbit.com</td>
+	<td>exact:http://www.rabbit.com</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[14]/td</td>
+	<td>Financial Services</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[12]/td</td>
+	<td>123 Main Street<br /> Suite 500<br /> Chicago IL, 60614<br /> USA</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>link=sally@rabbit.com</td>
+	<td>sally@rabbit.com</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[7]/td</td>
+	<td>Inbound Call</td>
+</tr>
+<tr>
+	<td>assertNotVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[16]/td</td>
+	<td>test</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='LeadDetailsPortletView']/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForCondition</td>
+	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+	<td>30000</td>
+</tr>
+<!--Full View-->
+<tr>
+	<td>assertText</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[1]/td</td>
+	<td>Mrs. Silly Sally ${randomSuffix}</td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[1]/td[2]</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[2]/td</td>
 	<td>In Progress</td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[2]/td[2]</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[4]/td</td>
 	<td>Rabbit Technology</td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[3]/td[2]</td>
-	<td>456-777-6655</td>
-</tr>
-<tr>
-	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[4]/td[2]</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[8]/td</td>
 	<td>888999888</td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[5]/td[2]</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[9]/td</td>
 	<td>5679076543</td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[7]/td[2]</td>
+	<td>compareText</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[13]/td</td>
 	<td>456 Bee Street<br /> Suite 400<br /> Gary Indiana, 67898<br /> USA</td>
 </tr>
 <tr>
@@ -298,12 +470,12 @@
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[8]/td[1]</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[14]/td</td>
 	<td>Financial Services</td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[7]/td[1]</td>
+	<td>compareText</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[12]/td</td>
 	<td>123 Main Street<br /> Suite 500<br /> Chicago IL, 60614<br /> USA</td>
 </tr>
 <tr>
@@ -318,12 +490,72 @@
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[4]/td[1]</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[7]/td</td>
 	<td>Inbound Call</td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>//div[@id='LeadEditAndDetailsView']/table/tbody/tr[9]/td</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[16]/td</td>
+	<td>test</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[1]/td</td>
+	<td>Mrs. Silly Sally ${randomSuffix}</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[2]/td</td>
+	<td>In Progress</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[4]/td</td>
+	<td>Rabbit Technology</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[8]/td</td>
+	<td>888999888</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[9]/td</td>
+	<td>5679076543</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[13]/td</td>
+	<td>456 Bee Street<br /> Suite 400<br /> Gary Indiana, 67898<br /> USA</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>link=exact:http://www.rabbit.com</td>
+	<td>exact:http://www.rabbit.com</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[14]/td</td>
+	<td>Financial Services</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[12]/td</td>
+	<td>123 Main Street<br /> Suite 500<br /> Chicago IL, 60614<br /> USA</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>link=sally@rabbit.com</td>
+	<td>sally@rabbit.com</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[7]/td</td>
+	<td>Inbound Call</td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>//div[@id='zurmoView']/div/table/tbody/tr[16]/td</td>
 	<td>test</td>
 </tr>
 </tbody></table>

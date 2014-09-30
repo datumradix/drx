@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,19 +12,29 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class ContactTest extends BaseTest
+    class ContactTest extends ZurmoBaseTest
     {
         public static function setUpBeforeClass()
         {
@@ -56,6 +66,31 @@
         /**
          * @depends testCreateStateValues
          */
+        public function testContactStateIsAudited()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $contact = new Contact();
+            $contactStates = ContactState::GetAll();
+            $contact->state = $contactStates[0];
+            $contact->firstName = 'jason';
+            $contact->lastName  = 'green';
+            $saved = $contact->save();
+            $this->assertTrue($saved);
+
+            $contactId = $contact->id;
+            $contact->forget();
+
+            $contact        = Contact::getById($contactId);
+            $contact->state = $contactStates[1];
+            $compareData    = array('state' => array('ContactState', $contactStates[0]->id, 'New'));
+            $this->assertEquals($compareData, $contact->originalAttributeValues);
+            $deleted = $contact->delete();
+            $this->assertTrue($deleted);
+        }
+
+        /**
+         * @depends testContactStateIsAudited
+         */
         public function testCreateAndGetContactById()
         {
             Yii::app()->user->userModel = User::getByUsername('super');
@@ -70,6 +105,9 @@
             $contactStates = ContactState::getByName('Qualified');
 
             $contact = new Contact();
+            $this->assertNull($contact->latestActivityDateTime);
+            $dateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+            $contact->setLatestActivityDateTime($dateTime);
             $contact->owner         = $user;
             $contact->title->value  = 'Mr.';
             $contact->firstName     = 'Super';
@@ -101,6 +139,7 @@
             $this->assertEquals('0987654321',       $contact->mobilePhone);
             $this->assertEquals('1222222222',       $contact->officeFax);
             $this->assertEquals('Qualified',        $contact->state->name);
+            $this->assertEquals($dateTime,          $contact->latestActivityDateTime);
         }
 
         /**
@@ -684,8 +723,8 @@
             $this->assertEquals(4, count($modelClassNames));
             $this->assertEquals('Contact', $modelClassNames[0]);
             $this->assertEquals('ContactSearch', $modelClassNames[1]);
-            $this->assertEquals('ContactState', $modelClassNames[2]);
-            $this->assertEquals('ContactsFilteredList', $modelClassNames[3]);
+            $this->assertEquals('ContactStarred', $modelClassNames[2]);
+            $this->assertEquals('ContactState', $modelClassNames[3]);
         }
 
         public function testChangingContactWithoutChangingRelatedAccountShouldNotAuditAccountChangeWhenDoneViaPost()
@@ -713,6 +752,58 @@
             $contact->setAttributes($fakePostData);
             $this->assertTrue($contact->save());
             $this->assertEquals($beforeCount, AuditEvent::getCount());
+        }
+
+        public function testJobTitleLength()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $user                       = Yii::app()->user->userModel;
+            $contactStates              = ContactState::getByName('Qualified');
+            $contact = new Contact();
+            $contact->owner = $user;
+            $contact->title->value       = 'Mr.';
+            $contact->firstName          = 'length';
+            $contact->lastName           = 'username';
+            $contact->jobTitle           = 'S';
+            $contact->state              = $contactStates[0];
+            $this->assertTrue($contact->save());
+        }
+
+        public function testDeleteContactCascadesMarketingListMemmers()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $contactStates              = ContactState::getByName('Qualified');
+            $contact = new Contact();
+            $contact->owner             = Yii::app()->user->userModel;
+            $contact->title->value      = 'Mr.';
+            $contact->firstName         = 'Member';
+            $contact->lastName          = 'One';
+            $contact->state             = $contactStates[0];
+            $this->assertTrue($contact->save());
+            $contactId = $contact->id;
+            $marketingList = MarketingListTestHelper::createMarketingListByName('Test Marketing List Member Deleted');
+            $member = MarketingListMemberTestHelper::populateValidMarketingListMember(1, $marketingList, $contact);
+            $this->assertTrue($member->unrestrictedSave());
+            $this->assertEquals(1, count(MarketingListMember::getByContactId($contactId)));
+            $testContact = new Contact();
+            $testContact->owner             = Yii::app()->user->userModel;
+            $testContact->title->value      = 'Mr.';
+            $testContact->firstName         = 'Member';
+            $testContact->lastName          = 'Two';
+            $testContact->state             = $contactStates[0];
+            $this->assertTrue($testContact->save());
+            $testContactId = $testContact->id;
+            $member2 = MarketingListMemberTestHelper::populateValidMarketingListMember(1, $marketingList, $testContact);
+            $this->assertTrue($member2->unrestrictedSave());
+            $this->assertEquals(1, count(MarketingListMember::getByContactId($testContact->id)));
+            $subscribedCount = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingList->id, 1);
+            $this->assertEquals(2, $subscribedCount);
+            $this->assertTrue($contact->delete());
+            $this->assertEquals(0, count(MarketingListMember::getByContactId($contactId)));
+            $this->assertTrue($testContact->delete());
+            $this->assertEquals(0, count(MarketingListMember::getByContactId($testContactId)));
+            $subscribedCount = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingList->id, 1);
+            $this->assertEquals(0, $subscribedCount);
         }
     }
 ?>

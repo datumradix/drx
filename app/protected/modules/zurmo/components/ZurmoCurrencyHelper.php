@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -39,9 +49,18 @@
          */
         protected $_baseCode;
 
-        protected $webServiceErrorMessage;
+        /**
+         * Which service type to use: GrandTotal(default) or WebServiceX
+         * It can be changed in config
+         * @var string
+         */
+        protected $_serviceType;
 
-        protected $webServiceErrorCode;
+        /**
+         * Currency service utility class, based on $_serviceType
+         * @var CurrencyServiceUtil
+         */
+        protected $currencyService;
 
         /**
          * This is set from the value in the application common config file.
@@ -55,6 +74,60 @@
         public function getBaseCode()
         {
             return $this->_baseCode;
+        }
+
+        /**
+        * This is set from the value in the application common config file.
+        */
+        public function setServiceType($value)
+        {
+            assert('is_string($value)');
+            $this->_serviceType = $value;
+            $this->setCurrencyService();
+        }
+
+        public function getServiceType()
+        {
+            return $this->_serviceType;
+        }
+
+        protected function setCurrencyService()
+        {
+            $className = $this->getServiceType() . 'CurrencyServiceUtil';
+            assert('class_exists($className)');
+            $this->currencyService = new $className;
+        }
+
+        /**
+         * Resolve the active currency for the current user.  If the user does not have a currency, it will fall back
+         * to the base system currency.  If the base system currency does not exist, it will attempt to make it.
+         * @throws NotSupportedException
+         */
+        public function getActiveCurrencyForCurrentUser()
+        {
+            if (Yii::app()->user->userModel->currency->id > 0)
+            {
+                return Yii::app()->user->userModel->currency;
+            }
+            try
+            {
+                $code = $this->getBaseCode();
+                if (null != $currency = Currency::getCachedCurrencyByCode($code))
+                {
+                    return $currency;
+                }
+                $currency = Currency::getByCode($code);
+            }
+            catch (NotFoundException $e)
+            {
+                $currency = Currency::makeBaseCurrency();
+            }
+            if ($currency->id <= 0)
+            {
+                throw new NotSupportedException();
+            }
+            Currency::setCachedCurrency($currency);
+            return $currency;
         }
 
         public function getCodeForCurrentUserForDisplay()
@@ -77,7 +150,7 @@
             {
                 return 1;
             }
-            $rate = $this->getConversionRateViaWebService($fromCode, $this->getBaseCode());
+            $rate = $this->currencyService->getConversionRateViaWebService($fromCode, $this->getBaseCode());
             if ($rate == null)
             {
                 return 1;
@@ -85,86 +158,25 @@
             return $rate;
         }
 
-        /**
-         * @param $error - string by reference to attach error to if needed.
-         * @return rate as a float, otherwise null if there is some sort of error
-         */
-        protected function getConversionRateViaWebService($fromCode, $toCode)
-        {
-            $url  = 'http://www.webservicex.net/CurrencyConvertor.asmx/ConversionRate?FromCurrency=';
-            $url .= $fromCode . '&ToCurrency=' . $toCode;
-            $ch = curl_init();
-            $timeout = 2;
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-            $file_contents = curl_exec($ch);
-            if ($file_contents === false || empty($file_contents))
-            {
-                $this->webServiceErrorMessage = curl_error($ch);
-                $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_WEB_SERVICE;
-                return null;
-            }
-            curl_close($ch);
-            if (!empty($file_contents) &&
-                false !== $xml = @simplexml_load_string($file_contents))
-            {
-                if (is_object($xml) && $xml instanceof SimpleXMLElement)
-                {
-                    $xmlAsArray = (array)$xml;
-                    return $xmlAsArray[0];
-                }
-                elseif (is_array($xml))
-                {
-                    return $xml[0];
-                }
-                else
-                {
-                    return null; //todo: throw exception
-                }
-            }
-            if (stripos($file_contents, 'error') === false)
-            {
-                $this->webServiceErrorMessage = Yii::t('Default', 'Invalid currency code');
-                $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_INVALID_CODE;
-            }
-            else
-            {
-                $this->webServiceErrorMessage = Yii::t('Default', 'There was an error with the web service.');
-                $this->webServiceErrorCode    = ZurmoCurrencyHelper::ERROR_WEB_SERVICE;
-            }
-            return null;
-        }
-
         public function getWebServiceErrorMessage()
         {
-            return $this->webServiceErrorMessage;
+            return $this->currencyService->getWebServiceErrorMessage();
         }
 
         public function getWebServiceErrorCode()
         {
-            return $this->webServiceErrorCode;
-        }
-
-        /**
-         * After you make a call to a method that envokes a webService, reset the errors.
-         * @see getConversionRateViaWebService
-         */
-        public function resetErrors()
-        {
-            $this->webServiceErrorMessage  = null;
-            $this->webServiceErrorCode     = null;
+            return $this->currencyService->getWebServiceErrorCode();
         }
 
         /**
          * Check if the currency rate has been updated within the last 24 hours. If not, then perform a currency
          * update and update the lastAttemptedRateUpdateTimeStamp.
+         * @param boolean $forceCheck - If true, it will ignore the last time the check was made
          */
-        public function checkAndUpdateCurrencyRates()
+        public function checkAndUpdateCurrencyRates($forceCheck = false)
         {
             $metadata = Currency::getMetadata();
-            if ( $metadata['Currency']['lastAttemptedRateUpdateTimeStamp'] == null ||
+            if ( $forceCheck || $metadata['Currency']['lastAttemptedRateUpdateTimeStamp'] == null ||
                 (time() - $metadata['Currency']['lastAttemptedRateUpdateTimeStamp']) > (24 * 60 * 60))
             {
                 //code and message or just code ? hmm.
@@ -192,7 +204,11 @@
         public function getActiveCurrenciesOrSelectedCurrenciesData($selectedCurrencyId)
         {
             assert('$selectedCurrencyId == null || (is_int($selectedCurrencyId) && $selectedCurrencyId > 0)');
-            $currencies = Currency::getAll();
+            if (null == $currencies = Currency::getAllCachedCurrencies())
+            {
+                $currencies = Currency::getAll();
+                Currency::setAllCachedCurrencies($currencies);
+            }
             $data       = array();
             foreach ($currencies as $currency)
             {
@@ -204,6 +220,9 @@
             return $data;
         }
 
+        /**
+         * @return Date/Time of the last attempted rate update.
+         */
         public function getLastAttemptedRateUpdateDateTime()
         {
             $metadata = Currency::getMetadata();
@@ -213,6 +232,11 @@
             }
             return Yii::app()->dateFormatter->formatDateTime(
                     $metadata['Currency']['lastAttemptedRateUpdateTimeStamp'], 'short');
+        }
+
+        public function resetErrors()
+        {
+            $this->currencyService->resetErrors();
         }
     }
 ?>

@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -131,7 +141,7 @@
             }
             else
             {
-                throw notSupportedException();
+                throw new NotSupportedException();
             }
         }
 
@@ -213,33 +223,44 @@
         /**
          * Given a SecurableItem, add and remove permissions
          * based on what the provided ExplicitReadWriteModelPermissions indicates should be done.
+         * Sets @see SecurableItem->setTreatCurrentUserAsOwnerForPermissions as true in order to ensure the current user
+         * can effectively add permissions even if the current user is no longer the owner.
          * @param SecurableItem $securableItem
          * @param ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions
+         * @param bool $validate
+         * @return bool|void
+         * @throws NotSupportedException
          */
         public static function resolveExplicitReadWriteModelPermissions(SecurableItem $securableItem,
-                                  ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions)
+                                  ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions, $validate = false)
         {
             assert('$securableItem->id > 0');
+            $optimizeReadPermissions = $securableItem::hasReadPermissionsOptimization();
+            $securableItem->setTreatCurrentUserAsOwnerForPermissions(true);
             $saveSecurableItem = false;
             if ($explicitReadWriteModelPermissions->getReadOnlyPermitablesCount() > 0)
             {
                 $saveSecurableItem = true;
                 foreach ($explicitReadWriteModelPermissions->getReadOnlyPermitables() as $permitable)
                 {
-                    $securableItem->addPermissions($permitable, Permission::READ);
-                    if ($permitable instanceof Group)
+                    if ($securableItem->addPermissions($permitable, Permission::READ) && $optimizeReadPermissions)
                     {
-                        ReadPermissionsOptimizationUtil::
-                        securableItemGivenPermissionsForGroup($securableItem, $permitable);
-                    }
-                    elseif ($permitable instanceof User)
-                    {
-                        ReadPermissionsOptimizationUtil::
-                        securableItemGivenPermissionsForUser($securableItem, $permitable);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException();
+                        if ($permitable instanceof Group)
+                        {
+                            AllPermissionsOptimizationUtil::
+                            securableItemGivenReadPermissionsForGroup($securableItem, $permitable);
+                            ReadPermissionsSubscriptionUtil::securableItemGivenPermissionsForGroup($securableItem);
+                        }
+                        elseif ($permitable instanceof User)
+                        {
+                            AllPermissionsOptimizationUtil::
+                            securableItemGivenReadPermissionsForUser($securableItem, $permitable);
+                            ReadPermissionsSubscriptionUtil::securableItemGivenPermissionsForUser($securableItem);
+                        }
+                        else
+                        {
+                            throw new NotSupportedException();
+                        }
                     }
                 }
             }
@@ -248,20 +269,25 @@
                 $saveSecurableItem = true;
                 foreach ($explicitReadWriteModelPermissions->getReadWritePermitables() as $permitable)
                 {
-                    $securableItem->addPermissions($permitable, Permission::READ_WRITE_CHANGE_PERMISSIONS_CHANGE_OWNER);
-                    if ($permitable instanceof Group)
+                    if ($securableItem->addPermissions($permitable, Permission::READ_WRITE_CHANGE_PERMISSIONS_CHANGE_OWNER) &&
+                                                                                                $optimizeReadPermissions)
                     {
-                        ReadPermissionsOptimizationUtil::
-                        securableItemGivenPermissionsForGroup($securableItem, $permitable);
-                    }
-                    elseif ($permitable instanceof User)
-                    {
-                        ReadPermissionsOptimizationUtil::
-                        securableItemGivenPermissionsForUser($securableItem, $permitable);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException();
+                        if ($permitable instanceof Group)
+                        {
+                            AllPermissionsOptimizationUtil::
+                            securableItemGivenPermissionsForGroup($securableItem, $permitable);
+                            ReadPermissionsSubscriptionUtil::securableItemGivenPermissionsForGroup($securableItem);
+                        }
+                        elseif ($permitable instanceof User)
+                        {
+                            AllPermissionsOptimizationUtil::
+                            securableItemGivenPermissionsForUser($securableItem, $permitable);
+                            ReadPermissionsSubscriptionUtil::securableItemGivenPermissionsForUser($securableItem);
+                        }
+                        else
+                        {
+                            throw new NotSupportedException();
+                        }
                     }
                 }
             }
@@ -271,19 +297,24 @@
                 foreach ($explicitReadWriteModelPermissions->getReadOnlyPermitablesToRemove() as $permitable)
                 {
                     $securableItem->removePermissions($permitable, Permission::READ, Permission::ALLOW);
-                    if ($permitable instanceof Group)
+                    if ($optimizeReadPermissions)
                     {
-                        ReadPermissionsOptimizationUtil::
-                        securableItemLostPermissionsForGroup($securableItem, $permitable);
-                    }
-                    elseif ($permitable instanceof User)
-                    {
-                        ReadPermissionsOptimizationUtil::
-                        securableItemLostPermissionsForUser($securableItem, $permitable);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException();
+                        if ($permitable instanceof Group)
+                        {
+                            AllPermissionsOptimizationUtil::
+                            securableItemLostReadPermissionsForGroup($securableItem, $permitable);
+                            ReadPermissionsSubscriptionUtil::securableItemLostPermissionsForGroup($securableItem);
+                        }
+                        elseif ($permitable instanceof User)
+                        {
+                            AllPermissionsOptimizationUtil::
+                            securableItemLostReadPermissionsForUser($securableItem, $permitable);
+                            ReadPermissionsSubscriptionUtil::securableItemLostPermissionsForUser($securableItem);
+                        }
+                        else
+                        {
+                            throw new NotSupportedException();
+                        }
                     }
                 }
             }
@@ -294,25 +325,72 @@
                 {
                     $securableItem->removePermissions($permitable,
                                                       Permission::READ_WRITE_CHANGE_PERMISSIONS_CHANGE_OWNER, Permission::ALLOW);
-                    if ($permitable instanceof Group)
+                    if ($optimizeReadPermissions)
                     {
-                        ReadPermissionsOptimizationUtil::
-                        securableItemLostPermissionsForGroup($securableItem, $permitable);
-                    }
-                    elseif ($permitable instanceof User)
-                    {
-                        ReadPermissionsOptimizationUtil::
-                        securableItemLostPermissionsForUser($securableItem, $permitable);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException();
+                        if ($permitable instanceof Group)
+                        {
+                            AllPermissionsOptimizationUtil::
+                            securableItemLostPermissionsForGroup($securableItem, $permitable);
+                            ReadPermissionsSubscriptionUtil::securableItemLostPermissionsForGroup($securableItem);
+                        }
+                        elseif ($permitable instanceof User)
+                        {
+                            AllPermissionsOptimizationUtil::
+                            securableItemLostPermissionsForUser($securableItem, $permitable);
+                            ReadPermissionsSubscriptionUtil::securableItemLostPermissionsForUser($securableItem);
+                        }
+                        else
+                        {
+                            throw new NotSupportedException();
+                        }
                     }
                 }
             }
             if ($saveSecurableItem)
             {
-                return $securableItem->save();
+                $setBackToProcess     = false;
+                if ($securableItem->shouldProcessWorkflowOnSave())
+                {
+                    $securableItem->setDoNotProcessWorkflowOnSave();
+                    $setBackToProcess = true;
+                }
+                $saved = $securableItem->save($validate);
+                if ($setBackToProcess)
+                {
+                    $securableItem->setProcessWorkflowOnSave();
+                }
+                $securableItem->setTreatCurrentUserAsOwnerForPermissions(false);
+                return $saved;
+            }
+            $securableItem->setTreatCurrentUserAsOwnerForPermissions(false);
+            return true;
+        }
+
+        /**
+         * Given a SecurableItem, add and remove permissions just on the securableItem.  Since this method
+         * is called when the SecurableItem is not being saved and just for display purposes in the user interface.
+         * @param SecurableItem $securableItem
+         * @param ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions
+         * @return boolean
+         * @throws NotSupportedException()
+         */
+        public static function resolveExplicitReadWriteModelPermissionsForDisplay(SecurableItem $securableItem,
+                               ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions)
+        {
+            assert('$securableItem->id < 0');
+            if ($explicitReadWriteModelPermissions->getReadOnlyPermitablesCount() > 0)
+            {
+                foreach ($explicitReadWriteModelPermissions->getReadOnlyPermitables() as $permitable)
+                {
+                    $securableItem->addPermissions($permitable, Permission::READ);
+                }
+            }
+            if ($explicitReadWriteModelPermissions->getReadWritePermitablesCount() > 0)
+            {
+                foreach ($explicitReadWriteModelPermissions->getReadWritePermitables() as $permitable)
+                {
+                    $securableItem->addPermissions($permitable, Permission::READ_WRITE_CHANGE_PERMISSIONS_CHANGE_OWNER);
+                }
             }
             return true;
         }
@@ -327,7 +405,8 @@
             foreach ($securableItem->permissions as $permission)
             {
                 $permission->castDownPermitable();
-                if ($permission->permitable instanceof Group && $permission->type == Permission::ALLOW)
+                if (($permission->permitable instanceof Group || $permission->permitable instanceof User) &&
+                     $permission->type == Permission::ALLOW)
                 {
                     if (Permission::WRITE == ($permission->permissions & Permission::WRITE))
                     {

@@ -12,14 +12,19 @@
 <tr><td rowspan="1" colspan="3">GoToAdministration</td></tr>
 </thead><tbody>
 <tr>
-    <td>setSpeed</td>
-    <td>1000</td>
-    <td></td>
+	<td>setTimeout</td>
+	<td>45000</td>
+	<td></td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>index.php?r=configuration</td>
-	<td></td>
+    <td>assertText</td>
+    <td>link=My Profile</td>
+    <td>My Profile</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>link=My Profile</td>
+    <td></td>
 </tr>
 <tr>
     <td>waitForPageToLoad</td>
@@ -27,26 +32,35 @@
     <td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Admin</td>
-	<td></td>
+    <td>verifyTextPresent</td>
+    <td>Super User</td>
+    <td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Administration: Menu</td>
-	<td></td>
+    <td>open</td>
+    <td>index.php/configuration</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>link=Designer</td>
-	<td>Designer</td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>link=Users</td>
-	<td>Users</td>
+    <td>verifyTextPresent</td>
+    <td>Administration</td>
+    <td></td>
 </tr>
-
+<tr>
+    <td>assertText</td>
+    <td>link=Designer</td>
+    <td>Designer</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Users</td>
+    <td>Users</td>
+</tr>
 </tbody></table>
 </body>
 </html>

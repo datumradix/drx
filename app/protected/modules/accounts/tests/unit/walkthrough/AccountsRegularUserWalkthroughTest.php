@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -45,6 +55,7 @@
             AccountTestHelper::createAccountByNameForOwner('superAccount4', Yii::app()->user->userModel);
             //Setup default dashboard.
             Dashboard::getByLayoutIdAndUser(Dashboard::DEFAULT_USER_LAYOUT_ID, Yii::app()->user->userModel);
+            AllPermissionsOptimizationUtil::rebuild();
         }
 
         public function testRegularUserAllControllerActionsNoElevation()
@@ -104,11 +115,18 @@
 
             //Test nobody with elevated rights.
             Yii::app()->user->userModel = User::getByUsername('nobody');
-            $this->runControllerWithNoExceptionsAndGetContent('accounts/default/list');
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/list');
+            $this->assertFalse(strpos($content, 'Benjamin Franklin') === false);
             $this->runControllerWithNoExceptionsAndGetContent('accounts/default/create');
 
             //Test nobody can view an existing account he owns.
             $account = AccountTestHelper::createAccountByNameForOwner('accountOwnedByNobody', $nobody);
+
+            //At this point the listview for accounts should show the search/list and not the helper screen.
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/list');
+            $this->assertTrue(strpos($content, 'Benjamin Franklin') === false);
+
+            //Go to the a ccount editview.
             $this->setGetArray(array('id' => $account->id));
             $this->runControllerWithNoExceptionsAndGetContent('accounts/default/edit');
 
@@ -116,7 +134,7 @@
             $this->setGetArray(array('id' => $account->id));
             $this->resetPostArray();
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/default/delete',
-                        Yii::app()->getUrlManager()->getBaseUrl() . '?r=accounts/default/index'); // Not Coding Standard
+                        Yii::app()->createUrl('accounts/default/index'));
 
             //Autocomplete for Account should not fail.
             $this->setGetArray(array('term' => 'super'));
@@ -124,7 +142,7 @@
 
             //actionModalList for Account should not fail.
             $this->setGetArray(array(
-                'modalTransferInformation' => array('sourceIdFieldId' => 'x', 'sourceNameFieldId' => 'y')
+                'modalTransferInformation' => array('sourceIdFieldId' => 'x', 'sourceNameFieldId' => 'y', 'modalId' => 'z')
             ));
             $this->runControllerWithNoExceptionsAndGetContent('accounts/default/modalList');
         }
@@ -151,6 +169,7 @@
             Yii::app()->user->userModel = $super;
             $account->addPermissions($nobody, Permission::READ);
             $this->assertTrue($account->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForUser($account, $nobody);
 
             //Now the nobody user can access the details view.
             Yii::app()->user->userModel = $nobody;
@@ -167,6 +186,8 @@
             Yii::app()->user->userModel = $super;
             $account->addPermissions($nobody, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($account->save());
+            AllPermissionsOptimizationUtil::securableItemLostReadPermissionsForUser($account, $nobody);
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($account, $nobody);
 
             //Now the nobody user should be able to access the edit view and still the details view.
             Yii::app()->user->userModel = $nobody;
@@ -183,6 +204,7 @@
             Yii::app()->user->userModel = $super;
             $account->removePermissions($nobody, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($account->save());
+            AllPermissionsOptimizationUtil::securableItemLostPermissionsForUser($account, $nobody);
 
             //Test nobody, access to detail, edit and delete should fail.
             Yii::app()->user->userModel = $nobody;
@@ -197,13 +219,14 @@
             Yii::app()->user->userModel = $super;
             $account->addPermissions($nobody, Permission::READ_WRITE_DELETE);
             $this->assertTrue($account->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($account, $nobody);
 
             //Test nobody, access to delete should not fail.
             Yii::app()->user->userModel = $nobody;
             $this->setGetArray(array('id' => $account->id));
             $this->resetPostArray();
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/default/delete',
-                        Yii::app()->getUrlManager()->getBaseUrl() . '?r=accounts/default/index'); // Not Coding Standard
+                       Yii::app()->createUrl('accounts/default/index'));
 
             //create some roles
             Yii::app()->user->userModel = $super;
@@ -223,9 +246,19 @@
             $parentRole->users->add($userInParentRole);
             $parentRole->roles->add($childRole);
             $this->assertTrue($parentRole->save());
+            $userInChildRole->forget();
+            $userInChildRole = User::getByUsername('nobody');
+            $userInParentRole->forget();
+            $userInParentRole = User::getByUsername('confused');
+            $parentRoleId = $parentRole->id;
+            $parentRole->forget();
+            $parentRole = Role::getById($parentRoleId);
+            $childRoleId = $childRole->id;
+            $childRole->forget();
+            $childRole = Role::getById($childRoleId);
 
             //create account owned by super
-            $account2 = AccountTestHelper::createAccountByNameForOwner('testingAccountsParentRolePermission',$super);
+            $account2 = AccountTestHelper::createAccountByNameForOwner('testingAccountsParentRolePermission', $super);
 
             //Test userInChildRole, access to details, edit and delete should fail.
             Yii::app()->user->userModel = $userInChildRole;
@@ -249,6 +282,7 @@
             Yii::app()->user->userModel = $super;
             $account2->addPermissions($userInChildRole, Permission::READ);
             $this->assertTrue($account2->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForUser($account2, $userInChildRole);
 
             //Test userInChildRole, access to details should not fail.
             Yii::app()->user->userModel = $userInChildRole;
@@ -276,6 +310,8 @@
             Yii::app()->user->userModel = $super;
             $account2->addPermissions($userInChildRole, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($account2->save());
+            AllPermissionsOptimizationUtil::securableItemLostReadPermissionsForUser($account2,  $userInChildRole);
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($account2, $userInChildRole);
 
             //Test userInChildRole, access to edit should not fail.
             Yii::app()->user->userModel = $userInChildRole;
@@ -299,6 +335,7 @@
             Yii::app()->user->userModel = $super;
             $account2->removePermissions($userInChildRole, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($account2->save());
+            AllPermissionsOptimizationUtil::securableItemLostReadPermissionsForUser($account2, $userInChildRole);
 
             //Test userInChildRole, access to detail, edit and delete should fail.
             Yii::app()->user->userModel = $userInChildRole;
@@ -322,13 +359,14 @@
             Yii::app()->user->userModel = $super;
             $account2->addPermissions($userInChildRole, Permission::READ_WRITE_DELETE);
             $this->assertTrue($account2->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($account2, $userInChildRole);
 
             //Test userInParentRole, access to delete should not fail.
             Yii::app()->user->userModel = $userInParentRole;
             $this->setGetArray(array('id' => $account2->id));
             $this->resetPostArray();
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/default/delete',
-                        Yii::app()->getUrlManager()->getBaseUrl() . '?r=accounts/default/index'); // Not Coding Standard
+                        Yii::app()->createUrl('accounts/default/index'));
 
             //clear up the role relationships between users so not to effect next assertions
             $parentRole->users->remove($userInParentRole);
@@ -391,6 +429,7 @@
             Yii::app()->user->userModel = $super;
             $account3->addPermissions($parentGroup, Permission::READ);
             $this->assertTrue($account3->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForGroup($account3, $parentGroup);
 
             //Test userInParentGroup, access to details should not fail.
             Yii::app()->user->userModel = $userInParentGroup;
@@ -418,6 +457,8 @@
             Yii::app()->user->userModel = $super;
             $account3->addPermissions($parentGroup, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($account3->save());
+            AllPermissionsOptimizationUtil::securableItemLostReadPermissionsForGroup($account3, $parentGroup);
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForGroup($account3, $parentGroup);
 
             //Test userInParentGroup, access to edit should not fail.
             Yii::app()->user->userModel = $userInParentGroup;
@@ -442,6 +483,7 @@
             Yii::app()->user->userModel = $super;
             $account3->removePermissions($parentGroup, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($account3->save());
+            AllPermissionsOptimizationUtil::securableItemLostPermissionsForGroup($account3, $parentGroup);
 
             //Test userInChildGroup, access to detail, edit and delete should fail.
             Yii::app()->user->userModel = $userInChildGroup;
@@ -465,13 +507,14 @@
             Yii::app()->user->userModel = $super;
             $account3->addPermissions($parentGroup, Permission::READ_WRITE_DELETE);
             $this->assertTrue($account3->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForGroup($account3, $parentGroup);
 
             //Test userInChildGroup, access to delete should not fail.
             Yii::app()->user->userModel = $userInChildGroup;
             $this->setGetArray(array('id' => $account3->id));
             $this->resetPostArray();
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/default/delete',
-                        Yii::app()->getUrlManager()->getBaseUrl() . '?r=accounts/default/index'); // Not Coding Standard
+                        Yii::app()->createUrl('accounts/default/index'));
 
             //clear up the role relationships between users so not to effect next assertions
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
@@ -514,13 +557,13 @@
             $this->setPostArray(array('Account' => array('name' => 'Switcheroo Inc.')));
             //Make sure the redirect is to the details view and not the list view.
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/default/edit',
-                        Yii::app()->getUrlManager()->getBaseUrl() . '?r=accounts/default/details&id=' . $account->id); // Not Coding Standard
+                        Yii::app()->createUrl('accounts/default/details', array('id' => $account->id)));
 
             //Now save account changing the owner, the redirect should go to the list view and provide a flash message.
             $this->setPostArray(array('Account' => array('owner' => array('id' => $super->id))));
             //Make sure the redirect is to the details view and not the list view.
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/default/edit',
-                        Yii::app()->getUrlManager()->getBaseUrl() . '?r=accounts/default/index'); // Not Coding Standard
+                        Yii::app()->createUrl('accounts/default/index'));
             ///Confirm flash message is set.
             $this->assertContains('You no longer have permissions to access Switcheroo Inc',
                                   Yii::app()->user->getFlash('notification'));
@@ -549,6 +592,7 @@
             $this->assertEquals(Permission::NONE, $account3->getEffectivePermissions      ($confused));
             $account3->addPermissions($confused, Permission::READ);
             $this->assertTrue($account3->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForUser($account3, $confused);
             $this->assertEquals(Permission::READ, $account3->getEffectivePermissions      ($confused));
 
             //Make confused user the current user.
@@ -596,12 +640,126 @@
             $account2 = Account::getById($account2->id);
             $account3 = Account::getById($account3->id);
 
-            $this->assertEquals ('7799',        $account1->name);
-            $this->assertEquals ('7799',        $account2->name);
-            $this->assertEquals ('cannotUpdate',$account3->name);
-            $this->assertEquals ("".$super,     "".$account2->owner);
-            $this->assertEquals ("".$super,     "".$account2->owner);
-            $this->assertEquals ("".$billy,     "".$account3->owner);
+            $this->assertEquals ('7799',         $account1->name);
+            $this->assertEquals ('7799',         $account2->name);
+            $this->assertEquals ('cannotUpdate', $account3->name);
+            $this->assertEquals ($super->getFullName(), $account2->owner->getFullName());
+            $this->assertEquals ($super->getFullName(), $account2->owner->getFullName());
+            $this->assertEquals ($billy->getFullName(), $account3->owner->getFullName());
+        }
+
+         /**
+         * @deletes selected accounts.
+         */
+
+        public function testMassDeleteActionsForSelectedIds()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $confused = User::getByUsername('confused');
+            $billy = User::getByUsername('billy');
+            $this->assertEquals(Right::DENY, $confused->getEffectiveRight('ZurmoModule', ZurmoModule::RIGHT_BULK_DELETE));
+            $confused->setRight('ZurmoModule', ZurmoModule::RIGHT_BULK_DELETE);
+            //Load MassDelete view for the 3 accounts.
+            $accounts = Account::getAll();
+            $this->assertEquals(8, count($accounts));
+
+            $account1 = AccountTestHelper::createAccountByNameForOwner('canDelete1', $confused);
+            $account2 = AccountTestHelper::createAccountByNameForOwner('canDelete2', $confused);
+            $account3 = AccountTestHelper::createAccountByNameForOwner('canDelete3', $billy);
+            $account4 = AccountTestHelper::createAccountByNameForOwner('canDelete4', $confused);
+            $account5 = AccountTestHelper::createAccountByNameForOwner('canDelete5', $confused);
+            $account6 = AccountTestHelper::createAccountByNameForOwner('canDelete6', $billy);
+
+            $selectedIds = $account1->id . ',' . $account2->id . ',' . $account3->id ;    // Not Coding Standard
+            $this->setGetArray(array('selectedIds' => $selectedIds,'selectAll' => ''));  // Not Coding Standard
+            $this->resetPostArray();
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massDelete');
+            $this->assertFalse(strpos($content, '<strong>3</strong>&#160;Accounts selected for removal') === false);
+            $pageSize = Yii::app()->pagination->getForCurrentUserByType('massDeleteProgressPageSize');
+            $this->assertEquals(5, $pageSize);
+            //calculating accounts after adding 6 new records
+            $accounts = Account::getAll();
+            $this->assertEquals(14, count($accounts));
+
+            //Deleting 6 accounts for pagination scenario
+            //Run Mass Delete using progress save for page1
+            $selectedIds = $account1->id . ',' . $account2->id . ',' . // Not Coding Standard
+                           $account3->id . ',' . $account4->id . ',' . // Not Coding Standard
+                           $account5->id . ',' . $account6->id;        // Not Coding Standard
+            $this->setGetArray(array(
+                'selectedIds' => $selectedIds, // Not Coding Standard
+                'selectAll' => '',
+                'Account_page' => 1));
+            $this->setPostArray(array('selectedRecordCount' => 6));
+            $content = $this->runControllerWithExitExceptionAndGetContent('accounts/default/massDelete');
+            $accounts = Account::getAll();
+            $this->assertEquals(9, count($accounts));
+
+            //Run Mass Delete using progress save for page2
+            $selectedIds = $account1->id . ',' . $account2->id . ',' . // Not Coding Standard
+                           $account3->id . ',' . $account4->id . ',' . // Not Coding Standard
+                           $account5->id . ',' . $account6->id;        // Not Coding Standard
+            $this->setGetArray(array(
+                'selectedIds' => $selectedIds, // Not Coding Standard
+                'selectAll' => '',
+                'Account_page' => 2));
+            $this->setPostArray(array('selectedRecordCount' => 6));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massDeleteProgress');
+            $accounts = Account::getAll();
+            $this->assertEquals(8, count($accounts));
+        }
+
+         /**
+         *Test Bug with mass delete and multiple pages when using select all
+         */
+        public function testMassDeletePagesProperlyAndRemovesAllSelected()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $confused = User::getByUsername('confused');
+            $billy = User::getByUsername('billy');
+
+            //Load MassDelete view for the 8 accounts.
+            $accounts = Account::getAll();
+            $this->assertEquals(8, count($accounts));
+             //Deleting all accounts
+
+            //mass Delete pagination scenario
+            //Run Mass Delete using progress save for page1
+            $this->setGetArray(array(
+                'selectAll' => '1',
+                'Account_page' => 1));
+            $this->setPostArray(array('selectedRecordCount' => 8));
+            $pageSize = Yii::app()->pagination->getForCurrentUserByType('massDeleteProgressPageSize');
+            $this->assertEquals(5, $pageSize);
+            $content = $this->runControllerWithExitExceptionAndGetContent('accounts/default/massDelete');
+            $accounts = Account::getAll();
+            $this->assertEquals(3, count($accounts));
+
+           //Run Mass Delete using progress save for page2
+            $this->setGetArray(array(
+                'selectAll' => '1',
+                'Account_page' => 2));
+            $this->setPostArray(array('selectedRecordCount' => 8));
+            $pageSize = Yii::app()->pagination->getForCurrentUserByType('massDeleteProgressPageSize');
+            $this->assertEquals(5, $pageSize);
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massDeleteProgress');
+            $accounts = Account::getAll();
+            $this->assertEquals(0, count($accounts));
+        }
+
+        public function testCloningWithAnotherUser()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $billy = User::getByUsername('billy');
+            $billy = $this->logoutCurrentUserLoginNewUserAndGetByUsername('billy');
+            $account1 = AccountTestHelper::createAccountByNameForOwner('test account', $billy);
+            $id = $account1->id;
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $confused = User::getByUsername('confused');
+            $confused = $this->logoutCurrentUserLoginNewUserAndGetByUsername('confused');
+            $this->setGetArray(array('id' => $id));
+            $content = $this->runControllerWithExitExceptionAndGetContent('accounts/default/copy');
+            $this->assertFalse(strpos($content, 'You have tried to access a page you do not have access to.') === false);
         }
     }
 ?>

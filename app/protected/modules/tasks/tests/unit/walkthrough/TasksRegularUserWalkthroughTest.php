@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -58,10 +68,10 @@
 
             //Now test all portlet controller actions
             $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/createFromRelation');
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
             $this->setGetArray(array('id' => $superAccountId));
             $this->resetPostArray();
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/details');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalDetails');
 
             //actionDelete should fail.
             $this->setGetArray(array('id' => $superAccountId));
@@ -97,7 +107,7 @@
             //Test whether the nobody user is able to view the task details that he created
             $this->setGetArray(array('id' => $task->id));
             $this->resetPostArray();
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/details');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalDetails');
 
             //add related task for account using createFromRelation action
             $activityItemPostData = array('Account' => array('id' => $account->id));
@@ -109,7 +119,7 @@
             //Test nobody can delete an existing task he craeted and it redirects to index.
             $this->setGetArray(array('id' => $task->id));
             $this->resetPostArray();
-            $this->runControllerWithRedirectExceptionAndGetContent('tasks/default/delete');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/delete', true);
         }
 
          /**
@@ -130,6 +140,7 @@
             Yii::app()->user->userModel = $super;
             $superAccount->addPermissions($nobody, Permission::READ);
             $this->assertTrue($superAccount->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForUser($superAccount, $nobody);
 
             //Now the nobody user can access the details view.
             Yii::app()->user->userModel = $nobody;
@@ -144,7 +155,7 @@
             Yii::app()->user->userModel = $nobody;
             $this->setGetArray(array('id' => $task->id));
             $this->resetPostArray();
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
             $this->setGetArray(array('id' => $task->id));
             $this->resetPostArray();
 
@@ -152,44 +163,48 @@
             Yii::app()->user->userModel = $super;
             $task->addPermissions($nobody, Permission::READ);
             $this->assertTrue($task->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForUser($task, $nobody);
 
             //Now access to tasks view by Nobody should not fail.
             Yii::app()->user->userModel = $nobody;
             $this->setGetArray(array('id' => $task->id));
             $this->resetPostArray();
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/details');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalDetails');
 
             //Now access to tasks edit by Nobody should fail
             $this->setGetArray(array('id' => $task->id));
             $this->resetPostArray();
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
 
             //give nobody access to both details and edit view
             Yii::app()->user->userModel = $super;
             $task->addPermissions($nobody, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($task->save());
+            AllPermissionsOptimizationUtil::securableItemLostReadPermissionsForUser($task, $nobody);
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($task, $nobody);
 
             //Now access to tasks view and edit by Nobody should not fail.
             $this->setGetArray(array('id' => $task->id));
             $this->resetPostArray();
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/details');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalDetails');
             $this->setGetArray(array('id' => $task->id));
             $this->resetPostArray();
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/edit');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalEdit');
 
             //revoke the permission from the nobody user to access the task
             Yii::app()->user->userModel = $super;
-            $task->addPermissions($nobody, Permission::READ_WRITE_CHANGE_PERMISSIONS, Permission::DENY);
+            $task->removePermissions($nobody, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($task->save());
+            AllPermissionsOptimizationUtil::securableItemLostPermissionsForUser($task, $nobody);
 
             //Now nobodys, access to edit and details of tasks should fail.
             Yii::app()->user->userModel = $nobody;
             $this->setGetArray(array('id' => $task->id));
             $this->resetPostArray();
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
             $this->setGetArray(array('id' => $task->id));
             $this->resetPostArray();
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/details');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalDetails');
 
             //create some roles
             Yii::app()->user->userModel = $super;
@@ -209,9 +224,19 @@
             $parentRole->users->add($userInParentRole);
             $parentRole->roles->add($childRole);
             $this->assertTrue($parentRole->save());
+            $userInChildRole->forget();
+            $userInChildRole = User::getByUsername('nobody');
+            $userInParentRole->forget();
+            $userInParentRole = User::getByUsername('confused');
+            $parentRoleId = $parentRole->id;
+            $parentRole->forget();
+            $parentRole = Role::getById($parentRoleId);
+            $childRoleId = $childRole->id;
+            $childRole->forget();
+            $childRole = Role::getById($childRoleId);
 
             //create account owned by super
-            $account2 = AccountTestHelper::createAccountByNameForOwner('AccountsParentRolePermission',$super);
+            $account2 = AccountTestHelper::createAccountByNameForOwner('AccountsParentRolePermission', $super);
 
             //Test userInParentRole, access to details and edit should fail.
             Yii::app()->user->userModel = $userInParentRole;
@@ -222,6 +247,7 @@
             Yii::app()->user->userModel = $super;
             $account2->addPermissions($userInChildRole, Permission::READ);
             $this->assertTrue($account2->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForUser($account2, $userInChildRole);
 
             //Test userInChildRole, access to details should not fail.
             Yii::app()->user->userModel = $userInChildRole;
@@ -241,63 +267,67 @@
             Yii::app()->user->userModel = $userInParentRole;
             $this->setGetArray(array('id' => $task2->id));
             $this->resetPostArray();
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
             $this->setGetArray(array('id' => $task2->id));
             $this->resetPostArray();
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/details');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalDetails');
 
             //give userInChildRole access to READ permision for tasks
             Yii::app()->user->userModel = $super;
             $task2->addPermissions($userInChildRole, Permission::READ);
             $this->assertTrue($task2->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForUser($task2, $userInChildRole);
 
             //Test userInChildRole, access to tasks details should not fail.
             Yii::app()->user->userModel = $userInChildRole;
             $this->setGetArray(array('id' => $task2->id));
             $this->resetPostArray();
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/details');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalDetails');
 
             //Test userInParentRole, access to tasks details should not fail.
             Yii::app()->user->userModel = $userInParentRole;
             $this->setGetArray(array('id' => $task2->id));
             $this->resetPostArray();
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/details');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalDetails');
 
             //give userInChildRole access to read and write for the tasks
             Yii::app()->user->userModel = $super;
             $task2->addPermissions($userInChildRole, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($task2->save());
+            AllPermissionsOptimizationUtil::securableItemLostReadPermissionsForUser($task2, $userInChildRole);
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($task2, $userInChildRole);
 
             //Test userInChildRole, access to tasks edit should not fail.
             Yii::app()->user->userModel = $userInChildRole;
             $this->setGetArray(array('id' => $task2->id));
             $this->resetPostArray();
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/edit');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalEdit');
 
             //Test userInParentRole, access to tasks edit should not fail.
             Yii::app()->user->userModel = $userInParentRole;
             $this->setGetArray(array('id' => $task2->id));
             $this->resetPostArray();
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/edit');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalEdit');
 
             //revoke userInChildRole access to read and write tasks
             Yii::app()->user->userModel = $super;
-            $task2->addPermissions($userInChildRole, Permission::READ_WRITE_CHANGE_PERMISSIONS, Permission::DENY);
+            $task2->removePermissions($userInChildRole, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($task2->save());
+            AllPermissionsOptimizationUtil::securableItemLostPermissionsForUser($task2, $userInChildRole);
 
             //Test userInChildRole, access to detail and edit should fail.
             Yii::app()->user->userModel = $userInChildRole;
             $this->setGetArray(array('id' => $task2->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/details');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalDetails');
             $this->setGetArray(array('id' => $task2->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
 
             //Test userInParentRole, access to detail and edit should fail.
             Yii::app()->user->userModel = $userInParentRole;
             $this->setGetArray(array('id' => $task2->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/details');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalDetails');
             $this->setGetArray(array('id' => $task2->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
 
             //clear up the role relationships between users so not to effect next assertions
             $parentRole->users->remove($userInParentRole);
@@ -351,6 +381,7 @@
             Yii::app()->user->userModel = $super;
             $account3->addPermissions($parentGroup, Permission::READ);
             $this->assertTrue($account3->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForGroup($account3, $parentGroup);
 
             //Test userInParentGroup, access to details should not fail.
             Yii::app()->user->userModel = $userInParentGroup;
@@ -375,67 +406,71 @@
             Yii::app()->user->userModel = $userInParentGroup;
             $this->setGetArray(array('id' => $task3->id));
             $this->resetPostArray();
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
             $this->setGetArray(array('id' => $task3->id));
             $this->resetPostArray();
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/details');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalDetails');
 
             //Test userInChildGroup, access to tasks details and edit should fail.
             Yii::app()->user->userModel = $userInChildGroup;
             $this->setGetArray(array('id' => $task3->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/details');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalDetails');
             $this->setGetArray(array('id' => $task3->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
 
             //give parentGroup access to READ
             Yii::app()->user->userModel = $super;
             $task3->addPermissions($parentGroup, Permission::READ);
             $this->assertTrue($task3->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForGroup($task3, $parentGroup);
 
             //Test userInParentGroup, access to tasks details should not fail.
             Yii::app()->user->userModel = $userInParentGroup;
             $this->setGetArray(array('id' => $task3->id));
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/details');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalDetails');
 
             //Test userInChildGroup, access to tasks details should not fail.
             Yii::app()->user->userModel = $userInChildGroup;
             $this->setGetArray(array('id' => $task3->id));
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/details');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalDetails');
 
             //give parentGroup access to read and write
             Yii::app()->user->userModel = $super;
             $task3->addPermissions($parentGroup, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($task3->save());
+            AllPermissionsOptimizationUtil::securableItemLostReadPermissionsForGroup($task3, $parentGroup);
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForGroup($task3, $parentGroup);
 
             //Test userInParentGroup, access to edit tasks should not fail.
             Yii::app()->user->userModel = $userInParentGroup;
             $this->setGetArray(array('id' => $task3->id));
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/edit');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalEdit');
 
             //Test userInChildGroup, access to edit tasks should not fail.
             Yii::app()->user->userModel = $userInChildGroup;
             $this->logoutCurrentUserLoginNewUserAndGetByUsername($userInChildGroup->username);
             $this->setGetArray(array('id' => $task3->id));
-            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/edit');
+            $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalEdit');
 
             //revoke parentGroup access to tasks read and write
             Yii::app()->user->userModel = $super;
-            $task3->addPermissions($parentGroup, Permission::READ_WRITE_CHANGE_PERMISSIONS, Permission::DENY);
+            $task3->removePermissions($parentGroup, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($task3->save());
+            AllPermissionsOptimizationUtil::securableItemLostPermissionsForGroup($task3, $parentGroup);
 
             //Test userInChildGroup, access to tasks detail should fail.
             Yii::app()->user->userModel = $userInChildGroup;
             $this->setGetArray(array('id' => $task3->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/details');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalDetails');
             $this->setGetArray(array('id' => $task3->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
 
             //Test userInParentGroup, access to tasks detail should fail.
             Yii::app()->user->userModel = $userInParentGroup;
             $this->setGetArray(array('id' => $task3->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/details');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalDetails');
             $this->setGetArray(array('id' => $task3->id));
-            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/edit');
+            $this->runControllerShouldResultInAccessFailureAndGetContent('tasks/default/modalEdit');
 
             //clear up the role relationships between users so not to effect next assertions
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');

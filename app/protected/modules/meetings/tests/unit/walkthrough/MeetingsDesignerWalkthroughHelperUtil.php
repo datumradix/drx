@@ -1,10 +1,10 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2011 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,16 +12,26 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
      *
-     * You can contact Zurmo, Inc. with a mailing address at 113 McHenry Road Suite 207,
-     * Buffalo Grove, IL 60089, USA. or at email address contact@zurmo.com.
+     * You can contact Zurmo, Inc. with a mailing address at 27 North Wacker Drive
+     * Suite 370 Chicago, IL 60606. or at email address contact@zurmo.com.
+     *
+     * The interactive user interfaces in original and modified versions
+     * of this program must display Appropriate Legal Notices, as required under
+     * Section 5 of the GNU Affero General Public License version 3.
+     *
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+     * these Appropriate Legal Notices must retain the display of the Zurmo
+     * logo and Zurmo copyright notice. If the display of the logo is not reasonably
+     * feasible for technical reasons, the Appropriate Legal Notices must display the words
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -42,6 +52,10 @@
                                         array(
                                             'element' => 'name',
                                         ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
                                         array(
                                             'element' => 'startDateTime',
                                         ),
@@ -52,6 +66,10 @@
                                         array(
                                             'element' => 'owner',
                                         ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
                                         array(
                                             'element' => 'location', // Not Coding Standard
                                         ),
@@ -62,6 +80,10 @@
                                         array(
                                             'element' => 'endDateTime',
                                         ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
                                         array(
                                             'element' => 'ActivityItemsExcludingContacts',
                                         ),
@@ -72,6 +94,10 @@
                                         array(
                                             'element' => 'category',
                                         ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
                                         array(
                                             'element' => 'MultipleContactsForMeeting', // Not Coding Standard
                                         ),
@@ -82,9 +108,6 @@
                                         array(
                                             'element' => 'description',
                                         ),
-                                        array(
-                                            'element' => 'Null', // Not Coding Standard
-                                        ),
                                     )
                                 ),
                                 array('cells' =>
@@ -93,6 +116,10 @@
                                             'detailViewOnly' => true,
                                             'element' => 'DateTimeCreatedUser',
                                         ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
                                         array(
                                             'detailViewOnly' => true,
                                             'element' => 'DateTimeModifiedUser',
@@ -102,70 +129,112 @@
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'checkbox',
-                                        ),
-                                        array(
-                                            'element' => 'currency',
+                                            'element' => 'checkboxCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'date',
-                                        ),
-                                        array(
-                                            'element' => 'datetime',
+                                            'element' => 'currencyCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'decimal',
-                                        ),
-                                        array(
-                                            'element' => 'picklist',
+                                            'element' => 'dateCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'integer',
-                                        ),
-                                        array(
-                                            'element' => 'multiselect',
+                                            'element' => 'datetimeCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'phone',
-                                        ),
-                                        array(
-                                            'element' => 'radio',
+                                            'element' => 'decimalCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'text',
-                                        ),
-                                        array(
-                                            'element' => 'textarea',
+                                            'element' => 'picklistCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'url',
+                                            'element' => 'integerCstm',
                                         ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
                                         array(
-                                            'element' => 'Null', // Not Coding Standard
+                                            'element' => 'multiselectCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'tagcloudCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'calcnumberCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'dropdowndepCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'phoneCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'radioCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'textCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'textareaCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'urlCstm',
                                         ),
                                     )
                                 ),
@@ -264,91 +333,126 @@
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'checkbox',
+                                            'element' => 'checkboxCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'currency',
+                                            'element' => 'currencyCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'date',
+                                            'element' => 'dateCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'datetime',
+                                            'element' => 'datetimeCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'decimal',
+                                            'element' => 'decimalCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'picklist',
+                                            'element' => 'picklistCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'integer',
+                                            'element' => 'integerCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'multiselect',
+                                            'element' => 'multiselectCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'phone',
+                                            'element' => 'tagcloudCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'radio',
+                                            'element' => 'calcnumberCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'text',
+                                            'element' => 'countrylistCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'textarea',
+                                            'element' => 'statelistCstm',
                                         ),
                                     )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
-                                            'element' => 'url',
+                                            'element' => 'citylistCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'phoneCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'radioCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'textCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'textareaCstm',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'element' => 'urlCstm',
                                         ),
                                     )
                                 ),
