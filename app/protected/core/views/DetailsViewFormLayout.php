@@ -162,7 +162,7 @@
                 $content = '<div id="' . $tabId . '">';
                 if (!empty($panel['title']))
                 {
-                    $tabTitle = Zurmo::t('Core', $panel['title']); //Attempt a final translation if available.
+                    $tabTitle = $panel['title'];
                 }
                 else
                 {
@@ -175,7 +175,7 @@
             {
                 if (!empty($panel['title']))
                 {
-                    return '<div class="panelTitle">' . Zurmo::t('Core', $panel['title']) . '</div>'; //Attempt a final translation if available.
+                    return '<div class="panelTitle">' . $panel['title'] . '</div>';
                 }
             }
         }

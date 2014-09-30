@@ -90,8 +90,14 @@
         {
             if (MassActionUtil::isMassUnsubscribeLikeAction($actionId))
             {
-                $term = 'Mass '. ucfirst(str_replace('mass', '', $actionId));
-                return Zurmo::t('MarketingListsModule', $term);
+                if (MassActionUtil::isMassSubscribeLikeAction($actionId))
+                {
+                    return Zurmo::t('Core', 'Mass Subscribe');
+                }
+                elseif(MassActionUtil::isMassUnsubscribeLikeAction($actionId))
+                {
+                    return Zurmo::t('Core', 'Mass Unsubscribe');
+                }
             }
             else
             {

@@ -334,32 +334,27 @@
             $campaignItems = CampaignItem::getAll();
             $this->assertCount(1, $campaignItems);
 
-            $fileNames                  = array('testImage.png', 'testZip.zip', 'testPDF.pdf');
-            $files                      = array();
-            foreach ($fileNames as $index => $fileName)
-            {
-                $file                       = ZurmoTestHelper::createFileModel($fileName);
-                $files[$index]['name']      = $fileName;
-                $files[$index]['type']      = $file->type;
-                $files[$index]['size']      = $file->size;
-                $files[$index]['contents']  = $file->fileContent->content;
-                $campaigns[0]->files->add($file);
-            }
-            $this->assertTrue($campaigns[0]->save());
-            $campaigns = Campaign::getAll();
-            $this->assertNotEmpty($campaigns[0]->files);
-            $this->assertCount(count($files), $campaigns[0]->files);
-            $this->assertEquals(count($files), FileModel::getCount());
+            $campaignItemActivity                           = new CampaignItemActivity();
+            $campaignItemActivity->type                     = CampaignItemActivity::TYPE_CLICK;
+            $campaignItemActivity->quantity                 = 1;
+            $campaignItemActivity->campaignItem             = $campaignItems[0];
+            $campaignItemActivity->latestSourceIP           = '121.212.122.112';
+            $this->assertTrue($campaignItemActivity->save());
 
+            $emailMessage   = EmailMessageTestHelper::createOutboxEmail(Yii::app()->user->userModel, 'subject',
+                                                                        'html', 'text', 'from', 'from@zurmo.com',
+                                                                        'to', 'to@zurmo.com');
+            $campaignItems[0]->emailMessage = $emailMessage;
+            $this->assertTrue($campaignItems[0]->unrestrictedSave());
+
+            $this->assertEquals(1, CampaignItemActivity::getCount());
+            $this->assertEquals(1, EmailMessage::getCount());
             $campaigns[0]->delete();
 
-            $campaigns = Campaign::getAll();
-            $this->assertEquals(3, count($campaigns));
-
-            $campaignItems = CampaignItem::getAll();
-            $this->assertCount(0, $campaignItems);
-
-            $this->assertEquals(0, FileModel::getCount());
+            $this->assertEquals(3, Campaign::getCount());
+            $this->assertEquals(0, CampaignItem::getCount());
+            $this->assertEquals(0, CampaignItemActivity::getCount());
+            $this->assertEquals(1, EmailMessage::getCount());
         }
     }
 ?>

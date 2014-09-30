@@ -213,9 +213,10 @@
 
         /**
          * While populating Saved Layouts, featured templates would have respective icon and background color.
+         * @param EmailTemplate $emailTemplate
          * @return null
          */
-        public function resolveThumbnailForFeaturedEmailTemplate()
+        public function resolveThumbnailForFeaturedEmailTemplate(EmailTemplate $emailTemplate)
         {
             return null;
         }

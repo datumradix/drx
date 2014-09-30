@@ -34,40 +34,27 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class DiscountFromListSellPriceFormulaRules extends SellPriceFormulaRules
+    /**
+     * Test class to test the MessageUtil class.
+     */
+    class MessageUtilTest extends BaseTest
     {
-        /**
-         * @return bool
-         */
-        public static function isSellPriceEditable()
+        public function testFindFileNameToCategoryToMessage()
         {
-            return false;
-        }
-
-        /**
-         * @return string
-         */
-        public static function getDisplayLabel()
-        {
-            return Zurmo::t('ProductTemplatesModule', 'Discount From List Percent');
-        }
-
-        /**
-         * @return int
-         */
-        public static function getType()
-        {
-            return SellPriceFormula::TYPE_DISCOUNT_FROM_LIST;
-        }
-
-        /**
-         * @return string
-         */
-        public static function getDisplaySellPriceFormula()
-        {
-            $listPriceLabel = Zurmo::t('ProductTemplatesModule', 'List Price');
-            $discountLabel = Zurmo::t('ProductTemplatesModule', 'discount');
-            return $listPriceLabel . ' - ' . $discountLabel;
+            $path = Zurmo::getPathOfAlias('application.core.tests.unit.modules');
+            $result = MessageUtil::findFileNameToCategoryToMessage($path, '', true);
+            $this->assertContains(
+                'A message for test translation with no line break',
+                $result[$path . '/TestModule.php']['Core']
+            );
+            $this->assertContains(
+                'A message for test translation with two line breaks',
+                $result[$path . '/TestModule.php']['Core']
+            );
+            $this->assertContains(
+                'A message for test translation with many line breaks',
+                $result[$path . '/TestModule.php']['Core']
+            );
         }
     }
 ?>
