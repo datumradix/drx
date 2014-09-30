@@ -183,5 +183,63 @@
             $this->clearAddresses();
             return $result;
         }
+
+        public function __construct(EmailHelper $emailHelper, EmailAccount $emailAccount)
+        {
+            $this->populateSettings($emailHelper, $emailAccount);
+        }
+
+        protected function populateSettings(EmailHelper $emailHelper, EmailAccount $emailAccount)
+        {
+            if ($emailAccount->useCustomOutboundSettings)
+            {
+                $this->host     = $emailAccount->outboundHost;
+                $this->port     = $emailAccount->outboundPort;
+                $this->username = $emailAccount->outboundUsername;
+                $this->password = ZurmoPasswordSecurityUtil::decrypt($emailAccount->outboundPassword);
+                $this->security = $emailAccount->outboundSecurity;
+            }
+            else
+            {
+                /**
+                $mailer->mailer   = $this->outboundType;
+                $mailer->host     = $this->outboundHost;
+                $mailer->port     = $this->outboundPort;
+                $mailer->username = $this->outboundUsername;
+                $mailer->password = $this->outboundPassword;
+                $mailer->security = $this->outboundSecurity;
+                 * */
+            }
+        }
+
+        public function populateMessage(EmailMessage $emailMessage)
+        {
+            $mailer->Subject  = $emailMessage->subject;
+            $mailer->headers  = unserialize($emailMessage->headers);
+            if (!empty($emailMessage->content->textContent))
+            {
+                $mailer->altBody  = $emailMessage->content->textContent;
+            }
+            if (!empty($emailMessage->content->htmlContent))
+            {
+                $mailer->body       = ZurmoCssInlineConverterUtil::convertAndPrettifyEmailByHtmlContent(
+                    $emailMessage->content->htmlContent,
+                    $this->htmlConverter);
+            }
+            $mailer->From = array($emailMessage->sender->fromAddress => $emailMessage->sender->fromName);
+            foreach ($emailMessage->recipients as $recipient)
+            {
+                $mailer->addAddressByType($recipient->toAddress, $recipient->toName, $recipient->type);
+            }
+
+            if (isset($emailMessage->files) && !empty($emailMessage->files))
+            {
+                foreach ($emailMessage->files as $file)
+                {
+                    $mailer->attachDynamicContent($file->fileContent->content, $file->name, $file->type);
+                    //$emailMessage->attach($attachment);
+                }
+            }
+        }
     }
 ?>

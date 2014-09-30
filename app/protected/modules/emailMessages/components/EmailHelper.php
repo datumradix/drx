@@ -257,8 +257,11 @@
             {
                 throw new NotSupportedException();
             }
+            //$mailer = ZurmoMailerFactory::resolveMailerByEmailMessage($emailMessage); //in here we can look at the related email->account, etc. and run
+            //the logic sequence to determine which mailer to retrieve.
             $mailer             = $this->getOutboundMailer();
-            $this->populateMailer($mailer, $emailMessage);
+           // $this->populateMailer($mailer, $emailMessage, $this->htmlConverter); //just passing in htmlConverter for the time being
+            $mailer->populateMessage($emailMessage);
             $this->sendEmail($mailer, $emailMessage);
             $this->updateEmailMessageForSending($emailMessage, (bool) ($emailMessage->id > 0));
         }
@@ -335,6 +338,7 @@
 
         protected function populateMailer(Mailer $mailer, EmailMessage $emailMessage)
         {
+            /**
             $mailer->mailer   = $this->outboundType;
             $mailer->host     = $this->outboundHost;
             $mailer->port     = $this->outboundPort;
@@ -342,6 +346,8 @@
             $mailer->password = $this->outboundPassword;
             $mailer->security = $this->outboundSecurity;
             $this->resolveMailerFromEmailAccount($mailer, $emailMessage->account);
+             * */
+            /**
             $mailer->Subject  = $emailMessage->subject;
             $mailer->headers  = unserialize($emailMessage->headers);
             if (!empty($emailMessage->content->textContent))
@@ -368,6 +374,7 @@
                     //$emailMessage->attach($attachment);
                 }
             }
+             * */
         }
 
         protected function resolveMailerFromEmailAccount(Mailer $mailer, EmailAccount $emailAccount)
