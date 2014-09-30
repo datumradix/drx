@@ -7138,6 +7138,9 @@ i[class^="icon"] {
 .icon-project-dashboard:after {
   content: "/";
 }
+.icon-push-dashboard:after {
+  content: '\03BC';
+}
 .icon-export:after {
   content: "(";
 }
