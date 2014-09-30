@@ -37,7 +37,7 @@
     /**
      * Helper class consisting of functions related to sending emails using sendgrid.
      */
-    class SendGridEmailHelper extends CApplicationComponent
+    class SendGridEmailHelper extends ZurmoBaseEmailHelper
     {
         /**
          * API username.
@@ -108,8 +108,8 @@
          */
         public function loadDefaultFromAndToAddresses()
         {
-            $this->defaultFromAddress   = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
-            $this->defaultTestToAddress = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
+            $this->defaultFromAddress   = static::resolveAndGetDefaultFromAddress();
+            $this->defaultTestToAddress = static::resolveAndGetDefaultTestToAddress();
         }
 
         /**
@@ -152,7 +152,7 @@
         {
             $this->loadApiSettings();
             $this->fromName = strval($user);
-            $this->fromAddress = Yii::app()->emailHelper->resolveFromAddressByUser($user);
+            $this->fromAddress = $this->resolveFromAddressByUser($user);
         }
 
         /**
@@ -187,9 +187,9 @@
          */
         public function send(EmailMessage & $emailMessage, $useSQL = false, $validate = true)
         {
-            EmailHelper::isValidFolderType($emailMessage);
+            static::isValidFolderType($emailMessage);
             $folder     = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX);
-            $saved      = EmailHelper::updateFolderForEmailMessage($emailMessage, $useSQL, $folder, $validate);
+            $saved      = static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder, $validate);
             if ($saved)
             {
                 Yii::app()->jobQueue->add('ProcessOutboundEmail');
@@ -207,7 +207,35 @@
          */
         public function sendQueued($count = null)
         {
-            EmailMessageUtil::processAndSendQueuedMessages($this, $count);
+            assert('is_int($count) || $count == null');
+            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
+            foreach ($queuedEmailMessages as $emailMessage)
+            {
+                $this->sendImmediately($emailMessage);
+            }
+            if ($count == null)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
+            }
+            elseif (count($queuedEmailMessages) < $count)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - count($queuedEmailMessages));
+            }
+            else
+            {
+                $queuedEmailMessages = array();
+            }
+            foreach ($queuedEmailMessages as $emailMessage)
+            {
+                if ($emailMessage->sendAttempts < 3)
+                {
+                    $this->sendImmediately($emailMessage);
+                }
+                else
+                {
+                    $this->processMessageAsFailure($emailMessage);
+                }
+            }
             return true;
         }
 
@@ -262,17 +290,6 @@
                 }
             }
             return array($toAddresses, $ccAddresses, $bccAddresses);
-        }
-
-        /**
-         * Process message as failure.
-         * @param EmailMessage $emailMessage
-         * @param bool $useSQL
-         */
-        public function processMessageAsFailure(EmailMessage $emailMessage, $useSQL = false)
-        {
-            $folder = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_FAILURE);
-            EmailHelper::updateFolderForEmailMessage($emailMessage, $useSQL, $folder);
         }
     }
 ?>

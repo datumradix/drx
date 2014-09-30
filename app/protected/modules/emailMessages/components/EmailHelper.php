@@ -37,7 +37,7 @@
     /**
      * Component for working with outbound and inbound email transport
      */
-    class EmailHelper extends CApplicationComponent
+    class EmailHelper extends ZurmoBaseEmailHelper
     {
         const OUTBOUND_TYPE_SMTP = 'smtp';
 
@@ -138,8 +138,8 @@
          */
         public function loadDefaultFromAndToAddresses()
         {
-            $this->defaultFromAddress   = $this->resolveAndGetDefaultFromAddress();
-            $this->defaultTestToAddress = $this->resolveAndGetDefaultTestToAddress();
+            $this->defaultFromAddress   = static::resolveAndGetDefaultFromAddress();
+            $this->defaultTestToAddress = static::resolveAndGetDefaultTestToAddress();
         }
 
         protected function loadOutboundSettings()
@@ -244,91 +244,6 @@
         }
 
         /**
-         * Verify if folder type of an emailMessage is valid or not.
-         * @param EmailMessage $emailMessage
-         * @throws NotSupportedException
-         */
-        public static function isValidFolderType(EmailMessage $emailMessage)
-        {
-            if ($emailMessage->folder->type == EmailFolder::TYPE_OUTBOX ||
-                $emailMessage->folder->type == EmailFolder::TYPE_SENT ||
-                $emailMessage->folder->type == EmailFolder::TYPE_OUTBOX_ERROR ||
-                $emailMessage->folder->type == EmailFolder::TYPE_OUTBOX_FAILURE)
-            {
-                throw new NotSupportedException();
-            }
-        }
-
-        /**
-         * Update an email message's folder and save it
-         * @param EmailMessage $emailMessage
-         * @param $useSQL
-         * @param EmailFolder $folder
-         * @param bool $validate
-         * @return bool|void
-         * @throws FailedToSaveModelException
-         */
-        public static function updateFolderForEmailMessage(EmailMessage & $emailMessage, $useSQL,
-                                                              EmailFolder $folder, $validate = true)
-        {
-            // we don't have syntax to support saving related records and other attributes for emailMessage, yet.
-            $saved  = false;
-            if ($useSQL && $emailMessage->id > 0)
-            {
-                $saved = static::updateFolderForEmailMessageWithSQL($emailMessage, $folder);
-            }
-            else
-            {
-                $saved = static::updateFolderForEmailMessageWithORM($emailMessage, $folder, $validate);
-            }
-            if (!$saved)
-            {
-                throw new FailedToSaveModelException();
-            }
-            return $saved;
-        }
-
-        /**
-         * Update an email message's folder and save it using SQL
-         * @param EmailMessage $emailMessage
-         * @param EmailFolder $folder
-         * @throws NotSupportedException
-         */
-        protected static function updateFolderForEmailMessageWithSQL(EmailMessage & $emailMessage, EmailFolder $folder)
-        {
-            // TODO: @Shoaibi/@Jason: Critical0: This fails CampaignItemsUtilTest.php:243
-            $folderForeignKeyName   = RedBeanModel::getForeignKeyName('EmailMessage', 'folder');
-            $tableName              = EmailMessage::getTableName();
-            $sql                    = "UPDATE " . DatabaseCompatibilityUtil::quoteString($tableName);
-            $sql                    .= " SET " . DatabaseCompatibilityUtil::quoteString($folderForeignKeyName);
-            $sql                    .= " = " . $folder->id;
-            $sql                    .= " WHERE " . DatabaseCompatibilityUtil::quoteString('id') . " = ". $emailMessage->id;
-            $effectedRows           = ZurmoRedBean::exec($sql);
-            if ($effectedRows == 1)
-            {
-                $emailMessageId = $emailMessage->id;
-                $emailMessage->forgetAll();
-                $emailMessage = EmailMessage::getById($emailMessageId);
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         * Update an email message's folder and save it using ORM
-         * @param EmailMessage $emailMessage
-         * @param EmailFolder $folder
-         * @param bool $validate
-         */
-        protected static function updateFolderForEmailMessageWithORM(EmailMessage & $emailMessage,
-                                                                        EmailFolder $folder, $validate = true)
-        {
-            $emailMessage->folder = $folder;
-            $saved = $emailMessage->save($validate);
-            return $saved;
-        }
-
-        /**
          * Use this method to send immediately, instead of putting an email in a queue to be processed by a scheduled
          * job.
          * @param EmailMessage $emailMessage
@@ -386,14 +301,36 @@
          */
         public function sendQueued($count = null)
         {
-            EmailMessageUtil::processAndSendQueuedMessages($this, $count);
+            assert('is_int($count) || $count == null');
+            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
+            foreach ($queuedEmailMessages as $emailMessage)
+            {
+                $this->sendImmediately($emailMessage);
+            }
+            if ($count == null)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
+            }
+            elseif (count($queuedEmailMessages) < $count)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - count($queuedEmailMessages));
+            }
+            else
+            {
+                $queuedEmailMessages = array();
+            }
+            foreach ($queuedEmailMessages as $emailMessage)
+            {
+                if ($emailMessage->sendAttempts < 3)
+                {
+                    $this->sendImmediately($emailMessage);
+                }
+                else
+                {
+                    $this->processMessageAsFailure($emailMessage);
+                }
+            }
             return true;
-        }
-
-        public function processMessageAsFailure(EmailMessage $emailMessage, $useSQL = false)
-        {
-            $folder = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_FAILURE);
-            static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder);
         }
 
         protected function populateMailer(Mailer $mailer, EmailMessage $emailMessage)
@@ -494,74 +431,6 @@
             $mailer = new ZurmoSwiftMailer();
             $mailer->init();
             return $mailer;
-        }
-
-        /**
-         * @return integer count of how many emails are queued to go.  This means they are in either the TYPE_OUTBOX
-         * folder or the TYPE_OUTBOX_ERROR folder.
-         */
-        public function getQueuedCount()
-        {
-            return count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX)) +
-                   count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX_ERROR));
-        }
-
-        /**
-         * Given a user, attempt to get the user's email address, but if it is not available, then return the default
-         * address.  @see EmailHelper::defaultFromAddress
-         * @param User $user
-         * @return string
-         */
-        public function resolveFromAddressByUser(User $user)
-        {
-            assert('$user->id >0');
-            if ($user->primaryEmail->emailAddress == null)
-            {
-                return $this->defaultFromAddress;
-            }
-            return $user->primaryEmail->emailAddress;
-        }
-
-        /*
-         * Resolving Default Email Addess For Email Testing
-         */
-        public static function resolveDefaultEmailAddress($defaultEmailAddress)
-        {
-            return $defaultEmailAddress . '@' . StringUtil::resolveCustomizedLabel() . 'alerts.com';
-        }
-
-        public function resolveAndGetDefaultFromAddress()
-        {
-            $defaultFromAddress = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'defaultFromAddress');
-            if ($defaultFromAddress == null)
-            {
-                $defaultFromAddress = static::resolveDefaultEmailAddress('notification');
-                $this->setDefaultFromAddress($defaultFromAddress);
-            }
-            return $defaultFromAddress;
-        }
-
-        public function setDefaultFromAddress($defaultFromAddress)
-        {
-            assert('is_string($defaultFromAddress)');
-            ZurmoConfigurationUtil::setByModuleName('ZurmoModule', 'defaultFromAddress', $defaultFromAddress);
-        }
-
-        public function resolveAndGetDefaultTestToAddress()
-        {
-            $defaultTestToAddress = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'defaultTestToAddress');
-            if ($defaultTestToAddress == null)
-            {
-                $defaultTestToAddress = static::resolveDefaultEmailAddress('testJobEmail');
-                $this->setDefaultTestToAddress($defaultTestToAddress);
-            }
-            return $defaultTestToAddress;
-        }
-
-        public function setDefaultTestToAddress($defaultTestToAddress)
-        {
-            assert('is_string($defaultTestToAddress)');
-            ZurmoConfigurationUtil::setByModuleName('ZurmoModule', 'defaultTestToAddress', $defaultTestToAddress);
         }
 
         /**
