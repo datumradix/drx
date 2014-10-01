@@ -221,29 +221,6 @@
         }
 
         /**
-         * Send an email message. This will queue up the email to be sent by the queue sending process. If you want to
-         * send immediately, consider using @sendImmediately
-         * @param EmailMessage $emailMessage
-         * @param bool $useSQL
-         * @param bool $validate
-         * @return bool|void
-         * @throws FailedToSaveModelException
-         * @throws NotFoundException
-         * @throws NotSupportedException
-         */
-        public function send(EmailMessage & $emailMessage, $useSQL = false, $validate = true)
-        {
-            static::isValidFolderType($emailMessage);
-            $folder     = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX);
-            $saved      = static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder, $validate);
-            if ($saved)
-            {
-                Yii::app()->jobQueue->add('ProcessOutboundEmail');
-            }
-            return $saved;
-        }
-
-        /**
          * Use this method to send immediately, instead of putting an email in a queue to be processed by a scheduled
          * job.
          * @param EmailMessage $emailMessage
@@ -251,26 +228,28 @@
          * @throws FailedToSaveModelException
          * @return null
          */
-        public function sendImmediately(EmailMessage $emailMessage)
+        public function sendImmediately(EmailMessage $emailMessage, $user = null)
         {
             if ($emailMessage->folder->type == EmailFolder::TYPE_SENT)
             {
                 throw new NotSupportedException();
             }
+            $mailer     = ZurmoMailerFactory::resolveMailer($emailMessage, $user);
             //$mailer = ZurmoMailerFactory::resolveMailerByEmailMessage($emailMessage); //in here we can look at the related email->account, etc. and run
             //the logic sequence to determine which mailer to retrieve.
-            $mailer             = $this->getOutboundMailer();
+            //$mailer             = $this->getOutboundMailer();
            // $this->populateMailer($mailer, $emailMessage, $this->htmlConverter); //just passing in htmlConverter for the time being
-            $mailer->populateMessage($emailMessage);
-            $this->sendEmail($mailer, $emailMessage);
-            $this->updateEmailMessageForSending($emailMessage, (bool) ($emailMessage->id > 0));
+            //$mailer->populateMessage($emailMessage);
+            //$this->sendEmail($mailer, $emailMessage);
+            $mailer->sendMail($emailMessage);
+            //$this->updateEmailMessageForSending($emailMessage, (bool) ($emailMessage->id > 0));
         }
 
         /**
          * Updates the email message using stored procedure
          * @param EmailMessage $emailMessage
          */
-        protected function updateEmailMessageForSending(EmailMessage $emailMessage, $useSQL = false)
+        /*protected function updateEmailMessageForSending(EmailMessage $emailMessage, $useSQL = false)
         {
             if (!$useSQL)
             {
@@ -293,48 +272,7 @@
                                                                         ' . $nowTimestamp .')';
             ZurmoDatabaseCompatibilityUtil::callProcedureWithoutOuts($sql);
             $emailMessage->forget();
-        }
-
-        /**
-         * Call this method to process all email Messages in the queue. This is typically called by a scheduled job
-         * or cron.  This will process all emails in a TYPE_OUTBOX folder or TYPE_OUTBOX_ERROR folder. If the message
-         * has already been sent 3 times then it will be moved to a failure folder.
-         * @param bool|null $count
-         * @return bool number of queued messages to be sent
-         */
-        public function sendQueued($count = null)
-        {
-            assert('is_int($count) || $count == null');
-            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                $this->sendImmediately($emailMessage);
-            }
-            if ($count == null)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
-            }
-            elseif (count($queuedEmailMessages) < $count)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - count($queuedEmailMessages));
-            }
-            else
-            {
-                $queuedEmailMessages = array();
-            }
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                if ($emailMessage->sendAttempts < 3)
-                {
-                    $this->sendImmediately($emailMessage);
-                }
-                else
-                {
-                    $this->processMessageAsFailure($emailMessage);
-                }
-            }
-            return true;
-        }
+        }*/
 
         protected function populateMailer(Mailer $mailer, EmailMessage $emailMessage)
         {
@@ -377,7 +315,7 @@
              * */
         }
 
-        protected function resolveMailerFromEmailAccount(Mailer $mailer, EmailAccount $emailAccount)
+        /*protected function resolveMailerFromEmailAccount(Mailer $mailer, EmailAccount $emailAccount)
         {
             if ($emailAccount->useCustomOutboundSettings)
             {
@@ -387,9 +325,9 @@
                 $mailer->password = ZurmoPasswordSecurityUtil::decrypt($emailAccount->outboundPassword);
                 $mailer->security = $emailAccount->outboundSecurity;
             }
-        }
+        }*/
 
-        protected function sendEmail(Mailer $mailer, EmailMessage $emailMessage)
+        /*protected function sendEmail(Mailer $mailer, EmailMessage $emailMessage)
         {
             try
             {
@@ -431,14 +369,14 @@
                 $emailMessage->folder   = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_ERROR);
                 $emailMessage->error    = $emailMessageSendError;
             }
-        }
+        }*/
 
-        protected function getOutboundMailer()
+        /*protected function getOutboundMailer()
         {
             $mailer = new ZurmoSwiftMailer();
             $mailer->init();
             return $mailer;
-        }
+        }*/
 
         /**
          * Prepare message content.
@@ -491,7 +429,7 @@
          * @param Mailer $mailer
          * @param EmailMessage $emailMessage
          */
-        protected function resolveMailerByCampaignOrAutoresponderEmailAccount(Mailer $mailer, EmailMessage $emailMessage)
+        /*protected function resolveMailerByCampaignOrAutoresponderEmailAccount(Mailer $mailer, EmailMessage $emailMessage)
         {
             if(($itemData = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($emailMessage)) != null)
             {
@@ -509,6 +447,6 @@
                     $mailer->port     = $userEmailAccount->outboundPort;
                 }
             }
-        }
+        }*/
     }
 ?>

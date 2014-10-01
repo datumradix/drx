@@ -54,6 +54,8 @@
 
         protected $fromUserEmailData;
 
+        protected $emailAccount;
+
         /**
          * @param SendGridEmailHelper $emailHelper
          * @param User $userToSendMessagesFrom
@@ -61,7 +63,7 @@
          * @param array $ccAddresses
          * @param array $bccAddresses
          */
-        public function __construct(SendGridEmailHelper $emailHelper,
+        /*public function __construct(SendGridEmailHelper $emailHelper,
                                     $userToSendMessagesFrom,
                                     $toAddresses,
                                     $ccAddresses = array(),
@@ -88,6 +90,16 @@
             }
             $this->ccAddresses      = $ccAddresses;
             $this->bccAddresses     = $bccAddresses;
+        }*/
+
+        public function __construct(EmailMessage $emailMessage, SendGridEmailAccount $emailAccount)
+        {
+            SendGrid::register_autoloader();
+            Smtpapi::register_autoloader();
+            $from = array('address' => $emailMessage->sender->fromAddress, 'name' => $emailMessage->sender->fromName);
+            $this->fromUserEmailData = $from;
+            static::resolveRecipientAddressesByType($emailMessage);
+            $this->emailAccount = $emailAccount;
         }
 
         /**
@@ -235,6 +247,36 @@
                     unlink($path);
                 }
             }
+        }
+
+        /**
+         * Resolve recipient address by type.
+         * @param EmailMessage $emailMessage
+         * @return array
+         */
+        public static function resolveRecipientAddressesByType(EmailMessage $emailMessage)
+        {
+            $toAddresses    = array();
+            $ccAddresses    = array();
+            $bccAddresses   = array();
+            foreach ($emailMessage->recipients as $recipient)
+            {
+                if($recipient->type == EmailMessageRecipient::TYPE_TO)
+                {
+                    $toAddresses[$recipient->toAddress] = $recipient->toName;
+                }
+                if($recipient->type == EmailMessageRecipient::TYPE_CC)
+                {
+                    $ccAddresses[$recipient->toAddress] = $recipient->toName;
+                }
+                if($recipient->type == EmailMessageRecipient::TYPE_BCC)
+                {
+                    $bccAddresses[$recipient->toAddress] = $recipient->toName;
+                }
+            }
+            $this->toAddresses = $toAddresses;
+            $this->ccAddresses = $ccAddresses;
+            $this->bccAddresses = $bccAddresses;
         }
     }
 ?>

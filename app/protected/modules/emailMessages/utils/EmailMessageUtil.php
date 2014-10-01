@@ -312,5 +312,37 @@
                 return Yii::app()->emailHelper;
             }
         }
+
+        /**
+         * Get outbound queued messages.
+         * @param int $count
+         * @return array
+         */
+        public static function getOutboundQueuedMessages($count = null)
+        {
+            return EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
+        }
+
+        /**
+         * Get outbound error queued messages.
+         * @param int $count
+         * @param int $queuedEmailMessagesCount Count of messages in outbox already queued.
+         */
+        public static function getOutboundErrorQueuedMessages($count = null, $queuedEmailMessagesCount)
+        {
+            if ($count == null)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
+            }
+            elseif (count($queuedEmailMessages) < $count)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - $queuedEmailMessagesCount);
+            }
+            else
+            {
+                $queuedEmailMessages = array();
+            }
+            return $queuedEmailMessages;
+        }
     }
 ?>

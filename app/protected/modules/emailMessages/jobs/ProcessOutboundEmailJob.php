@@ -72,13 +72,36 @@
          */
         public function run()
         {
-            $emailHelper    = EmailMessageUtil::resolveAndGetEmailHelperInstance();
+            /*$emailHelper    = EmailMessageUtil::resolveAndGetEmailHelperInstance();
             $success        = $emailHelper>sendQueued($this->resolveBatchSize());
             if ($emailHelper->getQueuedCount() > 0)
             {
                 static::loadJobQueue();
             }
-            return $success;
+            return $success;*/
+            $emailHelper          = Yii::app()->emailHelper;
+            $outboxQueuedMessages = EmailMessageUtil::getOutboundQueuedMessages($this->resolveBatchSize());
+            foreach($outboxQueuedMessages as $emailMessage)
+            {
+                $emailHelper->sendImmediately($emailMessage);
+            }
+            $outboxErrorQueuedMessages = EmailMessageUtil::getOutboundErrorQueuedMessages($this->resolveBatchSize(), $outboxQueuedMessages);
+            foreach ($queuedEmailMessages as $emailMessage)
+            {
+                if ($emailMessage->sendAttempts < 3)
+                {
+                    $emailHelper->sendImmediately($emailMessage);
+                }
+                else
+                {
+                    $emailHelper->processMessageAsFailure($emailMessage);
+                }
+            }
+            if ($emailHelper->getQueuedCount() > 0)
+            {
+                static::loadJobQueue();
+            }
+            return true;
         }
 
         protected function resolveBatchSize()
