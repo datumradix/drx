@@ -218,5 +218,69 @@
             return count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX)) +
                    count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX_ERROR));
         }
+
+        /**
+         * Call this method to process all email Messages in the queue. This is typically called by a scheduled job
+         * or cron.  This will process all emails in a TYPE_OUTBOX folder or TYPE_OUTBOX_ERROR folder. If the message
+         * has already been sent 3 times then it will be moved to a failure folder.
+         * @param bool|null $count
+         * @return bool number of queued messages to be sent
+         */
+        public function sendQueued($count = null)
+        {
+            assert('is_int($count) || $count == null');
+            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
+            foreach ($queuedEmailMessages as $emailMessage)
+            {
+                $this->sendImmediately($emailMessage);
+            }
+            if ($count == null)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
+            }
+            elseif (count($queuedEmailMessages) < $count)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - count($queuedEmailMessages));
+            }
+            else
+            {
+                $queuedEmailMessages = array();
+            }
+            foreach ($queuedEmailMessages as $emailMessage)
+            {
+                if ($emailMessage->sendAttempts < 3)
+                {
+                    $this->sendImmediately($emailMessage);
+                }
+                else
+                {
+                    $this->processMessageAsFailure($emailMessage);
+                }
+            }
+            return true;
+        }
+
+        /**
+         * Send an email message. This will queue up the email to be sent by the queue sending process. If you want to
+         * send immediately, consider using @sendImmediately
+         * @param EmailMessage $emailMessage
+         * @param bool $useSQL
+         * @param bool $validate
+         * @return bool|void
+         * @throws FailedToSaveModelException
+         * @throws NotFoundException
+         * @throws NotSupportedException
+         */
+        public function send(EmailMessage & $emailMessage, $useSQL = false, $validate = true)
+        {
+            static::isValidFolderType($emailMessage);
+            $folder     = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX);
+            $saved      = static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder, $validate);
+            if ($saved)
+            {
+                Yii::app()->jobQueue->add('ProcessOutboundEmail');
+            }
+            return $saved;
+        }
     }
 ?>
