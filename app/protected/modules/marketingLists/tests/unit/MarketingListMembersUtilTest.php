@@ -123,10 +123,10 @@
             $this->assertArrayHasKey('MarketingListMember', $searchAttributeData5[0]);
             $this->assertArrayHasKey('clauses', $searchAttributeData5[0]['MarketingListMember']);
             $this->assertArrayHasKey('structure', $searchAttributeData5[0]['MarketingListMember']);
-            $this->assertEquals('(1 and 2) and (3 or 4 or 5 or 6)', $searchAttributeData5[0]['MarketingListMember']['structure']);
+            $this->assertEquals('(1 and 2) and (3 or 4 or 5 or 6 or 7)', $searchAttributeData5[0]['MarketingListMember']['structure']);
 
             $clauses5       = $searchAttributeData5[0]['MarketingListMember']['clauses'];
-            $this->assertCount(6, $clauses5);
+            $this->assertCount(7, $clauses5);
             $this->assertArrayHasKey(3, $clauses5);
             $this->assertCount(4, $clauses5[3]);
             $this->assertArrayHasKey('attributeName', $clauses5[3]);
@@ -154,30 +154,43 @@
             $this->assertArrayHasKey('attributeName', $clauses5[5]);
             $this->assertEquals('contact', $clauses5[5]['attributeName']);
             $this->assertArrayHasKey('relatedModelData', $clauses5[5]);
-            $this->assertCount(4, $clauses5[5]['relatedModelData']);
-            $this->assertArrayHasKey('attributeName', $clauses5[5]['relatedModelData']);
-            $this->assertEquals('primaryEmail', $clauses5[5]['relatedModelData']['attributeName']);
-            $this->assertArrayHasKey('relatedAttributeName', $clauses5[5]['relatedModelData']);
-            $this->assertEquals('emailAddress', $clauses5[5]['relatedModelData']['relatedAttributeName']);
+            $this->assertCount(3, $clauses5[5]['relatedModelData']);
+            $this->assertArrayHasKey('concatedAttributeNames', $clauses5[5]['relatedModelData']);
+            $this->assertEquals(array('firstName', 'lastName'), $clauses5[5]['relatedModelData']['concatedAttributeNames']);
             $this->assertArrayHasKey('operatorType', $clauses5[5]['relatedModelData']);
-            $this->assertEquals('startsWith', $clauses5[5]['relatedModelData']['operatorType']);
+            $this->assertEquals('contains', $clauses5[5]['relatedModelData']['operatorType']);
             $this->assertArrayHasKey('value', $clauses5[5]['relatedModelData']);
-            $this->assertEquals($filterBySearchTerm, $clauses5[5]['relatedModelData']['value']);
+            $this->assertEquals('ja', $clauses5[5]['relatedModelData']['value']);
 
-            $this->assertArrayHasKey(6, $clauses5);
+            $this->assertArrayHasKey(5, $clauses5);
             $this->assertCount(2, $clauses5[6]);
             $this->assertArrayHasKey('attributeName', $clauses5[6]);
-            $this->assertEquals('contact', $clauses5[6]['attributeName']);
+            $this->assertEquals('contact', $clauses5[5]['attributeName']);
             $this->assertArrayHasKey('relatedModelData', $clauses5[6]);
             $this->assertCount(4, $clauses5[6]['relatedModelData']);
             $this->assertArrayHasKey('attributeName', $clauses5[6]['relatedModelData']);
-            $this->assertEquals('secondaryEmail', $clauses5[6]['relatedModelData']['attributeName']);
+            $this->assertEquals('primaryEmail', $clauses5[6]['relatedModelData']['attributeName']);
             $this->assertArrayHasKey('relatedAttributeName', $clauses5[6]['relatedModelData']);
             $this->assertEquals('emailAddress', $clauses5[6]['relatedModelData']['relatedAttributeName']);
             $this->assertArrayHasKey('operatorType', $clauses5[6]['relatedModelData']);
             $this->assertEquals('startsWith', $clauses5[6]['relatedModelData']['operatorType']);
             $this->assertArrayHasKey('value', $clauses5[6]['relatedModelData']);
             $this->assertEquals($filterBySearchTerm, $clauses5[6]['relatedModelData']['value']);
+
+            $this->assertArrayHasKey(6, $clauses5);
+            $this->assertCount(2, $clauses5[7]);
+            $this->assertArrayHasKey('attributeName', $clauses5[7]);
+            $this->assertEquals('contact', $clauses5[7]['attributeName']);
+            $this->assertArrayHasKey('relatedModelData', $clauses5[7]);
+            $this->assertCount(4, $clauses5[7]['relatedModelData']);
+            $this->assertArrayHasKey('attributeName', $clauses5[7]['relatedModelData']);
+            $this->assertEquals('secondaryEmail', $clauses5[7]['relatedModelData']['attributeName']);
+            $this->assertArrayHasKey('relatedAttributeName', $clauses5[7]['relatedModelData']);
+            $this->assertEquals('emailAddress', $clauses5[7]['relatedModelData']['relatedAttributeName']);
+            $this->assertArrayHasKey('operatorType', $clauses5[7]['relatedModelData']);
+            $this->assertEquals('startsWith', $clauses5[7]['relatedModelData']['operatorType']);
+            $this->assertArrayHasKey('value', $clauses5[7]['relatedModelData']);
+            $this->assertEquals($filterBySearchTerm, $clauses5[7]['relatedModelData']['value']);
         }
 
         public function testMakeSortAttributeData()

@@ -540,6 +540,10 @@
                         $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
                     }
                 }
+                else
+                {
+                    $userEmailConfigurationForm->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($userEmailConfigurationForm->outboundPassword);
+                }
             }
             $titleBarAndEditView = new UserActionBarAndEmailConfigurationEditView(
                                     $this->getId(),
