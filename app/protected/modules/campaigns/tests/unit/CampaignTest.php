@@ -341,19 +341,20 @@
             $campaignItemActivity->latestSourceIP           = '121.212.122.112';
             $this->assertTrue($campaignItemActivity->save());
 
-            $campaignItemActivities = CampaignItemActivity::getAll();
-            $this->assertCount(1, $campaignItemActivities);
+            $emailMessage   = EmailMessageTestHelper::createOutboxEmail(Yii::app()->user->userModel, 'subject',
+                                                                        'html', 'text', 'from', 'from@zurmo.com',
+                                                                        'to', 'to@zurmo.com');
+            $campaignItems[0]->emailMessage = $emailMessage;
+            $this->assertTrue($campaignItems[0]->unrestrictedSave());
 
+            $this->assertEquals(1, CampaignItemActivity::getCount());
+            $this->assertEquals(1, EmailMessage::getCount());
             $campaigns[0]->delete();
 
-            $campaigns = Campaign::getAll();
-            $this->assertEquals(3, count($campaigns));
-
-            $campaignItems = CampaignItem::getAll();
-            $this->assertCount(0, $campaignItems);
-
-            $campaignItemActivities = CampaignItemActivity::getAll();
-            $this->assertCount(0, $campaignItemActivities);
+            $this->assertEquals(3, Campaign::getCount());
+            $this->assertEquals(0, CampaignItem::getCount());
+            $this->assertEquals(0, CampaignItemActivity::getCount());
+            $this->assertEquals(1, EmailMessage::getCount());
         }
     }
 ?>

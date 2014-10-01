@@ -75,6 +75,21 @@
                                                                       "{createdTime} by {creator} {dimensions}"));
         }
 
+        public function testGetImageSummaryWhenThereIsNoCachedFile()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $pathToFiles = Yii::getPathOfAlias('application.modules.zurmo.tests.unit.files');
+            $filePath    = $pathToFiles . DIRECTORY_SEPARATOR . 'testImage.png';
+            $fileUploadData = ImageFileModelUtil::saveImageFromTemporaryFile($filePath, 'fileNameTest');
+            $id = $fileUploadData['id'];
+            $imageFileModel = ImageFileModel::getById($id);
+            $imageFileModel->width = null;
+            $imageFileModel->height = null;
+            $this->assertTrue($imageFileModel->save());
+            unlink(ImageFileModel::getImageCachePathByFileName($imageFileModel->getImageCacheFileName(), false));
+            ImageFileModelUtil::getImageSummary($imageFileModel);
+        }
+
         public function testGetImageFileNameWithDimensions()
         {
             $filename = 'test.png';

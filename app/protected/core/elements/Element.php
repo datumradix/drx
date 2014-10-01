@@ -237,7 +237,7 @@
 
         public static function getDisplayName()
         {
-            return Zurmo::t('Core', get_class());
+            return get_class();
         }
 
         public static function isReadOnly()

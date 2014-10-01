@@ -156,7 +156,7 @@
         {
             $name = static::getPluralModuleLabel($language);
             $name = substr($name, 0, strlen($name) - 1);
-            return Zurmo::t('Core', $name, array(), null, $language);
+            return Zurmo::t('Core', $name, array(), null, $language);;
         }
 
         /**

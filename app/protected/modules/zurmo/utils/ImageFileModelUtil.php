@@ -94,6 +94,11 @@
             {
                 $layout = static::getDefaultLayout();
             }
+            $imagePath = ImageFileModel::getImageCachePathByFileName($imageFileModel->getImageCacheFileName(), false);
+            if (!file_exists($imagePath))
+            {
+                $imageFileModel->createImageCache();
+            }
             static::resolveWidthAndHeightAttributesIfTheyAreMissing($imageFileModel);
             $url                   = static::getUrlForGetImageFromImageFileName($imageFileModel->getImageCacheFileName(), true);
             $urlForPreview         = Yii::app()->createAbsoluteUrl('zurmo/imageModel/modalPreview', array('fileName' => $imageFileModel->getImageCacheFileName()));
@@ -244,6 +249,15 @@
                 $extension = str_replace('image/', '', $mimeType);
                 $name .= $extension == 'jpeg' ? '.jpg' : '.' . $extension;
             }
+        }
+
+        public static function importFromUrl($url)
+        {
+            $tempFilePath = tempnam(sys_get_temp_dir(), 'upload_image_from_url_');
+            $name = preg_replace("#.*\/#", '', $url);
+            file_put_contents($tempFilePath, file_get_contents($url));
+            $fileUploadData = static::saveImageFromTemporaryFile($tempFilePath, $name);
+            return $fileUploadData;
         }
     }
 ?>

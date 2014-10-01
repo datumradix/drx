@@ -38,6 +38,7 @@
     {
         public function make()
         {
+            $this->makeImages();
             $this->makeBlank();
             $this->makeOneColumn();
             $this->makeTwoColumns();
@@ -126,7 +127,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x50">',
+                                                                                        'image' => $this->importedImages['200x50'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -224,7 +225,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/580x180">',
+                                                                                        'image' => $this->importedImages['580x180'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -429,7 +430,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x50">',
+                                                                                        'image' => $this->importedImages['200x50'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -834,7 +835,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x50">',
+                                                                                        'image' => $this->importedImages['200x50'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -1240,7 +1241,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x50">',
+                                                                                        'image' => $this->importedImages['200x50'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -1357,7 +1358,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x200"></img>',
+                                                                                        'image' => $this->importedImages['200x200'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -1414,7 +1415,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x200"></img>',
+                                                                                        'image' => $this->importedImages['200x200'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -1471,7 +1472,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x200"></img>',
+                                                                                        'image' => $this->importedImages['200x200'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -1687,7 +1688,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x50">',
+                                                                                        'image' => $this->importedImages['200x50'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -1812,8 +1813,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' =>
-'<img src="http://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&amp;zoom=13&amp;size=580x180&amp;maptype=roadmap &amp;markers=color:blue%7Clabel:S%7C40.702147,-74.015794&amp;markers=color:green%7Clabel:G%7C40.711614,-74.012318 &amp;markers=color:red%7Clabel:C%7C40.718217,-73.998284&amp;sensor=false">', // Not Coding Standard
+                                                                                        'image' => $this->importedImages['googleMaps'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -1844,7 +1844,7 @@
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x200"></img>',
+                                                                                        'image' => $this->importedImages['200x200'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -1912,7 +1912,7 @@ view into a stunning courtyard, The Sterling Mason lobby imparts the intimate wa
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x200"></img>',
+                                                                                        'image' => $this->importedImages['200x200'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
@@ -1980,7 +1980,7 @@ view into a stunning courtyard, The Sterling Mason lobby imparts the intimate wa
                                                                             array (
                                                                                 'content' =>
                                                                                     array (
-                                                                                        'image' => '<img src="http://placehold.it/200x200"></img>',
+                                                                                        'image' => $this->importedImages['200x200'],
                                                                                     ),
                                                                                 'properties' =>
                                                                                     array (
