@@ -199,47 +199,6 @@
         }
 
         /**
-         * Call this method to process all email Messages in the queue. This is typically called by a scheduled job
-         * or cron.  This will process all emails in a TYPE_OUTBOX folder or TYPE_OUTBOX_ERROR folder. If the message
-         * has already been sent 3 times then it will be moved to a failure folder.
-         * @param bool|null $count
-         * @return bool number of queued messages to be sent
-         */
-        public function sendQueued($count = null)
-        {
-            assert('is_int($count) || $count == null');
-            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                $this->sendImmediately($emailMessage);
-            }
-            if ($count == null)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
-            }
-            elseif (count($queuedEmailMessages) < $count)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - count($queuedEmailMessages));
-            }
-            else
-            {
-                $queuedEmailMessages = array();
-            }
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                if ($emailMessage->sendAttempts < 3)
-                {
-                    $this->sendImmediately($emailMessage);
-                }
-                else
-                {
-                    $this->processMessageAsFailure($emailMessage);
-                }
-            }
-            return true;
-        }
-
-        /**
          * Use this method to send immediately, instead of putting an email in a queue to be processed by a scheduled
          * job.
          * @param EmailMessage $emailMessage
