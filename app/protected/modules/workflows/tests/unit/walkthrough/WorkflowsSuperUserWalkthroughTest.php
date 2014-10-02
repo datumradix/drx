@@ -72,13 +72,13 @@
         {
             $this->assertEquals(0, SavedWorkflow::getCount());
             $content = $this->runControllerWithExitExceptionAndGetContent     ('workflows/default/create');
-            $this->assertFalse(strpos($content, 'On-Save Workflow') === false);
-            $this->assertFalse(strpos($content, 'Time-Based Workflow') === false);
+            $this->assertContains('On-Save Workflow', $content);
+            $this->assertContains('Time-Based Workflow', $content);
 
             $this->setGetArray(array('type' => 'OnSave'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent     ('workflows/default/create');
-            $this->assertFalse(strpos($content, 'Accounts') === false);
+            $this->assertContains('Accounts', $content);
 
             $this->setGetArray(array('type' => 'OnSave'));
             $data   = array();
@@ -186,7 +186,8 @@
                                                         'moduleClassName'   => 'WorkflowsTestModule');
             $this->setPostArray($data);
             $content = $this->runControllerWithNoExceptionsAndGetContent('workflows/default/relationsAndAttributesTree');
-            $this->assertTrue(strpos($content, '<div class="WorkflowRelationsAndAttributesTreeView') !== false);
+
+            $this->assertContains('<div class="WorkflowRelationsAndAttributesTreeView', $content);
             //With node id
             $this->setGetArray(array('type'     => 'OnSave',
                                      'treeType' => ComponentForWorkflowForm::TYPE_TRIGGERS,
@@ -200,7 +201,7 @@
                                                         'moduleClassName'   => 'WorkflowsTestModule');
             $this->setPostArray($data);
             $content = $this->runControllerWithExitExceptionAndGetContent('workflows/default/relationsAndAttributesTree');
-            $this->assertTrue(strpos($content, '{"id":"Triggers_hasOne___createdByUser__User",') !== false); // Not Coding Standard
+            $this->assertContains('{"id":"Triggers_hasOne___createdByUser__User",', $content); // Not Coding Standard
         }
 
         /**
@@ -221,7 +222,7 @@
                                                         'moduleClassName'   => 'WorkflowsTestModule');
             $this->setPostArray($data);
             $content = $this->runControllerWithNoExceptionsAndGetContent('workflows/default/addAttributeFromTree');
-            $this->assertTrue(strpos($content, '<option value="equals">Equals</option>') !== false);
+            $this->assertContains('<option value="equals">Equals</option>', $content);
         }
 
         /**
@@ -252,7 +253,7 @@
                                                         'moduleClassName'   => 'WorkflowsTestModule');
             $this->setPostArray($data);
             $content = $this->runControllerWithNoExceptionsAndGetContent('workflows/default/getAvailableAttributesForTimeTrigger');
-            $this->assertTrue(strpos($content, '{"":"(None)","likeContactState":"A name for a state","boolean":"Boolean",') !== false); // Not Coding Standard
+            $this->assertContains('{"":"(None)","likeContactState":"A name for a state","boolean":"Boolean",', $content); // Not Coding Standard
         }
 
         /**
@@ -271,7 +272,7 @@
                                                         'moduleClassName'   => 'WorkflowsTestModule');
             $this->setPostArray($data);
             $content = $this->runControllerWithNoExceptionsAndGetContent('workflows/default/addOrChangeTimeTriggerAttribute');
-            $this->assertTrue(strpos($content, 'ByTimeWorkflowWizardForm[TimeTrigger][durationInterval]') !== false);
+            $this->assertContains('ByTimeWorkflowWizardForm[TimeTrigger][durationInterval]', $content);
         }
 
         /**
@@ -281,7 +282,7 @@
         {
             $this->setGetArray(array('type' => 'OnSave', 'moduleClassName' => 'WorkflowsTestModule'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('workflows/default/changeActionType');
-            $this->assertTrue(strpos($content, '<div class="hasDropDown"><span class="select-arrow"></span><select name="actionTypeRelatedModel"') !== false);
+            $this->assertContains('<div class="hasDropDown"><span class="select-arrow"></span><select name="actionTypeRelatedModel"', $content);
         }
 
         /**
@@ -291,7 +292,7 @@
         {
             $this->setGetArray(array('type' => 'OnSave', 'moduleClassName' => 'WorkflowsTestModule', 'relation' => 'hasOne'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('workflows/default/changeActionTypeRelatedModel');
-            $this->assertTrue(strpos($content, '<option value="hasMany2">Has Many 2</option>') !== false);
+            $this->assertContains('<option value="hasMany2">Has Many 2</option>', $content);
         }
 
         /**
@@ -304,7 +305,7 @@
                                      'rowNumber'  => 4,
                                      'relation'   => 'hasOne'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('workflows/default/addAction');
-            $this->assertTrue(strpos($content, '<li id="OnSaveWorkflowWizardForm_Actions_4"') !== false);
+            $this->assertContains('<li id="OnSaveWorkflowWizardForm_Actions_4"', $content);
         }
 
         /**
@@ -316,7 +317,7 @@
                                      'moduleClassName' => 'WorkflowsTestModule',
                                      'rowNumber'  => 4));
             $content = $this->runControllerWithNoExceptionsAndGetContent('workflows/default/addEmailMessage');
-            $this->assertTrue(strpos($content, 'OnSaveWorkflowWizardForm[EmailMessages][4][sendAfterDurationType]') !== false);
+            $this->assertContains('OnSaveWorkflowWizardForm[EmailMessages][4][sendAfterDurationType]', $content);
         }
 
         /**
@@ -330,7 +331,7 @@
                                      'recipientType'      => WorkflowEmailMessageRecipientForm::TYPE_STATIC_USER,
                                      'recipientRowNumber' => 3));
             $content = $this->runControllerWithNoExceptionsAndGetContent('workflows/default/addEmailMessageRecipient');
-            $this->assertTrue(strpos($content, '<li class="dynamic-sub-row"><div class="dynamic-sub-row') !== false);
+            $this->assertContains('<li class="dynamic-sub-row"><div class="dynamic-sub-row', $content);
         }
 
         /**
@@ -344,7 +345,7 @@
                 'recipientType'      => WorkflowEmailMessageRecipientForm::TYPE_DYNAMIC_TRIGGERED_MODEL_RELATION_USER,
                 'recipientRowNumber' => 3));
             $content = $this->runControllerWithNoExceptionsAndGetContent('workflows/default/addEmailMessageRecipient');
-            $this->assertTrue(strpos($content, '<li class="dynamic-sub-row"><div class="dynamic-sub-row') !== false);
+            $this->assertContains('<li class="dynamic-sub-row"><div class="dynamic-sub-row', $content);
         }
 
         /**

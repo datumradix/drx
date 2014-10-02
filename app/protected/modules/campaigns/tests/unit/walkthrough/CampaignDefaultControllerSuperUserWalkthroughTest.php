@@ -91,10 +91,10 @@
             $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/index');
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
             $compareContent = 'Campaigns will not run properly until scheduled jobs are set up. Contact your administrator.';
-            $this->assertTrue(strpos($content, $compareContent) === false);
+            $this->assertNotContains($compareContent, $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/create');
             $compareContent = 'Campaigns will not run properly until scheduled jobs are set up. Contact your administrator.';
-            $this->assertTrue(strpos($content, $compareContent) !== false);
+            $this->assertContains($compareContent, $content);
         }
 
         /**
@@ -136,7 +136,7 @@
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/create');
             $compareContent = 'Campaigns will not run properly until scheduled jobs are set up. Contact your administrator.';
-            $this->assertTrue(strpos($content, $compareContent) === false);
+            $this->assertNotContains($compareContent, $content);
         }
 
         /**
@@ -145,15 +145,15 @@
         public function testSuperUserListAction()
         {
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') !== false);
-            $this->assertTrue(strpos($content, 'campaign01') !== false);
-            $this->assertTrue(strpos($content, 'campaign02') !== false);
-            $this->assertTrue(strpos($content, 'Active') !== false);
+            $this->assertContains('anyMixedAttributes', $content);
+            $this->assertContains('campaign01', $content);
+            $this->assertContains('campaign02', $content);
+            $this->assertContains('Active', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
         }
 
         /**
@@ -169,7 +169,7 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
-            $this->assertTrue(strpos($content, 'No results found') !== false);
+            $this->assertContains('No results found', $content);
 
             StickyReportUtil::clearDataByKey('CampaignsSearchForm');
             $this->setGetArray(array(
@@ -179,8 +179,8 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
-            $this->assertTrue(strpos($content, '2 result(s)') !== false);
-            $this->assertTrue(strpos($content, '<th id="list-view_c2">Status</th>') !== false);
+            $this->assertContains('2 result(s)', $content);
+            $this->assertContains('<th id="list-view_c2">Status</th>', $content);
             $this->assertEquals(1, substr_count($content, 'campaign01'));
             $this->assertEquals(1, substr_count($content, 'campaign02'));
             $this->assertEquals(2, substr_count($content, 'Active'));
@@ -194,8 +194,8 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
-            $this->assertTrue(strpos($content, '2 result(s)') !== false);
-            $this->assertTrue(strpos($content, '<th id="list-view_c2">Status</th>') !== false);
+            $this->assertContains('2 result(s)', $content);
+            $this->assertContains('<th id="list-view_c2">Status</th>', $content);
             $this->assertEquals(1, substr_count($content, 'campaign01'));
             $this->assertEquals(1, substr_count($content, 'campaign02'));
             $this->assertEquals(2, substr_count($content, 'Active'));
@@ -222,8 +222,8 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
-            $this->assertTrue(strpos($content, '1 result(s)') !== false);
-            $this->assertTrue(strpos($content, '<th id="list-view_c2">Status</th>') !== false);
+            $this->assertContains('1 result(s)', $content);
+            $this->assertContains('<th id="list-view_c2">Status</th>', $content);
             $this->assertEquals(1, substr_count($content, 'campaign02'));
             $this->assertEquals(1, substr_count($content, 'Active'));
             $this->assertEquals(2, substr_count($content, 'Clark Kent'));
@@ -247,8 +247,8 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
-            $this->assertTrue(strpos($content, '1 result(s)') !== false);
-            $this->assertTrue(strpos($content, '<th id="list-view_c2">Status</th>') !== false);
+            $this->assertContains('1 result(s)', $content);
+            $this->assertContains('<th id="list-view_c2">Status</th>', $content);
             $this->assertEquals(1, substr_count($content, 'campaign02'));
             $this->assertEquals(1, substr_count($content, 'Active'));
             $this->assertEquals(2, substr_count($content, 'Clark Kent'));
@@ -263,105 +263,105 @@
         public function testSuperUserCreateAction()
         {
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/create');
-            $this->assertTrue(strpos($content, '<title>ZurmoCRM - Campaigns</title>') !== false);
-            $this->assertTrue(strpos($content, '<div id="MarketingBreadCrumbView" class="BreadCrumbView">' .
-                                                '<div class="breadcrumbs">') !== false);
-            $this->assertTrue(strpos($content, '<div class="AppContent GridView">') !== false);
-            $this->assertTrue(strpos($content, '/marketing/default/index">Marketing</a>') !== false);
-            $this->assertTrue(strpos($content, '/campaigns/default/list">Campaigns</a>') !== false);
-            $this->assertTrue(strpos($content, '<span>Create</span></div></div>') !== false);
-            $this->assertTrue(strpos($content, '<div id="CampaignEditView" class="SecuredEditView EditView DetailsView' .
-                                                ' ModelView ConfigurableMetadataView MetadataView">') !== false);
-            $this->assertTrue(strpos($content, '<div class="wrapper">') !== false);
-            $this->assertTrue(strpos($content, '<h1><span class="truncated-title"><span class="ellipsis-content">' .
-                                                'Create Campaign</span></span></h1>') !== false);
-            $this->assertTrue(strpos($content, '<div class="wide form">') !== false);
-            $this->assertTrue(strpos($content, '<div class="attributesContainer">') !== false);
-            $this->assertTrue(strpos($content, '<div class="left-column"><div class="panel">') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label for="Campaign_name" class="required">Name '.
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_name" name="Campaign[name]" ' .
-                                                'type="text" maxlength="64"') !== false);
-            $this->assertTrue(strpos($content, '</tr><tr><th><label for="Campaign_marketingList_id" class="required">' .
-                                                'Marketing List <span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input name="Campaign[marketingList][id]" ' .
-                                                'id="Campaign_marketingList_id" value="" type="hidden"') !== false);
-            $this->assertTrue(strpos($content, '<div class="has-model-select">') !== false);
-            $this->assertTrue(strpos($content, 'id="Campaign_marketingList_name" type="text" value="" '.
-                                                'name="Campaign_marketingList_name"') !== false);
-            $this->assertTrue(strpos($content, '<a id="Campaign_marketingList_SelectLink" href="#"><span class="' .
-                                                'model-select-icon"></span><span class="z-spinner"></span></a>') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label for="Campaign_fromName" class="required">From Name ' .
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_fromName" name="Campaign[fromName]" ' .
-                                                'type="text" maxlength="64"') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label for="Campaign_fromAddress" class="required">From Address ' .
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_fromAddress" ' .
-                                                'name="Campaign[fromAddress]" type="text" maxlength="64"') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label for="Campaign_sendOnDateTime" class="required">Send On ' .
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><div class="has-date-select"><input ' .
-                                                'id="Campaign_sendOnDateTime" name="Campaign[sendOnDateTime]" ' .
-                                                'style="position:relative;z-index:10000;" type="text" ') !== false);
-            $this->assertTrue(strpos($content, '</tr><tr><th><label for="Campaign_subject" class="required">Subject ' .
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_subject" name="Campaign[subject]" ' .
-                                                'type="text" maxlength="255"') !== false);
-            $this->assertTrue(strpos($content, '<tr><th>Enable Tracking<span id="enable-tracking-tooltip" ' .
-                                                'class="tooltip" title="Check to track when recipients open ' .
-                                                'an email or click any links.">?</span></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="ytCampaign_enableTracking" type="hidden" ' .
-                                                'value="0" name="Campaign[enableTracking]"') !== false);
-            $this->assertTrue(strpos($content, '<label class="hasCheckBox c_on"><input id="Campaign_enableTracking" ' .
-                                                'name="Campaign[enableTracking]" value="1" checked="checked" ' .
-                                                'type="checkbox"') !== false);
-            $this->assertTrue(strpos($content, '<tr><th>Support HTML<span id="support-rich-text-tooltip" ' .
-                                                'class="tooltip" title="When checked, email will be sent in both text' .
-                                                ' and HTML format.  Uncheck to only send text emails">' .
-                                                '?</span></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="ytCampaign_supportsRichText" type="hidden"' .
-                                                ' value="0" name="Campaign[supportsRichText]"') !== false);
-            $this->assertTrue(strpos($content, '<label class="hasCheckBox c_on"><input id="Campaign_supportsRichText"' .
-                                                ' name="Campaign[supportsRichText]" value="1" checked="checked"' .
-                                                ' type="checkbox"') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label for="Campaign_contactEmailTemplateNames_name">Select a template</label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><div class="has-model-select"><input name=""' .
-                                                ' id="Campaign_contactEmailTemplateNames_id"' .
-                                                ' value="" type="hidden" />') !== false);
-            $this->assertTrue(strpos($content, '<input onblur="clearIdFromAutoCompleteField($(this).val(), &#039;' .
-                                                'Campaign_contactEmailTemplateNames_id&#039;);" id="Campaign_contact' .
-                                                'EmailTemplateNames_name" type="text" value="" ' .
-                                                'name="" />') !== false);
-            $this->assertTrue(strpos($content, '<a id="Campaign_contactEmailTemplateNames_SelectLink" href="#">' .
-                                                '<span class="model-select-icon"></span><span class="z-spinner">' .
-                                                '</span></a></div></td></tr>') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label>Attachments</label></th>') !== false);
-            $this->assertTrue(strpos($content, '<div class="fileupload-buttonbar clearfix">') !== false);
-            $this->assertTrue(strpos($content, '<div class="addfileinput-button"><span>Y</span>') !== false);
-            $this->assertTrue(strpos($content, '<strong class="add-label">Add Files</strong>') !== false);
-            $this->assertTrue(strpos($content, '<input id="Campaign_files" multiple="multiple" type="file" name="Campaign_files"') !== false);
-            $this->assertTrue(strpos($content, '<div class="fileupload-content">') !== false);
-            $this->assertTrue(strpos($content, '<table class="files">') !== false);
-            $this->assertTrue(strpos($content, '<div class="right-column">') !== false);
-            $this->assertTrue(strpos($content, '<div class="email-template-combined-content') !== false);
-            $this->assertTrue(strpos($content, '<div class="email-template-content"><div class="tabs-nav">') !== false);
-            $this->assertTrue(strpos($content, '<a href="#tab1">Text Content</a>') !== false);
-            $this->assertTrue(strpos($content, '<a class="active-tab" href="#tab2">Html Content</a>') !== false);
-            $this->assertTrue(strpos($content, 'class="simple-link" href="#">MergeTag Guide</a></div>') !== false);
-            $this->assertTrue(strpos($content, '<div id="tab1" class=" tab email-template-textContent">') !== false);
-            $this->assertTrue(strpos($content, '<th><label for="Campaign_textContent">Text Content</label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><textarea id="Campaign_textContent" ' .
-                                                'name="Campaign[textContent]" rows="6" cols="50">' .
-                                                '</textarea></td></div>') !== false);
-            $this->assertTrue(strpos($content, '<div id="tab2" class="active-tab tab email-template-htmlContent">' .
-                                                '<label for="Campaign_htmlContent">Html Content</label>') !== false);
-            $this->assertTrue(strpos($content, '<textarea id="Campaign_htmlContent" name="Campaign[htmlContent]"') !== false);
-            $this->assertTrue(strpos($content, '<div class="float-bar"><div class="view-toolbar-container ' .
-                                                'clearfix dock"><div class="form-toolbar">') !== false);
-            $this->assertTrue(strpos($content, '/campaigns/default"><span class="z-label">Cancel</span></a>') !== false);
-            $this->assertTrue(strpos($content, 'Save and Schedule') !== false);
-            $this->assertTrue(strpos($content, '<div id="modalContainer-edit-form">') !== false);
+            $this->assertContains('<title>ZurmoCRM - Campaigns</title>', $content);
+            $this->assertContains('<div id="MarketingBreadCrumbView" class="BreadCrumbView">' .
+                                    '<div class="breadcrumbs">', $content);
+            $this->assertContains('<div class="AppContent GridView">', $content);
+            $this->assertContains('/marketing/default/index">Marketing</a>', $content);
+            $this->assertContains('/campaigns/default/list">Campaigns</a>', $content);
+            $this->assertContains('<span>Create</span></div></div>', $content);
+            $this->assertContains('<div id="CampaignEditView" class="SecuredEditView EditView DetailsView' .
+                                    ' ModelView ConfigurableMetadataView MetadataView">', $content);
+            $this->assertContains('<div class="wrapper">', $content);
+            $this->assertContains('<h1><span class="truncated-title"><span class="ellipsis-content">' .
+                                    'Create Campaign</span></span></h1>', $content);
+            $this->assertContains('<div class="wide form">', $content);
+            $this->assertContains('<div class="attributesContainer">', $content);
+            $this->assertContains('<div class="left-column"><div class="panel">', $content);
+            $this->assertContains('<tr><th><label for="Campaign_name" class="required">Name '.
+                                    '<span class="required">*</span></label></th>', $content);
+            $this->assertContains('<td colspan="1"><input id="Campaign_name" name="Campaign[name]" ' .
+                                    'type="text" maxlength="64"', $content);                                    
+            $this->assertContains('</tr><tr><th><label for="Campaign_marketingList_id" class="required">' .
+                                    'Marketing List <span class="required">*</span></label></th>', $content);                                    
+            $this->assertContains('<td colspan="1"><input name="Campaign[marketingList][id]" ' .
+                                    'id="Campaign_marketingList_id" value="" type="hidden"', $content);                                    
+            $this->assertContains('<div class="has-model-select">', $content);
+            $this->assertContains('id="Campaign_marketingList_name" type="text" value="" '.
+                                    'name="Campaign_marketingList_name"', $content);                                    
+            $this->assertContains('<a id="Campaign_marketingList_SelectLink" href="#"><span class="' .
+                                    'model-select-icon"></span><span class="z-spinner"></span></a>', $content);                                    
+            $this->assertContains('<tr><th><label for="Campaign_fromName" class="required">From Name ' .
+                                    '<span class="required">*</span></label></th>', $content);                                    
+            $this->assertContains('<td colspan="1"><input id="Campaign_fromName" name="Campaign[fromName]" ' .
+                                    'type="text" maxlength="64"', $content);                                    
+            $this->assertContains('<tr><th><label for="Campaign_fromAddress" class="required">From Address ' .
+                                    '<span class="required">*</span></label></th>', $content);
+            $this->assertContains('<td colspan="1"><input id="Campaign_fromAddress" ' .
+                                    'name="Campaign[fromAddress]" type="text" maxlength="64"', $content);                                    
+            $this->assertContains('<tr><th><label for="Campaign_sendOnDateTime" class="required">Send On ' .
+                                    '<span class="required">*</span></label></th>', $content);
+            $this->assertContains('<td colspan="1"><div class="has-date-select"><input ' .
+                                    'id="Campaign_sendOnDateTime" name="Campaign[sendOnDateTime]" ' .
+                                    'style="position:relative;z-index:10000;" type="text" ', $content);
+            $this->assertContains('</tr><tr><th><label for="Campaign_subject" class="required">Subject ' .
+                                    '<span class="required">*</span></label></th>', $content);                                            
+            $this->assertContains('<td colspan="1"><input id="Campaign_subject" name="Campaign[subject]" ' .
+                                    'type="text" maxlength="255"', $content);                                    
+            $this->assertContains('<tr><th>Enable Tracking<span id="enable-tracking-tooltip" ' .
+                                    'class="tooltip" title="Check to track when recipients open ' .
+                                    'an email or click any links.">?</span></th>', $content);                                    
+            $this->assertContains('<td colspan="1"><input id="ytCampaign_enableTracking" type="hidden" ' .
+                                    'value="0" name="Campaign[enableTracking]"', $content);
+            $this->assertContains('<label class="hasCheckBox c_on"><input id="Campaign_enableTracking" ' .
+                                    'name="Campaign[enableTracking]" value="1" checked="checked" ' .
+                                    'type="checkbox"', $content); 
+            $this->assertContains('<tr><th>Support HTML<span id="support-rich-text-tooltip" ' .
+                                    'class="tooltip" title="When checked, email will be sent in both text' .
+                                    ' and HTML format.  Uncheck to only send text emails">' .
+                                    '?</span></th>', $content);
+            $this->assertContains('<td colspan="1"><input id="ytCampaign_supportsRichText" type="hidden"' .
+                                    ' value="0" name="Campaign[supportsRichText]"', $content);
+            $this->assertContains('<label class="hasCheckBox c_on"><input id="Campaign_supportsRichText"' .
+                                    ' name="Campaign[supportsRichText]" value="1" checked="checked"' .
+                                    ' type="checkbox"', $content);
+            $this->assertContains('<tr><th><label for="Campaign_contactEmailTemplateNames_name">Select a template</label></th>', $content);
+            $this->assertContains('<td colspan="1"><div class="has-model-select"><input name=""' .
+                                    ' id="Campaign_contactEmailTemplateNames_id"' .
+                                    ' value="" type="hidden" />', $content);
+            $this->assertContains('<input onblur="clearIdFromAutoCompleteField($(this).val(), &#039;' .
+                                    'Campaign_contactEmailTemplateNames_id&#039;);" id="Campaign_contact' .
+                                    'EmailTemplateNames_name" type="text" value="" ' .
+                                    'name="" />', $content);
+            $this->assertContains('<a id="Campaign_contactEmailTemplateNames_SelectLink" href="#">' .
+                                    '<span class="model-select-icon"></span><span class="z-spinner">' .
+                                    '</span></a></div></td></tr>', $content);
+            $this->assertContains('<tr><th><label>Attachments</label></th>', $content);
+            $this->assertContains('<div class="fileupload-buttonbar clearfix">', $content);
+            $this->assertContains('<div class="addfileinput-button"><span>Y</span>', $content);
+            $this->assertContains('<strong class="add-label">Add Files</strong>', $content);
+            $this->assertContains('<input id="Campaign_files" multiple="multiple" type="file" name="Campaign_files"', $content);
+            $this->assertContains('<div class="fileupload-content">', $content);
+            $this->assertContains('<table class="files">', $content);
+            $this->assertContains('<div class="right-column">', $content);
+            $this->assertContains('<div class="email-template-combined-content', $content);
+            $this->assertContains('<div class="email-template-content"><div class="tabs-nav">', $content);
+            $this->assertContains('<a href="#tab1">Text Content</a>', $content);
+            $this->assertContains('<a class="active-tab" href="#tab2">Html Content</a>', $content);
+            $this->assertContains('class="simple-link" href="#">MergeTag Guide</a></div>', $content);
+            $this->assertContains('<div id="tab1" class=" tab email-template-textContent">', $content);
+            $this->assertContains('<th><label for="Campaign_textContent">Text Content</label></th>', $content);
+            $this->assertContains('<td colspan="1"><textarea id="Campaign_textContent" ' .
+                                    'name="Campaign[textContent]" rows="6" cols="50">' .
+                                    '</textarea></td></div>', $content);
+            $this->assertContains('<div id="tab2" class="active-tab tab email-template-htmlContent">' .
+                                    '<label for="Campaign_htmlContent">Html Content</label>', $content);                                    
+            $this->assertContains('<textarea id="Campaign_htmlContent" name="Campaign[htmlContent]"', $content);
+            $this->assertContains('<div class="float-bar"><div class="view-toolbar-container ' .
+                                    'clearfix dock"><div class="form-toolbar">', $content);                                    
+            $this->assertContains('/campaigns/default"><span class="z-label">Cancel</span></a>', $content);
+            $this->assertContains('Save and Schedule', $content);
+            $this->assertContains('<div id="modalContainer-edit-form">', $content);
 
             $this->setPostArray(array('Campaign' => array(
                 'name' => '',
@@ -376,40 +376,40 @@
                 'htmlContent' => '',
             )));
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/create');
-            $this->assertTrue(strpos($content, '<div class="errorSummary"><p>Please fix the following' .
-                                                ' input errors:</p>') !== false);
-            $this->assertTrue(strpos($content, '<li>Name cannot be blank.</li>') !== false);
+            $this->assertContains('<div class="errorSummary"><p>Please fix the following' .
+                                    ' input errors:</p>', $content);                                    
+            $this->assertContains('<li>Name cannot be blank.</li>', $content);
             $this->assertEquals(1, substr_count($content, '<li>Name cannot be blank.</li>'));
-            $this->assertTrue(strpos($content, '<li>Marketing List cannot be blank.</li>') !== false);
-            $this->assertTrue(strpos($content, '<li>Supports HTML cannot be blank.</li>') !== false);
-            $this->assertTrue(strpos($content, '<li>Send On cannot be blank.</li>') !== false);
-            $this->assertTrue(strpos($content, '<li>From Name cannot be blank.</li>') !== false);
-            $this->assertTrue(strpos($content, '<li>From Address cannot be blank.</li>') !== false);
-            $this->assertTrue(strpos($content, '<li>Subject cannot be blank.</li>') !== false);
-            $this->assertTrue(strpos($content, '<li>Please provide at least one of the contents field.</li>') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label class="error required" for="Campaign_name">Name ' .
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_name" name="Campaign[name]" ' .
-                                                'type="text" maxlength="64" value="" class="error"') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label class="error required" for="Campaign_marketingList_id">' .
-                                                'Marketing List <span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label class="error required" for="Campaign_fromName">From Name' .
-                                                ' <span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_fromName" name="Campaign[fromName]"' .
-                                                ' type="text" maxlength="64" value="" class="error"') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label class="error required" for="Campaign_fromAddress">From' .
-                                                ' Address <span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_fromAddress" name="Campaign' .
-                                                '[fromAddress]" type="text" maxlength="64" ' .
-                                                'value="" class="error"') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label class="error required" for="Campaign_sendOnDateTime">' .
-                                                'Send On <span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label class="error required" for="Campaign_subject">Subject ' .
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_subject" name="Campaign[subject]" '.
-                                                'type="text" maxlength="255" value="" class="error"') !== false);
-            $this->assertTrue(strpos($content, '<input id="Campaign_supportsRichText" name="Campaign[supportsRichText]"' .
-                                                ' value="1" type="checkbox" class="error"') !== false);
+            $this->assertContains('<li>Marketing List cannot be blank.</li>', $content);
+            $this->assertContains('<li>Supports HTML cannot be blank.</li>', $content);
+            $this->assertContains('<li>Send On cannot be blank.</li>', $content);
+            $this->assertContains('<li>From Name cannot be blank.</li>', $content);
+            $this->assertContains('<li>From Address cannot be blank.</li>', $content);
+            $this->assertContains('<li>Subject cannot be blank.</li>', $content);
+            $this->assertContains('<li>Please provide at least one of the contents field.</li>', $content);
+            $this->assertContains('<tr><th><label class="error required" for="Campaign_name">Name ' .
+                                    '<span class="required">*</span></label></th>', $content);                                    
+            $this->assertContains('<td colspan="1"><input id="Campaign_name" name="Campaign[name]" ' .
+                                    'type="text" maxlength="64" value="" class="error"', $content);                                    
+            $this->assertContains('<tr><th><label class="error required" for="Campaign_marketingList_id">' .
+                                    'Marketing List <span class="required">*</span></label></th>', $content);                                    
+            $this->assertContains('<tr><th><label class="error required" for="Campaign_fromName">From Name' .
+                                    ' <span class="required">*</span></label></th>', $content);                                    
+            $this->assertContains('<td colspan="1"><input id="Campaign_fromName" name="Campaign[fromName]"' .
+                                    ' type="text" maxlength="64" value="" class="error"', $content);                                    
+            $this->assertContains('<tr><th><label class="error required" for="Campaign_fromAddress">From' .
+                                    ' Address <span class="required">*</span></label></th>', $content);                                    
+            $this->assertContains('<td colspan="1"><input id="Campaign_fromAddress" name="Campaign' .
+                                    '[fromAddress]" type="text" maxlength="64" ' .
+                                    'value="" class="error"', $content);                                    
+            $this->assertContains('<tr><th><label class="error required" for="Campaign_sendOnDateTime">' .
+                                    'Send On <span class="required">*</span></label></th>', $content);                                    
+            $this->assertContains('<tr><th><label class="error required" for="Campaign_subject">Subject ' .
+                                    '<span class="required">*</span></label></th>', $content);                                    
+            $this->assertContains('<td colspan="1"><input id="Campaign_subject" name="Campaign[subject]" '.
+                                    'type="text" maxlength="255" value="" class="error"', $content);                                    
+            $this->assertContains('<input id="Campaign_supportsRichText" name="Campaign[supportsRichText]"' .
+                                    ' value="1" type="checkbox" class="error"', $content);                                    
 
             $marketingListId                = self::getModelIdByModelNameAndName('MarketingList', 'MarketingListName');
             $this->setPostArray(array('Campaign' => array(
@@ -453,97 +453,97 @@
             $campaignId = self::getModelIdByModelNameAndName ('Campaign', 'New Campaign using Create');
             $this->setGetArray(array('id' => $campaignId));
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/details');
-            $this->assertTrue(strpos($content, '<title>ZurmoCRM - Campaigns</title>') !== false);
-            $this->assertTrue(strpos($content, '<div id="MarketingStickyDetailsAndRelationsBreadCrumbView" ' .
-                                                'class="StickyDetailsAndRelationsBreadCrumbView ' .
-                                                'BreadCrumbView">') !== false);
-            $this->assertTrue(strpos($content, '<div class="breadcrumbs">') !== false);
-            $this->assertTrue(strpos($content, '/marketing/default/index">Marketing</a>') !== false);
-            $this->assertTrue(strpos($content, '/campaigns/default/list">Campaigns</a>') !== false);
-            $this->assertTrue(strpos($content, '<span>New Campaign using Create</span></div></div>') !== false);
-            $this->assertTrue(strpos($content, '<div id="CampaignDetailsAndRelationsView" class="single-column ' .
-                                                'DetailsAndRelationsView ConfigurableMetadataView' .
-                                                ' MetadataView">') !== false);
-            $this->assertTrue(strpos($content, '<div class="GridView">') !== false);
-            $this->assertTrue(strpos($content, '<div id="CampaignDetailsView" class="SecuredDetailsView DetailsView ' .
-                                                'ModelView ConfigurableMetadataView MetadataView">') !== false);
-            $this->assertTrue(strpos($content, '<h1><span class="truncated-title"><span class="ellipsis-content">New '.
-                                                'Campaign using Create - Campaign</span></span></h1>') !== false);
-            $this->assertTrue(strpos($content, '<div class="view-toolbar-container clearfix"><nav class="pillbox clearfix">' .
-                                                '<div id="ListViewDetailsActionMenu" class="default-button">') !== false);
-            $this->assertTrue(strpos($content, '<div id="CampaignDetailsOverlayView" class="overlay-view SecuredDetailsView '.
-                                                'DetailsView ModelView ConfigurableMetadataView '.
-                                                'MetadataView">') !== false);
-            $this->assertTrue(strpos($content, '<div class="campaign-description"><strong>Send On: 6/13/13 ' .
-                                                '10:54 AM</strong>') !== false);
-            $this->assertTrue(strpos($content, '<strong>Subject: New Campaign using Create Subject</strong></div>') !== false);
-            $this->assertTrue(strpos($content, '<p class="after-form-details-content">') !== false);
-            $this->assertTrue(strpos($content, 'EditLinkActionElement') !== false);
-            $this->assertTrue(strpos($content, 'CampaignDeleteLinkActionElement') !== false);
-            $this->assertTrue(strpos($content, '<div class="ModelRelationsSecuredPortletFrameView SecuredPortlet' .
-                                                'FrameView PortletFrameView MetadataView">') !== false);
-            $this->assertTrue(strpos($content, '<div class="juiportlet-columns"> ') !== false);
-            $this->assertTrue(strpos($content, '<ul class="juiportlet-columns-CampaignDetailsAndRelationsViewLeft' .
-                                                'BottomView juiportlet-widget-column1 juiportlet-column juiportlet-column-no-split">') !== false);
-            $this->assertTrue(strpos($content, '<li class="juiportlet-widget CampaignOverallMetricsView type-campaigns" id="Campaign' .
-                                                'DetailsAndRelationsViewLeftBottomView') !== false);
-            $this->assertTrue(strpos($content, '<div class="juiportlet-widget-head">') !== false);
-            $this->assertTrue(strpos($content, '<h3>Campaign Dashboard</h3><div class="portlet-actions-container"><ul class="options-menu '.
-                                                'edit-portlet-menu nav">') !== false);
-            $this->assertTrue(strpos($content, '<li class="parent last"><a href="javascript:void(0);">' .
-                                                '<span></span></a>') !== false);
-            $this->assertTrue(strpos($content, '<li class="last"><a class="edit" id="CampaignDetailsAndRelations' .
-                                                'ViewLeftBottomView') !== false);
-            $this->assertTrue(strpos($content, '" href="#"><span>Configure Portlet</span></a></li>') !== false);
-            $this->assertTrue(strpos($content, '<div class="juiportlet-widget-content"  >') !== false);
-            $this->assertTrue(strpos($content, '<div id="CampaignOverallMetricsView" class="MarketingMetricsView ' .
-                                                'ConfigurableMetadataView MetadataView">') !== false);
-            $this->assertTrue(strpos($content, '<div class="left-column full-width metrics-details ' .
-                                                'campaign-metrics-container">') !== false);
-            $this->assertTrue(strpos($content, '<h3>What is going on with this campaign?</h3>') !== false);
-            $this->assertTrue(strpos($content, '<form id="marketing-metrics-group-by-configuration-form-CampaignDetails' .
-                                                'AndRelationsViewLeftBottomView') !== false);
-            $this->assertTrue(strpos($content, 'action="/app/test/index.php/somewhereForTheTest" ' .
-                                                'method="post">') !== false);
-            $this->assertTrue(strpos($content, '<div id="marketing-metrics-group-by-configuration-form-CampaignDetails' .
-                                                'AndRelationsViewLeftBottomView') !== false);
-            $this->assertTrue(strpos($content, '<th><label for="ytMarketingOverallMetricsForm_groupBy">Group By' .
-                                                '</label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input type="hidden" value="" name="marketingMetrics' .
-                                                'GroupByNotUsedName" id="marketingMetricsGroupByNotUsedName"') !== false);
-            $this->assertTrue(strpos($content, '<div class="pills"><a data-value="Day" class="marketing-metrics-group-' .
-                                                'by-configuration-form-CampaignDetailsAnd' .
-                                                'RelationsViewLeftBottomView') !== false);
-            $this->assertTrue(strpos($content, '<a data-value="Week" class="marketing-metrics-group-by-configuration-'.
-                                                'form-CampaignDetailsAndRelationsViewLeftBottomView') !== false);
-            $this->assertTrue(strpos($content, 'marketingMetricsGroupByLink active" href="#">Week</a>') !== false);
-            $this->assertTrue(strpos($content, '<a data-value="Month" class="marketing-metrics-group-by-configuration' .
-                                                '-form-CampaignDetailsAndRelationsViewLeftBottomView') !== false);
-            $this->assertTrue(strpos($content, 'marketingMetricsGroupByLink" href="#">Month</a></div>') !== false);
-            $this->assertTrue(strpos($content, '<div class="graph-container clearfix">') !== false);
-            $this->assertTrue(strpos($content, '<div class="half marketing-graph">') !== false);
-            $this->assertTrue(strpos($content, '<h3>Overall Campaign Performance</h3>') !== false);
-            $this->assertTrue(strpos($content, "<div id='chartContainerCampaignDetailsAndRelationsView" .
-                                                "LeftBottomView") !== false);
-            $this->assertTrue(strpos($content, "OverallListPerformance' style='width: 100%; " .
-                                                "height: 400px;'></div>") !== false);
-            $this->assertTrue(strpos($content, '<h3>Emails in this Campaign</h3>') !== false);
-            $this->assertTrue(strpos($content, "<div id='chartContainerCampaignDetailsAndRelationsView" .
-                                                "LeftBottomView") !== false);
-            $this->assertTrue(strpos($content, "EmailsInThisList' style='width: 100%; " .
-                                                "height: 400px;'></div>") !== false);
-            $this->assertTrue(strpos($content, '<li class="juiportlet-widget CampaignItemsRelatedListView type-campaigns" ' .
-                                                'id="CampaignDetailsAndRelationsViewLeftBottomView') !== false);
-            $this->assertTrue(strpos($content, '<div class="juiportlet-widget-head">') !== false);
-            $this->assertTrue(strpos($content, '<h3>Email Recipients</h3>') !== false);
-            $this->assertTrue(strpos($content, '<div class="juiportlet-widget-content" ') !== false);
-            $this->assertTrue(strpos($content, '<div class="CampaignItemsRelatedListView RelatedListView ListView ' .
-                                                'ModelView ConfigurableMetadataView MetadataView">') !== false);
-            $this->assertTrue(strpos($content, '<div class="campaign-items-container">') !== false);
-            $this->assertTrue(strpos($content, '<div class="cgrid-view type-campaigns" id="list-viewCampaignDetailsAndRelations' .
-                                                'ViewLeftBottomView') !== false);
-            $this->assertTrue(strpos($content, 'Email recipients will appear here once the campaign begins ' .
-                                                'sending out') !== false);
+            $this->assertContains('<title>ZurmoCRM - Campaigns</title>', $content);
+            $this->assertContains('<div id="MarketingStickyDetailsAndRelationsBreadCrumbView" ' .
+                                    'class="StickyDetailsAndRelationsBreadCrumbView ' .
+                                    'BreadCrumbView">', $content);
+            $this->assertContains('<div class="breadcrumbs">', $content);
+            $this->assertContains('/marketing/default/index">Marketing</a>', $content);
+            $this->assertContains('/campaigns/default/list">Campaigns</a>', $content);
+            $this->assertContains('<span>New Campaign using Create</span></div></div>', $content);
+            $this->assertContains('<div id="CampaignDetailsAndRelationsView" class="single-column ' .
+                                    'DetailsAndRelationsView ConfigurableMetadataView' .
+                                    ' MetadataView">', $content);
+            $this->assertContains('<div class="GridView">', $content);
+            $this->assertContains('<div id="CampaignDetailsView" class="SecuredDetailsView DetailsView ' .
+                                    'ModelView ConfigurableMetadataView MetadataView">', $content);
+            $this->assertContains('<h1><span class="truncated-title"><span class="ellipsis-content">New '.
+                                    'Campaign using Create - Campaign</span></span></h1>', $content);
+            $this->assertContains('<div class="view-toolbar-container clearfix"><nav class="pillbox clearfix">' .
+                                    '<div id="ListViewDetailsActionMenu" class="default-button">', $content);
+            $this->assertContains('<div id="CampaignDetailsOverlayView" class="overlay-view SecuredDetailsView '.
+                                    'DetailsView ModelView ConfigurableMetadataView '.
+                                    'MetadataView">', $content);
+            $this->assertContains('<div class="campaign-description"><strong>Send On: 6/13/13 ' .
+                                    '10:54 AM</strong>', $content);
+            $this->assertContains('<strong>Subject: New Campaign using Create Subject</strong></div>', $content);
+            $this->assertContains('<p class="after-form-details-content">', $content);
+            $this->assertContains('EditLinkActionElement', $content);
+            $this->assertContains('CampaignDeleteLinkActionElement', $content);
+            $this->assertContains('<div class="ModelRelationsSecuredPortletFrameView SecuredPortlet' .
+                                    'FrameView PortletFrameView MetadataView">', $content);
+            $this->assertContains('<div class="juiportlet-columns"> ', $content);
+            $this->assertContains('<ul class="juiportlet-columns-CampaignDetailsAndRelationsViewLeft' .
+                                    'BottomView juiportlet-widget-column1 juiportlet-column juiportlet-column-no-split">', $content);
+            $this->assertContains('<li class="juiportlet-widget CampaignOverallMetricsView type-campaigns" id="Campaign' .
+                                    'DetailsAndRelationsViewLeftBottomView', $content);
+            $this->assertContains('<div class="juiportlet-widget-head">', $content);
+            $this->assertContains('<h3>Campaign Dashboard</h3><div class="portlet-actions-container"><ul class="options-menu '.
+                                    'edit-portlet-menu nav">', $content);
+            $this->assertContains('<li class="parent last"><a href="javascript:void(0);">' .
+                                    '<span></span></a>', $content);
+            $this->assertContains('<li class="last"><a class="edit" id="CampaignDetailsAndRelations' .
+                                    'ViewLeftBottomView', $content);
+            $this->assertContains('" href="#"><span>Configure Portlet</span></a></li>', $content);
+            $this->assertContains('<div class="juiportlet-widget-content"  >', $content);
+            $this->assertContains('<div id="CampaignOverallMetricsView" class="MarketingMetricsView ' .
+                                    'ConfigurableMetadataView MetadataView">', $content);
+            $this->assertContains('<div class="left-column full-width metrics-details ' .
+                                    'campaign-metrics-container">', $content);
+            $this->assertContains('<h3>What is going on with this campaign?</h3>', $content);
+            $this->assertContains('<form id="marketing-metrics-group-by-configuration-form-CampaignDetails' .
+                                    'AndRelationsViewLeftBottomView', $content);
+            $this->assertContains('action="/app/test/index.php/somewhereForTheTest" ' .
+                                    'method="post">', $content);
+            $this->assertContains('<div id="marketing-metrics-group-by-configuration-form-CampaignDetails' .
+                                    'AndRelationsViewLeftBottomView', $content);
+            $this->assertContains('<th><label for="ytMarketingOverallMetricsForm_groupBy">Group By' .
+                                    '</label></th>', $content);
+            $this->assertContains('<td colspan="1"><input type="hidden" value="" name="marketingMetrics' .
+                                    'GroupByNotUsedName" id="marketingMetricsGroupByNotUsedName"', $content);
+            $this->assertContains('<div class="pills"><a data-value="Day" class="marketing-metrics-group-' .
+                                    'by-configuration-form-CampaignDetailsAnd' .
+                                    'RelationsViewLeftBottomView', $content);
+            $this->assertContains('<a data-value="Week" class="marketing-metrics-group-by-configuration-'.
+                                    'form-CampaignDetailsAndRelationsViewLeftBottomView', $content);
+            $this->assertContains('marketingMetricsGroupByLink active" href="#">Week</a>', $content);
+            $this->assertContains('<a data-value="Month" class="marketing-metrics-group-by-configuration' .
+                                    '-form-CampaignDetailsAndRelationsViewLeftBottomView', $content);
+            $this->assertContains('marketingMetricsGroupByLink" href="#">Month</a></div>', $content);
+            $this->assertContains('<div class="graph-container clearfix">', $content);
+            $this->assertContains('<div class="half marketing-graph">', $content);
+            $this->assertContains('<h3>Overall Campaign Performance</h3>', $content);
+            $this->assertContains("<div id='chartContainerCampaignDetailsAndRelationsView" .
+                                    "LeftBottomView", $content);
+            $this->assertContains("OverallListPerformance' style='width: 100%; " .
+                                    "height: 400px;'></div>", $content);
+            $this->assertContains('<h3>Emails in this Campaign</h3>', $content);
+            $this->assertContains("<div id='chartContainerCampaignDetailsAndRelationsView" .
+                                    "LeftBottomView", $content);
+            $this->assertContains("EmailsInThisList' style='width: 100%; " .
+                                    "height: 400px;'></div>", $content);
+            $this->assertContains('<li class="juiportlet-widget CampaignItemsRelatedListView type-campaigns" ' .
+                                    'id="CampaignDetailsAndRelationsViewLeftBottomView', $content);
+            $this->assertContains('<div class="juiportlet-widget-head">', $content);
+            $this->assertContains('<h3>Email Recipients</h3>', $content);
+            $this->assertContains('<div class="juiportlet-widget-content" ', $content);
+            $this->assertContains('<div class="CampaignItemsRelatedListView RelatedListView ListView ' .
+                                    'ModelView ConfigurableMetadataView MetadataView">', $content);
+            $this->assertContains('<div class="campaign-items-container">', $content);
+            $this->assertContains('<div class="cgrid-view type-campaigns" id="list-viewCampaignDetailsAndRelations' .
+                                    'ViewLeftBottomView', $content);
+            $this->assertContains('Email recipients will appear here once the campaign begins ' .
+                                    'sending out', $content);
         }
 
         /**
@@ -557,97 +557,97 @@
             $campaignId = self::getModelIdByModelNameAndName ('Campaign', 'New Campaign using Create');
             $this->setGetArray(array('id' => $campaignId));
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/edit');
-            $this->assertTrue(strpos($content, '<title>ZurmoCRM - Campaigns</title>') !== false);
-            $this->assertTrue(strpos($content, '<div id="MarketingBreadCrumbView" class="BreadCrumbView">' .
-                                                '<div class="breadcrumbs">') !== false);
-            $this->assertTrue(strpos($content, '/marketing/default/index">Marketing</a>') !== false);
-            $this->assertTrue(strpos($content, '/campaigns/default/list">Campaigns</a>') !== false);
-            $this->assertTrue(strpos($content, '<span>New Campaign using Create</span></div></div>') !== false);
-            $this->assertTrue(strpos($content, '<div id="CampaignEditView" class="SecuredEditView EditView DetailsView' .
-                                                ' ModelView ConfigurableMetadataView MetadataView">') !== false);
-            $this->assertTrue(strpos($content, '<h1><span class="truncated-title"><span class="ellipsis-content">New ' .
-                                                'Campaign using Create</span></span></h1>') !== false);
-            $this->assertTrue(strpos($content, '<div class="wide form">') !== false);
-            $this->assertTrue(strpos($content, '<div class="attributesContainer">') !== false);
-            $this->assertTrue(strpos($content, '<div class="left-column"><div class="panel">') !== false);
-            $this->assertTrue(strpos($content, '<th><label for="Campaign_name" class="required">Name <span class=' .
-                                                '"required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_name" name="Campaign[name]" ' .
-                                                'type="text" maxlength="64" value="New Campaign using Create"') !== false);
-            $this->assertTrue(strpos($content, '<th><label for="Campaign_marketingList_id" class="required">Marketing ' .
-                                                'List <span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input name="Campaign[marketingList][id]" ' .
-                                                'id="Campaign_marketingList_id" value="' . $marketingListId .
-                                                '" type="hidden"') !== false);
-            $this->assertTrue(strpos($content, '<a id="Campaign_marketingList_SelectLink" href="#"><span ' .
-                                                'class="model-select-icon"></span>') !== false);
-            $this->assertTrue(strpos($content, '<th><label for="Campaign_fromName" class="required">From Name ' .
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_fromName" name="Campaign[fromName]" ' .
-                                                'type="text" maxlength="64" value="Zurmo Sales"') !== false);
-            $this->assertTrue(strpos($content, '<th><label for="Campaign_fromAddress" class="required">From Address ' .
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_fromAddress" ' .
-                                                'name="Campaign[fromAddress]" type="text" maxlength="64" ' .
-                                                'value="sales@zurmo.com"') !== false);
-            $this->assertTrue(strpos($content, '<th><label for="Campaign_sendOnDateTime" class="required">Send On ' .
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><div class="has-date-select"><input ' .
-                                                'id="Campaign_sendOnDateTime" name="Campaign[sendOnDateTime]" ' .
-                                                'style="position:relative;z-index:10000;" type="text" ' .
-                                                'value="6/13/2013 10:54 AM"') !== false);
-            $this->assertTrue(strpos($content, '<th><label for="Campaign_subject" class="required">Subject ' .
-                                                '<span class="required">*</span></label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="Campaign_subject" name="Campaign[subject]" ' .
-                                                'type="text" maxlength="255" value="New Campaign ' .
-                                                'using Create Subject"') !== false);
-            $this->assertTrue(strpos($content, '<tr><th>Enable Tracking<span id="enable-tracking-tooltip" ' .
-                                                'class="tooltip" title="Check to track when recipients open ' .
-                                                'an email or click any links.">?</span></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="ytCampaign_enableTracking" type="hidden" ' .
-                                                'value="0" name="Campaign[enableTracking]"') !== false);
-            $this->assertTrue(strpos($content, '<label class="hasCheckBox c_on"><input id="Campaign_enableTracking" ' .
-                                                'name="Campaign[enableTracking]" value="1" checked="checked" ' .
-                                                'type="checkbox"') !== false);
-            $this->assertTrue(strpos($content, '<th>Support HTML<span id="support-rich-text-tooltip" class="tooltip" '.
-                                                'title="When checked, email will be sent in both text and HTML format. ' .
-                                                ' Uncheck to only send text emails">?</span></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><input id="ytCampaign_supportsRichText" type="hidden" ' .
-                                                'value="0" name="Campaign[supportsRichText]"') !== false);
-            $this->assertTrue(strpos($content, '<label class="hasCheckBox"><input id="Campaign_supportsRichText" ' .
-                                                'name="Campaign[supportsRichText]" value="1" type="checkbox"') !== false);
-            $this->assertTrue(strpos($content, '<tr><th><label for="Campaign_contactEmailTemplateNames_name">Select a template</label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><div class="has-model-select"><input name=""' .
-                                                ' id="Campaign_contactEmailTemplateNames_id"' .
-                                                ' value="" type="hidden" />') !== false);
-            $this->assertTrue(strpos($content, '<input onblur="clearIdFromAutoCompleteField($(this).val(), &#039;' .
-                                                'Campaign_contactEmailTemplateNames_id&#039;);" id="Campaign_contact' .
-                                                'EmailTemplateNames_name" type="text" value="" ' .
-                                                'name="" />') !== false);
-            $this->assertTrue(strpos($content, '<a id="Campaign_contactEmailTemplateNames_SelectLink" href="#">' .
-                                                '<span class="model-select-icon"></span><span class="z-spinner">' .
-                                                '</span></a></div></td></tr>') !== false);
-            $this->assertTrue(strpos($content, '<th><label>Attachments</label></th>') !== false);
-            $this->assertTrue(strpos($content, '<div class="fileupload-buttonbar clearfix">') !== false);
-            $this->assertTrue(strpos($content, '<div class="addfileinput-button"><span>Y</span>') !== false);
-            $this->assertTrue(strpos($content, '<strong class="add-label">Add Files</strong>') !== false);
-            $this->assertTrue(strpos($content, '<input id="Campaign_files" multiple="multiple" type="file" name="Campaign_files"') !== false);
-            $this->assertTrue(strpos($content, '<div class="fileupload-content"><table class="files">') !== false);
-            $this->assertTrue(strpos($content, '<div class="right-column">') !== false);
-            $this->assertTrue(strpos($content, '<div class="email-template-combined-content') !== false);
-            $this->assertTrue(strpos($content, '<div class="email-template-content"><div class="tabs-nav">') !== false);
-            $this->assertTrue(strpos($content, '<a href="#tab1">Text Content</a>') !== false);
-            $this->assertTrue(strpos($content, '<a class="active-tab" href="#tab2">Html Content</a>') !== false);
-            $this->assertTrue(strpos($content, '<div id="tab1" class=" tab email-template-' .
-                                                'textContent"><th>') !== false);
-            $this->assertTrue(strpos($content, '<label for="Campaign_textContent">Text Content</label></th>') !== false);
-            $this->assertTrue(strpos($content, '<td colspan="1"><textarea id="Campaign_textContent" ' .
-                                                'name="Campaign[textContent]" rows="6" cols="50">Text' .
-                                                '</textarea></td></div>') !== false);
-            $this->assertTrue(strpos($content, '<div id="tab2" class="active-tab tab email-template-htmlContent">' .
-                                                '<label for="Campaign_htmlContent">Html Content</label>') !== false);
-            $this->assertTrue(strpos($content, '<textarea id="Campaign_htmlContent" name="Campaign[htmlContent]"') !== false);
-
+            $this->assertContains('<title>ZurmoCRM - Campaigns</title>', $content);
+            $this->assertContains('<div id="MarketingBreadCrumbView" class="BreadCrumbView">' .
+                                    '<div class="breadcrumbs">', $content);
+            $this->assertContains('/marketing/default/index">Marketing</a>', $content);
+            $this->assertContains('/campaigns/default/list">Campaigns</a>', $content);
+            $this->assertContains('<span>New Campaign using Create</span></div></div>', $content);
+            $this->assertContains('<div id="CampaignEditView" class="SecuredEditView EditView DetailsView' .
+                                    ' ModelView ConfigurableMetadataView MetadataView">', $content);
+            $this->assertContains('<h1><span class="truncated-title"><span class="ellipsis-content">New ' .
+                                    'Campaign using Create</span></span></h1>', $content);
+            $this->assertContains('<div class="wide form">', $content);
+            $this->assertContains('<div class="attributesContainer">', $content);
+            $this->assertContains('<div class="left-column"><div class="panel">', $content);
+            $this->assertContains('<th><label for="Campaign_name" class="required">Name <span class=' .
+                                    '"required">*</span></label></th>', $content);
+            $this->assertContains('<td colspan="1"><input id="Campaign_name" name="Campaign[name]" ' .
+                                    'type="text" maxlength="64" value="New Campaign using Create"', $content);
+            $this->assertContains('<th><label for="Campaign_marketingList_id" class="required">Marketing ' .
+                                    'List <span class="required">*</span></label></th>', $content);
+            $this->assertContains('<td colspan="1"><input name="Campaign[marketingList][id]" ' .
+                                    'id="Campaign_marketingList_id" value="' . $marketingListId .
+                                    '" type="hidden"', $content);
+            $this->assertContains('<a id="Campaign_marketingList_SelectLink" href="#"><span ' .
+                                    'class="model-select-icon"></span>', $content);
+            $this->assertContains('<th><label for="Campaign_fromName" class="required">From Name ' .
+                                    '<span class="required">*</span></label></th>', $content);
+            $this->assertContains('<td colspan="1"><input id="Campaign_fromName" name="Campaign[fromName]" ' .
+                                    'type="text" maxlength="64" value="Zurmo Sales"', $content);
+            $this->assertContains('<th><label for="Campaign_fromAddress" class="required">From Address ' .
+                                    '<span class="required">*</span></label></th>', $content);
+            $this->assertContains('<td colspan="1"><input id="Campaign_fromAddress" ' .
+                                    'name="Campaign[fromAddress]" type="text" maxlength="64" ' .
+                                    'value="sales@zurmo.com"', $content);
+            $this->assertContains('<th><label for="Campaign_sendOnDateTime" class="required">Send On ' .
+                                    '<span class="required">*</span></label></th>', $content);
+            $this->assertContains('<td colspan="1"><div class="has-date-select"><input ' .
+                                    'id="Campaign_sendOnDateTime" name="Campaign[sendOnDateTime]" ' .
+                                    'style="position:relative;z-index:10000;" type="text" ' .
+                                    'value="6/13/2013 10:54 AM"', $content);
+            $this->assertContains('<th><label for="Campaign_subject" class="required">Subject ' .
+                                    '<span class="required">*</span></label></th>', $content);
+            $this->assertContains('<td colspan="1"><input id="Campaign_subject" name="Campaign[subject]" ' .
+                                    'type="text" maxlength="255" value="New Campaign ' .
+                                    'using Create Subject"', $content);
+            $this->assertContains('<tr><th>Enable Tracking<span id="enable-tracking-tooltip" ' .
+                                    'class="tooltip" title="Check to track when recipients open ' .
+                                    'an email or click any links.">?</span></th>', $content);
+            $this->assertContains('<td colspan="1"><input id="ytCampaign_enableTracking" type="hidden" ' .
+                                    'value="0" name="Campaign[enableTracking]"', $content);
+            $this->assertContains('<label class="hasCheckBox c_on"><input id="Campaign_enableTracking" ' .
+                                    'name="Campaign[enableTracking]" value="1" checked="checked" ' .
+                                    'type="checkbox"', $content);
+            $this->assertContains('<th>Support HTML<span id="support-rich-text-tooltip" class="tooltip" '.
+                                    'title="When checked, email will be sent in both text and HTML format. ' .
+                                    ' Uncheck to only send text emails">?</span></th>', $content);
+            $this->assertContains('<td colspan="1"><input id="ytCampaign_supportsRichText" type="hidden" ' .
+                                    'value="0" name="Campaign[supportsRichText]"', $content);
+            $this->assertContains('<label class="hasCheckBox"><input id="Campaign_supportsRichText" ' .
+                                    'name="Campaign[supportsRichText]" value="1" type="checkbox"', $content);
+            $this->assertContains('<tr><th><label for="Campaign_contactEmailTemplateNames_name">Select a template</label></th>', $content);
+            $this->assertContains('<td colspan="1"><div class="has-model-select"><input name=""' .
+                                    ' id="Campaign_contactEmailTemplateNames_id"' .
+                                    ' value="" type="hidden" />', $content);
+            $this->assertContains('<input onblur="clearIdFromAutoCompleteField($(this).val(), &#039;' .
+                                    'Campaign_contactEmailTemplateNames_id&#039;);" id="Campaign_contact' .
+                                    'EmailTemplateNames_name" type="text" value="" ' .
+                                    'name="" />', $content);
+            $this->assertContains('<a id="Campaign_contactEmailTemplateNames_SelectLink" href="#">' .
+                                    '<span class="model-select-icon"></span><span class="z-spinner">' .
+                                    '</span></a></div></td></tr>', $content);
+            $this->assertContains('<th><label>Attachments</label></th>', $content);
+            $this->assertContains('<div class="fileupload-buttonbar clearfix">', $content);
+            $this->assertContains('<div class="addfileinput-button"><span>Y</span>', $content);
+            $this->assertContains('<strong class="add-label">Add Files</strong>', $content);
+            $this->assertContains('<input id="Campaign_files" multiple="multiple" type="file" name="Campaign_files"', $content);
+            $this->assertContains('<div class="fileupload-content"><table class="files">', $content);
+            $this->assertContains('<div class="right-column">', $content);
+            $this->assertContains('<div class="email-template-combined-content', $content);
+            $this->assertContains('<div class="email-template-content"><div class="tabs-nav">', $content);
+            $this->assertContains('<a href="#tab1">Text Content</a>', $content);
+            $this->assertContains('<a class="active-tab" href="#tab2">Html Content</a>', $content);
+            $this->assertContains('<div id="tab1" class=" tab email-template-' .
+                                    'textContent"><th>', $content);
+            $this->assertContains('<label for="Campaign_textContent">Text Content</label></th>', $content);
+            $this->assertContains('<td colspan="1"><textarea id="Campaign_textContent" ' .
+                                    'name="Campaign[textContent]" rows="6" cols="50">Text' .
+                                    '</textarea></td></div>', $content);
+            $this->assertContains('<div id="tab2" class="active-tab tab email-template-htmlContent">' .
+                                    '<label for="Campaign_htmlContent">Html Content</label>', $content);
+            $this->assertContains('<textarea id="Campaign_htmlContent" name="Campaign[htmlContent]"', $content);    
+            
             $marketingList      = MarketingListTestHelper::createMarketingListByName('MarketingListName2',
                                                                                         'MarketingList Description',
                                                                                         'second',

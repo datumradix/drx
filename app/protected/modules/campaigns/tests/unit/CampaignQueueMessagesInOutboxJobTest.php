@@ -563,8 +563,8 @@
                 else
                 {
                     $this->assertNotEmpty($campaignItem->emailMessage);
-                    $this->assertTrue(strpos($campaignItem->emailMessage->content->textContent, $contact->firstName) !== false);
-                    $this->assertTrue(strpos($campaignItem->emailMessage->content->htmlContent, $contact->lastName) !== false);
+                    $this->assertContains($contact->firstName, $campaignItem->emailMessage->content->textContent);
+                    $this->assertContains($contact->lastName, $campaignItem->emailMessage->content->htmlContent);
                 }
             }
             $this->assertEquals(2, $skippedCount);
