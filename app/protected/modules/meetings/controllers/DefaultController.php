@@ -132,27 +132,5 @@
             }
             $this->actionCreateByModel($meeting, $redirectUrl);
         }
-
-        public function actionIndex()
-        {
-            for($month = 10; $month<= 12; $month++)
-            {
-                for($i = 1; $i<= 30; $i++)
-                {
-                    for($j = 0; $j<=23; $j++)
-                    {
-                        $meeting = new Meeting();
-                        $meeting->name = 'test';
-                        $day = $i < 10 ? '0' . $i : $i;
-                        $meeting->startDateTime = "2014-{$month}-{$day} {$j}:00:00";
-                        $endTime = $j + 1;
-                        $meeting->endDateTime = "2014-{$month}-{$day} {$endTime}:00:00";
-                        $meeting->owner = Yii::app()->user->userModel;
-                        $meeting->save();
-                    }
-                }
-            }
-
-        }
     }
 ?>
