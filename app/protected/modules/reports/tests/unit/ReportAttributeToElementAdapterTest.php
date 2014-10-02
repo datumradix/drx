@@ -111,9 +111,9 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
 
             //Test a currencyValue attribute
             $model->attributeIndexOrDerivedType = 'currencyValue';
@@ -121,11 +121,11 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
-            $this->assertFalse(strpos($content, '"some[prefix][currencyIdForValue]"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
+            $this->assertContains('"some[prefix][currencyIdForValue]"', $content);
 
             //Test a date attribute which does not have an operator but has a valueType
             $model->attributeIndexOrDerivedType = 'date';
@@ -133,11 +133,11 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertTrue(strpos($content,  '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content, '"some[prefix][valueType]"')          === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
+            $this->assertNotContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][valueType]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
 
             //Test a dateTime
             $model->attributeIndexOrDerivedType = 'dateTime';
@@ -145,11 +145,11 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertTrue(strpos($content,  '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content, '"some[prefix][valueType]"')          === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
+            $this->assertNotContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][valueType]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
 
             //Test a dropDown attribute with the operator set to multiple
             $model->attributeIndexOrDerivedType = 'dropDown';
@@ -158,20 +158,20 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value][]"')            === false);
-            $this->assertTrue(strpos($content,  '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
-            $this->assertFalse(strpos($content, 'multiple="multiple"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value][]"', $content);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
+            $this->assertContains('multiple="multiple"', $content);
             //Test a dropDown attribute with the operator set to null;
             $model->operator                    = null;
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content,  '"some[prefix][value]"')              === false);
-            $this->assertTrue (strpos($content,  '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content,  '"some[prefix][availableAtRunTime]"') === false);
-            $this->assertTrue (strpos($content,  'multiple="multiple"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
+            $this->assertNotContains('multiple="multiple"', $content);
 
             //Test a float attribute
             $model->attributeIndexOrDerivedType = 'float';
@@ -179,10 +179,10 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
 
             //Test a integer attribute
             $model->attributeIndexOrDerivedType = 'integer';
@@ -190,10 +190,10 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
 
             //Test a multiDropDown attribute with the operator set to multiple
             $model->attributeIndexOrDerivedType = 'multiDropDown';
@@ -202,20 +202,20 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value][]"')            === false);
-            $this->assertTrue(strpos($content,  '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
-            $this->assertFalse(strpos($content, 'multiple="multiple"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value][]"', $content);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
+            $this->assertContains('multiple="multiple"', $content);
             //Test a multiDropDown attribute with the operator set to null;
             $model->operator                    = null;
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content,  '"some[prefix][value]"')              === false);
-            $this->assertTrue (strpos($content,  '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content,  '"some[prefix][availableAtRunTime]"') === false);
-            $this->assertTrue (strpos($content,  'multiple="multiple"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
+            $this->assertNotContains('multiple="multiple"', $content);
 
             //Test a phone attribute
             $model->attributeIndexOrDerivedType = 'phone';
@@ -223,9 +223,9 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
 
             //Test a radioDropDown attribute with the operator set to multiple
             $model->attributeIndexOrDerivedType = 'radioDropDown';
@@ -234,20 +234,20 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value][]"')            === false);
-            $this->assertTrue(strpos($content,  '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
-            $this->assertFalse(strpos($content, 'multiple="multiple"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value][]"', $content);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
+            $this->assertContains('multiple="multiple"', $content);
             //Test a radioDropDown attribute with the operator set to null;
             $model->operator                    = null;
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content,  '"some[prefix][value]"')              === false);
-            $this->assertTrue (strpos($content,  '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content,  '"some[prefix][availableAtRunTime]"') === false);
-            $this->assertTrue (strpos($content,  'multiple="multiple"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
+            $this->assertNotContains('multiple="multiple"', $content);
 
             //Test a string attribute
             $model->attributeIndexOrDerivedType = 'string';
@@ -255,9 +255,9 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
             $this->assertContains('<option value="isEmpty">Is Empty</option>', $content);
             $this->assertContains('<option value="isNotEmpty">Is Not Empty</option>', $content);
 
@@ -267,9 +267,9 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
             $this->assertContains('<option value="isEmpty">Is Empty</option>', $content);
             $this->assertContains('<option value="isNotEmpty">Is Not Empty</option>', $content);
 
@@ -279,9 +279,9 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
 
             //Test a dynamically derived User
             $model->attributeIndexOrDerivedType = 'owner__User';
@@ -289,10 +289,10 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value]"')              === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
-            $this->assertFalse(strpos($content, '"some[prefix][stringifiedModelForValue]"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
+            $this->assertContains('"some[prefix][stringifiedModelForValue]"', $content);
 
             //Test a tagCloud attribute with the operator set to multiple
             $model->attributeIndexOrDerivedType = 'tagCloud';
@@ -301,20 +301,20 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content, '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content, '"some[prefix][value][]"')            === false);
-            $this->assertTrue(strpos($content,  '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content, '"some[prefix][availableAtRunTime]"') === false);
-            $this->assertFalse(strpos($content, 'multiple="multiple"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value][]"', $content);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
+            $this->assertContains('multiple="multiple"', $content);
             //Test a tagCloud attribute with the operator set to null;
             $model->operator                    = null;
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][operator]"')           === false);
-            $this->assertFalse(strpos($content,  '"some[prefix][value]"')              === false);
-            $this->assertTrue (strpos($content,  '"some[prefix][secondValue]"')        === false);
-            $this->assertFalse(strpos($content,  '"some[prefix][availableAtRunTime]"') === false);
-            $this->assertTrue (strpos($content,  'multiple="multiple"') === false);
+            $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][value]"', $content);
+            $this->assertNotContains('"some[prefix][secondValue]"', $content);
+            $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
+            $this->assertNotContains('multiple="multiple"', $content);
         }
 
         /**
@@ -353,7 +353,7 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][order]"')  === false);
+            $this->assertContains('"some[prefix][order]"', $content);
         }
 
         public function testGetDisplayAttributeContentForRowsAndColumns()
@@ -372,7 +372,7 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][label]"')  === false);
+            $this->assertContains('"some[prefix][label]"', $content);
         }
 
         /**
@@ -411,7 +411,7 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertTrue(strpos($content,  '"some[prefix][axis]"') === false);
+            $this->assertNotContains('"some[prefix][axis]"', $content);
         }
 
         public function testGetOrderByContentForSummation()
@@ -430,7 +430,7 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][order]"')  === false);
+            $this->assertContains('"some[prefix][order]"', $content);
         }
 
         public function testGetDisplayAttributeContentForSummation()
@@ -449,7 +449,7 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][label]"')  === false);
+            $this->assertContains('"some[prefix][label]"', $content);
         }
 
         public function testGetDrillDownDisplayAttributeContentForSummation()
@@ -468,7 +468,7 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][label]"')  === false);
+            $this->assertContains('"some[prefix][label]"', $content);
         }
 
         public function testGetGroupByContentForMatrix()
@@ -487,7 +487,7 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][axis]"') === false);
+            $this->assertContains('"some[prefix][axis]"', $content);
         }
 
         /**
@@ -526,7 +526,7 @@
                                                                                       $form, $treeType);
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
-            $this->assertFalse(strpos($content,  '"some[prefix][label]"')  === false);
+            $this->assertContains('"some[prefix][label]"', $content);
         }
 
        /**

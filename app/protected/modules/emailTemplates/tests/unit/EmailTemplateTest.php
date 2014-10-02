@@ -428,8 +428,8 @@
             $this->assertTrue(array_key_exists('htmlContent', $errorMessages));
             $this->assertEquals(1, count($errorMessages['textContent']));
             $this->assertEquals(1, count($errorMessages['htmlContent']));
-            $this->assertTrue(strpos($errorMessages['textContent'][0], 'TEXT__INVALID^MERGE^TAG') !== false);
-            $this->assertTrue(strpos($errorMessages['htmlContent'][0], 'HTMLINVALIDMERGETAG') !== false);
+            $this->assertContains('TEXT__INVALID^MERGE^TAG', $errorMessages['textContent'][0]);
+            $this->assertContains('HTMLINVALIDMERGETAG', $errorMessages['htmlContent'][0]);
             // test with no merge tags
             $emailTemplate->textContent    = 'Text Content without tags';
             $emailTemplate->htmlContent    = 'Html Content without tags';

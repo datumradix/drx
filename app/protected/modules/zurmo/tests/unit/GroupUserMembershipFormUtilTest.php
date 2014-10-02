@@ -164,13 +164,13 @@
             $bill->save();
             $group = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
             $content = GroupUserMembershipFormUtil::validateMembershipChange($form, $group);
-            $this->assertTrue(strpos($content, 'There must be at') === 0);
+            $this->assertContains('There must be at', $content);
 
             $group->users->add($bill);
             $this->assertTrue($group->save());
             $form = GroupUserMembershipFormUtil::setFormFromCastedPost($form, $fakePostData);
             $content = GroupUserMembershipFormUtil::validateMembershipChange($form, $group);
-            $this->assertTrue(strpos($content, 'You cannot remove') === false);
+            $this->assertNotContains('You cannot remove', $content);
 
             //Now add jimmy as a super user.
             $group->users->add($jim);
@@ -183,7 +183,7 @@
             //Now try to remove bill, it should pass ok validation because it won't really let you when it sets to form
             unset($form->userMembershipData[$bill->id]);
             $content = GroupUserMembershipFormUtil::validateMembershipChange($form, $group);
-            $this->assertTrue(strpos($content, 'You cannot remove') === false);
+            $this->assertNotContains('You cannot remove', $content);
         }
     }
 ?>

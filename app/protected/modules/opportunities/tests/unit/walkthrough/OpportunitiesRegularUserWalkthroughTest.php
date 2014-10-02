@@ -138,7 +138,7 @@
             //Test nobody with elevated rights.
             Yii::app()->user->userModel = User::getByUsername('nobody');
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/list');
-            $this->assertFalse(strpos($content, 'Albert Einstein') === false);
+            $this->assertContains('Albert Einstein', $content);
             $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/create');
 
             //Test nobody can view an existing opportunity he owns.
@@ -146,7 +146,7 @@
 
             //At this point the listview for leads should show the search/list and not the helper screen.
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/list');
-            $this->assertTrue(strpos($content, 'Albert Einstein') === false);
+            $this->assertNotContains('Albert Einstein', $content);
 
             $this->setGetArray(array('id' => $opportunity->id));
             $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/edit');
@@ -462,7 +462,7 @@
             unset($opportunity);
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('aUser');
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default');
-            $this->assertFalse(strpos($content, 'Fatal error: Method Account::__toString() must not throw an exception') > 0);
+            $this->assertNotContains('Fatal error: Method Account::__toString() must not throw an exception', $content);
         }
 
          /**
@@ -488,7 +488,7 @@
             $this->setGetArray(array('selectedIds' => $selectedIds, 'selectAll' => ''));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>3</strong>&#160;Opportunities selected for removal') === false);
+            $this->assertContains('<strong>3</strong>&#160;Opportunities selected for removal', $content);
             $pageSize = Yii::app()->pagination->getForCurrentUserByType('massDeleteProgressPageSize');
             $this->assertEquals(5, $pageSize);
             //calculating leads after adding 6 new records

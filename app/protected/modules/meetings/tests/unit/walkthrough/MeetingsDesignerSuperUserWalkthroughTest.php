@@ -163,7 +163,7 @@
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout,
                                       'LayoutPanelsTypeForm' => array('type' => FormLayout::PANELS_DISPLAY_TYPE_ALL)));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
         }
 
         /**
@@ -542,7 +542,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected value.
-            $this->assertTrue(strpos($content, "reading") > 0);
+            $this->assertContains("reading", $content);
         }
 
         /**
@@ -568,7 +568,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected value.
-            $this->assertTrue(strpos($content, "surfing fr") > 0);
+            $this->assertContains("surfing fr", $content);
         }
     }
 ?>

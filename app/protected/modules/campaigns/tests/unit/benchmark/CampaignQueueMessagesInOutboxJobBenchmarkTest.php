@@ -258,7 +258,7 @@ MTG;
                 $this->assertNotEquals($campaign->textContent, $emailMessage->content->textContent);
                 $this->assertNotEquals($campaign->htmlContent, $emailMessage->content->htmlContent);
                 $this->assertEquals(2, substr_count($emailMessage->content->textContent, '/marketingLists/external/'));
-                $this->assertTrue(strpos($emailMessage->content->htmlContent, '/marketingLists/external/') !== false);
+                $this->assertContains('/marketingLists/external/', $emailMessage->content->htmlContent);
                 $this->assertEquals(2, substr_count($emailMessage->content->htmlContent, '/marketingLists/external/'));
                 $this->assertEquals('support@zurmo.com', $emailMessage->sender->fromAddress);
                 $this->assertEquals('Support Team',      $emailMessage->sender->fromName);

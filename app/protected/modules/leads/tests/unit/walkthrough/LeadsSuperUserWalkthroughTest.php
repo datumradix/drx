@@ -77,12 +77,12 @@
             $this->runControllerWithNoExceptionsAndGetContent('leads/default/create');
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertContains('anyMixedAttributes', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
             $this->resetGetArray();
 
             //Default Controller actions requiring some sort of parameter via POST or GET
@@ -114,7 +114,7 @@
             $this->setGetArray (array('id'      => $superLeadId));
             $this->setPostArray(array('Contact' => array('lastName' => '')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Load Model Detail Views
             $this->setGetArray(array('id' => $superLeadId));
@@ -126,7 +126,7 @@
             $this->setGetArray(array('selectedIds' => '4,5,6,7,8,9', 'selectAll' => '')); // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>6</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>6</strong>&#160;records selected for updating', $content);
 
             //MassEdit view for all result selected ids
             $leads = Contact::getAll();
@@ -134,7 +134,7 @@
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>12</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>12</strong>&#160;records selected for updating', $content);
             //save Model MassEdit for selected Ids
             //Test that the 4 leads do not have the office phone number we are populating them with.
             $lead1 = Contact::getById($superLeadId);
@@ -228,13 +228,13 @@
             //save Modal MassEdit using progress load for page 2, 3 and 4.
             $this->setGetArray(array('selectAll' => '1', 'Contact_page' => 2));
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":16') === false);
+            $this->assertContains('"value":16', $content);
             $this->setGetArray(array('selectAll' => '1', 'Contact_page' => 3));
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":25') === false);
+            $this->assertContains('"value":25', $content);
             $this->setGetArray(array('selectAll' => '1', 'Contact_page' => 4));
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":33') === false);
+            $this->assertContains('"value":33', $content);
             //Set page size back to old value.
             Yii::app()->pagination->setForCurrentUserByType('massEditProgressPageSize', $pageSize);
 
@@ -540,13 +540,13 @@
             $this->setGetArray(array('selectedIds' => '5,6,7,8,9', 'selectAll' => '', ));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>5</strong>&#160;Leads selected for removal') === false);
+            $this->assertContains('<strong>5</strong>&#160;Leads selected for removal', $content);
 
             //MassDelete view for all result selected ids
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>12</strong>&#160;Leads selected for removal') === false);
+            $this->assertContains('<strong>12</strong>&#160;Leads selected for removal', $content);
             //MassDelete for selected Record Count
             $leads = Contact::getAll();
             $this->assertEquals(16, count($leads));
@@ -632,9 +632,9 @@
             /* ContactNotLead, superLead5, superLead6 was converted to a contact.
             *  so this leads are not removed
             */
-            $this->assertFalse(strpos(serialize($leads), 'ContactNotLead') === false);
-            $this->assertFalse(strpos(serialize($leads), 'superLead5') === false);
-            $this->assertFalse(strpos(serialize($leads), 'superLead6') === false);
+            $this->assertContains('ContactNotLead', serialize($leads));
+            $this->assertContains('superLead5', serialize($leads));
+            $this->assertContains('superLead6', serialize($leads));
             $this->assertEquals(3, count($leads));
         }
 

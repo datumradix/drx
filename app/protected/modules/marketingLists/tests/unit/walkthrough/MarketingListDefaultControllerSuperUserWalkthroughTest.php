@@ -79,15 +79,15 @@
         public function testSuperUserListAction()
         {
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') !== false);
-            $this->assertTrue(strpos($content, 'MarketingListName') !== false);
-            $this->assertTrue(strpos($content, 'MarketingListName2') !== false);
+            $this->assertContains('anyMixedAttributes', $content);
+            $this->assertContains('MarketingListName', $content);
+            $this->assertContains('MarketingListName2', $content);
             $this->assertEquals(2, substr_count($content, 'MarketingListName'));
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
         }
 
         /**
@@ -103,7 +103,7 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/list');
-            $this->assertTrue(strpos($content, 'No results found') !== false);
+            $this->assertContains('No results found', $content);
 
             StickyReportUtil::clearDataByKey('MarketingListsSearchForm');
             $this->setGetArray(array(
@@ -113,9 +113,9 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/list');
-            $this->assertTrue(strpos($content, '2 result(s)') !== false);
+            $this->assertContains('2 result(s)', $content);
             $this->assertEquals(2, substr_count($content, 'MarketingListName'));
-            $this->assertTrue(strpos($content, 'Clark Kent') !== false);
+            $this->assertContains('Clark Kent', $content);
 
             StickyReportUtil::clearDataByKey('MarketingListsSearchForm');
             $this->setGetArray(array(
@@ -126,11 +126,11 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/list');
-            $this->assertTrue(strpos($content, '2 result(s)') !== false);
+            $this->assertContains('2 result(s)', $content);
             $this->assertEquals(2, substr_count($content, 'MarketingListName'));
-            $this->assertTrue(strpos($content, 'Clark Kent') !== false);
+            $this->assertContains('Clark Kent', $content);
             $this->assertEquals(3, substr_count($content, 'Clark Kent'));
-            $this->assertTrue(strpos($content, '@zurmo.com') !== false);
+            $this->assertContains('@zurmo.com', $content);
             $this->assertEquals(4, substr_count($content, '@zurmo.com'));
             $this->assertEquals(2, substr_count($content, 'first@zurmo.com'));
             $this->assertEquals(2, substr_count($content, 'second@zurmo.com'));
@@ -151,11 +151,11 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/list');
-            $this->assertTrue(strpos($content, '1 result(s)') !== false);
+            $this->assertContains('1 result(s)', $content);
             $this->assertEquals(1, substr_count($content, 'MarketingListName2'));
-            $this->assertTrue(strpos($content, 'Clark Kent') !== false);
+            $this->assertContains('Clark Kent', $content);
             $this->assertEquals(2, substr_count($content, 'Clark Kent'));
-            $this->assertTrue(strpos($content, '@zurmo.com') !== false);
+            $this->assertContains('@zurmo.com', $content);
             $this->assertEquals(2, substr_count($content, '@zurmo.com'));
             $this->assertEquals(2, substr_count($content, 'second@zurmo.com'));
 
@@ -175,11 +175,11 @@
                 ) ,
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/list');
-            $this->assertTrue(strpos($content, '1 result(s)') !== false);
+            $this->assertContains('1 result(s)', $content);
             $this->assertEquals(1, substr_count($content, 'MarketingListName'));
-            $this->assertTrue(strpos($content, 'Clark Kent') !== false);
+            $this->assertContains('Clark Kent', $content);
             $this->assertEquals(2, substr_count($content, 'Clark Kent'));
-            $this->assertTrue(strpos($content, '@zurmo.com') !== false);
+            $this->assertContains('@zurmo.com', $content);
             $this->assertEquals(2, substr_count($content, '@zurmo.com'));
             $this->assertEquals(2, substr_count($content, 'first@zurmo.com'));
         }
@@ -190,14 +190,14 @@
         public function testSuperUserCreateAction()
         {
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/create');
-            $this->assertTrue(strpos($content, 'Create Marketing List') !== false);
-            $this->assertTrue(strpos($content, '<label for="MarketingList_name" class="required">Name ' .
-                                                                '<span class="required">*</span></label>') !== false);
-            $this->assertTrue(strpos($content, '<label for="MarketingList_description">Description</label>') !== false);
-            $this->assertTrue(strpos($content, '<label for="MarketingList_fromName">From Name</label>') !== false);
-            $this->assertTrue(strpos($content, '<label for="MarketingList_fromAddress">From Address</label>') !== false);
-            $this->assertTrue(strpos($content, '<span class="z-label">Cancel</span>') !== false);
-            $this->assertTrue(strpos($content, '<span class="z-label">Save</span>') !== false);
+            $this->assertContains('Create Marketing List', $content);
+            $this->assertContains('<label for="MarketingList_name" class="required">Name ' .
+                                  '<span class="required">*</span></label>', $content);
+            $this->assertContains('<label for="MarketingList_description">Description</label>', $content);
+            $this->assertContains('<label for="MarketingList_fromName">From Name</label>', $content);
+            $this->assertContains('<label for="MarketingList_fromAddress">From Address</label>', $content);
+            $this->assertContains('<span class="z-label">Cancel</span>', $content);
+            $this->assertContains('<span class="z-label">Save</span>', $content);
 
             $this->resetGetArray();
             $this->setPostArray(array('MarketingList' => array(
@@ -207,11 +207,11 @@
                 'fromAddress'   => '',
                 )));
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/create');
-            $this->assertTrue(strpos($content, 'class="errorMessage">Name cannot be blank.</div>') !== false);
-            $this->assertTrue(strpos($content, '<input id="MarketingList_name" name="MarketingList[name]" type="text"' .
-                                                                ' maxlength="64" value="" class="error"') !== false);
-            $this->assertTrue(strpos($content, '<label class="error required" for="MarketingList_name">Name ' .
-                                                                 '<span class="required">*</span></label>') !== false);
+            $this->assertContains('class="errorMessage">Name cannot be blank.</div>', $content);
+            $this->assertContains('<input id="MarketingList_name" name="MarketingList[name]" type="text"' .
+                                  ' maxlength="64" value="" class="error"', $content);                                                    
+            $this->assertContains('<label class="error required" for="MarketingList_name">Name ' .
+                                  '<span class="required">*</span></label>', $content);                                                     
             $this->resetGetArray();
             $this->setPostArray(array('MarketingList' => array(
                 'name'            => 'New MarketingListName using Create',
@@ -238,24 +238,24 @@
             $marketingListId = self::getModelIdByModelNameAndName ('MarketingList', 'MarketingListName2');
             $this->setGetArray(array('id' => $marketingListId));
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/details');
-            $this->assertTrue(strpos($content, 'MarketingListName2') !== false);
+            $this->assertContains('MarketingListName2', $content);
             $this->assertEquals(3, substr_count($content, 'MarketingListName2'));
-            $this->assertTrue(strpos($content, '<span class="button-label">Details</span>') !== false);
-            $this->assertTrue(strpos($content, '<strong class="marketing-list-subscribers-stats">' .
-                                                                                    '0 Subscribed</strong>') !== false);
-            $this->assertTrue(strpos($content, '<strong class="marketing-list-unsubscribers-stats">' .
-                                                                                    '0 Unsubscribed</strong>') !== false);
-            $this->assertTrue(strpos($content, 'MarketingList Description2') !== false);
-            $this->assertTrue(strpos($content, '<span class="button-label">Options</span>') !== false);
-            $this->assertTrue(strpos($content, '>Edit</a></li>') !== false);
-            $this->assertTrue(strpos($content, '>Delete</a></li>') !== false);
-            $this->assertTrue(strpos($content, '<h3>Contacts/Leads</h3>') !== false);
-            $this->assertTrue(strpos($content, '<span class="button-label">Add Contact/Lead</span>') !== false);
-            $this->assertTrue(strpos($content, 'From Contacts/Leads</label>') !== false);
-            $this->assertTrue(strpos($content, 'From Report</label>') !== false);
-            $this->assertTrue(strpos($content, '<span class="button-label">Subscribe</span>') !== false);
-            $this->assertTrue(strpos($content, '<span class="button-label">Unsubscribe</span>') !== false);
-            $this->assertTrue(strpos($content, '<span class="button-label">Delete</span>') !== false);
+            $this->assertContains('<span class="button-label">Details</span>', $content);
+            $this->assertContains('<strong class="marketing-list-subscribers-stats">' .
+                                  '0 Subscribed</strong>', $content);                                                                        
+            $this->assertContains('<strong class="marketing-list-unsubscribers-stats">' .
+                                  '0 Unsubscribed</strong>', $content);                                                                        
+            $this->assertContains('MarketingList Description2', $content);
+            $this->assertContains('<span class="button-label">Options</span>', $content);
+            $this->assertContains('>Edit</a></li>', $content);
+            $this->assertContains('>Delete</a></li>', $content);
+            $this->assertContains('<h3>Contacts/Leads</h3>', $content);
+            $this->assertContains('<span class="button-label">Add Contact/Lead</span>', $content);
+            $this->assertContains('From Contacts/Leads</label>', $content);
+            $this->assertContains('From Report</label>', $content);
+            $this->assertContains('<span class="button-label">Subscribe</span>', $content);
+            $this->assertContains('<span class="button-label">Unsubscribe</span>', $content);
+            $this->assertContains('<span class="button-label">Delete</span>', $content);
         }
 
         /**
@@ -266,12 +266,12 @@
             $marketingListId = self::getModelIdByModelNameAndName ('MarketingList', 'New MarketingListName using Create');
             $this->setGetArray(array('id' => $marketingListId));
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/edit');
-            $this->assertTrue(strpos($content, 'New MarketingListName using Create') !== false);
+            $this->assertContains('New MarketingListName using Create', $content);
             $this->assertEquals(2, substr_count($content, 'New MarketingListName using Create'));
-            $this->assertTrue(strpos($content, 'New MarketingList Description using Create') !== false);
-            $this->assertTrue(strpos($content, 'Zurmo Sales') !== false);
-            $this->assertTrue(strpos($content, 'sales@zurmo.com') !== false);
-            $this->assertTrue(strpos($content, 'Create Marketing List') === false);
+            $this->assertContains('New MarketingList Description using Create', $content);
+            $this->assertContains('Zurmo Sales', $content);
+            $this->assertContains('sales@zurmo.com', $content);
+            $this->assertNotContains('Create Marketing List', $content);
 
             $this->setPostArray(array('MarketingList' => array(
                 'name'            => 'New MarketingListName',
@@ -409,57 +409,57 @@
                )
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/modalList');
-            $this->assertTrue(strpos($content, '<div id="ModalView">') !== false);
-            $this->assertTrue(strpos($content, '<div id="MarketingListsModalSearchAndListView" ' .
-                                                'class="ModalSearchAndListView GridView">') !== false);
-            $this->assertTrue(strpos($content, '<div id="MarketingListsModalSearchView" class="SearchView ModelView' .
-                                                ' ConfigurableMetadataView MetadataView">') !== false);
-            $this->assertTrue(strpos($content, '<div class="wide form">') !== false);
-            $this->assertTrue(strpos($content, '<form id="search-formmodal" method="post">') !== false);
-            $this->assertTrue(strpos($content, '</div><div class="search-view-0"') !== false);
-            $this->assertTrue(strpos($content, '<table><tr><th></th><td colspan="3">') !== false);
-            $this->assertTrue(strpos($content, '<select class="ignore-style ignore-clearform" id="MarketingListsSearch' .
-                                                'Form_anyMixedAttributesScope" multiple="multiple" ' .
-                                                'style="display:none;" size="4" name="MarketingListsSearchForm' .
-                                                '[anyMixedAttributesScope][]">') !== false);
-            $this->assertTrue(strpos($content, '<option value="All" selected="selected">All</option>') !== false);
-            $this->assertTrue(strpos($content, '<option value="name">Name</option>') !== false);
-            $this->assertTrue(strpos($content, '<input class="input-hint anyMixedAttributes-input" ' .
-                                                'onfocus="$(this).select();" size="80" id="MarketingListsSearchForm' .
-                                                '_anyMixedAttributes" name="MarketingListsSearchForm' .
-                                                '[anyMixedAttributes]" type="text"') !== false);
-            $this->assertTrue(strpos($content, '</div><div class="search-form-tools">') !== false);
-            $this->assertTrue(strpos($content, '<a id="clear-search-linkmodal" style="display:none;" href="#">' .
-                                                'Clear</a>') !== false);
-            $this->assertTrue(strpos($content, '<input id="clearingSearch-search-formmodal" type="hidden" ' .
-                                                'name="clearingSearch"') !== false);
-            $this->assertTrue(strpos($content, '</div></form>') !== false);
-            $this->assertTrue(strpos($content, '<div id="modalContainer-search-formmodal"></div>') !== false);
-            $this->assertTrue(strpos($content, '<div id="MarketingListsModalListView" class="ModalListView ListView ' .
-                                                'ModelView ConfigurableMetadataView MetadataView">') !== false);
-            $this->assertTrue(strpos($content, '<div class="cgrid-view type-marketingLists" id="list-viewmodal">') !== false);
-            $this->assertTrue(strpos($content, '<div class="summary">1-2 of 2 result(s).</div>') !== false);
-            $this->assertTrue(strpos($content, '<table class="items">') !== false);
-            $this->assertTrue(strpos($content, '<th id="list-viewmodal_c0">') !== false);
-            $this->assertTrue(strpos($content, '<a class="sort-link" href="') !== false);
-            $this->assertTrue(strpos($content, 'marketingLists/default/modalList?modalTransferInformation%5BsourceId' . // Not Coding Standard
-                                                'FieldId%5D=Campaign_marketingList_id&amp;modalTransferInformation%5B' . // Not Coding Standard
-                                                'sourceNameFieldId%5D=Campaign_marketingList_name&amp;modalTransfer' .  // Not Coding Standard
-                                                'Information%5BmodalId%5D=modalContainer-edit-form&amp;MarketingList' . // Not Coding Standard
-                                                '_sort=name">Name</a></th></tr>') !== false);                           // Not Coding Standard
-            $this->assertTrue(strpos($content, '<tr class="odd">') !== false);
-            $this->assertTrue(strpos($content, 'MarketingListName</a></td></tr>') !== false);
-            $this->assertTrue(strpos($content, '<tr class="even">') !== false);
-            $this->assertTrue(strpos($content, 'MarketingListName2</a></td></tr>') !== false);
-            $this->assertTrue(strpos($content, '<div class="pager horizontal">') !== false);
-            $this->assertTrue(strpos($content, '<li class="refresh hidden">') !== false);
-            $this->assertTrue(strpos($content, 'marketingLists/default/modalList?modalTransferInformation%5Bsource'.    // Not Coding Standard
-                                                'IdFieldId%5D=Campaign_marketingList_id&amp;modalTransferInformation'.  // Not Coding Standard
-                                                '%5BsourceNameFieldId%5D=Campaign_marketingList_name&amp;modal' .       // Not Coding Standard
-                                                'TransferInformation%5BmodalId%5D=modalContainer-edit-form">' .         // Not Coding Standard
-                                                'refresh</a></li></ul>') !== false);
-            $this->assertTrue(strpos($content, '</div><div class="list-preloader">') !== false);
-            $this->assertTrue(strpos($content, '<span class="z-spinner"></span></div>') !== false);
+            $this->assertContains('<div id="ModalView">', $content);
+            $this->assertContains('<div id="MarketingListsModalSearchAndListView" ' .
+                                  'class="ModalSearchAndListView GridView">', $content);                                    
+            $this->assertContains('<div id="MarketingListsModalSearchView" class="SearchView ModelView' .
+                                  ' ConfigurableMetadataView MetadataView">', $content);
+            $this->assertContains('<div class="wide form">', $content);
+            $this->assertContains('<form id="search-formmodal" method="post">', $content);
+            $this->assertContains('</div><div class="search-view-0"', $content);
+            $this->assertContains('<table><tr><th></th><td colspan="3">', $content);
+            $this->assertContains('<select class="ignore-style ignore-clearform" id="MarketingListsSearch' .
+                                  'Form_anyMixedAttributesScope" multiple="multiple" ' .
+                                  'style="display:none;" size="4" name="MarketingListsSearchForm' .
+                                  '[anyMixedAttributesScope][]">', $content);
+            $this->assertContains('<option value="All" selected="selected">All</option>', $content);
+            $this->assertContains('<option value="name">Name</option>', $content);
+            $this->assertContains('<input class="input-hint anyMixedAttributes-input" ' .
+                                  'onfocus="$(this).select();" size="80" id="MarketingListsSearchForm' .
+                                  '_anyMixedAttributes" name="MarketingListsSearchForm' .
+                                  '[anyMixedAttributes]" type="text"', $content);                                    
+            $this->assertContains('</div><div class="search-form-tools">', $content);
+            $this->assertContains('<a id="clear-search-linkmodal" style="display:none;" href="#">' .
+                                  'Clear</a>', $content);
+            $this->assertContains('<input id="clearingSearch-search-formmodal" type="hidden" ' .
+                                  'name="clearingSearch"', $content);
+            $this->assertContains('</div></form>', $content);
+            $this->assertContains('<div id="modalContainer-search-formmodal"></div>', $content);
+            $this->assertContains('<div id="MarketingListsModalListView" class="ModalListView ListView ' .
+                                  'ModelView ConfigurableMetadataView MetadataView">', $content);                                    
+            $this->assertContains('<div class="cgrid-view type-marketingLists" id="list-viewmodal">', $content);
+            $this->assertContains('<div class="summary">1-2 of 2 result(s).</div>', $content);
+            $this->assertContains('<table class="items">', $content);
+            $this->assertContains('<th id="list-viewmodal_c0">', $content);
+            $this->assertContains('<a class="sort-link" href="', $content);
+            $this->assertContains('marketingLists/default/modalList?modalTransferInformation%5BsourceId' . // Not Coding Standard
+                                  'FieldId%5D=Campaign_marketingList_id&amp;modalTransferInformation%5B' . // Not Coding Standard
+                                  'sourceNameFieldId%5D=Campaign_marketingList_name&amp;modalTransfer' .  // Not Coding Standard
+                                  'Information%5BmodalId%5D=modalContainer-edit-form&amp;MarketingList' . // Not Coding Standard
+                                  '_sort=name">Name</a></th></tr>', $content); // Not Coding Standard
+            $this->assertContains('<tr class="odd">', $content);
+            $this->assertContains('MarketingListName</a></td></tr>', $content);
+            $this->assertContains('<tr class="even">', $content);
+            $this->assertContains('MarketingListName2</a></td></tr>', $content);
+            $this->assertContains('<div class="pager horizontal">', $content);
+            $this->assertContains('<li class="refresh hidden">', $content);
+            $this->assertContains('marketingLists/default/modalList?modalTransferInformation%5Bsource'.    // Not Coding Standard
+                                  'IdFieldId%5D=Campaign_marketingList_id&amp;modalTransferInformation'.  // Not Coding Standard
+                                  '%5BsourceNameFieldId%5D=Campaign_marketingList_name&amp;modal' .       // Not Coding Standard
+                                  'TransferInformation%5BmodalId%5D=modalContainer-edit-form">' .         // Not Coding Standard
+                                  'refresh</a></li></ul>', $content);
+            $this->assertContains('</div><div class="list-preloader">', $content);
+            $this->assertContains('<span class="z-spinner"></span></div>', $content);
         }
     }
 ?>

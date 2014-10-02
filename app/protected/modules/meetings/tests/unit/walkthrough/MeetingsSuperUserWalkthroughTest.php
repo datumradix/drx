@@ -192,8 +192,8 @@
             $this->setGetArray(array('redirectUrl' => 'someRedirect',
                                      'startDate'   => '2014-03-03'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('meetings/default/createMeeting');
-            $this->assertTrue(strpos($content, '3/3/2014 12:00 AM') !== false);
-            $this->assertFalse(strpos($content, '3/2/2014 11:00 PM') !== false);
+            $this->assertContains('3/3/2014 12:00 AM', $content);
+            $this->assertNotContains('3/2/2014 11:00 PM', $content);
         }
     }
 ?>

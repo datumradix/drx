@@ -227,11 +227,11 @@
             $emailMessagePermissions    = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($emailMessage);
             $this->assertEquals($marketingListPermissions, $emailMessagePermissions);
             $this->assertEquals($campaign->subject, $emailMessage->subject);
-            $this->assertTrue(strpos($emailMessage->content->textContent, $campaign->textContent) !== false);
-            $this->assertTrue(strpos($emailMessage->content->textContent, '/marketingLists/external/') !== false);
+            $this->assertContains($campaign->textContent, $emailMessage->content->textContent);
+            $this->assertContains('/marketingLists/external/', $emailMessage->content->textContent);
             $this->assertEquals(2, substr_count($emailMessage->content->textContent, '/marketingLists/external/'));
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, $campaign->htmlContent) !== false);
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, '/marketingLists/external/') !== false);
+            $this->assertContains($campaign->htmlContent, $emailMessage->content->htmlContent);
+            $this->assertContains('/marketingLists/external/', $emailMessage->content->htmlContent);
             $this->assertEquals(2, substr_count($emailMessage->content->htmlContent, '/marketingLists/external/'));
             $this->assertEquals('support@zurmo.com', $emailMessage->sender->fromAddress);
             $this->assertEquals('Support Team',      $emailMessage->sender->fromName);
@@ -283,11 +283,11 @@
             $emailMessagePermissions    = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($emailMessage);
             $this->assertEquals($marketingListPermissions, $emailMessagePermissions);
             $this->assertEquals($campaign->subject, $emailMessage->subject);
-            $this->assertTrue(strpos($emailMessage->content->textContent, $campaign->textContent) !== false);
-            $this->assertTrue(strpos($emailMessage->content->textContent, '/marketingLists/external/') !== false);
+            $this->assertContains($campaign->textContent, $emailMessage->content->textContent);
+            $this->assertContains('/marketingLists/external/', $emailMessage->content->textContent);
             $this->assertEquals(2, substr_count($emailMessage->content->textContent, '/marketingLists/external/'));
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, $campaign->htmlContent) !== false);
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, '/marketingLists/external/') !== false);
+            $this->assertContains($campaign->htmlContent, $emailMessage->content->htmlContent);
+            $this->assertContains('/marketingLists/external/', $emailMessage->content->htmlContent);
             $this->assertEquals(2, substr_count($emailMessage->content->htmlContent, '/marketingLists/external/'));
             $this->assertEquals('support@zurmo.com', $emailMessage->sender->fromAddress);
             $this->assertEquals('Support Team',      $emailMessage->sender->fromName);
@@ -341,11 +341,11 @@
             $this->assertEquals($campaign->subject, $emailMessage->subject);
             $this->assertNotEquals($campaign->textContent, $emailMessage->content->textContent);
             $this->assertNotEquals($campaign->htmlContent, $emailMessage->content->htmlContent);
-            $this->assertTrue(strpos($emailMessage->content->textContent, 'Dr. contact 05 contact 05son') !== false);
-            $this->assertTrue(strpos($emailMessage->content->textContent, '/marketingLists/external/') !== false);
+            $this->assertContains('Dr. contact 05 contact 05son', $emailMessage->content->textContent);
+            $this->assertContains('/marketingLists/external/', $emailMessage->content->textContent);
             $this->assertEquals(2, substr_count($emailMessage->content->textContent, '/marketingLists/external/'));
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, '<b>contact 05son</b>, contact 05') !== false);
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, '/marketingLists/external/') !== false);
+            $this->assertContains('<b>contact 05son</b>, contact 05', $emailMessage->content->htmlContent);
+            $this->assertContains('/marketingLists/external/', $emailMessage->content->htmlContent);
             $this->assertEquals(2, substr_count($emailMessage->content->htmlContent, '/marketingLists/external/'));
             $this->assertEquals('support@zurmo.com', $emailMessage->sender->fromAddress);
             $this->assertEquals('Support Team',      $emailMessage->sender->fromName);
@@ -411,11 +411,11 @@
             $this->assertEquals($campaign->subject, $emailMessage->subject);
             $this->assertNotEquals($campaign->textContent, $emailMessage->content->textContent);
             $this->assertNotEquals($campaign->htmlContent, $emailMessage->content->htmlContent);
-            $this->assertTrue(strpos($emailMessage->content->textContent, 'Dr. contact 06 contact 06son') !== false);
-            $this->assertTrue(strpos($emailMessage->content->textContent, '/marketingLists/external/') !== false);
+            $this->assertContains('Dr. contact 06 contact 06son', $emailMessage->content->textContent);
+            $this->assertContains('/marketingLists/external/', $emailMessage->content->textContent);
             $this->assertEquals(2, substr_count($emailMessage->content->textContent, '/marketingLists/external/'));
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, '<b>contact 06son</b>, contact 06') !== false);
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, '/marketingLists/external/') !== false);
+            $this->assertContains('<b>contact 06son</b>, contact 06', $emailMessage->content->htmlContent);
+            $this->assertContains('/marketingLists/external/', $emailMessage->content->htmlContent);
             $this->assertEquals(2, substr_count($emailMessage->content->htmlContent, '/marketingLists/external/'));
             $this->assertEquals('support@zurmo.com', $emailMessage->sender->fromAddress);
             $this->assertEquals('Support Team',      $emailMessage->sender->fromName);
@@ -566,11 +566,11 @@
             $this->assertEquals($campaign->subject, $emailMessage->subject);
             $this->assertNotEquals($campaign->textContent, $emailMessage->content->textContent);
             $this->assertNotEquals($campaign->htmlContent, $emailMessage->content->htmlContent);
-            $this->assertTrue(strpos($emailMessage->content->textContent, 'Dr. contact 09 contact 09son') !== false);
-            $this->assertTrue(strpos($emailMessage->content->textContent, '/marketingLists/external/') !== false);
+            $this->assertContains('Dr. contact 09 contact 09son', $emailMessage->content->textContent);
+            $this->assertContains('/marketingLists/external/', $emailMessage->content->textContent);
             $this->assertEquals(2, substr_count($emailMessage->content->textContent, '/marketingLists/external/'));
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, '<b>contact 09son</b>, contact 09') !== false);
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, '/marketingLists/external/') !== false);
+            $this->assertContains('<b>contact 09son</b>, contact 09', $emailMessage->content->htmlContent);
+            $this->assertContains('/marketingLists/external/', $emailMessage->content->htmlContent);
             $this->assertEquals(2, substr_count($emailMessage->content->htmlContent, '/marketingLists/external/'));
             $this->assertEquals('support@zurmo.com', $emailMessage->sender->fromAddress);
             $this->assertEquals('Support Team',      $emailMessage->sender->fromName);
@@ -718,10 +718,8 @@
             $emailMessage               = $campaignItem->emailMessage;
             $this->assertNotNull   ($emailMessage->content->textContent);
             $this->assertNotNull($emailMessage->content->htmlContent);
-            $this->assertTrue(strpos($emailMessage->content->textContent,
-                                                            '/contacts/default/details?id=' . $contact->id) !== false);
-            $this->assertTrue(strpos($emailMessage->content->htmlContent,
-                                                            '/contacts/default/details?id=' . $contact->id) !== false);
+            $this->assertContains('/contacts/default/details?id=' . $contact->id, $emailMessage->content->textContent);
+            $this->assertContains('/contacts/default/details?id=' . $contact->id, $emailMessage->content->htmlContent);                                                
         }
 
         /**
@@ -789,13 +787,13 @@
             $htmlContent                = $campaignItem->emailMessage->content->htmlContent;
             $this->assertNotEquals($campaign->textContent, $textContent);
             $this->assertNotEquals($campaign->htmlContent, $htmlContent);
-            $this->assertTrue(strpos($textContent, 'localhost') !== false);
+            $this->assertContains('localhost', $textContent);
             $this->assertEquals(1, substr_count($textContent, '/marketingLists/external/unsubscribe?hash='));
-            $this->assertTrue(strpos($htmlContent, 'localhost') !== false);
+            $this->assertContains('localhost', $htmlContent);
             $this->assertEquals(1, substr_count($htmlContent, '/marketingLists/external/unsubscribe?hash='));
-            $this->assertTrue(strpos($htmlContent, '<img width="1" height="1" src="localhost') !== false);
-            $this->assertTrue(strpos($htmlContent, '/tracking/default/track?id=') !== false);
-            $this->assertTrue(strpos($htmlContent, '/marketingLists/external/manageSubscriptions') === false);
+            $this->assertContains('<img width="1" height="1" src="localhost', $htmlContent);
+            $this->assertContains('/tracking/default/track?id=', $htmlContent);
+            $this->assertNotContains('/marketingLists/external/manageSubscriptions', $htmlContent);
         }
 
         /**
@@ -830,13 +828,13 @@
             $htmlContent                = $campaignItem->emailMessage->content->htmlContent;
             $this->assertNotEquals($campaign->textContent, $textContent);
             $this->assertNotEquals($campaign->htmlContent, $htmlContent);
-            $this->assertTrue(strpos($textContent, 'localhost') !== false);
+            $this->assertContains('localhost', $textContent);
             $this->assertEquals(1, substr_count($textContent, '/marketingLists/external/manageSubscriptions?hash='));
-            $this->assertTrue(strpos($htmlContent, 'localhost') !== false);
+            $this->assertContains('localhost', $htmlContent);
             $this->assertEquals(1, substr_count($htmlContent, '/marketingLists/external/manageSubscriptions?hash='));
-            $this->assertTrue(strpos($htmlContent, '<img width="1" height="1" src="localhost') !== false);
-            $this->assertTrue(strpos($htmlContent, '/tracking/default/track?id=') !== false);
-            $this->assertTrue(strpos($htmlContent, '/marketingLists/external/unsubscribe') === false);
+            $this->assertContains('<img width="1" height="1" src="localhost', $htmlContent);
+            $this->assertContains('/tracking/default/track?id=', $htmlContent);
+            $this->assertNotContains('/marketingLists/external/unsubscribe', $htmlContent);
         }
 
         /**
@@ -873,18 +871,18 @@
             $htmlContent                = $campaignItem->emailMessage->content->htmlContent;
             $this->assertNotEquals($campaign->textContent, $textContent);
             $this->assertNotEquals($campaign->htmlContent, $htmlContent);
-            $this->assertTrue(strpos($textContent, 'localhost') !== false);
+            $this->assertContains('localhost', $textContent);
             $this->assertEquals(1, substr_count($textContent, '/marketingLists/external/unsubscribe?hash='));
-            $this->assertTrue(strpos($htmlContent, 'localhost') !== false);
+            $this->assertContains('localhost', $htmlContent);
             $this->assertEquals(1, substr_count($htmlContent, '/marketingLists/external/unsubscribe?hash='));
-            $this->assertTrue(strpos($htmlContent, '<img width="1" height="1" src="localhost') !== false);
-            $this->assertTrue(strpos($htmlContent, '/tracking/default/track?id=') !== false);
-            $this->assertTrue(strpos($textContent, ', localhost') !== false);
+            $this->assertContains('<img width="1" height="1" src="localhost', $htmlContent);
+            $this->assertContains('/tracking/default/track?id=', $htmlContent);
+            $this->assertContains(', localhost', $textContent);
             $this->assertEquals(1, substr_count($textContent, '/marketingLists/external/manageSubscriptions?hash='));
-            $this->assertTrue(strpos($htmlContent, ', localhost') !== false);
+            $this->assertContains(', localhost', $htmlContent);
             $this->assertEquals(1, substr_count($htmlContent, '/marketingLists/external/manageSubscriptions?hash='));
-            $this->assertTrue(strpos($htmlContent, '<img width="1" height="1" src="localhost') !== false);
-            $this->assertTrue(strpos($htmlContent, '/tracking/default/track?id=') !== false);
+            $this->assertContains('<img width="1" height="1" src="localhost', $htmlContent);
+            $this->assertContains('/tracking/default/track?id=', $htmlContent);
         }
 
         /**
@@ -919,19 +917,19 @@
             $htmlContent                = $campaignItem->emailMessage->content->htmlContent;
             $this->assertNotEquals($campaign->textContent, $textContent);
             $this->assertNotEquals($campaign->htmlContent, $htmlContent);
-            $this->assertTrue(strpos($textContent, 'Plain Text') !== false);
-            $this->assertTrue(strpos($textContent, '/marketingLists/external/unsubscribe?hash=') !== false);
+            $this->assertContains('Plain Text', $textContent);
+            $this->assertContains('/marketingLists/external/unsubscribe?hash=', $textContent);
             $this->assertEquals(1, substr_count($textContent, '/marketingLists/external/unsubscribe?hash='));
-            $this->assertTrue(strpos($textContent, '/marketingLists/external/manageSubscriptions?hash=') !== false);
+            $this->assertContains('/marketingLists/external/manageSubscriptions?hash=', $textContent);
             $this->assertEquals(1, substr_count($textContent, '/marketingLists/external/manageSubscriptions?hash='));
-            $this->assertTrue(strpos($htmlContent, 'HTML<br /><br /><a href="localhost/') !== false);
-            $this->assertTrue(strpos($htmlContent, '<img width="1" height="1" src="localhost') !== false);
-            $this->assertTrue(strpos($htmlContent, '/tracking/default/track?id=') !== false);
+            $this->assertContains('HTML<br /><br /><a href="localhost/', $htmlContent);
+            $this->assertContains('<img width="1" height="1" src="localhost', $htmlContent);
+            $this->assertContains('/tracking/default/track?id=', $htmlContent);
             $this->assertEquals(1, substr_count($htmlContent, '/tracking/default/track?id='));
-            $this->assertTrue(strpos($htmlContent, '/marketingLists/external/unsubscribe?hash=') !== false);
+            $this->assertContains('/marketingLists/external/unsubscribe?hash=', $htmlContent);
             $this->assertEquals(1, substr_count($htmlContent, '/marketingLists/external/unsubscribe?hash='));
             $this->assertEquals(2, substr_count($htmlContent, '<br /><a href="localhost/'));
-            $this->assertTrue(strpos($htmlContent, '/marketingLists/external/manageSubscriptions?hash=') !== false);
+            $this->assertContains('/marketingLists/external/manageSubscriptions?hash=', $htmlContent);
             $this->assertEquals(1, substr_count($htmlContent, '/marketingLists/external/manageSubscriptions?hash='));
         }
 
