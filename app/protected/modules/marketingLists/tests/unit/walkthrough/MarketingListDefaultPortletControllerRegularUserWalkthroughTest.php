@@ -96,16 +96,16 @@
         {
             $content    = $this->runControllerWithExitExceptionAndGetContent(
                                                                     'marketingLists/defaultPortlet/toggleUnsubscribed');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
             $content    = $this->runControllerWithExitExceptionAndGetContent(
                                                                         'marketingLists/defaultPortlet/countMembers');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
             $content    = $this->runControllerWithExitExceptionAndGetContent(
                                                                     'marketingLists/defaultPortlet/subscribeContacts');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
             $content    = $this->runControllerWithExitExceptionAndGetContent(
                                                                                 'marketingLists/defaultPortlet/delete');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
         }
 
         /**
@@ -119,13 +119,13 @@
             $this->setGetArray(array('id' => static::$superUserMemberId));
             $content    = $this->runControllerWithExitExceptionAndGetContent(
                                                                     'marketingLists/defaultPortlet/toggleUnsubscribed');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
             $content    = $this->runControllerWithExitExceptionAndGetContent('marketingLists/defaultPortlet/delete');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
             $this->setGetArray(array('marketingListId' => static::$superUserMarketingListId));
             $content    = $this->runControllerWithExitExceptionAndGetContent(
                                                                         'marketingLists/defaultPortlet/countMembers');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
             $type                       = 'contact';
             $account                    = AccountTestHelper::createAccountByNameForOwner('account2', $this->user);
             $contact7                   = ContactTestHelper::createContactWithAccountByNameForOwner('contact7',
@@ -138,7 +138,7 @@
             ));
             $content    = $this->runControllerWithExitExceptionAndGetContent(
                                                                     'marketingLists/defaultPortlet/subscribeContacts');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
             $type                       = 'report';
             $report                     = SavedReportTestHelper::makeSimpleContactRowsAndColumnsReport();
             $this->setGetArray(array(
@@ -148,7 +148,7 @@
             ));
             $content    = $this->runControllerWithExitExceptionAndGetContent(
                                                                     'marketingLists/defaultPortlet/subscribeContacts');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
         }
 
         public function testRegularUserActionsWithMarketingListRightAndRequiredPermissions()

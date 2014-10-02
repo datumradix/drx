@@ -68,12 +68,12 @@
             $this->runControllerWithNoExceptionsAndGetContent('products/default/create');
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('products/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertContains('anyMixedAttributes', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('products/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
             $this->resetGetArray();
 
             //Default Controller actions requiring some sort of parameter via POST or GET
@@ -103,7 +103,7 @@
             $this->setGetArray (array('id'      => $superProductId));
             $this->setPostArray(array('Product' => array('name' => '')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('products/default/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Load Model Detail Views
             $this->setGetArray(array('id' => $superProductId));
@@ -200,13 +200,13 @@
             $this->resetPostArray();
             $content                = $this->runControllerWithNoExceptionsAndGetContent('products/default/massDelete');
 
-            $this->assertFalse(strpos($content, '<strong>5</strong>&#160;Products selected for removal') === false);
+            $this->assertContains('<strong>5</strong>&#160;Products selected for removal', $content);
 
              //MassDelete view for all result selected ids
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('products/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>13</strong>&#160;Products selected for removal') === false);
+            $this->assertContains('<strong>13</strong>&#160;Products selected for removal', $content);
 
             //MassDelete for selected Record Count
             $products               = Product::getAll();
@@ -304,7 +304,7 @@
             $id = $product->id;
             $this->setGetArray(array('id' => $id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('products/default/copy');
-            $this->assertTrue(strpos($content, 'My Product 1') > 0);
+            $this->assertContains('My Product 1', $content);
             $products = Product::getAll();
             $this->assertEquals(1, count($products));
         }
@@ -346,8 +346,8 @@
                 'uniqueLayoutId' => 'AccountDetailsAndRelationsView_' . $portlet->id));
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/defaultPortlet/modalRefresh');
-            $this->assertTrue(strpos($content, 'My Product 1') > 0);
-            $this->assertFalse(strpos($content, 'My Product 2') > 0);
+            $this->assertContains('My Product 1', $content);
+            $this->assertNotContains('My Product 2', $content);
 
             $this->setGetArray(array(
                 'id' => $account->id,
@@ -358,8 +358,8 @@
                 'uniqueLayoutId' => 'AccountDetailsAndRelationsView_' . $portlet->id));
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/defaultPortlet/modalRefresh');
-            $this->assertTrue(strpos($content, 'My Product 1') > 0);
-            $this->assertTrue(strpos($content, 'My Product 2') > 0);
+            $this->assertContains('My Product 1', $content);
+            $this->assertContains('My Product 2', $content);
 
             $this->setGetArray(array(
                 'id' => $account->id,
@@ -370,8 +370,8 @@
                 'uniqueLayoutId' => 'AccountDetailsAndRelationsView_' . $portlet->id));
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/defaultPortlet/modalRefresh');
-            $this->assertFalse(strpos($content, 'My Product 1') > 0);
-            $this->assertTrue(strpos($content, 'My Product 2') > 0);
+            $this->assertNotContains('My Product 1', $content);
+            $this->assertContains('My Product 2', $content);
         }
     }
 ?>

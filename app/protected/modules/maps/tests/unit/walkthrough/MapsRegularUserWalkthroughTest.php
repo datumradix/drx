@@ -92,7 +92,7 @@
             //The map should always be available.  Not controlled by rights.
             $this->setGetArray(array('addressString' => 'anAddress String', 'latitude' => '45.00', 'longitude' => '45.00'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('maps/default/mapAndPoint');
-            $this->assertFalse(strpos($content, 'Access Failure') > 0);
+            $this->assertNotContains('Access Failure', $content);
         }
     }
 ?>
