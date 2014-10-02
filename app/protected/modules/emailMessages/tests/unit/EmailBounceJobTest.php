@@ -112,7 +112,7 @@
             $this->assertEquals(Yii::app()->emailHelper->outboundUsername, $messages[0]->fromEmail);
             $job    = new EmailBounceJob();
             $this->assertFalse($job->run());
-            $this->assertTrue(strpos($job->getErrorMessage(), 'Failed to process Message id:') !== false);
+            $this->assertContains('Failed to process Message id:', $job->getErrorMessage());
             $activities    = AutoresponderItemActivity::getAll();
             $this->assertEmpty($activities);
             $messages = $bounce->getMessages();
@@ -144,10 +144,10 @@
             $messages = $bounce->getMessages();
             $this->assertEquals(1, count($messages));
             $this->assertEquals("Mail delivery failed: returning message to sender", $messages[0]->subject);
-            $this->assertTrue(strpos($messages[0]->textBody, 'Test email body') !== false);
+            $this->assertContains($messages[0]->textBody, 'Test email body');
             $job    = new EmailBounceJob();
             $this->assertFalse($job->run());
-            $this->assertTrue(strpos($job->getErrorMessage(), 'Failed to process Message id:') !== false);
+            $this->assertContains('Failed to process Message id:', $job->getErrorMessage());
             $activities    = AutoresponderItemActivity::getAll();
             $this->assertEmpty($activities);
             $messages = $bounce->getMessages();
@@ -182,12 +182,12 @@
             $messages = $bounce->getMessages();
             $this->assertEquals(1, count($messages));
             $this->assertEquals("Mail delivery failed: returning message to sender", $messages[0]->subject);
-            $this->assertTrue(strpos($messages[0]->textBody, 'Test email body') !== false);
-            $this->assertTrue(strpos($messages[0]->textBody, 'headerOne: 1') !== false);
-            $this->assertTrue(strpos($messages[0]->textBody, 'headerTwo: 2') !== false);
+            $this->assertContains('Test email body', $messages[0]->textBody);
+            $this->assertContains('headerOne: 1', $messages[0]->textBody);
+            $this->assertContains('headerTwo: 2', $messages[0]->textBody);
             $job    = new EmailBounceJob();
             $this->assertFalse($job->run());
-            $this->assertTrue(strpos($job->getErrorMessage(), 'Failed to process Message id:') !== false);
+            $this->assertContains('Failed to process Message id:', $job->getErrorMessage());
             $activities    = AutoresponderItemActivity::getAll();
             $this->assertEmpty($activities);
             $messages = $bounce->getMessages();
@@ -240,10 +240,10 @@
             $messages = $bounce->getMessages();
             $this->assertEquals(1, count($messages));
             $this->assertEquals("Mail delivery failed: returning message to sender", $messages[0]->subject);
-            $this->assertTrue(strpos($messages[0]->textBody, 'Test email body') !== false);
-            $this->assertTrue(strpos($messages[0]->textBody, 'zurmoItemId: ' . $autoresponderItem->id) !== false);
-            $this->assertTrue(strpos($messages[0]->textBody, 'zurmoItemClass: ' . get_class($autoresponderItem)) !== false);
-            $this->assertTrue(strpos($messages[0]->textBody, 'zurmoPersonId: ' . $personId) !== false);
+            $this->assertContains('Test email body', $messages[0]->textBody);
+            $this->assertContains('zurmoItemId: ' . $autoresponderItem->id, $messages[0]->textBody);
+            $this->assertContains('zurmoItemClass: ' . get_class($autoresponderItem, $messages[0]->textBody));
+            $this->assertContains('zurmoPersonId: ' . $personId, $messages[0]->textBody);
             $job    = new EmailBounceJob();
             $this->assertTrue($job->run());
             $activities    = AutoresponderItemActivity::getAll();
@@ -318,11 +318,10 @@
             for ($i = 0; $i < 2; $i++)
             {
                 $this->assertEquals("Mail delivery failed: returning message to sender", $messages[$i]->subject);
-                $this->assertTrue(strpos($messages[$i]->textBody, 'Test email body') !== false);
-                $this->assertTrue(strpos($messages[$i]->textBody, 'zurmoItemId: ' . $autoresponderItem->id) !== false);
-                $this->assertTrue(strpos($messages[$i]->textBody, 'zurmoItemClass: ' .
-                                                                            get_class($autoresponderItem)) !== false);
-                $this->assertTrue(strpos($messages[$i]->textBody, 'zurmoPersonId: ' . $personId) !== false);
+                $this->assertContains('Test email body', $messages[$i]->textBody);
+                $this->assertContains('zurmoItemId: ' . $autoresponderItem->id, $messages[$i]->textBody);
+                $this->assertContains('zurmoItemClass: ' . get_class($autoresponderItem), $messages[$i]->textBody);                                                            
+                $this->assertContains('zurmoPersonId: ' . $personId, $messages[$i]->textBody);
             }
             $job    = new EmailBounceJob();
             $this->assertTrue($job->run());

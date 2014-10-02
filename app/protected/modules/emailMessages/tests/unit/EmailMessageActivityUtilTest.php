@@ -115,8 +115,8 @@
             $result     = static::resolveContent($content, false, false);
             $this->assertTrue($result);
             $this->assertNotEquals('Sample Content with no links', $content);
-            $this->assertTrue(strpos($content, 'Sample Content with no links') !== false);
-            $this->assertTrue(strpos($content, '/marketingLists/external/') !== false);
+            $this->assertContains('Sample Content with no links', $content);
+            $this->assertContains('/marketingLists/external/', $content);
             $this->assertEquals(2, substr_count($content, '/marketingLists/external/'));
         }
 
@@ -128,8 +128,8 @@
             $content    = 'Sample Content with no links';
             $result     = static::resolveContent($content, true, false);
             $this->assertTrue($result);
-            $this->assertTrue(strpos($content, 'Sample Content with no links') !== false);
-            $this->assertTrue(strpos($content, '/marketingLists/external/') !== false);
+            $this->assertContains('Sample Content with no links', $content);
+            $this->assertContains('/marketingLists/external/', $content);
             $this->assertEquals(2, substr_count($content, '/marketingLists/external/'));
         }
 
@@ -155,12 +155,12 @@ www.yahoo.com
 LNK;
             $result     = static::resolveContent($content, true, false);
             $this->assertTrue($result);
-            $this->assertFalse(strpos($content, 'http://www.zurmo.com'));
-            $this->assertFalse(strpos($content, 'http://www.zurmo.org'));
-            $this->assertFalse(strpos($content, 'www.yahoo.com'));
-            $this->assertTrue(strpos($content, '/tracking/default/track?id=') !== false);
+            $this->assertNotContains('http://www.zurmo.com', $content);
+            $this->assertNotContains('http://www.zurmo.org', $content);
+            $this->assertNotContains('www.yahoo.com', $content);
+            $this->assertContains('/tracking/default/track?id=', $content);
             $this->assertEquals(3, substr_count($content, '/tracking/default/track?id='));
-            $this->assertTrue(strpos($content, '/marketingLists/external/') !== false);
+            $this->assertContains('/marketingLists/external/', $content);
             $this->assertEquals(2, substr_count($content, '/marketingLists/external/'));
         }
 
@@ -172,11 +172,11 @@ LNK;
             $content    = 'Link: http://www.zurmo.com , <a href="http://www.zurmo.org">Zurmo</a>';
             $result     = static::resolveContent($content, true, false);
             $this->assertTrue($result);
-            $this->assertFalse(strpos($content, 'http://www.zurmo.com'));
-            $this->assertTrue(strpos($content, '<a href="http://www.zurmo.org">') !== false);
-            $this->assertTrue(strpos($content, '/tracking/default/track?id=') !== false);
+            $this->assertNotContains('http://www.zurmo.com', $content);
+            $this->assertContains('<a href="http://www.zurmo.org">', $content);
+            $this->assertContains('/tracking/default/track?id=', $content);
             $this->assertEquals(1, substr_count($content, '/tracking/default/track?id='));
-            $this->assertTrue(strpos($content, '/marketingLists/external/') !== false);
+            $this->assertContains('/marketingLists/external/', $content);
             $this->assertEquals(2, substr_count($content, '/marketingLists/external/'));
         }
 
@@ -189,11 +189,11 @@ LNK;
             $result     = static::resolveContent($content);
             $this->assertTrue($result);
             $this->assertNotEquals('Sample content', $content);
-            $this->assertTrue(strpos($content, 'Sample content') !== false);
-            $this->assertTrue(strpos($content, '<img width="1" height="1" src="') !== false);
-            $this->assertTrue(strpos($content, '/tracking/default/track?id=') !== false);
+            $this->assertContains('Sample content', $content);
+            $this->assertContains('<img width="1" height="1" src="', $content);
+            $this->assertContains('/tracking/default/track?id=', $content);
             $this->assertEquals(1, substr_count($content, '/tracking/default/track?id='));
-            $this->assertTrue(strpos($content, '/marketingLists/external/') !== false);
+            $this->assertContains('/marketingLists/external/', $content);
             $this->assertEquals(2, substr_count($content, '/marketingLists/external/'));
         }
 
@@ -206,13 +206,13 @@ LNK;
             $result     = static::resolveContent($content);
             $this->assertTrue($result);
             $this->assertNotEquals('Sample content', $content);
-            $this->assertTrue(strpos($content, 'Sample content') !== false);
-            $this->assertTrue(strpos($content, '</body></body>') !== false);
-            $this->assertTrue(strpos($content, '<img width="1" height="1" src="') !== false);
+            $this->assertContains('Sample content', $content);
+            $this->assertContains('</body></body>', $content);
+            $this->assertContains('<img width="1" height="1" src="', $content);
             $this->assertEquals(1, substr_count($content, '<img width="1" height="1" src="'));
-            $this->assertTrue(strpos($content, '/tracking/default/track?id=') !== false);
+            $this->assertContains('/tracking/default/track?id=', $content);
             $this->assertEquals(1, substr_count($content, '/tracking/default/track?id='));
-            $this->assertTrue(strpos($content, '/marketingLists/external/') !== false);
+            $this->assertContains('/marketingLists/external/', $content);
             $this->assertEquals(2, substr_count($content, '/marketingLists/external/'));
         }
 
@@ -226,11 +226,11 @@ LNK;
             $result             = static::resolveContent($content);
             $this->assertTrue($result);
             $this->assertNotEquals($originalContent, $content);
-            $this->assertTrue(strpos($content, '<p>Sample Content</p>') !== false);
-            $this->assertTrue(strpos($content, '<p>Sample Content</p><br /><img width="1" height="1" src="') !== false);
-            $this->assertTrue(strpos($content, '/tracking/default/track?id=') !== false);
+            $this->assertContains('<p>Sample Content</p>', $content);
+            $this->assertContains('<p>Sample Content</p><br /><img width="1" height="1" src="', $content);
+            $this->assertContains('/tracking/default/track?id=', $content);
             $this->assertEquals(1, substr_count($content, '/tracking/default/track?id='));
-            $this->assertTrue(strpos($content, '/marketingLists/external/') !== false);
+            $this->assertContains('/marketingLists/external/', $content);
             $this->assertEquals(2, substr_count($content, '/marketingLists/external/'));
         }
 
@@ -256,12 +256,12 @@ HTML;
             $result             = static::resolveContent($content);
             $this->assertTrue($result);
             $this->assertNotEquals($originalContent, $content);
-            $this->assertTrue(strpos($content, '<p>Sample Content With Links</p>') !== false);
-            $this->assertTrue(strpos($content, '<p>Plain Link: http://www.zurmo.com</p>') === false);
-            $this->assertTrue(strpos($content, '<img width="1" height="1" src="') !== false);
-            $this->assertTrue(strpos($content, '/tracking/default/track?id=') !== false);
+            $this->assertContains('<p>Sample Content With Links</p>', $content);
+            $this->assertNotContains('<p>Plain Link: http://www.zurmo.com</p>', $content);
+            $this->assertContains('<img width="1" height="1" src="', $content);
+            $this->assertContains('/tracking/default/track?id=', $content);
             $this->assertEquals(2, substr_count($content, '/tracking/default/track?id='));
-            $this->assertTrue(strpos($content, '/marketingLists/external/') !== false);
+            $this->assertContains('/marketingLists/external/', $content);
             $this->assertEquals(2, substr_count($content, '/marketingLists/external/'));
         }
 
@@ -325,85 +325,81 @@ HTML;
             $this->assertTrue($result);
             $this->assertNotEquals($originalContent, $content);
             $this->assertEquals(19, substr_count($content, '/tracking/default/track?id='));
-            $this->assertTrue(strpos($content, '<p>Sample Content With Links</p>') !== false);
-            $this->assertTrue(strpos($content, 'http://www.zurmo1.com') !== false);
+            $this->assertContains('<p>Sample Content With Links</p>', $content);
+            $this->assertContains('http://www.zurmo1.com', $content);
             $this->assertEquals(1, substr_count($content, 'http://www.zurmo1.com'));
-            $this->assertTrue(strpos($content, 'http://www.zurmo2.com') !== false);
+            $this->assertContains('http://www.zurmo2.com', $content);
             $this->assertEquals(1, substr_count($content, 'http://www.zurmo2.com'));
-            $this->assertTrue(strpos($content, 'http://www.zurmo3.com') !== false);
+            $this->assertContains('http://www.zurmo3.com', $content);
             $this->assertEquals(1, substr_count($content, 'http://www.zurmo3.com'));
-            $this->assertTrue(strpos($content, 'http://www.zurmo4.com') !== false);
+            $this->assertContains('http://www.zurmo4.com', $content);
             $this->assertEquals(1, substr_count($content, 'http://www.zurmo4.com'));
-            $this->assertTrue(strpos($content, 'http://www.zurmo5.com') !== false);
+            $this->assertContains('http://www.zurmo5.com', $content);
             $this->assertEquals(1, substr_count($content, 'http://www.zurmo5.com'));
-            $this->assertTrue(strpos($content, 'http://www.zurmo6.com') !== false);
+            $this->assertContains('http://www.zurmo6.com', $content);
             $this->assertEquals(1, substr_count($content, 'http://www.zurmo6.com'));
-            $this->assertTrue(strpos($content, 'http://www.zurmo7.com') !== false);
+            $this->assertContains('http://www.zurmo7.com', $content);
             $this->assertEquals(1, substr_count($content, 'http://www.zurmo7.com'));
-            $this->assertTrue(strpos($content, 'http://www.zurmo.org') === false);
-            $this->assertTrue(strpos($content, "SourceForge") !== false);
-            $this->assertTrue(strpos($content, " href='http://www.sourceforge1.org'") === false);
-            $this->assertTrue(strpos($content, " href='http://www.sourceforge2.org'") === false);
-            $this->assertTrue(strpos($content, " href='http://www.sourceforge3.org'") === false);
-            $this->assertTrue(strpos($content, " href='http://www.sourceforge4.org'") === false);
-            $this->assertTrue(strpos($content, " href='http://www.sourceforge5.org'") === false);
-            $this->assertTrue(strpos($content, " href='http://www.sourceforge6.org'") === false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge2.org") !== false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge3.org") !== false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge4.org") !== false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge5.org") !== false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge6.org") !== false);
+            $this->assertNotContains('http://www.zurmo.org', $content);
+            $this->assertContains("SourceForge", $content);
+            $this->assertNotContains(" href='http://www.sourceforge1.org'", $content);
+            $this->assertNotContains(" href='http://www.sourceforge2.org'", $content);
+            $this->assertNotContains(" href='http://www.sourceforge3.org'", $content);
+            $this->assertNotContains(" href='http://www.sourceforge4.org'", $content);
+            $this->assertNotContains(" href='http://www.sourceforge5.org'", $content);
+            $this->assertNotContains(" href='http://www.sourceforge6.org'", $content);
+            $this->assertContains("http://www.sourceforge2.org", $content);
+            $this->assertContains("http://www.sourceforge3.org", $content);
+            $this->assertContains("http://www.sourceforge4.org", $content);
+            $this->assertContains("http://www.sourceforge5.org", $content);
+            $this->assertContains("http://www.sourceforge6.org", $content);
             $this->assertEquals(1, substr_count($content, 'http://www.sourceforge2.org'));
             $this->assertEquals(1, substr_count($content, 'http://www.sourceforge3.org'));
             $this->assertEquals(1, substr_count($content, 'http://www.sourceforge4.org'));
             $this->assertEquals(1, substr_count($content, 'http://www.sourceforge5.org'));
             $this->assertEquals(1, substr_count($content, 'http://www.sourceforge6.org'));
-            $this->assertTrue(strpos($content, "http://www.sourceforge8.org") !== false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge9.org") !== false);
+            $this->assertContains("http://www.sourceforge8.org", $content);
+            $this->assertContains("http://www.sourceforge9.org", $content);
             $this->assertEquals(1, substr_count($content, 'http://www.sourceforge8.org'));
             $this->assertEquals(1, substr_count($content, 'http://www.sourceforge9.org'));
-            $this->assertTrue(strpos($content, " href='http://www.sourceforge1.org'") === false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge10.org") !== false);
+            $this->assertNotContains(" href='http://www.sourceforge1.org'", $content);
+            $this->assertContains("http://www.sourceforge10.org", $content);
             $this->assertEquals(1, substr_count($content, 'http://www.sourceforge10.org'));
-            $this->assertTrue(strpos($content, 'Link10:' . "\n" . '<a href="') !== false);
+            $this->assertContains('Link10:' . "\n" . '<a href="', $content);
             $this->assertEquals(1, substr_count($content, 'Link10:' . "\n" . '<a href="'));
-            $this->assertTrue(strpos($content, "Link7: <a target='_blank' ") !== false);
+            $this->assertContains("Link7: <a target='_blank' ", $content);
             $this->assertEquals(1, substr_count($content, "Link7: <a target='_blank' "));
-            $this->assertTrue(strpos($content, " style='color:red;'> ") !== false);
+            $this->assertContains(" style='color:red;'> ", $content);
             $this->assertEquals(1, substr_count($content, " style='color:red;'> "));
-            $this->assertTrue(strpos($content, "http://www.sourceforge11.org") !== false);
+            $this->assertContains("http://www.sourceforge11.org", $content);
             $this->assertEquals(2, substr_count($content, 'http://www.sourceforge11.org'));
-            $this->assertTrue(strpos($content, " href='http://www.sourceforge12.org'") === false);
-            $this->assertTrue(strpos($content, " href='http://www.sourceforge13.org'") === false);
-            $this->assertTrue(strpos($content, " href='http://www.sourceforge14.org'") === false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge12.org") !== false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge13.org") !== false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge14.org") !== false);
-            $this->assertTrue(strpos($content, "<p>Link15: <a href='#localanchor'>New</a></p>") !== false);
-            $this->assertTrue(strpos($content, "http://www.sourceforge16.org/projects#promoted") === false);
-            $this->assertTrue(strpos($content,
-                                        "http://zurmo.org/wp-content/themes/Zurmo/images/Zurmo-logo.png") !== false);
+            $this->assertNotContains(" href='http://www.sourceforge12.org'", $content);
+            $this->assertNotContains(" href='http://www.sourceforge13.org'", $content);
+            $this->assertNotContains(" href='http://www.sourceforge14.org'", $content);
+            $this->assertContains("http://www.sourceforge12.org", $content);
+            $this->assertContains("http://www.sourceforge13.org", $content);
+            $this->assertContains("http://www.sourceforge14.org", $content);
+            $this->assertContains("<p>Link15: <a href='#localanchor'>New</a></p>", $content);
+            $this->assertNotContains("http://www.sourceforge16.org/projects#promoted", $content);
+            $this->assertContains("http://zurmo.org/wp-content/themes/Zurmo/images/Zurmo-logo.png", $content);                            
             $this->assertEquals(1, substr_count($content,
                                                     'http://zurmo.org/wp-content/themes/Zurmo/images/Zurmo-logo.png'));
-            $this->assertTrue(strpos($content, "http://www.zurmo.com/icon.png") !== false);
+            $this->assertContains("http://www.zurmo.com/icon.png", $content);
             $this->assertEquals(1, substr_count($content, 'http://www.zurmo.com/icon.png'));
-            $this->assertTrue(strpos($content, "http://www.zurmo.com/css/keyframes.css") !== false);
+            $this->assertContains("http://www.zurmo.com/css/keyframes.css", $content);
             $this->assertEquals(1, substr_count($content, 'http://www.zurmo.com/css/keyframes.css'));
-            $this->assertTrue(strpos($content,
-                                "http://www.zurmo.com/zurmo/app/index.php/min/serve/g/css/lm/1366956624") !== false);
+            $this->assertContains("http://www.zurmo.com/zurmo/app/index.php/min/serve/g/css/lm/1366956624", $content);
             $this->assertEquals(1, substr_count($content,
                                             'http://www.zurmo.com/zurmo/app/index.php/min/serve/g/css/lm/1366956624'));
-            $this->assertTrue(strpos($content,
-                                    "http://www.zurmo.com/zurmo/app/index.php/min/serve/g/js/lm/1366697759") !== false);
+            $this->assertContains("http://www.zurmo.com/zurmo/app/index.php/min/serve/g/js/lm/1366697759", $content);
             $this->assertEquals(1,
                     substr_count($content, 'http://www.zurmo.com/zurmo/app/index.php/min/serve/g/js/lm/1366697759'));
-            $this->assertTrue(strpos($content,
-                                "http://www.zurmo.com/zurmo/app/index.php/min/serve/g/js/lm/1366697751.js") !== false);
+            $this->assertContains("http://www.zurmo.com/zurmo/app/index.php/min/serve/g/js/lm/1366697751.js", $content);
             $this->assertEquals(1,
                     substr_count($content, 'http://www.zurmo.com/zurmo/app/index.php/min/serve/g/js/lm/1366697751.js'));
-            $this->assertTrue(strpos($content, '<img width="1" height="1" src=') !== false);
+            $this->assertContains('<img width="1" height="1" src=', $content);
             $this->assertEquals(1, substr_count($content, '<img width="1" height="1" src='));
-            $this->assertTrue(strpos($content, '/marketingLists/external/') !== false);
+            $this->assertContains('/marketingLists/external/', $content);
             $this->assertEquals(2, substr_count($content, '/marketingLists/external/'));
         }
 
@@ -455,9 +451,9 @@ HTML;
             $content    = 'This is some text content';
             $result     = static::resolveContent($content, true, false);
             $this->assertTrue($result);
-            $this->assertTrue(strpos($content, 'This is some text content') !== false);
-            $this->assertTrue(strpos($content, 'PlainTextFooter') !== false);
-            $this->assertTrue(strpos($content, '/marketingLists/external/') === false);
+            $this->assertContains('This is some text content', $content);
+            $this->assertContains('PlainTextFooter', $content);
+            $this->assertNotContains('/marketingLists/external/', $content);
         }
 
         /**
@@ -469,9 +465,9 @@ HTML;
             $content    = 'This is some html content';
             $result     = static::resolveContent($content, true, true);
             $this->assertTrue($result);
-            $this->assertTrue(strpos($content, 'This is some html content') !== false);
-            $this->assertTrue(strpos($content, 'RichTextFooter') !== false);
-            $this->assertTrue(strpos($content, '/marketingLists/external/') === false);
+            $this->assertContains('This is some html content', $content);
+            $this->assertContains('RichTextFooter', $content);
+            $this->assertNotContains('/marketingLists/external/', $content);
         }
 
         protected static function resolveContent(& $content, $tracking = true, $isHtmlContent = true)
