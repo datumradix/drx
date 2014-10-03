@@ -352,6 +352,9 @@
                     $data['serverSoftware'] = $_SERVER['SERVER_SOFTWARE'];
                 }
 
+                $sandboxMode = Yii::app()->isApplicationInSandboxMode();
+                $data['sandboxMode'] = $sandboxMode;
+
                 $response = ApiRestHelper::createApiCall('http://updates.zurmo.com/app/index.php/updatesManager/api/create', 'POST', $headers, array('data' => $data));
                 $response = json_decode($response, true);
                 if (ApiResponse::STATUS_SUCCESS == $response['status'])
