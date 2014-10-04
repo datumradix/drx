@@ -170,7 +170,7 @@
             $this->assertTrue($group->save());
             $form = GroupUserMembershipFormUtil::setFormFromCastedPost($form, $fakePostData);
             $content = GroupUserMembershipFormUtil::validateMembershipChange($form, $group);
-            $this->assertNotContains('You cannot remove', $content);
+            $this->assertNull($content);
 
             //Now add jimmy as a super user.
             $group->users->add($jim);
@@ -183,7 +183,7 @@
             //Now try to remove bill, it should pass ok validation because it won't really let you when it sets to form
             unset($form->userMembershipData[$bill->id]);
             $content = GroupUserMembershipFormUtil::validateMembershipChange($form, $group);
-            $this->assertNotContains('You cannot remove', $content);
+            $this->assertNull($content);
         }
     }
 ?>
