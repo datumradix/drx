@@ -114,7 +114,7 @@
             $content            = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massUnsubscribe');
             $this->assertContains('Mass Unsubscribe: Marketing List Members', $content);
             $this->assertContains('<strong>4</strong>&#160;Marketing List Members' .
-                                  ' selected for unsubscription', $content);                                                                    
+                                  ' selected for unsubscription', $content);
             // MassUnsubscribe view for all result selected ids
             $this->setGetArray(
                             array(
@@ -124,7 +124,7 @@
                         );
             $content            = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massUnsubscribe');
             $this->assertContains('<strong>17</strong>&#160;Marketing List Members'.
-                                  ' selected for unsubscription', $content);                                                                    
+                                  ' selected for unsubscription', $content);
 
             // Mass Unsubscribe, multiple pages unsubscribe, first page
             $selectedIdsArray   = array();
@@ -322,7 +322,7 @@
             $content            = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massDelete');
             $this->assertContains('Mass Delete: Marketing List Members', $content);
             $this->assertContains('<strong>4</strong>&#160;Marketing List Members' .
-                                  ' selected for removal', $content);                                                                        
+                                  ' selected for removal', $content);
             // MassDelete view for all result selected ids
             $this->setGetArray(
                             array(
@@ -332,7 +332,7 @@
                         );
             $content            = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massDelete');
             $this->assertContains('<strong>17</strong>&#160;Marketing List Members'.
-                                  ' selected for removal', $content);                                                                        
+                                  ' selected for removal', $content);
 
             // Mass delete, multiple pages delete, first page
             $list               = MarketingList::getById($listId);

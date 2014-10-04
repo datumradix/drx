@@ -83,24 +83,24 @@
             $this->assertContains('<div class="Warning"><h2>Not so fast!</h2>', $content);
             $this->assertContains('<p>To manage Marketing Lists related features you must have access ' .
                                   'to marketing lists first. Contact the CRM administrator' .
-                                  ' about this issue.</p>', $content);                                                                
+                                  ' about this issue.</p>', $content);
             $content    = $this->runControllerWithNoExceptionsAndGetContent('autoresponders/default/edit');
             $this->assertContains('<div id="UserIsMissingMarketingListAccessSplashView"', $content);
             $this->assertContains('<div class="Warning"><h2>Not so fast!</h2>', $content);
             $this->assertContains('<p>To manage Marketing Lists related features you must have access ' .
                                   'to marketing lists first. Contact the CRM administrator' .
-                                  ' about this issue.</p>', $content);                                                                      
+                                  ' about this issue.</p>', $content);
             $content    = $this->runControllerWithNoExceptionsAndGetContent('autoresponders/default/details');
             $this->assertContains('<div id="UserIsMissingMarketingListAccessSplashView"', $content);
-            $this->assertContains('<div class="Warning"><h2>Not so fast!</h2>', $content);                              
+            $this->assertContains('<div class="Warning"><h2>Not so fast!</h2>', $content);
             $this->assertContains('<p>To manage Marketing Lists related features you must have access ' .
                                   'to marketing lists first. Contact the CRM administrator' .
-                                  ' about this issue.</p>', $content);                                    
+                                  ' about this issue.</p>', $content);
             $content    = $this->runControllerWithNoExceptionsAndGetContent('autoresponders/default/delete');
             $this->assertContains('<div class="Warning"><h2>Not so fast!</h2>', $content);
             $this->assertContains('<p>To manage Marketing Lists related features you must have access ' .
                                   'to marketing lists first. Contact the CRM administrator' .
-                                  ' about this issue.</p>', $content);                                                                      
+                                  ' about this issue.</p>', $content);
         }
 
         public function testRegularUserActionsWithMarketingListRightButInsufficientPermission()

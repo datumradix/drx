@@ -527,7 +527,7 @@
             $this->assertNotEquals($autoresponder->textContent, $emailMessage->content->textContent);
             $this->assertNotEquals($autoresponder->htmlContent, $emailMessage->content->htmlContent);
             $this->assertContains('/contacts/default/details?id=' . $contact->id, $emailMessage->content->textContent);
-            $this->assertContains('/contacts/default/details?id=' . $contact->id, $emailMessage->content->htmlContent);                                                
+            $this->assertContains('/contacts/default/details?id=' . $contact->id, $emailMessage->content->htmlContent);
         }
 
         /**

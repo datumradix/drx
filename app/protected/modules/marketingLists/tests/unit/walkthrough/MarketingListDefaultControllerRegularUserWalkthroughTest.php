@@ -105,14 +105,14 @@
             $this->setGetArray(array('id' => $marketingList->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/details');
             $this->assertContains('<p>To manage Marketing Lists you must have access to either contacts' .
-                                  ' or leads. Contact the CRM administrator about this issue.</p>', $content);    
+                                  ' or leads. Contact the CRM administrator about this issue.</p>', $content);
             $this->resetGetArray();
 
             $this->user->setRight('MarketingListsModule', MarketingListsModule::getCreateRight());
             $this->assertTrue($this->user->save());
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/create');
             $this->assertContains('<p>To manage Marketing Lists you must have access to either contacts' .
-                                  ' or leads. Contact the CRM administrator about this issue.</p>', $content);    
+                                  ' or leads. Contact the CRM administrator about this issue.</p>', $content);
 
             $this->user->setRight('ContactsModule', ContactsModule::getAccessRight());
             $this->user->setRight('LeadsModule', LeadsModule::getAccessRight());
@@ -120,14 +120,14 @@
             $this->setGetArray(array('id' => $marketingList->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/details');
             $this->assertNotContains('<p>To manage Marketing Lists you must have access to either contacts' .
-                                  ' or leads. Contact the CRM administrator about this issue.</p>', $content);    
+                                  ' or leads. Contact the CRM administrator about this issue.</p>', $content);
             $this->resetGetArray();
 
             $this->user->setRight('MarketingListsModule', MarketingListsModule::getCreateRight());
             $this->assertTrue($this->user->save());
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/create');
             $this->assertNotContains('<p>To manage Marketing Lists you must have access to either contacts' .
-                                     ' or leads. Contact the CRM administrator about this issue.</p>', $content);    
+                                     ' or leads. Contact the CRM administrator about this issue.</p>', $content);
 
             $this->setGetArray(array('id' => $marketingList->id));
             $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/edit');

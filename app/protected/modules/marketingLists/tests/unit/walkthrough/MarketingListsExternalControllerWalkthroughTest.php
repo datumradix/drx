@@ -677,19 +677,19 @@
             $content    = $this->runControllerWithNoExceptionsAndGetContent($this->manageSubscriptionsUrl);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_0" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_1" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             @$this->runControllerWithRedirectExceptionAndGetUrl($this->unsubscribeUrl);
             $content = $this->runControllerWithNoExceptionsAndGetContent($this->manageSubscriptionsUrl);
             $this->assertNotEmpty($content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_0" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $autoresponderItemActivities    = AutoresponderItemActivity::getByTypeAndModelIdAndPersonIdAndUrl(
                                                                             AutoresponderItemActivity::TYPE_UNSUBSCRIBE,
@@ -745,19 +745,19 @@
             $content    = $this->runControllerWithNoExceptionsAndGetContent($this->manageSubscriptionsUrl);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_0" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_1" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             @$this->runControllerWithRedirectExceptionAndGetUrl($this->unsubscribeUrl);
             $content = $this->runControllerWithNoExceptionsAndGetContent($this->manageSubscriptionsUrl);
             $this->assertNotEmpty($content);
             $this->assertNotContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                      $marketingListId . '_0" type="radio" name="marketingListsManage' .
-                                     'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                     'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->assertNotContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                      $marketingListId . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                                     'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                     'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->assertNotContains('<td>marketingList 04</td>', $content);
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $autoresponderItemActivities    = AutoresponderItemActivity::getByTypeAndModelIdAndPersonIdAndUrl(
@@ -795,19 +795,19 @@
             $content    = $this->runControllerWithNoExceptionsAndGetContent($this->manageSubscriptionsUrl);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_0" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                            
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                            
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->runControllerWithRedirectExceptionAndGetUrl($this->unsubscribeUrl);
             $content = $this->runControllerWithNoExceptionsAndGetContent($this->manageSubscriptionsUrl);
             $this->assertNotEmpty($content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_0" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                        
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                        
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
         }
 
         /**
@@ -873,16 +873,16 @@
             $this->assertContains('<td>marketingList 03</td>', $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_0" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->runControllerWithRedirectExceptionAndGetUrl($this->unsubscribeUrl);
             $content = $this->runControllerWithNoExceptionsAndGetContent($this->manageSubscriptionsUrl);
             $this->assertNotEmpty($content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_0" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId . '_1" checked="checked" type="radio" name="marketingListsManage' .
                                   'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
@@ -958,23 +958,23 @@
             $this->assertContains('<td>marketingList 04</td>', $content);
             $this->assertContains('marketingLists/external/subscribe?hash=', $content);
             $this->assertContains('id="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_', $content);                            
+                                  'SubscriptionListView-toggleUnsubscribed_', $content);
             $this->assertContains('id="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_', $content);                            
+                                  'SubscriptionListView-toggleUnsubscribed_', $content);
             $this->assertContains('type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_', $content);                            
+                                  'SubscriptionListView-toggleUnsubscribed_', $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListIds[0] . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[0], $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[0], $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListIds[1] . '_0" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[1], $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[1], $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListIds[2] . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[2], $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[2], $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListIds[3] . '_0" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[3], $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[3], $content);
             @$this->runControllerWithRedirectExceptionAndGetUrl($this->optOutUrl);
             $content    = $this->runControllerWithNoExceptionsAndGetContent($this->manageSubscriptionsUrl);
             $this->assertContains('<td>marketingList 01</td>', $content);
@@ -983,17 +983,17 @@
             $this->assertNotContains('<td>marketingList 04</td>', $content);
             $this->assertContains('marketingLists/external/subscribe?hash=', $content);
             $this->assertContains('id="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_', $content);                            
+                                  'SubscriptionListView-toggleUnsubscribed_', $content);
             $this->assertContains('id="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_', $content);                            
+                                  'SubscriptionListView-toggleUnsubscribed_', $content);
             $this->assertContains('type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_', $content);                            
+                                  'SubscriptionListView-toggleUnsubscribed_', $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListIds[0] . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[0], $content);                            
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[0], $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListIds[2] . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[2], $content);                            
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListIds[2], $content);
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $contact            = Contact::getByName('contact 05 contact 05son');
             $this->assertNotEmpty($contact);
@@ -1032,14 +1032,14 @@
             $this->assertContains('<td>marketingList 03</td>', $content);
             $this->assertContains('marketingLists/external/subscribe?hash=', $content);
             $this->assertContains('id="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_', $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_', $content);
             $this->assertContains('id="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_', $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_', $content);
             $this->assertContains('type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_', $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_', $content);
             $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
                                   $marketingListId. '_0" checked="checked" type="radio" name="marketingListsManage' .
-                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);                    
+                                  'SubscriptionListView-toggleUnsubscribed_' . $marketingListId, $content);
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $contact            = Contact::getByName('contact 05 contact 05son');
             $this->assertNotEmpty($contact);
@@ -1059,7 +1059,7 @@
             $content = $this->runControllerWithExitExceptionAndGetContent($this->unsubscribeUrl);
             $this->assertContains('<div class="GridView">', $content);
             $this->assertContains('<div id="MarketingListsExternalActionsPreviewView" ' .
-                                  'class="splash-view SplashView">', $content);                                    
+                                  'class="splash-view SplashView">', $content);
             $this->assertContains('<div class="Warning">', $content);
             $this->assertContains('<h2>Not so fast!</h2>', $content);
             $this->assertContains('<div class="large-icon">', $content);
@@ -1079,7 +1079,7 @@
             $content = $this->runControllerWithExitExceptionAndGetContent($this->subscribeUrl);
             $this->assertContains('<div class="GridView">', $content);
             $this->assertContains('<div id="MarketingListsExternalActionsPreviewView" ' .
-                                  'class="splash-view SplashView">', $content);                                    
+                                  'class="splash-view SplashView">', $content);
             $this->assertContains('<div class="Warning">', $content);
             $this->assertContains('<h2>Not so fast!</h2>', $content);
             $this->assertContains('<div class="large-icon">', $content);
@@ -1099,7 +1099,7 @@
             $content = $this->runControllerWithExitExceptionAndGetContent($this->optOutUrl);
             $this->assertContains('<div class="GridView">', $content);
             $this->assertContains('<div id="MarketingListsExternalActionsPreviewView" ' .
-                                  'class="splash-view SplashView">', $content);                                    
+                                  'class="splash-view SplashView">', $content);
             $this->assertContains('<div class="Warning">', $content);
             $this->assertContains('<h2>Not so fast!</h2>', $content);
             $this->assertContains('<div class="large-icon">', $content);
@@ -1119,7 +1119,7 @@
             $content = $this->runControllerWithExitExceptionAndGetContent($this->manageSubscriptionsUrl);
             $this->assertContains('<div class="GridView">', $content);
             $this->assertContains('<div id="MarketingListsExternalActionsPreviewView" ' .
-                                  'class="splash-view SplashView">', $content);                                    
+                                  'class="splash-view SplashView">', $content);
             $this->assertContains('<div class="Warning">', $content);
             $this->assertContains('<h2>Not so fast!</h2>', $content);
             $this->assertContains('<div class="large-icon">', $content);

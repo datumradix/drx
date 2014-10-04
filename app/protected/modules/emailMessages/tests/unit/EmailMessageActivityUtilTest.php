@@ -381,7 +381,7 @@ HTML;
             $this->assertContains("http://www.sourceforge14.org", $content);
             $this->assertContains("<p>Link15: <a href='#localanchor'>New</a></p>", $content);
             $this->assertNotContains("http://www.sourceforge16.org/projects#promoted", $content);
-            $this->assertContains("http://zurmo.org/wp-content/themes/Zurmo/images/Zurmo-logo.png", $content);                            
+            $this->assertContains("http://zurmo.org/wp-content/themes/Zurmo/images/Zurmo-logo.png", $content);
             $this->assertEquals(1, substr_count($content,
                                                     'http://zurmo.org/wp-content/themes/Zurmo/images/Zurmo-logo.png'));
             $this->assertContains("http://www.zurmo.com/icon.png", $content);
