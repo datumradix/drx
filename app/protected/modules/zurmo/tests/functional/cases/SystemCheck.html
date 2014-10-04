@@ -90,7 +90,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[1]/tbody/tr[2]/td[1]</td>
-    <td>PHP upload_max_filesize value is: 2M minimum requirement is: 20M</td>
+    <td>Database max_allowed_packet size is: 1M minimum requirement is: 20M</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -100,31 +100,11 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[1]/tbody/tr[3]/td[1]</td>
-    <td>PHP post_max_size setting is: 8M minimum requirement is: 20M</td>
-</tr>
-<tr>
-    <td>waitForText</td>
-    <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[1]/tbody/tr[3]/td[2]/span</td>
-    <td>FAIL</td>
-</tr>
-<tr>
-    <td>waitForText</td>
-    <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[1]/tbody/tr[4]/td[1]</td>
-    <td>Database max_allowed_packet size is: 1M minimum requirement is: 20M</td>
-</tr>
-<tr>
-    <td>waitForText</td>
-    <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[1]/tbody/tr[4]/td[2]/span</td>
-    <td>FAIL</td>
-</tr>
-<tr>
-    <td>waitForText</td>
-    <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[1]/tbody/tr[5]/td[1]</td>
     <td>Database does not support LOAD LOCAL INFILE.</td>
 </tr>
 <tr>
     <td>waitForText</td>
-    <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[1]/tbody/tr[5]/td[2]/span</td>
+    <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[1]/tbody/tr[3]/td[2]/span</td>
     <td>FAIL</td>
 </tr>
 <tr>
@@ -135,7 +115,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[2]/td[1]</td>
-    <td>Apache version installed: 2.2.17 Minimum version required: 2.2.1</td>
+    <td>Apache version installed: 2.2.15 Minimum version required: 2.2.1</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -185,7 +165,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[7]/td[1]</td>
-    <td>$_SERVER is accessible.</td>
+    <td>PHP upload_max_filesize value meets minimum requirement.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -195,7 +175,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[8]/td[1]</td>
-    <td>PCRE extension is loaded.</td>
+    <td>PHP post_max_size meets minimum requirement.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -205,7 +185,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[9]/td[1]</td>
-    <td>SPL extension is loaded.</td>
+    <td>$_SERVER is accessible.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -215,7 +195,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[10]/td[1]</td>
-    <td>Ctype extension is loaded.</td>
+    <td>PCRE extension is loaded.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -225,7 +205,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[11]/td[1]</td>
-    <td>The instance folders are present and writable.</td>
+    <td>SPL extension is loaded.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -235,7 +215,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[12]/td[1]</td>
-    <td>APC version installed: 3.1.14 Minimum version required: 1.0.0</td>
+    <td>Ctype extension is loaded.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -245,7 +225,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[13]/td[1]</td>
-    <td>SOAP is installed.</td>
+    <td>The instance folders are present and writable.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -255,7 +235,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[14]/td[1]</td>
-    <td>Curl version installed: 7.19.7 Minimum version required: 6.0</td>
+    <td>APC version installed: 3.1.14 Minimum version required: 1.0.0</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -265,7 +245,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[15]/td[1]</td>
-    <td>Yii version installed: 1.1.13 Minimum version required: 1.1.13</td>
+    <td>SOAP is installed.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -275,7 +255,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[16]/td[1]</td>
-    <td>RedBean version installed: 3.2 Minimum version required: 3.2</td>
+    <td>Curl version installed: 7.19.7 Minimum version required: 6.0</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -285,7 +265,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[17]/td[1]</td>
-    <td>Mbstring is installed.</td>
+    <td>Yii version installed: 1.1.13 Minimum version required: 1.1.13</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -295,7 +275,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[18]/td[1]</td>
-    <td>Memcache extension version installed: 3.0.7 Minimum version required: 2.2.0	</td>
+    <td>RedBean version installed: 3.2 Minimum version required: 3.2</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -305,7 +285,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[19]/td[1]</td>
-    <td>Minify library is included.</td>
+    <td>Mbstring is installed.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -315,7 +295,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[20]/td[1]</td>
-    <td>IMAP extension is loaded.</td>
+    <td>Memcache extension version installed: 3.0.7 Minimum version required: 2.2.0	</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -325,7 +305,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[21]/td[1]</td>
-    <td>pdo is installed.</td>
+    <td>Minify library is included.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -335,7 +315,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[22]/td[1]</td>
-    <td>pdo_mysql is installed.</td>
+    <td>IMAP extension is loaded.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -345,7 +325,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[23]/td[1]</td>
-    <td>Ldap is installed.</td>
+    <td>pdo is installed.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -355,7 +335,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[24]/td[1]</td>
-    <td>Mcrypt extension is loaded.</td>
+    <td>pdo_mysql is installed.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -365,7 +345,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[25]/td[1]</td>
-    <td>Mysql version installed: 5.5.29 Minimum version required: 5.0.0</td>
+    <td>Ldap is installed.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -375,7 +355,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[26]/td[1]</td>
-    <td>Database is not in strict mode.</td>
+    <td>Mcrypt extension is loaded.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -385,7 +365,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[27]/td[1]</td>
-    <td>Database max_sp_recursion_depth size meets minimum requirement.</td>
+    <td>Mysql version installed: 5.5.29 Minimum version required: 5.0.0</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -395,7 +375,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[28]/td[1]</td>
-    <td>Database thread_stack value meets minimum requirement.</td>
+    <td>Database is not in strict mode.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -405,7 +385,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[29]/td[1]</td>
-    <td>Database default collation meets minimum requirement.</td>
+    <td>Database max_sp_recursion_depth size meets minimum requirement.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -415,7 +395,7 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[30]/td[1]</td>
-    <td>Database log_bin=off and therefore satisfies this requirement.</td>
+    <td>Database thread_stack value meets minimum requirement.</td>
 </tr>
 <tr>
     <td>waitForText</td>
@@ -425,11 +405,31 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[31]/td[1]</td>
-    <td>Database optimizer_search_depth size meets requirement.</td>
+    <td>Database default collation meets minimum requirement.</td>
 </tr>
 <tr>
     <td>waitForText</td>
     <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[31]/td[2]/span</td>
+    <td>PASS</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[32]/td[1]</td>
+    <td>Database log_bin=off and therefore satisfies this requirement.</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[32]/td[2]/span</td>
+    <td>PASS</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[33]/td[1]</td>
+    <td>Database optimizer_search_depth size meets requirement.</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='DiagnosticCheckServicesView']/div/div/table[2]/tbody/tr[33]/td[2]/span</td>
     <td>PASS</td>
 </tr>
 </tbody></table>
