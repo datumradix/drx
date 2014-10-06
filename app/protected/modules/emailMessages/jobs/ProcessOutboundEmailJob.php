@@ -86,7 +86,7 @@
                 $emailHelper->sendImmediately($emailMessage);
             }
             $outboxErrorQueuedMessages = EmailMessageUtil::getOutboundErrorQueuedMessages($this->resolveBatchSize(), $outboxQueuedMessages);
-            foreach ($queuedEmailMessages as $emailMessage)
+            foreach ($outboxErrorQueuedMessages as $emailMessage)
             {
                 if ($emailMessage->sendAttempts < 3)
                 {

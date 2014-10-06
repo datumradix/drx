@@ -334,7 +334,7 @@
             {
                 $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
             }
-            elseif (count($queuedEmailMessages) < $count)
+            elseif ($queuedEmailMessagesCount < $count)
             {
                 $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - $queuedEmailMessagesCount);
             }
