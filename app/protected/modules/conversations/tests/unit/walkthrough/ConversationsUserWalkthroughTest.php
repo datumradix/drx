@@ -137,8 +137,8 @@
             //Confirm Mary got the email invite and it was correctly setup with a valid conversation id
             $emailMessages = EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX);
             $this->assertEquals(1, count($emailMessages));
-            $this->assertNotContains('conversations/default/details?id=' . $conversations[0]->id . '">', 
-                                     $emailMessages[0]->content->textContent);                           
+            $this->assertNotContains('conversations/default/details?id=' . $conversations[0]->id . '">',
+                                     $emailMessages[0]->content->textContent);
 
             //Confirm Mary is the only one with explicit permissions on the conversation
             $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());

@@ -1187,7 +1187,7 @@
             $this->assertContains('<label for="ClassicEmailTemplateWizardForm_explicitReadWriteModel' .
                                   'Permissions_type_2">Everyone</label>', $content);
             $this->assertContains('<div class="float-bar"><div class="view-toolbar-container ' .
-                                  'clearfix dock"><div class="form-toolbar">', $content);                                    
+                                  'clearfix dock"><div class="form-toolbar">', $content);
             $this->assertEquals(2, substr_count($content, '<div class="float-bar"><div class="view-toolbar-container ' .
                                                             'clearfix dock"><div class="form-toolbar">') !== false);
             $this->assertContains('<a id="generalDataCancelLink" class="cancel-button" href="#">' .
@@ -1243,7 +1243,7 @@
                                     'builtType' => EmailTemplate::BUILT_TYPE_PASTED_HTML));
             $content = $this->runControllerWithNoExceptionsAndGetContent('emailTemplates/default/create');
             $this->assertContains('<div id="WorkflowBreadCrumbView" class="SettingsBreadCrumbView ' .
-                                  'BreadCrumbView"><div class="breadcrumbs">', $content);                                    
+                                  'BreadCrumbView"><div class="breadcrumbs">', $content);
             $this->assertContains('/workflows/default/index">Workflows</a>', $content);
             $this->assertContains('/emailTemplates/default/listForWorkflow">Templates</a>', $content);
             $this->assertContains('<span>Create</span></div></div>', $content);

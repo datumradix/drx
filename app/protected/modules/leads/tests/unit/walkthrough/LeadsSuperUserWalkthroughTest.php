@@ -689,6 +689,7 @@
             $this->assertEquals  ('There is 1 possible match. <span class="underline">Click here</span> to view.', $object->message);
             $this->assertContains('CreateModelsToMergeListAndChartView',       $object->content);
         }
+
         public function testSuperUserConvertActionWithTagCloud()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
@@ -730,7 +731,7 @@
                 array(
                     'Account' => array(
                         'name' => 'mynewaccountfromleadtagcloudconvert',
-                        'tagcloudCstm' => array('values' => 'English,French')
+                        'tagcloudCstm' => array('values' => 'English,French') // Not Coding Standard
                     )
                 )
             );

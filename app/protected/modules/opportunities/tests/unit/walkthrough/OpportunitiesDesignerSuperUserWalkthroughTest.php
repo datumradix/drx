@@ -388,7 +388,7 @@
 
             //Check if the opportunity name exits after the search is performed on the basis of the
             //custom fields added to the opportunities module.
-            //$this->assertContains("Displaying 1-1 of 1 result(s).", $content); //removed until we show the count again in the listview.            
+            //$this->assertContains("Displaying 1-1 of 1 result(s).", $content); //removed until we show the count again in the listview.
             $this->assertContains("myNewOpportunity", $content);
         }
 

@@ -320,7 +320,7 @@
                 $this->assertEquals("Mail delivery failed: returning message to sender", $messages[$i]->subject);
                 $this->assertContains('Test email body', $messages[$i]->textBody);
                 $this->assertContains('zurmoItemId: ' . $autoresponderItem->id, $messages[$i]->textBody);
-                $this->assertContains('zurmoItemClass: ' . get_class($autoresponderItem), $messages[$i]->textBody);                                                            
+                $this->assertContains('zurmoItemClass: ' . get_class($autoresponderItem), $messages[$i]->textBody);
                 $this->assertContains('zurmoPersonId: ' . $personId, $messages[$i]->textBody);
             }
             $job    = new EmailBounceJob();

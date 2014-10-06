@@ -209,9 +209,9 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/create');
             $this->assertContains('class="errorMessage">Name cannot be blank.</div>', $content);
             $this->assertContains('<input id="MarketingList_name" name="MarketingList[name]" type="text"' .
-                                  ' maxlength="64" value="" class="error"', $content);                                                    
+                                  ' maxlength="64" value="" class="error"', $content);
             $this->assertContains('<label class="error required" for="MarketingList_name">Name ' .
-                                  '<span class="required">*</span></label>', $content);                                                     
+                                  '<span class="required">*</span></label>', $content);
             $this->resetGetArray();
             $this->setPostArray(array('MarketingList' => array(
                 'name'            => 'New MarketingListName using Create',
@@ -242,9 +242,9 @@
             $this->assertEquals(3, substr_count($content, 'MarketingListName2'));
             $this->assertContains('<span class="button-label">Details</span>', $content);
             $this->assertContains('<strong class="marketing-list-subscribers-stats">' .
-                                  '0 Subscribed</strong>', $content);                                                                        
+                                  '0 Subscribed</strong>', $content);
             $this->assertContains('<strong class="marketing-list-unsubscribers-stats">' .
-                                  '0 Unsubscribed</strong>', $content);                                                                        
+                                  '0 Unsubscribed</strong>', $content);
             $this->assertContains('MarketingList Description2', $content);
             $this->assertContains('<span class="button-label">Options</span>', $content);
             $this->assertContains('>Edit</a></li>', $content);
@@ -411,7 +411,7 @@
             $content    = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/default/modalList');
             $this->assertContains('<div id="ModalView">', $content);
             $this->assertContains('<div id="MarketingListsModalSearchAndListView" ' .
-                                  'class="ModalSearchAndListView GridView">', $content);                                    
+                                  'class="ModalSearchAndListView GridView">', $content);
             $this->assertContains('<div id="MarketingListsModalSearchView" class="SearchView ModelView' .
                                   ' ConfigurableMetadataView MetadataView">', $content);
             $this->assertContains('<div class="wide form">', $content);
@@ -427,7 +427,7 @@
             $this->assertContains('<input class="input-hint anyMixedAttributes-input" ' .
                                   'onfocus="$(this).select();" size="80" id="MarketingListsSearchForm' .
                                   '_anyMixedAttributes" name="MarketingListsSearchForm' .
-                                  '[anyMixedAttributes]" type="text"', $content);                                    
+                                  '[anyMixedAttributes]" type="text"', $content);
             $this->assertContains('</div><div class="search-form-tools">', $content);
             $this->assertContains('<a id="clear-search-linkmodal" style="display:none;" href="#">' .
                                   'Clear</a>', $content);
@@ -436,7 +436,7 @@
             $this->assertContains('</div></form>', $content);
             $this->assertContains('<div id="modalContainer-search-formmodal"></div>', $content);
             $this->assertContains('<div id="MarketingListsModalListView" class="ModalListView ListView ' .
-                                  'ModelView ConfigurableMetadataView MetadataView">', $content);                                    
+                                  'ModelView ConfigurableMetadataView MetadataView">', $content);
             $this->assertContains('<div class="cgrid-view type-marketingLists" id="list-viewmodal">', $content);
             $this->assertContains('<div class="summary">1-2 of 2 result(s).</div>', $content);
             $this->assertContains('<table class="items">', $content);
