@@ -719,7 +719,7 @@
             $this->assertNotNull   ($emailMessage->content->textContent);
             $this->assertNotNull($emailMessage->content->htmlContent);
             $this->assertContains('/contacts/default/details?id=' . $contact->id, $emailMessage->content->textContent);
-            $this->assertContains('/contacts/default/details?id=' . $contact->id, $emailMessage->content->htmlContent);                                                
+            $this->assertContains('/contacts/default/details?id=' . $contact->id, $emailMessage->content->htmlContent);
         }
 
         /**

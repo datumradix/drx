@@ -281,41 +281,41 @@
             $this->assertContains('<tr><th><label for="Campaign_name" class="required">Name '.
                                     '<span class="required">*</span></label></th>', $content);
             $this->assertContains('<td colspan="1"><input id="Campaign_name" name="Campaign[name]" ' .
-                                    'type="text" maxlength="64"', $content);                                    
+                                    'type="text" maxlength="64"', $content);
             $this->assertContains('</tr><tr><th><label for="Campaign_marketingList_id" class="required">' .
-                                    'Marketing List <span class="required">*</span></label></th>', $content);                                    
+                                    'Marketing List <span class="required">*</span></label></th>', $content);
             $this->assertContains('<td colspan="1"><input name="Campaign[marketingList][id]" ' .
-                                    'id="Campaign_marketingList_id" value="" type="hidden"', $content);                                    
+                                    'id="Campaign_marketingList_id" value="" type="hidden"', $content);
             $this->assertContains('<div class="has-model-select">', $content);
             $this->assertContains('id="Campaign_marketingList_name" type="text" value="" '.
-                                    'name="Campaign_marketingList_name"', $content);                                    
+                                    'name="Campaign_marketingList_name"', $content);
             $this->assertContains('<a id="Campaign_marketingList_SelectLink" href="#"><span class="' .
-                                    'model-select-icon"></span><span class="z-spinner"></span></a>', $content);                                    
+                                    'model-select-icon"></span><span class="z-spinner"></span></a>', $content);
             $this->assertContains('<tr><th><label for="Campaign_fromName" class="required">From Name ' .
-                                    '<span class="required">*</span></label></th>', $content);                                    
+                                    '<span class="required">*</span></label></th>', $content);
             $this->assertContains('<td colspan="1"><input id="Campaign_fromName" name="Campaign[fromName]" ' .
-                                    'type="text" maxlength="64"', $content);                                    
+                                    'type="text" maxlength="64"', $content);
             $this->assertContains('<tr><th><label for="Campaign_fromAddress" class="required">From Address ' .
                                     '<span class="required">*</span></label></th>', $content);
             $this->assertContains('<td colspan="1"><input id="Campaign_fromAddress" ' .
-                                    'name="Campaign[fromAddress]" type="text" maxlength="64"', $content);                                    
+                                    'name="Campaign[fromAddress]" type="text" maxlength="64"', $content);
             $this->assertContains('<tr><th><label for="Campaign_sendOnDateTime" class="required">Send On ' .
                                     '<span class="required">*</span></label></th>', $content);
             $this->assertContains('<td colspan="1"><div class="has-date-select"><input ' .
                                     'id="Campaign_sendOnDateTime" name="Campaign[sendOnDateTime]" ' .
                                     'style="position:relative;z-index:10000;" type="text" ', $content);
             $this->assertContains('</tr><tr><th><label for="Campaign_subject" class="required">Subject ' .
-                                    '<span class="required">*</span></label></th>', $content);                                            
+                                    '<span class="required">*</span></label></th>', $content);
             $this->assertContains('<td colspan="1"><input id="Campaign_subject" name="Campaign[subject]" ' .
-                                    'type="text" maxlength="255"', $content);                                    
+                                    'type="text" maxlength="255"', $content);
             $this->assertContains('<tr><th>Enable Tracking<span id="enable-tracking-tooltip" ' .
                                     'class="tooltip" title="Check to track when recipients open ' .
-                                    'an email or click any links.">?</span></th>', $content);                                    
+                                    'an email or click any links.">?</span></th>', $content);
             $this->assertContains('<td colspan="1"><input id="ytCampaign_enableTracking" type="hidden" ' .
                                     'value="0" name="Campaign[enableTracking]"', $content);
             $this->assertContains('<label class="hasCheckBox c_on"><input id="Campaign_enableTracking" ' .
                                     'name="Campaign[enableTracking]" value="1" checked="checked" ' .
-                                    'type="checkbox"', $content); 
+                                    'type="checkbox"', $content);
             $this->assertContains('<tr><th>Support HTML<span id="support-rich-text-tooltip" ' .
                                     'class="tooltip" title="When checked, email will be sent in both text' .
                                     ' and HTML format.  Uncheck to only send text emails">' .
@@ -355,10 +355,10 @@
                                     'name="Campaign[textContent]" rows="6" cols="50">' .
                                     '</textarea></td></div>', $content);
             $this->assertContains('<div id="tab2" class="active-tab tab email-template-htmlContent">' .
-                                    '<label for="Campaign_htmlContent">Html Content</label>', $content);                                    
+                                    '<label for="Campaign_htmlContent">Html Content</label>', $content);
             $this->assertContains('<textarea id="Campaign_htmlContent" name="Campaign[htmlContent]"', $content);
             $this->assertContains('<div class="float-bar"><div class="view-toolbar-container ' .
-                                    'clearfix dock"><div class="form-toolbar">', $content);                                    
+                                    'clearfix dock"><div class="form-toolbar">', $content);
             $this->assertContains('/campaigns/default"><span class="z-label">Cancel</span></a>', $content);
             $this->assertContains('Save and Schedule', $content);
             $this->assertContains('<div id="modalContainer-edit-form">', $content);
@@ -377,7 +377,7 @@
             )));
             $content = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/create');
             $this->assertContains('<div class="errorSummary"><p>Please fix the following' .
-                                    ' input errors:</p>', $content);                                    
+                                    ' input errors:</p>', $content);
             $this->assertContains('<li>Name cannot be blank.</li>', $content);
             $this->assertEquals(1, substr_count($content, '<li>Name cannot be blank.</li>'));
             $this->assertContains('<li>Marketing List cannot be blank.</li>', $content);
@@ -388,28 +388,28 @@
             $this->assertContains('<li>Subject cannot be blank.</li>', $content);
             $this->assertContains('<li>Please provide at least one of the contents field.</li>', $content);
             $this->assertContains('<tr><th><label class="error required" for="Campaign_name">Name ' .
-                                    '<span class="required">*</span></label></th>', $content);                                    
+                                    '<span class="required">*</span></label></th>', $content);
             $this->assertContains('<td colspan="1"><input id="Campaign_name" name="Campaign[name]" ' .
-                                    'type="text" maxlength="64" value="" class="error"', $content);                                    
+                                    'type="text" maxlength="64" value="" class="error"', $content);
             $this->assertContains('<tr><th><label class="error required" for="Campaign_marketingList_id">' .
-                                    'Marketing List <span class="required">*</span></label></th>', $content);                                    
+                                    'Marketing List <span class="required">*</span></label></th>', $content);
             $this->assertContains('<tr><th><label class="error required" for="Campaign_fromName">From Name' .
-                                    ' <span class="required">*</span></label></th>', $content);                                    
+                                    ' <span class="required">*</span></label></th>', $content);
             $this->assertContains('<td colspan="1"><input id="Campaign_fromName" name="Campaign[fromName]"' .
-                                    ' type="text" maxlength="64" value="" class="error"', $content);                                    
+                                    ' type="text" maxlength="64" value="" class="error"', $content);
             $this->assertContains('<tr><th><label class="error required" for="Campaign_fromAddress">From' .
-                                    ' Address <span class="required">*</span></label></th>', $content);                                    
+                                    ' Address <span class="required">*</span></label></th>', $content);
             $this->assertContains('<td colspan="1"><input id="Campaign_fromAddress" name="Campaign' .
                                     '[fromAddress]" type="text" maxlength="64" ' .
-                                    'value="" class="error"', $content);                                    
+                                    'value="" class="error"', $content);
             $this->assertContains('<tr><th><label class="error required" for="Campaign_sendOnDateTime">' .
-                                    'Send On <span class="required">*</span></label></th>', $content);                                    
+                                    'Send On <span class="required">*</span></label></th>', $content);
             $this->assertContains('<tr><th><label class="error required" for="Campaign_subject">Subject ' .
-                                    '<span class="required">*</span></label></th>', $content);                                    
+                                    '<span class="required">*</span></label></th>', $content);
             $this->assertContains('<td colspan="1"><input id="Campaign_subject" name="Campaign[subject]" '.
-                                    'type="text" maxlength="255" value="" class="error"', $content);                                    
+                                    'type="text" maxlength="255" value="" class="error"', $content);
             $this->assertContains('<input id="Campaign_supportsRichText" name="Campaign[supportsRichText]"' .
-                                    ' value="1" type="checkbox" class="error"', $content);                                    
+                                    ' value="1" type="checkbox" class="error"', $content);
 
             $marketingListId                = self::getModelIdByModelNameAndName('MarketingList', 'MarketingListName');
             $this->setPostArray(array('Campaign' => array(
@@ -646,8 +646,8 @@
                                     '</textarea></td></div>', $content);
             $this->assertContains('<div id="tab2" class="active-tab tab email-template-htmlContent">' .
                                     '<label for="Campaign_htmlContent">Html Content</label>', $content);
-            $this->assertContains('<textarea id="Campaign_htmlContent" name="Campaign[htmlContent]"', $content);    
-            
+            $this->assertContains('<textarea id="Campaign_htmlContent" name="Campaign[htmlContent]"', $content);
+
             $marketingList      = MarketingListTestHelper::createMarketingListByName('MarketingListName2',
                                                                                         'MarketingList Description',
                                                                                         'second',
