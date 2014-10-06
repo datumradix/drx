@@ -125,7 +125,7 @@
                             }
                             updateElementWithData(textContentElement, data.textContent);
                             updateElementWithData(subjectElement, data.subject);
-                            $(htmlContentElement).redactor("set", data.htmlContent);
+                            $(htmlContentElement).redactor("code.set", data.htmlContent);
                             $(htmlContentElement).redactor("toggle");
                             $(htmlContentElement).redactor("toggle");
                             var contentHeight = $(".redactor_box iframe").contents().find("html").outerHeight();
