@@ -38,7 +38,7 @@
     {
         const LINK_FOR_INSERT_CLASS = 'image-gallery-modal-insert';
 
-        public $scriptFile          = array('redactor.min.js');
+        public $scriptFile          = array('redactor.js');
 
         public $cssFile             = array('redactor.css');
 
@@ -54,6 +54,8 @@
         public $buttons         = "['html', '|', 'formatting', 'bold', 'italic', 'deleted', '|',
                                    'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'link', '|',
                                    'alignleft', 'aligncenter', 'alignright', '|', 'horizontalrule']";
+
+        public $buttonSource    = "true";
 
         public $pastePlainText  = "true";
 
@@ -137,7 +139,8 @@
                                 {$this->renderRedactorParamForInit('iframe')}
                                 {$this->renderRedactorParamForInit('css')}
                                 {$this->renderRedactorParamForInit('urlForImageGallery')}
-                                buttons:            {$this->buttons},
+                                {$this->renderRedactorParamForInit('buttonSource')}
+                                {$this->renderRedactorParamForInit('buttons')}
                                 cleanup:            {$this->cleanup},
                                 convertDivs:        {$this->convertDivs},
                                 imageGetJson:       '{$this->imageGetJson}',
