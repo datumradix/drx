@@ -98,7 +98,7 @@
             Smtpapi::register_autoloader();
             $from = array('address' => $emailMessage->sender->fromAddress, 'name' => $emailMessage->sender->fromName);
             $this->fromUserEmailData = $from;
-            static::resolveRecipientAddressesByType($emailMessage);
+            $this->resolveRecipientAddressesByType($emailMessage);
             $this->emailAccount = $emailAccount;
         }
 
@@ -127,7 +127,7 @@
             if ($validated)
             {
                 list($toAddresses, $ccAddresses, $bccAddresses) = SendGridEmailHelper::resolveRecipientAddressesByType($emailMessage);
-                $this->sendEmail($emailMessage);
+                $this->sendMail($emailMessage);
                 $saved        = $emailMessage->save();
                 if (!$saved)
                 {
@@ -141,11 +141,12 @@
          * Send email.
          * @param EmailMessage $emailMessage
          */
-        public function sendEmail(EmailMessage $emailMessage)
+        public function sendMail(EmailMessage $emailMessage)
         {
+            $sendGridEmailHelper = Yii::app()->sendGridEmailHelper;
             $itemData       = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($emailMessage);
-            $apiUser        = $this->emailHelper->apiUsername;
-            $apiPassword    = $this->emailHelper->apiPassword;
+            $apiUser        = $sendGridEmailHelper->apiUsername;
+            $apiPassword    = $sendGridEmailHelper->apiPassword;
             if($itemData != null)
             {
                 list($itemId, $itemClass, $personId) = $itemData;
@@ -247,6 +248,11 @@
                     unlink($path);
                 }
             }
+            $saved = $emailMessage->save();
+            if (!$saved)
+            {
+                throw new FailedToSaveModelException();
+            }
         }
 
         /**
@@ -254,7 +260,7 @@
          * @param EmailMessage $emailMessage
          * @return array
          */
-        public static function resolveRecipientAddressesByType(EmailMessage $emailMessage)
+        public function resolveRecipientAddressesByType(EmailMessage $emailMessage)
         {
             $toAddresses    = array();
             $ccAddresses    = array();

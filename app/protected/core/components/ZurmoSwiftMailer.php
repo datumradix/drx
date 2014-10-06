@@ -184,12 +184,22 @@
             return $result;
         }
 
+        /**
+         * Class constructor.
+         * @param EmailMessage $emailMessage
+         * @param EmailAccount $emailAccount
+         */
         public function __construct(EmailMessage $emailMessage, EmailAccount $emailAccount)
         {
             $this->populateSettings($emailAccount);
             $this->populateMessage($emailMessage);
         }
 
+        /**
+         * Populate settings.
+         * @param EmailAccount $emailAccount
+         * @return void
+         */
         protected function populateSettings(EmailAccount $emailAccount)
         {
             if ($emailAccount->useCustomOutboundSettings)
@@ -212,6 +222,11 @@
             }
         }
 
+        /**
+         * Populate message.
+         * @param EmailMessage $emailMessage
+         * @return void
+         */
         public function populateMessage(EmailMessage $emailMessage)
         {
             $this->Subject  = $emailMessage->subject;
@@ -243,7 +258,8 @@
         }
 
         /**
-         *
+         * Get outbound settings.
+         * @return array
          */
         public static function getOutboundSettings()
         {
@@ -284,6 +300,7 @@
                     $settings[$keyName] = null;
                 }
             }
+            return $settings;
         }
 
         /**
@@ -310,6 +327,11 @@
             }
         }
 
+        /**
+         * Sends email.
+         * @param EmailMessage $emailMessage
+         * @return void
+         */
         public function sendEmail(EmailMessage $emailMessage)
         {
             try

@@ -215,7 +215,7 @@
             $from         = array('address' => $emailMessage->sender->fromAddress, 'name' => $emailMessage->sender->fromName);
             list($toAddresses, $ccAddresses, $bccAddresses) = self::resolveRecipientAddressesByType($emailMessage);
             $mailer       = new ZurmoSendGridMailer($this, $from, $toAddresses, $ccAddresses, $bccAddresses);
-            $mailer->sendEmail($emailMessage);
+            $mailer->sendMail($emailMessage);
             $saved        = $emailMessage->save();
             if (!$saved)
             {

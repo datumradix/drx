@@ -36,8 +36,9 @@
 
         }*/
 
-        public static function resolveMailer(EmailMessage $emailMessage, $user = null)
+        public static function resolveMailer(EmailMessage $emailMessage)
         {
+            $user   = $emailMessage->owner;
             //Sendgrid enabled
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             if($sendGridPluginEnabled && $user != null)
