@@ -50,9 +50,19 @@
             $this->assertEquals('aJob', $queuedJobs[15][0]['jobType']);
             //Try to add it again
             Yii::app()->jobQueue->add('aJob', 15);
+            // And add it with noise
+            Yii::app()->jobQueue->add('aJob', 17);
             $queuedJobs = Yii::app()->jobQueue->getAll();
             $this->assertCount(1, $queuedJobs[15]);
+            $this->assertFalse(isset($queuedJobs[17]));
             $this->assertEquals('aJob', $queuedJobs[15][0]['jobType']);
+            // Now add same job, but with delay that is much higher then existing job with noise
+            Yii::app()->jobQueue->add('aJob', 100);
+            $queuedJobs = Yii::app()->jobQueue->getAll();
+            $this->assertCount(1, $queuedJobs[15]);
+            $this->assertCount(1, $queuedJobs[100]);
+            $this->assertEquals('aJob', $queuedJobs[100][0]['jobType']);
+
             //Try to add a new job
             Yii::app()->jobQueue->add('bJob', 15);
             $queuedJobs = Yii::app()->jobQueue->getAll();
@@ -72,8 +82,9 @@
         public function testDeleteAll()
         {
             $queuedJobs = Yii::app()->jobQueue->getAll();
-            $this->assertCount(2, $queuedJobs);
+            $this->assertCount(3, $queuedJobs);
             $this->assertCount(2, $queuedJobs[15]);
+            $this->assertCount(1, $queuedJobs[100]);
             $this->assertCount(1, $queuedJobs[0]);
             Yii::app()->jobQueue->deleteAll();
             $queuedJobs = Yii::app()->jobQueue->getAll();

@@ -39,6 +39,8 @@
      */
     class JobQueue extends CApplicationComponent
     {
+        const MAX_DELAY_NOISE_IN_SECONDS = 15;
+
         protected $queuedJobs = array();
 
         /**
@@ -51,8 +53,7 @@
             assert('is_string($jobType)');
             assert('is_int($delay)');
             assert('is_array($params)');
-            if (!isset($this->queuedJobs[$delay]) ||
-                !$this->isJobTypeWithDelayAndParamsAlreadyExistInQueue($jobType, $delay, $params))
+            if (!$this->isJobTypeWithDelayAndParamsAlreadyExistInQueue($jobType, $delay, $params))
             {
                 $this->queuedJobs[$delay][] = array(
                     'jobType' => $jobType,
@@ -73,16 +74,36 @@
             assert('is_string($jobType)');
             assert('is_int($delay)');
             assert('is_array($params)');
-            foreach ($this->queuedJobs[$delay] as $queuedJob)
+            foreach ($this->queuedJobs as $existingJobDelay => $queuedJobs)
             {
-                if ($queuedJob['jobType'] == $jobType)
+                foreach ($queuedJobs as $queuedJob)
                 {
-                    // add code to check case when params are empty
-                    if ($queuedJob['params'] == $params)
+                    if ($queuedJob['jobType'] == $jobType &&
+                        $this->isDelayEqualWithNoise($existingJobDelay, $delay, self::MAX_DELAY_NOISE_IN_SECONDS))
                     {
-                        return true;
+                        if ($queuedJob['params'] == $params)
+                        {
+                            return true;
+                        }
                     }
                 }
+            }
+            return false;
+        }
+
+        /**
+         * Check if new job delay is in bounds of another
+         * @param int $existingJobDelay
+         * @param int $delay
+         * @param int $noise
+         * @return bool
+         */
+        protected function isDelayEqualWithNoise($existingJobDelay, $delay, $noise)
+        {
+            if ($existingJobDelay <= $delay  &&
+                $existingJobDelay + $noise >= $delay)
+            {
+                return true;
             }
             return false;
         }
