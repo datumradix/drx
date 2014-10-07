@@ -241,7 +241,7 @@
            // $this->populateMailer($mailer, $emailMessage, $this->htmlConverter); //just passing in htmlConverter for the time being
             //$mailer->populateMessage($emailMessage);
             //$this->sendEmail($mailer, $emailMessage);
-            $mailer->sendMail($emailMessage);
+            $mailer->sendEmail();
             //$this->updateEmailMessageForSending($emailMessage, (bool) ($emailMessage->id > 0));
         }
 

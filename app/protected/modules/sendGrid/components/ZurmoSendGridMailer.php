@@ -56,6 +56,8 @@
 
         protected $emailAccount;
 
+        protected $emailMessage;
+
         /**
          * @param SendGridEmailHelper $emailHelper
          * @param User $userToSendMessagesFrom
@@ -92,13 +94,14 @@
             $this->bccAddresses     = $bccAddresses;
         }*/
 
-        public function __construct(EmailMessage $emailMessage, SendGridEmailAccount $emailAccount)
+        public function __construct(EmailMessage $emailMessage, $emailAccount)
         {
             SendGrid::register_autoloader();
             Smtpapi::register_autoloader();
             $from = array('address' => $emailMessage->sender->fromAddress, 'name' => $emailMessage->sender->fromName);
             $this->fromUserEmailData = $from;
-            $this->resolveRecipientAddressesByType($emailMessage);
+            $this->emailMessage      = $emailMessage;
+            $this->resolveRecipientAddressesByType();
             $this->emailAccount = $emailAccount;
         }
 
@@ -141,8 +144,9 @@
          * Send email.
          * @param EmailMessage $emailMessage
          */
-        public function sendMail(EmailMessage $emailMessage)
+        public function sendEmail()
         {
+            $emailMessage   = $this->emailMessage;
             $sendGridEmailHelper = Yii::app()->sendGridEmailHelper;
             $itemData       = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($emailMessage);
             $apiUser        = $sendGridEmailHelper->apiUsername;
@@ -151,22 +155,28 @@
             {
                 list($itemId, $itemClass, $personId) = $itemData;
                 $campaignOrAutoresponderItem = $itemClass::getById($itemId);
-                $userEmailAccount            = SendGridEmailAccount::resolveAndGetByUserAndName($campaignOrAutoresponderItem->campaign->owner, null, false);
-                $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                if($userEmailAccount->apiUsername != ''
-                    && $userEmailAccount->apiPassword != ''
-                        && $useAutoresponderOrCampaignOwnerMailSettings === true)
+                $userEmailAccount            = $this->emailAccount;
+                if($userEmailAccount != null)
                 {
-                    $associatedCampaign          = $campaignOrAutoresponderItem->campaign;
-                    //If not already updated
-                    if($associatedCampaign->mailer == null)
+                    $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
+                    if($userEmailAccount->apiUsername != ''
+                        && $userEmailAccount->apiPassword != ''
+                            && $useAutoresponderOrCampaignOwnerMailSettings === true)
                     {
-                        $associatedCampaign->mailer         = 'sendgrid';
-                        $associatedCampaign->useOwnerSmtp   = true;
-                        $associatedCampaign->save();
+                        if($itemClass == 'CampaignItem')
+                        {
+                            $associatedCampaign          = $campaignOrAutoresponderItem->campaign;
+                            //If not already updated
+                            if($associatedCampaign->mailer == null)
+                            {
+                                $associatedCampaign->mailer         = 'sendgrid';
+                                $associatedCampaign->useOwnerSmtp   = true;
+                                $associatedCampaign->save();
+                            }
+                        }
+                        $apiUser        = $userEmailAccount->apiUsername;
+                        $apiPassword    = ZurmoPasswordSecurityUtil::decrypt($userEmailAccount->apiPassword);
                     }
-                    $apiUser        = $userEmailAccount->apiUsername;
-                    $apiPassword    = ZurmoPasswordSecurityUtil::decrypt($userEmailAccount->apiPassword);
                 }
             }
             $sendgrid = new SendGrid($apiUser, $apiPassword, array("turn_off_ssl_verification" => true));
@@ -260,8 +270,9 @@
          * @param EmailMessage $emailMessage
          * @return array
          */
-        public function resolveRecipientAddressesByType(EmailMessage $emailMessage)
+        public function resolveRecipientAddressesByType()
         {
+            $emailMessage   = $this->emailMessage;
             $toAddresses    = array();
             $ccAddresses    = array();
             $bccAddresses   = array();
