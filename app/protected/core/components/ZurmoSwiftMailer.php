@@ -59,6 +59,10 @@
          */
         protected $sendResponseLog          = array();
 
+        protected $emailAccount;
+
+        protected $emailMessage;
+
         /**
          * (non-PHPdoc)
          * @see SwiftMailer::smtpTransport()
@@ -189,10 +193,13 @@
          * @param EmailMessage $emailMessage
          * @param EmailAccount $emailAccount
          */
-        public function __construct(EmailMessage $emailMessage, EmailAccount $emailAccount)
+        public function __construct(EmailMessage $emailMessage, $emailAccount)
         {
-            $this->populateSettings($emailAccount);
-            $this->populateMessage($emailMessage);
+            parent::init();
+            $this->emailAccount = $emailAccount;
+            $this->emailMessage = $emailMessage;
+            $this->populateSettings();
+            $this->populateMessage();
         }
 
         /**
@@ -200,9 +207,10 @@
          * @param EmailAccount $emailAccount
          * @return void
          */
-        protected function populateSettings(EmailAccount $emailAccount)
+        protected function populateSettings()
         {
-            if ($emailAccount->useCustomOutboundSettings)
+            $emailAccount = $this->emailAccount;
+            if ($emailAccount != null && $emailAccount->useCustomOutboundSettings)
             {
                 $this->host     = $emailAccount->outboundHost;
                 $this->port     = $emailAccount->outboundPort;
@@ -224,11 +232,11 @@
 
         /**
          * Populate message.
-         * @param EmailMessage $emailMessage
          * @return void
          */
-        public function populateMessage(EmailMessage $emailMessage)
+        public function populateMessage()
         {
+            $emailMessage   = $this->emailMessage;
             $this->Subject  = $emailMessage->subject;
             $this->headers  = unserialize($emailMessage->headers);
             if (!empty($emailMessage->content->textContent))
@@ -305,24 +313,38 @@
 
         /**
          * Resolve mailer by campaign or autoresponder email account setting if marketing option is configured.
-         * @param EmailMessage $emailMessage
          */
-        public function resolveMailerByCampaignOrAutoresponderEmailAccount(EmailMessage $emailMessage)
+        public function resolveMailerByCampaignOrAutoresponderEmailAccount()
         {
+            $emailMessage = $this->emailMessage;
             if(($itemData = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($emailMessage)) != null)
             {
                 list($itemId, $itemClass, $personId) = $itemData;
                 $campaignOrAutoresponderItem = $itemClass::getById($itemId);
-                $userEmailAccount = EmailAccount::resolveAndGetByUserAndName($campaignOrAutoresponderItem->campaign->owner, null, false);
-                $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                if($userEmailAccount->outboundUsername != ''
-                        && $userEmailAccount->outboundPassword != ''
-                            && $useAutoresponderOrCampaignOwnerMailSettings === true)
+                $userEmailAccount = $this->emailAccount;
+                if($userEmailAccount != null)
                 {
-                    $this->username = $userEmailAccount->outboundUsername;
-                    $this->password = ZurmoPasswordSecurityUtil::decrypt($userEmailAccount->outboundPassword);
-                    $this->host     = $userEmailAccount->outboundHost;
-                    $this->port     = $userEmailAccount->outboundPort;
+                    $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
+                    if($userEmailAccount->outboundUsername != ''
+                            && $userEmailAccount->outboundPassword != ''
+                                && $useAutoresponderOrCampaignOwnerMailSettings === true)
+                    {
+                        if($itemClass == 'CampaignItem')
+                        {
+                            $associatedCampaign          = $campaignOrAutoresponderItem->campaign;
+                            //If not already updated
+                            if($associatedCampaign->mailer == null)
+                            {
+                                $associatedCampaign->mailer         = 'swiftmailer';
+                                $associatedCampaign->useOwnerSmtp   = true;
+                                $associatedCampaign->save();
+                            }
+                        }
+                        $this->username = $userEmailAccount->outboundUsername;
+                        $this->password = ZurmoPasswordSecurityUtil::decrypt($userEmailAccount->outboundPassword);
+                        $this->host     = $userEmailAccount->outboundHost;
+                        $this->port     = $userEmailAccount->outboundPort;
+                    }
                 }
             }
         }
@@ -332,11 +354,12 @@
          * @param EmailMessage $emailMessage
          * @return void
          */
-        public function sendEmail(EmailMessage $emailMessage)
+        public function sendEmail()
         {
+            $emailMessage = $this->emailMessage;
             try
             {
-                $this->resolveMailerByCampaignOrAutoresponderEmailAccount($emailMessage);
+                $this->resolveMailerByCampaignOrAutoresponderEmailAccount();
                 $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
                 $acceptedRecipients         = $this->send();
                 // Code below is quick fix, we need to think about better solution
