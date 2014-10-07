@@ -68,7 +68,31 @@
         public function run()
         {
             $user = Yii::app()->user->userModel;
-            $processingCampaigns    = Campaign::getByStatus(Campaign::STATUS_PROCESSING);
+            //$processingCampaigns    = Campaign::getByStatus(Campaign::STATUS_PROCESSING);
+
+            //figure out later... we gotta get autoresponders too. event data for autoresponders, not just campaigns.
+            //get all campaigns that are processing/completed
+            //for a given $campaign - get a related emailMessage that has been sent.....
+                //ONLY if at least 1 email message has been sent. proceed....
+
+
+                    //proceed - check emailMessage for mailerType sendgrid or not.
+
+                        //if not sendgrid don't proceed.
+
+                            //if sendgrid, then check $emailMessage->mailerSettingsSource is personal or global
+
+                                //if person use
+            $emailAccount                   = SendGridEmailAccount::getByUserAndName($processingCampaign->owner);
+            $bounceEventWebhookUrl          = $emailAccount->eventWebhookUrl;
+                                //if not
+            $bounceEventWebhookUrl          = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
+
+
+
+
+
+
             foreach($processingCampaigns as $processingCampaign)
             {
                 $campaignItemsList      = array();
@@ -183,6 +207,35 @@
                     $value['type'] = EmailMessageActivity::TYPE_BOUNCE;
                 }
             }
+        }
+
+
+
+        public function jasonFunction()
+        {
+            //global event hook polling
+                //this->globalEventMethod();
+            //user event hooks polling
+                //this->someMethod that looks through users to see who has personal sendgrid, then polls for that
+
+        }
+
+        protected function globalEventMethod()
+        {
+            //get last offset from ZurmoConfigurationUtil::getByModuleName
+            $bounceEventWebhookUrl          = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
+            $content = file_get_contents($bounceEventWebhookUrl, $offset);
+            //now loop through each line up to max offset processing
+
+                //foreach each line of log
+                    //processs event
+                    //++ lines processed
+                    //if lines processed is max, then stop foreach (break)
+
+                //construct new offset etc
+                //store new offset ZurmoConfigurationUtil::setByModuleName
+
+
         }
     }
 ?>
