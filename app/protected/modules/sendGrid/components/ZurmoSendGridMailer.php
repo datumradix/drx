@@ -106,38 +106,17 @@
         }
 
         /**
-         * Send a test email from user.  Can use to determine if the SMTP settings are configured correctly.
-         * @return EmailMessage
-         */
-        public function sendTestEmailFromUser()
-        {
-            $this->fromUserEmailData = array(
-                'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($this->fromUser),
-                'name'      => strval($this->fromUser),
-            );
-            return $this->sendTestEmail();
-        }
-
-        /**
          * Send a test email.
          * @return EmailMessage
          */
         public function sendTestEmail()
         {
-            $toAddresses               = array_keys($this->toAddresses);
-            $emailMessage              = EmailMessageHelper::processAndCreateEmailMessage($this->fromUserEmailData, $toAddresses[0]);
-            $validated                 = $emailMessage->validate();
-            if ($validated)
+            if ($this->emailMessage->validate())
             {
-                list($toAddresses, $ccAddresses, $bccAddresses) = SendGridEmailHelper::resolveRecipientAddressesByType($emailMessage);
-                $this->sendMail($emailMessage);
-                $saved        = $emailMessage->save();
-                if (!$saved)
-                {
-                    throw new FailedToSaveModelException();
-                }
+                self::resolveRecipientAddressesByType();
+                $this->sendEmail();
             }
-            return $emailMessage;
+            return $this->emailMessage;
         }
 
         /**
@@ -157,9 +136,9 @@
                 $apiUser        = $this->emailAccount->apiUsername;
                 $apiPassword    = ZurmoPasswordSecurityUtil::decrypt($this->emailAccount->apiPassword);
             }
-            $itemData       = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($this->emailMessage);
-            $sendgrid = new SendGrid($apiUser, $apiPassword, array("turn_off_ssl_verification" => true));
-            $email    = new SendGrid\Email();
+            $itemData   = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($this->emailMessage);
+            $sendgrid   = new SendGrid($apiUser, $apiPassword, array("turn_off_ssl_verification" => true));
+            $email      = new SendGrid\Email();
             $email->setFrom($this->fromUserEmailData['address'])->
                    setFromName($this->fromUserEmailData['name'])->
                    setSubject($emailMessage->subject)->
@@ -274,6 +253,42 @@
             $this->toAddresses = $toAddresses;
             $this->ccAddresses = $ccAddresses;
             $this->bccAddresses = $bccAddresses;
+        }
+
+        /**
+         * Sets from user.
+         * @param User $userToSendMessagesFrom
+         */
+        public function setFromUser($userToSendMessagesFrom)
+        {
+            if(is_array($userToSendMessagesFrom))
+            {
+                $this->fromUserEmailData = $userToSendMessagesFrom;
+            }
+            elseif(is_object($userToSendMessagesFrom) && $userToSendMessagesFrom instanceof User)
+            {
+                $this->fromUser    = $userToSendMessagesFrom;
+            }
+        }
+
+        public function setToAddresses($toAddresses)
+        {
+            $this->toAddresses = $toAddresses;
+        }
+
+        public function setCcAddresses($ccAddresses)
+        {
+            $this->ccAddresses = $ccAddresses;
+        }
+
+        public function setBccAddresses($bccAddresses)
+        {
+            $this->bccAddresses = $bccAddresses;
+        }
+
+        public function getEmailAccount()
+        {
+            return $this->emailAccount;
         }
     }
 ?>

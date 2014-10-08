@@ -228,13 +228,15 @@
          * @throws FailedToSaveModelException
          * @return null
          */
-        public function sendImmediately(EmailMessage $emailMessage, $user = null)
+        public function sendImmediately(EmailMessage $emailMessage)
         {
             if ($emailMessage->folder->type == EmailFolder::TYPE_SENT)
             {
                 throw new NotSupportedException();
             }
-            $mailer     = ZurmoMailerFactory::resolveMailer($emailMessage, $user);
+            $mailerFactory  = new ZurmoMailerFactory($emailMessage);
+            $mailer         = $mailerFactory->resolveMailer();
+            exit;
             //$mailer = ZurmoMailerFactory::resolveMailerByEmailMessage($emailMessage); //in here we can look at the related email->account, etc. and run
             //the logic sequence to determine which mailer to retrieve.
             //$mailer             = $this->getOutboundMailer();

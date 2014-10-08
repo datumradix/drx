@@ -162,26 +162,28 @@
                 }
                 if ($configurationForm->aTestToAddress != null)
                 {
-                    $emailHelper = new SendGridEmailHelper();
-                    $emailHelper->loadDefaultFromAndToAddresses();
-                    $emailHelper->apiUsername     = $configurationForm->username;
-                    $emailHelper->apiPassword     = $configurationForm->password;
+                    $sendGridEmailAccount         = new SendGridEmailAccount();
+                    $sendGridEmailAccount->apiUsername     = $configurationForm->username;
+                    $sendGridEmailAccount->apiPassword     = ZurmoPasswordSecurityUtil::encrypt($configurationForm->password);
                     if (isset($fromNameToSendMessagesFrom) && isset($fromAddressToSendMessagesFrom))
                     {
                         $from = array(
                             'name'      => $fromNameToSendMessagesFrom,
                             'address'   => $fromAddressToSendMessagesFrom
                         );
-                        $mailer       = new ZurmoSendGridMailer($emailHelper, $from, $configurationForm->aTestToAddress);
-                        $emailMessage = $mailer->sendTestEmail();
                     }
                     else
                     {
                         $user                   = BaseControlUserConfigUtil::getUserToRunAs();
                         $userToSendMessagesFrom = User::getById((int)$user->id);
-                        $mailer                 = new ZurmoSendGridMailer($emailHelper, $userToSendMessagesFrom, $configurationForm->aTestToAddress);
-                        $emailMessage           = $mailer->sendTestEmailFromUser();
+                        $from = array(
+                            'name'      => strval($userToSendMessagesFrom),
+                            'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom)
+                        );
                     }
+                    $emailMessage = EmailMessageHelper::processAndCreateEmailMessage($from, $configurationForm->aTestToAddress);
+                    $mailer       = new ZurmoSendGridMailer($emailMessage, $sendGridEmailAccount);
+                    $emailMessage = $mailer->sendTestEmail();
                     $messageContent  = EmailHelper::prepareMessageContent($emailMessage);
                 }
                 else

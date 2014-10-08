@@ -93,5 +93,19 @@
             }
             return $emailMessage;
         }
+
+        public static function createSendGridEmailAccount(User $user)
+        {
+            $emailAccount                    = new SendGridEmailAccount();
+            $emailAccount->user              = $user;
+            $emailAccount->name              = EmailAccount::DEFAULT_NAME;
+            $emailAccount->fromName          = $user->getFullName();
+            $emailAccount->fromAddress       = 'user@zurmo.com';
+            $emailAccount->apiUsername        = Yii::app()->params['emailTestAccounts']['sendGridUserSettings']['apiUsername'];
+            $emailAccount->apiPassword        = Yii::app()->params['emailTestAccounts']['sendGridUserSettings']['apiPassword'];
+            $emailAccount->eventWebhookUrl    = 'http://yahoo.com';
+            $emailAccount->save();
+            return $emailAccount;
+        }
     }
 ?>

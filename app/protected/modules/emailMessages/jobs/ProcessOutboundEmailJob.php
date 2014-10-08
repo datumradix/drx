@@ -72,13 +72,6 @@
          */
         public function run()
         {
-            /*$emailHelper    = EmailMessageUtil::resolveAndGetEmailHelperInstance();
-            $success        = $emailHelper>sendQueued($this->resolveBatchSize());
-            if ($emailHelper->getQueuedCount() > 0)
-            {
-                static::loadJobQueue();
-            }
-            return $success;*/
             $emailHelper          = Yii::app()->emailHelper;
             $outboxQueuedMessages = EmailMessageUtil::getOutboundQueuedMessages($this->resolveBatchSize());
             foreach($outboxQueuedMessages as $emailMessage)
