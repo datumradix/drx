@@ -178,9 +178,7 @@
                     'htmlContent',
                     'textContent',
                     'fromName',
-                    'fromAddress',
-                    'mailer',
-                    'useOwnerSmtp'
+                    'fromAddress'
                 ),
                 'rules' => array(
                     array('name',                   'required'),
@@ -212,10 +210,7 @@
                     array('textContent',            'CampaignMergeTagsValidator', 'except' => 'searchModel'),
                     array('enableTracking',         'boolean'),
                     array('enableTracking',         'default', 'value' => false),
-                    array('marketingList',          'required'),
-                    array('mailer',                 'type',    'type' => 'string'),
-                    array('useOwnerSmtp',           'boolean'),
-                    array('useOwnerSmtp',           'default', 'value' => false),
+                    array('marketingList',          'required')
                 ),
                 'relations' => array(
                     'campaignItems'     => array(static::HAS_MANY, 'CampaignItem'),
@@ -230,9 +225,7 @@
                     'supportsRichText' => 'CheckBox',
                     'enableTracking'   => 'CheckBox',
                     'sendOnDateTime'   => 'DateTime',
-                    'status'           => 'CampaignStatus',
-                    'useOwnerSmtp'     => 'CheckBox',
-                    'mailer'           => 'Text'
+                    'status'           => 'CampaignStatus'
                 ),
                 'defaultSortAttribute' => 'name',
             );

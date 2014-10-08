@@ -147,38 +147,17 @@
         public function sendEmail()
         {
             $emailMessage   = $this->emailMessage;
-            $sendGridEmailHelper = Yii::app()->sendGridEmailHelper;
-            $itemData       = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($emailMessage);
-            $apiUser        = $sendGridEmailHelper->apiUsername;
-            $apiPassword    = $sendGridEmailHelper->apiPassword;
-            if($itemData != null)
+            if($this->emailAccount == null)
             {
-                list($itemId, $itemClass, $personId) = $itemData;
-                $campaignOrAutoresponderItem = $itemClass::getById($itemId);
-                $userEmailAccount            = $this->emailAccount;
-                if($userEmailAccount != null)
-                {
-                    $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                    if($userEmailAccount->apiUsername != ''
-                        && $userEmailAccount->apiPassword != ''
-                            && $useAutoresponderOrCampaignOwnerMailSettings === true)
-                    {
-                        if($itemClass == 'CampaignItem')
-                        {
-                            $associatedCampaign          = $campaignOrAutoresponderItem->campaign;
-                            //If not already updated
-                            if($associatedCampaign->mailer == null)
-                            {
-                                $associatedCampaign->mailer         = 'sendgrid';
-                                $associatedCampaign->useOwnerSmtp   = true;
-                                $associatedCampaign->save();
-                            }
-                        }
-                        $apiUser        = $userEmailAccount->apiUsername;
-                        $apiPassword    = ZurmoPasswordSecurityUtil::decrypt($userEmailAccount->apiPassword);
-                    }
-                }
+                $apiUser        = Yii::app()->sendGridEmailHelper->apiUsername;
+                $apiPassword    = Yii::app()->sendGridEmailHelper->apiPassword;
             }
+            else
+            {
+                $apiUser        = $this->emailAccount->apiUsername;
+                $apiPassword    = ZurmoPasswordSecurityUtil::decrypt($this->emailAccount->apiPassword);
+            }
+            $itemData       = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($this->emailMessage);
             $sendgrid = new SendGrid($apiUser, $apiPassword, array("turn_off_ssl_verification" => true));
             $email    = new SendGrid\Email();
             $email->setFrom($this->fromUserEmailData['address'])->
@@ -191,6 +170,7 @@
             //Check if campaign and if yes, associate to email.
             if($itemData != null)
             {
+                list($itemId, $itemClass, $personId) = $itemData;
                 $email->addUniqueArg("itemId", $itemId);
                 $email->addUniqueArg("itemClass", $itemClass);
                 $email->addUniqueArg("personId", $personId);
