@@ -59,15 +59,11 @@
 
             if (EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
             {
-                EmailMessageTestHelper::createEmailAccount(static::$usercstmsmtp);
-                Yii::app()->emailHelper->outboundHost     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundHost'];
-                Yii::app()->emailHelper->outboundPort     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPort'];
-                Yii::app()->emailHelper->outboundUsername = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundUsername'];
-                Yii::app()->emailHelper->outboundPassword = Yii::app()->params['emailTestAccounts']['userSmtpSettins']['outboundPassword'];
-                Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundSecurity'];
-                Yii::app()->emailHelper->sendEmailThroughTransport = true;
-                Yii::app()->emailHelper->setOutboundSettings();
-                Yii::app()->emailHelper->init();
+                EmailMessageTestHelper::createEmailAccountForMailerFactory(static::$usercstmsmtp);
+                //$emailAccount = EmailAccount::resolveAndGetByUserAndName(static::$usercstmsmtp, null, false);
+                //Yii::app()->emailHelper->sendEmailThroughTransport = true;
+                //Yii::app()->emailHelper->setOutboundSettings();
+                //Yii::app()->emailHelper->init();
             }
             SendGrid::register_autoloader();
             Smtpapi::register_autoloader();
@@ -96,8 +92,6 @@
             $this->assertNotNull($mailer->getEmailAccount());
             $emailMessage->owner = static::$usercstmsmtp;
             assert($emailMessage->save());
-            print $emailMessage->owner->getFullName();
-            exit;
             $mailerFactory = new ZurmoMailerFactory($emailMessage);
             $mailer        = $mailerFactory->resolveMailer();
             $this->assertTrue($mailer instanceof ZurmoSwiftMailer);

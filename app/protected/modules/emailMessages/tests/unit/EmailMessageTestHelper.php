@@ -250,5 +250,22 @@
                 $imap->deleteMessages(true);
             }
         }
+
+        public static function createEmailAccountForMailerFactory(User $user)
+        {
+            $emailAccount                    = new EmailAccount();
+            $emailAccount->user              = $user;
+            $emailAccount->name              = EmailAccount::DEFAULT_NAME;
+            $emailAccount->fromName          = $user->getFullName();
+            $emailAccount->fromAddress       = 'user@zurmo.com';
+            $emailAccount->useCustomOutboundSettings = true;
+            $emailAccount->outboundType      = 'smtp';
+            $emailAccount->outboundHost     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundHost'];
+            $emailAccount->outboundPort     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPort'];
+            $emailAccount->outboundUsername = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundUsername'];
+            $emailAccount->outboundPassword = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPassword'];
+            $emailAccount->outboundSecurity = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundSecurity'];
+            $emailAccount->save();
+        }
     }
 ?>
