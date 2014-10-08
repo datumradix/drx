@@ -53,7 +53,7 @@
             assert('is_string($jobType)');
             assert('is_int($delay)');
             assert('is_array($params)');
-            if (!$this->isJobTypeWithDelayAndParamsAlreadyExistInQueue($jobType, $delay, $params))
+            if (!$this->isJobTypeWithDelayAndParamsAlreadyExistInQueueAndReplaceItInQueue($jobType, $delay, $params, true))
             {
                 $this->queuedJobs[$delay][] = array(
                     'jobType' => $jobType,
@@ -67,22 +67,37 @@
          * @param string $jobType
          * @param int $delay
          * @param array $params
+         * @param bool $replaceExistingJobInQueueWithLatterOne
          * @return bool
          */
-        protected function isJobTypeWithDelayAndParamsAlreadyExistInQueue($jobType, $delay, $params)
+        protected function isJobTypeWithDelayAndParamsAlreadyExistInQueueAndReplaceItInQueue($jobType, $delay, $params,
+                                                                                           $replaceExistingJobInQueueWithLatterOne = false)
         {
             assert('is_string($jobType)');
             assert('is_int($delay)');
             assert('is_array($params)');
+            assert('is_bool($replaceExistingJobInQueueWithLatterOne)');
             foreach ($this->queuedJobs as $existingJobDelay => $queuedJobs)
             {
-                foreach ($queuedJobs as $queuedJob)
+                foreach ($queuedJobs as $key => $queuedJob)
                 {
                     if ($queuedJob['jobType'] == $jobType &&
-                        $this->isDelayEqualWithNoise($existingJobDelay, $delay, self::MAX_DELAY_NOISE_IN_SECONDS))
+                        $this->isDelayWithinAcceptableTolerance($existingJobDelay, $delay, self::MAX_DELAY_NOISE_IN_SECONDS))
                     {
                         if ($queuedJob['params'] == $params)
                         {
+                            if ($replaceExistingJobInQueueWithLatterOne)
+                            {
+                                unset($this->queuedJobs[$existingJobDelay][$key]);
+                                if (empty($this->queuedJobs[$existingJobDelay]))
+                                {
+                                    unset($this->queuedJobs[$existingJobDelay]);
+                                }
+                                $this->queuedJobs[$delay][] = array(
+                                    'jobType' => $jobType,
+                                    'params' => $params
+                                );
+                            }
                             return true;
                         }
                     }
@@ -98,7 +113,7 @@
          * @param int $noise
          * @return bool
          */
-        protected function isDelayEqualWithNoise($existingJobDelay, $delay, $noise)
+        protected function isDelayWithinAcceptableTolerance($existingJobDelay, $delay, $noise)
         {
             if ($existingJobDelay <= $delay  &&
                 $existingJobDelay + $noise >= $delay)
