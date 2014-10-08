@@ -427,5 +427,10 @@
             ZurmoDatabaseCompatibilityUtil::callProcedureWithoutOuts($sql);
             $emailMessage->forget();
         }
+
+        public function getEmailAccount()
+        {
+            return $this->emailAccount;
+        }
     }
 ?>

@@ -36,7 +36,6 @@
                 //Should user settings be used
                 if($this->shouldSendGridUserSettingsBeUsed())
                 {
-                    print "Personal Sendgrid with sendgrid";
                     return new ZurmoSendGridMailer($this->emailMessage, $this->sendGridEmailAccount);
                 }
                 else
@@ -44,7 +43,6 @@
                     //Check for personal settings
                     if($this->shouldCustomUserSettingsBeUsed())
                     {
-                        print "Personal Custom with sendgrid";
                         return new ZurmoSwiftMailer($this->emailMessage, $this->emailAccount);
                     }
                     else
@@ -124,16 +122,16 @@
             if($itemData != null)
             {
                 $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                if($this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost
-                        && $this->emailAccount->outboundUsername && $this->emailAccount->outboundPassword
+                if((bool)$this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost != ''
+                        && $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != ''
                             && $useAutoresponderOrCampaignOwnerMailSettings === true)
                 {
                     $this->updateMailerDetailsForEmailMessage('smtp', 'personal');
                     return true;
                 }
             }
-            elseif($this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost
-                        && $this->emailAccount->outboundUsername && $this->emailAccount->outboundPassword)
+            elseif((bool)$this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost != ''
+                        && $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != '')
             {
                 $this->updateMailerDetailsForEmailMessage('smtp', 'personal');
                 return true;
