@@ -34,25 +34,29 @@
             if($this->sendGridPluginEnabled && $user != null)
             {
                 //Should user settings be used
-                if($this->shouldUserSettingsBeUsed())
+                if($this->shouldSendGridUserSettingsBeUsed())
                 {
-                    return new ZurmoSendGridMailer($this->emailMessage, $this->emailAccount);
+                    print "Personal Sendgrid with sendgrid";
+                    return new ZurmoSendGridMailer($this->emailMessage, $this->sendGridEmailAccount);
                 }
                 else
                 {
                     //Check for personal settings
-                    if($this->emailAccount != null)
+                    if($this->shouldCustomUserSettingsBeUsed())
                     {
+                        print "Personal Custom with sendgrid";
                         return new ZurmoSwiftMailer($this->emailMessage, $this->emailAccount);
                     }
                     else
                     {
                         if($apiUser != null && $apiPassword != null)
                         {
+                            print "Global Sendgrid with sendgrid";
                             return new ZurmoSendGridMailer($this->emailMessage, null);
                         }
                         else
                         {
+                            print "Global settings with sendgrid";
                             return new ZurmoSwiftMailer($this->emailMessage, null);
                         }
                     }
@@ -73,70 +77,81 @@
         }
 
         /**
-         * Should user settings be used to send email.
+         * Should sendgrid user settings be used to send email.
          * @param EmailMessage $emailMessage
          * @return boolean
          */
-        protected function shouldUserSettingsBeUsed()
+        protected function shouldSendGridUserSettingsBeUsed()
         {
+            if($this->sendGridEmailAccount == null)
+            {
+                return false;
+            }
             $itemData       = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($this->emailMessage);
             if($itemData != null)
             {
-                list($itemId, $itemClass, $personId) = $itemData;
-                $campaignOrAutoresponderItem = $itemClass::getById($itemId);
                 $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                if($this->sendGridPluginEnabled)
+                if($this->sendGridEmailAccount->apiUsername != ''
+                    && $this->sendGridEmailAccount->apiPassword != ''
+                        && $useAutoresponderOrCampaignOwnerMailSettings === true)
                 {
-                    if($this->sendGridEmailAccount == null)
-                    {
-                        return false;
-                    }
-                    if($this->sendGridEmailAccount->apiUsername != ''
-                        && $this->sendGridEmailAccount->apiPassword != ''
-                            && $useAutoresponderOrCampaignOwnerMailSettings === true)
-                    {
-                        $this->updateMailerDetailsForEmailMessage($campaignOrAutoresponderItem, $itemClass, 'sendgrid');
-                        return true;
-                    }
-                    return false;
+                    $this->updateMailerDetailsForEmailMessage('sendgrid', 'personal');
+                    return true;
                 }
-                else
+                return false;
+            }
+            elseif($this->sendGridEmailAccount->apiUsername != ''
+                        && $this->sendGridEmailAccount->apiPassword != '')
+            {
+                $this->updateMailerDetailsForEmailMessage('sendgrid', 'personal');
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Should sendgrid user settings be used to send email.
+         * @param EmailMessage $emailMessage
+         * @return boolean
+         */
+        protected function shouldCustomUserSettingsBeUsed()
+        {
+            if($this->emailAccount == null)
+            {
+                return false;
+            }
+            $itemData       = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($this->emailMessage);
+            if($itemData != null)
+            {
+                $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
+                if($this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost
+                        && $this->emailAccount->outboundUsername && $this->emailAccount->outboundPassword
+                            && $useAutoresponderOrCampaignOwnerMailSettings === true)
                 {
-                    if($this->emailAccount == null)
-                    {
-                        return false;
-                    }
-                    if($this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost
-                            && $this->emailAccount->outboundUsername && $this->emailAccount->outboundPassword
-                                && $useAutoresponderOrCampaignOwnerMailSettings === true)
-                    {
-                        $this->updateMailerDetailsForEmailMessage($campaignOrAutoresponderItem, $itemClass, 'smtp');
-                        return true;
-                    }
-                    return false;
+                    $this->updateMailerDetailsForEmailMessage('smtp', 'personal');
+                    return true;
                 }
             }
-            return true;
+            elseif($this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost
+                        && $this->emailAccount->outboundUsername && $this->emailAccount->outboundPassword)
+            {
+                $this->updateMailerDetailsForEmailMessage('smtp', 'personal');
+                return true;
+            }
+            return false;
         }
 
         /**
          * Updates mailer details for email message
-         * @param Item $campaignOrAutoresponderItem
-         * @param string $itemClass
          * @param string $mailerType
+         * @return void
          */
-        protected function updateMailerDetailsForEmailMessage($campaignOrAutoresponderItem, $itemClass, $mailerType)
+        protected function updateMailerDetailsForEmailMessage($mailerType, $mailerSettings)
         {
-            if($itemClass == 'CampaignItem')
-            {
-                $associatedCampaign          = $campaignOrAutoresponderItem->campaign;
-                //If not already updated
-                if($associatedCampaign->mailer == null)
-                {
-                    $associatedCampaign->mailer         = $mailerType;
-                    $associatedCampaign->useOwnerSmtp   = true;
-                    $associatedCampaign->save();
-                }
-            }
+            $emailMessage                   = $this->emailMessage;
+            $emailMessage->mailerType       = $mailerType;
+            $emailMessage->mailerSettings   = $mailerSettings;
+            $emailMessage->save();
+            $this->emailMessage = $emailMessage;
         }
     }

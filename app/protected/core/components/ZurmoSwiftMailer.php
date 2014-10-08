@@ -204,19 +204,18 @@
 
         /**
          * Populate settings.
-         * @param EmailAccount $emailAccount
+         * @param EmailAccount $this->emailAccount
          * @return void
          */
         protected function populateSettings()
         {
-            $emailAccount = $this->emailAccount;
-            if ($emailAccount != null && $emailAccount->useCustomOutboundSettings)
+            if ($this->emailAccount != null && $this->emailAccount->useCustomOutboundSettings)
             {
-                $this->host     = $emailAccount->outboundHost;
-                $this->port     = $emailAccount->outboundPort;
-                $this->username = $emailAccount->outboundUsername;
-                $this->password = ZurmoPasswordSecurityUtil::decrypt($emailAccount->outboundPassword);
-                $this->security = $emailAccount->outboundSecurity;
+                $this->host     = $this->emailAccount->outboundHost;
+                $this->port     = $this->emailAccount->outboundPort;
+                $this->username = $this->emailAccount->outboundUsername;
+                $this->password = ZurmoPasswordSecurityUtil::decrypt($this->emailAccount->outboundPassword);
+                $this->security = $this->emailAccount->outboundSecurity;
             }
             else
             {
