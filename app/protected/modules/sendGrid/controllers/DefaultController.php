@@ -165,8 +165,10 @@
                     $sendGridEmailAccount         = new SendGridEmailAccount();
                     $sendGridEmailAccount->apiUsername     = $configurationForm->username;
                     $sendGridEmailAccount->apiPassword     = ZurmoPasswordSecurityUtil::encrypt($configurationForm->password);
+                    $isUser = false;
                     if (isset($fromNameToSendMessagesFrom) && isset($fromAddressToSendMessagesFrom))
                     {
+                        $isUser                 = true;
                         $from = array(
                             'name'      => $fromNameToSendMessagesFrom,
                             'address'   => $fromAddressToSendMessagesFrom
@@ -183,7 +185,7 @@
                     }
                     $emailMessage = EmailMessageHelper::processAndCreateEmailMessage($from, $configurationForm->aTestToAddress);
                     $mailer       = new ZurmoSendGridMailer($emailMessage, $sendGridEmailAccount);
-                    $emailMessage = $mailer->sendTestEmail();
+                    $emailMessage = $mailer->sendTestEmail($isUser);
                     $messageContent  = EmailHelper::prepareMessageContent($emailMessage);
                 }
                 else

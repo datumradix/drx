@@ -251,14 +251,14 @@
             }
         }
 
-        public static function createEmailAccountForMailerFactory(User $user)
+        public static function createEmailAccountForMailerFactory(User $user, $useCustomSetting = true)
         {
             $emailAccount                    = new EmailAccount();
             $emailAccount->user              = $user;
             $emailAccount->name              = EmailAccount::DEFAULT_NAME;
             $emailAccount->fromName          = $user->getFullName();
             $emailAccount->fromAddress       = 'user@zurmo.com';
-            $emailAccount->useCustomOutboundSettings = true;
+            $emailAccount->useCustomOutboundSettings = $useCustomSetting;
             $emailAccount->outboundType      = 'smtp';
             $emailAccount->outboundHost     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundHost'];
             $emailAccount->outboundPort     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPort'];

@@ -222,29 +222,44 @@
                 }
                 if ($configurationForm->aTestToAddress != null)
                 {
-                    $emailHelper = new EmailHelper();
+                    $emailAccount       = new EmailAccount();
+                    /*$emailHelper = new EmailHelper();
                     $emailHelper->loadDefaultFromAndToAddresses();
                     $emailHelper->outboundHost     = $configurationForm->host;
                     $emailHelper->outboundPort     = $configurationForm->port;
                     $emailHelper->outboundUsername = $configurationForm->username;
                     $emailHelper->outboundPassword = $configurationForm->password;
-                    $emailHelper->outboundSecurity = $configurationForm->security;
+                    $emailHelper->outboundSecurity = $configurationForm->security;*/
+                    $emailAccount->outboundHost     = $configurationForm->host;
+                    $emailAccount->outboundPort     = $configurationForm->port;
+                    $emailAccount->outboundUsername = $configurationForm->username;
+                    $emailAccount->outboundPassword = $configurationForm->password;
+                    $emailAccount->outboundSecurity = $configurationForm->security;
+                    $isUser = false;
                     if (isset($fromNameToSendMessagesFrom) && isset($fromAddressToSendMessagesFrom))
                     {
+                        $isUser = true;
                         $from = array(
                             'name'      => $fromNameToSendMessagesFrom,
                             'address'   => $fromAddressToSendMessagesFrom
                         );
-                        $emailMessage = EmailMessageHelper::sendTestEmail($emailHelper, $from,
-                                                                      $configurationForm->aTestToAddress);
+                        /*$emailMessage = EmailMessageHelper::sendTestEmail($emailHelper, $from,
+                                                                      $configurationForm->aTestToAddress);*/
                     }
                     else
                     {
                         $user                   = BaseControlUserConfigUtil::getUserToRunAs();
                         $userToSendMessagesFrom = User::getById((int)$user->id);
-                        $emailMessage = EmailMessageHelper::sendTestEmailFromUser($emailHelper, $userToSendMessagesFrom,
-                                                                      $configurationForm->aTestToAddress);
+                        $from = array(
+                            'name'      => strval($userToSendMessagesFrom),
+                            'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom)
+                        );
+                        /*$emailMessage = EmailMessageHelper::sendTestEmailFromUser($emailHelper, $userToSendMessagesFrom,
+                                                                      $configurationForm->aTestToAddress);*/
                     }
+                    $emailMessage = EmailMessageHelper::processAndCreateEmailMessage($from, $configurationForm->aTestToAddress);
+                    $mailer       = new ZurmoSwiftMailer($emailMessage, $emailAccount);
+                    $emailMessage = $mailer->sendTestEmail($isUser);
                     $messageContent  = EmailHelper::prepareMessageContent($emailMessage);
                 }
                 else

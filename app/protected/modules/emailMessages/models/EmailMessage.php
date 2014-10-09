@@ -113,9 +113,7 @@
                     'error'         => array(static::HAS_ONE,  'EmailMessageSendError' , static::OWNED,
                                                 static::LINK_TYPE_SPECIFIC, 'error'),
                     'account'       => array(static::HAS_ONE,  'EmailAccount', static::NOT_OWNED,
-                                                static::LINK_TYPE_SPECIFIC, 'account'),
-                    'sendgridAccount'       => array(static::HAS_ONE,  'SendGridEmailAccount', static::NOT_OWNED,
-                                                static::LINK_TYPE_SPECIFIC, 'sendgridAccount'),
+                                                static::LINK_TYPE_SPECIFIC, 'account')
                 ),
                 'rules' => array(
                     array('subject',         'required'),

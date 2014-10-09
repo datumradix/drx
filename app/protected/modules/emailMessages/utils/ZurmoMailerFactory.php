@@ -49,18 +49,16 @@
                     {
                         if($apiUser != null && $apiPassword != null)
                         {
-                            print "Global Sendgrid with sendgrid";
                             return new ZurmoSendGridMailer($this->emailMessage, null);
                         }
                         else
                         {
-                            print "Global settings with sendgrid";
                             return new ZurmoSwiftMailer($this->emailMessage, null);
                         }
                     }
                 }
             }
-            elseif($user != null && $this->shouldUserSettingsBeUsed() === true)
+            elseif($user != null && $this->shouldCustomUserSettingsBeUsed() === true)
             {
                 return new ZurmoSwiftMailer($this->emailMessage, $this->emailAccount);
             }
@@ -129,6 +127,7 @@
                     $this->updateMailerDetailsForEmailMessage('smtp', 'personal');
                     return true;
                 }
+                return false;
             }
             elseif((bool)$this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost != ''
                         && $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != '')
