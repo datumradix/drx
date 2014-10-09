@@ -299,7 +299,6 @@
                 }
                 if (null !== $keyValue)
                 {
-                    $this->$keyName = $keyValue;
                     $settings[$keyName] = $keyValue;
                 }
                 else
@@ -308,44 +307,6 @@
                 }
             }
             return $settings;
-        }
-
-        /**
-         * Resolve mailer by campaign or autoresponder email account setting if marketing option is configured.
-         */
-        public function resolveMailerByCampaignOrAutoresponderEmailAccount()
-        {
-            $emailMessage = $this->emailMessage;
-            if(($itemData = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($emailMessage)) != null)
-            {
-                list($itemId, $itemClass, $personId) = $itemData;
-                $campaignOrAutoresponderItem = $itemClass::getById($itemId);
-                $userEmailAccount = $this->emailAccount;
-                if($userEmailAccount != null)
-                {
-                    $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                    if($userEmailAccount->outboundUsername != ''
-                            && $userEmailAccount->outboundPassword != ''
-                                && $useAutoresponderOrCampaignOwnerMailSettings === true)
-                    {
-                        if($itemClass == 'CampaignItem')
-                        {
-                            $associatedCampaign          = $campaignOrAutoresponderItem->campaign;
-                            //If not already updated
-                            if($associatedCampaign->mailer == null)
-                            {
-                                $associatedCampaign->mailer         = 'swiftmailer';
-                                $associatedCampaign->useOwnerSmtp   = true;
-                                $associatedCampaign->save();
-                            }
-                        }
-                        $this->username = $userEmailAccount->outboundUsername;
-                        $this->password = ZurmoPasswordSecurityUtil::decrypt($userEmailAccount->outboundPassword);
-                        $this->host     = $userEmailAccount->outboundHost;
-                        $this->port     = $userEmailAccount->outboundPort;
-                    }
-                }
-            }
         }
 
         /**
@@ -358,7 +319,6 @@
             $emailMessage = $this->emailMessage;
             try
             {
-                $this->resolveMailerByCampaignOrAutoresponderEmailAccount();
                 $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
                 $acceptedRecipients         = $this->send();
                 // Code below is quick fix, we need to think about better solution
@@ -428,9 +388,34 @@
             $emailMessage->forget();
         }
 
+        /**
+         * Send a test email.
+         * @param bool $isUser
+         * @return EmailMessage
+         */
+        public function sendTestEmail($isUser = false)
+        {
+            $this->emailMessage->mailerType = 'smtp';
+            if($isUser)
+            {
+                $this->emailMessage->mailerSettings = 'personal';
+            }
+            if ($this->emailMessage->validate())
+            {
+                $this->emailMessage->save();
+                $this->sendEmail();
+            }
+            return $this->emailMessage;
+        }
+
         public function getEmailAccount()
         {
             return $this->emailAccount;
+        }
+
+        public function getEmailMessage()
+        {
+            return $this->emailMessage;
         }
     }
 ?>

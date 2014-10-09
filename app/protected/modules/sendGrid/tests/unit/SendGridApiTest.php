@@ -58,7 +58,6 @@
         }
 
         /**
-         * @covers ZurmoSendGridMailer::sendTestEmailFromUser
          * @covers ZurmoSendGridMailer::sendTestEmail
          * @covers ZurmoSendGridMailer::sendEmail
          */
@@ -68,7 +67,7 @@
             $emailHelper->apiUsername = static::$apiUsername;
             $emailHelper->apiPassword = static::$apiPassword;
             $mailer         = new ZurmoSendGridMailer($emailHelper, Yii::app()->user->userModel, static::$testEmailAddress);
-            $emailMessage   = $mailer->sendTestEmailFromUser();
+            $emailMessage   = $mailer->sendTestEmail(true);
             $this->assertEquals('EmailMessage', get_class($emailMessage));
             $this->assertEquals(EmailFolder::TYPE_SENT, $emailMessage->folder->type);
         }

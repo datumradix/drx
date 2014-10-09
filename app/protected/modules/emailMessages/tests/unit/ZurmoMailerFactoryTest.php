@@ -40,6 +40,8 @@
 
         protected static $userpsg;
         protected static $usercstmsmtp;
+        protected static $basicuser;
+        protected static $bothSGandCstmUser;
 
         public static function setUpBeforeClass()
         {
@@ -48,6 +50,8 @@
             self::$emailHelperSendEmailThroughTransport = Yii::app()->emailHelper->sendEmailThroughTransport;
             static::$userpsg = UserTestHelper::createBasicUser('userpsg');
             static::$usercstmsmtp = UserTestHelper::createBasicUser('usercstmsmtp');
+            static::$basicuser = UserTestHelper::createBasicUser('basicuser');
+            static::$bothSGandCstmUser = UserTestHelper::createBasicUser('bothSGandCstmUser');
             $someoneSuper = UserTestHelper::createBasicUser('someoneSuper');
 
             $group = Group::getByName('Super Administrators');
@@ -60,16 +64,14 @@
             if (EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
             {
                 EmailMessageTestHelper::createEmailAccountForMailerFactory(static::$usercstmsmtp);
-                //$emailAccount = EmailAccount::resolveAndGetByUserAndName(static::$usercstmsmtp, null, false);
-                //Yii::app()->emailHelper->sendEmailThroughTransport = true;
-                //Yii::app()->emailHelper->setOutboundSettings();
-                //Yii::app()->emailHelper->init();
+                EmailMessageTestHelper::createEmailAccountForMailerFactory(static::$bothSGandCstmUser);
             }
             SendGrid::register_autoloader();
             Smtpapi::register_autoloader();
             if (SendGridTestHelper::isSetSendGridAccountTestConfiguration())
             {
                 SendGridTestHelper::createSendGridEmailAccount(static::$userpsg);
+                SendGridTestHelper::createSendGridEmailAccount(static::$bothSGandCstmUser);
                 Yii::app()->sendGridEmailHelper->apiUsername = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiUsername'];
                 Yii::app()->sendGridEmailHelper->apiPassword = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiPassword'];
                 Yii::app()->sendGridEmailHelper->setApiSettings();
@@ -79,23 +81,138 @@
             Yii::app()->jobQueue->deleteAll();
         }
 
-        public function testResolveMailer()
+        public function testResolveMailerWithSendGridEnabled()
         {
             ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
             ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', true);
             $emailMessage = EmailMessageHelper::processAndCreateEmailMessage(array('name' => 'Test User', 'address' => 'test@yahoo.com'), 'abc@yahoo.com');
             $emailMessage->owner = static::$userpsg;
             assert($emailMessage->save());
+            //user sendgrid
             $mailerFactory = new ZurmoMailerFactory($emailMessage);
             $mailer        = $mailerFactory->resolveMailer();
             $this->assertTrue($mailer instanceof ZurmoSendGridMailer);
             $this->assertNotNull($mailer->getEmailAccount());
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', false);
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSendGridMailer);
+            $this->assertNotNull($mailer->getEmailAccount());
+
+            //user custom
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
             $emailMessage->owner = static::$usercstmsmtp;
             assert($emailMessage->save());
             $mailerFactory = new ZurmoMailerFactory($emailMessage);
             $mailer        = $mailerFactory->resolveMailer();
             $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
             $this->assertNotNull($mailer->getEmailAccount());
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', false);
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
+            $this->assertNotNull($mailer->getEmailAccount());
+
+            //Global sendgrid
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
+            $emailMessage->owner = static::$basicuser;
+            assert($emailMessage->save());
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSendGridMailer);
+            $this->assertNull($mailer->getEmailAccount());
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', false);
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSendGridMailer);
+            $this->assertNull($mailer->getEmailAccount());
+
+            //Global smtp
+            Yii::app()->sendGridEmailHelper->apiUsername = '';
+            Yii::app()->sendGridEmailHelper->apiPassword = '';
+            Yii::app()->sendGridEmailHelper->setApiSettings();
+            Yii::app()->sendGridEmailHelper->init();
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
+            $this->assertNull($mailer->getEmailAccount());
+        }
+
+        public function testResolveMailerWithSendGridDisabled()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            Yii::app()->sendGridEmailHelper->apiUsername = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiUsername'];
+            Yii::app()->sendGridEmailHelper->apiPassword = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiPassword'];
+            Yii::app()->sendGridEmailHelper->setApiSettings();
+            Yii::app()->sendGridEmailHelper->init();
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
+            ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', false);
+            $emailMessage = EmailMessageHelper::processAndCreateEmailMessage(array('name' => 'Test User WO sendgrid', 'address' => 'testwosendgrid@yahoo.com'), 'abc@yahoo.com');
+            //user custom
+            $emailMessage->owner = static::$usercstmsmtp;
+            assert($emailMessage->save());
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
+            $this->assertNotNull($mailer->getEmailAccount());
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', false);
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
+            $this->assertNotNull($mailer->getEmailAccount());
+
+            //Global custom
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
+            $emailMessage->owner = static::$basicuser;
+            assert($emailMessage->save());
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
+            $this->assertNull($mailer->getEmailAccount());
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', false);
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
+            $this->assertNull($mailer->getEmailAccount());
+        }
+
+        public function testResolveMailerWithItemsData()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $contact = ContactTestHelper::createContactByNameForOwner('mailercontact', Yii::app()->user->userModel);
+            $campaignItem                          = new CampaignItem();
+            $campaignItem->processed               = 0;
+            $campaignItem->contact                 = $contact;
+            $this->assertTrue($campaignItem->unrestrictedSave());
+
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
+            ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', true);
+            $emailMessage = EmailMessageHelper::processAndCreateEmailMessage(array('name' => 'Test User', 'address' => 'test@yahoo.com'), 'abc@yahoo.com');
+            $emailMessage->owner = static::$bothSGandCstmUser;
+            assert($emailMessage->save());
+            $campaignItem->emailMessage = $emailMessage;
+            $this->assertTrue($campaignItem->unrestrictedSave());
+            //user sendgrid, should return personal sg instance
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSendGridMailer);
+            $this->assertNotNull($mailer->getEmailAccount());
+            //Uncheck autoresponder/camapign settings for owner, should return global sg instance
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', false);
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSendGridMailer);
+            $this->assertNull($mailer->getEmailAccount());
+
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
+            $emailMessage->owner = static::$usercstmsmtp;
+            assert($emailMessage->save());
+            $mailerFactory = new ZurmoMailerFactory($emailMessage);
+            $mailer        = $mailerFactory->resolveMailer();
+            $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
+            $this->assertNotNull($mailer->getEmailAccount());
+            $this->assertEquals('smtp', $mailer->getEmailMessage()->mailerType);
+            $this->assertEquals('personal', $mailer->getEmailMessage()->mailerSettings);
         }
     }
 ?>

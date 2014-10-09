@@ -236,7 +236,6 @@
             }
             $mailerFactory  = new ZurmoMailerFactory($emailMessage);
             $mailer         = $mailerFactory->resolveMailer();
-            exit;
             //$mailer = ZurmoMailerFactory::resolveMailerByEmailMessage($emailMessage); //in here we can look at the related email->account, etc. and run
             //the logic sequence to determine which mailer to retrieve.
             //$mailer             = $this->getOutboundMailer();

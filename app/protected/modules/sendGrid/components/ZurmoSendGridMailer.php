@@ -59,41 +59,10 @@
         protected $emailMessage;
 
         /**
-         * @param SendGridEmailHelper $emailHelper
-         * @param User $userToSendMessagesFrom
-         * @param array $toAddresses
-         * @param array $ccAddresses
-         * @param array $bccAddresses
+         * Class constructor.
+         * @param EmailMessage $emailMessage
+         * @param mixed $emailAccount
          */
-        /*public function __construct(SendGridEmailHelper $emailHelper,
-                                    $userToSendMessagesFrom,
-                                    $toAddresses,
-                                    $ccAddresses = array(),
-                                    $bccAddresses = array())
-        {
-            SendGrid::register_autoloader();
-            Smtpapi::register_autoloader();
-            $this->emailHelper = $emailHelper;
-            if(is_array($userToSendMessagesFrom))
-            {
-                $this->fromUserEmailData = $userToSendMessagesFrom;
-            }
-            elseif(is_object($userToSendMessagesFrom) && $userToSendMessagesFrom instanceof User)
-            {
-                $this->fromUser    = $userToSendMessagesFrom;
-            }
-            if(is_array($toAddresses))
-            {
-                $this->toAddresses  = $toAddresses;
-            }
-            else
-            {
-                $this->toAddresses  = array($toAddresses => null);
-            }
-            $this->ccAddresses      = $ccAddresses;
-            $this->bccAddresses     = $bccAddresses;
-        }*/
-
         public function __construct(EmailMessage $emailMessage, $emailAccount)
         {
             SendGrid::register_autoloader();
@@ -107,12 +76,19 @@
 
         /**
          * Send a test email.
+         * @param bool $isUser
          * @return EmailMessage
          */
-        public function sendTestEmail()
+        public function sendTestEmail($isUser = true)
         {
+            $this->emailMessage->mailerType = 'sendgrid';
+            if($isUser)
+            {
+                $this->emailMessage->mailerSettings = 'personal';
+            }
             if ($this->emailMessage->validate())
             {
+                $this->emailMessage->save();
                 self::resolveRecipientAddressesByType();
                 $this->sendEmail();
             }
@@ -289,6 +265,11 @@
         public function getEmailAccount()
         {
             return $this->emailAccount;
+        }
+
+        public function getEmailMessage()
+        {
+            return $this->emailMessage;
         }
     }
 ?>
