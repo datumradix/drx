@@ -223,13 +223,6 @@
                 if ($configurationForm->aTestToAddress != null)
                 {
                     $emailAccount       = new EmailAccount();
-                    /*$emailHelper = new EmailHelper();
-                    $emailHelper->loadDefaultFromAndToAddresses();
-                    $emailHelper->outboundHost     = $configurationForm->host;
-                    $emailHelper->outboundPort     = $configurationForm->port;
-                    $emailHelper->outboundUsername = $configurationForm->username;
-                    $emailHelper->outboundPassword = $configurationForm->password;
-                    $emailHelper->outboundSecurity = $configurationForm->security;*/
                     $emailAccount->outboundHost     = $configurationForm->host;
                     $emailAccount->outboundPort     = $configurationForm->port;
                     $emailAccount->outboundUsername = $configurationForm->username;
@@ -243,8 +236,6 @@
                             'name'      => $fromNameToSendMessagesFrom,
                             'address'   => $fromAddressToSendMessagesFrom
                         );
-                        /*$emailMessage = EmailMessageHelper::sendTestEmail($emailHelper, $from,
-                                                                      $configurationForm->aTestToAddress);*/
                     }
                     else
                     {
@@ -254,8 +245,6 @@
                             'name'      => strval($userToSendMessagesFrom),
                             'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom)
                         );
-                        /*$emailMessage = EmailMessageHelper::sendTestEmailFromUser($emailHelper, $userToSendMessagesFrom,
-                                                                      $configurationForm->aTestToAddress);*/
                     }
                     $emailMessage = EmailMessageHelper::processAndCreateEmailMessage($from, $configurationForm->aTestToAddress);
                     $mailer       = new ZurmoSwiftMailer($emailMessage, $emailAccount);

@@ -251,16 +251,7 @@
 
         protected static function sendEmailMessage(EmailMessage & $emailMessage)
         {
-            //Yii::app()->emailHelper->send($emailMessage, true, false);
-            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
-            if($sendGridPluginEnabled)
-            {
-                Yii::app()->sendGridEmailHelper->send($emailMessage, true, false);
-            }
-            else
-            {
-                Yii::app()->emailHelper->send($emailMessage, true, false);
-            }
+            Yii::app()->emailHelper->send($emailMessage, true, false);
         }
 
         protected static function resolveExplicitPermissionsForEmailMessage(EmailMessage & $emailMessage, MarketingList $marketingList)

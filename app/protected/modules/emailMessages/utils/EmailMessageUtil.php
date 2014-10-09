@@ -298,22 +298,6 @@
         }
 
         /**
-         * Resolve and get email helper instance.
-         */
-        public static function resolveAndGetEmailHelperInstance()
-        {
-            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
-            if($sendGridPluginEnabled)
-            {
-                return Yii::app()->sendGridEmailHelper;
-            }
-            else
-            {
-                return Yii::app()->emailHelper;
-            }
-        }
-
-        /**
          * Get outbound queued messages.
          * @param int $count
          * @return array
@@ -343,6 +327,34 @@
                 $queuedEmailMessages = array();
             }
             return $queuedEmailMessages;
+        }
+
+        /**
+         * Send Queued email messages.
+         * @param int $count
+         * @param EmailHelper $emailHelper
+         */
+        public static function sendQueued(EmailHelper $emailHelper, $count = null)
+        {
+            assert('is_int($count) || $count == null');
+            $outboxQueuedMessages = EmailMessageUtil::getOutboundQueuedMessages($count);
+            foreach($outboxQueuedMessages as $emailMessage)
+            {
+                $emailHelper->sendImmediately($emailMessage);
+            }
+            $outboxErrorQueuedMessages = EmailMessageUtil::getOutboundErrorQueuedMessages($count, $outboxQueuedMessages);
+            foreach ($outboxErrorQueuedMessages as $emailMessage)
+            {
+                if ($emailMessage->sendAttempts < 3)
+                {
+                    $emailHelper->sendImmediately($emailMessage);
+                }
+                else
+                {
+                    $emailHelper->processMessageAsFailure($emailMessage);
+                }
+            }
+            return true;
         }
     }
 ?>
