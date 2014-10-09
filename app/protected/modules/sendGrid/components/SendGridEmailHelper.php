@@ -144,18 +144,6 @@
         }
 
         /**
-         * Load user's outbound settings from user's email account or the system settings
-         * @param User   $user
-         * @param string $name  EmailAccount name or null for default name
-         */
-        public function loadApiSettingsFromUserEmailAccount(User $user, $name = null)
-        {
-            $this->loadApiSettings();
-            $this->fromName = strval($user);
-            $this->fromAddress = $this->resolveFromAddressByUser($user);
-        }
-
-        /**
          * Set api settings into the database.
          */
         public function setApiSettings()
@@ -171,55 +159,6 @@
                 {
                     ZurmoConfigurationUtil::setByModuleName('SendGridModule', $keyName, $this->$keyName);
                 }
-            }
-        }
-
-        /**
-         * Send an email message. This will queue up the email to be sent by the queue sending process. If you want to
-         * send immediately, consider using @sendImmediately
-         * @param EmailMessage $emailMessage
-         * @param bool $useSQL
-         * @param bool $validate
-         * @return bool|void
-         * @throws FailedToSaveModelException
-         * @throws NotFoundException
-         * @throws NotSupportedException
-         */
-        public function send(EmailMessage & $emailMessage, $useSQL = false, $validate = true)
-        {
-            static::isValidFolderType($emailMessage);
-            $folder     = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX);
-            $saved      = static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder, $validate);
-            if ($saved)
-            {
-                Yii::app()->jobQueue->add('ProcessOutboundEmail');
-            }
-
-            return $saved;
-        }
-
-        /**
-         * Use this method to send immediately, instead of putting an email in a queue to be processed by a scheduled
-         * job.
-         * @param EmailMessage $emailMessage
-         * @throws NotSupportedException - if the emailMessage does not properly save.
-         * @throws FailedToSaveModelException
-         * @return null
-         */
-        public function sendImmediately(EmailMessage $emailMessage)
-        {
-            if ($emailMessage->folder->type == EmailFolder::TYPE_SENT)
-            {
-                throw new NotSupportedException();
-            }
-            $from         = array('address' => $emailMessage->sender->fromAddress, 'name' => $emailMessage->sender->fromName);
-            list($toAddresses, $ccAddresses, $bccAddresses) = self::resolveRecipientAddressesByType($emailMessage);
-            $mailer       = new ZurmoSendGridMailer($this, $from, $toAddresses, $ccAddresses, $bccAddresses);
-            $mailer->sendMail($emailMessage);
-            $saved        = $emailMessage->save();
-            if (!$saved)
-            {
-                throw new FailedToSaveModelException();
             }
         }
     }
