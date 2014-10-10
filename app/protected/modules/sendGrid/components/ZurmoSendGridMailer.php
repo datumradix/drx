@@ -202,30 +202,12 @@
 
         /**
          * Resolve recipient address by type.
-         * @param EmailMessage $emailMessage
          * @return array
          */
         public function resolveRecipientAddressesByType()
         {
             $emailMessage   = $this->emailMessage;
-            $toAddresses    = array();
-            $ccAddresses    = array();
-            $bccAddresses   = array();
-            foreach ($emailMessage->recipients as $recipient)
-            {
-                if($recipient->type == EmailMessageRecipient::TYPE_TO)
-                {
-                    $toAddresses[$recipient->toAddress] = $recipient->toName;
-                }
-                if($recipient->type == EmailMessageRecipient::TYPE_CC)
-                {
-                    $ccAddresses[$recipient->toAddress] = $recipient->toName;
-                }
-                if($recipient->type == EmailMessageRecipient::TYPE_BCC)
-                {
-                    $bccAddresses[$recipient->toAddress] = $recipient->toName;
-                }
-            }
+            list($toAddresses, $ccAddresses, $bccAddresses) = SendGridEmailHelper::resolveRecipientAddressesByType($emailMessage);
             $this->toAddresses = $toAddresses;
             $this->ccAddresses = $ccAddresses;
             $this->bccAddresses = $bccAddresses;

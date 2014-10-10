@@ -161,5 +161,33 @@
                 }
             }
         }
+
+        /**
+         * Resolve recipient address by type.
+         * @param EmailMessage $emailMessage
+         * @return array
+         */
+        public static function resolveRecipientAddressesByType($emailMessage)
+        {
+            $toAddresses    = array();
+            $ccAddresses    = array();
+            $bccAddresses   = array();
+            foreach ($emailMessage->recipients as $recipient)
+            {
+                if($recipient->type == EmailMessageRecipient::TYPE_TO)
+                {
+                    $toAddresses[$recipient->toAddress] = $recipient->toName;
+                }
+                if($recipient->type == EmailMessageRecipient::TYPE_CC)
+                {
+                    $ccAddresses[$recipient->toAddress] = $recipient->toName;
+                }
+                if($recipient->type == EmailMessageRecipient::TYPE_BCC)
+                {
+                    $bccAddresses[$recipient->toAddress] = $recipient->toName;
+                }
+            }
+            return array($toAddresses, $ccAddresses, $bccAddresses);
+        }
     }
 ?>

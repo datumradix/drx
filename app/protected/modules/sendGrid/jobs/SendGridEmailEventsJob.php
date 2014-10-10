@@ -146,6 +146,7 @@
                                                                         'url'       => null,
                                                                         'type'      => $type);
                                     $activityCreatedOrUpdated   = $activityUtilClassName::createOrUpdateActivity($activityData);
+                                    //$activityClassName=CampaignItemActivity
                                     $emailMessageActivities     = $activityClassName::getByTypeAndModelIdAndPersonIdAndUrl($type, $value['itemId'], $value['personId'], null);
                                     self::resolveAndUpdateEventInformationByStatus($value);
                                     $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity($value['type'], $emailMessageActivities[0], "sendgrid");
