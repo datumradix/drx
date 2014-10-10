@@ -219,7 +219,7 @@
             }
             else
             {
-                $outboundSettings = static::getOutboundSettings();
+                $outboundSettings = EmailHelper::getOutboundSettings();
                 $this->mailer   = $outboundSettings['outboundType'];
                 $this->host     = $outboundSettings['outboundHost'];
                 $this->port     = $outboundSettings['outboundPort'];
@@ -262,51 +262,6 @@
                     //$emailMessage->attach($attachment);
                 }
             }
-        }
-
-        /**
-         * Get outbound settings.
-         * @return array
-         */
-        public static function getOutboundSettings()
-        {
-            $settingsToLoad = array(
-                                        'outboundType',
-                                        'outboundHost',
-                                        'outboundPort',
-                                        'outboundUsername',
-                                        'outboundPassword',
-                                        'outboundSecurity'
-                                    );
-            $settings = array();
-            foreach ($settingsToLoad as $keyName)
-            {
-                if ($keyName == 'outboundPassword')
-                {
-                    $encryptedKeyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', $keyName);
-                    if ($encryptedKeyValue !== '' && $encryptedKeyValue !== null)
-                    {
-                        $keyValue = ZurmoPasswordSecurityUtil::decrypt($encryptedKeyValue);
-                    }
-                    else
-                    {
-                        $keyValue = null;
-                    }
-                }
-                else
-                {
-                    $keyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', $keyName);
-                }
-                if (null !== $keyValue)
-                {
-                    $settings[$keyName] = $keyValue;
-                }
-                else
-                {
-                    $settings[$keyName] = null;
-                }
-            }
-            return $settings;
         }
 
         /**

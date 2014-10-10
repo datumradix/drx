@@ -70,7 +70,6 @@
          */
         public static function resolveDrillDownMetricsSummaryContent(CampaignItem $campaignItem)
         {
-            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             $isQueued              = $campaignItem->isQueued();
             $isSkipped             = $campaignItem->isSkipped();
             if ($isQueued)

@@ -342,7 +342,7 @@
             {
                 $emailHelper->sendImmediately($emailMessage);
             }
-            $outboxErrorQueuedMessages = EmailMessageUtil::getOutboundErrorQueuedMessages($count, $outboxQueuedMessages);
+            $outboxErrorQueuedMessages = EmailMessageUtil::getOutboundErrorQueuedMessages($count, count($outboxQueuedMessages));
             foreach ($outboxErrorQueuedMessages as $emailMessage)
             {
                 if ($emailMessage->sendAttempts < 3)

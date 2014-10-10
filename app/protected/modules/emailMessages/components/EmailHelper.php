@@ -101,7 +101,7 @@
          * @see loadOutboundSettings
          * @var array
          */
-        protected $settingsToLoad = array(
+        protected static $settingsToLoad = array(
             'outboundType',
             'outboundHost',
             'outboundPort',
@@ -144,28 +144,10 @@
 
         protected function loadOutboundSettings()
         {
-            foreach ($this->settingsToLoad as $keyName)
+            $settings = self::getOutboundSettings();
+            foreach ($settings as $keyName => $keyValue)
             {
-                if ($keyName == 'outboundPassword')
-                {
-                    $encryptedKeyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', $keyName);
-                    if ($encryptedKeyValue !== '' && $encryptedKeyValue !== null)
-                    {
-                        $keyValue = ZurmoPasswordSecurityUtil::decrypt($encryptedKeyValue);
-                    }
-                    else
-                    {
-                        $keyValue = null;
-                    }
-                }
-                else
-                {
-                    $keyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', $keyName);
-                }
-                if (null !== $keyValue)
-                {
-                    $this->$keyName = $keyValue;
-                }
+                $this->$keyName = $keyValue;
             }
         }
 
@@ -283,6 +265,51 @@
                 }
             }
             return $messageContent;
+        }
+
+        /**
+         * Get outbound settings.
+         * @return array
+         */
+        public static function getOutboundSettings()
+        {
+            $settings = array();
+            foreach (static::$settingsToLoad as $keyName)
+            {
+                if ($keyName == 'outboundPassword')
+                {
+                    $encryptedKeyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', $keyName);
+                    if ($encryptedKeyValue !== '' && $encryptedKeyValue !== null)
+                    {
+                        $keyValue = ZurmoPasswordSecurityUtil::decrypt($encryptedKeyValue);
+                    }
+                    else
+                    {
+                        $keyValue = null;
+                    }
+                }
+                elseif ($keyName == 'outboundType')
+                {
+                    $keyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'outboundType');
+                    if($keyValue == null)
+                    {
+                        $keyValue = self::OUTBOUND_TYPE_SMTP;
+                    }
+                }
+                else
+                {
+                    $keyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', $keyName);
+                }
+                if (null !== $keyValue)
+                {
+                    $settings[$keyName] = $keyValue;
+                }
+                else
+                {
+                    $settings[$keyName] = null;
+                }
+            }
+            return $settings;
         }
     }
 ?>

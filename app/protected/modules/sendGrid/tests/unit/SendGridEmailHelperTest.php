@@ -38,8 +38,6 @@
      Yii::import('ext.sendgrid.lib.Unirest');
     class SendGridEmailHelperTest extends ZurmoBaseTest
     {
-        protected static $apiUsername;
-        protected static $apiPassword;
         protected static $testEmailAddress;
 
         public static function setUpBeforeClass()
@@ -61,8 +59,10 @@
             {
                 //$steve = UserTestHelper::createBasicUser('steve');
                 //EmailMessageTestHelper::createEmailAccount($steve);
-                static::$apiUsername        = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiUsername'];
-                static::$apiPassword        = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiPassword'];
+                Yii::app()->sendGridEmailHelper->apiUsername = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiUsername'];
+                Yii::app()->sendGridEmailHelper->apiPassword = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiPassword'];
+                Yii::app()->sendGridEmailHelper->setApiSettings();
+                Yii::app()->sendGridEmailHelper->init();
                 static::$testEmailAddress   = Yii::app()->params['emailTestAccounts']['testEmailAddress'];
             }
             // Delete item from jobQueue, that is created when new user is created
@@ -71,16 +71,14 @@
 
         public function testSend()
         {
-            $emailHelper    = new SendGridEmailHelper();
-            $emailHelper->apiUsername = static::$apiUsername;
-            $emailHelper->apiPassword = static::$apiPassword;
+            ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', true);
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
             $emailMessage = SendGridTestHelper::createDraftSendGridSystemEmail('a test email', $super);
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $this->assertEquals(0, count(Yii::app()->jobQueue->getAll()));
-            $emailHelper->send($emailMessage);
+            Yii::app()->sendGridEmailHelper->send($emailMessage);
             $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $queuedJobs = Yii::app()->jobQueue->getAll();
@@ -93,9 +91,7 @@
          */
         public function testSendQueued()
         {
-            $emailHelper    = new SendGridEmailHelper();
-            $emailHelper->apiUsername = static::$apiUsername;
-            $emailHelper->apiPassword = static::$apiPassword;
+            ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', true);
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
 
@@ -107,7 +103,7 @@
 
             $this->assertEquals(2, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
-            $emailHelper->sendQueued();
+            Yii::app()->emailHelper->sendQueued();
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(2, Yii::app()->emailHelper->getSentCount());
 
@@ -129,10 +125,10 @@
 
             $this->assertEquals(3, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(2, Yii::app()->emailHelper->getSentCount());
-            $emailHelper->sendQueued(1);
+            Yii::app()->emailHelper->sendQueued(1);
             $this->assertEquals(2, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(3, Yii::app()->emailHelper->getSentCount());
-            $emailHelper->sendQueued(2);
+            Yii::app()->emailHelper->sendQueued(2);
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(5, Yii::app()->emailHelper->getSentCount());
         }
@@ -142,15 +138,12 @@
          */
         public function testSendImmediately()
         {
-            $emailHelper    = new SendGridEmailHelper();
-            $emailHelper->apiUsername = static::$apiUsername;
-            $emailHelper->apiPassword = static::$apiPassword;
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
             $emailMessage = SendGridTestHelper::createDraftSendGridSystemEmail('a test email 2', $super);
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(5, Yii::app()->emailHelper->getSentCount());
-            $emailHelper->sendImmediately($emailMessage);
+            Yii::app()->emailHelper->sendImmediately($emailMessage);
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(6, Yii::app()->emailHelper->getSentCount());
         }
