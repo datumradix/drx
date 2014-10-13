@@ -144,7 +144,7 @@
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout,
                                       'LayoutPanelsTypeForm' => array('type' => FormLayout::PANELS_DISPLAY_TYPE_ALL)));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to ProductTemplatesSearchView.
             $this->setGetArray(array('moduleClassName' => 'ProductTemplatesModule',
@@ -152,7 +152,7 @@
             $layout = ProductTemplatesDesignerWalkthroughHelperUtil::getProductTemplatesSearchViewLayoutWithAllCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to ProductTemplatesListView.
             $this->setGetArray(array('moduleClassName' => 'ProductTemplatesModule',
@@ -160,7 +160,7 @@
             $layout = ProductTemplatesDesignerWalkthroughHelperUtil::getProductTemplatesListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
         }
 
         /**
@@ -303,7 +303,7 @@
                                                 'ajax'                      =>  'list-view'));
             //TODO Ask Jason
             $content = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default');
-            $this->assertTrue(strpos($content, "myNewProductTemplate") > 0);
+            $this->assertContains("myNewProductTemplate", $content);
         }
 
         /**
@@ -507,7 +507,7 @@
             );
             //TODO Ask Jason
             $content = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default');
-            $this->assertTrue(strpos($content, "myEditProductTemplate") > 0);
+            $this->assertContains("myEditProductTemplate", $content);
         }
 
         /**
@@ -548,7 +548,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default');
 
             //Assert that the edit ProductTemplate does not exits after the search.
-            $this->assertTrue(strpos($content, "No results found") > 0);
+            $this->assertContains("No results found", $content);
         }
 
         /**
@@ -565,7 +565,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected vlaue
-            $this->assertTrue(strpos($content, "reading") > 0);
+            $this->assertContains("reading", $content);
         }
 
         /**
@@ -591,7 +591,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected vlaue
-            $this->assertTrue(strpos($content, "surfing fr") > 0);
+            $this->assertContains("surfing fr", $content);
         }
     }
 ?>
