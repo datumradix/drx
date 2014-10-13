@@ -62,14 +62,18 @@
             {
                 return;
             }
-            $content  = ZurmoHtml::openTag('div');
-            $content .= Zurmo::t('ZurmoModule', '<strong>Achieve more with a Zurmo subscription</strong>.');
+            $content  = ZurmoHtml::openTag('div', array('class' => 'get-pro-message'));
+	        $content .= ZurmoHtml::openTag('h2');
+            $content .= Zurmo::t('ZurmoModule', 'Achieve more with a Zurmo subscription');
+	        $content .= ZurmoHtml::closeTag('h2');
+	        $content .= ZurmoHtml::openTag('p');
             $content .= Zurmo::t('HomeModule', 'Get more features, proactive support, access ' .
                 'to training and consulting, blazing fast hosting, ' .
                 'and in-depth documentation with a Zurmo subscription.');
-            $content .= '<BR><a href="http://www.zurmo.com/needSupport.php?s=amenu">' .
-                Zurmo::t('ZurmoModule', 'Learn More' . '</a>');
-            $content .= ZurmoHtml::closeTag('div');;
+	        $content .= ZurmoHtml::closeTag('p');
+	        $content .= '<a href="http://www.zurmo.com/needSupport.php?s=amenu" class="z-button"><span class="z-label">' .
+                        Zurmo::t('ZurmoModule', 'Learn More' . '</span></a>');
+	        $content .= ZurmoHtml::closeTag('div');
             return $content;
         }
     }

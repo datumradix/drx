@@ -6176,6 +6176,40 @@ a.dashboard-link .z-label {
   background-image: -ms-linear-gradient(90deg,rgba(255,255,255,0) 55%,#ffffff 100%);
   background-image: linear-gradient(90deg,rgba(255,255,255,0) 55%,#ffffff 100%);
 }
+.get-pro-message {
+  padding: 30px;
+  background-color: #36719f !important;
+  background-repeat: repeat-x !important;
+  background-image: -ms-radial-gradient(circle,#3d82b6,#36719f) !important;
+  background-image: -webkit-gradient(circle,color-stop(0%,#3d82b6),color-stop(100%,#36719f)) !important;
+  background-image: -webkit-radial-gradient(circle,#3d82b6,#36719f) !important;
+  background-image: -o-radial-gradient(circle,#3d82b6,#36719f) !important;
+  background-image: -moz-radial-gradient(circle,#3d82b6,#36719f) !important;
+  background-image: radial-gradient(circle,#3d82b6,#36719f) !important;
+}
+.get-pro-message h2 {
+  font-weight: 100;
+  color: #141b24;
+  -webkit-text-shadow: none;
+  -moz-text-shadow: none;
+  -ms-text-shadow: none;
+  -o-text-shadow: none;
+  text-shadow: none;
+  margin-bottom: 15px;
+  font-size: 42px;
+}
+.get-pro-message p {
+  margin-bottom: 15px;
+  line-height: 1.4;
+  color: #fff;
+  font-size: 18px;
+  max-width: 800px;
+}
+.get-pro-message .z-label {
+  line-height: 36px !important;
+  font-size: 16px;
+  font-weight: 400;
+}
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
   #LoginView,
   #HeaderLinksView > div,
