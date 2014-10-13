@@ -104,6 +104,22 @@
             $data = $dataProvider->getData();
             $this->assertCount(1, $data);
             $this->assertEquals('aMeeting', $data[0]->getTitle());
+            //Meeting start and ends before calendar start/end dates
+            $savedCalendarSubscriptions = SavedCalendarSubscriptions::makeByUser($this->super, (string) $savedCalendar->id);
+            $dataProvider = new CalendarItemsDataProvider($savedCalendarSubscriptions,
+                array('startDate'     => '2014-07-01 01:00:00',
+                    'endDate'       => '2014-08-31 01:00:00',
+                    'dateRangeType' => SavedCalendar::DATERANGE_TYPE_MONTH));
+            $data = $dataProvider->getData();
+            $this->assertCount(0, $data);
+            //Meeting start and ends after calendar start/end dates
+            $savedCalendarSubscriptions = SavedCalendarSubscriptions::makeByUser($this->super, (string) $savedCalendar->id);
+            $dataProvider = new CalendarItemsDataProvider($savedCalendarSubscriptions,
+                array('startDate'     => '2014-01-01 01:00:00',
+                    'endDate'       => '2014-03-31 01:00:00',
+                    'dateRangeType' => SavedCalendar::DATERANGE_TYPE_MONTH));
+            $data = $dataProvider->getData();
+            $this->assertCount(0, $data);
         }
     }
 ?>

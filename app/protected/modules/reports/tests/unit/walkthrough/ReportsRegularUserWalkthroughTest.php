@@ -128,14 +128,14 @@
             $this->assertEquals(0, count($savedReports));
             $nobody = $this->logoutCurrentUserLoginNewUserAndGetByUsername('nobody');
             $content = $this->runControllerWithExitExceptionAndGetContent     ('reports/default/create');
-            $this->assertFalse(strpos($content, 'Rows and Columns Report') === false);
-            $this->assertFalse(strpos($content, 'Summation Report') === false);
-            $this->assertFalse(strpos($content, 'Matrix Report') === false);
+            $this->assertContains('Rows and Columns Report', $content);
+            $this->assertContains('Summation Report', $content);
+            $this->assertContains('Matrix Report', $content);
 
             $this->setGetArray(array('type' => 'RowsAndColumns'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent     ('reports/default/create');
-            $this->assertFalse(strpos($content, 'Accounts') === false);
+            $this->assertContains('Accounts', $content);
 
             $this->setGetArray(array('type' => 'RowsAndColumns'));
             $postData = static::makeRowsAndColumnsReportPostData();

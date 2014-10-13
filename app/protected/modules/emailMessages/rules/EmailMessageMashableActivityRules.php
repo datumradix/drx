@@ -252,7 +252,7 @@
                                     $moduleId        = $moduleClassName::getDirectoryName();
                                     $element         = new DetailsLinkActionElement('default', $moduleId,
                                                                                     $castedDownModel->id,
-+                                                                array_merge($params, $additionalParams));
+                                                                 array_merge($params, $additionalParams));
                                     $existingPersonsOrAccounts[] = $element->render();
                                 }
                             }

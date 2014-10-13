@@ -97,14 +97,14 @@
             Yii::app()->user->userModel = $nobody;
             $content = $this->runControllerWithNoExceptionsAndGetContent('projects/default/list');
 
-            $this->assertFalse(strpos($content, 'John Kenneth Galbraith') === false);
+            $this->assertContains('John Kenneth Galbraith', $content);
             $this->runControllerWithNoExceptionsAndGetContent('projects/default/create');
             //Test nobody can view an existing project he owns.
             $project = ProjectTestHelper::createProjectByNameForOwner('projectOwnedByNobody', $nobody);
 
             //At this point the listview for projects should show the search/list and not the helper screen.
             $content = $this->runControllerWithNoExceptionsAndGetContent('projects/default/list');
-            $this->assertTrue(strpos($content, 'John Kenneth Galbraith') === false);
+            $this->assertNotContains('John Kenneth Galbraith', $content);
 
             $this->setGetArray(array('id' => $project->id));
             $this->runControllerWithNoExceptionsAndGetContent('projects/default/edit');
@@ -433,7 +433,7 @@
             unset($project);
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('aUser');
             $content = $this->runControllerWithNoExceptionsAndGetContent('projects/default');
-            $this->assertFalse(strpos($content, 'Fatal error: Method Project::__toString() must not throw an exception') > 0);
+            $this->assertNotContains('Fatal error: Method Project::__toString() must not throw an exception', $content);
         }
 
          /**
@@ -459,7 +459,7 @@
             $this->setGetArray(array('selectedIds' => $selectedIds, 'selectAll' => ''));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('projects/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>3</strong>&#160;Projects selected for removal') === false);
+            $this->assertContains('<strong>3</strong>&#160;Projects selected for removal', $content);
             $pageSize = Yii::app()->pagination->getForCurrentUserByType('massDeleteProgressPageSize');
             $this->assertEquals(5, $pageSize);
             //calculating projects after adding 6 new records
