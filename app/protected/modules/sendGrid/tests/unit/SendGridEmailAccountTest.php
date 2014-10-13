@@ -71,10 +71,11 @@
             $this->assertNotEquals($emailAccountId, $emailAccount->id);
             $emailAccount->apiUsername = static::$apiUsername;
             $emailAccount->apiPassword = static::$apiPassword;
+            $emailAccount->eventWebhookUrl = 'http://yahoo.com';
             $emailAccount->save();
             $this->assertEquals($emailAccount->getError('fromAddress'), 'From Address cannot be blank.');
             $emailAccount->fromAddress = 'super@zurmo.org';
-            $emailAccount->save();
+            $this->assertTrue($emailAccount->save());
             $emailAccountId = $emailAccount->id;
             $emailAccount = SendGridEmailAccount::resolveAndGetByUserAndName($super);
             $this->assertEquals($emailAccountId, $emailAccount->id);
