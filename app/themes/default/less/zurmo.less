@@ -1192,7 +1192,7 @@ body > .ui-autocomplete{
 			top: 2px;
 			left: 8px;
 			padding-right: 5px;
-			width: 80%;
+			max-width: 80%;
 		}
 	}
 	.over > a,
@@ -1219,7 +1219,7 @@ body > .ui-autocomplete{
 		display:inline-block;
 		text-align:center;
 		position:relative;
-		top:2px;
+		top:1px;
 		left: 2px;
 	}
 	/*deafult for if an icon doesnt exist*/
@@ -1272,28 +1272,29 @@ body > .ui-autocomplete{
 	.type-ProjectsModule         i:before{ content: '\02C7'; font-size: 22px; }
 	.type-ConversationsModule{
 		i{
-			padding-top:3px;
 			padding-right:3px;
 		}
 		i:before{
 			content: "b";
+            position: relative;
+            top: 3px;
 		}
 	}
 	.type-OpportunitiesModule{
-		i{
-			padding-top:2px;
-		}
 		i:before{
 			content: "9";
+            position: relative;
+            top: 2px;
 		}
 	}
 	.type-NotesModule{
 		i{
 			padding-left:4px;
-			padding-top:1px;
 		}
 		i:before{
 			content: "3";
+            position: relative;
+            top: 1px;
 		}
 	}
 	.toggle-hidden-nav-items:hover{
@@ -1378,7 +1379,6 @@ body > .ui-autocomplete{
 				.smaller();
 				font-weight:normal;
 				line-height: 1;
-
 				display:block;
 				width: auto;
 				padding:6px 10px 6px 10px;
@@ -1408,10 +1408,9 @@ body > .ui-autocomplete{
 	}
 	.unread-inbox-count{
 		overflow: visible;
-		position: absolute;
-		top: -1px;
-		left: 35%;
-		margin-left: 0;
+        position: relative;
+        top: -1px;
+		margin-left: 4px;
 		display: inline-block;
 		.radius(3px);
 		font-size: 9px;
