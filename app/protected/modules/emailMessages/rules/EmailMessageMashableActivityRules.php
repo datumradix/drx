@@ -213,7 +213,7 @@
             return $senderString;
         }
 
-        public static function getRecipientsContent(RedBeanOneToManyRelatedModels $recipients, $type = null)
+        public static function getRecipientsContent(RedBeanOneToManyRelatedModels $recipients, $type = null, $additionalParams = array())
         {
             assert('$type == null || $type == EmailMessageRecipient::TYPE_TO ||
                     EmailMessageRecipient::TYPE_CC || EmailMessageRecipient::TYPE_BCC');
@@ -239,21 +239,22 @@
                             {
                                 $castedDownModel = self::castDownItem($personOrAccount);
                                 if (strval($castedDownModel) != null)
-                                            {
-                                                $params          = array('label' => strval($castedDownModel), 'wrapLabel' => false);
-                                                if (get_class($castedDownModel) == 'Contact')
-                                                {
-                                                    $moduleClassName = ContactsStateMetadataAdapter::getModuleClassNameByModel($castedDownModel);
-                                                }
-                                                else
-                                                {
-                                                    $moduleClassName = $castedDownModel->getModuleClassName();
-                                                }
-                                                $moduleId        = $moduleClassName::getDirectoryName();
-                                                $element         = new DetailsLinkActionElement('default', $moduleId,
-                                                                                                $castedDownModel->id, $params);
-                                                $existingPersonsOrAccounts[] = $element->render();
-                                            }
+                                {
+                                    $params          = array('label' => strval($castedDownModel), 'wrapLabel' => false);
+                                    if (get_class($castedDownModel) == 'Contact')
+                                    {
+                                        $moduleClassName = ContactsStateMetadataAdapter::getModuleClassNameByModel($castedDownModel);
+                                    }
+                                    else
+                                    {
+                                        $moduleClassName = $castedDownModel->getModuleClassName();
+                                    }
+                                    $moduleId        = $moduleClassName::getDirectoryName();
+                                    $element         = new DetailsLinkActionElement('default', $moduleId,
+                                                                                    $castedDownModel->id,
+                                                                 array_merge($params, $additionalParams));
+                                    $existingPersonsOrAccounts[] = $element->render();
+                                }
                             }
                             catch (AccessDeniedSecurityException $e)
                             {

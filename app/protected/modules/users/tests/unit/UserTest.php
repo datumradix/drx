@@ -1617,5 +1617,73 @@
             $this->assertContains('Item Modified', strval($auditEvents[1]));
             unset($user);
         }
+
+        public function testSetMetadata()
+        {
+            $metadata   = User::getMetadata();
+            $this->assertArrayHasKey('Person', $metadata);
+            $this->assertNotEmpty($metadata['Person']);
+            $this->assertArrayHasKey('User', $metadata);
+            $this->assertNotEmpty($metadata['User']);
+            $personMetaData = $metadata['Person'];
+            $userMetaData   = $metadata['User'];
+            $this->assertArrayHasKey('members', $personMetaData);
+            $this->assertCount(7, $personMetaData['members']);
+            $this->assertArrayHasKey('members', $userMetaData);
+            $this->assertCount(12, $userMetaData['members']);
+
+            // unset a member from person, update metadata
+            unset($personMetaData['members'][0]);
+            User::setMetadata(array('Person' => $personMetaData));
+
+            // ensure metadata update has propagated
+            $metadata   = User::getMetadata();
+            $this->assertArrayHasKey('Person', $metadata);
+            $this->assertNotEmpty($metadata['Person']);
+            $this->assertArrayHasKey('User', $metadata);
+            $this->assertNotEmpty($metadata['User']);
+            $personMetaData = $metadata['Person'];
+            $userMetaData   = $metadata['User'];
+            $this->assertArrayHasKey('members', $personMetaData);
+            $this->assertCount(6, $personMetaData['members']);
+            $this->assertArrayHasKey('members', $userMetaData);
+            $this->assertCount(12, $userMetaData['members']);
+
+            // unset a member from User, update metadata
+            unset($userMetaData['members'][0]);
+            User::setMetadata(array('User' => $userMetaData));
+
+            // ensure metadata update has propagated
+            $metadata   = User::getMetadata();
+            $this->assertArrayHasKey('Person', $metadata);
+            $this->assertNotEmpty($metadata['Person']);
+            $this->assertArrayHasKey('User', $metadata);
+            $this->assertNotEmpty($metadata['User']);
+            $personMetaData = $metadata['Person'];
+            $userMetaData   = $metadata['User'];
+            $this->assertArrayHasKey('members', $personMetaData);
+            $this->assertCount(6, $personMetaData['members']);
+            $this->assertArrayHasKey('members', $userMetaData);
+            $this->assertCount(11, $userMetaData['members']);
+
+
+            // unset a member from User and Person, update metadata
+            unset($userMetaData['members'][1]);
+            unset($personMetaData['members'][1]);
+            User::setMetadata(array('Person' => $personMetaData, 'User' => $userMetaData));
+
+            // ensure metadata update has propagated
+            $metadata   = User::getMetadata();
+            $this->assertArrayHasKey('Person', $metadata);
+            $this->assertNotEmpty($metadata['Person']);
+            $this->assertArrayHasKey('User', $metadata);
+            $this->assertNotEmpty($metadata['User']);
+            $personMetaData = $metadata['Person'];
+            $userMetaData   = $metadata['User'];
+            $this->assertArrayHasKey('members', $personMetaData);
+            $this->assertCount(5, $personMetaData['members']);
+            $this->assertArrayHasKey('members', $userMetaData);
+            $this->assertCount(10, $userMetaData['members']);
+        }
     }
 ?>

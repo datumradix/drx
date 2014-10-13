@@ -150,7 +150,7 @@
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout,
                                       'LayoutPanelsTypeForm' => array('type' => FormLayout::PANELS_DISPLAY_TYPE_ALL)));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to OpportunitiesSearchView.
             $this->setGetArray(array('moduleClassName' => 'ProductsModule',
@@ -158,7 +158,7 @@
             $layout = ProductsDesignerWalkthroughHelperUtil::getProductsSearchViewLayoutWithAllCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to OpportunitiesListView.
             $this->setGetArray(array('moduleClassName' => 'ProductsModule',
@@ -166,7 +166,7 @@
             $layout = ProductsDesignerWalkthroughHelperUtil::getProductsListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to OpportunitiesRelatedListView.
             $this->setGetArray(array('moduleClassName' => 'ProductsModule',
@@ -174,7 +174,7 @@
             $layout = ProductsDesignerWalkthroughHelperUtil::getProductsListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
         }
 
         /**
@@ -328,8 +328,7 @@
                                                 'datetimeCstm__DateTime' => array('type'   =>  'Today')),
                                                 'ajax' =>  'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('products/default');
-
-            $this->assertTrue(strpos($content, "myNewProduct") > 0);
+            $this->assertContains("myNewProduct", $content);
         }
 
         /**
@@ -556,8 +555,7 @@
             );
             //TODO Need to ask Jason
             $content = $this->runControllerWithNoExceptionsAndGetContent('products/default');
-
-            $this->assertTrue(strpos($content, "myEditProduct") > 0);
+            $this->assertContains("myEditProduct", $content);
         }
 
         /**
@@ -603,7 +601,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('products/default');
 
             //Assert that the edit Product does not exits after the search.
-            $this->assertTrue(strpos($content, "No results found") > 0);
+            $this->assertContains("No results found", $content);
         }
 
         /**
@@ -620,7 +618,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected vlaue
-            $this->assertTrue(strpos($content, "reading") > 0);
+            $this->assertContains("reading", $content);
         }
 
         /**
@@ -646,7 +644,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected vlaue
-            $this->assertTrue(strpos($content, "surfing fr") > 0);
+            $this->assertContains("surfing fr", $content);
         }
     }
 ?>

@@ -147,7 +147,7 @@
 
         protected function resolveLabelfromData($information)
         {
-            return Zurmo::t('ZurmoModule', $information['displayName']);
+            return $information['displayName'];
         }
 
         /**

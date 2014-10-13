@@ -126,7 +126,7 @@
             //Test nobody with elevated rights.
             Yii::app()->user->userModel = User::getByUsername('nobody');
             $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/list');
-            $this->assertFalse(strpos($content, 'Arthur Conan') === false);
+            $this->assertContains('Arthur Conan', $content);
             $this->runControllerWithNoExceptionsAndGetContent('contacts/default/create');
 
             //Test nobody can view an existing contact he owns.
@@ -134,8 +134,7 @@
 
             //At this point the listview for leads should show the search/list and not the helper screen.
             $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/list');
-            $this->assertTrue(strpos($content, 'Arthur Conan') === false);
-
+            $this->assertNotContains('Arthur Conan', $content);
             //Go to the a ccount editview.
             $this->setGetArray(array('id' => $contact->id));
             $this->runControllerWithNoExceptionsAndGetContent('contacts/default/edit');
@@ -573,7 +572,7 @@
             $this->setGetArray(array('selectedIds' => $selectedIds, 'selectAll' => ''));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>3</strong>&#160;Contacts selected for removal') === false);
+            $this->assertContains('<strong>3</strong>&#160;Contacts selected for removal', $content);
 
             //calculating contacts after adding 9 new records
             $contacts = Contact::getAll();

@@ -384,9 +384,9 @@
                 self::assertMetadataIsValid($metadata);
             }
             // Save the mixed in Person metadata.
-            $modelClassName = 'Person';
-            if (isset($metadata[$modelClassName]))
+            if (isset($metadata['Person']))
             {
+                $modelClassName = 'Person';
                 try
                 {
                     $globalMetadata = GlobalMetadata::getByClassName($modelClassName);
@@ -400,7 +400,7 @@
                 $saved = $globalMetadata->save();
                 assert('$saved');
             }
-            else
+            if (isset($metadata['User']))
             {
                 parent::setMetadata($metadata);
             }

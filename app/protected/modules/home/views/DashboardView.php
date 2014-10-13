@@ -111,7 +111,7 @@
                 $this->moduleId,
                 $this->modelId,
                 array('htmlOptions' => array('id' => 'PushDashboardLink'),
-                      'iconClass'   => 'icon-change-dashboard')
+                      'iconClass'   => 'icon-push-dashboard')
             );
             if (ActionSecurityUtil::canCurrentUserPerformAction($deleteDashboardLinkActionElement->getActionType(),
                 $this->model) && !$this->isDefaultDashboard)
