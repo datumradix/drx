@@ -48,5 +48,29 @@
         {
             return true;
         }
+
+        protected function renderContent()
+        {
+            $content  = $this->renderBannerContent();
+            $content .= parent::renderContent();
+            return $content;
+        }
+
+        protected function renderBannerContent()
+        {
+            if (Yii::app()->edition != 'Community')
+            {
+                return;
+            }
+            $content  = ZurmoHtml::openTag('div');
+            $content .= Zurmo::t('ZurmoModule', '<strong>Achieve more with a Zurmo subscription</strong>.');
+            $content .= Zurmo::t('HomeModule', 'Get more features, proactive support, access ' .
+                'to training and consulting, blazing fast hosting, ' .
+                'and in-depth documentation with a Zurmo subscription.');
+            $content .= '<BR><a href="http://www.zurmo.com/needSupport.php?s=amenu">' .
+                Zurmo::t('ZurmoModule', 'Learn More' . '</a>');
+            $content .= ZurmoHtml::closeTag('div');;
+            return $content;
+        }
     }
 ?>

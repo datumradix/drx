@@ -40,8 +40,7 @@
 
         protected function renderContent()
         {
-            $content      = $this->renderBannerContent();
-            $content     .= $this->renderTitleContent();
+            $content      = $this->renderTitleContent();
             $categoryData = $this->getCategoryData();
             foreach ($categoryData as $category => $categoryItems)
             {
@@ -136,23 +135,6 @@
             {
                 return Zurmo::t('Core', 'Configure');
             }
-        }
-
-        protected function renderBannerContent()
-        {
-            if (Yii::app()->edition != 'Community')
-            {
-                return;
-            }
-            $content  = '<div>';
-            $content .= Zurmo::t('ZurmoModule', '<strong>Achieve more with a Zurmo subscription</strong>.');
-            $content .= Zurmo::t('HomeModule', 'Get more features, proactive support, access ' .
-                                               'to training and consulting, blazing fast hosting, ' .
-                                               'and in-depth documentation with a Zurmo subscription.');
-            $content .= '<BR><a href="http://www.zurmo.com/needSupport.php?s=amenu">' .
-                        Zurmo::t('ZurmoModule', 'Learn More' . '</a>');
-            $content .= '</div>';
-            return $content;
         }
     }
 ?>
