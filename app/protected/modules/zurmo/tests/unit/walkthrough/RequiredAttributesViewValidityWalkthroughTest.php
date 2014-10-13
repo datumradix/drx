@@ -55,23 +55,23 @@
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $account = AccountTestHelper::createAccountByNameForOwner('aTestAccount', $super);
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/create');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/list');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
             $this->setGetArray (array('id' => $account->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/edit');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
 
             //Now create an attribute that is required.
             $this->createTextCustomFieldByModule('AccountsModule', 'text');
 
             $content = $this->runControllerWithExitExceptionAndGetContent('accounts/default/create');
-            $this->assertFalse(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertContains('There are required fields missing from the following layout', $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/list');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
             $this->setGetArray (array('id' => $account->id));
             $content = $this->runControllerWithExitExceptionAndGetContent('accounts/default/edit');
-            $this->assertFalse(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertContains('There are required fields missing from the following layout', $content);
 
             //Remove the new field.
             $modelAttributesAdapterClassName = TextAttributeForm::getModelAttributeAdapterNameForSavingAttributeFormData();
@@ -90,7 +90,7 @@
         {
             $super   = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/create');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
 
             //Now make industry required.
             $attributeForm = AttributesFormFactory::createAttributeFormByAttributeName(new Account(), 'industry');
@@ -111,7 +111,7 @@
             RedBeanModelsCache::forgetAll();
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/create');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
 
             //Now make industry unrequired.
             $attributeForm = AttributesFormFactory::createAttributeFormByAttributeName(new Account(), 'industry');
@@ -137,7 +137,7 @@
 
             //Now the layout should not show an error message.
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/create');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
         }
 
         /**
@@ -149,39 +149,39 @@
             $contact = ContactTestHelper::createContactByNameForOwner('aTestContact', $super);
             $lead    = LeadTestHelper::createLeadByNameForOwner('aTestLead', $super);
             $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/create');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/list');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
             $this->setGetArray (array('id' => $contact->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/edit');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
             //Now check lead layouts.
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/create');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/list');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
             $this->setGetArray (array('id' => $lead->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/edit');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
 
             //Now create an attribute that is required.
             $this->createTextCustomFieldByModule('ContactsModule', 'text');
 
             $content = $this->runControllerWithExitExceptionAndGetContent('contacts/default/create');
-            $this->assertFalse(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertContains('There are required fields missing from the following layout', $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/list');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
             $this->setGetArray (array('id' => $contact->id));
             $content = $this->runControllerWithExitExceptionAndGetContent('contacts/default/edit');
-            $this->assertFalse(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertContains('There are required fields missing from the following layout', $content);
             //Now check lead layouts. They should follow the same pattern as contacts.
             $content = $this->runControllerWithExitExceptionAndGetContent('leads/default/create');
-            $this->assertFalse(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertContains('There are required fields missing from the following layout', $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/list');
-            $this->assertTrue(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertNotContains('There are required fields missing from the following layout', $content);
             $this->setGetArray (array('id' => $lead->id));
             $content = $this->runControllerWithExitExceptionAndGetContent('leads/default/edit');
-            $this->assertFalse(strpos($content, 'There are required fields missing from the following layout') === false);
+            $this->assertContains('There are required fields missing from the following layout', $content);
         }
 
         //todo: test note inlineEditSave

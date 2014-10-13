@@ -105,10 +105,10 @@
             $savedCalendarSubscriptions = SavedCalendarSubscriptions::makeByUser(Yii::app()->user->userModel);
             $content = CalendarUtil::makeCalendarItemsList($savedCalendarSubscriptions->getMySavedCalendarsAndSelected(),
                                                            'mycalendar[]', 'mycalendar', 'saved');
-            $this->assertTrue(strpos($content, 'Test Cal') > 0);
+            $this->assertContains('Test Cal', $content);
             $content = CalendarUtil::makeCalendarItemsList($savedCalendarSubscriptions->getSubscribedToSavedCalendarsAndSelected(),
                                                            'sharedcalendar[]', 'sharedcalendar', 'shared');
-            $this->assertTrue(strpos($content, 'Test Cal New') > 0);
+            $this->assertContains('Test Cal New', $content);
         }
 
         /**

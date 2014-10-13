@@ -105,7 +105,7 @@
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/details');
             //Confirm content does have the security element
-            $this->assertFalse(strpos($content, 'Who can read and write') === false);
+            $this->assertContains('Who can read and write', $content);
 
             //Now go to an account details with nobody where nobody can read, but not write.
             //In this scenario the DerivedExplicitReadWriteModelPermissions element is still shown
@@ -117,7 +117,7 @@
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/details');
             //Confirm content does not have security element
-            $this->assertFalse(strpos($content, 'Who can read and write') === false);
+            $this->assertContains('Who can read and write', $content);
         }
 
         /**

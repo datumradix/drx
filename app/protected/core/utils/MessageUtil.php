@@ -430,7 +430,6 @@
                                             echo 'The following message should be using proper line breaks: ' . $matches[2][$index] . "\n";
                                         }
                                     }
-
                                 }
                             }
                         }

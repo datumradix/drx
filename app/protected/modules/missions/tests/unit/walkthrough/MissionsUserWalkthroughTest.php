@@ -287,19 +287,19 @@
             }
             $super   = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $content = $this->runControllerWithNoExceptionsAndGetContent('missions/default/list');
-            $this->assertFalse(strpos($content, 'Missions') === false);
+            $this->assertContains('Missions', $content);
             $this->setGetArray(array(
                 'type' => MissionsListConfigurationForm::LIST_TYPE_CREATED));
             $content = $this->runControllerWithNoExceptionsAndGetContent('missions/default/list');
-            $this->assertFalse(strpos($content, 'Missions') === false);
+            $this->assertContains('Missions', $content);
             $this->setGetArray(array(
                 'type' => MissionsListConfigurationForm::LIST_TYPE_AVAILABLE));
             $content = $this->runControllerWithNoExceptionsAndGetContent('missions/default/list');
-            $this->assertFalse(strpos($content, 'Missions') === false);
+            $this->assertContains('Missions', $content);
             $this->setGetArray(array(
                 'type' => MissionsListConfigurationForm::LIST_TYPE_MINE_TAKEN_BUT_NOT_ACCEPTED));
             $content = $this->runControllerWithNoExceptionsAndGetContent('missions/default/list');
-            $this->assertFalse(strpos($content, 'Missions') === false);
+            $this->assertContains('Missions', $content);
         }
 
         /**
