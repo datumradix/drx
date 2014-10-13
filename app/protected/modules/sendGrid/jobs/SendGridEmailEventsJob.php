@@ -67,109 +67,19 @@
          */
         public function run()
         {
-            $user = Yii::app()->user->userModel;
-            //$processingCampaigns    = Campaign::getByStatus(Campaign::STATUS_PROCESSING);
-
-            //figure out later... we gotta get autoresponders too. event data for autoresponders, not just campaigns.
-            //get all campaigns that are processing/completed
-            //for a given $campaign - get a related emailMessage that has been sent.....
-                //ONLY if at least 1 email message has been sent. proceed....
-
-
-                    //proceed - check emailMessage for mailerType sendgrid or not.
-
-                        //if not sendgrid don't proceed.
-
-                            //if sendgrid, then check $emailMessage->mailerSettingsSource is personal or global
-
-                                //if person use
-            $emailAccount                   = SendGridEmailAccount::getByUserAndName($processingCampaign->owner);
-            $bounceEventWebhookUrl          = $emailAccount->eventWebhookUrl;
-                                //if not
-            $bounceEventWebhookUrl          = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
-
-
-
-
-
-
-            foreach($processingCampaigns as $processingCampaign)
+            $sendGridEmailAccounts = SendGridEmailAccount::getAll();
+            foreach($sendGridEmailAccounts as $sendGridEmailAccount)
             {
-                $campaignItemsList      = array();
-                $items = CampaignItem::getByProcessedAndCampaignId(1, $processingCampaign->id);
-                foreach ($items as $item)
+                if($sendGridEmailAccount->eventWebhookUrl != null)
                 {
-                    $campaignItemsList[] = $item->id;
+                    $this->processEventData($sendGridEmailAccount->eventWebhookUrl, $sendGridEmailAccount->eventWebhookFilePath);
                 }
-
-                if($processingCampaign->mailer == 'sendgrid')
-                {
-                    if($processingCampaign->useOwnerSmtp)
-                    {
-                        $emailAccount                   = SendGridEmailAccount::getByUserAndName($processingCampaign->owner);
-                        $bounceEventWebhookUrl          = $emailAccount->eventWebhookUrl;
-                    }
-                    else
-                    {
-                        $bounceEventWebhookUrl          = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
-                    }
-                    $data = array();
-                    if($bounceEventWebhookUrl != null)
-                    {
-                        $content = file_get_contents($bounceEventWebhookUrl);
-                        preg_match_all('/\[{(.*?)}\]/i', $content, $matches);
-                        foreach($matches[1] as $string)
-                        {
-                            $data[] = json_decode('{' . $string . '}', true);
-                        }
-                        foreach($data as $value)
-                        {
-                            if($value['event'] == 'bounce' || $value['event'] == 'spamreport' || $value['event'] == 'dropped')
-                            {
-                                if(ArrayUtil::getArrayValue($value, 'itemClass', false) !== false &&
-                                    ArrayUtil::getArrayValue($value, 'itemId', false) !== false &&
-                                        in_array($value['itemId'], $campaignItemsList))
-                                {
-                                    $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
-                                    $activityUtilClassName      = $activityClassName . 'Util';
-                                    if($value['event'] == 'bounce' || $value['event'] == 'dropped')
-                                    {
-                                        $type                       = $activityClassName::TYPE_BOUNCE;
-                                    }
-                                    else
-                                    {
-                                        $type                       = $activityClassName::TYPE_SPAM;
-                                    }
-                                    $activityData               = array('modelId'   => $value['itemId'],
-                                                                        'modelType' => $value['itemClass'],
-                                                                        'personId'  => $value['personId'],
-                                                                        'url'       => null,
-                                                                        'type'      => $type);
-                                    $activityCreatedOrUpdated   = $activityUtilClassName::createOrUpdateActivity($activityData);
-                                    //$activityClassName=CampaignItemActivity
-                                    $emailMessageActivities     = $activityClassName::getByTypeAndModelIdAndPersonIdAndUrl($type, $value['itemId'], $value['personId'], null);
-                                    self::resolveAndUpdateEventInformationByStatus($value);
-                                    $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity($value['type'], $emailMessageActivities[0], "sendgrid");
-                                    if($externalMessageActivityCount == 0)
-                                    {
-                                        $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
-                                        $externalApiEmailMessageActivity->emailMessageActivity = $emailMessageActivities[0];
-                                        $externalApiEmailMessageActivity->api           = 'sendgrid';
-                                        $externalApiEmailMessageActivity->type          = $value['type'];
-                                        $externalApiEmailMessageActivity->reason        = $value['reason'];
-                                        $externalApiEmailMessageActivity->itemClass     = $value['itemClass'];
-                                        $externalApiEmailMessageActivity->emailAddress  = $value['email'];
-                                        $externalApiEmailMessageActivity->save();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        echo Zurmo::t('SendGridModule', 'Webhook event url is missing for user ' . $user->username) . "\n";
-                    }
-                }
+            }
+            //Global
+            $globalWebHookUrl = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
+            if($globalWebHookUrl != null)
+            {
+                $this->processEventData($globalWebHookUrl, Yii::app()->sendGridEmailHelper->eventWebhookFilePath);
             }
             return true;
         }
@@ -210,33 +120,82 @@
             }
         }
 
-
-
-        public function jasonFunction()
+        /**
+         * Process event data.
+         * @param string $eventWebhookUrl
+         * @param string $eventWebhookFilePath
+         * @return void
+         */
+        protected function processEventData($eventWebhookUrl, $eventWebhookFilePath)
         {
-            //global event hook polling
-                //this->globalEventMethod();
-            //user event hooks polling
-                //this->someMethod that looks through users to see who has personal sendgrid, then polls for that
+            if($eventWebhookUrl != null)
+            {
+                $content = file_get_contents($eventWebhookUrl);
+                preg_match_all('/\[{(.*?)}\]/i', $content, $matches);
+                $data = array();
+                foreach($matches[1] as $string)
+                {
+                    $data[] = json_decode('{' . $string . '}', true);
+                }
+                foreach($data as $value)
+                {
+                    if($value['event'] == 'bounce' || $value['event'] == 'spamreport' || $value['event'] == 'dropped')
+                    {
+                        if(ArrayUtil::getArrayValue($value, 'itemClass', false) !== false &&
+                            ArrayUtil::getArrayValue($value, 'itemId', false) !== false)
+                        {
+                            $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
+                            $activityUtilClassName      = $activityClassName . 'Util';
+                            if($value['event'] == 'bounce' || $value['event'] == 'dropped')
+                            {
+                                $type                       = $activityClassName::TYPE_BOUNCE;
+                            }
+                            else
+                            {
+                                $type                       = $activityClassName::TYPE_SPAM;
+                            }
+                            $activityData               = array('modelId'   => $value['itemId'],
+                                                                'modelType' => $value['itemClass'],
+                                                                'personId'  => $value['personId'],
+                                                                'url'       => null,
+                                                                'type'      => $type);
+                            if($activityUtilClassName::createOrUpdateActivity($activityData))
+                            {
+                                //$activityClassName=CampaignItemActivity
+                                $emailMessageActivities     = $activityClassName::getByTypeAndModelIdAndPersonIdAndUrl($type, $value['itemId'], $value['personId'], null);
+                                self::resolveAndUpdateEventInformationByStatus($value);
+                                $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity($value['type'], $emailMessageActivities[0], "sendgrid");
+                                if($externalMessageActivityCount == 0)
+                                {
+                                    $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
+                                    $externalApiEmailMessageActivity->emailMessageActivity = $emailMessageActivities[0];
+                                    $externalApiEmailMessageActivity->api           = 'sendgrid';
+                                    $externalApiEmailMessageActivity->type          = $value['type'];
+                                    $externalApiEmailMessageActivity->reason        = $value['reason'];
+                                    $externalApiEmailMessageActivity->itemClass     = $value['itemClass'];
+                                    $externalApiEmailMessageActivity->itemId        = $value['itemId'];
+                                    $externalApiEmailMessageActivity->emailAddress  = $value['email'];
+                                    $externalApiEmailMessageActivity->save();
+                                }
+                            }
+                        }
+                    }
+                }
+                // Initialize cURL
+                $ch = curl_init();
 
-        }
-
-        protected function globalEventMethod()
-        {
-            //get last offset from ZurmoConfigurationUtil::getByModuleName
-            $bounceEventWebhookUrl          = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
-            $content = file_get_contents($bounceEventWebhookUrl, $offset);
-            //now loop through each line up to max offset processing
-
-                //foreach each line of log
-                    //processs event
-                    //++ lines processed
-                    //if lines processed is max, then stop foreach (break)
-
-                //construct new offset etc
-                //store new offset ZurmoConfigurationUtil::setByModuleName
-
-
+                // Set URL on which you want to post the Form and/or data
+                curl_setopt($ch, CURLOPT_URL, $eventWebhookFilePath);
+                // Set post to true
+                curl_setopt($ch, CURLOPT_POST, true);
+                // Data+Files to be posted
+                curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode(''));
+                // Pass TRUE or 1 if you want to wait for and catch the response against the request made
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: text/plain'));
+                // Execute the request
+                $response = curl_exec($ch);
+            }
         }
     }
 ?>

@@ -72,6 +72,7 @@
             $emailAccount->apiUsername = static::$apiUsername;
             $emailAccount->apiPassword = static::$apiPassword;
             $emailAccount->eventWebhookUrl = 'http://yahoo.com';
+            $emailAccount->eventWebhookFilePath = 'http://xyz.com/a.php';
             $emailAccount->save();
             $this->assertEquals($emailAccount->getError('fromAddress'), 'From Address cannot be blank.');
             $emailAccount->fromAddress = 'super@zurmo.org';

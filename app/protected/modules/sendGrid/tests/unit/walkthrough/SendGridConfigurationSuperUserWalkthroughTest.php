@@ -82,7 +82,8 @@
             $this->setPostArray(array('SendGridWebApiConfigurationForm' => array(
                                     'username'                          => 'myuser',
                                     'password'                          => 'apassword',
-                                    'eventWebhookUrl'                   => 'http://yahoo.com')));
+                                    'eventWebhookUrl'                   => 'http://yahoo.com',
+                                    'eventWebhookFilePath'              => 'http://yahoo.com/a.php')));
             $this->runControllerWithRedirectExceptionAndGetContent('sendGrid/default/configurationEditOutbound');
             $this->assertEquals('Sendgrid configuration saved successfully.', Yii::app()->user->getFlash('notification'));
 
@@ -90,6 +91,7 @@
             $this->assertEquals('myuser',         Yii::app()->sendGridEmailHelper->apiUsername);
             $this->assertEquals('apassword',      Yii::app()->sendGridEmailHelper->apiPassword);
             $this->assertEquals('http://yahoo.com',          Yii::app()->sendGridEmailHelper->eventWebhookUrl);
+            $this->assertEquals('http://yahoo.com/a.php',    Yii::app()->sendGridEmailHelper->eventWebhookFilePath);
         }
 
         public function testSuperUserChangeOtherUserSendGridEmailSignature()
@@ -110,6 +112,7 @@
                                     'apiUsername'                       => 'abc',
                                     'apiPassword'                       => 'password',
                                     'eventWebhookUrl'                   => 'http://yahoo.com',
+                                    'eventWebhookFilePath'              => 'http://yahoo.com/a.php',
                                     'emailSignatureHtmlContent'         => 'abc email signature')));
             $this->runControllerWithRedirectExceptionAndGetContent('users/default/sendGridConfiguration');
             $this->assertEquals('User SendGrid API configuration saved successfully.',

@@ -96,6 +96,15 @@
                                     array(
                                         array(
                                             'elements' => array(
+                                                array('attributeName' => 'eventWebhookFilePath', 'type' => 'Text'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
                                                 array('attributeName' => 'aTestToAddress',
                                                       'type' => 'SendGridSendATestEmailTo'),
                                             ),

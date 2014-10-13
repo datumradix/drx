@@ -42,18 +42,20 @@
         public $username;
         public $password;
         public $eventWebhookUrl;
+        public $eventWebhookFilePath;
         public $aTestToAddress;
 
         public function rules()
         {
             return array(
-                array('username, password, eventWebhookUrl', 'required'),
+                array('username, password, eventWebhookUrl, eventWebhookFilePath', 'required'),
                 array('username',                          'type',      'type' => 'string'),
                 array('username',                          'length',    'min'  => 1, 'max' => 64),
                 array('password',                          'type',      'type' => 'string'),
                 array('password',                          'length',    'min'  => 1, 'max' => 64),
                 array('aTestToAddress',                    'email'),
                 array('eventWebhookUrl',                   'url'),
+                array('eventWebhookFilePath',              'type',      'type' => 'string'),
             );
         }
 
@@ -63,7 +65,8 @@
                 'username'                             => Zurmo::t('ZurmoModule', 'Username'),
                 'password'                             => Zurmo::t('ZurmoModule', 'Password'),
                 'aTestToAddress'                       => Zurmo::t('SendGridModule', 'Send a test email to'),
-                'eventWebhookUrl'                      => Zurmo::t('SendGridModule', 'Event webhook url')
+                'eventWebhookUrl'                      => Zurmo::t('SendGridModule', 'Event webhook url'),
+                'eventWebhookFilePath'                 => Zurmo::t('SendGridModule', 'Event webhook file path'),
             );
         }
     }
