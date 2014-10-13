@@ -188,7 +188,7 @@
          */
         public function setOutboundSettings()
         {
-            foreach ($this->settingsToLoad as $keyName)
+            foreach (static::$settingsToLoad as $keyName)
             {
                 if ($keyName == 'outboundPassword')
                 {

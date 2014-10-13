@@ -245,8 +245,8 @@
             if (!empty($emailMessage->content->htmlContent))
             {
                 $this->body       = ZurmoCssInlineConverterUtil::convertAndPrettifyEmailByHtmlContent(
-                    $emailMessage->content->htmlContent,
-                    'cssin');//for the time being it should be $this->htmlConverter in emailHelper
+                                                $emailMessage->content->htmlContent,
+                                                Yii::app()->emailHelper->htmlConverter);
             }
             $this->From = array($emailMessage->sender->fromAddress => $emailMessage->sender->fromName);
             foreach ($emailMessage->recipients as $recipient)

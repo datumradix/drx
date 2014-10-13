@@ -43,6 +43,14 @@
         {
             parent::setUpBeforeClass();
             SecurityTestHelper::createSuperAdmin();
+            Yii::app()->emailHelper->outboundType      = 'smtp';
+            Yii::app()->emailHelper->outboundHost     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundHost'];
+            Yii::app()->emailHelper->outboundPort     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPort'];
+            Yii::app()->emailHelper->outboundUsername = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundUsername'];
+            Yii::app()->emailHelper->outboundPassword = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPassword'];
+            Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundSecurity'];
+            Yii::app()->emailHelper->setOutboundSettings();
+            Yii::app()->emailHelper->init();
         }
 
         public function setUp()
@@ -57,6 +65,10 @@
             EmailMessageRecipient::deleteAll();
             EmailMessageSendError::deleteAll();
             FileModel::deleteAll();
+            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
+            {
+                $this->markTestSkipped('Please fix the test email settings');
+            }
         }
 
         public function testSingleEmailMessage()
@@ -173,7 +185,7 @@
             {
                 $emailMessage   = EmailMessage::getById($emailMessageId);
                 $this->assertEquals('My Email Message ' . $i, $emailMessage->subject);
-                $this->assertEquals(1, $emailMessage->sendAttempts);
+                $this->assertEquals(1, intval($emailMessage->sendAttempts));
                 $this->assertEquals($sentFolder->id, $emailMessage->folder->id);
                 $this->assertNotEmpty($emailMessage->files);
                 $this->assertCount(count($files), $emailMessage->files);
