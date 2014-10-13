@@ -81,6 +81,15 @@
             Yii::app()->jobQueue->deleteAll();
         }
 
+        public function setUp()
+        {
+            parent::setUp();
+            if (!(EmailMessageTestHelper::isSetEmailAccountsTestConfiguration() && SendGridTestHelper::isSetSendGridAccountTestConfiguration()))
+            {
+                $this->markTestSkipped('Please fix the test email settings');
+            }
+        }
+
         public function testResolveMailerWithSendGridEnabled()
         {
             ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
@@ -189,7 +198,7 @@
             ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', true);
             $emailMessage = EmailMessageHelper::processAndCreateEmailMessage(array('name' => 'Test User', 'address' => 'test@yahoo.com'), 'abc@yahoo.com');
             $emailMessage->owner = static::$bothSGandCstmUser;
-            assert($emailMessage->save());
+            $this->assertTrue($emailMessage->save());
             $campaignItem->emailMessage = $emailMessage;
             $this->assertTrue($campaignItem->unrestrictedSave());
             //user sendgrid, should return personal sg instance
