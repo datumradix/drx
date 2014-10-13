@@ -133,7 +133,8 @@
                     'replyToAddress',
                     'apiUsername',
                     'apiPassword',
-                    'eventWebhookUrl'
+                    'eventWebhookUrl',
+                    'eventWebhookFilePath'
                 ),
                 'relations' => array(
                     'messages' => array(static::HAS_MANY, 'EmailMessage', static::NOT_OWNED,
@@ -146,6 +147,7 @@
                                   array('fromName',                  'required'),
                                   array('fromAddress',               'required'),
                                   array('eventWebhookUrl',           'required'),
+                                  array('eventWebhookFilePath',      'required'),
                                   array('name',                      'type',      'type' => 'string'),
                                   array('fromName',                  'type',      'type' => 'string'),
                                   array('apiUsername',               'type',      'type' => 'string'),
@@ -156,6 +158,7 @@
                                   array('fromAddress',               'email'),
                                   array('replyToAddress',            'email'),
                                   array('eventWebhookUrl',           'url'),
+                                  array('eventWebhookFilePath',      'url'),
                 )
             );
             return $metadata;
@@ -205,6 +208,7 @@
                     'replyToAddress'            => Zurmo::t('SendGridModule', 'Reply To Address',              array(), null, $language),
                     'user'                      => Zurmo::t('UsersModule',         'User',                          array(), null, $language),
                     'eventWebhookUrl'           => Zurmo::t('SendGridModule', 'Event webhook url',             array(), null, $language),
+                    'eventWebhookFilePath'      => Zurmo::t('SendGridModule', 'Event webhook file path',       array(), null, $language),
                 )
             );
         }

@@ -68,6 +68,11 @@
          * @var string
          */
         public $eventWebhookUrl;
+        /**
+         * Event webhook url.
+         * @var string
+         */
+        public $eventWebhookFilePath;
 
         /**
          * Contains array of settings to load during initialization from the configuration table.
@@ -77,7 +82,8 @@
         protected $settingsToLoad = array(
             'apiUsername',
             'apiPassword',
-            'eventWebhookUrl'
+            'eventWebhookUrl',
+            'eventWebhookFilePath'
         );
 
         /**

@@ -68,6 +68,7 @@
                     'datetime',
                     'reason',
                     'itemClass',
+                    'itemId',
                     'emailAddress'
                 ),
                 'relations' => array(
@@ -77,11 +78,14 @@
                                   array('api',                 'required'),
                                   array('type',                'required'),
                                   array('emailAddress',        'required'),
+                                  array('itemClass',           'required'),
+                                  array('itemId',              'required'),
                                   array('type',                'type', 'type' => 'integer'),
                                   array('datetime',            'type', 'type' => 'datetime'),
                                   array('reason',              'type', 'type' => 'string'),
                                   array('itemClass',           'type', 'type' => 'string'),
                                   array('api',                 'type', 'type' => 'string'),
+                                  array('itemId',              'type', 'type' => 'integer'),
                                   array('emailAddress',        'email'),
                 )
             );

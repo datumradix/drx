@@ -93,6 +93,7 @@
             $externalApiEmailMessageActivity->reason    = 'Test reason';
             $externalApiEmailMessageActivity->emailAddress    = 'abc@yahoo.com';
             $externalApiEmailMessageActivity->itemClass = 'CampaignItem';
+            $externalApiEmailMessageActivity->itemId = $campaignItem->id;
             $this->assertTrue($externalApiEmailMessageActivity->save());
             $id          = $externalApiEmailMessageActivity->id;
             $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity(CampaignItemActivity::TYPE_OPEN, $emailMessageActivities[0], "sendgrid");

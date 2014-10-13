@@ -89,6 +89,7 @@
                             $externalApiEmailMessageActivity->type          = $value['type'];
                             $externalApiEmailMessageActivity->reason        = $value['reason'];
                             $externalApiEmailMessageActivity->itemClass     = $value['itemClass'];
+                            $externalApiEmailMessageActivity->itemId        = $value['itemId'];
                             $externalApiEmailMessageActivity->emailAddress  = $value['email'];
                             $externalApiEmailMessageActivity->save();
                         }
