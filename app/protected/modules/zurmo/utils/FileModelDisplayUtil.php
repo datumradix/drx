@@ -79,8 +79,8 @@
             $content .= ZurmoHtml::link(
                     Yii::app()->format->text($fileModel->name),
                     static::resolveDownloadUrlByRelationModelIdAndRelationModelClassNameAndFileIdAndFileName($model->id,
-                                                                                                            get_class($model),
-                                                                                                            $fileModel->id));
+                                                                                                        get_class($model),
+                                                                                                        $fileModel->id));
             return $content;
         }
 
@@ -94,7 +94,7 @@
         {
             return Yii::app()->createUrl('zurmo/fileModel/download/', array('modelId' => $modelId,
                                                                             'modelClassName' => $modelClass,
-                                                                                'id' => $fileId));
+                                                                            'id' => $fileId));
         }
 
         /**
