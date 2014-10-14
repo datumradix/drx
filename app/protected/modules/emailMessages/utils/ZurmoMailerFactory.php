@@ -89,10 +89,12 @@
                     {
                         if($apiUser != null && $apiPassword != null)
                         {
+                            $this->updateMailerDetailsForEmailMessage('sendgrid', 'global');
                             return new ZurmoSendGridMailer($this->emailMessage, null);
                         }
                         else
                         {
+                            $this->updateMailerDetailsForEmailMessage('smtp', 'global');
                             return new ZurmoSwiftMailer($this->emailMessage, null);
                         }
                     }
@@ -104,10 +106,12 @@
             }
             elseif($this->sendGridPluginEnabled && $apiUser != null && $apiPassword != null)
             {
+                $this->updateMailerDetailsForEmailMessage('sendgrid', 'global');
                 return new ZurmoSendGridMailer($this->emailMessage, null);
             }
             else
             {
+                $this->updateMailerDetailsForEmailMessage('smtp', 'global');
                 return new ZurmoSwiftMailer($this->emailMessage, null);
             }
         }
