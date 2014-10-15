@@ -48,8 +48,9 @@
         }
 
         public function run()
-        {   //echo Yii::app()->baseUrl;die;
-            $idleTime = 1800000;
+        {
+            //$idleTime = 1800000;
+            $idleTime = 10000;
             $initialSessionTimeoutMessage = Zurmo::t('Core', 'Your session will expire in <span id=\"sessionTimeoutCountdown\"></span>&nbsp;seconds.<br/><br />Click on <b>OK</b> to continue your session.');
             $redirectAfter = 60;
             $redirectTo = Yii::app()->baseUrl . '/index.php/zurmo/default/logout';
@@ -63,7 +64,7 @@
                         var sessionTimeoutCountdownId = 'sessionTimeoutCountdown';
                         var redirectAfter = {$redirectAfter};
                         var redirectTo = '{$redirectTo}'; // URL to relocate the user to once they have timed out
-                        var expiredMessage = 'Your session has expired.  You are being logged out for security reasons.'; // message to show user when the countdown reaches 0
+                        var expiredMessage = '{$expiredMessage}'; // message to show user when the countdown reaches 0
                         var running = false; // var to check if the countdown is running
                         var timer; // reference to the setInterval timer so it can be stopped
                         $(document).ready(function() {
@@ -75,7 +76,7 @@
                                 autoOpen: false,	// set this to false so we can manually open it
                                 closeOnEscape: false,
                                 draggable: false,
-                                width: 460,
+                                height: 260,
                                 minHeight: 50,
                                 modal: true,
                                 beforeclose: function() { // bind to beforeclose so if the user clicks on the \"X\" or escape to close the dialog, it will work too
@@ -86,7 +87,14 @@
                                     running = false;
                                 },
                                 buttons: {
+                                    width: 350,
                                     OK: function() {
+                                        // stop the timer
+                                        clearInterval(timer);
+
+                                        // stop countdown
+                                        running = false;
+
                                         // close dialog
                                         $(this).dialog('close');
                                     }
@@ -97,6 +105,12 @@
                                     $('body').css('overflow','hidden');
                                 },
                                 close: function() {
+                                    // stop the timer
+                                        clearInterval(timer);
+
+                                    // stop countdown
+                                    running = false;
+
                                     // reset overflow
                                     $('body').css('overflow','auto');
                                 }
@@ -130,7 +144,6 @@
                                         } else {
                                             $('#'+sessionTimeoutCountdownId).html(counter);
                                         };
-                                        console.debug(counter);
                                         $(sessionTimeoutWarningDialog).dialog('open');
                                     }, 1000);
                                 };
@@ -148,9 +161,9 @@
         {
             $cs            = Yii::app()->getClientScript();
             $baseScriptUrl = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.core.widgets.assets'));
-            $cs->registerScriptFile($baseScriptUrl . '/sessionTimeout/jquery-ui-1.8rc1.custom.min.js', ClientScript::POS_HEAD);
+            // $cs->registerScriptFile($baseScriptUrl . '/sessionTimeout/jquery-ui-1.8rc1.custom.min.js', ClientScript::POS_HEAD);
             $cs->registerScriptFile($baseScriptUrl . '/sessionTimeout/jquery.idletimer.js', ClientScript::POS_HEAD);
-            $cs->registerCssFile($baseScriptUrl . '/sessionTimeout/jquery-ui-1.8rc1.custom.css');
+            // $cs->registerCssFile($baseScriptUrl . '/sessionTimeout/jquery-ui-1.8rc1.custom.css');
         }
     }
 ?>
