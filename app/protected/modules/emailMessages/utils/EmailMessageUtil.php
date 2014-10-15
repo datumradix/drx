@@ -356,5 +356,22 @@
             }
             return true;
         }
+
+        /**
+         * Renders email address stage based on last email activity
+         * @param EmailMessage $emailAddress
+         * @param RedBeanModel $model
+         * @return string $content
+         */
+        public static function renderEmailAddressStage($emailAddress, RedBeanModel $model)
+        {
+            assert('is_string($emailAddress) || $emailAddress == null');
+            if ($emailAddress == null)
+            {
+                return;
+            }
+            $content           = Yii::app()->format->email($emailAddress);
+            return $content;
+        }
     }
 ?>

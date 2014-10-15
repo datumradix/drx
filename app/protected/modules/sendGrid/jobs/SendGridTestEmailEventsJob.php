@@ -58,7 +58,7 @@
             if($sendGridPluginEnabled)
             {
                 $data = array();
-                $content = file_get_contents('testsendgridwebhookdump.log', true);
+                $content = file_get_contents('../tests/unit/files/testsendgridwebhookdump.log', true);
                 preg_match_all('/{(.*?)}/i', $content, $matches);
                 foreach($matches[1] as $string)
                 {
