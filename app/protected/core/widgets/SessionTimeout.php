@@ -49,8 +49,7 @@
 
         public function run()
         {
-            //$idleTime = 1800000;
-            $idleTime = 10000;
+            $idleTime = 1200000;
             $initialSessionTimeoutMessage = Zurmo::t('Core', 'Your session will expire in <span id=\"sessionTimeoutCountdown\"></span>&nbsp;seconds.<br/><br />Click on <b>OK</b> to continue your session.');
             $redirectAfter = 60;
             $redirectTo = Yii::app()->baseUrl . '/index.php/zurmo/default/logout';
@@ -161,9 +160,7 @@
         {
             $cs            = Yii::app()->getClientScript();
             $baseScriptUrl = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.core.widgets.assets'));
-            // $cs->registerScriptFile($baseScriptUrl . '/sessionTimeout/jquery-ui-1.8rc1.custom.min.js', ClientScript::POS_HEAD);
             $cs->registerScriptFile($baseScriptUrl . '/sessionTimeout/jquery.idletimer.js', ClientScript::POS_HEAD);
-            // $cs->registerCssFile($baseScriptUrl . '/sessionTimeout/jquery-ui-1.8rc1.custom.css');
         }
     }
 ?>
