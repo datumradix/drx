@@ -363,15 +363,35 @@
          * @param RedBeanModel $model
          * @return string $content
          */
-        public static function renderEmailAddressStage($emailAddress, RedBeanModel $model)
+        public static function renderEmailAddressState($emailAddress, RedBeanModel $model)
         {
             assert('is_string($emailAddress) || $emailAddress == null');
             if ($emailAddress == null)
             {
                 return;
             }
-            $content           = Yii::app()->format->email($emailAddress);
-            return $content;
+            $records = ExternalApiEmailMessageActivity::resolveAndGetByEmailAddress($emailAddress, 'sendgrid');
+            if(!empty($records))
+            {
+                $record = $records[0];
+                if($record->type == EmailMessageActivity::TYPE_BOUNCE
+                        || $record->type == EmailMessageActivity::TYPE_HARD_BOUNCE
+                            || $record->type == EmailMessageActivity::TYPE_SOFT_BOUNCE)
+                {
+                    $content = '<i>&#9679;</i><span>' . Zurmo::t('MarketingModule', 'Bounced') . '</span>';
+                    $content = ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status stage-false'), $content);
+                    $content = ZurmoHtml::tag('div', array('class' => 'clearfix'), $content);
+                    return ZurmoHtml::tag('div', array('class' => 'continuum', 'id' => 'bouncedcontact'), $content);
+                }
+                if($record->type == EmailMessageActivity::TYPE_SPAM)
+                {
+                    $content = '<i>&#9679;</i><span>' . Zurmo::t('MarketingModule', 'Spam') . '</span>';
+                    $content = ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status queued'), $content);
+                    $content = ZurmoHtml::tag('div', array('class' => 'clearfix'), $content);
+                    return ZurmoHtml::tag('div', array('class' => 'continuum', 'id' => 'spammedcontact'), $content);
+                }
+            }
+            return null;
         }
     }
 ?>
