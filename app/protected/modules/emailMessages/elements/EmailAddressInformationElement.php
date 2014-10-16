@@ -107,7 +107,8 @@
             $content = null;
             if (!empty($emailAddress))
             {
-                $content .= EmailMessageUtil::renderEmailAddressAsMailToOrModalLinkStringContent($emailAddress, $this->model);
+                $content .= EmailMessageUtil::renderEmailAddressAsMailToOrModalLinkStringContent($emailAddress, $this->model)
+                            . EmailMessageUtil::renderEmailAddressState($emailAddress, $this->model);
                 if ($optOut || $isInvalid)
                 {
                     $content  .= '&#160;&#40;';

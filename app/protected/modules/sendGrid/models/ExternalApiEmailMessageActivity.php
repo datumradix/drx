@@ -251,5 +251,33 @@
             }
             return self::getSubset($joinTablesAdapter, null, null, $where, 'datetime', get_called_class(), false);
         }
+
+        /**
+         * Resolve and get by email message.
+         * @param int $emailAddress
+         * @param string $api
+         * @return array
+         */
+        public static function resolveAndGetByEmailAddress($emailAddress, $api)
+        {
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'][1] = array(
+                    'attributeName'             => 'emailAddress',
+                    'operatorType'              => 'equals',
+                    'value'                     => $emailAddress,
+            );
+            $structure = '1';
+            $clauseNumber = count($searchAttributeData['clauses']) + 1;
+            $searchAttributeData['clauses'][$clauseNumber] = array(
+                    'attributeName'             => 'api',
+                    'operatorType'              => 'equals',
+                    'value'                     => $api,
+            );
+            $structure .= ' and ' . $clauseNumber;
+            $searchAttributeData['structure'] = "({$structure})";
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            return self::getSubset($joinTablesAdapter, null, 1, $where, 'datetime DESC', get_called_class(), false);
+        }
     }
 ?>
