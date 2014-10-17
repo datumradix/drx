@@ -55,6 +55,7 @@
 
         /**
          * Given a SendGridWebApiConfigurationForm, save the configuration global values.
+         * @param SendGridWebApiConfigurationForm $form
          */
         public static function setConfigurationFromForm(SendGridWebApiConfigurationForm $form)
         {

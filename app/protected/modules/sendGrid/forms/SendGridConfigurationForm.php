@@ -43,6 +43,7 @@
 
         /**
          * Rules for api key element in configuration.
+         * @return array
          */
         public function rules()
         {
@@ -53,6 +54,7 @@
 
         /**
          * Attribute label name in configuration view.
+         * @return array
          */
         public function attributeLabels()
         {

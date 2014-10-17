@@ -43,11 +43,18 @@
         public $cssClasses = array('splash-view');
         protected $redirectUrl;
 
+        /**
+         * Class constructor.
+         * @param string $redirectUrl
+         */
         public function __construct($redirectUrl = null)
         {
             $this->redirectUrl = $redirectUrl;
         }
 
+        /**
+         * @return string
+         */
         protected function renderContent()
         {
             $params  = array('label' => $this->getCreateLinkDisplayLabel());
@@ -59,16 +66,25 @@
             return $content;
         }
 
+        /**
+         * @return string
+         */
         protected function getIconName()
         {
             return 'EmailMessage';
         }
 
+        /**
+         * @return string
+         */
         protected function getCreateLinkDisplayLabel()
         {
             return Zurmo::t('Core', 'Configure');
         }
 
+        /**
+         * @return string
+         */
         protected function getMessageContent()
         {
             return Zurmo::t('SendGridModule', '<h2>Not so fast</h2>' .

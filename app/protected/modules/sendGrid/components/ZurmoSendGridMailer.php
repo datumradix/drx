@@ -97,7 +97,6 @@
 
         /**
          * Send email.
-         * @param EmailMessage $emailMessage
          */
         public function sendEmail()
         {
@@ -202,7 +201,6 @@
 
         /**
          * Resolve recipient address by type.
-         * @return array
          */
         public function resolveRecipientAddressesByType()
         {

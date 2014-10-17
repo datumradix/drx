@@ -43,16 +43,26 @@
 
         public $emailSignatureHtmlContent;
 
+        /**
+         * @return string
+         */
         protected static function getRedBeanModelClassName()
         {
             return 'SendGridEmailAccount';
         }
 
+        /**
+         * Class constructor.
+         * @param SendGridEmailAccount $model
+         */
         public function __construct(SendGridEmailAccount $model)
         {
             $this->model = $model;
         }
 
+        /**
+         * @return array
+         */
         public function rules()
         {
             return array(
@@ -61,6 +71,9 @@
             );
         }
 
+        /**
+         * @return array
+         */
         public function attributeLabels()
         {
             return array_merge($this->model->attributeLabels(), array(
@@ -71,6 +84,7 @@
 
         /**
          * Save the emailSignatureHtmlContent
+         * @return boolean
          */
         public function save($runValidation = true, array $attributeNames = null)
         {

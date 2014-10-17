@@ -42,6 +42,10 @@
     {
         public $controller;
 
+        /**
+         * @param FilterChain $filterChain
+         * @return boolean
+         */
         protected function preFilter($filterChain)
         {
             if (isset($_POST['ajax']))

@@ -41,8 +41,7 @@
     class SendGridSendATestEmailToElement extends SendATestEmailToElement
     {
         /**
-         * Render a test button. This link calls a modal
-         * popup.
+         * Render a test button. This link calls a modal popup.
          * @return The element's content as a string.
          */
         protected function renderTestButton()

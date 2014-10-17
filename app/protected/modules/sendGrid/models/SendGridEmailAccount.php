@@ -93,6 +93,7 @@
          * and return it.
          * @param User $user
          * @param mixed $name null or String representing the email account name
+         * @param bool $decrypt
          * @return SendGridEmailAccount
          */
         public static function resolveAndGetByUserAndName(User $user, $name = null, $decrypt = true)
