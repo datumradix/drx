@@ -286,7 +286,7 @@
             foreach ($users as $user)
             {
                 if ($user->getClassId('Item') != $mission->owner->getClassId('Item') &&
-                    RightsUtil::canUserAccessModule('MissionsModule', $user))
+                    RightsUtil::canUserAccessModule('MissionsModule', $user)  && $user->isActive)
                 {
                     $people[] = $user;
                 }
