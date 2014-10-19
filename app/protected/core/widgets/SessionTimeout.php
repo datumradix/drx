@@ -34,133 +34,140 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
+     Yii::import('zii.widgets.jui.CJuiWidget');
+
     /**
      * Widget for displaying session timeout.
      */
-    class SessionTimeout extends ZurmoWidget
+    class SessionTimeout extends CJuiWidget
     {
         /**
-         * Initialize the SessionTimeout Widget
+         * @var integer The number of your session timeout (in seconds).
+         * The timeout value minus the countdown value determines how long until
+         * the dialog appears.
+         * Default: 1200
          */
+        public $timeout;
+
+        /**
+         * @var integer The countdown total value (in seconds).
+         * Default: 60
+         */
+        public $countdown;
+
+        /**
+         * @var string The title message in the dialog box.
+         * Default: 'Your session is about to expire!'
+         */
+        public $title;
+
+        /**
+         * @var string The countdown message where {0} will be
+         * used to enter the countdown value.
+         * Default: 'You will be logged out in {0} seconds.'
+         */
+        public $message;
+
+        /**
+         * @var string The question message if they want to
+         * continue using the site or not.
+         * Default: 'Do you want to stay signed in?'
+         */
+        public $question;
+
+        /**
+         * @var string The text of the YES button to keep the session alive.
+         * Default: 'Yes, Keep me signed in'
+         */
+        public $keepAliveButtonText;
+
+        /**
+         * @var string The text of the NO button to kill the session.
+         * Default: 'No, Sign me out'
+         */
+        public $signOutButtonText;
+
+        /**
+         * @var string The url that will perform a GET request to keep the
+         * session alive. This GET expects a 'OK' plain HTTP response.
+         * Default: /keep-alive
+         */
+        public $keepAliveUrl;
+
+        /**
+         * @var string The url that will perform a POST request to display an error message.
+         * that your session has timed out and has been logged out.
+         * Default: null
+         */
+        public $logoutUrl;
+
+        /**
+         * @var string The redirect url after the logout happens, usually back
+         * to the login url. It will also contain a next query param with the url
+         * that they were when timedout and a timeout=t query param indicating
+         * if it was from a timeout, this value will not be set if the user clicked
+         * the 'No, Sign me out' button.
+         * Default: /
+         */
+        public $logoutRedirectUrl;
+
+        /**
+         * @var boolean A boolean value that indicates if the countdown will
+         * restart when the user clicks the 'keep session alive' button.
+         * Default: true
+         */
+        public $restartOnYes;
+
+        /**
+         * @var integer The width of the dialog box
+         * Default: 350
+         */
+        public $dialogWidth;
+
         public function init()
         {
             parent::init();
+            $this->timeout              = 1200;
+            $this->countdown            = 60;
+            $this->title                = Zurmo::t('Core', 'Your session is about to expire!');
+            $this->message              = Zurmo::t('Core', 'You will be logged out in {0} seconds.');
+            $this->question             = Zurmo::t('Core', 'Do you want to stay signed in?');
+            $this->keepAliveButtonText  = Zurmo::t('Core', 'Yes, Keep me signed in');
+            $this->signOutButtonText    = Zurmo::t('Core', 'No, Sign me out');
+            $this->keepAliveUrl         = Yii::app()->baseUrl . '/index.php';
+            $this->logoutUrl            = Yii::app()->baseUrl . '/index.php/zurmo/default/logout';
+            $this->logoutRedirectUrl    = Yii::app()->baseUrl . '/index.php/zurmo/default/logout';
+            $cs                         = Yii::app()->getClientScript();
+            $baseScriptUrl              = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.core.widgets.assets'));
+            $cs->registerScriptFile($baseScriptUrl . '/sessionTimeout/timeout-dialog.js', ClientScript::POS_HEAD);
+            $cs->registerCssFile($baseScriptUrl . '/sessionTimeout/timeout-dialog.css');
         }
 
         public function run()
         {
-            $idleTime = 1200000;
-            $initialSessionTimeoutMessage = Zurmo::t('Core', 'Your session will expire in <span id=\"sessionTimeoutCountdown\"></span>&nbsp;seconds.<br/><br />Click on <b>OK</b> to continue your session.');
-            $redirectAfter = 60;
-            $redirectTo = Yii::app()->baseUrl . '/index.php/zurmo/default/logout';
-            $expiredMessage = Zurmo::t('Core', 'Your session has expired.  You are being logged out for security reasons.');
-            $cs = Yii::app()->getClientScript();
-            //Register session timeout script and css
-            self::registerSessionTimeoutScriptAndCss();
-            // Begin Not Coding Standard
-            $script =  "var idleTime = {$idleTime};
-                        var initialSessionTimeoutMessage = '{$initialSessionTimeoutMessage}';
-                        var sessionTimeoutCountdownId = 'sessionTimeoutCountdown';
-                        var redirectAfter = {$redirectAfter};
-                        var redirectTo = '{$redirectTo}'; // URL to relocate the user to once they have timed out
-                        var expiredMessage = '{$expiredMessage}'; // message to show user when the countdown reaches 0
-                        var running = false; // var to check if the countdown is running
-                        var timer; // reference to the setInterval timer so it can be stopped
-                        $(document).ready(function() {
-                            // create the warning window and set autoOpen to false
-                            var sessionTimeoutWarningDialog = $(\"#sessionTimeoutWarning\");
-                            $(sessionTimeoutWarningDialog).html(initialSessionTimeoutMessage);
-                            $(sessionTimeoutWarningDialog).dialog({
-                                title: 'Session Expiration Warning',
-                                autoOpen: false,	// set this to false so we can manually open it
-                                closeOnEscape: false,
-                                draggable: false,
-                                height: 260,
-                                minHeight: 50,
-                                modal: true,
-                                beforeclose: function() { // bind to beforeclose so if the user clicks on the \"X\" or escape to close the dialog, it will work too
-                                    // stop the timer
-                                    clearInterval(timer);
-
-                                    // stop countdown
-                                    running = false;
-                                },
-                                buttons: {
-                                    width: 350,
-                                    OK: function() {
-                                        // stop the timer
-                                        clearInterval(timer);
-
-                                        // stop countdown
-                                        running = false;
-
-                                        // close dialog
-                                        $(this).dialog('close');
-                                    }
-                                },
-                                resizable: false,
-                                open: function() {
-                                    // scrollbar fix for IE
-                                    $('body').css('overflow','hidden');
-                                },
-                                close: function() {
-                                    // stop the timer
-                                        clearInterval(timer);
-
-                                    // stop countdown
-                                    running = false;
-
-                                    // reset overflow
-                                    $('body').css('overflow','auto');
-                                }
-                            }); // end of dialog
-
-
-                            // start the idle timer
-                            $.idleTimer(idleTime);
-
-                            // bind to idleTimer's idle.idleTimer event
-                            $(document).bind(\"idle.idleTimer\", function(){
-                                // if the user is idle and a countdown isn't already running
-                                if($.data(document,'idleTimer') === 'idle' && !running){
-                                    var counter = redirectAfter;
-                                    running = true;
-
-                                    // intialisze timer
-                                    $('#'+sessionTimeoutCountdownId).html(redirectAfter);
-                                    // open dialog
-                                    $(sessionTimeoutWarningDialog).dialog('open');
-
-                                    // create a timer that runs every second
-                                    timer = setInterval(function(){
-                                        counter -= 1;
-
-                                        // if the counter is 0, redirect the user
-                                        if(counter === 0) {
-                                            $(sessionTimeoutWarningDialog).html(expiredMessage);
-                                            $(sessionTimeoutWarningDialog).dialog('disable');
-                                            window.location = redirectTo;
-                                        } else {
-                                            $('#'+sessionTimeoutCountdownId).html(counter);
-                                        };
-                                        $(sessionTimeoutWarningDialog).dialog('open');
-                                    }, 1000);
-                                };
-                            });
-
-                        });";
-            // End Not Coding Standard
-            $cs->registerScript('loadSessionTimeoutScript', $script, ClientScript::POS_END);
-        }
-
-        /**
-         * Registers script and css file
-         */
-        protected static function registerSessionTimeoutScriptAndCss()
-        {
-            $cs            = Yii::app()->getClientScript();
-            $baseScriptUrl = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.core.widgets.assets'));
-            $cs->registerScriptFile($baseScriptUrl . '/sessionTimeout/jquery.idletimer.js', ClientScript::POS_HEAD);
+            $options = array(
+                'timeout'                   => $this->timeout,
+                'countdown'                 => $this->countdown,
+                'title'                     => $this->title,
+                'message'                   => $this->message,
+                'question'                  => $this->question,
+                'keep_alive_button_text'    => $this->keepAliveButtonText,
+                'sign_out_button_text'      => $this->signOutButtonText,
+                'keep_alive_url'            => $this->keepAliveUrl,
+                'logout_url'                => $this->logoutUrl,
+                'restart_on_yes'            => $this->restartOnYes,
+                'logout_redirect_url'       => $this->logoutRedirectUrl,
+                'dialog_width'              => $this->dialogWidth,
+            );
+            foreach ($options as $key => $value)
+            {
+                if ($value === null)
+                {
+                    unset($options[$key]);
+                }
+            }
+            $options = CJSON::encode($options);
+            Yii::app()->getClientScript()->registerScript('TimeoutDialog', "$.timeoutDialog($options);", CClientScript::POS_READY);
         }
     }
 ?>
