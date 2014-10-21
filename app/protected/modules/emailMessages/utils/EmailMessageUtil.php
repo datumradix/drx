@@ -371,27 +371,36 @@
                 return;
             }
             $records = ExternalApiEmailMessageActivity::resolveAndGetByEmailAddress($emailAddress, 'sendgrid');
-            if(!empty($records))
-            {
-                $record = $records[0];
-                if($record->type == EmailMessageActivity::TYPE_BOUNCE
-                        || $record->type == EmailMessageActivity::TYPE_HARD_BOUNCE
-                            || $record->type == EmailMessageActivity::TYPE_SOFT_BOUNCE)
-                {
-                    $content = '<i>&#9679;</i><span>' . Zurmo::t('MarketingModule', 'Bounced') . '</span>';
-                    $content = ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status stage-false'), $content);
-                    $content = ZurmoHtml::tag('div', array('class' => 'clearfix'), $content);
-                    return ZurmoHtml::tag('div', array('class' => 'continuum', 'id' => 'bouncedcontact'), $content);
-                }
-                if($record->type == EmailMessageActivity::TYPE_SPAM)
-                {
-                    $content = '<i>&#9679;</i><span>' . Zurmo::t('MarketingModule', 'Spam') . '</span>';
-                    $content = ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status queued'), $content);
-                    $content = ZurmoHtml::tag('div', array('class' => 'clearfix'), $content);
-                    return ZurmoHtml::tag('div', array('class' => 'continuum', 'id' => 'spammedcontact'), $content);
-                }
-            }
-            return null;
+	        if(!empty($records))
+	        {
+		        $record = $records[0];
+		        if($record->type == EmailMessageActivity::TYPE_BOUNCE
+		           || $record->type == EmailMessageActivity::TYPE_HARD_BOUNCE
+		           || $record->type == EmailMessageActivity::TYPE_SOFT_BOUNCE)
+		        {
+			        $tooltipTitle = Zurmo::t('MarketingModule', 'NEGATIVE MSG HERE');
+			        $tooltip = '<span id="last-email-activity-status-tooltip" class="tooltip" title="' . $tooltipTitle . '">?</span>';
+			        $content = '<i>&#9679;</i><span>' . Zurmo::t('MarketingModule', 'Bounced') . '</span>' . $tooltip;
+			        $content = ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status stage-false'), $content);
+			        $content = ZurmoHtml::tag('div', array('class' => 'clearfix'), $content);
+			        $content = ZurmoHtml::tag('div', array('class' => 'continuum', 'id' => 'bouncedcontact'), $content);
+		        }
+		        if($record->type == EmailMessageActivity::TYPE_SPAM)
+		        {
+			        $tooltipTitle = Zurmo::t('MarketingModule', 'ANOTHER NEGATIVE MSG HERE');
+			        $tooltip = '<span id="last-email-activity-status-tooltip" class="tooltip" title="' . $tooltipTitle . '">?</span>';
+			        $content = '<i>&#9679;</i><span>' . Zurmo::t('MarketingModule', 'Spam') . '</span>' . $tooltip;
+			        $content = ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status queued'), $content);
+			        $content = ZurmoHtml::tag('div', array('class' => 'clearfix'), $content);
+			        $content = ZurmoHtml::tag('div', array('class' => 'continuum', 'id' => 'spammedcontact'), $content);
+		        }
+
+		        $qtip = new ZurmoTip();
+		        $qtip->addQTip("#last-email-activity-status-tooltip");
+		        $content = ZurmoHtml::tag('div', array('class' => 'last-email-activity-status'), $content);
+		        return $content;
+	        }
+	        return null;
         }
     }
 ?>
