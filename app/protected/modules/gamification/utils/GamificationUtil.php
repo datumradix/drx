@@ -40,14 +40,19 @@
     class GamificationUtil
     {
         /**
+         * This method replaces previous usage of throwing an exception when a game model like gamePoint was retrieved
+         * for a person and there was more than one.  For a given person/type there should only be one.  It is possible
+         * though that 2 endRequestBehaviors occur simultaneously for the same user. An example is if the user is using
+         * 2 browser tabs at once and submits a page request simultaneously.  Currently there is not much that can be done
+         * to avoid this so instead of failing we will now log this to the application.log and notify the super user
+         * that the Repair Gamification tool should be run. This tool is located under developer tools.
          * @param $logContent
          */
-        public function logAndNotifyOnDuplicateGameModel($logContent)
+        public static function logAndNotifyOnDuplicateGameModel($logContent)
         {
             assert('is_string($logContent)');
             $logContent .= "\n Use developer tools 'Repair Gamification' to resolve";
             Yii::log($logContent, CLogger::LEVEL_WARNING);
-
             $message              = new NotificationMessage();
             $message->textContent = Zurmo::t('GamificationModule', "The game engine needs to be repaired. Run 'Repair Gamification' under developer tools");
             $rules                = new RepairGamificationNotificationRules();
