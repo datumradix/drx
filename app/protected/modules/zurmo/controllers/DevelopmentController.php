@@ -235,5 +235,62 @@
                 echo $rebuildView->renderRefreshJSONScript();
             }
         }
+
+        /**
+         * @see GamificationUtil::logAndNotifyOnDuplicateGameModel($logContent for an explanation of why you would
+         * use this method.
+         */
+        public function actionRepairGamification()
+        {
+            //Check GameCoin for duplication person models
+            //todo: gameCoin - special since no type
+
+            //Check GameCollection, GameLevel, GamePoint, and GameScore for duplicate type/person models
+            $duplicateModelsData                   = array();
+            $gameCollectionDuplicateData           = GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey(GameCollection::getTableName());
+            $duplicateModelsData['GameCollection'] = $gameCollectionDuplicateData;
+            $gameLevelDuplicateData                = GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey(GameLevel::getTableName());
+            $duplicateModelsData['GameLevel']      = $gameLevelDuplicateData;
+            $gamePointDuplicateData                = GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey(GamePoint::getTableName());
+            $duplicateModelsData['GamePoint']      = $gamePointDuplicateData;
+            $gameScoreDuplicateData                = GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey(GameScore::getTableName());
+            $duplicateModelsData['GameScore']      = $gameScoreDuplicateData;
+            foreach($duplicateModelsData as $modelClassName => $duplicatesData)
+            {
+                if(empty($duplicatesData))
+                {
+                    echo 'No duplicates found for ' . $modelClassName . "<BR>";
+                }
+                else
+                {
+                    echo 'Duplicates discovered for ' . $modelClassName . "<BR>";
+                    foreach($duplicatesData as $typePersonKeyDuplicateData)
+                    {
+                        $searchAttributeData = array();
+                        $searchAttributeData['clauses'] = array(
+                            1 => array(
+                                'attributeName'        => 'type',
+                                'operatorType'         => 'equals',
+                                'value'                => $typePersonKeyDuplicateData['type'],
+                            ),
+                            2 => array(
+                                'attributeName'        => 'person',
+                                'relatedAttributeName' => 'id',
+                                'operatorType'         => 'equals',
+                                'value'                => $typePersonKeyDuplicateData['person_item_id'],
+                            ),
+                        );
+                        $searchAttributeData['structure'] = '1 and 2';
+                        $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
+                        $where  = RedBeanModelDataProvider::makeWhere($modelClassName, $searchAttributeData, $joinTablesAdapter);
+                        $models = $modelClassName::getSubset($joinTablesAdapter, null, null, $where, null);
+                        echo $modelClassName . ' Quantity of duplicates: ' . count($models) .
+                             ' --- for person_item_id: ' . $typePersonKeyDuplicateData['person_item_id'] .
+                             ' with type: ' . $typePersonKeyDuplicateData['type'] . "<BR>";
+                        //todo: actually clean
+                    }
+                }
+            }
+        }
     }
 ?>

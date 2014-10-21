@@ -67,6 +67,10 @@
                                                                             'clearing the cache to improve performance'),
                                           'route'               => 'zurmo/development/rebuildSecurityCache' // Not Coding Standard
             );
+            $categories['misc'][] = array('titleLabel'          => Zurmo::t('ZurmoModule', 'Repair Gamification'),
+                                          'descriptionLabel'    => Zurmo::t('ZurmoModule', 'Removes duplicate game models.'),
+                                          'route'               => 'zurmo/development/repairGamification' // Not Coding Standard
+            );
             $this->setLinkText(Zurmo::t('ZurmoModule', 'Run'));
             return $categories;
         }
