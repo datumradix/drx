@@ -58,5 +58,15 @@
             $rules                = new RepairGamificationNotificationRules();
             NotificationsUtil::submit($message, $rules);
         }
+
+        public static function findGameTableRowsThatAreDuplicatedByTypePersonKey($tableName)
+        {
+            assert('is_string($tableName)');
+            $sql = "SELECT count(*) as count, person_item_id, type, CONCAT(type, '_', person_item_id) as unique_column " .
+                "FROM `".$tableName."` " .
+                "GROUP BY CONCAT(type, '_', person_item_id) having count(CONCAT(type, '_', person_item_id)) > 1";
+
+            return ZurmoRedBean::getAll($sql);
+        }
     }
 ?>
