@@ -68,7 +68,14 @@
                 throw new MissingRecipientsForEmailMessageException();
             }
             $userId                 = static::resolveCurrentUserId();
-            $ownerId                = $marketingList->owner->id;
+            if(get_class($itemOwnerModel) == 'Campaign')
+            {
+                $ownerId                = $itemOwnerModel->owner->id;
+            }
+            else
+            {
+                $ownerId                = $marketingList->owner->id;
+            }
             $subject                = $itemOwnerModel->subject;
             $serializedData         = serialize($subject);
             $headers                = static::resolveHeaders($itemId);
