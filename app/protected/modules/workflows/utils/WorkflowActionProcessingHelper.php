@@ -109,10 +109,6 @@
             {
                 self::processUnsubscribeFromListAction();
             }
-            else
-            {
-                throw new NotSupportedException('Invalid action type: ' . $this->action->type);
-            }
         }
 
         /**
