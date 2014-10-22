@@ -54,7 +54,7 @@
             $logContent .= "\n Use developer tools 'Repair Gamification' to resolve";
             Yii::log($logContent, CLogger::LEVEL_WARNING);
             $message              = new NotificationMessage();
-            $message->textContent = Zurmo::t('GamificationModule', "The game engine needs to be repaired. Run 'Repair Gamification' under developer tools");
+            $message->textContent = Zurmo::t('GamificationModule', "Run 'Repair Gamification' under developer tools");
             $rules                = new RepairGamificationNotificationRules();
             NotificationsUtil::submit($message, $rules);
         }
