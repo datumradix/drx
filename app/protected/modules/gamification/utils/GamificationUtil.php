@@ -68,5 +68,40 @@
 
             return ZurmoRedBean::getAll($sql);
         }
+
+        public static function findGameTableRowsThatAreDuplicatedByPersonKey($tableName)
+        {
+            assert('is_string($tableName)');
+            $sql = "SELECT count(*) as count, person_item_id " .
+                "FROM `".$tableName."` " .
+                "GROUP BY person_item_id having count(person_item_id) > 1";
+            return ZurmoRedBean::getAll($sql);
+        }
+
+        public static function removeDuplicatesByModels(array $models, & $messageContent)
+        {
+            assert('is_string($messageContent)');
+            $modelToKeep = $models[0];
+            $maxValue    = 0;
+            foreach($models as $model)
+            {
+                if(get_class($model) == 'GameCollection' || ($model->value > $maxValue))
+                {
+                    $modelToKeep = $model;
+                    if(get_class($model) != 'GameCollection')
+                    {
+                        $maxValue    = $model->value;
+                    }
+                }
+            }
+            foreach($models as $model)
+            {
+                if($model->id != $modelToKeep->id)
+                {
+                    $messageContent .=  'Deleting model: ' . get_class($model) . ' with id ' . $model->id . "<BR>";
+                    $model->delete();
+                }
+            }
+        }
     }
 ?>

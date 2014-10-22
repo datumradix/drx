@@ -242,11 +242,12 @@
          */
         public function actionRepairGamification()
         {
-            //Check GameCoin for duplication person models
-            //todo: gameCoin - special since no type
-
-            //Check GameCollection, GameLevel, GamePoint, and GameScore for duplicate type/person models
             $duplicateModelsData                   = array();
+            //Check GameCoin for duplication person models
+            $gameCoinDuplicateData                = GamificationUtil::findGameTableRowsThatAreDuplicatedByPersonKey(GameCoin::getTableName());
+            $duplicateModelsData['GameCoin']      = $gameCoinDuplicateData;
+            //Check GameCollection, GameLevel, GamePoint, and GameScore for duplicate type/person models
+
             $gameCollectionDuplicateData           = GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey(GameCollection::getTableName());
             $duplicateModelsData['GameCollection'] = $gameCollectionDuplicateData;
             $gameLevelDuplicateData                = GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey(GameLevel::getTableName());
@@ -267,30 +268,56 @@
                     foreach($duplicatesData as $typePersonKeyDuplicateData)
                     {
                         $searchAttributeData = array();
-                        $searchAttributeData['clauses'] = array(
-                            1 => array(
-                                'attributeName'        => 'type',
-                                'operatorType'         => 'equals',
-                                'value'                => $typePersonKeyDuplicateData['type'],
-                            ),
-                            2 => array(
-                                'attributeName'        => 'person',
-                                'relatedAttributeName' => 'id',
-                                'operatorType'         => 'equals',
-                                'value'                => $typePersonKeyDuplicateData['person_item_id'],
-                            ),
-                        );
-                        $searchAttributeData['structure'] = '1 and 2';
+                        if($modelClassName == 'GameCoin')
+                        {
+                            $searchAttributeData['clauses'] = array(
+                                1 => array(
+                                    'attributeName'        => 'person',
+                                    'relatedAttributeName' => 'id',
+                                    'operatorType'         => 'equals',
+                                    'value'                => $typePersonKeyDuplicateData['person_item_id'],
+                                ),
+                            );
+                            $searchAttributeData['structure'] = '1';
+                        }
+                        else
+                        {
+                            $searchAttributeData['clauses'] = array(
+                                1 => array(
+                                    'attributeName'        => 'type',
+                                    'operatorType'         => 'equals',
+                                    'value'                => $typePersonKeyDuplicateData['type'],
+                                ),
+                                2 => array(
+                                    'attributeName'        => 'person',
+                                    'relatedAttributeName' => 'id',
+                                    'operatorType'         => 'equals',
+                                    'value'                => $typePersonKeyDuplicateData['person_item_id'],
+                                ),
+                            );
+                            $searchAttributeData['structure'] = '1 and 2';
+                        }
                         $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
                         $where  = RedBeanModelDataProvider::makeWhere($modelClassName, $searchAttributeData, $joinTablesAdapter);
                         $models = $modelClassName::getSubset($joinTablesAdapter, null, null, $where, null);
-                        echo $modelClassName . ' Quantity of duplicates: ' . count($models) .
-                             ' --- for person_item_id: ' . $typePersonKeyDuplicateData['person_item_id'] .
-                             ' with type: ' . $typePersonKeyDuplicateData['type'] . "<BR>";
-                        //todo: actually clean
+                        if($modelClassName == 'GameCoin')
+                        {
+                            echo $modelClassName . ' --- Quantity of duplicates: ' . count($models) .
+                                ' --- for person_item_id: ' . $typePersonKeyDuplicateData['person_item_id'] . "<BR>";
+                        }
+                        else
+                        {
+                            echo $modelClassName . ' --- Quantity of duplicates: ' . count($models) .
+                                ' --- for person_item_id: ' . $typePersonKeyDuplicateData['person_item_id'] .
+                                ' with type: ' . $typePersonKeyDuplicateData['type'] . "<BR>";
+                        }
+                        $messageContent = null;
+                        GamificationUtil::removeDuplicatesByModels($models, $messageContent);
+                        echo $messageContent;
                     }
                 }
             }
+            echo "<BR>" . 'Repair complete.' . "<BR>";
         }
     }
 ?>
