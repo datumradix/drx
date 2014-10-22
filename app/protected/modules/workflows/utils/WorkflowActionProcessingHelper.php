@@ -40,6 +40,16 @@
     class WorkflowActionProcessingHelper
     {
         /**
+         * @var int
+         */
+        protected $workflowId;
+
+        /**
+         * @var string
+         */
+        protected $workflowName;
+
+        /**
          * @var ActionForWorkflowForm
          */
         protected $action;
@@ -60,6 +70,8 @@
         protected $canSaveTriggeredModel;
 
         /**
+         * @param int $workflowId
+         * @param string $workflowName
          * @param ActionForWorkflowForm $action
          * @param RedBeanModel $triggeredModel
          * @param User $triggeredByUser
@@ -68,10 +80,14 @@
          * triggered model.  This parameter then would be set to false in that scenario.  Otherwise the triggered model
          * will be saved when necessary since it is assumed it will not be saved after this execution.
          */
-        public function __construct(ActionForWorkflowForm $action, RedBeanModel $triggeredModel, User $triggeredByUser,
+        public function __construct($workflowId, $workflowName, ActionForWorkflowForm $action, RedBeanModel $triggeredModel, User $triggeredByUser,
                                     $canSaveTriggeredModel = true)
         {
+            assert('is_int($workflowId)');
+            assert('is_string($workflowName)');
             assert('is_bool($canSaveTriggeredModel)');
+            $this->workflowId            = $workflowId;
+            $this->workflowName          = $workflowName;
             $this->action                = $action;
             $this->triggeredModel        = $triggeredModel;
             $this->triggeredByUser       = $triggeredByUser;
@@ -444,8 +460,16 @@
                 throw new NotSupportedException();
             }
             $marketingListId = $actionAttributes['marketingList']->value;
-            $marketingList   = MarketingList::getById((int)$marketingListId);
-            $marketingList->addNewMember((int)$this->triggeredModel->id, false);
+            try
+            {
+                //Does the marketing list still exist
+                $marketingList   = MarketingList::getById((int)$marketingListId);
+                $marketingList->addNewMember((int)$this->triggeredModel->id, false);
+            }
+            catch(NotFoundException $e)
+            {
+                $this->logAndNotifyOnMissingMarketingListModel(ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST);
+            }
         }
 
         /**
@@ -503,6 +527,38 @@
                     throw new FailedToSaveModelException();
                 }
             }
+            else
+            {
+                try
+                {
+                    //Does the marketing list still exist
+                    MarketingList::getById((int)$marketingListId);
+                }
+                catch(NotFoundException $e)
+                {
+                    $this->logAndNotifyOnMissingMarketingListModel(ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST);
+                }
+            }
+        }
+
+        protected function logAndNotifyOnMissingMarketingListModel($type)
+        {
+            assert('$type == ActionForWorkflowForm::TYPE_SUBSCRIBE_TO_LIST ||
+                    $type == ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST');
+            if($type == ActionForWorkflowForm::TYPE_SUBSCRIBE_TO_LIST)
+            {
+                $logContent = "\n Workflow model with id: " . $this->workflowId . ' is malformed. Subscribe action references invalid marketing list';
+                Yii::log($logContent, CLogger::LEVEL_WARNING);
+            }
+            else
+            {
+                $logContent = "\n Workflow model with id: " . $this->workflowId . ' is malformed. Unsubscribe action references invalid marketing list';
+                Yii::log($logContent, CLogger::LEVEL_WARNING);
+            }
+            $message              = new NotificationMessage();
+            $message->textContent = "Repair the workflow rule named '" . $this->workflowName . "' because it is referencing an invalid marketing list";
+            $rules                = new MalformedWorkflowMissingMarketingListNotificationRules();
+            NotificationsUtil::submit($message, $rules);
         }
     }
 ?>
