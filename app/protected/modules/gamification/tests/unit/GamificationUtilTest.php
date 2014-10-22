@@ -56,5 +56,70 @@
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $this->assertEquals(1, count(Notification::getAll()));
         }
+
+        public function testFindGameTableRowsThatAreDuplicatedByTypePersonKey()
+        {
+            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('GameCollection'));
+            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('GameLevel'));
+            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('GamePoint'));
+            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('GameScore'));
+        }
+
+        public function testFindGameTableRowsThatAreDuplicatedByPersonKey()
+        {
+            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByPersonKey('GameCoin'));
+        }
+
+        public function testRemoveDuplicatesByModelsNonGameCollection()
+        {
+            $super    = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+
+            $models   = array();
+            $gameCoin = new GameCoin();
+            $gameCoin->person = $super;
+            $gameCoin->value  = 34;
+            $gameCoin->save();
+            $models[] = $gameCoin;
+            $gameCoin2 = new GameCoin();
+            $gameCoin2->person = $super;
+            $gameCoin2->value  = 56;
+            $gameCoin2->save();
+            $models[] = $gameCoin2;
+            $messageContent = null;
+            $this->assertEquals(2, count(GameCoin::getAll()));
+            GamificationUtil::removeDuplicatesByModels($models, $messageContent);
+            $gameCoins = GameCoin::getAll();
+            $this->assertEquals(1, count($gameCoins));
+            //Ensure it deleted the smaller value (Bank error in your favor)
+            $this->assertEquals(56, $gameCoins[0]->value);
+            $this->assertNotNull($messageContent);
+        }
+
+        public function testRemoveDuplicatesByModelsGameCollection()
+        {
+            $super    = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+
+            $models   = array();
+            $gameCollection            = new GameCollection();
+            $gameCollection->person    = $super;
+            $gameCollection->type      = 'Basketball';
+            $gameCollection->serializedData = serialize(array('something'));
+            $gameCollection->save();
+            $models[] = $gameCollection;
+            $gameCollection2            = new GameCollection();
+            $gameCollection2->person    = $super;
+            $gameCollection2->type      = 'Basketball';
+            $gameCollection2->serializedData = serialize(array('something2'));
+            $gameCollection2->save();
+            $models[] = $gameCollection2;
+            $messageContent = null;
+            $this->assertEquals(2, count(GameCollection::getAll()));
+            GamificationUtil::removeDuplicatesByModels($models, $messageContent);
+            $gameCollections = GameCollection::getAll();
+            $this->assertEquals(1, count($gameCollections));
+            $this->assertNotNull($messageContent);
+        }
     }
 ?>
