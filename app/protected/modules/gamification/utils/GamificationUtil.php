@@ -80,7 +80,7 @@
 
         public static function removeDuplicatesByModels(array $models, & $messageContent)
         {
-            assert('is_string($messageContent)');
+            assert('is_string($messageContent) || $messageContent === null');
             $modelToKeep = $models[0];
             $maxValue    = 0;
             foreach($models as $model)
