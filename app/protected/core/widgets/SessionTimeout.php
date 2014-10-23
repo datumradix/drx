@@ -127,14 +127,27 @@
         public function init()
         {
             parent::init();
-            $this->timeout              = 1200;
+            $sessionCookieLifeTime      = ini_get('session.cookie_lifetime');
+            $sessionGcMaxLifeTime       = ini_get('session.gc_maxlifetime');
+            if (isset($sessionCookieLifeTime) && $sessionCookieLifeTime != 0)
+            {
+                $this->timeout          = $sessionCookieLifeTime;
+            }
+            else if (isset($sessionGcMaxLifeTime))
+            {
+                $this->timeout          = $sessionGcMaxLifeTime;
+            }
+            else
+            {
+                $this->timeout          = 1400;
+            }
             $this->countdown            = 60;
             $this->title                = Zurmo::t('Core', 'Your session is about to expire!');
             $this->message              = Zurmo::t('Core', 'You will be logged out in {0} seconds.');
             $this->question             = Zurmo::t('Core', 'Do you want to stay signed in?');
             $this->keepAliveButtonText  = Zurmo::t('Core', 'Yes, Keep me signed in');
             $this->signOutButtonText    = Zurmo::t('Core', 'No, Sign me out');
-            $this->keepAliveUrl         = Yii::app()->baseUrl . '/index.php';
+            $this->keepAliveUrl         = Yii::app()->request->url;
             $this->logoutUrl            = Yii::app()->baseUrl . '/index.php/zurmo/default/logout';
             $this->logoutRedirectUrl    = Yii::app()->baseUrl . '/index.php/zurmo/default/logout';
             $cs                         = Yii::app()->getClientScript();
