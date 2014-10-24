@@ -35,36 +35,31 @@
      ********************************************************************************/
 
     /**
-     * Inform user that owner of the message could not be determinated
+     * Development Controller Walkthrough.
+     * Walkthrough for the super user of all possible controller actions.
+     * Since this is a super user, he should have access to all controller actions
+     * without any exceptions being thrown.
      */
-    class EmailMessageOwnerNotExistNotificationRules extends NotificationRules
+    class DevelopmentSuperUserWalkthroughTest extends ZurmoWalkthroughBaseTest
     {
-        protected $critical        = false;
-
-        protected $allowDuplicates = true;
-
-        public static function getDisplayName()
+        public static function setUpBeforeClass()
         {
-            return Zurmo::t('EmailMessagesModule', 'Owner Of The Message Does Not Exist');
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
         }
 
-        public static function getType()
+        public function setup()
         {
-            return 'EmailMessageOwnerNotExist';
+            $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
         }
 
-        /**
-         * Any user who is a super administrator added to receive a
-         * notification.
-         */
-        protected function loadUsers()
+        public function testSuperUserAllDefaultControllerActions()
         {
-            $superAdministratorGroup = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
-            $users                   = User::getByCriteria(true, $superAdministratorGroup->id);
-            foreach ($users as $user)
-            {
-                $this->addUser($user);
-            }
+            $this->runControllerWithNoExceptionsAndGetContent('zurmo/development');
+            $this->runControllerWithNoExceptionsAndGetContent('zurmo/development/index');
+            $this->runControllerWithNoExceptionsAndGetContent('zurmo/development/compileCss');
+            $this->runControllerWithExitExceptionAndGetContent('zurmo/development/rebuildSecurityCache');
+            $this->runControllerWithNoExceptionsAndGetContent('zurmo/development/repairGamification');
         }
     }
 ?>

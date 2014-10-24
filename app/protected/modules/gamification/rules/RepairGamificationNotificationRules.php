@@ -35,22 +35,22 @@
      ********************************************************************************/
 
     /**
-     * Inform user that owner of the message could not be determinated
+     * Inform user(super admin) to run 'Repair Gamification' from developer tools
      */
-    class EmailMessageOwnerNotExistNotificationRules extends NotificationRules
+    class RepairGamificationNotificationRules extends NotificationRules
     {
         protected $critical        = false;
 
-        protected $allowDuplicates = true;
+        protected $allowDuplicates = false;
 
         public static function getDisplayName()
         {
-            return Zurmo::t('EmailMessagesModule', 'Owner Of The Message Does Not Exist');
+            return Zurmo::t('GamificationModule', "The game engine needs to be repaired");
         }
 
         public static function getType()
         {
-            return 'EmailMessageOwnerNotExist';
+            return 'RepairGamification';
         }
 
         /**

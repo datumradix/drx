@@ -229,7 +229,7 @@
 
         protected function resolveLabelContent(array $item)
         {
-            $label      = $item['label'] . $this->resolveAndGetSpanAndDynamicLabelContent($item);
+            $label      = $item['label'];
             if (isset($item['labelSpanHtmlOptions']))
             {
                 $labelSpanHtmlOptions = $item['labelSpanHtmlOptions'];
@@ -239,7 +239,7 @@
                 $labelSpanHtmlOptions = array();
             }
             $content    = $this->renderLabelPrefix() . ZurmoHtml::tag('span', $labelSpanHtmlOptions,  $label);
-            return $content;
+            return $content . $this->resolveAndGetSpanAndDynamicLabelContent($item);
         }
 
         protected function renderMenuItem($item)

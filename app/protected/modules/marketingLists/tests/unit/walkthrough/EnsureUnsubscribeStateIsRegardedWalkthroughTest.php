@@ -298,7 +298,7 @@
                                                     'type'          => WorkflowActionAttributeForm::TYPE_STATIC,
                                                     'value'         => static::$marketingList->id));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
-            $helper = new WorkflowActionProcessingHelper($action, static::$contact, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, static::$contact, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $marketingListId    = static::$marketingList->id;
             static::$marketingList->forget();
@@ -321,7 +321,7 @@
                 'value'         => static::$marketingList->id));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
 
-            $helper = new WorkflowActionProcessingHelper($action, static::$contact, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, static::$contact, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $marketingListId    = static::$marketingList->id;
             static::$marketingList->forget();

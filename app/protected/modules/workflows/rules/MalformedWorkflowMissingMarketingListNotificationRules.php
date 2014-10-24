@@ -35,35 +35,37 @@
      ********************************************************************************/
 
     /**
-     * Inform user that owner of the message could not be determinated
+     * Inform users who have access to the workflow engine that there is a malformed workflow referencing an invalid
+     * marketing list.
      */
-    class EmailMessageOwnerNotExistNotificationRules extends NotificationRules
+    class MalformedWorkflowMissingMarketingListNotificationRules extends NotificationRules
     {
         protected $critical        = false;
 
-        protected $allowDuplicates = true;
+        protected $allowDuplicates = false;
 
         public static function getDisplayName()
         {
-            return Zurmo::t('EmailMessagesModule', 'Owner Of The Message Does Not Exist');
+            return Zurmo::t('MarketingListsModule', "Invalid Workflow Rule");
         }
 
         public static function getType()
         {
-            return 'EmailMessageOwnerNotExist';
+            return 'MalformedWorkflowMissingMarketingList';
         }
 
         /**
-         * Any user who is a super administrator added to receive a
-         * notification.
+         * Any user who has access to the workflow manager should receive a notification
          */
         protected function loadUsers()
         {
-            $superAdministratorGroup = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
-            $users                   = User::getByCriteria(true, $superAdministratorGroup->id);
-            foreach ($users as $user)
+            foreach (User::getActiveUsers(true) as $user)
             {
-                $this->addUser($user);
+                if ($user->getEffectiveRight('WorkflowsModule', WorkflowsModule::RIGHT_ACCESS_WORKFLOWS) ==
+                    Right::ALLOW)
+                {
+                    $this->addUser($user);
+                }
             }
         }
     }
