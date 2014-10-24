@@ -35,61 +35,23 @@
      ********************************************************************************/
 
     /**
-     * A job for create campaign items for campaigns
+     * Derived version of @see ExplicitReadWriteModelPermissionsElement for campaign.
      */
-    class CampaignGenerateDueCampaignItemsJob extends AutoresponderOrCampaignBaseJob
+    class CampaignDerivedExplicitReadWriteModelPermissionsElement extends DerivedExplicitReadWriteModelPermissionsElement
     {
-        /**
-         * @see BaseJob::$loadJobQueueOnCleanupAndFallback
-         * @var bool
-         */
-        protected static $loadJobQueueOnCleanupAndFallback = true;
-
-        /**
-         * @returns Translated label that describes this job type.
-         */
-        public static function getDisplayName()
+        public function getEditableHtmlOptions()
         {
-           return Zurmo::t('CampaignsModule', 'Generate campaign items');
-        }
-
-        /**
-         * @see parent::resolveJobsForQueue()
-         */
-        public static function resolveJobsForQueue()
-        {
-            parent::resolveJobsForQueue();
-            $pageSize       = static::JOB_QUEUE_PAGE_SIZE;
-            $offset         = 0;
-            $timeStamp      = time();
-            do
+            list($attributeName, $relationAttributeName) = $this->resolveAttributeNameAndRelatedAttributes();
+            $htmlOptions = array(
+                'id'   => $this->getEditableInputId($attributeName, $relationAttributeName),
+            );
+            if($this->getModel()->status == Campaign::STATUS_PROCESSING || $this->getModel()->status == Campaign::STATUS_COMPLETED)
             {
-                $campaigns = Campaign::getByStatusAndSendingTime(
-                                Campaign::STATUS_ACTIVE, $timeStamp, $pageSize, $offset, false);
-                $offset    = $offset + $pageSize;
-                if (is_array($campaigns) && count($campaigns) > 0)
-                {
-                    foreach ($campaigns as $campaign)
-                    {
-                        Yii::app()->jobQueue->resolveToAddJobTypeByModelByDateTimeAttribute($campaign, 'sendOnDateTime',
-                                                'CampaignGenerateDueCampaignItems');
-                    }
-                }
+                $htmlOptions['disabled'] = true;
             }
-            while (is_array($campaigns) && count($campaigns) > 0);
-        }
-
-        /**
-         * @see BaseJob::run()
-         */
-        public function run()
-        {
-            return CampaignItemsUtil::generateCampaignItemsForDueCampaigns();
-        }
-
-        public static function jobExecutionInQueueDependsOnTime()
-        {
-            return true;
+            $htmlOptions['template']  = '<div class="radio-input">{input}{label}</div>';
+            $htmlOptions['separator'] = '';
+            return $htmlOptions;
         }
     }
 ?>

@@ -920,12 +920,16 @@ body > .ui-autocomplete{
 }
 
 .AppContainer{
-	height:100%;
-	height: e( "calc(100% - 50px)" );
 	border-top:none;
 	z-index: 10;
 	position:relative;
 }
+
+.HeaderView + .AppContainer{
+    height:100%;
+    height: e( "calc(100% - 50px)" );
+}
+
 
 @headerHeight : 50px;
 @headerHeight2 : 46px;
@@ -3974,7 +3978,8 @@ div.wide.form{
 #MetadataViewEditView   > div:not(.view-toolbar-container),
 .TableOfContentsView    > div:not(.view-toolbar-container),
 .DetailsView            > div:not(.view-toolbar-container),
-.EditAndDetailsView     > div:not(.view-toolbar-container){
+.EditAndDetailsView     > div:not(.view-toolbar-container),
+.CheckServicesView      > div:not(.MetadataView){
 	margin-bottom:20px;
 	border:1px solid #ccc;
 	.b-shadow(~"inset 0 0 0 2px #ffffff,  0 0 9px 5px rgba(153, 153, 153, 0.12)");

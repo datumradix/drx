@@ -866,38 +866,44 @@ a.simple-link .icon-x {
 #InstallView table {
   width: 100%;
 }
-#InstallView table table {
+.checked-services {
   border-color: #DDDEDE;
   border-style: solid;
   border-width: 0 0 1px 0;
   border-spacing: 0;
   border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 15px;
 }
-#InstallView table table td {
+.checked-services td {
   border-color: #DDDEDE;
   border-style: solid;
   border-width: 1px 1px 0 0;
-  padding-left: 10px;
+  padding: 10px;
 }
-#InstallView table table tr {
+.checked-services tr {
   border-color: #DDDEDE;
   border-style: solid;
   border-width: 0 0 0 1px;
   border-spacing: 0;
 }
-#InstallView table table tr:first-child {
-  border-left: none;
-}
-#InstallView table table tr:first-child td {
-  border: none;
-  font-weight: bold;
-}
-#InstallView table table tr:hover {
+.checked-services tr:hover {
   background-color: none;
   color: #545454;
 }
-#InstallView table td {
-  padding: 8px 2px;
+.checked-services tr:first-child {
+  border-left: none;
+}
+.checked-services tr:first-child td {
+  border: none;
+  font-weight: bold;
+  padding-left: 2px;
+}
+.checked-services span.pass,
+.checked-services span.fail,
+.checked-services span.warning {
+  display: block;
+  text-align: center;
 }
 #install-form {
   border: none;
@@ -976,10 +982,11 @@ a.simple-link .icon-x {
 #install-form th {
   width: 26%;
   vertical-align: top;
-  padding-top: 8px;
+  padding: 10px;
 }
 #install-form td {
   width: 37%;
+  padding: 10px;
 }
 #install-form th+td {
   vertical-align: top;
@@ -2516,15 +2523,6 @@ table.configuration-list tr:last-child td {
   padding: 15px;
   white-space: normal;
   word-break: break-all;
-}
-#DiagnosticCheckServicesView table {
-  margin-top: 15px;
-}
-#DiagnosticCheckServicesView .fail,
-#DiagnosticCheckServicesView .warning,
-#DiagnosticCheckServicesView .pass {
-  display: block;
-  text-align: center;
 }
 #QueuesListView {
   float: left;
