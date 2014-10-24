@@ -94,7 +94,7 @@
                 {
                     return Zurmo::t('Core', 'Mass Subscribe');
                 }
-                elseif(MassActionUtil::isMassUnsubscribeLikeAction($actionId))
+                elseif (MassActionUtil::isMassUnsubscribeLikeAction($actionId))
                 {
                     return Zurmo::t('Core', 'Mass Unsubscribe');
                 }

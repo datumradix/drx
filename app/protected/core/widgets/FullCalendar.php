@@ -108,7 +108,7 @@
                                                                                 }
                                                                               },
                                                                      eventSources: [
-                                                                                      getCalendarEvents('{$eventsUrl}', '{$inputId}', '{$maxCount}')
+                                                                                      getCalendarEvents('{$eventsUrl}', '{$inputId}')
                                                                                    ],
                                                                      eventRender: function(event, element, view) {
                                                                                         element.qtip({

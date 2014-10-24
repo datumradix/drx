@@ -56,17 +56,17 @@
             $this->assertEquals(0, Contact::getCount());
             //At this point the zero model ui should show up for contacts and leads
             $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/list');
-            $this->assertFalse(strpos($content, 'Arthur Conan') === false);
+            $this->assertContains('Arthur Conan', $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/list');
-            $this->assertFalse(strpos($content, 'Thomas Paine') === false);
+            $this->assertContains('Thomas Paine', $content);
 
             $contact = ContactTestHelper::createContactByNameForOwner('Jimmy', $super);
 
             //At this point leads should still show the zero model message
             $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/list');
-            $this->assertTrue(strpos($content, 'Arthur Conan') === false);
+            $this->assertNotContains('Arthur Conan', $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/list');
-            $this->assertFalse(strpos($content, 'Thomas Paine') === false);
+            $this->assertContains('Thomas Paine', $content);
 
             $this->assertTrue($contact->delete());
             $this->assertEquals(0, Contact::getCount());
@@ -76,9 +76,9 @@
 
             //At this point contacts should still show the zero model message
             $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/list');
-            $this->assertFalse(strpos($content, 'Arthur Conan') === false);
+            $this->assertContains('Arthur Conan', $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/list');
-            $this->assertTrue(strpos($content, 'Thomas Paine') === false);
+            $this->assertNotContains('Thomas Paine', $content);
         }
     }
 ?>

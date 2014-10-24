@@ -93,5 +93,10 @@
             $where = RedBeanModelDataProvider::makeWhere($modelClassName, $searchAttributeData, $joinTablesAdapter);
             return $modelClassName::getSubset($joinTablesAdapter, $offset, $pageSize, $where, null);
         }
+
+        public static function jobExecutionInQueueDependsOnTime()
+        {
+            return true;
+        }
     }
 ?>
