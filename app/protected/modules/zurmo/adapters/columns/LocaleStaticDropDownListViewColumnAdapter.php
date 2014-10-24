@@ -34,21 +34,32 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMembersMassSubscribeProgressView extends MassEditProgressView
+    class LocaleStaticDropDownListViewColumnAdapter extends ListViewColumnAdapter
     {
-        protected function getMessagePrefix()
+        public function renderGridViewData()
         {
-            return Zurmo::t('Core', 'Subscribing');
+            return array(
+                'name'  => $this->attribute,
+                'value' => array($this, 'renderDataCellContent'),
+                'type'  => 'text',
+            );
         }
 
-        protected function getCompleteMessageSuffix()
+        public function renderDataCellContent($data, $row)
         {
-            return Zurmo::t('Core', 'subscribed successfully');
+            return $this->renderValue($data->{$this->attribute});
         }
 
-        protected function headerLabelPrefixContent()
+        public function renderValue($value)
         {
-            return Zurmo::t('Core', 'Mass Subscribe');
+            if ($value == null)
+            {
+                return Zurmo::t('ZurmoModule', 'Same as language');
+            }
+            else
+            {
+                return Yii::app()->locale->getLocaleDisplayName($value) . ' (' . $value . ')';
+            }
         }
     }
 ?>

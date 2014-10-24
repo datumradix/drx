@@ -301,13 +301,11 @@
 
         protected function afterDelete()
         {
-            parent::afterDelete();
-            $campaignitems = CampaignItem::getByProcessedAndCampaignId(0, $this->id);
-            foreach ($campaignitems as $campaignitem)
+            foreach ($this->campaignItems as $item)
             {
-                ZurmoRedBean::exec("DELETE FROM campaignitemactivity WHERE campaignitem_id = " . $campaignitem->id);
+                $item->delete();
             }
-            ZurmoRedBean::exec("DELETE FROM campaignitem WHERE processed = 0 and campaign_id = " . $this->id);
+            return parent::afterDelete();
         }
     }
 ?>

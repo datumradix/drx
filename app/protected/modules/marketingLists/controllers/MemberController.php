@@ -53,16 +53,6 @@
             $this->triggerMarketingListMemberMassAction();
         }
 
-        public function actionMassSubscribe()
-        {
-            $this->triggerMarketingListMemberMassAction();
-        }
-
-        public function actionMassSubscribeProgress()
-        {
-            $this->triggerMarketingListMemberMassAction();
-        }
-
         public function actionMassUnsubscribe()
         {
             $this->triggerMarketingListMemberMassAction();
@@ -89,26 +79,16 @@
                                         false);
         }
 
-        protected static function processModelForMassSubscribe(& $model)
-        {
-            return static::processModelForMassSubscribeOrUnsubscribe($model, false);
-        }
-
         protected static function processModelForMassUnsubscribe(& $model)
         {
-            return static::processModelForMassSubscribeOrUnsubscribe($model, true);
-        }
-
-        protected static function processModelForMassSubscribeOrUnsubscribe(& $model, $unsubscribed)
-        {
-            $model->unsubscribed = $unsubscribed;
+            $model->unsubscribed = true;
             $model->unrestrictedSave();
             return true;
         }
 
         protected static function resolveTitleByMassActionId($actionId)
         {
-            if (MassActionUtil::isMassSubscribeOrUnsubscribeLikeAction($actionId))
+            if (MassActionUtil::isMassUnsubscribeLikeAction($actionId))
             {
                 if (MassActionUtil::isMassSubscribeLikeAction($actionId))
                 {
@@ -146,7 +126,7 @@
 
         protected static function resolveViewIdByMassActionId($actionId, $returnProgressViewName, $moduleName = null)
         {
-            if (MassActionUtil::isMassSubscribeOrUnsubscribeLikeAction($actionId))
+            if (MassActionUtil::isMassUnsubscribeLikeAction($actionId))
             {
                 $viewNameSuffix    = 'View';
                 if ($returnProgressViewName)

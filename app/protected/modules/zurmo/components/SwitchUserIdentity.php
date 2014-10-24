@@ -55,7 +55,12 @@
          */
         public function authenticate()
         {
-            if (!static::hasPrimaryUser() && !Yii::app()->user->userModel->isSuperAdministrator())
+            if (Yii::app()->user->userModel->username == $this->username)
+            {
+                // user is trying to switch to himself again.
+                $this->redirectForInvalidSwitchRequest();
+            }
+            if ((!static::hasPrimaryUser() && !Yii::app()->user->userModel->isSuperAdministrator()))
             {
                 // we have an adventurous user here. He isn't admin and he hasn't got the primaryUser state
                 // set yet he wants to try.
@@ -70,7 +75,7 @@
                     if ($switchToUser->isRootUser)
                     {
                         // an adventurous user who is trying to switch to another Root User
-                        return $this->noRightToSwitchUser();
+                        $this->redirectForInvalidSwitchRequest();
                     }
                 }
                 if (Yii::app()->user->userModel->isSuperAdministrator() && !isset($primaryUser))
@@ -108,6 +113,11 @@
         {
             $this->errorCode    = static::ERROR_NO_RIGHT_SWITCH_USER;
             return false;
+        }
+
+        protected function redirectForInvalidSwitchRequest()
+        {
+            Yii::app()->request->redirect(Yii::app()->homeUrl);
         }
 
         protected static function hasPrimaryUser()
