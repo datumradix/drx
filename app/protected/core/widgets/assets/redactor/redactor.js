@@ -951,7 +951,7 @@
 			html = html.replace(/<span(.*?)id="redactor-image-editter"(.*?)>(.*?)<\/span>/gi, '');
 
 			// remove any styles form ul, ol, li
-			html = html.replace(/<(ul|ol|li)(.*?) style="(.*?)"(.*?)>/gi, '<$1$2$4>');
+			html = html.replace(/<(ul|ol|li)([^>]*) style="(.*?)"(.*?)>/gi, '<$1$2$4>');
 
 			// remove empty lists
 			html = html.replace(/<(ul|ol)>\s*\t*\n*<\/(ul|ol)>/gi, '');
