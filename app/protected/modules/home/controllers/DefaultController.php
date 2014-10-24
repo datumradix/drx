@@ -163,6 +163,8 @@
             {
                 $dashboard->owner = Yii::app()->user->userModel;
                 $dashboard->layoutId = Dashboard::getNextLayoutId();
+                $_POST['Dashboard']  = PostUtil::sanitizePostByDesignerTypeForSavingModel(
+                                       $dashboard, $_POST['Dashboard']);
                 $dashboard->setAttributes($_POST['Dashboard']);
                 assert('in_array($dashboard->layoutType, array_keys(Dashboard::getLayoutTypesData()))');
                 if ($dashboard->save())
@@ -189,6 +191,8 @@
             if (isset($_POST['Dashboard']))
             {
                 $oldLayoutType = $dashboard->layoutType;
+                $_POST['Dashboard']  = PostUtil::sanitizePostByDesignerTypeForSavingModel(
+                                       $dashboard, $_POST['Dashboard']);
                 $dashboard->setAttributes($_POST['Dashboard']);
                 assert('in_array($dashboard->layoutType, array_keys(Dashboard::getLayoutTypesData()))');
                 if ($dashboard->save())

@@ -41,7 +41,7 @@
     {
         protected function renderIntroContent()
         {
-            $content  = '<h1>' . Zurmo::t('ProductsModule', 'How do ProductsPluralLabel work in Zurmo?', LabelUtil::getTranslationParamsForAllModules()). '</h1>';
+            $content  = '<h1>' . Zurmo::t('ProductsModule', 'How do ProductsModulePluralLabel work in Zurmo?', LabelUtil::getTranslationParamsForAllModules()). '</h1>';
             $content .= '<div id="products-intro-steps" class="module-intro-steps clearfix">';
             $content .= '<div class="third catalog-description"><span class="icon"></span>';
             $content .= '<p><strong>' . Zurmo::t('ProductsModule', 'Catalog') . '</strong>';
@@ -55,10 +55,10 @@
             $content .= '</p>';
             $content .= '</div>';
             $content .= '<div class="third product-description"><span class="icon"></span>';
-            $content .= '<p><strong>' . Zurmo::t('ProductsModule', 'ProductsSingularLabel', LabelUtil::getTranslationParamsForAllModules()) . '</strong>';
-            $content .= Zurmo::t('ProductsModule', 'A <em>ProductsSingularLabel</em> record is an actual customer order. ' .
+            $content .= '<p><strong>' . Zurmo::t('ProductsModule', 'ProductsModuleSingularLabel', LabelUtil::getTranslationParamsForAllModules()) . '</strong>';
+            $content .= Zurmo::t('ProductsModule', 'A <em>ProductsModuleSingularLabel</em> record is an actual customer order. ' .
                                                    'Select an existing item from the catalog or create a free-standing ' .
-                                                   'SingularLowerCaseLabel',
+                                                   'ProductsModuleSingularLowerCaseLabel',
                                                    LabelUtil::getTranslationParamsForAllModules());
             $content .= '</p>';
             $content .= '</div>';

@@ -209,7 +209,7 @@
             {
                 if (isset($value))
                 {
-                    $value  = ZurmoRedBean::$adapter->escape($value);
+                    $value  = DatabaseCompatibilityUtil::escape($value);
                 }
             }
         }

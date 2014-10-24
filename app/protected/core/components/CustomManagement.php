@@ -224,5 +224,13 @@
         public function resolveAdditionalScriptContentForEmailTemplate($stepCount, & $script)
         {
         }
+        
+        public function resolveQueueModelEditAndDetailsViewOnLoadScript($model)
+        {
+        }
+
+        public function resolveQueueModelEditViewOnRuleTypeChangeScript($model)
+        {
+        }
     }
 ?>

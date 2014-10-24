@@ -35,61 +35,31 @@
      ********************************************************************************/
 
     /**
-     * A job for create campaign items for campaigns
+     * Development Controller Walkthrough.
+     * Walkthrough for the super user of all possible controller actions.
+     * Since this is a super user, he should have access to all controller actions
+     * without any exceptions being thrown.
      */
-    class CampaignGenerateDueCampaignItemsJob extends AutoresponderOrCampaignBaseJob
+    class DevelopmentSuperUserWalkthroughTest extends ZurmoWalkthroughBaseTest
     {
-        /**
-         * @see BaseJob::$loadJobQueueOnCleanupAndFallback
-         * @var bool
-         */
-        protected static $loadJobQueueOnCleanupAndFallback = true;
-
-        /**
-         * @returns Translated label that describes this job type.
-         */
-        public static function getDisplayName()
+        public static function setUpBeforeClass()
         {
-           return Zurmo::t('CampaignsModule', 'Generate campaign items');
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
         }
 
-        /**
-         * @see parent::resolveJobsForQueue()
-         */
-        public static function resolveJobsForQueue()
+        public function setup()
         {
-            parent::resolveJobsForQueue();
-            $pageSize       = static::JOB_QUEUE_PAGE_SIZE;
-            $offset         = 0;
-            $timeStamp      = time();
-            do
-            {
-                $campaigns = Campaign::getByStatusAndSendingTime(
-                                Campaign::STATUS_ACTIVE, $timeStamp, $pageSize, $offset, false);
-                $offset    = $offset + $pageSize;
-                if (is_array($campaigns) && count($campaigns) > 0)
-                {
-                    foreach ($campaigns as $campaign)
-                    {
-                        Yii::app()->jobQueue->resolveToAddJobTypeByModelByDateTimeAttribute($campaign, 'sendOnDateTime',
-                                                'CampaignGenerateDueCampaignItems');
-                    }
-                }
-            }
-            while (is_array($campaigns) && count($campaigns) > 0);
+            $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
         }
 
-        /**
-         * @see BaseJob::run()
-         */
-        public function run()
+        public function testSuperUserAllDefaultControllerActions()
         {
-            return CampaignItemsUtil::generateCampaignItemsForDueCampaigns();
-        }
-
-        public static function jobExecutionInQueueDependsOnTime()
-        {
-            return true;
+            $this->runControllerWithNoExceptionsAndGetContent('zurmo/development');
+            $this->runControllerWithNoExceptionsAndGetContent('zurmo/development/index');
+            $this->runControllerWithNoExceptionsAndGetContent('zurmo/development/compileCss');
+            $this->runControllerWithExitExceptionAndGetContent('zurmo/development/rebuildSecurityCache');
+            $this->runControllerWithNoExceptionsAndGetContent('zurmo/development/repairGamification');
         }
     }
 ?>

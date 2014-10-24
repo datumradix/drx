@@ -35,61 +35,36 @@
      ********************************************************************************/
 
     /**
-     * A job for create campaign items for campaigns
+     * Inform user(super admin) to run 'Repair Gamification' from developer tools
      */
-    class CampaignGenerateDueCampaignItemsJob extends AutoresponderOrCampaignBaseJob
+    class RepairGamificationNotificationRules extends NotificationRules
     {
-        /**
-         * @see BaseJob::$loadJobQueueOnCleanupAndFallback
-         * @var bool
-         */
-        protected static $loadJobQueueOnCleanupAndFallback = true;
+        protected $critical        = false;
 
-        /**
-         * @returns Translated label that describes this job type.
-         */
+        protected $allowDuplicates = false;
+
         public static function getDisplayName()
         {
-           return Zurmo::t('CampaignsModule', 'Generate campaign items');
+            return Zurmo::t('GamificationModule', "The game engine needs to be repaired");
+        }
+
+        public static function getType()
+        {
+            return 'RepairGamification';
         }
 
         /**
-         * @see parent::resolveJobsForQueue()
+         * Any user who is a super administrator added to receive a
+         * notification.
          */
-        public static function resolveJobsForQueue()
+        protected function loadUsers()
         {
-            parent::resolveJobsForQueue();
-            $pageSize       = static::JOB_QUEUE_PAGE_SIZE;
-            $offset         = 0;
-            $timeStamp      = time();
-            do
+            $superAdministratorGroup = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
+            $users                   = User::getByCriteria(true, $superAdministratorGroup->id);
+            foreach ($users as $user)
             {
-                $campaigns = Campaign::getByStatusAndSendingTime(
-                                Campaign::STATUS_ACTIVE, $timeStamp, $pageSize, $offset, false);
-                $offset    = $offset + $pageSize;
-                if (is_array($campaigns) && count($campaigns) > 0)
-                {
-                    foreach ($campaigns as $campaign)
-                    {
-                        Yii::app()->jobQueue->resolveToAddJobTypeByModelByDateTimeAttribute($campaign, 'sendOnDateTime',
-                                                'CampaignGenerateDueCampaignItems');
-                    }
-                }
+                $this->addUser($user);
             }
-            while (is_array($campaigns) && count($campaigns) > 0);
-        }
-
-        /**
-         * @see BaseJob::run()
-         */
-        public function run()
-        {
-            return CampaignItemsUtil::generateCampaignItemsForDueCampaigns();
-        }
-
-        public static function jobExecutionInQueueDependsOnTime()
-        {
-            return true;
         }
     }
 ?>
