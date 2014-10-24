@@ -359,7 +359,7 @@
 
         /**
          * Renders email address stage based on last email activity
-         * @param EmailMessage $emailAddress
+         * @param String $emailAddress
          * @param RedBeanModel $model
          * @return string $content
          */
@@ -378,7 +378,7 @@
 		           || $record->type == EmailMessageActivity::TYPE_HARD_BOUNCE
 		           || $record->type == EmailMessageActivity::TYPE_SOFT_BOUNCE)
 		        {
-			        $tooltipTitle = Zurmo::t('MarketingModule', 'NEGATIVE MSG HERE');
+			        $tooltipTitle = $record->reason;
 			        $tooltip = '<span id="last-email-activity-status-tooltip" class="tooltip" title="' . $tooltipTitle . '">?</span>';
 			        $content = '<i>&#9679;</i><span>' . Zurmo::t('MarketingModule', 'Bounced') . '</span>' . $tooltip;
 			        $content = ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status stage-false'), $content);
@@ -387,7 +387,7 @@
 		        }
 		        if($record->type == EmailMessageActivity::TYPE_SPAM)
 		        {
-			        $tooltipTitle = Zurmo::t('MarketingModule', 'ANOTHER NEGATIVE MSG HERE');
+			        $tooltipTitle = $record->reason;
 			        $tooltip = '<span id="last-email-activity-status-tooltip" class="tooltip" title="' . $tooltipTitle . '">?</span>';
 			        $content = '<i>&#9679;</i><span>' . Zurmo::t('MarketingModule', 'Spam') . '</span>' . $tooltip;
 			        $content = ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status queued'), $content);
