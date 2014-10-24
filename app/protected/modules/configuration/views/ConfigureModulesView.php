@@ -63,6 +63,7 @@
                 return;
             }
             $content  = ZurmoHtml::openTag('div', array('class' => 'get-pro-message'));
+	        $content .= ZurmoHtml::openTag('div');
 	        $content .= ZurmoHtml::openTag('h2');
             $content .= Zurmo::t('ZurmoModule', 'Achieve more with a Zurmo subscription');
 	        $content .= ZurmoHtml::closeTag('h2');
@@ -73,6 +74,7 @@
 	        $content .= ZurmoHtml::closeTag('p');
 	        $content .= '<a href="http://www.zurmo.com/needSupport.php?s=amenu" class="z-button"><span class="z-label">' .
                         Zurmo::t('ZurmoModule', 'Learn More' . '</span></a>');
+	        $content .= ZurmoHtml::closeTag('div');
 	        $content .= ZurmoHtml::closeTag('div');
             return $content;
         }

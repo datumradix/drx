@@ -6076,8 +6076,8 @@ a.dashboard-link .z-label {
 }
 .help-section {
   border-top: 1px solid #fff;
-  padding: 30px 0 0 15px;
-  width: 50%;
+  padding: 30px 50px 0 0;
+  width: 30%;
   float: left;
   font-size: 12px;
   margin-bottom: 30px;
@@ -6097,6 +6097,9 @@ a.dashboard-link .z-label {
 .help-section a {
   color: #666;
   font-weight: bold;
+}
+.get-pro-message-small {
+  width: 40%;
 }
 #tip-of-day-next-page-link {
   margin-left: 16px;
@@ -6177,7 +6180,6 @@ a.dashboard-link .z-label {
   background-image: linear-gradient(90deg,rgba(255,255,255,0) 55%,#ffffff 100%);
 }
 .get-pro-message {
-  padding: 30px;
   background-color: #36719f !important;
   background-repeat: repeat-x !important;
   background-image: -ms-radial-gradient(circle,#3d82b6,#36719f) !important;
@@ -6186,6 +6188,10 @@ a.dashboard-link .z-label {
   background-image: -o-radial-gradient(circle,#3d82b6,#36719f) !important;
   background-image: -moz-radial-gradient(circle,#3d82b6,#36719f) !important;
   background-image: radial-gradient(circle,#3d82b6,#36719f) !important;
+}
+.get-pro-message > div {
+  padding: 30px;
+  background: url("../images/get-pro-screens.png") right bottom no-repeat;
 }
 .get-pro-message h2 {
   font-weight: 100;
@@ -6209,6 +6215,25 @@ a.dashboard-link .z-label {
   line-height: 36px !important;
   font-size: 16px;
   font-weight: 400;
+}
+.get-pro-message-small {
+  width: 40%;
+  font-weight: bold;
+  padding-right: 60px;
+}
+.get-pro-message-small h3 {
+  font-weight: 400;
+  color: #e9c71b;
+  -webkit-text-shadow: none;
+  -moz-text-shadow: none;
+  -ms-text-shadow: none;
+  -o-text-shadow: none;
+  text-shadow: none;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+.get-pro-message-small p {
+  line-height: 1.5;
 }
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
   #LoginView,
