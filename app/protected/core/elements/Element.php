@@ -466,5 +466,10 @@
         {
             return $this->renderControlNonEditable();
         }
+
+        public function getModel()
+        {
+            return $this->model;
+        }
     }
 ?>

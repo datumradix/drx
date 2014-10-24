@@ -280,5 +280,25 @@
                 Zurmo::t('Core', 'Save');
             }
         }
+
+        protected function renderRightSideFormLayoutForEdit($form)
+        {
+            assert('$form instanceof ZurmoActiveForm');
+            $content = "<h3>".Zurmo::t('ZurmoModule', 'Rights and Permissions') . '</h3><div id="owner-box">';
+            if($this->isCampaignEditable())
+            {
+                $element = new UserElement($this->getModel(), 'owner', $form);
+            }
+            else
+            {
+                $element = new UserElement($this->getModel(), 'owner', $form, array('disabled' => true));
+            }
+            $element->editableTemplate = '{label}{content}{error}';
+            $content .= $element->render().'</div>';
+            $element  = new CampaignDerivedExplicitReadWriteModelPermissionsElement($this->getModel(), 'null', $form);
+            $element->editableTemplate = '{label}{content}{error}';
+            $content .= $element->render();
+            return $content;
+        }
     }
 ?>
