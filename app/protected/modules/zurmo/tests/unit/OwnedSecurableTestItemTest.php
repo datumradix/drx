@@ -49,7 +49,7 @@
 
         public static function getDependentTestModelClassNames()
         {
-            return array('OwnedSecurableTestItem');
+            return array('OwnedSecurableTestItem', 'OwnedSecurableTestItem3');
         }
 
         public function testSavingTwiceWithAModelThatHasACurrencyValueAsARelation()
@@ -96,6 +96,29 @@
             $testItem->forget();
             $testItem = OwnedSecurableTestItem::getById($testItemId);
             $this->assertNotEquals($defaultDateTimeModified, $testItem->modifiedDateTime);
+        }
+        
+        public function testOwnerChangeTriggersEventOnAfterOwnerChange()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $user = UserTestHelper::createBasicUser('basic1');
+            $testItem = new OwnedSecurableTestItem3();
+            $testItem->member = 'test';
+            $this->assertTrue($testItem->save());
+            sleep(1);
+            $testItem->member = 'test1';
+            $this->assertTrue($testItem->save());
+            $testItemId = $testItem->id;
+            $testItem->forget();
+            $testItem = OwnedSecurableTestItem3::getById($testItemId);
+            $this->assertEquals('test1', $testItem->member);
+            sleep(1);
+            $testItem->owner = $user;
+            $this->assertTrue($testItem->save());
+            $testItemId = $testItem->id;
+            $testItem->forget();
+            $testItem = OwnedSecurableTestItem3::getById($testItemId);
+            $this->assertEquals('onAfterOwnerChange', $testItem->member);
         }
     }
 ?>
