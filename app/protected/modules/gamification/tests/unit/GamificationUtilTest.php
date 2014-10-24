@@ -59,15 +59,15 @@
 
         public function testFindGameTableRowsThatAreDuplicatedByTypePersonKey()
         {
-            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('GameCollection'));
-            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('GameLevel'));
-            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('GamePoint'));
-            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('GameScore'));
+            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('gamecollection'));
+            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('gamelevel'));
+            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('gamepoint'));
+            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey('gamescore'));
         }
 
         public function testFindGameTableRowsThatAreDuplicatedByPersonKey()
         {
-            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByPersonKey('GameCoin'));
+            $this->assertEmpty(GamificationUtil::findGameTableRowsThatAreDuplicatedByPersonKey('gamecoin'));
         }
 
         public function testRemoveDuplicatesByModelsNonGameCollection()
