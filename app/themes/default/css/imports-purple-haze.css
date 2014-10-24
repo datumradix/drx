@@ -866,38 +866,44 @@ a.simple-link .icon-x {
 #InstallView table {
   width: 100%;
 }
-#InstallView table table {
+.checked-services {
   border-color: #DDDEDE;
   border-style: solid;
   border-width: 0 0 1px 0;
   border-spacing: 0;
   border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 15px;
 }
-#InstallView table table td {
+.checked-services td {
   border-color: #DDDEDE;
   border-style: solid;
   border-width: 1px 1px 0 0;
-  padding-left: 10px;
+  padding: 10px;
 }
-#InstallView table table tr {
+.checked-services tr {
   border-color: #DDDEDE;
   border-style: solid;
   border-width: 0 0 0 1px;
   border-spacing: 0;
 }
-#InstallView table table tr:first-child {
-  border-left: none;
-}
-#InstallView table table tr:first-child td {
-  border: none;
-  font-weight: bold;
-}
-#InstallView table table tr:hover {
+.checked-services tr:hover {
   background-color: none;
   color: #545454;
 }
-#InstallView table td {
-  padding: 8px 2px;
+.checked-services tr:first-child {
+  border-left: none;
+}
+.checked-services tr:first-child td {
+  border: none;
+  font-weight: bold;
+  padding-left: 2px;
+}
+.checked-services span.pass,
+.checked-services span.fail,
+.checked-services span.warning {
+  display: block;
+  text-align: center;
 }
 #install-form {
   border: none;
@@ -976,10 +982,11 @@ a.simple-link .icon-x {
 #install-form th {
   width: 26%;
   vertical-align: top;
-  padding-top: 8px;
+  padding: 10px;
 }
 #install-form td {
   width: 37%;
+  padding: 10px;
 }
 #install-form th+td {
   vertical-align: top;
@@ -2516,15 +2523,6 @@ table.configuration-list tr:last-child td {
   padding: 15px;
   white-space: normal;
   word-break: break-all;
-}
-#DiagnosticCheckServicesView table {
-  margin-top: 15px;
-}
-#DiagnosticCheckServicesView .fail,
-#DiagnosticCheckServicesView .warning,
-#DiagnosticCheckServicesView .pass {
-  display: block;
-  text-align: center;
 }
 #QueuesListView {
   float: left;
@@ -13321,6 +13319,49 @@ body.flat-cement #RecentlyViewedView {
 }
 body.flat-cement #RecentlyViewedView li em {
   background: none;
+}
+body.flat-cement .AppNavigation {
+  -webkit-transition: all 0.1s cubic-bezier(0.390,0.575,0.565,1.000);
+  -moz-transition: all 0.1s cubic-bezier(0.390,0.575,0.565,1.000);
+  -ms-transition: all 0.1s cubic-bezier(0.390,0.575,0.565,1.000);
+  -o-transition: all 0.1s cubic-bezier(0.390,0.575,0.565,1.000);
+  transition: all 0.1s cubic-bezier(0.390,0.575,0.565,1.000);
+  -ms-transform: translate(0px,0);
+  -moz-transform: translate(0px,0);
+  -webkit-transform: translate3d(0px,0,0);
+  transform: translate(0px,0);
+  background-color: rgba(227,227,227,0) !important;
+  background-repeat: repeat-x !important;
+  background-image: -ms-linear-gradient(top,rgba(220,220,220,0),rgba(227,227,227,0)) !important;
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,rgba(220,220,220,0)),color-stop(100%,rgba(227,227,227,0))) !important;
+  background-image: -webkit-linear-gradient(top,rgba(220,220,220,0),rgba(227,227,227,0)) !important;
+  background-image: -o-linear-gradient(top,rgba(220,220,220,0),rgba(227,227,227,0)) !important;
+  background-image: -moz-linear-gradient(top,rgba(220,220,220,0),rgba(227,227,227,0)) !important;
+  background-image: linear-gradient(top,rgba(220,220,220,0),rgba(227,227,227,0)) !important;
+}
+body.flat-cement .AppNavigation:hover {
+  background-color: #e3e3e3 !important;
+  background-repeat: repeat-x !important;
+  background-image: -ms-linear-gradient(top,#dcdcdc,#e3e3e3) !important;
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#dcdcdc),color-stop(100%,#e3e3e3)) !important;
+  background-image: -webkit-linear-gradient(top,#dcdcdc,#e3e3e3) !important;
+  background-image: -o-linear-gradient(top,#dcdcdc,#e3e3e3) !important;
+  background-image: -moz-linear-gradient(top,#dcdcdc,#e3e3e3) !important;
+  background-image: linear-gradient(top,#dcdcdc,#e3e3e3) !important;
+}
+body.flat-cement .AppNavigation:hover .ui-chooser {
+  background-color: #e3e3e3 !important;
+  background-repeat: repeat-x !important;
+  background-image: -ms-linear-gradient(top,#dcdcdc,#e3e3e3) !important;
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#dcdcdc),color-stop(100%,#e3e3e3)) !important;
+  background-image: -webkit-linear-gradient(top,#dcdcdc,#e3e3e3) !important;
+  background-image: -o-linear-gradient(top,#dcdcdc,#e3e3e3) !important;
+  background-image: -moz-linear-gradient(top,#dcdcdc,#e3e3e3) !important;
+  background-image: linear-gradient(top,#dcdcdc,#e3e3e3) !important;
+}
+body.flat-cement .ui-chooser {
+  background: none !important;
+  border: none;
 }
 body.flat-cement .items {
   background: #fff;

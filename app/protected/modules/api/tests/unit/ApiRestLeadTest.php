@@ -830,6 +830,8 @@
             LeadTestHelper::createLeadWithAccountByNameForOwner('Third Lead', $super, $account);
             LeadTestHelper::createLeadWithAccountByNameForOwner('Forth Lead', $super, $account2);
             LeadTestHelper::createLeadWithAccountByNameForOwner('Fifth Lead', $super, $account2);
+            ContactTestHelper::createContactWithAccountByNameForOwner('First Contact', $super, $account);
+            ContactTestHelper::createContactWithAccountByNameForOwner('Second Contact', $super, $account2);
 
             $searchParams = array(
                 'pagination' => array(

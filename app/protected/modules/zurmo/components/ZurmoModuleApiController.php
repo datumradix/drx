@@ -305,19 +305,7 @@
                 {
                     throw new NotSupportedException();
                 }
-
-                // In case of ContactState model, we can't use Module::getStateMetadataAdapterClassName() function,
-                // because it references to Contact model, so we defined new function
-                // ContactsContactStateApiController::getStateMetadataAdapterClassName() which return null.
-                if (method_exists($this, 'getStateMetadataAdapterClassName'))
-                {
-                    $stateMetadataAdapterClassName = $this->getStateMetadataAdapterClassName();
-                }
-                else
-                {
-                    $stateMetadataAdapterClassName = $this->getModule()->getStateMetadataAdapterClassName();
-                }
-
+                $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
                 $dataProvider = $this->makeRedBeanDataProviderByDataCollection(
                     $searchForm,
                     $pageSize,
@@ -448,6 +436,14 @@
                 if (isset($filterParams['sort']))
                 {
                     $sort = $filterParams['sort'];
+                }
+
+                $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
+                if ($stateMetadataAdapterClassName != null)
+                {
+                    $stateMetadataAdapter = new $stateMetadataAdapterClassName($filterParams['search']['searchAttributeData']);
+                    $filterParams['search']['searchAttributeData'] = $stateMetadataAdapter->getAdaptedDataProviderMetadata();
+                    $filterParams['search']['searchAttributeData']['structure'] = '(' . $filterParams['search']['searchAttributeData']['structure'] . ')';
                 }
 
                 $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
@@ -928,6 +924,26 @@
             $redBeanModelToApiDataUtil  = new $dataUtil($model);
             $data                       = $redBeanModelToApiDataUtil->getData();
             return $data;
+        }
+
+        /**
+         * Resolve StateMetadataAdapterClassName
+         * @return mixed
+         */
+        protected function resolveStateMetadataAdapterClassName()
+        {
+            // In case of ContactState model, we can't use Module::getStateMetadataAdapterClassName() function,
+            // because it references to Contact model, so we defined new function
+            // ContactsContactStateApiController::getStateMetadataAdapterClassName() which return null.
+            if (method_exists($this, 'getStateMetadataAdapterClassName'))
+            {
+                $stateMetadataAdapterClassName = $this->getStateMetadataAdapterClassName();
+            }
+            else
+            {
+                $stateMetadataAdapterClassName = $this->getModule()->getStateMetadataAdapterClassName();
+            }
+            return $stateMetadataAdapterClassName;
         }
     }
 ?>

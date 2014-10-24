@@ -80,7 +80,7 @@
                                resolveBreadCrumbViewForDetailsControllerAction($controller, $stickySearchKey, $model);
             $this->assertTrue($view instanceof StickyDetailsAndRelationsBreadCrumbView);
             $content = $view->render();
-            $this->assertTrue(strpos($content, 'stickyModelId') === false);
+            $this->assertNotContains('stickyModelId', $content);
 
             //Test when there is a stickyLoadUrl
             $stickySearchKey = 'abc';
@@ -90,7 +90,7 @@
                                resolveBreadCrumbViewForDetailsControllerAction($controller, $stickySearchKey, $model);
             $this->assertTrue($view instanceof StickyDetailsAndRelationsBreadCrumbView);
             $content = $view->render();
-            $this->assertFalse(strpos($content, 'stickyListLoadingArea') === false);
+            $this->assertContains('stickyListLoadingArea', $content);
         }
     }
 ?>

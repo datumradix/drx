@@ -103,7 +103,7 @@
             $this->setGetArray (array('id'              => $superCategoryId2));
             $this->setPostArray(array('ProductCategory' => array('name' => '')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/category/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Load Model Detail Views
             $this->setGetArray(array('id' => $superCategoryId));

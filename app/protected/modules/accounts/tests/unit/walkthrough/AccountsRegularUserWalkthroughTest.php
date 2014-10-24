@@ -116,7 +116,7 @@
             //Test nobody with elevated rights.
             Yii::app()->user->userModel = User::getByUsername('nobody');
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/list');
-            $this->assertFalse(strpos($content, 'Benjamin Franklin') === false);
+            $this->assertContains('Benjamin Franklin', $content);
             $this->runControllerWithNoExceptionsAndGetContent('accounts/default/create');
 
             //Test nobody can view an existing account he owns.
@@ -124,8 +124,7 @@
 
             //At this point the listview for accounts should show the search/list and not the helper screen.
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/list');
-            $this->assertTrue(strpos($content, 'Benjamin Franklin') === false);
-
+            $this->assertNotContains('Benjamin Franklin', $content);
             //Go to the a ccount editview.
             $this->setGetArray(array('id' => $account->id));
             $this->runControllerWithNoExceptionsAndGetContent('accounts/default/edit');
@@ -603,7 +602,7 @@
             $this->setGetArray(array('selectedIds' => $selectedIds, 'selectAll' => ''));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>3</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>3</strong>&#160;records selected for updating', $content);
 
             //Test trying to change the owner to super and trying to change name which is required, but leaving it blank.
             //This will result in a validation error, but since since the owner has been selected as super, we want
@@ -617,7 +616,7 @@
                 'MassEdit' => array('name' => 1, 'owner' => 1)
             ));
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>3</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>3</strong>&#160;records selected for updating', $content);
 
             //Now set office phone to a real value, keep owner set at super, and try again. This time the mass update
             //should be successful except for account3 which the confused user does not have write access too.
@@ -674,7 +673,7 @@
             $this->setGetArray(array('selectedIds' => $selectedIds,'selectAll' => ''));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>3</strong>&#160;Accounts selected for removal') === false);
+            $this->assertContains('<strong>3</strong>&#160;Accounts selected for removal', $content);
             $pageSize = Yii::app()->pagination->getForCurrentUserByType('massDeleteProgressPageSize');
             $this->assertEquals(5, $pageSize);
             //calculating accounts after adding 6 new records
@@ -759,7 +758,7 @@
             $confused = $this->logoutCurrentUserLoginNewUserAndGetByUsername('confused');
             $this->setGetArray(array('id' => $id));
             $content = $this->runControllerWithExitExceptionAndGetContent('accounts/default/copy');
-            $this->assertFalse(strpos($content, 'You have tried to access a page you do not have access to.') === false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
         }
     }
 ?>

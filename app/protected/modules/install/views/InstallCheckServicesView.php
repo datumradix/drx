@@ -57,8 +57,7 @@
             $requiredIndexId = ServiceHelper::REQUIRED_SERVICE;
             $currentPageUrl  = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/checkSystem/');
             $nextPageUrl     = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/settings/');
-            $content = '<br/><br/>';
-            $content .= ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('InstallModule', 'Recheck System')),
+            $content = ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('InstallModule', 'Recheck System')),
                 $currentPageUrl, array('class' => 'default-btn'));
             if (count($this->checkResultsDisplayData[$failedIndexId][$requiredIndexId]) == 0)
             {

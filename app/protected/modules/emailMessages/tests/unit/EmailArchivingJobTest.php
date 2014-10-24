@@ -346,8 +346,8 @@ To: Steve <steve@example.com>
             $emailMessage = $emailMessages[0];
 
             $this->assertEquals($subject, $emailMessage->subject);
-            $this->assertTrue(strpos($emailMessage->content->textContent, 'Hello Steve') !== false);
-            $this->assertTrue(strpos($emailMessage->content->htmlContent, '<strong>Hello</strong> Steve') !== false);
+            $this->assertContains('Hello Steve', $emailMessage->content->textContent);
+            $this->assertContains('<strong>Hello</strong> Steve', $emailMessage->content->htmlContent);
             $this->assertEquals(Yii::app()->params['emailTestAccounts']['testEmailAddress'], $emailMessage->sender->fromAddress);
             $this->assertEquals($user->primaryEmail->emailAddress, $emailMessage->recipients[0]->toAddress);
 
@@ -407,7 +407,7 @@ To: Steve <steve@example.com>
             sleep(30);
             $job = new EmailArchivingJob();
             $this->assertFalse($job->run());
-            $this->assertTrue(strpos($job->getErrorMessage(), 'Failed to process Message id') !== false);
+            $this->assertContains('Failed to process Message id', $job->getErrorMessage());
 
             $this->assertEquals(0, EmailMessage::getCount());
             $this->assertEquals(1, Notification::getCountByTypeAndUser('EmailMessageOwnerNotExist', $super));

@@ -36,27 +36,39 @@ body.flat-cement{
 		box-shadow: none !important;
 		//border-radius: 0 !important;
 	}
-	.AppContent, .AppNavigation, .AppContainer,
-	#MenuView, #RecentlyViewedView{
+	.AppContent,
+    .AppNavigation,
+    .AppContainer,
+	#MenuView,
+    #RecentlyViewedView{
 		background: none !important;
 		border: none !important;
 	}
 	#RecentlyViewedView li em{
 		background: none;
 	}
+    .AppNavigation{
+        @_time : 0.5s;
+        .animateAll(0.1s);
+        #gradient > .vertical(rgba(220, 220, 220, 0), rgba(227, 227, 227, 0)) !important;
+    }
+    .AppNavigation:hover{
+        #gradient > .vertical(#dcdcdc, #e3e3e3) !important;
+        .ui-chooser{
+            #gradient > .vertical(#dcdcdc, #e3e3e3) !important;
+        }
+    }
+    .ui-chooser{
+        background: none !important;
+        border:none;
+    }
 	.items{
 		background: #fff;
 	}
 	.juiportlet-columns .juiportlet-widget{
-		//border:none;
-		//background: #fefefe;
 		.pager{
 			border-top: 1px solid #dfdfdf
 		}
-	}
-	.juiportlet-columns .juiportlet-widget .juiportlet-widget-head{
-		//border:none;
-		//background: none !important;
 	}
 }
 

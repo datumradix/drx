@@ -58,7 +58,7 @@
             $user->firstName = 'James';
             $user->lastName  = 'Boondog';
             assert($user->save()); // Not Coding Standard
-            assert(AuditEvent::getCount() == 4); // Not Coding Standard
+            assert(AuditEvent::getCount() == 6); // Not Coding Standard
         }
 
         public function testResolveNewRecentlyViewedModel()
@@ -156,8 +156,8 @@
 
             $content = AuditEventsRecentlyViewedUtil::getRecentlyViewedAjaxContentByUser(Yii::app()->user->userModel, 5);
             $this->assertNotEmpty($content);
-            $this->assertTrue(strpos($content, 'Dooble2') !== false);
-            $this->assertTrue(strpos($content, 'Dooble1') !== false);
+            $this->assertContains('Dooble2', $content);
+            $this->assertContains('Dooble1', $content);
         }
 
         public function testDeleteModelFromRecentlyViewed()
