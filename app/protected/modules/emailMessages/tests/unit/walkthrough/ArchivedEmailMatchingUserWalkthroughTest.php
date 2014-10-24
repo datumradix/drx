@@ -71,7 +71,9 @@
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $this->runControllerWithNoExceptionsAndGetContent('emailMessages/default/matchingList');
             $message1             = EmailMessageTestHelper::createArchivedUnmatchedReceivedMessage($super);
+            $message1Id           = $message1->id;
             $message2             = EmailMessageTestHelper::createArchivedUnmatchedReceivedMessage($super);
+            $message2Id           = $message2->id;
             $message3             = EmailMessageTestHelper::createArchivedUnmatchedReceivedMessage($super);
             $contact              = ContactTestHelper::createContactByNameForOwner('gail', $super);
             $startingContactState = ContactsUtil::getStartingState();
@@ -112,6 +114,8 @@
                                             'contactId'   => $contact->id,
                                             'contactName' => 'Some Name'))));
             $this->runControllerWithNoExceptionsAndGetContent('emailMessages/default/completeMatch', true);
+            $message1->forget();
+            $message1 = EmailMessage::getById($message1Id);
             $this->assertNull($contact->primaryEmail->emailAddress);
             $this->assertCount(1, $message1->sender->personsOrAccounts);
             $this->assertTrue($message1->sender->personsOrAccounts[0]->isSame($contact));
@@ -164,6 +168,8 @@
                                         'officePhone'       => '456765421',
                                         'state'             => array('id' => $startingContactState->id)))));
             $this->runControllerWithNoExceptionsAndGetContent('emailMessages/default/completeMatch', true);
+            $message2->forget();
+            $message2 = EmailMessage::getById($message2Id);
             $this->assertEquals(2, Contact::getCount());
             $contacts = Contact::getByName('George Patton');
             $contact  = $contacts[0];
