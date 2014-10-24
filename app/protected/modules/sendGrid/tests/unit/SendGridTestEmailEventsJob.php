@@ -57,44 +57,7 @@
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             if($sendGridPluginEnabled)
             {
-                $data = array();
-                $content = file_get_contents('../tests/unit/files/testsendgridwebhookdump.log', true);
-                preg_match_all('/{(.*?)}/i', $content, $matches);
-                foreach($matches[1] as $string)
-                {
-                    $data[] = json_decode('{' . $string . '}', true);
-                }
-                foreach($data as $value)
-                {
-                    if($value['event'] == 'bounce' || $value['event'] == 'spamreport' || $value['event'] == 'dropped')
-                    {
-                        if(ArrayUtil::getArrayValue($value, 'itemClass'))
-                        {
-                            $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
-                            $activityUtilClassName      = $activityClassName . 'Util';
-                            if($value['event'] == 'bounce' || $value['event'] == 'dropped')
-                            {
-                                $type                       = $activityClassName::TYPE_BOUNCE;
-                                $emailMessageActivity       = $this->createBounceEmailMessageActivity();
-                            }
-                            else
-                            {
-                                $type                       = $activityClassName::TYPE_SPAM;
-                                $emailMessageActivity       = $this->createSpamEmailMessageActivity();
-                            }
-                            static::resolveAndUpdateEventInformationByStatus($value);
-                            $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
-                            $externalApiEmailMessageActivity->emailMessageActivity = $emailMessageActivity;
-                            $externalApiEmailMessageActivity->api           = 'sendgrid';
-                            $externalApiEmailMessageActivity->type          = $value['type'];
-                            $externalApiEmailMessageActivity->reason        = $value['reason'];
-                            $externalApiEmailMessageActivity->itemClass     = $value['itemClass'];
-                            $externalApiEmailMessageActivity->itemId        = $value['itemId'];
-                            $externalApiEmailMessageActivity->emailAddress  = $value['email'];
-                            $externalApiEmailMessageActivity->save();
-                        }
-                    }
-                }
+                $this->processEventData('files/testsendgridwebhookdump.log', null);
             }
             return true;
         }
@@ -121,6 +84,36 @@
             $emailMessageActivity->quantity                = 10;
             $emailMessageActivity->save();
             return $emailMessageActivity;
+        }
+
+        /**
+         * Deletes file content.
+         * @param string $eventWebhookFilePath
+         * @return void
+         */
+        protected function deleteFileContent($eventWebhookFilePath)
+        {
+
+        }
+
+        /**
+         * Process actiity information.
+         * @param array $value
+         * @param int $type
+         */
+        protected function processActivityInformation($value, $type)
+        {
+            $type                       = $this->getActivityTypeByEvent($value);
+            if($type == EmailMessageActivity::TYPE_BOUNCE)
+            {
+                $emailMessageActivity       = $this->createBounceEmailMessageActivity();
+            }
+            else
+            {
+                $emailMessageActivity       = $this->createSpamEmailMessageActivity();
+            }
+            static::resolveAndUpdateEventInformationByStatus($value);
+            $this->saveExternalApiEmailMessageActivity($emailMessageActivity, $value);
         }
     }
 ?>

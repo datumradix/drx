@@ -130,7 +130,7 @@
         {
             if($eventWebhookUrl != null)
             {
-                $content = file_get_contents($eventWebhookUrl);
+                $content = $this->resolveFileContent($eventWebhookUrl);
                 preg_match_all('/\[{(.*?)}\]/i', $content, $matches);
                 $data = array();
                 foreach($matches[1] as $string)
@@ -144,57 +144,106 @@
                         if(ArrayUtil::getArrayValue($value, 'itemClass', false) !== false &&
                             ArrayUtil::getArrayValue($value, 'itemId', false) !== false)
                         {
-                            $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
-                            $activityUtilClassName      = $activityClassName . 'Util';
-                            if($value['event'] == 'bounce' || $value['event'] == 'dropped')
-                            {
-                                $type                       = $activityClassName::TYPE_BOUNCE;
-                            }
-                            else
-                            {
-                                $type                       = $activityClassName::TYPE_SPAM;
-                            }
-                            $activityData               = array('modelId'   => $value['itemId'],
+                            $this->processActivityInformation($value);
+                        }
+                    }
+                }
+                $this->deleteFileContent($eventWebhookFilePath);
+            }
+        }
+
+        /**
+         * Deletes file content.
+         * @param string $eventWebhookFilePath
+         * @return void
+         */
+        protected function deleteFileContent($eventWebhookFilePath)
+        {
+            // Initialize cURL
+            $ch = curl_init();
+            // Set URL on which you want to post the Form and/or data
+            curl_setopt($ch, CURLOPT_URL, $eventWebhookFilePath);
+            // Set post to true
+            curl_setopt($ch, CURLOPT_POST, true);
+            // Data+Files to be posted
+            curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode(''));
+            // Pass TRUE or 1 if you want to wait for and catch the response against the request made
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: text/plain'));
+            // Execute the request
+            $response = curl_exec($ch);
+        }
+
+        /**
+         * Save external api email message activity.
+         * @param EmailMessageActivity $emailMessageActivity
+         * @param array $value
+         */
+        protected function saveExternalApiEmailMessageActivity(EmailMessageActivity $emailMessageActivity, $value)
+        {
+            $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
+            $externalApiEmailMessageActivity->emailMessageActivity = $emailMessageActivity;
+            $externalApiEmailMessageActivity->api           = 'sendgrid';
+            $externalApiEmailMessageActivity->type          = $value['type'];
+            $externalApiEmailMessageActivity->reason        = $value['reason'];
+            $externalApiEmailMessageActivity->itemClass     = $value['itemClass'];
+            $externalApiEmailMessageActivity->itemId        = $value['itemId'];
+            $externalApiEmailMessageActivity->emailAddress  = $value['email'];
+            $externalApiEmailMessageActivity->save();
+        }
+
+        /**
+         * Resolve file content.
+         * @param string $eventWebhookUrl
+         * @return string
+         */
+        protected function resolveFileContent($eventWebhookUrl)
+        {
+            return file_get_contents($eventWebhookUrl);
+        }
+
+        /**
+         * Get activity type by event.
+         * @param array $value
+         * @return string
+         */
+        protected function getActivityTypeByEvent($value)
+        {
+            if($value['event'] == 'bounce' || $value['event'] == 'dropped')
+            {
+                $type   = EmailMessageActivity::TYPE_BOUNCE;
+            }
+            else
+            {
+                $type   = EmailMessageActivity::TYPE_SPAM;
+            }
+            return $type;
+        }
+
+        /**
+         * Process actiity information.
+         * @param array $value
+         */
+        protected function processActivityInformation($value)
+        {
+            $type                       = $this->getActivityTypeByEvent($value);
+            $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
+            $activityUtilClassName      = $activityClassName . 'Util';
+            $activityData               = array('modelId'   => $value['itemId'],
                                                                 'modelType' => $value['itemClass'],
                                                                 'personId'  => $value['personId'],
                                                                 'url'       => null,
                                                                 'type'      => $type);
-                            if($activityUtilClassName::createOrUpdateActivity($activityData))
-                            {
-                                //$activityClassName=CampaignItemActivity
-                                $emailMessageActivities     = $activityClassName::getByTypeAndModelIdAndPersonIdAndUrl($type, $value['itemId'], $value['personId'], null);
-                                self::resolveAndUpdateEventInformationByStatus($value);
-                                $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity($value['type'], $emailMessageActivities[0], "sendgrid");
-                                if($externalMessageActivityCount == 0)
-                                {
-                                    $externalApiEmailMessageActivity = new ExternalApiEmailMessageActivity();
-                                    $externalApiEmailMessageActivity->emailMessageActivity = $emailMessageActivities[0];
-                                    $externalApiEmailMessageActivity->api           = 'sendgrid';
-                                    $externalApiEmailMessageActivity->type          = $value['type'];
-                                    $externalApiEmailMessageActivity->reason        = $value['reason'];
-                                    $externalApiEmailMessageActivity->itemClass     = $value['itemClass'];
-                                    $externalApiEmailMessageActivity->itemId        = $value['itemId'];
-                                    $externalApiEmailMessageActivity->emailAddress  = $value['email'];
-                                    $externalApiEmailMessageActivity->save();
-                                }
-                            }
-                        }
-                    }
+            if($activityUtilClassName::createOrUpdateActivity($activityData))
+            {
+                //$activityClassName=CampaignItemActivity
+                $emailMessageActivities     = $activityClassName::getByTypeAndModelIdAndPersonIdAndUrl($type, $value['itemId'], $value['personId'], null);
+                self::resolveAndUpdateEventInformationByStatus($value);
+                $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity($value['type'], $emailMessageActivities[0], "sendgrid");
+                if($externalMessageActivityCount == 0)
+                {
+                    $this->saveExternalApiEmailMessageActivity($emailMessageActivities[0], $value);
                 }
-                // Initialize cURL
-                $ch = curl_init();
-
-                // Set URL on which you want to post the Form and/or data
-                curl_setopt($ch, CURLOPT_URL, $eventWebhookFilePath);
-                // Set post to true
-                curl_setopt($ch, CURLOPT_POST, true);
-                // Data+Files to be posted
-                curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode(''));
-                // Pass TRUE or 1 if you want to wait for and catch the response against the request made
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: text/plain'));
-                // Execute the request
-                $response = curl_exec($ch);
             }
         }
     }
