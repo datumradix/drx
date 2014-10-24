@@ -84,7 +84,10 @@
 
         protected function renderContent()
         {
-            $this->renderSessionTimeout();
+            if (!Yii::app()->userInterface->isMobile())
+            {
+                $this->renderSessionTimeout();
+            }
             $this->renderLoginRequiredAjaxResponse();
             $logoAndSearchContent = $this->renderLogoAndSearchContent();
             $userActionsContent   = $this->renderUserActionsContent();
