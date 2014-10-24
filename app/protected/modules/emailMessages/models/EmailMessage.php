@@ -97,6 +97,8 @@
                     'sentDateTime',
                     'sendOnDateTime',
                     'headers',
+                    'mailerType',
+                    'mailerSettings'
                 ),
                 'relations' => array(
                     'folder'        => array(static::HAS_ONE,  'EmailFolder', static::NOT_OWNED,
@@ -111,7 +113,7 @@
                     'error'         => array(static::HAS_ONE,  'EmailMessageSendError' , static::OWNED,
                                                 static::LINK_TYPE_SPECIFIC, 'error'),
                     'account'       => array(static::HAS_ONE,  'EmailAccount', static::NOT_OWNED,
-                                                static::LINK_TYPE_SPECIFIC, 'account'),
+                                                static::LINK_TYPE_SPECIFIC, 'account')
                 ),
                 'rules' => array(
                     array('subject',         'required'),
@@ -124,10 +126,14 @@
                     array('sentDateTime',    'type', 'type' => 'datetime'),
                     array('sendOnDateTime',  'type', 'type' => 'datetime'),
                     array('headers',         'type', 'type' => 'string'),
+                    array('mailerType',      'type',    'type' => 'string'),
+                    array('mailerSettings',  'type',    'type' => 'string'),
                 ),
                 'elements' => array(
                     'sentDateTime'  => 'DateTime',
                     'files'         => 'Files',
+                    'mailerType'    => 'Text',
+                    'mailerSettings'=> 'Text'
                 )
             );
             return $metadata;

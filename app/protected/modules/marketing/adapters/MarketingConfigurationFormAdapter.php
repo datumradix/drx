@@ -49,6 +49,7 @@
             $form                                         = new MarketingConfigurationForm();
             $form->autoresponderOrCampaignFooterPlainText = GlobalMarketingFooterUtil::getContentByType(false);
             $form->autoresponderOrCampaignFooterRichText  = GlobalMarketingFooterUtil::getContentByType(true);
+            $form->useAutoresponderOrCampaignOwnerMailSettings = ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
             return $form;
         }
 
@@ -59,6 +60,7 @@
         {
             GlobalMarketingFooterUtil::setContentByType($form->autoresponderOrCampaignFooterPlainText, false);
             GlobalMarketingFooterUtil::setContentByType($form->autoresponderOrCampaignFooterRichText, true);
+            ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', $form->useAutoresponderOrCampaignOwnerMailSettings);
         }
     }
 ?>

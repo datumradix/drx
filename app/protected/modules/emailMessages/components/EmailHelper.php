@@ -37,7 +37,7 @@
     /**
      * Component for working with outbound and inbound email transport
      */
-    class EmailHelper extends CApplicationComponent
+    class EmailHelper extends ZurmoBaseEmailHelper
     {
         const OUTBOUND_TYPE_SMTP = 'smtp';
 
@@ -101,7 +101,7 @@
          * @see loadOutboundSettings
          * @var array
          */
-        protected $settingsToLoad = array(
+        protected static $settingsToLoad = array(
             'outboundType',
             'outboundHost',
             'outboundPort',
@@ -138,34 +138,16 @@
          */
         public function loadDefaultFromAndToAddresses()
         {
-            $this->defaultFromAddress   = $this->resolveAndGetDefaultFromAddress();
-            $this->defaultTestToAddress = $this->resolveAndGetDefaultTestToAddress();
+            $this->defaultFromAddress   = static::resolveAndGetDefaultFromAddress();
+            $this->defaultTestToAddress = static::resolveAndGetDefaultTestToAddress();
         }
 
         protected function loadOutboundSettings()
         {
-            foreach ($this->settingsToLoad as $keyName)
+            $settings = self::getOutboundSettings();
+            foreach ($settings as $keyName => $keyValue)
             {
-                if ($keyName == 'outboundPassword')
-                {
-                    $encryptedKeyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', $keyName);
-                    if ($encryptedKeyValue !== '' && $encryptedKeyValue !== null)
-                    {
-                        $keyValue = ZurmoPasswordSecurityUtil::decrypt($encryptedKeyValue);
-                    }
-                    else
-                    {
-                        $keyValue = null;
-                    }
-                }
-                else
-                {
-                    $keyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', $keyName);
-                }
-                if (null !== $keyValue)
-                {
-                    $this->$keyName = $keyValue;
-                }
+                $this->$keyName = $keyValue;
             }
         }
 
@@ -206,7 +188,7 @@
          */
         public function setOutboundSettings()
         {
-            foreach ($this->settingsToLoad as $keyName)
+            foreach (static::$settingsToLoad as $keyName)
             {
                 if ($keyName == 'outboundPassword')
                 {
@@ -218,114 +200,6 @@
                     ZurmoConfigurationUtil::setByModuleName('EmailMessagesModule', $keyName, $this->$keyName);
                 }
             }
-        }
-
-        /**
-         * Send an email message. This will queue up the email to be sent by the queue sending process. If you want to
-         * send immediately, consider using @sendImmediately
-         * @param EmailMessage $emailMessage
-         * @param bool $useSQL
-         * @param bool $validate
-         * @return bool|void
-         * @throws FailedToSaveModelException
-         * @throws NotFoundException
-         * @throws NotSupportedException
-         */
-        public function send(EmailMessage & $emailMessage, $useSQL = false, $validate = true)
-        {
-            static::isValidFolderType($emailMessage);
-            $folder     = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX);
-            $saved      = static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder, $validate);
-            if ($saved)
-            {
-                Yii::app()->jobQueue->add('ProcessOutboundEmail');
-            }
-            return $saved;
-        }
-
-        /**
-         * Verify if folder type of an emailMessage is valid or not.
-         * @param EmailMessage $emailMessage
-         * @throws NotSupportedException
-         */
-        protected static function isValidFolderType(EmailMessage $emailMessage)
-        {
-            if ($emailMessage->folder->type == EmailFolder::TYPE_OUTBOX ||
-                $emailMessage->folder->type == EmailFolder::TYPE_SENT ||
-                $emailMessage->folder->type == EmailFolder::TYPE_OUTBOX_ERROR ||
-                $emailMessage->folder->type == EmailFolder::TYPE_OUTBOX_FAILURE)
-            {
-                throw new NotSupportedException();
-            }
-        }
-
-        /**
-         * Update an email message's folder and save it
-         * @param EmailMessage $emailMessage
-         * @param $useSQL
-         * @param EmailFolder $folder
-         * @param bool $validate
-         * @return bool|void
-         * @throws FailedToSaveModelException
-         */
-        protected static function updateFolderForEmailMessage(EmailMessage & $emailMessage, $useSQL,
-                                                              EmailFolder $folder, $validate = true)
-        {
-            // we don't have syntax to support saving related records and other attributes for emailMessage, yet.
-            $saved  = false;
-            if ($useSQL && $emailMessage->id > 0)
-            {
-                $saved = static::updateFolderForEmailMessageWithSQL($emailMessage, $folder);
-            }
-            else
-            {
-                $saved = static::updateFolderForEmailMessageWithORM($emailMessage, $folder, $validate);
-            }
-            if (!$saved)
-            {
-                throw new FailedToSaveModelException();
-            }
-            return $saved;
-        }
-
-        /**
-         * Update an email message's folder and save it using SQL
-         * @param EmailMessage $emailMessage
-         * @param EmailFolder $folder
-         * @throws NotSupportedException
-         */
-        protected static function updateFolderForEmailMessageWithSQL(EmailMessage & $emailMessage, EmailFolder $folder)
-        {
-            // TODO: @Shoaibi/@Jason: Critical0: This fails CampaignItemsUtilTest.php:243
-            $folderForeignKeyName   = RedBeanModel::getForeignKeyName('EmailMessage', 'folder');
-            $tableName              = EmailMessage::getTableName();
-            $sql                    = "UPDATE " . DatabaseCompatibilityUtil::quoteString($tableName);
-            $sql                    .= " SET " . DatabaseCompatibilityUtil::quoteString($folderForeignKeyName);
-            $sql                    .= " = " . $folder->id;
-            $sql                    .= " WHERE " . DatabaseCompatibilityUtil::quoteString('id') . " = ". $emailMessage->id;
-            $effectedRows           = ZurmoRedBean::exec($sql);
-            if ($effectedRows == 1)
-            {
-                $emailMessageId = $emailMessage->id;
-                $emailMessage->forgetAll();
-                $emailMessage = EmailMessage::getById($emailMessageId);
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         * Update an email message's folder and save it using ORM
-         * @param EmailMessage $emailMessage
-         * @param EmailFolder $folder
-         * @param bool $validate
-         */
-        protected static function updateFolderForEmailMessageWithORM(EmailMessage & $emailMessage,
-                                                                        EmailFolder $folder, $validate = true)
-        {
-            $emailMessage->folder = $folder;
-            $saved = $emailMessage->save($validate);
-            return $saved;
         }
 
         /**
@@ -342,254 +216,100 @@
             {
                 throw new NotSupportedException();
             }
-            $mailer             = $this->getOutboundMailer();
-            $this->populateMailer($mailer, $emailMessage);
-            $this->sendEmail($mailer, $emailMessage);
-            $this->updateEmailMessageForSending($emailMessage, (bool) ($emailMessage->id > 0));
+            $mailerFactory  = new ZurmoMailerFactory($emailMessage);
+            $mailer         = $mailerFactory->resolveMailer();
+            $mailer->sendEmail();
         }
 
         /**
-         * Updates the email message using stored procedure
+         * Prepare message content.
          * @param EmailMessage $emailMessage
+         * @return string
          */
-        protected function updateEmailMessageForSending(EmailMessage $emailMessage, $useSQL = false)
+        public static function prepareMessageContent(EmailMessage $emailMessage)
         {
-            if (!$useSQL)
+            $messageContent  = null;
+            if (!($emailMessage->hasErrors() || $emailMessage->hasSendError()))
             {
-                Yii::log("EmailMessage should have been saved by this point. Anyways, saving now", CLogger::LEVEL_INFO);
-                // we save it and return. No need to call SP as the message is saved already;
-                $emailMessage->save(false);
-                return;
-            }
-            $nowTimestamp       = "'" . DateTimeUtil::convertTimestampToDbFormatDateTime(time()) . "'";
-            $sendAttempts       = ($emailMessage->sendAttempts)? $emailMessage->sendAttempts : 1;
-            $sentDateTime       = ($emailMessage->sentDateTime)? "'" . $emailMessage->sentDateTime . "'" : 'null';
-            $serializedData     = ($emailMessage->error->serializedData)?
-                                                            "'" . $emailMessage->error->serializedData . "'" : 'null';
-            $sql                    = '`update_email_message_for_sending`(
-                                                                        ' . $emailMessage->id . ',
-                                                                        ' . $sendAttempts . ',
-                                                                        ' . $sentDateTime . ',
-                                                                        ' . $emailMessage->folder->id . ',
-                                                                        ' . $serializedData . ',
-                                                                        ' . $nowTimestamp .')';
-            ZurmoDatabaseCompatibilityUtil::callProcedureWithoutOuts($sql);
-            $emailMessage->forget();
-        }
-
-        /**
-         * Call this method to process all email Messages in the queue. This is typically called by a scheduled job
-         * or cron.  This will process all emails in a TYPE_OUTBOX folder or TYPE_OUTBOX_ERROR folder. If the message
-         * has already been sent 3 times then it will be moved to a failure folder.
-         * @param bool|null $count
-         * @return bool number of queued messages to be sent
-         */
-        public function sendQueued($count = null)
-        {
-            assert('is_int($count) || $count == null');
-            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                $this->sendImmediately($emailMessage);
-            }
-            if ($count == null)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
-            }
-            elseif (count($queuedEmailMessages) < $count)
-            {
-                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - count($queuedEmailMessages));
+                $messageContent .= Zurmo::t('EmailMessagesModule', 'Message successfully sent') . "\n";
             }
             else
             {
-                $queuedEmailMessages = array();
-            }
-            foreach ($queuedEmailMessages as $emailMessage)
-            {
-                if ($emailMessage->sendAttempts < 3)
+                $messageContent .= Zurmo::t('EmailMessagesModule', 'Message failed to send') . "\n";
+                if ($emailMessage->hasSendError())
                 {
-                    $this->sendImmediately($emailMessage);
+                    $messageContent .= $emailMessage->error     . "\n";
                 }
                 else
                 {
-                    $this->processMessageAsFailure($emailMessage);
-                }
-            }
-            return true;
-        }
-
-        protected function processMessageAsFailure(EmailMessage $emailMessage, $useSQL = false)
-        {
-            $folder = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_FAILURE);
-            static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder);
-        }
-
-        protected function populateMailer(Mailer $mailer, EmailMessage $emailMessage)
-        {
-            $mailer->mailer   = $this->outboundType;
-            $mailer->host     = $this->outboundHost;
-            $mailer->port     = $this->outboundPort;
-            $mailer->username = $this->outboundUsername;
-            $mailer->password = $this->outboundPassword;
-            $mailer->security = $this->outboundSecurity;
-            $this->resolveMailerFromEmailAccount($mailer, $emailMessage->account);
-            $mailer->Subject  = $emailMessage->subject;
-            $mailer->headers  = unserialize($emailMessage->headers);
-            if (!empty($emailMessage->content->textContent))
-            {
-                $mailer->altBody  = $emailMessage->content->textContent;
-            }
-            if (!empty($emailMessage->content->htmlContent))
-            {
-                $mailer->body       = ZurmoCssInlineConverterUtil::convertAndPrettifyEmailByHtmlContent(
-                                                                                    $emailMessage->content->htmlContent,
-                                                                                    $this->htmlConverter);
-            }
-            $mailer->From = array($emailMessage->sender->fromAddress => $emailMessage->sender->fromName);
-            foreach ($emailMessage->recipients as $recipient)
-            {
-                $mailer->addAddressByType($recipient->toAddress, $recipient->toName, $recipient->type);
-            }
-
-            if (isset($emailMessage->files) && !empty($emailMessage->files))
-            {
-                foreach ($emailMessage->files as $file)
-                {
-                    $mailer->attachDynamicContent($file->fileContent->content, $file->name, $file->type);
-                    //$emailMessage->attach($attachment);
-                }
-            }
-        }
-
-        protected function resolveMailerFromEmailAccount(Mailer $mailer, EmailAccount $emailAccount)
-        {
-            if ($emailAccount->useCustomOutboundSettings)
-            {
-                $mailer->host     = $emailAccount->outboundHost;
-                $mailer->port     = $emailAccount->outboundPort;
-                $mailer->username = $emailAccount->outboundUsername;
-                $mailer->password = ZurmoPasswordSecurityUtil::decrypt($emailAccount->outboundPassword);
-                $mailer->security = $emailAccount->outboundSecurity;
-            }
-        }
-
-        protected function sendEmail(Mailer $mailer, EmailMessage $emailMessage)
-        {
-            try
-            {
-                $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
-                $acceptedRecipients         = $mailer->send();
-                // Code below is quick fix, we need to think about better solution
-                // Here is related PT story: https://www.pivotaltracker.com/projects/380027#!/stories/45841753
-                //if ($acceptedRecipients != $emailMessage->recipients->count())
-                if ($acceptedRecipients <= 0)
-                {
-                    $content = Zurmo::t('EmailMessagesModule', 'Response from Server') . "\n";
-                    foreach ($mailer->getSendResponseLog() as $logMessage)
+                    //todo: refactor to use ZurmoHtml::errorSummary after this supports that method
+                    //todo: supports nested messages better.
+                    $errors = $emailMessage->getErrors();
+                    foreach ($errors as $attributeNameWithErrors)
                     {
-                        $content .= $logMessage . "\n";
+                        foreach ($attributeNameWithErrors as $attributeError)
+                        {
+                            if (is_array($attributeError))
+                            {
+                                foreach ($attributeError as $nestedAttributeError)
+                                {
+                                    $messageContent .= reset($nestedAttributeError) . "\n";
+                                }
+                            }
+                            else
+                            {
+                                $messageContent .= reset($attributeError) . "\n";
+                            }
+                        }
                     }
-                    $emailMessageSendError = new EmailMessageSendError();
-                    $data                  = array();
-                    $data['message']                       = $content;
-                    $emailMessageSendError->serializedData = serialize($data);
-                    $emailMessage->folder                  = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox,
-                                                                                          EmailFolder::TYPE_OUTBOX_ERROR);
-                    $emailMessage->error                   = $emailMessageSendError;
+                }
+            }
+            return $messageContent;
+        }
+
+        /**
+         * Get outbound settings.
+         * @return array
+         */
+        public static function getOutboundSettings()
+        {
+            $settings = array();
+            foreach (static::$settingsToLoad as $keyName)
+            {
+                if ($keyName == 'outboundPassword')
+                {
+                    $encryptedKeyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', $keyName);
+                    if ($encryptedKeyValue !== '' && $encryptedKeyValue !== null)
+                    {
+                        $keyValue = ZurmoPasswordSecurityUtil::decrypt($encryptedKeyValue);
+                    }
+                    else
+                    {
+                        $keyValue = null;
+                    }
+                }
+                elseif ($keyName == 'outboundType')
+                {
+                    $keyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'outboundType');
+                    if($keyValue == null)
+                    {
+                        $keyValue = self::OUTBOUND_TYPE_SMTP;
+                    }
                 }
                 else
                 {
-                    $emailMessage->error        = null;
-                    $emailMessage->folder       = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
-                    $emailMessage->sentDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+                    $keyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', $keyName);
+                }
+                if (null !== $keyValue)
+                {
+                    $settings[$keyName] = $keyValue;
+                }
+                else
+                {
+                    $settings[$keyName] = null;
                 }
             }
-            catch (OutboundEmailSendException $e)
-            {
-                $emailMessageSendError = new EmailMessageSendError();
-                $data = array();
-                $data['code']                          = $e->getCode();
-                $data['message']                       = $e->getMessage();
-                //$data['trace']                         = $e->getPrevious();
-                $emailMessageSendError->serializedData = serialize($data);
-                $emailMessage->folder   = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_ERROR);
-                $emailMessage->error    = $emailMessageSendError;
-            }
-        }
-
-        protected function getOutboundMailer()
-        {
-            $mailer = new ZurmoSwiftMailer();
-            $mailer->init();
-            return $mailer;
-        }
-
-        /**
-         * @return integer count of how many emails are queued to go.  This means they are in either the TYPE_OUTBOX
-         * folder or the TYPE_OUTBOX_ERROR folder.
-         */
-        public function getQueuedCount()
-        {
-            return count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX)) +
-                   count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX_ERROR));
-        }
-
-        /**
-         * Given a user, attempt to get the user's email address, but if it is not available, then return the default
-         * address.  @see EmailHelper::defaultFromAddress
-         * @param User $user
-         * @return string
-         */
-        public function resolveFromAddressByUser(User $user)
-        {
-            assert('$user->id >0');
-            if ($user->primaryEmail->emailAddress == null)
-            {
-                return $this->defaultFromAddress;
-            }
-            return $user->primaryEmail->emailAddress;
-        }
-
-        /*
-         * Resolving Default Email Addess For Email Testing
-         */
-        public static function resolveDefaultEmailAddress($defaultEmailAddress)
-        {
-            return $defaultEmailAddress . '@' . StringUtil::resolveCustomizedLabel() . 'alerts.com';
-        }
-
-        public function resolveAndGetDefaultFromAddress()
-        {
-            $defaultFromAddress = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'defaultFromAddress');
-            if ($defaultFromAddress == null)
-            {
-                $defaultFromAddress = static::resolveDefaultEmailAddress('notification');
-                $this->setDefaultFromAddress($defaultFromAddress);
-            }
-            return $defaultFromAddress;
-        }
-
-        public function setDefaultFromAddress($defaultFromAddress)
-        {
-            assert('is_string($defaultFromAddress)');
-            ZurmoConfigurationUtil::setByModuleName('ZurmoModule', 'defaultFromAddress', $defaultFromAddress);
-        }
-
-        public function resolveAndGetDefaultTestToAddress()
-        {
-            $defaultTestToAddress = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'defaultTestToAddress');
-            if ($defaultTestToAddress == null)
-            {
-                $defaultTestToAddress = static::resolveDefaultEmailAddress('testJobEmail');
-                $this->setDefaultTestToAddress($defaultTestToAddress);
-            }
-            return $defaultTestToAddress;
-        }
-
-        public function setDefaultTestToAddress($defaultTestToAddress)
-        {
-            assert('is_string($defaultTestToAddress)');
-            ZurmoConfigurationUtil::setByModuleName('ZurmoModule', 'defaultTestToAddress', $defaultTestToAddress);
+            return $settings;
         }
     }
 ?>

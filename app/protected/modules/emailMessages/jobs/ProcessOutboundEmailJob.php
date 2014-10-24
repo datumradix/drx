@@ -72,14 +72,19 @@
          */
         public function run()
         {
-            $success = Yii::app()->emailHelper->sendQueued($this->resolveBatchSize());
-            if (Yii::app()->emailHelper->getQueuedCount() > 0)
+            $emailHelper = Yii::app()->emailHelper;
+            $emailHelper->sendQueued($this->resolveBatchSize());
+            if ($emailHelper->getQueuedCount() > 0)
             {
                 static::loadJobQueue();
             }
-            return $success;
+            return true;
         }
 
+        /**
+         * Resolve batch size.
+         * @return int
+         */
         protected function resolveBatchSize()
         {
             return OutboundEmailBatchSizeConfigUtil::getBatchSize();

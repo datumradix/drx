@@ -101,7 +101,7 @@
          * @param User $userToSendMessagesFrom
          * @param string $toAddress
          */
-        public static function sendTestEmailFromUser(EmailHelper $emailHelper, User $userToSendMessagesFrom, $toAddress)
+        /*public static function sendTestEmailFromUser(EmailHelper $emailHelper, User $userToSendMessagesFrom, $toAddress)
         {
             $from = array(
                 'address'   => $emailHelper->resolveFromAddressByUser($userToSendMessagesFrom),
@@ -109,7 +109,7 @@
             );
             $emailMessage = static::sendTestEmail($emailHelper, $from, $toAddress);
             return $emailMessage;
-        }
+        }*/
 
         /**
          * Send a test email.
@@ -118,7 +118,25 @@
          * @param Array $from
          * @param string $toAddress
          */
-        public static function sendTestEmail(EmailHelper $emailHelper, Array $from, $toAddress)
+        /*public static function sendTestEmail(EmailHelper $emailHelper, Array $from, $toAddress)
+        {
+            $emailMessage              = self::processAndCreateEmailMessage($from, $toAddress);
+            $validated                 = $emailMessage->validate();
+            if ($validated)
+            {
+                $emailMessage->save();
+                $emailHelper->sendImmediately($emailMessage);
+            }
+            return $emailMessage;
+        }*/
+
+        /**
+         * Process and create email message.
+         * @param array $from
+         * @param string $toAddress
+         * @return \EmailMessage
+         */
+        public static function processAndCreateEmailMessage(Array $from, $toAddress)
         {
             assert('is_string($from["name"])');
             assert('is_string($from["address"])');
@@ -147,11 +165,6 @@
             $emailMessage->recipients->add($recipient);
             $box                       = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder      = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
-            $validated                 = $emailMessage->validate();
-            if ($validated)
-            {
-                $emailHelper->sendImmediately($emailMessage);
-            }
             return $emailMessage;
         }
     }
