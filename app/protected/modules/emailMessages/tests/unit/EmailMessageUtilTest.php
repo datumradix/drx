@@ -63,7 +63,7 @@
             $molly->primaryEmail = new Email();
             $molly->primaryEmail->emailAddress = 'molly@zurmoland.com';
             $molly->secondaryEmail->emailAddress = 'toMakeSureNoFreeze@works.zur';
-            $contact->save();
+            $molly->save();
             AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($contact, $billy);
         }
 
