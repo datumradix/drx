@@ -152,23 +152,23 @@
             $this->setGetArray(array('hash'    => $hash));
             $content    = $this->runControllerWithNoExceptionsAndGetContent($this->externalManageSubscriptionsUrl);
             // ensure he is unsubscribed by default
-            $this->assertTrue(strpos($content, 'id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
-                    static::$marketingList->id . '_0" type="radio" name="marketingListsManage' .
-                    'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id) !== false);
-            $this->assertTrue(strpos($content, 'id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
-                    static::$marketingList->id . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                    'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id) !== false);
+            $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
+                                  static::$marketingList->id . '_0" type="radio" name="marketingListsManage' .
+                                  'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id, $content);
+            $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
+                                  static::$marketingList->id . '_1" checked="checked" type="radio" name="marketingListsManage' .
+                                  'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id, $content);
             // try to subscribe him
             $this->runControllerWithRedirectExceptionAndGetUrl($this->externalSubscribeUrl);
             $content = $this->runControllerWithNoExceptionsAndGetContent($this->externalManageSubscriptionsUrl);
             $this->assertNotEmpty($content);
             // ensure he is subscribed now.
-            $this->assertTrue(strpos($content, 'id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
-                    static::$marketingList->id . '_0" checked="checked" type="radio" name="marketingListsManage' .
-                    'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id) !== false);
-            $this->assertTrue(strpos($content, 'id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
-                    static::$marketingList->id . '_1" type="radio" name="marketingListsManage' .
-                    'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id) !== false);
+            $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
+                                  static::$marketingList->id . '_0" checked="checked" type="radio" name="marketingListsManage' .
+                                  'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id, $content);
+            $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
+                                  static::$marketingList->id . '_1" type="radio" name="marketingListsManage' .
+                                  'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id, $content);
             $this->assertEquals(1, MarketingListMember::getCount());
         }
 
@@ -180,21 +180,21 @@
                                                                         'AutoresponderItem', false);
             $this->setGetArray(array( 'hash'    => $hash, ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent($this->externalManageSubscriptionsUrl);
-            $this->assertTrue(strpos($content, 'id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
-                    static::$marketingList->id . '_0" checked="checked" type="radio" name="marketingListsManage' .
-                    'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id) !== false);
-            $this->assertTrue(strpos($content, 'id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
-                    static::$marketingList->id . '_1" type="radio" name="marketingListsManage' .
-                    'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id) !== false);
+            $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
+                                  static::$marketingList->id . '_0" checked="checked" type="radio" name="marketingListsManage' .
+                                  'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id, $content);
+            $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
+                                  static::$marketingList->id . '_1" type="radio" name="marketingListsManage' .
+                                  'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id, $content);
             @$this->runControllerWithRedirectExceptionAndGetUrl($this->externalUnsubscribeUrl);
             $content = $this->runControllerWithNoExceptionsAndGetContent($this->externalManageSubscriptionsUrl);
             $this->assertNotEmpty($content);
-            $this->assertTrue(strpos($content, 'id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
-                    static::$marketingList->id . '_0" type="radio" name="marketingListsManage' .
-                    'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id) !== false);
-            $this->assertTrue(strpos($content, 'id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
-                    static::$marketingList->id . '_1" checked="checked" type="radio" name="marketingListsManage' .
-                    'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id) !== false);
+            $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
+                                  static::$marketingList->id . '_0" type="radio" name="marketingListsManage' .
+                                  'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id, $content);
+            $this->assertContains('id="marketingListsManageSubscriptionListView-toggleUnsubscribed_' .
+                                  static::$marketingList->id . '_1" checked="checked" type="radio" name="marketingListsManage' .
+                                  'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id, $content);
             $this->assertEquals(1, MarketingListMember::getCount());
         }
 
@@ -267,7 +267,7 @@
                                                     'type'          => WorkflowActionAttributeForm::TYPE_STATIC,
                                                     'value'         => static::$marketingList->id));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
-            $helper = new WorkflowActionProcessingHelper($action, static::$contact, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, static::$contact, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $marketingListId    = static::$marketingList->id;
             static::$marketingList->forget();
@@ -290,7 +290,7 @@
                 'value'         => static::$marketingList->id));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
 
-            $helper = new WorkflowActionProcessingHelper($action, static::$contact, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, static::$contact, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $marketingListId    = static::$marketingList->id;
             static::$marketingList->forget();

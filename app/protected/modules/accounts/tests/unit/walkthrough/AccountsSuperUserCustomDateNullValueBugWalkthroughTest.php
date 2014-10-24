@@ -68,7 +68,7 @@
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout,
                                       'LayoutPanelsTypeForm' => array('type' => FormLayout::PANELS_DISPLAY_TYPE_ALL)));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             $superAccountId = self::getModelIdByModelNameAndName ('Account', 'superAccount');
             $this->setGetArray(array(

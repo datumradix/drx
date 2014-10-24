@@ -67,7 +67,7 @@
             //Test when the job is not stuck
             $this->setGetArray(array('type' => 'Monitor'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('jobsManager/default/resetJob');
-            $this->assertTrue(strpos($content, 'The job Monitor Job was not found to be stuck and therefore was not reset.') !== false);
+            $this->assertContains('The job Monitor Job was not found to be stuck and therefore was not reset.', $content);
 
             //Test when the job is stuck (Just having a jobInProcess is enough to trigger it.
             $jobInProcess = new JobInProcess();
@@ -75,7 +75,8 @@
             $this->assertTrue($jobInProcess->save());
             $this->setGetArray(array('type' => 'Monitor'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('jobsManager/default/resetJob');
-            $this->assertTrue(strpos($content, 'The job Monitor Job has been reset.') !== false);
+            $this->assertContains('The job Monitor Job has been reset.', $content);
+            $this->assertContains('The job Monitor Job has been reset.', $content);
         }
 
         public function testSuperUserModalListByType()

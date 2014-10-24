@@ -81,7 +81,7 @@
                                                                                                     'availableAtRunTime' => '0')
                                                                                                   ))));
             $content = $this->runControllerWithExitExceptionAndGetContent('calendars/default/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Filter validation
             $this->setGetArray (array('id'      => $superCalId));
@@ -96,7 +96,7 @@
                                                                                                     'availableAtRunTime' => '0')
                                                                                                   ))));
             $content = $this->runControllerWithExitExceptionAndGetContent('calendars/default/edit');
-            $this->assertFalse(strpos($content, 'Value cannot be blank') === false);
+            $this->assertContains('Value cannot be blank', $content);
 
             //Valid case
             $this->setGetArray (array('id'      => $superCalId));
@@ -126,7 +126,7 @@
                                       'endDate'                    => CalendarUtil::getEndDate(SavedCalendar::DATERANGE_TYPE_MONTH),
                                       'dateRangeType'              => SavedCalendar::DATERANGE_TYPE_MONTH));
             $content = $this->runControllerWithNoExceptionsAndGetContent('calendars/default/getEvents');
-            $this->assertFalse(strpos($content, 'My First Prod') === false);
+            $this->assertContains('My First Prod', $content);
 
             //Week view
             $this->setGetArray (array('selectedMyCalendarIds'      => $superCalId . ',' . $superCalId2, // Not Coding Standard
@@ -135,7 +135,7 @@
                                       'endDate'                    => CalendarUtil::getEndDate(SavedCalendar::DATERANGE_TYPE_WEEK),
                                       'dateRangeType'              => SavedCalendar::DATERANGE_TYPE_WEEK));
             $content = $this->runControllerWithNoExceptionsAndGetContent('calendars/default/getEvents');
-            $this->assertFalse(strpos($content, 'My First Prod') === false);
+            $this->assertContains('My First Prod', $content);
 
             //Day view
             $this->setGetArray (array('selectedMyCalendarIds'      => $superCalId . ',' . $superCalId2, // Not Coding Standard
@@ -156,12 +156,12 @@
             $subscribedCalendar->save();
             $this->setGetArray (array('id' => $subscribedCalendar->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('calendars/default/addSubsriptionForCalendar');
-            $this->assertFalse(strpos($content, 'My Subscribed Cal') === false);
+            $this->assertContains('My Subscribed Cal', $content);
 
             $subscribedCalendars = CalendarUtil::getUserSubscribedCalendars($super);
             $this->setGetArray (array('id' => $subscribedCalendars[0]->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('calendars/default/unsubscribe');
-            $this->assertTrue(strpos($content, 'My Subscribed Cal') === false);
+            $this->assertNotContains('My Subscribed Cal', $content);
         }
 
         public function testSuperUserDeleteAction()

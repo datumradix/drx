@@ -119,7 +119,7 @@
                                       'baseDomain'                        => Yii::app()->authenticationHelper->ldapBaseDomain,
                                       'enabled'                           => Yii::app()->authenticationHelper->ldapEnabled)));
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/ldap/testConnection');
-            $this->assertTrue(strpos($content, "Successfully Connected to Ldap Server") > 0);
+            $this->assertContains("Successfully Connected to Ldap Server", $content);
         }
 
         /*
@@ -143,7 +143,7 @@
                                       'baseDomain'                        => 'testBaseDomain',
                                       'enabled'                           => Yii::app()->authenticationHelper->ldapEnabled)));
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/ldap/testConnection');
-            $this->assertTrue(strpos($content, "Unable to connect to Ldap server") > 0);
+            $this->assertContains("Unable to connect to Ldap server", $content);
         }
     }
 ?>

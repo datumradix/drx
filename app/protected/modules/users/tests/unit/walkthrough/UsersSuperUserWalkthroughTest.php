@@ -100,14 +100,14 @@
             $this->setGetArray(array('id' => $super->id));
             //Access to User Role edit link and control available.
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/edit');
-            $this->assertTrue(strpos($content, 'User_role_SelectLink') !== false);
-            $this->assertTrue(strpos($content, 'User_role_name') !== false);
+            $this->assertContains('User_role_SelectLink', $content);
+            $this->assertContains('User_role_name', $content);
 
             $this->setGetArray(array('id' => $aUser->id));
             //Access to User Role edit link and control available.
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/edit');
-            $this->assertTrue(strpos($content, 'User_role_SelectLink') !== false);
-            $this->assertTrue(strpos($content, 'User_role_name') !== false);
+            $this->assertContains('User_role_SelectLink', $content);
+            $this->assertContains('User_role_name', $content);
 
             $users = User::getAll();
             $this->assertEquals(5, count($users));
@@ -128,7 +128,7 @@
             $this->setGetArray (array('id'      => $aUser->id));
             $this->setPostArray(array('User' => array('lastName' => '')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
             $users = User::getAll();
             $this->assertEquals(5, count($users));
             //LastName for aUser should still be aUserson.
@@ -162,7 +162,7 @@
             $this->setGetArray(array('selectedIds' => '4,5,6,7', 'selectAll' => '')); // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>4</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>4</strong>&#160;records selected for updating', $content);
 
             //MassEdit view for all result selected ids
             $users = User::getAll();
@@ -170,7 +170,7 @@
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>5</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>5</strong>&#160;records selected for updating', $content);
             //save Model MassEdit for selected Ids
             //Test that the 4 contacts do not have the office phone number we are populating them with.
             $user1 = User::getById($aUser->id);
@@ -229,16 +229,16 @@
             //save Modal MassEdit using progress load for page 2, 3, 4 and 5.
             $this->setGetArray(array('selectAll' => '1', 'User_page' => 2));
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":40') === false);
+            $this->assertContains('"value":40', $content);
             $this->setGetArray(array('selectAll' => '1', 'User_page' => 3));
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":60') === false);
+            $this->assertContains('"value":60', $content);
             $this->setGetArray(array('selectAll' => '1', 'User_page' => 4));
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":80') === false);
+            $this->assertContains('"value":80', $content);
             $this->setGetArray(array('selectAll' => '1', 'User_page' => 5));
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":100') === false);
+            $this->assertContains('"value":100', $content);
             //Set page size back to old value.
             Yii::app()->pagination->setForCurrentUserByType('massEditProgressPageSize', $pageSize);
 
@@ -507,7 +507,7 @@
             //Super user as access to change every users avatar
             $this->setGetArray(array('id' => $aUser->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/changeAvatar');
-            $this->assertTrue(strpos($content, 'You have tried to access a page') > 0);
+            $this->assertContains('You have tried to access a page', $content);
 
             $aUser->setIsNotSystemUser();
             $aUser->setIsRootUser();
@@ -521,7 +521,7 @@
             //Super user as access to change every users avatar
             $this->setGetArray(array('id' => $aUser->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/changeAvatar');
-            $this->assertTrue(strpos($content, 'You have tried to access a page') > 0);
+            $this->assertContains('You have tried to access a page', $content);
 
             $aUser->setIsNotSystemUser();
             $aUser->setIsNotRootUser();
@@ -535,7 +535,7 @@
             //Super user as access to change every users avatar
             $this->setGetArray(array('id' => $aUser->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/changeAvatar');
-            $this->assertFalse(strpos($content, 'You have tried to access a page') > 0);
+            $this->assertNotContains('You have tried to access a page', $content);
         }
 
         //TODO: need to clarify with Jason
@@ -671,7 +671,7 @@
                                                         'password' => 'bNewPassword',
                                                         'rememberMe' => '0')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/login');
-            $this->assertTrue(strpos($content, 'Incorrect username or password') > 0);
+            $this->assertContains('Incorrect username or password', $content);
 
             $aUser->setIsNotSystemUser();
             $this->assertTrue($aUser->save());

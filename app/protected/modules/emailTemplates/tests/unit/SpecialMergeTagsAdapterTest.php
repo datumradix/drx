@@ -67,7 +67,7 @@
             $resolvedModelUrl   = SpecialMergeTagsAdapter::resolve('modelUrl', $contact);
             $this->assertNotNull($resolvedModelUrl);
             $expectedSuffix                 = '/contacts/default/details?id=' . $contact->id;
-            $this->assertTrue(strpos($resolvedModelUrl, $expectedSuffix) !== false);
+            $this->assertContains($expectedSuffix, $resolvedModelUrl);
         }
 
         /**
@@ -77,7 +77,7 @@
         {
             $resolvedBaseUrl    = SpecialMergeTagsAdapter::resolve('baseUrl', null);
             $this->assertNotNull($resolvedBaseUrl);
-            $this->assertTrue(strpos($resolvedBaseUrl, 'localhost') === 0);
+            $this->assertContains('localhost', $resolvedBaseUrl);
         }
 
         /**
@@ -181,9 +181,9 @@
             $this->assertNotNull($resolvedFooter);
             // resolved one would be without merge tags, expected would have those.
             $this->assertNotEquals($expectedFooter, $resolvedFooter);
-            $this->assertFalse(strpos($resolvedFooter, 'PRIMARY^EMAIL') !== false);
-            $this->assertTrue(strpos($expectedFooter, 'PRIMARY^EMAIL') !== false);
-            $this->assertFalse(strpos($expectedFooter, '(None)') !== false);
+            $this->assertNotContains('PRIMARY^EMAIL', $resolvedFooter);
+            $this->assertContains('PRIMARY^EMAIL', $expectedFooter);
+            $this->assertNotContains('(None)', $expectedFooter);
         }
 
         /**
@@ -199,7 +199,7 @@
             $expectedFooter         = GlobalMarketingFooterUtil::getContentByType(true, false);
             $this->assertNotNull($resolvedFooter);
             $this->assertEquals($expectedFooter, $resolvedFooter);
-            $this->assertTrue(strpos($resolvedFooter, 'INVALID^TAG') !== false);
+            $this->assertContains('INVALID^TAG', $resolvedFooter);
         }
 
         /**
@@ -232,9 +232,9 @@
             $this->assertNotNull($resolvedFooter);
             // resolved one would be without merge tags, expected would have those.
             $this->assertNotEquals($expectedFooter, $resolvedFooter);
-            $this->assertFalse(strpos($resolvedFooter, 'PRIMARY^EMAIL') !== false);
-            $this->assertTrue(strpos($expectedFooter, 'PRIMARY^EMAIL') !== false);
-            $this->assertFalse(strpos($expectedFooter, '(None)') !== false);
+            $this->assertNotContains('PRIMARY^EMAIL', $resolvedFooter);
+            $this->assertContains('PRIMARY^EMAIL', $expectedFooter);
+            $this->assertNotContains('(None)', $expectedFooter);
         }
 
         /**
@@ -250,7 +250,7 @@
             $expectedFooter         = GlobalMarketingFooterUtil::getContentByType(false, false);
             $this->assertNotNull($resolvedFooter);
             $this->assertEquals($expectedFooter, $resolvedFooter);
-            $this->assertTrue(strpos($resolvedFooter, 'INVALID^TAG') !== false);
+            $this->assertContains('INVALID^TAG', $resolvedFooter);
         }
 
         /**
@@ -302,9 +302,9 @@
                                             'modelId'           => 3,
                                             'modelType'         => 'AutoresponderItem');
             $expected               = GlobalMarketingFooterUtil::resolveUnsubscribeUrlByArray($params);
-            $this->assertTrue(strpos($expected, 'marketingLists/external/unsubscribe?hash=') !== false);
+            $this->assertContains('marketingLists/external/unsubscribe?hash=', $expected);
             $resolved               = SpecialMergeTagsAdapter::resolve('unsubscribeUrl', $model, $params);
-            $this->assertTrue(strpos($resolved, 'marketingLists/external/unsubscribe?hash=') !== false);
+            $this->assertContains('marketingLists/external/unsubscribe?hash=', $resolved);
             $expectedHash           = static::extractHashFromUrl($expected);
             $resolvedHash           = static::extractHashFromUrl($resolved);
             $expectedReversed       = EmailMessageActivityUtil::resolveQueryStringArrayForHash($expectedHash);
@@ -325,9 +325,9 @@
                                             'createNewActivity' => true,
                                             'preview'           => false);
             $expected               = GlobalMarketingFooterUtil::resolveUnsubscribeUrlByArray($params);
-            $this->assertTrue(strpos($expected, 'marketingLists/external/unsubscribe?hash=') !== false);
+            $this->assertContains('marketingLists/external/unsubscribe?hash=', $expected);
             $resolved               = SpecialMergeTagsAdapter::resolve('unsubscribeUrl', $model, $params);
-            $this->assertTrue(strpos($resolved, 'marketingLists/external/unsubscribe?hash=') !== false);
+            $this->assertContains('marketingLists/external/unsubscribe?hash=', $resolved);
             $expectedHash           = static::extractHashFromUrl($expected);
             $resolvedHash           = static::extractHashFromUrl($resolved);
             $expectedReversed       = EmailMessageActivityUtil::resolveQueryStringArrayForHash($expectedHash);
@@ -384,9 +384,9 @@
                                                 'modelId'           => 3,
                                                 'modelType'         => 'AutoresponderItem');
             $expected               = GlobalMarketingFooterUtil::resolveManageSubscriptionsUrlByArray($params);
-            $this->assertTrue(strpos($expected, 'marketingLists/external/manageSubscriptions?hash=') !== false);
+            $this->assertContains('marketingLists/external/manageSubscriptions?hash=', $expected);
             $resolved               = SpecialMergeTagsAdapter::resolve('manageSubscriptionsUrl', $model, $params);
-            $this->assertTrue(strpos($resolved, 'marketingLists/external/manageSubscriptions?hash=') !== false);
+            $this->assertContains('marketingLists/external/manageSubscriptions?hash=', $resolved);
             $expectedHash           = static::extractHashFromUrl($expected);
             $resolvedHash           = static::extractHashFromUrl($resolved);
             $expectedReversed       = EmailMessageActivityUtil::resolveQueryStringArrayForHash($expectedHash);
@@ -407,9 +407,9 @@
                                             'createNewActivity' => true,
                                             'preview'           => false);
             $expected               = GlobalMarketingFooterUtil::resolveManageSubscriptionsUrlByArray($params);
-            $this->assertTrue(strpos($expected, 'marketingLists/external/manageSubscriptions?hash=') !== false);
+            $this->assertContains('marketingLists/external/manageSubscriptions?hash=', $expected);
             $resolved               = SpecialMergeTagsAdapter::resolve('manageSubscriptionsUrl', $model, $params);
-            $this->assertTrue(strpos($resolved, 'marketingLists/external/manageSubscriptions?hash=') !== false);
+            $this->assertContains('marketingLists/external/manageSubscriptions?hash=', $resolved);
             $expectedHash           = static::extractHashFromUrl($expected);
             $resolvedHash           = static::extractHashFromUrl($resolved);
             $expectedReversed       = EmailMessageActivityUtil::resolveQueryStringArrayForHash($expectedHash);
