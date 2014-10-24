@@ -130,7 +130,7 @@
         {
             if ($this->isNewModel && !$this->isCompleted)
             {
-                Yii::app()->jobQueue->add('Export');
+                Yii::app()->jobQueue->add('Export', 5);
             }
             parent::afterSave();
         }
