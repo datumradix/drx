@@ -61,9 +61,9 @@
                 )
             );
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/systemConfigurationEdit');
-            $this->assertFalse(strpos($content, 'Autoresponder/Campaign batch size cannot be blank.') === false);
-            $this->assertFalse(strpos($content, 'Outbound Email Message batch size cannot be blank.') === false);
-            $this->assertFalse(strpos($content, 'List page size maximum limit cannot be blank.') === false);
+            $this->assertContains('Autoresponder/Campaign batch size cannot be blank.', $content);
+            $this->assertContains('Outbound Email Message batch size cannot be blank.', $content);
+            $this->assertContains('List page size maximum limit cannot be blank.', $content);
 
             //checking with proper values for required fields
             $this->setPostArray(array('save'                    => 'Save',

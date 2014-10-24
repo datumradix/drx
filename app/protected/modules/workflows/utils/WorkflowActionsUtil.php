@@ -53,7 +53,8 @@
             {
                 try
                 {
-                    $helper = new WorkflowActionProcessingHelper($action, $model, $triggeredByUser);
+                    $helper = new WorkflowActionProcessingHelper((int)$workflow->getId(), $workflow->getName(),
+                                                                 $action, $model, $triggeredByUser);
                     $helper->processUpdateSelfAction();
                 }
                 catch (Exception $e)
@@ -79,7 +80,8 @@
             {
                 try
                 {
-                    $helper = new WorkflowActionProcessingHelper($action, $model, $triggeredByUser);
+                    $helper = new WorkflowActionProcessingHelper((int)$workflow->getId(), $workflow->getName(),
+                                                                 $action, $model, $triggeredByUser);
                     $helper->processNonUpdateSelfAction();
                 }
                 catch (Exception $e)
@@ -106,7 +108,8 @@
             {
                 try
                 {
-                    $helper = new WorkflowActionProcessingHelper($action, $model, $triggeredByUser, false);
+                    $helper = new WorkflowActionProcessingHelper((int)$workflow->getId(), $workflow->getName(),
+                                                                 $action, $model, $triggeredByUser, false);
                     $helper->processUpdateSelfAction();
                     $helper->processNonUpdateSelfAction();
                 }

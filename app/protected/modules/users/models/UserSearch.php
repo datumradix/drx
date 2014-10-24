@@ -205,5 +205,23 @@
                 $where  = "  ((_user.id != " . Yii::app()->user->userModel->id . ") and (${where}))";
             }
         }
+
+        /**
+         * Updates `where` part of query to exclude queueUsers
+         * @param $exclude bool
+         * @param RedBeanModelJoinTablesQueryAdapter $joinTablesAdapter
+         * @param $where
+         */
+        protected static function excludeQueueUsers($exclude, RedBeanModelJoinTablesQueryAdapter & $joinTablesAdapter,
+                                                    & $where)
+        {
+            if ($exclude)
+            {
+                $queueModelTableName   = QueueModel::getTableName();
+                $excludeQueueUsersWhere  = "(_user.id not in (select queueuser__user_id from ${queueModelTableName}";
+                $excludeQueueUsersWhere .= " where queueuser__user_id is not null)) and ${where}";
+                $where = $excludeQueueUsersWhere;
+            }
+        }
     }
 ?>

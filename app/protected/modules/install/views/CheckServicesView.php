@@ -81,7 +81,6 @@
                                             Zurmo::t('InstallModule', 'Failed Required Services'),
                                             $this->checkResultsDisplayData[$failedIndexId][$requiredIndexId],
                                             '<span class="fail">' . Zurmo::t('InstallModule', 'FAIL') . '</span>');
-                    $content .= '<br/><br/>';
                 }
                 if (count($this->checkResultsDisplayData[$failedIndexId][$optionalIndexId]) > 0)
                 {
@@ -89,7 +88,6 @@
                                             Zurmo::t('InstallModule', 'Failed Optional Services'),
                                             $this->checkResultsDisplayData[$failedIndexId][$optionalIndexId],
                                             '<span class="fail">' . Zurmo::t('InstallModule', 'FAIL') . '</span>');
-                    $content .= '<br/>';
                 }
             }
             if (count($this->checkResultsDisplayData[$warningIndexId]) > 0)
@@ -98,7 +96,6 @@
                                         Zurmo::t('InstallModule', 'Service Status Partially Known'),
                                         $this->checkResultsDisplayData[$warningIndexId],
                                         '<span class="warning">' . Zurmo::t('Core', 'WARNING') . '</span>');
-                $content .= '<br/>';
             }
 
             if (count($this->checkResultsDisplayData[$passedIndexId]) > 0)
@@ -126,7 +123,7 @@
             assert('is_string($groupLabel) && $groupLabel != ""');
             assert('is_array($groupData)');
             assert('is_string($checkResultLabel) && $checkResultLabel != ""');
-            $content  = '<table>';
+            $content  = '<table class="checked-services">';
             $content .= '<colgroup><col/><col style="width:100px;" /></colgroup>';
             $content .= '<tr><td>' . $groupLabel . '</td><td></td></tr>';
             foreach ($groupData as $serviceDisplayData)

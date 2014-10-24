@@ -74,29 +74,29 @@
             $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/index');
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
-            $this->assertFalse(strpos($content, 'kanban-board-options-link') === false);
+            $this->assertContains('anyMixedAttributes', $content);
+            $this->assertContains('kanban-board-options-link', $content);
 
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('kanbanBoard' => '1', 'ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
             $this->resetGetArray();
 
             //Test without kanbanBoard explicitly set and the option should still be there because it is sticky
             $this->resetGetArray();
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
-            $this->assertFalse(strpos($content, 'kanban-board-options-link') === false);
+            $this->assertContains('anyMixedAttributes', $content);
+            $this->assertContains('kanban-board-options-link', $content);
 
             //Now explicity declare grid and it should be missing
             $this->setGetArray(array('kanbanBoard' => ''));
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
-            $this->assertTrue(strpos($content, 'kanban-board-options-link') === false);
+            $this->assertContains('anyMixedAttributes', $content);
+            $this->assertNotContains('kanban-board-options-link', $content);
         }
 
         /**

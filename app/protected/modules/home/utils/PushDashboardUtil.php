@@ -147,6 +147,7 @@
             {
                 $userDashboard = $userDefaultDashboards[0];
             }
+            $userDashboard->setTreatCurrentUserAsOwnerForPermissions(true);
             $userDashboard->name       = $dashboard->name;
             $userDashboard->layoutType = $dashboard->layoutType;
             $saved = $userDashboard->save();

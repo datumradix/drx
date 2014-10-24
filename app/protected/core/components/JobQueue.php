@@ -39,6 +39,8 @@
      */
     class JobQueue extends CApplicationComponent
     {
+        const MAX_DELAY_NOISE_IN_SECONDS = 15;
+
         protected $queuedJobs = array();
 
         /**
@@ -51,8 +53,7 @@
             assert('is_string($jobType)');
             assert('is_int($delay)');
             assert('is_array($params)');
-            if (!isset($this->queuedJobs[$delay]) ||
-                !$this->isJobTypeWithDelayAndParamsAlreadyExistInQueue($jobType, $delay, $params))
+            if (!$this->isJobTypeWithDelayAndParamsAlreadyExistInQueueAndReplaceItInQueue($jobType, $delay, $params, true))
             {
                 $this->queuedJobs[$delay][] = array(
                     'jobType' => $jobType,
@@ -66,23 +67,58 @@
          * @param string $jobType
          * @param int $delay
          * @param array $params
+         * @param bool $replaceExistingJobInQueueWithLatterOne
          * @return bool
          */
-        protected function isJobTypeWithDelayAndParamsAlreadyExistInQueue($jobType, $delay, $params)
+        protected function isJobTypeWithDelayAndParamsAlreadyExistInQueueAndReplaceItInQueue($jobType, $delay, $params,
+                                                                                           $replaceExistingJobInQueueWithLatterOne = false)
         {
             assert('is_string($jobType)');
             assert('is_int($delay)');
             assert('is_array($params)');
-            foreach ($this->queuedJobs[$delay] as $queuedJob)
+            assert('is_bool($replaceExistingJobInQueueWithLatterOne)');
+            foreach ($this->queuedJobs as $existingJobDelay => $queuedJobs)
             {
-                if ($queuedJob['jobType'] == $jobType)
+                foreach ($queuedJobs as $key => $queuedJob)
                 {
-                    // add code to check case when params are empty
-                    if ($queuedJob['params'] == $params)
+                    if ($queuedJob['jobType'] == $jobType &&
+                        $this->isDelayWithinAcceptableTolerance($existingJobDelay, $delay, self::MAX_DELAY_NOISE_IN_SECONDS))
                     {
-                        return true;
+                        if ($queuedJob['params'] == $params)
+                        {
+                            if ($replaceExistingJobInQueueWithLatterOne)
+                            {
+                                unset($this->queuedJobs[$existingJobDelay][$key]);
+                                if (empty($this->queuedJobs[$existingJobDelay]))
+                                {
+                                    unset($this->queuedJobs[$existingJobDelay]);
+                                }
+                                $this->queuedJobs[$delay][] = array(
+                                    'jobType' => $jobType,
+                                    'params' => $params
+                                );
+                            }
+                            return true;
+                        }
                     }
                 }
+            }
+            return false;
+        }
+
+        /**
+         * Check if new job delay is in bounds of another
+         * @param int $existingJobDelay
+         * @param int $delay
+         * @param int $noise
+         * @return bool
+         */
+        protected function isDelayWithinAcceptableTolerance($existingJobDelay, $delay, $noise)
+        {
+            if ($existingJobDelay <= $delay  &&
+                $existingJobDelay + $noise >= $delay)
+            {
+                return true;
             }
             return false;
         }
