@@ -67,6 +67,17 @@
             return join(' ' , $fullName);
         }
 
+        /**
+         * Public access method required since User needs to mix-in the labels from Person and it requires a public
+         * method on Person to do that.
+         * @param $language
+         * @return array
+         */
+        public static function getTranslatedAttributeLabels($language)
+        {
+            return static::translatedAttributeLabels($language);
+        }
+
         protected static function translatedAttributeLabels($language)
         {
             return array_merge(parent::translatedAttributeLabels($language),
