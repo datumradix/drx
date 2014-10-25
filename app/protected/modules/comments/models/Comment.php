@@ -81,7 +81,8 @@
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('Comment');
             $orderByColumnName = RedBeanModelDataProvider::
                                  resolveSortAttributeColumnName('Comment', $joinTablesAdapter, 'createdDateTime');
-            $where             = "relatedmodel_type = '" . strtolower($type) . "' AND relatedmodel_id = '" . $relatedId . "'";
+            $where             = "relatedmodel_type = '" . DatabaseCompatibilityUtil::escape(strtolower($type)) .
+                                 "' AND relatedmodel_id = '" . DatabaseCompatibilityUtil::escape($relatedId) . "'";
             $orderBy           = $orderByColumnName . ' desc';
             return self::getSubset($joinTablesAdapter, null, $pageSize, $where, $orderBy);
         }
