@@ -57,8 +57,9 @@
             $quote = DatabaseCompatibilityUtil::getQuote();
             $sql = "select id, {$quote}column$quote, position "           .
                    'from portlet '                                        .
-                   "where layoutid = '$layoutId' and _user_id = $userId " .
-                   "order by {$quote}column$quote, position;";
+                   "where layoutid = '" . DatabaseCompatibilityUtil::escape($layoutId) . "' and _user_id = " .
+                   DatabaseCompatibilityUtil::escape($userId) .
+                   " order by {$quote}column$quote, position;";
             $rows = ZurmoRedBean::getAll($sql);
             if (!empty($rows))
             {
@@ -79,8 +80,9 @@
             $quote = DatabaseCompatibilityUtil::getQuote();
             $sql = "select id, {$quote}column$quote, position "          .
                    'from portlet '                                       .
-                   "where layoutid = '$layoutId' and _user_id = $userId " .
-                   'order by id;';
+                   "where layoutid = '" . DatabaseCompatibilityUtil::escape($layoutId) .
+                   "' and _user_id = " . DatabaseCompatibilityUtil::escape($userId) .
+                   ' order by id;';
             foreach (ZurmoRedBean::getAll($sql) as $row)
             {
                 $portlet = Portlet::getById(intval($row['id']));
@@ -276,7 +278,9 @@
             assert('is_integer($userId) && $userId >= 1');
             $sql = "select count(*) as count "          .
                    'from portlet '                                       .
-                   "where layoutid = '$uniqueLayoutId' and viewtype = '$viewType' and _user_id = $userId";
+                   "where layoutid = '" . DatabaseCompatibilityUtil::escape($uniqueLayoutId) .
+                   "' and viewtype = '" . DatabaseCompatibilityUtil::escape($viewType) .
+                   "' and _user_id = " . DatabaseCompatibilityUtil::escape($userId);
             $row = ZurmoRedBean::getRow($sql);
             if ($row['count'] > 0)
             {
