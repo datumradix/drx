@@ -38,75 +38,6 @@
      */
     abstract class ZurmoBaseEmailHelper extends CApplicationComponent
     {
-        /**
-         * Update an email message's folder and save it
-         * @param EmailMessage $emailMessage
-         * @param $useSQL
-         * @param EmailFolder $folder
-         * @param bool $validate
-         * @return bool|void
-         * @throws FailedToSaveModelException
-         */
-        public static function updateFolderForEmailMessage(EmailMessage & $emailMessage, $useSQL,
-                                                              EmailFolder $folder, $validate = true)
-        {
-            // we don't have syntax to support saving related records and other attributes for emailMessage, yet.
-            $saved  = false;
-            if ($useSQL && $emailMessage->id > 0)
-            {
-                $saved = static::updateFolderForEmailMessageWithSQL($emailMessage, $folder);
-            }
-            else
-            {
-                $saved = static::updateFolderForEmailMessageWithORM($emailMessage, $folder, $validate);
-            }
-            if (!$saved)
-            {
-                throw new FailedToSaveModelException();
-            }
-            return $saved;
-        }
-
-        /**
-         * Update an email message's folder and save it using SQL
-         * @param EmailMessage $emailMessage
-         * @param EmailFolder $folder
-         * @throws NotSupportedException
-         */
-        protected static function updateFolderForEmailMessageWithSQL(EmailMessage & $emailMessage, EmailFolder $folder)
-        {
-            // TODO: @Shoaibi/@Jason: Critical0: This fails CampaignItemsUtilTest.php:243
-            $folderForeignKeyName   = RedBeanModel::getForeignKeyName('EmailMessage', 'folder');
-            $tableName              = EmailMessage::getTableName();
-            $sql                    = "UPDATE " . DatabaseCompatibilityUtil::quoteString($tableName);
-            $sql                    .= " SET " . DatabaseCompatibilityUtil::quoteString($folderForeignKeyName);
-            $sql                    .= " = " . $folder->id;
-            $sql                    .= " WHERE " . DatabaseCompatibilityUtil::quoteString('id') . " = ". $emailMessage->id;
-            $effectedRows           = ZurmoRedBean::exec($sql);
-            if ($effectedRows == 1)
-            {
-                $emailMessageId = $emailMessage->id;
-                $emailMessage->forgetAll();
-                $emailMessage = EmailMessage::getById($emailMessageId);
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         * Update an email message's folder and save it using ORM
-         * @param EmailMessage $emailMessage
-         * @param EmailFolder $folder
-         * @param bool $validate
-         */
-        protected static function updateFolderForEmailMessageWithORM(EmailMessage & $emailMessage,
-                                                                        EmailFolder $folder, $validate = true)
-        {
-            $emailMessage->folder = $folder;
-            $saved = $emailMessage->save($validate);
-            return $saved;
-        }
-
         /*
          * Resolving Default Email Addess For Email Testing
          * @return string
@@ -167,30 +98,13 @@
         }
 
         /**
-         * Verify if folder type of an emailMessage is valid or not.
-         * @param EmailMessage $emailMessage
-         * @throws NotSupportedException
-         */
-        public static function isValidFolderType(EmailMessage $emailMessage)
-        {
-            if ($emailMessage->folder->type == EmailFolder::TYPE_OUTBOX ||
-                $emailMessage->folder->type == EmailFolder::TYPE_SENT ||
-                $emailMessage->folder->type == EmailFolder::TYPE_OUTBOX_ERROR ||
-                $emailMessage->folder->type == EmailFolder::TYPE_OUTBOX_FAILURE)
-            {
-                throw new NotSupportedException();
-            }
-        }
-
-        /**
          * Process message as failure.
          * @param EmailMessage $emailMessage
          * @param bool $useSQL
          */
         public function processMessageAsFailure(EmailMessage $emailMessage, $useSQL = false)
         {
-            $folder = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_FAILURE);
-            static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder);
+            throw new NotImplementedException();
         }
 
         /**
@@ -210,16 +124,6 @@
         }
 
         /**
-         * @return integer count of how many emails are queued to go.  This means they are in either the TYPE_OUTBOX
-         * folder or the TYPE_OUTBOX_ERROR folder.
-         */
-        public static function getQueuedCount()
-        {
-            return count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX)) +
-                   count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX_ERROR));
-        }
-
-        /**
          * Call this method to process all email Messages in the queue. This is typically called by a scheduled job
          * or cron.  This will process all emails in a TYPE_OUTBOX folder or TYPE_OUTBOX_ERROR folder. If the message
          * has already been sent 3 times then it will be moved to a failure folder.
@@ -228,7 +132,7 @@
          */
         public function sendQueued($count = null)
         {
-            return EmailMessageUtil::sendQueued($this, $count);
+            throw new NotImplementedException();
         }
 
         /**
@@ -244,14 +148,7 @@
          */
         public function send(EmailMessage & $emailMessage, $useSQL = false, $validate = true)
         {
-            static::isValidFolderType($emailMessage);
-            $folder     = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX);
-            $saved      = static::updateFolderForEmailMessage($emailMessage, $useSQL, $folder, $validate);
-            if ($saved)
-            {
-                Yii::app()->jobQueue->add('ProcessOutboundEmail');
-            }
-            return $saved;
+            throw new NotImplementedException();
         }
     }
 ?>

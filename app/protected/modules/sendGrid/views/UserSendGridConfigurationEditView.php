@@ -50,6 +50,7 @@
                         'elements' => array(
                             array('type' => 'SaveButton'),
                             array('type' => 'UserEmailConfigurationCancelLink'),
+                            array('type' => 'UserSendGridEmailConfigurationClearLink'),
                         ),
                     ),
                     'derivedAttributeTypes' => array(
