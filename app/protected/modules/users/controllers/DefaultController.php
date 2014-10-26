@@ -82,7 +82,7 @@
                          'controller' => $this,
             );
             $filters[] = array(
-                        self::SENDGRID_EMAIL_CONFIGURATION_FILTER_PATH . ' + sendGridConfiguration',
+                        self::SENDGRID_EMAIL_CONFIGURATION_FILTER_PATH . ' + sendGridConfiguration, clearSendGridConfiguration',
                          'controller' => $this,
             );
             return $filters;
@@ -736,6 +736,20 @@
             $titleBarAndEditView->setCssClasses(array('AdministrativeArea'));
             $view = new UsersPageView($this->resolveZurmoDefaultOrAdminView($titleBarAndEditView, $breadCrumbLinks, 'UserBreadCrumbView'));
             echo $view->render();
+        }
+
+        /**
+         * Clear sendgrid options.
+         * @param int $id
+         * @return void
+         */
+        public function actionClearSendGridConfiguration($id)
+        {
+            SendGridAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
+            $user                           = User::getById(intval($id));
+            $emailAccount                   = SendGridEmailAccount::resolveAndGetByUserAndName($user);
+            $emailAccount->delete();
+            $this->redirect(Yii::app()->createUrl('users/default/sendGridConfiguration', array('id' => $id)));
         }
     }
 ?>
