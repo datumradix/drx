@@ -6072,10 +6072,13 @@ a.dashboard-link .z-label {
 #welcome-content:after {
   clear: both;
 }
+#welcome-content.has-message .help-section {
+  width: 30%;
+}
 .help-section {
   border-top: 1px solid #fff;
   padding: 30px 50px 0 0;
-  width: 30%;
+  width: 50%;
   float: left;
   font-size: 12px;
   margin-bottom: 30px;
@@ -6207,7 +6210,7 @@ a.dashboard-link .z-label {
   line-height: 1.4;
   color: #fff;
   font-size: 18px;
-  max-width: 800px;
+  padding-right: 230px;
 }
 .get-pro-message .z-label {
   line-height: 36px !important;
