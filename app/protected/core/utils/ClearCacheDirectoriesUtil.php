@@ -34,12 +34,60 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    Yii::import('application.modules.zurmo.components.EndRequestBehavior');
-    class EndRequestTestBehavior extends EndRequestBehavior
+    abstract class ClearCacheDirectoriesUtil
     {
-        protected function resolveDefaultRequestType($className)
+        /**
+         * Clear cache directories. Optionally specify an array of paths to be cleared.
+         * @param bool $forgetAllCaches
+         * @param array $cacheDirectories
+         */
+        public static function clearCacheDirectories($forgetAllCaches = true, array $cacheDirectories = array())
         {
-            return $className::TEST_REQUEST;
+            if ($forgetAllCaches)
+            {
+                ForgetAllCacheUtil::forgetAllCaches();
+            }
+            if (empty($cacheDirectories))
+            {
+                $cacheDirectories   = static::resolveCacheDirectoryPaths();
+            }
+            foreach ($cacheDirectories as $cacheDirectory)
+            {
+                static::clearCacheDirectory($cacheDirectory);
+            }
         }
+
+        /**
+         * Clear specified cache directory.
+         * @param array $cacheDirectory
+         */
+        protected static function clearCacheDirectory(array $cacheDirectory)
+        {
+            $excludedFiles          = array('index.html');
+            $path                   = null;
+            $removeDirectoryItself  = false;
+            extract($cacheDirectory);
+            if (is_dir($path))
+            {
+                FileUtil::deleteDirectoryRecursive($path, $removeDirectoryItself, $excludedFiles);
+            }
+        }
+
+        /**
+         * Resolve application cache directory paths
+         * @return array
+         */
+        protected static function resolveCacheDirectoryPaths()
+        {
+            $cacheDirectories       = array(
+                array(  'path'                  => Yii::app()->assetManager->getBasePath(),
+                    'removeDirectoryItself' => false),
+                array(  'path'                 => Yii::getPathOfAlias('application.runtime.themes'),
+                    'removeDirectoryItself' => false),
+                array(  'path'                 => Yii::getPathOfAlias('application.runtime.minscript.cache'),
+                    'removeDirectoryItself' => false));
+            return $cacheDirectories;
+        }
+
     }
 ?>

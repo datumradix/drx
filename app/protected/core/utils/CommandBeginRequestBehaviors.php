@@ -34,12 +34,11 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    Yii::import('application.modules.zurmo.components.EndRequestBehavior');
-    class EndRequestTestBehavior extends EndRequestBehavior
+    Yii::import('application.core.utils.ApplicationBeginRequestBehaviors');
+    /**
+     * Class containing command begin request behaviors.
+     */
+    class CommandBeginRequestBehaviors extends ApplicationBeginRequestBehaviors
     {
-        protected function resolveDefaultRequestType($className)
-        {
-            return $className::TEST_REQUEST;
-        }
     }
 ?>

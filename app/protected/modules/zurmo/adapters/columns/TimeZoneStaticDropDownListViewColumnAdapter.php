@@ -34,12 +34,25 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    Yii::import('application.modules.zurmo.components.EndRequestBehavior');
-    class EndRequestTestBehavior extends EndRequestBehavior
+    class TimeZoneStaticDropDownListViewColumnAdapter extends ListViewColumnAdapter
     {
-        protected function resolveDefaultRequestType($className)
+        public function renderGridViewData()
         {
-            return $className::TEST_REQUEST;
+            return array(
+                'name'  => $this->attribute,
+                'value' => array($this, 'renderDataCellContent'),
+                'type'  => 'text',
+            );
+        }
+
+        public function renderDataCellContent($data, $row)
+        {
+            return $this->renderValue($data->{$this->attribute});
+        }
+
+        public function renderValue($value)
+        {
+            return $value;
         }
     }
 ?>

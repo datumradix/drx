@@ -371,9 +371,23 @@
         {
             $autoresponderItems = AutoresponderItem::getAll();
             $this->assertCount(37, $autoresponderItems);
+
+            $autoresponderItemActivity                  = new AutoresponderItemActivity();
+            $autoresponderItemActivity->type            = AutoresponderItemActivity::TYPE_OPEN;
+            $autoresponderItemActivity->quantity        = 10;
+            $autoresponderItemActivity->latestSourceIP  = '10.11.12.13';
+            $autoresponderItemActivity->autoresponderItem = $autoresponderItems[0];
+            $this->assertTrue($autoresponderItemActivity->save());
+
+            $autoresponderItemActivities = AutoresponderItemActivity::getAll();
+            $this->assertCount(1, $autoresponderItemActivities);
+
             $autoresponderItems[0]->delete();
             $autoresponderItems = AutoresponderItem::getAll();
             $this->assertEquals(36, count($autoresponderItems));
+
+            $autoresponderItemActivities = AutoresponderItemActivity::getAll();
+            $this->assertCount(0, $autoresponderItemActivities);
         }
 
         /**

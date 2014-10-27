@@ -345,6 +345,12 @@
                         );
         }
 
+        protected function afterDelete()
+        {
+            $this->emailMessageUrl->delete();
+            return parent::afterDelete();
+        }
+
         /**
          * Get by campaign or autoresponder item.
          * @param OwnedModel $item

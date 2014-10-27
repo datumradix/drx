@@ -34,36 +34,28 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMembersSubscribeMenuActionElement extends MarketingListMembersActionMenuActionElement
+    abstract class RequestBehavior extends CBehavior
     {
-        protected function getSelectedMenuNameSuffix()
+        abstract protected function resolveEventsBinderClassName();
+
+        abstract protected function resolveDefaultRequestType($className);
+
+        public function attach($owner)
         {
-            return '-massSubscribeSelected';
+            $className      = $this->resolveEventsBinderClassName();
+            $requestType    = $this->resolveDefaultRequestType($className);
+
+            if ($this->resolveIsApiRequest())
+            {
+                $requestType    = $className::API_REQUEST;
+            }
+            $eventBinder  = new $className($requestType, $owner);
+            $eventBinder->bind();
         }
 
-        protected function getAllMenuNameSuffix()
+        protected function resolveIsApiRequest()
         {
-            return '-massSubscribeAll';
+            return false;
         }
-
-        protected function getActionId()
-        {
-            return 'massSubscribe';
-        }
-
-        protected function getScriptNameSuffixForSelectedMenu()
-        {
-            return '-listViewMassActionSubscribeSelected';
-        }
-
-        protected function getScriptNameSuffixForAllMenu()
-        {
-            return '-listViewMassActionSubscribeAll';
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('Core', 'Subscribe');
-        }
-    }
+     }
 ?>

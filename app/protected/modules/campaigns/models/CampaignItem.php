@@ -360,5 +360,15 @@
             }
             return false;
         }
+
+        protected function afterDelete()
+        {
+            $this->emailMessage->delete();
+            foreach ($this->campaignItemActivities as $activity)
+            {
+                $activity->delete();
+            }
+            return parent::afterDelete();
+        }
     }
 ?>

@@ -34,27 +34,15 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMembersMassSubscribeView extends MarketingListMembersMassEditActionView
+    Yii::import('application.core.utils.EndRequestBehaviors');
+    /**
+     * Class containing test begin request behaviors.
+     */
+    class TestEndRequestBehaviors extends EndRequestBehaviors
     {
-        public static function getDefaultMetadata()
+        public function handleEndRequest()
         {
-            $metadata = array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type' => 'MarketingListMembersSubscribeButton',
-                                'htmlOptions' => 'eval:$this->getSubmitButtonHtmlOptions()',
-                            ),
-                        ),
-                    ),
-                ),
-            );
-            return CMap::mergeArray(parent::getDefaultMetadata(), $metadata);
-        }
-
-        protected function renderItemOperationType()
-        {
-            return 'subscription';
+            throw new ExitException();
         }
     }
 ?>
