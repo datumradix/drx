@@ -7094,6 +7094,60 @@ div.radio-input .hasDropDown {
 .editable-cell:after:hover {
   cursor: pointer;
 }
+#timeout-dialog {
+  float: left;
+  width: 100% !important;
+  background-color: #ededed;
+  background-repeat: repeat-x;
+  background-image: -ms-linear-gradient(top,#f6f6f6,#ededed);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#f6f6f6),color-stop(100%,#ededed));
+  background-image: -webkit-linear-gradient(top,#f6f6f6,#ededed);
+  background-image: -o-linear-gradient(top,#f6f6f6,#ededed);
+  background-image: -moz-linear-gradient(top,#f6f6f6,#ededed);
+  background-image: linear-gradient(top,#f6f6f6,#ededed);
+  -webkit-box-shadow: inset 0 1px 0 0 #ffffff;
+  -moz-box-shadow: inset 0 1px 0 0 #ffffff;
+  -ms-box-shadow: inset 0 1px 0 0 #ffffff;
+  -o-box-shadow: inset 0 1px 0 0 #ffffff;
+  box-shadow: inset 0 1px 0 0 #ffffff;
+}
+#timeout-dialog:before {
+  content: '\006A';
+  font-weight: normal !important;
+  font-size: 80px;
+  font-family: "zurmo_gamification_symbly_rRg";
+  float: left;
+  margin-right: 25px;
+  line-height: 0.5;
+}
+#timeout-dialog p {
+  line-height: 1.5;
+}
+#timeout-dialog .float-bar {
+  margin-top: 20px;
+  margin-bottom: 0;
+  padding: 0;
+}
+#timeout-dialog .form-toolbar {
+  text-align: right;
+}
+#timeout-dialog .form-toolbar a:last-child {
+  margin-right: 0;
+}
+#timeout-countdown {
+  font-weight: bold;
+  color: #fff;
+  background: #a82d31;
+  padding: 0 2px 0 4px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+}
+#timeout-message {
+  margin-bottom: 5px;
+}
 i[class^="icon"] {
   color: #656565;
   font-weight: normal;
