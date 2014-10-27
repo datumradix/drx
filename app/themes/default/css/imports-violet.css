@@ -4590,23 +4590,22 @@ div.wide.form .errorMessage {
   }
 }
 .tooltip {
-  width: 10px;
-  height: 10px !important;
-  line-height: 10px !important;
+  line-height: 11px !important;
+  width: 12px !important;
+  height: 12px !important;
   display: inline-block;
   background: #fff;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
-  border-radius: 10px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
   border: 1px solid #ccc;
   color: #333;
-  font-weight: 500;
-  font-size: 8px;
+  font-weight: 400 !important;
+  font-size: 8px !important;
   text-align: center;
   cursor: pointer;
-  vertical-align: super;
   margin: 0 4px;
 }
 .qtip {
@@ -8485,6 +8484,21 @@ a + .autoresponder-stats {
   -ms-box-shadow: inset 0 0 1px 1px #efefef;
   -o-box-shadow: inset 0 0 1px 1px #efefef;
   box-shadow: inset 0 0 1px 1px #efefef;
+}
+.last-email-activity-status {
+  float: none;
+  margin-left: 8px;
+  position: absolute;
+  top: 2px;
+  display: inline-block;
+}
+.last-email-activity-status .continuum {
+  margin-right: 4px;
+}
+.last-email-activity-status .tooltip {
+  font-weight: normal;
+  margin-right: 0;
+  font-size: 8px;
 }
 .gmail-user-stage-status,
 .import-item-stage-status,
