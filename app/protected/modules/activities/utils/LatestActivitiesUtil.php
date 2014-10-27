@@ -56,9 +56,10 @@
         /**
          * Given an array of modelClassNames and relationItemIds build an array of searchAttributeData that
          * can be used by the RedBeanModelsDataProvider to produce a union query of data.
-         * @param array $modelClassNames
-         * @param array $relationItemIds
-         * @return array $modelClassNamesAndSearchAttributeData
+         * @param $modelClassNames
+         * @param $relationItemIds
+         * @param $ownedByFilter
+         * @return array
          */
         public static function getSearchAttributesDataByModelClassNamesAndRelatedItemIds($modelClassNames,
                                                                                          $relationItemIds,
@@ -92,57 +93,31 @@
                     $searchAttributesData =    // Not Coding Standard
                         $mashableActivityRules->resolveSearchAttributeDataForAllLatestActivities($searchAttributesData);
                 }
-                static::resolveSearchAttributeDataForLatestActivities($searchAttributesData, $mashableActivityRules);
+                if(static::shouldResolveSearchAttributeDataForLatestActivities())
+                {
+                    $searchAttributesData =    // Not Coding Standard
+                        $mashableActivityRules->resolveSearchAttributeDataForLatestActivities($searchAttributesData);
+                }
                 $mashableActivityRules->resolveSearchAttributesDataByOwnedByFilter($searchAttributesData, $ownedByFilter);
+                $mashableActivityRules->resolveSearchAttributesDataStructure($searchAttributesData['structure']);
+                $modelClassNamesAndSearchAttributeData[] = array($modelClassName => $searchAttributesData);
 
-                //todo: begin move
-                if($modelClassName == 'EmailMessage')
-                {
-                    $searchAttributesData['structure'] = '1';
-                    $modelClassNamesAndSearchAttributeData[] = array($modelClassName => $searchAttributesData);
-                    if (count($relationItemIds) > 1)
-                    {
-                        $searchAttributesData =     // Not Coding Standard
-                            $mashableActivityRules->resolveSearchAttributesDataByRelatedItemIds($relationItemIds);
-                        $searchAttributesData['structure'] = '2';
-                    }
-                    elseif (count($relationItemIds) == 1)
-                    {
-                        $searchAttributesData =    // Not Coding Standard
-                            $mashableActivityRules->resolveSearchAttributesDataByRelatedItemId($relationItemIds[0]);
-                        $searchAttributesData['structure'] = '2';
-                    }
-                    else
-                    {
-                        $searchAttributesData              = array();
-                        $searchAttributesData['clauses']   = array();
-                        $searchAttributesData['structure'] = null;
-                        $searchAttributesData =    // Not Coding Standard
-                            $mashableActivityRules->resolveSearchAttributeDataForAllLatestActivities($searchAttributesData);
-                    }
-                    static::resolveSearchAttributeDataForLatestActivities($searchAttributesData, $mashableActivityRules);
-                    $mashableActivityRules->resolveSearchAttributesDataByOwnedByFilter($searchAttributesData, $ownedByFilter);
-                    $modelClassNamesAndSearchAttributeData[] = array($modelClassName => $searchAttributesData);
-                }
-                else
-                {
-                    $modelClassNamesAndSearchAttributeData[] = array($modelClassName => $searchAttributesData);
-                }
-                //todo: end move
+                $mashableActivityRules->resolveAdditionalSearchAttributesDataByModelClassNameAndRelatedItemIds(
+                    $modelClassName, $relationItemIds, $ownedByFilter,
+                    static::shouldResolveSearchAttributeDataForLatestActivities(),
+                    $modelClassNamesAndSearchAttributeData);
+
             }
             return $modelClassNamesAndSearchAttributeData;
         }
 
+
         /**
-         * Resolves the $searchAttributesData for each type of MashableActivity based on
-         * @see MashableActivityRules
-         * @param $searchAttributesData
-         * @param $mashableActivityRules
+         * @return bool
          */
-        protected static function resolveSearchAttributeDataForLatestActivities(& $searchAttributesData, $mashableActivityRules)
+        protected static function shouldResolveSearchAttributeDataForLatestActivities()
         {
-            $searchAttributesData =    // Not Coding Standard
-                $mashableActivityRules->resolveSearchAttributeDataForLatestActivities($searchAttributesData);
+            return true;
         }
 
         /**
