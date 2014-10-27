@@ -34,19 +34,54 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Class DedupesActivitiesUtil
-     * Used as an helper to count total activities for each dupe
-     */
-    class DedupesActivitiesUtil extends LatestActivitiesUtil
+    class OwnedSecurableTestItem3 extends OwnedSecurableItem
     {
-        /**
-         * Override so it don't resolve the $searchAttributesData for LatestActivities
-         * @return bool
-         */
-        protected static function shouldResolveSearchAttributeDataForLatestActivities()
+        public function __toString()
         {
-            return false;
+            if (trim($this->member) == '')
+            {
+                return Zurmo::t('Core', '(Unnamed)');
+            }
+            return $this->member;
+        }
+
+        public static function getDefaultMetadata()
+        {
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'member',
+                    'member2'
+                ),
+                'rules' => array(
+                    array('member', 'required'),
+                    array('member', 'type', 'type' => 'string'),
+                    array('member', 'length', 'max' => 255),
+                    array('member2', 'type', 'type' => 'string'),
+                    array('member2', 'length', 'max' => 255),
+                ),
+            );
+            return $metadata;
+        }
+
+        public static function getModuleClassName()
+        {
+            return 'ZurmoModule';
+        }
+
+        public static function isTypeDeletable()
+        {
+            return true;
+        }
+
+        public function onAfterOwnerChange(CEvent $event)
+        {
+            parent::__set('member', 'onAfterOwnerChange');
+        }
+
+        public function onBeforeOwnerChange(CEvent $event)
+        {
+            parent::__set('member2', 'onBeforeOwnerChange');
         }
     }
 ?>

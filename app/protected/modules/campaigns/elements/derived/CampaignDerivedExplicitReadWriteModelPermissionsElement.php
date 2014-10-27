@@ -35,18 +35,23 @@
      ********************************************************************************/
 
     /**
-     * Class DedupesActivitiesUtil
-     * Used as an helper to count total activities for each dupe
+     * Derived version of @see ExplicitReadWriteModelPermissionsElement for campaign.
      */
-    class DedupesActivitiesUtil extends LatestActivitiesUtil
+    class CampaignDerivedExplicitReadWriteModelPermissionsElement extends DerivedExplicitReadWriteModelPermissionsElement
     {
-        /**
-         * Override so it don't resolve the $searchAttributesData for LatestActivities
-         * @return bool
-         */
-        protected static function shouldResolveSearchAttributeDataForLatestActivities()
+        public function getEditableHtmlOptions()
         {
-            return false;
+            list($attributeName, $relationAttributeName) = $this->resolveAttributeNameAndRelatedAttributes();
+            $htmlOptions = array(
+                'id'   => $this->getEditableInputId($attributeName, $relationAttributeName),
+            );
+            if($this->model->status == Campaign::STATUS_PROCESSING || $this->model->status == Campaign::STATUS_COMPLETED)
+            {
+                $htmlOptions['disabled'] = true;
+            }
+            $htmlOptions['template']  = '<div class="radio-input">{input}{label}</div>';
+            $htmlOptions['separator'] = '';
+            return $htmlOptions;
         }
     }
 ?>

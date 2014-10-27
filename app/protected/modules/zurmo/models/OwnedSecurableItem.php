@@ -174,9 +174,18 @@
         {
             if ($attributeName == 'owner')
             {
-                $this->onBeforeOwnerChange(new CEvent($this, array('newOwner' => $value)));
-                $this->ownerChange($value);
-                $this->onAfterOwnerChange(new CEvent($this));
+                $this->isSetting = true;
+                if ($value === null || !$this->owner->isSame($value))
+                {
+                    $this->isSetting = false;
+                    $this->onBeforeOwnerChange(new CEvent($this, array('newOwner' => $value)));
+                    $this->ownerChange($value);
+                    $this->onAfterOwnerChange(new CEvent($this));
+                }
+                else
+                {
+                    $this->isSetting = false;
+                }
             }
             else
             {
