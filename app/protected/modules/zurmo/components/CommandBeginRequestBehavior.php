@@ -40,40 +40,14 @@
      */
     class CommandBeginRequestBehavior extends BeginRequestBehavior
     {
-        public function attach($owner)
+        protected function resolveDefaultRequestType($className)
         {
-            $this->attachNonApiRequestBehaviors($owner);
-            if (Yii::app()->isApplicationInstalled())
-            {
-                $this->attachNonApiRequestBehaviorsForInstalledApplication($owner);
-            }
+            return $className::COMMAND_REQUEST;
         }
 
-        /**
-         * @param CComponent $owner
-         */
-        protected function attachNonApiRequestBehaviors(CComponent $owner)
+        protected function resolveIsApiRequest()
         {
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleApplicationCache'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleImports'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLibraryCompatibilityCheck'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleStartPerformanceClock'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadLanguage'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadTimeZone'));
-        }
-
-        /**
-         * @param CComponent $owner
-         */
-        protected function attachNonApiRequestBehaviorsForInstalledApplication(CComponent $owner)
-        {
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleSetupDatabaseConnection'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadActivitiesObserver'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadConversationsObserver'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadEmailMessagesObserver'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadReadPermissionSubscriptionObserver'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadAccountContactAffiliationObserver'));
+            return false;
         }
     }
 ?>

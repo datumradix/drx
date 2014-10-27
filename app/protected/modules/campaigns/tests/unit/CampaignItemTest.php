@@ -402,10 +402,37 @@
             $campaignItems   = CampaignItem::getAll();
             $this->assertNotEmpty($campaignItems);
             $this->assertCount(10, $campaignItems);
+
+            $campaignItemActivity                           = new CampaignItemActivity();
+            $campaignItemActivity->type                     = CampaignItemActivity::TYPE_CLICK;
+            $campaignItemActivity->quantity                 = 1;
+            $campaignItemActivity->campaignItem             = $campaignItems[0];
+            $campaignItemActivity->latestSourceIP           = '121.212.122.112';
+            $this->assertTrue($campaignItemActivity->save());
+
+            $campaignItems[0]->emailMessage = $this->resolveEmailMessage();
+            $this->assertTrue($campaignItems[0]->unrestrictedSave());
+
+            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(1, EmailMessageContent::getCount());
+            $this->assertEquals(1, EmailMessageSender::getCount());
+            $this->assertEquals(1, EmailMessageRecipient::getCount());
+
+            $campaignItemActivities = CampaignItemActivity::getAll();
+            $this->assertCount(1, $campaignItemActivities);
+
             $campaignItems[0]->delete();
             $campaignItems   = CampaignItem::getAll();
             $this->assertNotEmpty($campaignItems);
             $this->assertCount(9, $campaignItems);
+
+            $campaignItemActivities = CampaignItemActivity::getAll();
+            $this->assertCount(0, $campaignItemActivities);
+
+            $this->assertEquals(0, EmailMessage::getCount());
+            $this->assertEquals(0, EmailMessageContent::getCount());
+            $this->assertEquals(0, EmailMessageSender::getCount());
+            $this->assertEquals(0, EmailMessageRecipient::getCount());
         }
 
         /**

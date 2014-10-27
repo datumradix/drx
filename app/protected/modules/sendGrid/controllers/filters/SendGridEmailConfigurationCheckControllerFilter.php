@@ -34,36 +34,35 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMembersSubscribeMenuActionElement extends MarketingListMembersActionMenuActionElement
+    /**
+     * Filter used by user controller to ascertain whether the user's sendgrid email settings has been configured or not.
+     * If not, then the user is instructed to set this up first before they can send email from the system.
+     */
+    class SendGridEmailConfigurationCheckControllerFilter extends CFilter
     {
-        protected function getSelectedMenuNameSuffix()
-        {
-            return '-massSubscribeSelected';
-        }
+        public $controller;
 
-        protected function getAllMenuNameSuffix()
+        /**
+         * @param FilterChain $filterChain
+         * @return boolean
+         */
+        protected function preFilter($filterChain)
         {
-            return '-massSubscribeAll';
-        }
-
-        protected function getActionId()
-        {
-            return 'massSubscribe';
-        }
-
-        protected function getScriptNameSuffixForSelectedMenu()
-        {
-            return '-listViewMassActionSubscribeSelected';
-        }
-
-        protected function getScriptNameSuffixForAllMenu()
-        {
-            return '-listViewMassActionSubscribeAll';
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('Core', 'Subscribe');
+            if (isset($_POST['ajax']))
+            {
+                return true;
+            }
+            if (Yii::app()->sendGridEmailHelper->apiUsername != null
+                && Yii::app()->sendGridEmailHelper->apiPassword != null)
+            {
+                return true;
+            }
+            $messageView                  = new NoGlobalSendGridEmailConfigurationYetView();
+            $pageViewClassName            = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
+            $view                         = new $pageViewClassName(ZurmoDefaultViewUtil::
+                                                 makeStandardViewForCurrentUser($this->controller, $messageView));
+            echo $view->render();
+            return false;
         }
     }
 ?>
