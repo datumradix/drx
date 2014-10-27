@@ -95,7 +95,40 @@
                 static::resolveSearchAttributeDataForLatestActivities($searchAttributesData, $mashableActivityRules);
                 $mashableActivityRules->resolveSearchAttributesDataByOwnedByFilter($searchAttributesData, $ownedByFilter);
 
-                $modelClassNamesAndSearchAttributeData[] = array($modelClassName => $searchAttributesData);
+                //todo: begin move
+                if($modelClassName == 'EmailMessage')
+                {
+                    $searchAttributesData['structure'] = '1';
+                    $modelClassNamesAndSearchAttributeData[] = array($modelClassName => $searchAttributesData);
+                    if (count($relationItemIds) > 1)
+                    {
+                        $searchAttributesData =     // Not Coding Standard
+                            $mashableActivityRules->resolveSearchAttributesDataByRelatedItemIds($relationItemIds);
+                        $searchAttributesData['structure'] = '2';
+                    }
+                    elseif (count($relationItemIds) == 1)
+                    {
+                        $searchAttributesData =    // Not Coding Standard
+                            $mashableActivityRules->resolveSearchAttributesDataByRelatedItemId($relationItemIds[0]);
+                        $searchAttributesData['structure'] = '2';
+                    }
+                    else
+                    {
+                        $searchAttributesData              = array();
+                        $searchAttributesData['clauses']   = array();
+                        $searchAttributesData['structure'] = null;
+                        $searchAttributesData =    // Not Coding Standard
+                            $mashableActivityRules->resolveSearchAttributeDataForAllLatestActivities($searchAttributesData);
+                    }
+                    static::resolveSearchAttributeDataForLatestActivities($searchAttributesData, $mashableActivityRules);
+                    $mashableActivityRules->resolveSearchAttributesDataByOwnedByFilter($searchAttributesData, $ownedByFilter);
+                    $modelClassNamesAndSearchAttributeData[] = array($modelClassName => $searchAttributesData);
+                }
+                else
+                {
+                    $modelClassNamesAndSearchAttributeData[] = array($modelClassName => $searchAttributesData);
+                }
+                //todo: end move
             }
             return $modelClassNamesAndSearchAttributeData;
         }
