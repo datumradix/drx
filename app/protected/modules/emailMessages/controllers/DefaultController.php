@@ -222,65 +222,34 @@
                 }
                 if ($configurationForm->aTestToAddress != null)
                 {
-                    $emailHelper = new EmailHelper();
-                    $emailHelper->loadDefaultFromAndToAddresses();
-                    $emailHelper->outboundHost     = $configurationForm->host;
-                    $emailHelper->outboundPort     = $configurationForm->port;
-                    $emailHelper->outboundUsername = $configurationForm->username;
-                    $emailHelper->outboundPassword = $configurationForm->password;
-                    $emailHelper->outboundSecurity = $configurationForm->security;
+                    $emailAccount       = new EmailAccount();
+                    $emailAccount->outboundHost     = $configurationForm->host;
+                    $emailAccount->outboundPort     = $configurationForm->port;
+                    $emailAccount->outboundUsername = $configurationForm->username;
+                    $emailAccount->outboundPassword = $configurationForm->password;
+                    $emailAccount->outboundSecurity = $configurationForm->security;
+                    $isUser = false;
                     if (isset($fromNameToSendMessagesFrom) && isset($fromAddressToSendMessagesFrom))
                     {
+                        $isUser = true;
                         $from = array(
                             'name'      => $fromNameToSendMessagesFrom,
                             'address'   => $fromAddressToSendMessagesFrom
                         );
-                        $emailMessage = EmailMessageHelper::sendTestEmail($emailHelper, $from,
-                                                                      $configurationForm->aTestToAddress);
                     }
                     else
                     {
                         $user                   = BaseControlUserConfigUtil::getUserToRunAs();
                         $userToSendMessagesFrom = User::getById((int)$user->id);
-                        $emailMessage = EmailMessageHelper::sendTestEmailFromUser($emailHelper, $userToSendMessagesFrom,
-                                                                      $configurationForm->aTestToAddress);
+                        $from = array(
+                            'name'      => strval($userToSendMessagesFrom),
+                            'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom)
+                        );
                     }
-                    $messageContent  = null;
-                    if (!($emailMessage->hasErrors() || $emailMessage->hasSendError()))
-                    {
-                        $messageContent .= Zurmo::t('EmailMessagesModule', 'Message successfully sent') . "\n";
-                    }
-                    else
-                    {
-                        $messageContent .= Zurmo::t('EmailMessagesModule', 'Message failed to send') . "\n";
-                        if ($emailMessage->hasSendError())
-                        {
-                            $messageContent .= $emailMessage->error     . "\n";
-                        }
-                        else
-                        {
-                            //todo: refactor to use ZurmoHtml::errorSummary after this supports that method
-                            //todo: supports nested messages better.
-                            $errors = $emailMessage->getErrors();
-                            foreach ($errors as $attributeNameWithErrors)
-                            {
-                                foreach ($attributeNameWithErrors as $attributeError)
-                                {
-                                    if (is_array($attributeError))
-                                    {
-                                        foreach ($attributeError as $nestedAttributeError)
-                                        {
-                                            $messageContent .= reset($nestedAttributeError) . "\n";
-                                        }
-                                    }
-                                    else
-                                    {
-                                        $messageContent .= reset($attributeError) . "\n";
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    $emailMessage = EmailMessageHelper::processAndCreateEmailMessage($from, $configurationForm->aTestToAddress);
+                    $mailer       = new ZurmoSwiftMailer($emailMessage, $emailAccount);
+                    $emailMessage = $mailer->sendTestEmail($isUser);
+                    $messageContent  = EmailHelper::prepareMessageContent($emailMessage);
                 }
                 else
                 {

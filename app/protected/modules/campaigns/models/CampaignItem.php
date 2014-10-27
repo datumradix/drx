@@ -315,18 +315,7 @@
          */
         public function hasAtLeastOneOpenActivity()
         {
-            $count = CampaignItemActivity::getByTypeAndModelIdAndPersonIdAndUrl(CampaignItemActivity::TYPE_OPEN,
-                                                                                $this->id,
-                                                                                $this->contact->getClassId('Person'),
-                                                                                null,
-                                                                                'latestDateTime',
-                                                                                null,
-                                                                                true);
-            if ($count > 0)
-            {
-                return true;
-            }
-            return false;
+            return $this->hasAtLeastOneEventActivity(CampaignItemActivity::TYPE_OPEN);
         }
 
         /**
@@ -334,18 +323,7 @@
          */
         public function hasAtLeastOneClickActivity()
         {
-            $count = CampaignItemActivity::getByTypeAndModelIdAndPersonIdAndUrl(CampaignItemActivity::TYPE_CLICK,
-                                                                                $this->id,
-                                                                                $this->contact->getClassId('Person'),
-                                                                                null,
-                                                                                'latestDateTime',
-                                                                                null,
-                                                                                true);
-            if ($count > 0)
-            {
-                return true;
-            }
-            return false;
+            return $this->hasAtLeastOneEventActivity(CampaignItemActivity::TYPE_CLICK);
         }
 
         /**
@@ -353,18 +331,7 @@
          */
         public function hasAtLeastOneUnsubscribeActivity()
         {
-             $count = CampaignItemActivity::getByTypeAndModelIdAndPersonIdAndUrl(CampaignItemActivity::TYPE_UNSUBSCRIBE,
-                                                                                 $this->id,
-                                                                                 $this->contact->getClassId('Person'),
-                                                                                 null,
-                                                                                 'latestDateTime',
-                                                                                 null,
-                                                                                 true);
-            if ($count > 0)
-            {
-                return true;
-            }
-            return false;
+            return $this->hasAtLeastOneEventActivity(CampaignItemActivity::TYPE_UNSUBSCRIBE);
         }
 
         /**
@@ -372,7 +339,15 @@
          */
         public function hasAtLeastOneBounceActivity()
         {
-            $count = CampaignItemActivity::getByTypeAndModelIdAndPersonIdAndUrl(CampaignItemActivity::TYPE_BOUNCE,
+            return $this->hasAtLeastOneEventActivity(CampaignItemActivity::TYPE_BOUNCE);
+        }
+
+        /**
+         * @return bool;
+         */
+        public function hasAtLeastOneEventActivity($eventType)
+        {
+            $count = CampaignItemActivity::getByTypeAndModelIdAndPersonIdAndUrl($eventType,
                                                                                 $this->id,
                                                                                 $this->contact->getClassId('Person'),
                                                                                 null,

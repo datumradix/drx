@@ -93,7 +93,8 @@
             assert('isset($to) || isset($cc) || isset($bcc)');
             assert('is_array($attachments) || !isset($attachments)');
             assert('is_array($parts) || !isset($parts)');
-            $mailer           = $this->getOutboundMailer();
+            $mailer = new ZurmoSwiftMailer();
+            $mailer->init();
             if (!$settings)
             {
                 $mailer->mailer   = $this->outboundType;

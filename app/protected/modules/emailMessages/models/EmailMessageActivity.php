@@ -49,6 +49,12 @@
 
         const TYPE_SKIP                       = 5;
 
+        const TYPE_SPAM                       = 6;
+
+        const TYPE_SOFT_BOUNCE                = 7;
+
+        const TYPE_HARD_BOUNCE                = 8;
+
         public static function getTypesArray()
         {
             return array(
@@ -57,6 +63,9 @@
                 static::TYPE_UNSUBSCRIBE        => Zurmo::t('Core',                'Unsubscribe'),
                 static::TYPE_BOUNCE             => Zurmo::t('EmailMessagesModule', 'Bounce'),
                 static::TYPE_SKIP               => Zurmo::t('Core', 'Skipped'),
+                static::TYPE_SPAM               => Zurmo::t('Core', 'Spammed'),
+                static::TYPE_SOFT_BOUNCE        => Zurmo::t('EmailMessagesModule', 'Soft Bounce'),
+                static::TYPE_HARD_BOUNCE        => Zurmo::t('EmailMessagesModule', 'Hard Bounce'),
             );
         }
 
@@ -334,6 +343,26 @@
                                 'members' => array($relatedColumnName),
                                 'unique' => false)
                         );
+        }
+
+        /**
+         * Get by campaign or autoresponder item.
+         * @param OwnedModel $item
+         * @return int
+         */
+        public static function getIdByCampaignOrAutoresponderItem($item)
+        {
+            $itemClassName  = get_class($item);
+            $type           = strtolower($itemClassName);
+            $modelClassName = $itemClassName . 'Activity';
+            $tableName      = $modelClassName::getTableName();
+            $rows           = ZurmoRedBean::getRow('select emailmessageactivity_id from ' . $tableName .
+                                    ' where ' . $type . '_id = ?', array($item->id));
+            if(!empty($rows))
+            {
+                return $rows['emailmessageactivity_id'];
+            }
+            return null;
         }
     }
 ?>
