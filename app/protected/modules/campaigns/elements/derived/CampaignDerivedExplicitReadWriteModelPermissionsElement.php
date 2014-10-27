@@ -45,7 +45,7 @@
             $htmlOptions = array(
                 'id'   => $this->getEditableInputId($attributeName, $relationAttributeName),
             );
-            if($this->getModel()->status == Campaign::STATUS_PROCESSING || $this->getModel()->status == Campaign::STATUS_COMPLETED)
+            if($this->model->status == Campaign::STATUS_PROCESSING || $this->model->status == Campaign::STATUS_COMPLETED)
             {
                 $htmlOptions['disabled'] = true;
             }
