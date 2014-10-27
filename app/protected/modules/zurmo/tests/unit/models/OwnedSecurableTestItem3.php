@@ -51,11 +51,14 @@
             $metadata[__CLASS__] = array(
                 'members' => array(
                     'member',
+                    'member2'
                 ),
                 'rules' => array(
                     array('member', 'required'),
                     array('member', 'type', 'type' => 'string'),
                     array('member', 'length', 'max' => 255),
+                    array('member2', 'type', 'type' => 'string'),
+                    array('member2', 'length', 'max' => 255),
                 ),
             );
             return $metadata;
@@ -70,10 +73,15 @@
         {
             return true;
         }
-        
+
         public function onAfterOwnerChange(CEvent $event)
         {
             parent::__set('member', 'onAfterOwnerChange');
+        }
+
+        public function onBeforeOwnerChange(CEvent $event)
+        {
+            parent::__set('member2', 'onBeforeOwnerChange');
         }
     }
 ?>
