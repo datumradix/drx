@@ -34,24 +34,46 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Derived version of @see ExplicitReadWriteModelPermissionsElement for campaign.
-     */
-    class CampaignDerivedExplicitReadWriteModelPermissionsElement extends DerivedExplicitReadWriteModelPermissionsElement
+    class OwnedSecurableTestItem3 extends OwnedSecurableItem
     {
-        public function getEditableHtmlOptions()
+        public function __toString()
         {
-            list($attributeName, $relationAttributeName) = $this->resolveAttributeNameAndRelatedAttributes();
-            $htmlOptions = array(
-                'id'   => $this->getEditableInputId($attributeName, $relationAttributeName),
-            );
-            if($this->model->status == Campaign::STATUS_PROCESSING || $this->model->status == Campaign::STATUS_COMPLETED)
+            if (trim($this->member) == '')
             {
-                $htmlOptions['disabled'] = true;
+                return Zurmo::t('Core', '(Unnamed)');
             }
-            $htmlOptions['template']  = '<div class="radio-input">{input}{label}</div>';
-            $htmlOptions['separator'] = '';
-            return $htmlOptions;
+            return $this->member;
+        }
+
+        public static function getDefaultMetadata()
+        {
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'member',
+                ),
+                'rules' => array(
+                    array('member', 'required'),
+                    array('member', 'type', 'type' => 'string'),
+                    array('member', 'length', 'max' => 255),
+                ),
+            );
+            return $metadata;
+        }
+
+        public static function getModuleClassName()
+        {
+            return 'ZurmoModule';
+        }
+
+        public static function isTypeDeletable()
+        {
+            return true;
+        }
+        
+        public function onAfterOwnerChange(CEvent $event)
+        {
+            parent::__set('member', 'onAfterOwnerChange');
         }
     }
 ?>
