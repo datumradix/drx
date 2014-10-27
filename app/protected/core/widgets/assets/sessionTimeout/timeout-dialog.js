@@ -76,10 +76,14 @@ String.prototype.format = function() {
         var self = this;
         self.destroyDialog();
 
-        $('<div id="timeout-dialog">' +
+        $('<div id="timeout-dialog" class="left-column full-width">' +
             '<p id="timeout-message">' + settings.message.format('<span id="timeout-countdown">' + settings.countdown + '</span>') + '</p>' +
             '<p id="timeout-question">' + settings.question + '</p>' +
-          '</div>')
+            '<div class="float-bar"><div class="view-toolbar-container clearfix dock"><div class="form-toolbar">' +
+            '<a href="#" id="timeout-keep-signin-btn" class="z-button"><span class="z-label">' + settings.keep_alive_button_text + '</span></a>' +
+            '<a href="#" id="timeout-sign-out-button" class="z-button secondary-button"><span class="z-label">' + settings.sign_out_button_text + '</span></a>' +
+            '</div></div></div></div>' +
+            '</div>')
         .appendTo('body')
         .dialog({
           modal: true,
@@ -90,24 +94,11 @@ String.prototype.format = function() {
           draggable: false,
           resizable: false,
           dialogClass: 'timeout-dialog',
-          title: settings.title,
-          buttons : {
-            'keep-alive-button' : {
-              text: settings.keep_alive_button_text,
-              id: "timeout-keep-signin-btn",
-              click: function() {
-                self.keepAlive();
-              }
-            },
-            'sign-out-button' : {
-              text: settings.sign_out_button_text,
-              id: "timeout-sign-out-button",
-              click: function() {
-                self.signOut(true);
-              }
-            }
-          }
+          title: settings.title
         });
+
+        $('#timeout-keep-signin-btn').click(function(){ self.keepAlive(); });
+        $('#timeout-sign-out-button').click(function(){ self.signOut(true); });
 
         self.startCountdown();
       },

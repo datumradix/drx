@@ -124,6 +124,8 @@
          */
         public $dialogWidth;
 
+	    public $cssFile = null;
+
         public function init()
         {
             parent::init();
@@ -154,7 +156,8 @@
             $cs                         = Yii::app()->getClientScript();
             $baseScriptUrl              = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.core.widgets.assets'));
             $cs->registerScriptFile($baseScriptUrl . '/sessionTimeout/timeout-dialog.js', ClientScript::POS_HEAD);
-            $cs->registerCssFile($baseScriptUrl . '/sessionTimeout/timeout-dialog.css');
+            //@TODO we don't need this file, consider removing it totally
+            //$cs->registerCssFile($baseScriptUrl . '/sessionTimeout/timeout-dialog.css');
         }
 
         public function run()
