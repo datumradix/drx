@@ -59,6 +59,23 @@
             return $content;
         }
 
+        protected static function resolveAndRenderSubscriptionContent()
+        {
+            if (Yii::app()->edition != 'Community')
+            {
+                return;
+            }
+            $content  = '<div class="help-section get-pro-message-small">';
+            $content .= '<h3>' . Zurmo::t('HomeModule', 'Achieve more with a Zurmo subscription') . '</h3>';
+            $content .= '<p>' .Zurmo::t('HomeModule', 'Get more features, proactive support, access ' .
+                                               'to training and consulting, blazing fast hosting, ' .
+                                               'and in-depth documentation with a Zurmo subscription.');
+            $content .= '<br/><a href="http://www.zurmo.com/needSupport.php?s=about">' .
+                        Zurmo::t('ZurmoModule', 'Learn More' . '</a>');
+            $content .= '</p></div>';
+            return $content;
+        }
+
         protected static function renderSocialLinksContent()
         {
             return AboutView::renderSocialLinksContent();
@@ -78,14 +95,19 @@
 
         protected function renderContent()
         {
-            $params     = LabelUtil::getTranslationParamsForAllModules();
+	        $cssClass = 'class="has-message"';
+	        if (Yii::app()->edition != 'Community')
+	        {
+		        $cssClass = '';
+	        }
+	        $params     = LabelUtil::getTranslationParamsForAllModules();
             $rand       = mt_rand(1, 11);
             $themeName  = Yii::app()->theme->name;
             $imgUrl     = Yii::app()->themeManager->baseUrl . '/' . $themeName . '/images/welcome-gallery-' . $rand . '.png';
             $content    = '<div class="clearfix">';
             $content    .= '<h1>' . Zurmo::t('HomeModule', 'Welcome to Zurmo', $params). '</h1>';
             $content    .= static::renderSocialLinksContent();
-            $content    .= '<div id="welcome-content">';
+            $content    .= '<div id="welcome-content" '.$cssClass.'>';
             $content    .= '<div id="instructions"><div id="welcome-gallery"><img src="' . $imgUrl . '" title="" /><span></span></div>';
             $content    .= '<p>';
             $content    .= Zurmo::t('HomeModule', 'Using a CRM shouldn\'t be a chore. With Zurmo, you can earn points, ' .
@@ -93,9 +115,10 @@
             $content    .= '</p>';
             $content    .= $this->renderDashboardLinkContent();
             $content    .= '</div>';
-            $content    .= static::renderHelpfulLinksContent();
+            $content    .= static::resolveAndRenderSubscriptionContent();
             $content    .= $this->renderTipsContent();
-            $content    .= $this->renderHideLinkContent();
+	        $content    .= static::renderHelpfulLinksContent();
+	        $content    .= $this->renderHideLinkContent();
             $content    .= '</div>';
             $content    .= '</div>';
             return $content;
