@@ -512,7 +512,8 @@
 
         protected static function translatedAttributeLabels($language)
         {
-            return array_merge(parent::translatedAttributeLabels($language),
+            return array_merge(Person::getTranslatedAttributeLabels($language),
+                    array_merge(parent::translatedAttributeLabels($language),
                 array(
                     'currency'            => Zurmo::t('ZurmoModule', 'Currency',                array(), null, $language),
                     'emailAccounts'       => Zurmo::t('EmailMessagesModule', 'Email Accounts',          array(), null, $language),
@@ -537,7 +538,7 @@
                     'username'            => Zurmo::t('ZurmoModule', 'Username',                array(), null, $language),
                     'lastLoginDateTime'   => Zurmo::t('UsersModule', 'Last Login',              array(), null, $language),
                 )
-            );
+            ));
         }
 
         public function getActualRight($moduleName, $rightName)
