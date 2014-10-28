@@ -124,6 +124,8 @@
          */
         public $dialogWidth;
 
+	    public $cssFile = null;
+
         public function init()
         {
             parent::init();
@@ -141,6 +143,7 @@
             {
                 $this->timeout          = 1400;
             }
+            $this->timeout          = 10;
             $this->countdown            = 60;
             $this->title                = Zurmo::t('Core', 'Your Zurmo session is about to expire?',
                                                     LabelUtil::getTranslationParamsForAllModules());
