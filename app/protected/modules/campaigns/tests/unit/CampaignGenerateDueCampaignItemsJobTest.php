@@ -259,5 +259,129 @@
             $this->assertNotEmpty($campaignItems);
             $this->assertCount(5, $campaignItems);
         }
+
+        /**
+         * @depends testRunWithJustDueActiveCampaignsWithMembers
+         */
+        public function testRunJobDoesNotRegenerateExistingItems()
+        {
+            $data = array(
+                'old' => array(
+                    'subject'       => 'Old Subject',
+                    'fromName'      => 'Old From Name',
+                    'fromAddress'   => 'old@zurmo.com',
+                    'textContent'   => 'Nld Text Content',
+                    'htmlContent'   => 'Nld Html Content'
+                ),
+                'new' => array(
+                    'subject'       => 'New Subject',
+                    'fromName'      => 'New From Name',
+                    'fromAddress'   => 'new@zurmo.com',
+                    'textContent'   => 'New Text Content',
+                    'htmlContent'   => 'New Html Content'
+                ),
+            );
+            $marketingList      = MarketingListTestHelper::createMarketingListByName('marketingList 06');
+            $marketingListId    = $marketingList->id;
+            $processed          = 0;
+            for ($i = 11; $i <= 15; $i++)
+            {
+                $email                  = new Email();
+                $email->emailAddress    = "demo$i@zurmo.com";
+                $contact                = ContactTestHelper::createContactByNameForOwner('campaignContact 0' . $i, $this->user);
+                $contact->primaryEmail  = $email;
+                $this->assertTrue($contact->save());
+                MarketingListMemberTestHelper::createMarketingListMember($processed, $marketingList, $contact);
+            }
+            $marketingList->forgetAll();
+            $marketingList      = MarketingList::getById($marketingListId);
+            $nowDateTime        = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+            $campaign           = CampaignTestHelper::createCampaign('campaign',
+                                                                        $data['old']['subject'],
+                                                                        $data['old']['textContent'],
+                                                                        $data['old']['htmlContent'],
+                                                                        $data['old']['fromName'],
+                                                                        $data['old']['fromAddress'],
+                                                                        null,
+                                                                        Campaign::STATUS_ACTIVE,
+                                                                        $nowDateTime,
+                                                                        null,
+                                                                        $marketingList);
+            $campaignId         = $campaign->id;
+            // we have to do this to ensure when we retrieve the data status is updated from db.
+            $campaign->forgetAll();
+            $this->assertEmpty(CampaignItem::getAll());
+            // sleep 1 second to ensure we are giving ample time difference between creating the campaign and calling the job
+            sleep(1);
+            $campaignGenerateDueCampaignItemsJob    = new CampaignGenerateDueCampaignItemsJob();
+            $this->assertTrue($campaignGenerateDueCampaignItemsJob->run());
+            $campaign                               = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+            $allCampaignItems                       = CampaignItem::getAll();
+            $this->assertNotEmpty($allCampaignItems);
+            $this->assertCount(5, $allCampaignItems);
+            $campaignItems                          = CampaignItem::getByProcessedAndCampaignId(0, $campaignId);
+            $this->assertNotEmpty($campaignItems);
+            $this->assertCount(5, $campaignItems);
+            $campaignQueueMessagesInOutboxJob       = new CampaignQueueMessagesInOutboxJob();
+            $this->assertTrue($campaignQueueMessagesInOutboxJob->run());
+            $campaignItems                          = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
+            $this->assertNotEmpty($campaignItems);
+            $this->assertCount(5, $campaignItems);
+            $oldCampaignItemIds                     = array();
+            foreach ($campaignItems as $ci)
+            {
+                $this->assertNotEmpty($ci->id);
+                $this->assertEquals(1, $ci->processed);
+                $this->assertNotEmpty($ci->emailMessage->id);
+                $this->assertNotEmpty($ci->emailMessage->sender->id);
+                $this->assertNotEmpty($ci->emailMessage->content->id);
+                $this->assertNotEmpty($ci->contact->id);
+                $this->assertEquals($data['old']['subject'], $ci->emailMessage->subject);
+                $this->assertEquals($data['old']['fromName'], $ci->emailMessage->sender->fromName);
+                $this->assertEquals($data['old']['fromAddress'], $ci->emailMessage->sender->fromAddress);
+                $this->assertContains($data['old']['textContent'], $ci->emailMessage->content->textContent);
+                $this->assertContains($data['old']['htmlContent'], $ci->emailMessage->content->htmlContent);
+                $oldCampaignItemIds[]               = $ci->id;
+            }
+            $campaignItems[ count($campaignItems) -1 ]->delete();
+            $campaign->status   = Campaign::STATUS_ACTIVE;
+            foreach ($data['new'] as $property => $value)
+            {
+                $campaign->$property    = $value;
+            }
+            $this->assertTrue($campaign->save());
+            $campaign->forgetAll();
+            $campaignGenerateDueCampaignItemsJob    = new CampaignGenerateDueCampaignItemsJob();
+            $this->assertTrue($campaignGenerateDueCampaignItemsJob->run());
+            $campaign                               = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+            $allCampaignItems                       = CampaignItem::getAll();
+            $this->assertNotEmpty($allCampaignItems);
+            $this->assertCount(5, $allCampaignItems);
+            $campaignItems                          = CampaignItem::getByProcessedAndCampaignId(0, $campaignId);
+            $this->assertNotEmpty($campaignItems);
+            $this->assertCount(1, $campaignItems);
+            $campaignQueueMessagesInOutboxJob       = new CampaignQueueMessagesInOutboxJob();
+            $this->assertTrue($campaignQueueMessagesInOutboxJob->run());
+            $campaignItems                          = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
+            $this->assertNotEmpty($campaignItems);
+            $this->assertCount(5, $campaignItems);
+            foreach ($campaignItems as $ci)
+            {
+                $this->assertNotEmpty($ci->id);
+                $this->assertEquals(1, $ci->processed);
+                $this->assertNotEmpty($ci->emailMessage->id);
+                $this->assertNotEmpty($ci->emailMessage->sender->id);
+                $this->assertNotEmpty($ci->emailMessage->content->id);
+                $this->assertNotEmpty($ci->contact->id);
+                $dataIndex          = (in_array($ci->id, $oldCampaignItemIds))? 'old' : 'new';
+                $this->assertEquals($data[$dataIndex]['subject'], $ci->emailMessage->subject);
+                $this->assertEquals($data[$dataIndex]['fromName'], $ci->emailMessage->sender->fromName);
+                $this->assertEquals($data[$dataIndex]['fromAddress'], $ci->emailMessage->sender->fromAddress);
+                $this->assertContains($data[$dataIndex]['textContent'], $ci->emailMessage->content->textContent);
+                $this->assertContains($data[$dataIndex]['htmlContent'], $ci->emailMessage->content->htmlContent);
+            }
+        }
     }
 ?>
