@@ -387,7 +387,7 @@
         public function sendQueued($count = null)
         {
             assert('is_int($count) || $count == null');
-            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
+            $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count, true);
             foreach ($queuedEmailMessages as $emailMessage)
             {
                 $this->sendImmediately($emailMessage);
