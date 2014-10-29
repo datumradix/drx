@@ -44,12 +44,12 @@
             return 'EmailMessage';
         }
 
-        public static function getAllByFolderType($type)
+        public static function getAllByFolderType($type, $excludePausedCampaignMessages = false)
         {
-            return static::getByFolderType($type, null);
+            return static::getByFolderType($type, null, $excludePausedCampaignMessages);
         }
 
-        public static function getByFolderType($type, $count)
+        public static function getByFolderType($type, $count, $excludePausedCampaignMessages = false)
         {
             assert('is_string($type)');
             $searchAttributeData = array();
@@ -62,6 +62,19 @@
                 ),
             );
             $searchAttributeData['structure'] = '1';
+            if ($excludePausedCampaignMessages)
+            {
+                $searchAttributeData['clauses'][2] = array(
+                    'attributeName'             => 'campaignItem',
+                    'relatedModelData'          => array(
+                        'attributeName'                 => 'campaign',
+                        'relatedAttributeName'          => 'status',
+                        'operatorType'                  => 'doesNotEqual',
+                        'value'                         => Campaign::STATUS_PAUSED
+                    ),
+                );
+                $searchAttributeData['structure'] = '1 and 2';
+            }
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('EmailMessage');
             $where = RedBeanModelDataProvider::makeWhere('EmailMessage', $searchAttributeData, $joinTablesAdapter);
             return self::getSubset($joinTablesAdapter, null, $count, $where, null);
@@ -112,6 +125,7 @@
                                                 static::LINK_TYPE_SPECIFIC, 'error'),
                     'account'       => array(static::HAS_ONE,  'EmailAccount', static::NOT_OWNED,
                                                 static::LINK_TYPE_SPECIFIC, 'account'),
+                    'campaignItem'  => array(static::HAS_ONE_BELONGS_TO, 'CampaignItem', static::NOT_OWNED),
                 ),
                 'rules' => array(
                     array('subject',         'required'),
