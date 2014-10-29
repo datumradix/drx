@@ -81,13 +81,13 @@
             $this->resetGetArray();
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/language/activate/languageCode/de');
-            $this->assertTrue(strpos($content, 'activated successfully') !== false);
+            $this->assertContains('activated successfully', $content);
 
             // Activate Italian
             $this->resetGetArray();
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/language/activate/languageCode/it');
-            $this->assertTrue(strpos($content, 'activated successfully') !== false);
+            $this->assertContains('activated successfully', $content);
 
             // Confirm the new languages are active
             $data = Yii::app()->languageHelper->getActiveLanguagesDataForTesting();
@@ -136,7 +136,7 @@
             $this->resetGetArray();
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/language/update/languageCode/de');
-            $this->assertTrue(strpos($content, 'updated successfully') !== false);
+            $this->assertContains('updated successfully', $content);
         }
 
         /**
@@ -174,7 +174,7 @@
             $this->resetGetArray();
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/language/deactivate/languageCode/de');
-            $this->assertTrue(strpos($content, 'deactivated successfully') !== false);
+            $this->assertContains('deactivated successfully', $content);
 
             // Confirm the correct languages are active.
             $data = Yii::app()->languageHelper->getActiveLanguagesDataForTesting();

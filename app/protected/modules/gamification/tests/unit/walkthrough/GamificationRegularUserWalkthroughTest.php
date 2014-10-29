@@ -55,13 +55,13 @@
         {
             $nobody  = $this->logoutCurrentUserLoginNewUserAndGetByUsername('nobody');
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertfalse(strpos($content, 'Leaderboard') === false);
+            $this->assertContains('Leaderboard', $content);
             $this->setGetArray(array('type' => GamePointUtil::LEADERBOARD_TYPE_WEEKLY));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertfalse(strpos($content, 'Leaderboard') === false);
+            $this->assertContains('Leaderboard', $content);
             $this->setGetArray(array('type' => GamePointUtil::LEADERBOARD_TYPE_MONTHLY));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gamification/default/leaderboard');
-            $this->assertfalse(strpos($content, 'Leaderboard') === false);
+            $this->assertContains('Leaderboard', $content);
             $this->setGetArray(array('type' => GamePointUtil::LEADERBOARD_TYPE_OVERALL));
         }
 

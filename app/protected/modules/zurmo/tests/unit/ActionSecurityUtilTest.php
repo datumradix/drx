@@ -106,7 +106,7 @@
                                     $bettyAccount,
                                     'AccountsModule',
                                     'accounts/default/details');
-            $this->assertFalse(strpos($link, 'accounts/default/details') === false);
+            $this->assertContains('accounts/default/details', $link);
             $this->assertEquals(1, count($accounts));
             $link = ActionSecurityUtil::resolveLinkToModelForCurrentUser(
                                     'bpoboo',

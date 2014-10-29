@@ -86,5 +86,10 @@
         {
             return CampaignItemsUtil::generateCampaignItemsForDueCampaigns();
         }
+
+        public static function jobExecutionInQueueDependsOnTime()
+        {
+            return true;
+        }
     }
 ?>

@@ -58,8 +58,8 @@
             }
 
             exec($command, $output);
-            $this->assertTrue(strpos($output[2], 'Sending output to') !== false);
-            $this->assertTrue(strpos($output[2], 'ExportCleanup.log') !== false);
+            $this->assertContains('Sending output to', $output[2]);
+            $this->assertContains('ExportCleanup.log', $output[2]);
         }
     }
 ?>

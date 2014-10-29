@@ -93,7 +93,7 @@
             $this->assertTrue($saved);
             $this->setGetArray(array('relatedModelId' => $task->id, 'relatedModelClassName' => 'Task', 'relatedModelRelationName' => 'checkListItems', 'uniquePageId' => 'TaskCheckItemInlineEditForModelView'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/taskCheckItems/ajaxCheckItemListForRelatedTaskModel');
-            $this->assertTrue(strpos($content, 'Test Check List Item1') > 0);
+            $this->assertContains('Test Check List Item1', $content);
         }
    }
 ?>

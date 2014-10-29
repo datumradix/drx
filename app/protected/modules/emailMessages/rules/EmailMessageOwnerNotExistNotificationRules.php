@@ -54,17 +54,16 @@
         }
 
         /**
-         * Any user who has access to the scheduler module is added to receive a
+         * Any user who is a super administrator added to receive a
          * notification.
          */
         protected function loadUsers()
         {
-            foreach (User::getActiveUsers(true) as $user)
+            $superAdministratorGroup = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
+            $users                   = User::getByCriteria(true, $superAdministratorGroup->id);
+            foreach ($users as $user)
             {
-                if ($user->isSuperAdministrator())
-                {
-                    $this->addUser($user);
-                }
+                $this->addUser($user);
             }
         }
     }

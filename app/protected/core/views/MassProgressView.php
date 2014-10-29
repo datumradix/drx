@@ -90,7 +90,7 @@
             return $this->getMessagePrefix() . "&#160;" . $this->start . "&#160;-&#160;" . $this->getEndSize() .
                         "&#160;" . Zurmo::t('Core', 'of') . "&#160;" . $this->totalRecordCount . "&#160;" .
                         Zurmo::t('Core', 'total') . "&#160;" .
-                        Zurmo::t('Core', LabelUtil::getUncapitalizedRecordLabelByCount($this->totalRecordCount));
+                        LabelUtil::getUncapitalizedRecordLabelByCount($this->totalRecordCount);
         }
 
         protected function getCompleteMessage()

@@ -213,7 +213,7 @@
             return $senderString;
         }
 
-        public static function getRecipientsContent(RedBeanOneToManyRelatedModels $recipients, $type = null)
+        public static function getRecipientsContent(RedBeanOneToManyRelatedModels $recipients, $type = null, $additionalParams = array())
         {
             assert('$type == null || $type == EmailMessageRecipient::TYPE_TO ||
                     EmailMessageRecipient::TYPE_CC || EmailMessageRecipient::TYPE_BCC');
@@ -239,21 +239,22 @@
                             {
                                 $castedDownModel = self::castDownItem($personOrAccount);
                                 if (strval($castedDownModel) != null)
-                                            {
-                                                $params          = array('label' => strval($castedDownModel), 'wrapLabel' => false);
-                                                if (get_class($castedDownModel) == 'Contact')
-                                                {
-                                                    $moduleClassName = ContactsStateMetadataAdapter::getModuleClassNameByModel($castedDownModel);
-                                                }
-                                                else
-                                                {
-                                                    $moduleClassName = $castedDownModel->getModuleClassName();
-                                                }
-                                                $moduleId        = $moduleClassName::getDirectoryName();
-                                                $element         = new DetailsLinkActionElement('default', $moduleId,
-                                                                                                $castedDownModel->id, $params);
-                                                $existingPersonsOrAccounts[] = $element->render();
-                                            }
+                                {
+                                    $params          = array('label' => strval($castedDownModel), 'wrapLabel' => false);
+                                    if (get_class($castedDownModel) == 'Contact')
+                                    {
+                                        $moduleClassName = ContactsStateMetadataAdapter::getModuleClassNameByModel($castedDownModel);
+                                    }
+                                    else
+                                    {
+                                        $moduleClassName = $castedDownModel->getModuleClassName();
+                                    }
+                                    $moduleId        = $moduleClassName::getDirectoryName();
+                                    $element         = new DetailsLinkActionElement('default', $moduleId,
+                                                                                    $castedDownModel->id,
+                                                                 array_merge($params, $additionalParams));
+                                    $existingPersonsOrAccounts[] = $element->render();
+                                }
                             }
                             catch (AccessDeniedSecurityException $e)
                             {
@@ -294,6 +295,67 @@
                 }
             }
             throw new NotSupportedException();
+        }
+
+        /**
+         * Override to split emailMessages into send and received.  This helps to improve performance on
+         * showing lists of email messages as activities.
+         * @param $searchAttributesDataStructure
+         */
+        public static function resolveSearchAttributesDataStructure(& $searchAttributesDataStructure)
+        {
+            assert('is_string($searchAttributesDataStructure) || $searchAttributesDataStructure === null');
+            $searchAttributesDataStructure = '1';
+        }
+
+        /**
+         * Override to split out emailMessages into send and received. This helps to improve performance on
+         * showing lists of email messages as activities.
+         * @param $modelClassName
+         * @param $relationItemIds
+         * @param $ownedByFilter
+         * @param $shouldResolveSearchAttributeDataForLatestActivities
+         * @param $modelClassNamesAndSearchAttributeData
+         */
+        public function resolveAdditionalSearchAttributesDataByModelClassNameAndRelatedItemIds(
+                            $modelClassName, $relationItemIds, $ownedByFilter,
+                            $shouldResolveSearchAttributeDataForLatestActivities,
+                            & $modelClassNamesAndSearchAttributeData)
+        {
+            assert('is_string($modelClassName)');
+            assert('is_array($relationItemIds)');
+            assert('$ownedByFilter == LatestActivitiesConfigurationForm::OWNED_BY_FILTER_ALL ||
+                    $ownedByFilter == LatestActivitiesConfigurationForm::OWNED_BY_FILTER_USER ||
+                    is_int($ownedByFilter)');
+            assert('is_bool($shouldResolveSearchAttributeDataForLatestActivities)');
+            assert('is_array($modelClassNamesAndSearchAttributeData)');
+            if (count($relationItemIds) > 1)
+            {
+                $searchAttributesData =     // Not Coding Standard
+                    $this->resolveSearchAttributesDataByRelatedItemIds($relationItemIds);
+                $searchAttributesData['structure'] = '2';
+            }
+            elseif (count($relationItemIds) == 1)
+            {
+                $searchAttributesData =    // Not Coding Standard
+                    $this->resolveSearchAttributesDataByRelatedItemId($relationItemIds[0]);
+                $searchAttributesData['structure'] = '2';
+            }
+            else
+            {
+                $searchAttributesData              = array();
+                $searchAttributesData['clauses']   = array();
+                $searchAttributesData['structure'] = null;
+                $searchAttributesData =    // Not Coding Standard
+                    $this->resolveSearchAttributeDataForAllLatestActivities($searchAttributesData);
+            }
+            if($shouldResolveSearchAttributeDataForLatestActivities)
+            {
+                $searchAttributesData =    // Not Coding Standard
+                    $this->resolveSearchAttributeDataForLatestActivities($searchAttributesData);
+            }
+            $this->resolveSearchAttributesDataByOwnedByFilter($searchAttributesData, $ownedByFilter);
+            $modelClassNamesAndSearchAttributeData[] = array($modelClassName => $searchAttributesData);
         }
     }
 ?>

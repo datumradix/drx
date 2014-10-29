@@ -55,12 +55,12 @@
         {
             $nobody          = $this->logoutCurrentUserLoginNewUserAndGetByUsername('nobody');
             $content         = $this->runControllerWithNoExceptionsAndGetContent('home/default');
-            $this->assertTrue(strpos($content, 'globalSearchInput') === false);
+            $this->assertNotContains('globalSearchInput', $content);
             //Now add accounts access, the global search should show up.
             $nobody->setRight('AccountsModule', AccountsModule::RIGHT_ACCESS_ACCOUNTS);
             $this->assertTrue($nobody->save()); // Not Coding Standard
             $content         = $this->runControllerWithNoExceptionsAndGetContent('home/default');
-            $this->assertFalse(strpos($content, 'globalSearchInput') === false);
+            $this->assertContains('globalSearchInput', $content);
         }
 
         public function testRegularUserAllControllerActions()

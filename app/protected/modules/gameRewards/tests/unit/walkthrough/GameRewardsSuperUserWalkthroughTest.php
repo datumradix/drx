@@ -101,12 +101,12 @@
             $this->runControllerWithNoExceptionsAndGetContent('gameRewards/default/create');
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('gameRewards/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertContains('anyMixedAttributes', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gameRewards/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
             $this->resetGetArray();
 
             //Default Controller actions requiring some sort of parameter via POST or GET
@@ -125,7 +125,7 @@
             $this->setGetArray (array('id'      => self::$gameReward1->id));
             $this->setPostArray(array('GameReward' => array('name' => '')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('gameRewards/default/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Load Model Detail Views
             $this->setGetArray(array('id' => self::$gameReward1->id, 'lockPortlets' => '1'));
@@ -137,13 +137,13 @@
             $this->setGetArray(array('selectedIds' => '4,5,6,7,8', 'selectAll' => ''));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('gameRewards/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>5</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>5</strong>&#160;records selected for updating', $content);
 
             //MassEdit view for all result selected ids
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('gameRewards/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>12</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>12</strong>&#160;records selected for updating', $content);
 
             //save Model MassEdit for selected Ids
             //Test that the 2 game rewards do not have the office phone number we are populating them with.
@@ -444,13 +444,13 @@
             $this->setGetArray(array('selectedIds' => '5,6,7,8', 'selectAll' => '', ));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('gameRewards/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>4</strong>&#160;Game Rewards selected for removal') === false);
+            $this->assertContains('<strong>4</strong>&#160;Game Rewards selected for removal', $content);
 
             //MassDelete view for all result selected ids
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('gameRewards/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>13</strong>&#160;Game Rewards selected for removal') === false);
+            $this->assertContains('<strong>13</strong>&#160;Game Rewards selected for removal', $content);
             //MassDelete for selected ids
             $this->setGetArray(array(
                 'selectedIds' => implode(',', array(self::$gameReward2->id,self::$gameReward3->id,self::$gameReward12->id)), // Not Coding Standard
@@ -468,12 +468,12 @@
         {
             $super      = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $content    = $this->runControllerWithNoExceptionsAndGetContent('gameRewards/default/redeemList');
-            $this->assertFalse(strpos($content, '<h4 class="reward-name">myClonedGameReward</h4>') === false);
+            $this->assertContains('<h4 class="reward-name">myClonedGameReward</h4>', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('gameRewards/default/redeemList');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
             $this->resetGetArray();
         }
 
@@ -486,7 +486,7 @@
             //not enough coins
             $this->setGetArray(array('id' => $gameRewards[0]->id));
             $content = $this->runControllerWithExitExceptionAndGetContent('gameRewards/default/redeemReward');
-            $this->assertFalse(strpos($content, 'You do not have enough coins to redeem this reward') === false);
+            $this->assertContains('You do not have enough coins to redeem this reward', $content);
 
             //enough coins
             $gameCoin           = new GameCoin();
@@ -499,7 +499,7 @@
             $this->assertEquals(0, count($notifications));
             $this->setGetArray(array('id' => $gameRewards[0]->id));
             $content = $this->runControllerWithExitExceptionAndGetContent('gameRewards/default/redeemReward');
-            $this->assertFalse(strpos($content, 'myNewGameReward has been redeemed.') === false);
+            $this->assertContains('myNewGameReward has been redeemed.', $content);
 
             //check for notification
             $notifications              = Notification::getAll();
@@ -509,7 +509,7 @@
             $this->assertContains('myNewGameReward was redeemed by Clark Kent.', $notifications[0]->notificationMessage->htmlContent);
 
             //check url
-            $this->assertFalse(strpos($notifications[0]->notificationMessage->htmlContent, '/gameRewards/default/details?id=13') === false); // Not Coding Standard
+            $this->assertContains('/gameRewards/default/details?id=13', $notifications[0]->notificationMessage->htmlContent); // Not Coding Standard
         }
     }
 ?>

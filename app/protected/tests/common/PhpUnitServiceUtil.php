@@ -39,7 +39,7 @@
         public static $phpUnitMinimumVersion = '3.5';
 
         // Installed version must be less then phpUnitMaximumVersion
-        public static $phpUnitMaximumVersion = '4.2.0';
+        public static $phpUnitMaximumVersion = '4.3.0';
 
         public static function checkVersion()
         {

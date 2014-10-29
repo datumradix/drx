@@ -56,10 +56,10 @@
             $this->setGetArray(array('id' => $role->id));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/role/UsersInRoleModalList');
-            $this->assertTrue(strpos($content, "1-1 of 1 result(s).") !== false);
-            $this->assertTrue(strpos($content, "/users/default/details?id=" . $super->id) !== false);
-            $this->assertTrue(strpos($content, $super->username) !== false);
-            $this->assertTrue(strpos($content, $super->getFullName()) !== false);
+            $this->assertContains("1-1 of 1 result(s).", $content);
+            $this->assertContains("/users/default/details?id=" . $super->id, $content);
+            $this->assertContains($super->username, $content);
+            $this->assertContains($super->getFullName(), $content);
       }
     }
 ?>

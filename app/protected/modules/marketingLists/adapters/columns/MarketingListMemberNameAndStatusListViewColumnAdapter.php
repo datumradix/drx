@@ -56,11 +56,11 @@
             $status = null;
             if ($unsubscribed == true)
             {
-                $status = Zurmo::t($moduleClassName, 'Unsubscribed');
+                $status = Zurmo::t('Core', 'Unsubscribed');
             }
             else
             {
-                $status = Zurmo::t($moduleClassName, 'Subscribed');
+                $status = Zurmo::t('Core', 'Subscribed');
             }
             return $name . "\t (" . $status . ")";
         }

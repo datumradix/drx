@@ -127,7 +127,11 @@
                 }
                 elseif ($model->notificationMessage->textContent != null)
                 {
-                    $contentForSpan = Yii::app()->format->text($model->notificationMessage->textContent);
+                    $contentForSpan = ZurmoHtml::tag(
+                        'span',
+                        array("class" => "last-comment"),
+                        Yii::app()->format->text($model->notificationMessage->textContent)
+                    );
                 }
                 $content .= $contentForSpan;
             }

@@ -74,12 +74,12 @@
             $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default/create');
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertContains('anyMixedAttributes', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
             $this->resetGetArray();
 
             //Default Controller actions requiring some sort of parameter via POST or GET
@@ -110,7 +110,7 @@
             $this->setGetArray (array('id'       => $superTemplateId));
             $this->setPostArray(array('ProductTemplate' => array('name' => '')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Load Model Detail Views
             $this->setGetArray(array('id' => $superTemplateId));
@@ -223,13 +223,13 @@
             $this->resetPostArray();
             $content                = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default/massDelete');
 
-            $this->assertFalse(strpos($content, '<strong>5</strong>&#160;Catalog Items selected for removal') === false);
+            $this->assertContains('<strong>5</strong>&#160;Catalog Items selected for removal', $content);
 
              //MassDelete view for all result selected ids
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>13</strong>&#160;Catalog Items selected for removal') === false);
+            $this->assertContains('<strong>13</strong>&#160;Catalog Items selected for removal', $content);
 
             //MassDelete for selected Record Count
             $productTemplates = ProductTemplate::getAll();
@@ -327,7 +327,7 @@
             $id = $productTemplate->id;
             $this->setGetArray(array('id' => $id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default/copy');
-            $this->assertTrue(strpos($content, 'My Copy Catalog Item') > 0);
+            $this->assertContains('My Copy Catalog Item', $content);
             $productTemplates = ProductTemplate::getAll();
             $this->assertEquals(1, count($productTemplates));
         }

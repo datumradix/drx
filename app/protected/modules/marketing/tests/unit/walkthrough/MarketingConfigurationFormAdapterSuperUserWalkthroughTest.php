@@ -59,8 +59,8 @@
                 )
             );
             $content = $this->runControllerWithNoExceptionsAndGetContent('marketing/default/configurationEdit');
-            $this->assertFalse(strpos($content, 'Marketing Footer(Plain Text) cannot be blank.') === false);
-            $this->assertFalse(strpos($content, 'Marketing Footer(Rich Text) cannot be blank.') === false);
+            $this->assertContains('Marketing Footer(Plain Text) cannot be blank.', $content);
+            $this->assertContains('Marketing Footer(Rich Text) cannot be blank.', $content);
 
             //checking with proper values for required fields
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
