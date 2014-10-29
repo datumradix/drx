@@ -393,7 +393,7 @@
         }
 
         /**
-         * @//depends testSendQueued
+         * @depends testSendQueued
          */
         public function testSendQueuedSkipsPausedCampaignMessages()
         {
