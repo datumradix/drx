@@ -103,14 +103,14 @@
             $this->setGetArray(array('id' => $task->id));
             $this->assertFalse($task->doNotificationSubscribersContainPerson($super));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/addSubscriber', false);
-            $this->assertTrue(strpos($content, 'gravatar') > 0);
-            $this->assertTrue(strpos($content, 'users/default/details') !== false);
-            $this->assertTrue(strpos($content, $super->getFullName()) !== false);
+            $this->assertContains('gravatar', $content);
+            $this->assertContains('users/default/details', $content);
+            $this->assertContains($super->getFullName(), $content);
             $this->assertEquals(3, $task->notificationSubscribers->count());
 
             $this->setGetArray(array('id' => $task->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/removeSubscriber', false);
-            $this->assertTrue(strpos($content, $super->getFullName()) === false);
+            $this->assertNotContains($super->getFullName(), $content);
             $this->assertEquals(2, $task->notificationSubscribers->count());
             $task->owner        = $super;
             $this->assertTrue($task->save());
@@ -119,7 +119,7 @@
             //Super user is owner so even if it is removed, it would be restored
             $this->setGetArray(array('id' => $task->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/removeSubscriber', false);
-            $this->assertTrue(strpos($content, $super->getFullName()) !== false);
+            $this->assertContains($super->getFullName(), $content);
             $this->assertEquals(3, $task->notificationSubscribers->count());
         }
 
@@ -151,7 +151,7 @@
 
             $this->setGetArray(array('id' => $task->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/removeSubscriber', false);
-            $this->assertTrue(strpos($content, $sally->getFullName()) !== false);
+            $this->assertContains($sally->getFullName(), $content);
             $this->assertEquals(2, $task->notificationSubscribers->count());
 
             //Now super user would be added as a subscriber as he becomes the owner
@@ -159,14 +159,14 @@
             $this->assertTrue($task->save());
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/removeSubscriber', false);
-            $this->assertTrue(strpos($content, $sally->getFullName()) === false);
+            $this->assertNotContains($sally->getFullName(), $content);
             $this->assertEquals(2, $task->notificationSubscribers->count());
 
             $isSallyFound = $this->checkIfUserFoundInSubscribersList($task, $sally->id);
             $this->assertFalse($isSallyFound);
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/addSubscriber', false);
-            $this->assertTrue(strpos($content, $sally->getFullName()) !== false);
+            $this->assertContains($sally->getFullName(), $content);
             $this->assertEquals(3, $task->notificationSubscribers->count());
 
             $isSallyFound = $this->checkIfUserFoundInSubscribersList($task, $sally->id);
@@ -187,14 +187,14 @@
             $this->setGetArray(array('id' => $task->id));
             $this->assertFalse($task->doNotificationSubscribersContainPerson($super));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/addKanbanSubscriber', false);
-            $this->assertTrue(strpos($content, 'gravatar') > 0);
-            $this->assertTrue(strpos($content, 'users/default/details') !== false);
-            $this->assertTrue(strpos($content, $super->getFullName()) !== false);
+            $this->assertContains('gravatar', $content);
+            $this->assertContains('users/default/details', $content);
+            $this->assertContains($super->getFullName(), $content);
             $this->assertEquals(3, $task->notificationSubscribers->count());
 
             $this->setGetArray(array('id' => $task->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/removeKanbanSubscriber', false);
-            $this->assertTrue(strpos($content, $super->getFullName()) === false);
+            $this->assertNotContains($super->getFullName(), $content);
             $this->assertEquals(2, $task->notificationSubscribers->count());
             $task->owner        = $super;
             $this->assertTrue($task->save());
@@ -203,7 +203,7 @@
             //Super user is owner so even if it is removed, it would be restored
             $this->setGetArray(array('id' => $task->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/removeKanbanSubscriber', false);
-            $this->assertTrue(strpos($content, $super->getFullName()) !== false);
+            $this->assertContains($super->getFullName(), $content);
             $this->assertEquals(3, $task->notificationSubscribers->count());
         }
 
@@ -235,7 +235,7 @@
 
             $this->setGetArray(array('id' => $task->id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/removeKanbanSubscriber', false);
-            $this->assertTrue(strpos($content, $myuser->getFullName()) !== false);
+            $this->assertContains($myuser->getFullName(), $content);
             $this->assertEquals(2, $task->notificationSubscribers->count());
 
             //Now super user would be added as a subscriber as he becomes the owner
@@ -243,13 +243,13 @@
             $this->assertTrue($task->save());
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/removeKanbanSubscriber', false);
-            $this->assertTrue(strpos($content, $myuser->getFullName()) === false);
+            $this->assertNotContains($myuser->getFullName(), $content);
             $this->assertEquals(2, $task->notificationSubscribers->count());
             $isMyUserFound = $this->checkIfUserFoundInSubscribersList($task, $myuser->id);
             $this->assertFalse($isMyUserFound);
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/addKanbanSubscriber', false);
-            $this->assertTrue(strpos($content, $myuser->getFullName()) !== false);
+            $this->assertContains($myuser->getFullName(), $content);
             $this->assertEquals(3, $task->notificationSubscribers->count());
             $isMyUserFound = $this->checkIfUserFoundInSubscribersList($task, $myuser->id);
             $this->assertTrue($isMyUserFound);
@@ -287,7 +287,7 @@
             ));
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalSaveFromRelation');
-            $this->assertTrue(strpos($content, 'Task for test cases') > 0);
+            $this->assertContains('Task for test cases', $content);
             $tasks              = Task::getAll();
             $this->assertEquals(6, count($tasks));
 
@@ -296,7 +296,7 @@
                                     )
                               );
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalDetails');
-            $this->assertTrue(strpos($content, 'Task for test cases') > 0);
+            $this->assertContains('Task for test cases', $content);
 
             $this->setGetArray(array(
                                     'id'  => $tasks[5]->id
@@ -308,7 +308,7 @@
                               ));
             unset($_POST['Task']);
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalCopy');
-            $this->assertTrue(strpos($content, 'Task for test cases') > 0);
+            $this->assertContains('Task for test cases', $content);
         }
 
         public function testUpdateStatusOnDragInKanbanView()
@@ -345,7 +345,7 @@
             $this->setGetArray(array('items' => array($task1->id, $task->id), 'type' => KanbanItem::TYPE_IN_PROGRESS));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/updateStatusOnDragInKanbanView', false);
             $contentArray = CJSON::decode($content);
-            $this->assertTrue(strpos($contentArray['button'], 'Finish') > 0);
+            $this->assertContains('Finish', $contentArray['button']);
             $task1 = Task::getById($task1Id);
             $this->assertEquals(Task::STATUS_IN_PROGRESS, $task1->status);
             $kanbanItem = KanbanItem::getByTask($task1Id);

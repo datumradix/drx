@@ -36,6 +36,8 @@
 
     abstract class EmailTemplatesBaseDefaultDataMaker extends DefaultDataMaker
     {
+        protected $importedImages = array();
+
         protected function makeBuilderPredefinedEmailTemplate($name, $unserializedData, $subject = null, $modelClassName = null,
                                                     $language = null, $type = null, $isDraft = 0, $textContent = null,
                                                     $htmlContent = null)
@@ -71,6 +73,22 @@
                 securableItemGivenPermissionsForGroup($emailTemplate, Group::getByName(Group::EVERYONE_GROUP_NAME));
             $saved                          = $emailTemplate->save(false);
             assert('$saved');
+        }
+
+        protected function makeImages()
+        {
+            $imagesNamesToImport = array(
+                '200x50' => '200x50.gif',
+                '200x200' => '200x200.gif',
+                '580x180' => '580x180.gif',
+                'googleMaps' => 'staticmap.png'
+            );
+            foreach ($imagesNamesToImport as $type => $name)
+            {
+                $path = Yii::getPathOfAlias('application.modules.emailTemplates.views.assets.images') . DIRECTORY_SEPARATOR . $name;
+                $fileUploadData = ImageFileModelUtil::saveImageFromTemporaryFile($path, $type);
+                $this->importedImages[$type] = $fileUploadData['id'];
+            }
         }
     }
 ?>

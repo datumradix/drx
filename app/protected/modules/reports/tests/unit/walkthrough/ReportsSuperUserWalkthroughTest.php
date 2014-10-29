@@ -148,14 +148,14 @@
             $savedReports = SavedReport::getAll();
             $this->assertEquals(0, count($savedReports));
             $content = $this->runControllerWithExitExceptionAndGetContent     ('reports/default/create');
-            $this->assertFalse(strpos($content, 'Rows and Columns Report') === false);
-            $this->assertFalse(strpos($content, 'Summation Report') === false);
-            $this->assertFalse(strpos($content, 'Matrix Report') === false);
+            $this->assertContains('Rows and Columns Report', $content);
+            $this->assertContains('Summation Report', $content);
+            $this->assertContains('Matrix Report', $content);
 
             $this->setGetArray(array('type' => 'RowsAndColumns'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent     ('reports/default/create');
-            $this->assertFalse(strpos($content, 'Accounts') === false);
+            $this->assertContains('Accounts', $content);
 
             $this->setGetArray(array('type' => 'RowsAndColumns'));
             $postData = static::makeRowsAndColumnsReportPostData();
@@ -250,14 +250,14 @@
             $postData = static::makeRowsAndColumnsReportPostData();
             $this->setPostArray($postData);
             $content = $this->runControllerWithNoExceptionsAndGetContent('reports/default/relationsAndAttributesTree');
-            $this->assertTrue(strpos($content, '<div class="ReportRelationsAndAttributesTreeView') !== false);
+            $this->assertContains('<div class="ReportRelationsAndAttributesTreeView', $content);
             //With node id
             $this->setGetArray(array('type'     => 'RowsAndColumns', 'treeType' => ComponentForReportForm::TYPE_FILTERS,
                                      'nodeId'   => 'Filters_hasOne'));
             $postData = static::makeRowsAndColumnsReportPostData();
             $this->setPostArray($postData);
             $content = $this->runControllerWithExitExceptionAndGetContent('reports/default/relationsAndAttributesTree');
-            $this->assertTrue(strpos($content, '{"id":"Filters_hasOne___createdByUser__User",') !== false); // Not Coding Standard
+            $this->assertContains('{"id":"Filters_hasOne___createdByUser__User",', $content); // Not Coding Standard
         }
 
         /**
@@ -272,7 +272,7 @@
             $postData = static::makeRowsAndColumnsReportPostData();
             $this->setPostArray($postData);
             $content = $this->runControllerWithNoExceptionsAndGetContent('reports/default/addAttributeFromTree');
-            $this->assertTrue(strpos($content, '<option value="equals">Equals</option>') !== false);
+            $this->assertContains('<option value="equals">Equals</option>', $content);
         }
 
         /**
@@ -284,7 +284,7 @@
             $postData = static::makeSummationReportPostData();
             $this->setPostArray($postData);
             $content = $this->runControllerWithNoExceptionsAndGetContent('reports/default/getAvailableSeriesAndRangesForChart');
-            $this->assertTrue(strpos($content, '{"firstSeriesDataAndLabels":{"":"(None)"},"firstRangeDataAndLabels":') !== false); // Not Coding Standard
+            $this->assertContains('{"firstSeriesDataAndLabels":{"":"(None)"},"firstRangeDataAndLabels":', $content); // Not Coding Standard
         }
 
         /**
@@ -326,7 +326,7 @@
             $postData = static::makeSummationReportPostData();
             $this->setPostArray($postData);
             $content = $this->runControllerWithNoExceptionsAndGetContent('reports/default/drillDownDetails');
-            $this->assertTrue(strpos($content, '<th id="report-results-grid-view2_c2">Currency Value</th>') !== false);
+            $this->assertContains('<th id="report-results-grid-view2_c2">Currency Value</th>', $content);
             $this->assertContains('No results found', $content);
 
             //Check drillDown works with runtime filters
@@ -336,7 +336,7 @@
                     'value'                       => 'string1')))));
             $this->runControllerWithNoExceptionsAndGetContent('reports/default/applyRuntimeFilters', true);
             $content = $this->runControllerWithNoExceptionsAndGetContent('reports/default/drillDownDetails');
-            $this->assertTrue(strpos($content, '<th id="report-results-grid-view2_c2">Currency Value</th>') !== false);
+            $this->assertContains('<th id="report-results-grid-view2_c2">Currency Value</th>', $content);
             $this->assertContains('1 result(s)', $content);
         }
 

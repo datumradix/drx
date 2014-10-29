@@ -49,7 +49,7 @@
 
         public static function getDependentTestModelClassNames()
         {
-            return array('OwnedSecurableTestItem');
+            return array('OwnedSecurableTestItem', 'OwnedSecurableTestItem3');
         }
 
         public function testSavingTwiceWithAModelThatHasACurrencyValueAsARelation()
@@ -96,6 +96,60 @@
             $testItem->forget();
             $testItem = OwnedSecurableTestItem::getById($testItemId);
             $this->assertNotEquals($defaultDateTimeModified, $testItem->modifiedDateTime);
+        }
+
+        /**
+         * Event should not fire when the owner being set is the same
+         */
+        public function testOwnerChangeDoesNotTriggerEventOnSet()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $testItem = new OwnedSecurableTestItem3();
+            $testItem->member = 'test';
+            $this->assertTrue($testItem->save());
+
+            $testItem->member  = 'test1';
+            $testItem->member2 = 'test2';
+            $this->assertTrue($testItem->save());
+            $testItemId = $testItem->id;
+            $testItem->forget();
+            $testItem = OwnedSecurableTestItem3::getById($testItemId);
+            $this->assertEquals('test1', $testItem->member);
+            $this->assertEquals('test2', $testItem->member2);
+
+            $testItem->owner = Yii::app()->user->userModel;
+            $this->assertTrue($testItem->save());
+            $testItemId = $testItem->id;
+            $testItem->forget();
+            $testItem = OwnedSecurableTestItem3::getById($testItemId);
+            $this->assertEquals('test1', $testItem->member);
+            $this->assertEquals('test2', $testItem->member2);
+        }
+
+        public function testOwnerChangeTriggersEventOnAfterAndBeforeOwnerChange()
+        {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $user = UserTestHelper::createBasicUser('basic1');
+            $testItem = new OwnedSecurableTestItem3();
+            $testItem->member = 'test';
+            $this->assertTrue($testItem->save());
+
+            $testItem->member  = 'test1';
+            $testItem->member2 = 'test2';
+            $this->assertTrue($testItem->save());
+            $testItemId = $testItem->id;
+            $testItem->forget();
+            $testItem = OwnedSecurableTestItem3::getById($testItemId);
+            $this->assertEquals('test1', $testItem->member);
+            $this->assertEquals('test2', $testItem->member2);
+
+            $testItem->owner = $user;
+            $this->assertTrue($testItem->save());
+            $testItemId = $testItem->id;
+            $testItem->forget();
+            $testItem = OwnedSecurableTestItem3::getById($testItemId);
+            $this->assertEquals('onAfterOwnerChange', $testItem->member);
+            $this->assertEquals('onBeforeOwnerChange', $testItem->member2);
         }
     }
 ?>

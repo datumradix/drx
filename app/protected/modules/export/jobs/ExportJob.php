@@ -474,7 +474,7 @@
             $this->getMessageLogger()->addInfoMessage(
                 Zurmo::t('ExportModule', 'processExportPage: rows processed: {count} ' .
                                          'with asynchronousPageSize of {pageSize}' ,
-                                         array('{count}'    => $rowsCount,
+                                         array('{count}'    => $this->totalModelsProcessed,
                                                '{pageSize}' => $this->getAsynchronousPageSize())));
             if ($rowsCount >= $this->getAsynchronousPageSize())
             {

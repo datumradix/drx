@@ -78,7 +78,7 @@
                                                   'value'         => self::$marketingListId));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
             $contact = ContactTestHelper::createContactByNameForOwner('jason', Yii::app()->user->userModel);
-            $helper = new WorkflowActionProcessingHelper($action, $contact, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $contact, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $marketingList->forget();
             $marketingList = MarketingList::getById(self::$marketingListId);
@@ -86,7 +86,7 @@
             $this->assertEquals(0, $marketingList->marketingListMembers[0]->unsubscribed);
 
             //Try adding the same contact again to the list, it should not add the contact again.
-            $helper = new WorkflowActionProcessingHelper($action, $contact, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $contact, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $marketingList->forget();
             $marketingList = MarketingList::getById(self::$marketingListId);
@@ -104,12 +104,39 @@
             $this->assertEquals(1, $marketingList->marketingListMembers[0]->unsubscribed);
 
             //Try to resubscribe the contact, it should not resubscribe them
-            $helper = new WorkflowActionProcessingHelper($action, $contact, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $contact, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $marketingList->forget();
             $marketingList = MarketingList::getById(self::$marketingListId);
             $this->assertEquals(1, $marketingList->marketingListMembers->count());
             $this->assertEquals(1, $marketingList->marketingListMembers[0]->unsubscribed);
+
+            //Test gracefully handling trying to subscribe to a marketing list that does not exist
+            $this->assertEquals(0, count(Notification::getAll()));
+            $action                       = new ActionForWorkflowForm('Contact', Workflow::TYPE_ON_SAVE);
+            $action->type                 = ActionForWorkflowForm::TYPE_SUBSCRIBE_TO_LIST;
+            $attributes                   = array('marketingList' => array('shouldSetValue'    => '1',
+                'type'          => WorkflowActionAttributeForm::TYPE_STATIC,
+                'value'         => 123456789));
+            $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $contact, Yii::app()->user->userModel);
+            $helper->processNonUpdateSelfAction();
+            $notifications = Notification::getAll();
+            $this->assertEquals(1, count($notifications));
+
+            //Test gracefully handling trying to unsubscribe to a marketing list that does not exist
+            $this->assertTrue($notifications[0]->delete());
+            $this->assertEquals(0, count(Notification::getAll()));
+            $action                       = new ActionForWorkflowForm('Contact', Workflow::TYPE_ON_SAVE);
+            $action->type                 = ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST;
+            $attributes                   = array('marketingList' => array('shouldSetValue'    => '1',
+                'type'          => WorkflowActionAttributeForm::TYPE_STATIC,
+                'value'         => 123456789));
+            $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $contact, Yii::app()->user->userModel);
+            $helper->processNonUpdateSelfAction();
+            $this->assertEquals(1, count(Notification::getAll()));
+
         }
 
         /**
@@ -124,7 +151,7 @@
                                                   'value'         => self::$marketingListId));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
             $account = AccountTestHelper::createAccountByNameForOwner('jason', Yii::app()->user->userModel);
-            $helper = new WorkflowActionProcessingHelper($action, $account, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $account, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
         }
 
@@ -154,7 +181,7 @@
                                                   'value'         => self::$marketingListId));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
 
-            $helper = new WorkflowActionProcessingHelper($action, $contact, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $contact, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $marketingList->forget();
             $marketingList = MarketingList::getById(self::$marketingListId);
@@ -172,7 +199,7 @@
             $this->assertEquals(0, $marketingList->marketingListMembers[0]->unsubscribed);
 
             //Try to unsubscribe the contact, it should unsubscribe them
-            $helper = new WorkflowActionProcessingHelper($action, $contact, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $contact, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $marketingList->forget();
             $marketingList = MarketingList::getById(self::$marketingListId);
@@ -192,7 +219,7 @@
                                                   'value'         => self::$marketingListId));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
             $account = AccountTestHelper::createAccountByNameForOwner('jason', Yii::app()->user->userModel);
-            $helper = new WorkflowActionProcessingHelper($action, $account, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $account, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
         }
 
@@ -217,7 +244,7 @@
             $relatedModel->lastName = 'some old name';
             $relatedModel->string   = 'some old string';
             $model->hasMany2->add($relatedModel);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals('some old name', $model->hasMany2[0]->lastName);
             $this->assertEquals('some old string', $model->hasMany2[0]->string);
@@ -245,7 +272,7 @@
                                                   'value'  => 'jason'));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
             $model = new WorkflowModelTestItem();
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processUpdateSelfAction();
             $this->assertEquals('jason', $model->string);
             $this->assertTrue($model->id < 0);
@@ -266,7 +293,7 @@
             $model = new WorkflowModelTestItem();
             $model->hasOne       = new WorkflowModelTestItem2();
             $model->hasOne->name = 'some old name';
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals('some new better name', $model->hasOne->name);
             $this->assertTrue($model->id < 0);
@@ -294,7 +321,7 @@
             $relatedModel2->name = 'some old name 2';
             $model->hasMany->add($relatedModel);
             $model->hasMany->add($relatedModel2);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals('some new better name', $model->hasMany[0]->name);
             $this->assertEquals('some new better name', $model->hasMany[1]->name);
@@ -322,7 +349,7 @@
             $relatedModel2->name = 'some old name 2';
             $model->hasMany3->add($relatedModel);
             $model->hasMany3->add($relatedModel2);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals('some new better name', $model->hasMany3[0]->name);
             $this->assertEquals('some new better name', $model->hasMany3[1]->name);
@@ -347,7 +374,7 @@
             $model->lastName = 'lastName';
             $model->string   = 'string';
             $this->assertTrue($model->hasOne->id < 0);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals('some new model', $model->hasOne->name);
             $this->assertTrue($model->id > 0);
@@ -372,7 +399,7 @@
             $relatedModel = new WorkflowModelTestItem3();
             $relatedModel->name = 'some old name';
             $model->hasMany->add($relatedModel);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals('some old name', $model->hasMany[0]->name);
             $this->assertEquals('some new better name', $model->hasMany[1]->name);
@@ -398,7 +425,7 @@
             $relatedModel = new WorkflowModelTestItem3();
             $relatedModel->name = 'some old name';
             $model->hasMany3->add($relatedModel);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals('some old name', $model->hasMany3[0]->name);
             $this->assertEquals('some new better name', $model->hasMany3[1]->name);
@@ -427,7 +454,7 @@
             $model->hasOne = $relatedModel;
             $this->assertTrue($model->hasOne->id < 0);
             $this->assertTrue($model->hasOne->hasOne->id < 0);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals('some new model 2', $model->hasOne->hasOne->name);
             $this->assertTrue($model->id < 0);
@@ -456,7 +483,7 @@
             $this->assertTrue($model->hasMany2->count() == 1);
             $this->assertTrue($model->hasMany2[0]->id < 0);
             $this->assertTrue($model->hasMany2[0]->hasMany->count() == 0);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals('some new model', $model->hasMany2[0]->hasMany[0]->name);
             $this->assertTrue($model->id > 0); //get saved by related model because of new RedBeanOneToManyRelatedModels override 'add' method
@@ -489,7 +516,7 @@
             $derivedModel->workflowItems->add($model);
             $saved = $derivedModel->save();
             $this->assertTrue($saved);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $derivedModelId = $derivedModel->id;
             $derivedModel->forget();
@@ -501,7 +528,7 @@
             $model->lastName = 'lastName';
             $model->string   = 'string';
             $this->assertEquals(1, WorkflowModelTestItem5::getCount());
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $derivedModels = WorkflowModelTestItem5::getAll();
             $this->assertEquals(1, count($derivedModels));
@@ -528,7 +555,7 @@
             $model->string   = 'string';
             $saved           = $model->save();
             $this->assertTrue($saved);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $derivedModels = WorkflowModelTestItem5::getAll();
             $this->assertEquals(1, count($derivedModels));
@@ -563,7 +590,7 @@
             $saved = $relatedModel->save();
             $this->assertTrue($saved);
             $model->hasOne          = $relatedModel;
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $derivedModels = WorkflowModelTestItem5::getAll();
             $this->assertEquals(1, count($derivedModels));
@@ -599,7 +626,7 @@
             $relatedModel->workflowItems->add($model);
             $saved = $relatedModel->save();
             $this->assertTrue($saved);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $derivedModels = WorkflowModelTestItem5::getAll();
             $this->assertEquals(1, count($derivedModels));
@@ -631,7 +658,7 @@
             $model->workflowItems->add($inferredModel);
             $saved = $model->save();
             $this->assertTrue($saved);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals(1, $model->workflowItems->count());
             $inferredModel->forget();
@@ -657,7 +684,7 @@
                                                         'value'    => 'a new last name'));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
             $model = new WorkflowModelTestItem5();
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals(1, $model->workflowItems->count());
             $this->assertEquals('a new derived name', $model->workflowItems[0]->string);
@@ -693,7 +720,7 @@
             $saved = $model->save();
             $this->assertTrue($saved);
             $this->assertEquals(0, $model->hasOne2->workflowItems->count());
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals(1, $model->hasOne2->workflowItems->count());
             $this->assertEquals('a new derived name', $model->hasOne2->workflowItems[0]->string);
@@ -723,7 +750,7 @@
             $saved                  = $model->save();
             $this->assertTrue($saved);
             $this->assertTrue($model->workflowItems[0]->hasOne->id < 0);
-            $helper = new WorkflowActionProcessingHelper($action, $model, Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $model, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertTrue($model->workflowItems[0]->hasOne->id > 0);
             $this->assertEquals('some new model 2', $model->workflowItems[0]->hasOne->name);

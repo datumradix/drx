@@ -36,6 +36,8 @@
 
     class Role extends Item
     {
+        protected static $roleIdToRoleCache = array();
+
         /**
          * @param string $name
          * @throws NotFoundException
@@ -61,6 +63,41 @@
                 return Zurmo::t('Core', '(Unnamed)');
             }
             return $this->name;
+        }
+
+        public static function getIdsByUsersMemberOfGroup($groupId)
+        {
+            $groupId    = intval($groupId);
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'             => 'users',
+                    'relatedModelData'          => array(
+                            'attributeName'             => 'groups',
+                            'relatedAttributeName'      => 'id',
+                            'operatorType'              => 'equals',
+                            'value'                     => $groupId,
+                    ),
+                ),
+            );
+            $searchAttributeData['structure'] = '1';
+            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            return static::getSubsetIds($joinTablesAdapter, null, null, $where);
+        }
+
+        public static function getFromCacheOrDatabase($roleId)
+        {
+            $roleId     = intval($roleId);
+            if (!isset(static::$roleIdToRoleCache[$roleId]))
+            {
+                static::$roleIdToRoleCache[$roleId] = static::getById($roleId);
+            }
+            return static::$roleIdToRoleCache[$roleId];
+        }
+
+        public static function forgetRoleIdToRoleCache()
+        {
+            static::$roleIdToRoleCache  = array();
         }
 
         protected static function translatedAttributeLabels($language)
@@ -126,6 +163,7 @@
             {
                 $this->forgetPermissionsRightsAndPoliciesCache();
             }
+            static::$roleIdToRoleCache[intval($this->id)] = $this;
             parent::afterSave();
         }
 
@@ -167,6 +205,7 @@
             $this->forgetPermissionsRightsAndPoliciesCache();
             ReadPermissionsSubscriptionUtil::roleHasBeenDeleted();
             AllPermissionsOptimizationCache::forgetAll();
+            static::forgetRoleIdToRoleCache();
         }
 
         protected function beforeValidate()

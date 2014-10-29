@@ -76,5 +76,15 @@
         {
             return 'localhost';
         }
+
+        /**
+         * Override to avoid when parameters such as SERVER_NAME are not available via unit testing.
+         * (non-PHPdoc)
+         * @see ZurmoHttpRequest::getRealHostInfo()
+         */
+        public function getRealHostInfo()
+        {
+            return $this->getHostInfo();
+        }
     }
 ?>

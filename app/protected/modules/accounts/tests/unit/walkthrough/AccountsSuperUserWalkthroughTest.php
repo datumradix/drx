@@ -85,12 +85,12 @@
             $this->runControllerWithNoExceptionsAndGetContent('accounts/default/create');
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertContains('anyMixedAttributes', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
             $this->resetGetArray();
 
             //Default Controller actions requiring some sort of parameter via POST or GET
@@ -124,7 +124,7 @@
             $this->setGetArray (array('id'      => $superAccountId));
             $this->setPostArray(array('Account' => array('name' => '')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Load Model Detail Views
             $this->setGetArray(array('id' => $superAccountId, 'lockPortlets' => '1'));
@@ -136,13 +136,13 @@
             $this->setGetArray(array('selectedIds' => '4,5,6,7,8', 'selectAll' => ''));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>5</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>5</strong>&#160;records selected for updating', $content);
 
             //MassEdit view for all result selected ids
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>20</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>20</strong>&#160;records selected for updating', $content);
 
             //save Model MassEdit for selected Ids
             //Test that the 2 accounts do not have the office phone number we are populating them with.
@@ -237,13 +237,13 @@
             //save Modal MassEdit using progress load for page 2, 3 and 4.
             $this->setGetArray(array('selectAll' => '1', 'Account_page' => 2));
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":10') === false);
+            $this->assertContains('"value":10', $content);
             $this->setGetArray(array('selectAll' => '1', 'Account_page' => 3));
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":15') === false);
+            $this->assertContains('"value":15', $content);
             $this->setGetArray(array('selectAll' => '1', 'Account_page' => 4));
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":20') === false);
+            $this->assertContains('"value":20', $content);
             //Set page size back to old value.
             Yii::app()->pagination->setForCurrentUserByType('massEditProgressPageSize', $pageSize);
 
@@ -520,13 +520,13 @@
             $this->setGetArray(array('selectedIds' => '5,6,7,8', 'selectAll' => '', ));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>4</strong>&#160;Accounts selected for removal') === false);
+            $this->assertContains('<strong>4</strong>&#160;Accounts selected for removal', $content);
 
             //MassDelete view for all result selected ids
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>21</strong>&#160;Accounts selected for removal') === false);
+            $this->assertContains('<strong>21</strong>&#160;Accounts selected for removal', $content);
             //MassDelete for selected ids
             $account2  = Account::getById($superAccountId2);
             $account3  = Account::getById($superAccountId3);

@@ -159,5 +159,10 @@
             $this->modelIdentifiersForForgottenValidators[$autoresponderItem->autoresponder->getModelIdentifier()] = true;
             parent::runGarbageCollection($autoresponderItem);
         }
+
+        public static function jobExecutionInQueueDependsOnTime()
+        {
+            return true;
+        }
     }
 ?>

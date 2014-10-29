@@ -86,9 +86,6 @@
                                                         'operatorType'              => 'startsWith',
                                                         'value'                     => $filterBySearchTerm
                                                 ),
-                    /*
-                     // TODO: @Jason: Low: Bug: Undefined Index: attributeName
-
                                                 array(  'attributeName'             => 'contact',
                                                         'relatedModelData'          => array(
                                                             'concatedAttributeNames'        => array('firstName', 'lastName'),
@@ -96,7 +93,6 @@
                                                             'value'                         => $filterBySearchTerm
                                                         ),
                                                 ),
-                    /**/
                                                 array(  'attributeName'             => 'contact',
                                                         'relatedModelData'          => array(
                                                             'attributeName'                 => 'primaryEmail',

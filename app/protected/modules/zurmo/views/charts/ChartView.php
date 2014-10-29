@@ -112,9 +112,11 @@
             assert('is_string($modulePluralLabelName)');
             if (!RightsUtil::canUserAccessModule($moduleClassName, Yii::app()->user->userModel))
             {
-                $msg  = 'You cannot view this chart because you do not have access ';
-                $msg .= 'to the ' . $modulePluralLabelName . ' module.';
-                return Zurmo::t('ZurmoModule', $msg, LabelUtil::getTranslationParamsForAllModules());
+                $modulePluralLabelName = Zurmo::t('ZurmoModule', $modulePluralLabelName, LabelUtil::getTranslationParamsForAllModules());
+                return Zurmo::t('ZurmoModule',
+                                'You cannot view this chart because you do not have access ' .
+                                'to the {modulePluralLabelName} module.',
+                                array('{modulePluralLabelName}' => $modulePluralLabelName));
             }
             return null;
         }

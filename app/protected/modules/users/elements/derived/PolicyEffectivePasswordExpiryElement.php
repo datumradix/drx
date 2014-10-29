@@ -52,7 +52,7 @@
          */
         protected function renderLabel()
         {
-            return Zurmo::t('UsersModule', UsersModule::POLICY_PASSWORD_EXPIRES);
+            return Zurmo::t('UsersModule', 'Password Expires');
         }
 
         /**

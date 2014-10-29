@@ -378,11 +378,46 @@
             $jimmy    = User::getById($jimmysId);
             //now we forgot and re-retrieved so it should still show
             $this->assertTrue($jimmy->emailBoxes->count() == 1);
-            EmailBoxUtil::getDefaultEmailBoxByUser($jimmy); // This command shouldn't create new box
+            EmailBoxUtil::getDefaultEmailBoxByUser($jimmy); // This command shouldn't create new box because we have manually refreshed user
             $boxes = EmailBox::getAll();
             // Note that two new boxes are created for use jimmy instead one.
             // Probably because $jimmy->emailBoxes->count() return 0
             $this->assertEquals(3, count($boxes));
+        }
+
+        public function testGetDefaultEmailBoxByUserNotCreatingDuplicates()
+        {
+            $super                      = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $emailBoxCountBefore        = EmailBox::getCount();
+            $johnDoe = UserTestHelper::createBasicUser('johnDoe');
+            Yii::app()->user->userModel = $johnDoe;
+
+            $johnDoeId                  = $johnDoe->id;
+            $this->assertTrue($johnDoeId > 0);
+            $this->assertTrue($johnDoe->emailBoxes->count() == 0);
+            EmailBoxUtil::getDefaultEmailBoxByUser($johnDoe);
+            //still doesn't show from the user side, because it was added via the other side.
+            $this->assertTrue($johnDoe->emailBoxes->count() == 0);
+            $this->assertEquals($emailBoxCountBefore + 1, EmailBox::getCount());
+            //lets try getting default again, shouldn't create a new one.
+            EmailBoxUtil::getDefaultEmailBoxByUser($johnDoe);
+            //still doesn't show from the user side, because it was added via the other side.
+            $this->assertTrue($johnDoe->emailBoxes->count() == 0);
+            $this->assertEquals($emailBoxCountBefore + 1, EmailBox::getCount());
+            $johnDoeId                  = $johnDoe->id;
+            $johnDoe->forget();
+            $johnDoe                    = User::getById($johnDoeId);
+            //now we forgot and re-retrieved so it should still show
+            $this->assertTrue($johnDoe->emailBoxes->count() == 1);
+            EmailBoxUtil::getDefaultEmailBoxByUser($johnDoe); // This command shouldn't create new box
+            $this->assertTrue($johnDoe->emailBoxes->count() == 1);
+            $johnDoeId                  = $johnDoe->id;
+            $johnDoe->forget();
+            $johnDoe                    = User::getById($johnDoeId);
+            //now we forgot and re-retrieved so it should still show
+            $this->assertTrue($johnDoe->emailBoxes->count() == 1);
+            $this->assertEquals($emailBoxCountBefore + 1, EmailBox::getCount());
         }
     }
 ?>

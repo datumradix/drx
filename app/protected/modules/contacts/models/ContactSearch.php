@@ -129,6 +129,7 @@
         protected static function getWherePartForPartialNameSearchByPartialName($partialName)
         {
             assert('is_string($partialName)');
+            static::sanitizeSearchTerm($partialName);
             $fullNameSql = DatabaseCompatibilityUtil::concat(array('person.firstname',
                                                                    '\' \'',
                                                                    'person.lastname'));
@@ -264,6 +265,7 @@
         protected static function getWherePartForFullNameSearch($fullName)
         {
             assert('is_string($fullName)');
+            static::sanitizeSearchTerm($fullName);
             $fullNameSql = DatabaseCompatibilityUtil::concat(array('person.firstname',
                                                                    '\' \'',
                                                                    'person.lastname'));

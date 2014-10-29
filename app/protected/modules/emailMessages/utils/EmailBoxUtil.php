@@ -101,12 +101,20 @@
 
         /**
          * @param User $user
+         * @param bool $refreshUser
          * @return EmailBox|void
+         * @throws NotImplementedException
          * @throws NotSupportedException
          */
-        public static function getDefaultEmailBoxByUser(User $user)
+        public static function getDefaultEmailBoxByUser(User $user, $refreshUserModel = true)
         {
             assert('$user->id > 0');
+            if ($refreshUserModel)
+            {
+                // doing this ensures that we won't have the multiple emailBoxes exception below but
+                // we still gotta let the code decide if we want to do it or not as its tad bit expensive
+                static::refreshModel($user);
+            }
             if ($user->emailBoxes->count() == 0)
             {
                 return self::createBoxAndDefaultFoldersByUserAndName($user, EmailBox::USER_DEFAULT_NAME);
@@ -120,6 +128,21 @@
             {
                 return $user->emailBoxes->offsetGet(0);
             }
+        }
+
+        protected static function refreshModel(RedBeanModel & $model)
+        {
+            assert('$model->id > 0');
+            // this is just a fail safe. We don't want to lose any unsaved changes.
+            // ideally $model should be saved by this point anyway, but regardless:
+            if ($model->isModified() && !$model->save())
+            {
+                throw new FailedToSaveModelException();
+            }
+            $modelId    = $model->id;
+            $modelClass = get_class($model);
+            $model->forgetAll();
+            $model      = $modelClass::getById($modelId);
         }
     }
 ?>
