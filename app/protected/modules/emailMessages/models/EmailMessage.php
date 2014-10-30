@@ -49,7 +49,7 @@
             return static::getByFolderType($type, null, $excludePausedCampaignMessages);
         }
 
-        public static function getByFolderType($type, $count, $excludePausedCampaignMessages = false)
+        public static function getByFolderType($type, $count = null, $excludePausedCampaignMessages = false)
         {
             assert('is_string($type)');
             $searchAttributeData = array();
@@ -75,6 +75,33 @@
                 );
                 $searchAttributeData['structure'] = '1 and 2';
             }
+            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('EmailMessage');
+            $where = RedBeanModelDataProvider::makeWhere('EmailMessage', $searchAttributeData, $joinTablesAdapter);
+            return self::getSubset($joinTablesAdapter, null, $count, $where, null);
+        }
+
+        public static function getByFolderTypeAndCampaignId($type, $campaignId, $count = null)
+        {
+            assert('is_string($type)');
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'folder',
+                    'relatedAttributeName' => 'type',
+                    'operatorType'         => 'equals',
+                    'value'                => $type,
+                ),
+                2 => array(
+                    'attributeName'             => 'campaignItem',
+                    'relatedModelData'          => array(
+                        'attributeName'                 => 'campaign',
+                        'relatedAttributeName'          => 'id',
+                        'operatorType'                  => 'equals',
+                        'value'                         => intval($campaignId)
+                    ),
+                ),
+            );
+            $searchAttributeData['structure'] = '1 and 2';
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('EmailMessage');
             $where = RedBeanModelDataProvider::makeWhere('EmailMessage', $searchAttributeData, $joinTablesAdapter);
             return self::getSubset($joinTablesAdapter, null, $count, $where, null);
