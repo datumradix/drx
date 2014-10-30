@@ -397,7 +397,13 @@
         public function getEditableAttributesForProcessingOrCompletedStatus()
         {
             $allowedAttributes  = array('name');
-            if ($this->status != static::STATUS_COMPLETED)
+            // either the current status should not be completed(e.g. processing, as that is the only status under
+            //                                                          which this function would be called)
+            // or we should have moved from a processing status(to completed, as that is the only status under
+            //                                                          which this function would be called)
+            if ($this->status != static::STATUS_COMPLETED ||
+                (isset($this->originalAttributeValues['status']) &&
+                    $this->originalAttributeValues['status'] == static::STATUS_PROCESSING))
             {
                 $allowedAttributes[] = 'status';
             }
