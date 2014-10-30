@@ -356,5 +356,62 @@
             $this->assertEquals(0, CampaignItemActivity::getCount());
             $this->assertEquals(1, EmailMessage::getCount());
         }
+
+        public function testGetEditableAttributes()
+        {
+            // check editable attributes of a new model.
+            $campaign                   = new Campaign();
+            $expectedEditableAttributes = array (
+                'name',
+                'subject',
+                'status',
+                'sendOnDateTime',
+                'supportsRichText',
+                'enableTracking',
+                'htmlContent',
+                'textContent',
+                'fromName',
+                'fromAddress',
+                'marketingList',
+                'EmailTemplate',
+                'Files',
+                'Permissions',
+            );
+            $editableAttributes         = $campaign->getEditableAttributes();
+            $this->assertEquals($expectedEditableAttributes, $editableAttributes);
+
+            // check editable attributes of a existing model with every status
+            $campaign                   = CampaignTestHelper::createCampaign('editableAttributeTest', 'subject', 'textContent');
+            $campaign->status           = Campaign::STATUS_ACTIVE;
+            $editableAttributes         = $campaign->getEditableAttributes();
+            $this->assertEquals($expectedEditableAttributes, $editableAttributes);
+
+            $campaign->status           = Campaign::STATUS_PROCESSING;
+            $editableAttributes         = $campaign->getEditableAttributes();
+            $expectedEditableAttributes = array('name');
+            $this->assertEquals($expectedEditableAttributes, $editableAttributes);
+
+            $campaign->status           = Campaign::STATUS_COMPLETED;
+            $editableAttributes         = $campaign->getEditableAttributes();
+            $this->assertEquals($expectedEditableAttributes, $editableAttributes);
+
+            $campaign->status           = Campaign::STATUS_PAUSED;
+            $editableAttributes         = $campaign->getEditableAttributes();
+            $expectedEditableAttributes = array (
+                'name',
+                'subject',
+                'status',
+                'sendOnDateTime',
+                'supportsRichText',
+                'enableTracking',
+                'htmlContent',
+                'textContent',
+                'fromName',
+                'fromAddress',
+                'EmailTemplate',
+                'Files',
+            );
+            $this->assertEquals($expectedEditableAttributes, $editableAttributes);
+        }
     }
 ?>
