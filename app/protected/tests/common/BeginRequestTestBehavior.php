@@ -36,47 +36,14 @@
 
     class BeginRequestTestBehavior extends BeginRequestBehavior
     {
-        public function attach($owner)
+        protected function resolveDefaultRequestType($className)
         {
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleApplicationCache'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleImports'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadReadPermissionSubscriptionObserver'));
+            return $className::TEST_REQUEST;
         }
 
-        /**
-        * Import all files that need to be included(for lazy loading)
-        * @param $event
-        */
-        public function handleImports($event)
+        protected function resolveIsApiRequest()
         {
-            try
-            {
-                // we don't ue $default here as the computation of default on each request would take more time.
-                $filesToInclude = GeneralCache::getEntry('filesToIncludeForTests');
-            }
-            catch (NotFoundException $e)
-            {
-                $filesToInclude   = FileUtil::getFilesFromDir(Yii::app()->basePath . '/modules', Yii::app()->basePath . '/modules', 'application.modules', true);
-                $filesToIncludeFromFramework = FileUtil::getFilesFromDir(Yii::app()->basePath . '/core', Yii::app()->basePath . '/core', 'application.core', true);
-                $totalFilesToIncludeFromModules = count($filesToInclude);
-
-                foreach ($filesToIncludeFromFramework as $key => $file)
-                {
-                    $filesToInclude[$totalFilesToIncludeFromModules + $key] = $file;
-                }
-                GeneralCache::cacheEntry('filesToIncludeForTests', $filesToInclude);
-            }
-            foreach ($filesToInclude as $file)
-            {
-                Yii::import($file);
-            }
-        }
-
-        public function handleLoadReadPermissionSubscriptionObserver($event)
-        {
-            parent::handleLoadReadPermissionSubscriptionObserver($event);
-            Yii::app()->readPermissionSubscriptionObserver->enabled = false;
+            return false;
         }
     }
 ?>

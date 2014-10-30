@@ -137,6 +137,8 @@
                     'sentDateTime',
                     'sendOnDateTime',
                     'headers',
+                    'mailerType',
+                    'mailerSettings'
                 ),
                 'relations' => array(
                     'folder'        => array(static::HAS_ONE,  'EmailFolder', static::NOT_OWNED,
@@ -165,10 +167,14 @@
                     array('sentDateTime',    'type', 'type' => 'datetime'),
                     array('sendOnDateTime',  'type', 'type' => 'datetime'),
                     array('headers',         'type', 'type' => 'string'),
+                    array('mailerType',      'type',    'type' => 'string'),
+                    array('mailerSettings',  'type',    'type' => 'string'),
                 ),
                 'elements' => array(
                     'sentDateTime'  => 'DateTime',
                     'files'         => 'Files',
+                    'mailerType'    => 'Text',
+                    'mailerSettings'=> 'Text'
                 )
             );
             return $metadata;
