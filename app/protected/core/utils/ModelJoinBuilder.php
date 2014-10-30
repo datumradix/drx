@@ -561,15 +561,13 @@
             {
                 return $this->resolveJoinsForForARelationAttributeThatIsManyToMany($onTableAliasName);
             }
-            elseif ($this->modelAttributeToDataProviderAdapter->getRelationType() == RedBeanModel::HAS_MANY ||
-                    $this->modelAttributeToDataProviderAdapter->getRelationType() == RedBeanModel::HAS_ONE_BELONGS_TO)
+            elseif ($this->modelAttributeToDataProviderAdapter->isRelationTypeAHasManyVariant())
             {
                 $onTableAliasName = $this->resolveJoinsForForARelationAttributeThatIsAHasManyVariant($onTableAliasName);
                 $this->resolveSettingDistinctForARelationAttributeThatIsHasMany();
                 return $onTableAliasName;
             }
-            elseif ($this->modelAttributeToDataProviderAdapter->getRelationType() == RedBeanModel::HAS_ONE ||
-                    $this->modelAttributeToDataProviderAdapter->getRelationType() == RedBeanModel::HAS_MANY_BELONGS_TO)
+            elseif ($this->modelAttributeToDataProviderAdapter->isRelationTypeAHasOneVariant())
             {
                 return $this->resolveJoinsForForARelationAttributeThatIsAHasOne($onTableAliasName);
             }
