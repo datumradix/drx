@@ -624,8 +624,6 @@
             $processed              = 0;
             CampaignItemTestHelper::createCampaignItem($processed, $campaign, $contact);
             $this->assertTrue($job->run());
-            $campaignItems          = CampaignItem::getAll();
-            $this->assertCount(1, $campaignItems);
             $campaignItemsProcessed = CampaignItem::getByProcessedAndCampaignId(1, $campaign->id);
             $this->assertCount(1, $campaignItemsProcessed);
             $countAfter             = EmailMessage::getCount();

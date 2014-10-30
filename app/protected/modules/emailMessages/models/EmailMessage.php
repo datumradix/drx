@@ -73,7 +73,13 @@
                         'value'                         => Campaign::STATUS_PAUSED
                     ),
                 );
-                $searchAttributeData['structure'] = '1 and 2';
+                $searchAttributeData['clauses'][3] = array(
+                    'attributeName'             => 'campaignItem',
+                    'relatedAttributeName'      => 'id',
+                    'operatorType'              => 'isNull',
+                    'value'                     => null,
+                );
+                $searchAttributeData['structure'] = '1 and (2 or 3)';
             }
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('EmailMessage');
             $where = RedBeanModelDataProvider::makeWhere('EmailMessage', $searchAttributeData, $joinTablesAdapter);
