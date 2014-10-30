@@ -36,6 +36,8 @@
 
     class EmailMessageTest extends ZurmoBaseTest
     {
+        protected $user = null;
+
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
@@ -69,14 +71,19 @@
             }
         }
 
+        public function setUp()
+        {
+            parent::setUp();
+            $this->user                 = User::getByUsername('super');
+            Yii::app()->user->userModel = $this->user;
+        }
+
         /**
          * A notification email is different than a regular outbound email because it is owned by a super user
          * that is different than the user logged in.  So the sender does not have a 'person'
          */
         public function testCreateEmailMessageThatIsANotification()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $billy                      = User::getByUsername('billy');
             $this->assertEquals(0, EmailMessage::getCount());
 
@@ -134,8 +141,6 @@
          */
         public function testAttemptingToSendEmailInOutbox()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $emailMessages              = EmailMessage::getAll();
             $this->assertEquals(1, count($emailMessages));
 
@@ -151,8 +156,6 @@
          */
         public function testAttemptingToSendEmailNotOutbox()
         {
-            $super                            = User::getByUsername('super');
-            Yii::app()->user->userModel       = $super;
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $emailMessages                    = EmailMessage::getAll();
             $this->assertEquals(1, count($emailMessages));
@@ -172,8 +175,6 @@
          */
         public function testCreateNormalEmailMessage()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $billy                      = User::getByUsername('billy');
             $jane                       = User::getByUsername('jane');
 
@@ -228,8 +229,6 @@
          */
         public function testCreateAndSendEmailMessageWithAttachment()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $billy                      = User::getByUsername('billy');
             $jane                       = User::getByUsername('jane');
 
@@ -291,8 +290,6 @@
          */
         public function testMultipleRecipientsAndTypes()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $billy                      = User::getByUsername('billy');
             $jane                       = User::getByUsername('jane');
             $sally                      = User::getByUsername('sally');
@@ -366,8 +363,6 @@
          */
         public function testQueuedEmailsWhenEmailMessageChangeToSentFolder()
         {
-            $super                            = User::getByUsername('super');
-            Yii::app()->user->userModel       = $super;
             $this->assertEquals(2, Yii::app()->emailHelper->getQueuedCount());
             $emailMessages                    = EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX);
             $this->assertEquals(2, count($emailMessages));
@@ -403,8 +398,6 @@
 
         public function testCreateMultipleEmailMessageWithAttachments()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $jane                       = User::getByUsername('jane');
             $billy                      = User::getByUsername('billy');
             $emailMessageIds            = array();
@@ -464,9 +457,7 @@
 
         public function testCrudForHasOneAndHasManyEmailMessageRelations()
         {
-            $super          = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
-            $emailMessage   = EmailMessageTestHelper::createDraftSystemEmail('test crud relations', $super);
+            $emailMessage   = EmailMessageTestHelper::createDraftSystemEmail('test crud relations', $this->user);
             $this->assertTrue($emailMessage->save());
             $emailMessageId = $emailMessage->id;
             $emailMessage->forgetAll();
@@ -570,6 +561,82 @@
             }
             $this->assertFalse($found);
             $this->assertCount(0, $emailMessage->recipients);
+        }
+
+        public function testGetAllByFolderExcludedPausedCampaignMessages()
+        {
+            $countBefore                = EmailMessage::getCount();
+            $job                        = new CampaignQueueMessagesInOutboxJob();
+            $email                      = new Email();
+            $email->emailAddress        = 'demo@zurmo.com';
+            $contact                    = ContactTestHelper::createContactByNameForOwner('contact 01', $this->user);
+            $contact->primaryEmail      = $email;
+            $this->assertTrue($contact->save());
+            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 01');
+            $campaign                   = CampaignTestHelper::createCampaign('campaign 01',
+                                                                                'subject',
+                                                                                'text Content',
+                                                                                'Html Content',
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                Campaign::STATUS_PROCESSING,
+                                                                                null,
+                                                                                0,
+                                                                                $marketingList);
+
+            $processed              = 0;
+            CampaignItemTestHelper::createCampaignItem($processed, $campaign, $contact);
+            $this->assertTrue($job->run());
+            $campaignItems          = CampaignItem::getAll();
+            $this->assertCount(1, $campaignItems);
+            $campaignItemsProcessed = CampaignItem::getByProcessedAndCampaignId(1, $campaign->id);
+            $this->assertCount(1, $campaignItemsProcessed);
+            $countAfter             = EmailMessage::getCount();
+            $this->assertEquals($countAfter, $countBefore + 1);
+            $outboxCount            = count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX));
+            $outboxNonPausedCount   = count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX, true));
+            $this->assertEquals($outboxCount, $outboxNonPausedCount);
+            $campaign->status       = Campaign::STATUS_PAUSED;
+            $this->assertTrue($campaign->save());
+            $outboxCount            = count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX));
+            $outboxNonPausedCount   = count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX, true));
+            $this->assertEquals($outboxCount, $outboxNonPausedCount + 1);
+        }
+
+        public function testGetByFolderTypeAndCampaignId()
+        {
+            $countBefore                = EmailMessage::getCount();
+            $job                        = new CampaignQueueMessagesInOutboxJob();
+            $email                      = new Email();
+            $email->emailAddress        = 'demo@zurmo.com';
+            $contact                    = ContactTestHelper::createContactByNameForOwner('contact 02', $this->user);
+            $contact->primaryEmail      = $email;
+            $this->assertTrue($contact->save());
+            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 02');
+            $campaign                   = CampaignTestHelper::createCampaign('campaign 02',
+                                                                                'subject',
+                                                                                'text Content',
+                                                                                'Html Content',
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                Campaign::STATUS_PROCESSING,
+                                                                                null,
+                                                                                0,
+                                                                                $marketingList);
+
+            $processed              = 0;
+            CampaignItemTestHelper::createCampaignItem($processed, $campaign, $contact);
+            $this->assertTrue($job->run());
+            $campaignItems          = CampaignItem::getAll();
+            $this->assertCount(1, $campaignItems);
+            $campaignItemsProcessed = CampaignItem::getByProcessedAndCampaignId(1, $campaign->id);
+            $this->assertCount(1, $campaignItemsProcessed);
+            $countAfter             = EmailMessage::getCount();
+            $this->assertEquals($countAfter, $countBefore + 1);
+            $outboxCount            = count(EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_OUTBOX, $campaign->id));
+            $this->assertEquals(1, $outboxCount);
         }
     }
 ?>

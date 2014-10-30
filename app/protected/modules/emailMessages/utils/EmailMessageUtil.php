@@ -299,12 +299,13 @@
 
         /**
          * Get outbound queued messages.
-         * @param int $count
+         * @param null $count
+         * @param bool $excludePausedCampaignMessages
          * @return array
          */
-        public static function getOutboundQueuedMessages($count = null)
+        public static function getOutboundQueuedMessages($count = null, $excludePausedCampaignMessages = true)
         {
-            return EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count);
+            return EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count, $excludePausedCampaignMessages);
         }
 
         /**
@@ -331,13 +332,16 @@
 
         /**
          * Send Queued email messages.
-         * @param int $count
          * @param EmailHelper $emailHelper
+         * @param null $count
+         * @param bool $excludePausedCampaignMessages
+         * @return bool
+         * @throws NotSupportedException
          */
-        public static function sendQueued(EmailHelper $emailHelper, $count = null)
+        public static function sendQueued(EmailHelper $emailHelper, $count = null, $excludePausedCampaignMessages = true)
         {
             assert('is_int($count) || $count == null');
-            $outboxQueuedMessages = EmailMessageUtil::getOutboundQueuedMessages($count);
+            $outboxQueuedMessages = EmailMessageUtil::getOutboundQueuedMessages($count, $excludePausedCampaignMessages);
             foreach($outboxQueuedMessages as $emailMessage)
             {
                 $emailHelper->sendImmediately($emailMessage);
