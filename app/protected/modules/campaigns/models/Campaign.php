@@ -64,30 +64,6 @@
             );
         }
 
-        public function isStartedButNotCompleted()
-        {
-            return ($this->status == static::STATUS_PROCESSING || $this->status == static::STATUS_PAUSED);
-        }
-
-        public function hasAtLeastOneQueuedMessage()
-        {
-            $campaignItemTableName  = CampaignItem::getTableName();
-            $emailMessageTableName  = EmailMessage::getTableName();
-            $emailFolderTableName   = EmailFolder::getTableName();
-            $campaignForeignKey     = RedBeanModel::getForeignKeyName('CampaignItem', 'campaign');
-            $emailMessageForeignKey = RedBeanModel::getForeignKeyName('CampaignItem', 'emailMessage');
-            $folderForeignKey       = RedBeanModel::getForeignKeyName('EmailMessage', 'folder');
-            $sentFolder             = EmailFolder::TYPE_SENT;
-
-            $query  = "SELECT COUNT(*) FROM `${emailMessageTableName}`, `${emailFolderTableName}` ";
-            $query  .= "WHERE `${emailMessageTableName}`.`${folderForeignKey}` = `${emailFolderTableName}`.`id` ";
-            $query  .= "AND `${emailFolderTableName}`.`type` != '${sentFolder}' AND ";
-            $query  .= "`${emailMessageTableName}`.`id` IN (SELECT `${emailMessageForeignKey}` FROM ";
-            $query  .= "`${campaignItemTableName}` WHERE `${campaignForeignKey}` = " . $this->id . " )";
-            $count                  = ZurmoRedBean::getCell($query);
-            return $count > 0;
-        }
-
         public function __toString()
         {
             try
@@ -318,8 +294,27 @@
             return true;
         }
 
+        public function togglePausedStatusToActive()
+        {
+            // if this is true by default(install), demo data can't create campaigns that are paused.
+            // tests that expect the status to be left paused would fail too.
+            // we could hack here but using scenarios, is_cli, etc but nothing would be too definite without
+            // making a nice spaghetti here.
+            return false;
+        }
+
+        protected function beforeSave()
+        {
+            if ($this->togglePausedStatusToActive() && $this->status == static::STATUS_PAUSED)
+            {
+                $this->status = static::STATUS_ACTIVE;
+            }
+            return parent::beforeSave();
+        }
+
         protected function afterSave()
         {
+            $this->deleteCampaignItemsForUnsetEmailMessagesIfPausedToggledToActiveStatus();
             Yii::app()->jobQueue->resolveToAddJobTypeByModelByDateTimeAttribute($this, 'sendOnDateTime',
                                                                                 'CampaignGenerateDueCampaignItems');
             parent::afterSave();
@@ -334,6 +329,36 @@
                 ZurmoRedBean::exec("DELETE FROM campaignitemactivity WHERE campaignitem_id = " . $campaignitem->id);
             }
             ZurmoRedBean::exec("DELETE FROM campaignitem WHERE processed = 0 and campaign_id = " . $this->id);
+        }
+
+        protected function deleteCampaignItemsForUnsetEmailMessagesIfPausedToggledToActiveStatus()
+        {
+            if (!isset($this->originalAttributeValues['status']) ||
+                $this->originalAttributeValues['status'] != static::STATUS_PAUSED)
+            {
+                return;
+            }
+            $modifiedAttributeKeys              = array_keys(array_filter($this->originalAttributeValues));
+            $dependentAttributesModified        = array_diff($modifiedAttributeKeys, array('name', 'status'));
+            $purgeUnsentCampaignItems           = (!empty($dependentAttributesModified));
+            if ($purgeUnsentCampaignItems)
+            {
+                $this->deleteUnprocessedCampaignItems();
+                $unsetEmailMessagesForCurrentCampaign = EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_OUTBOX, $this->id);
+                foreach ($unsetEmailMessagesForCurrentCampaign as $emailMessage) {
+                    // deleting campaign item should automatically delete any associated data.
+                    $emailMessage->campaignItem->delete();
+                }
+            }
+        }
+
+        protected function deleteUnprocessedCampaignItems()
+        {
+            $campaignitems = CampaignItem::getByProcessedAndCampaignId(0, $this->id);
+            foreach ($campaignitems as $campaignitem)
+            {
+                $campaignitem->delete();
+            }
         }
 
         public function isAttributeEditable($attributeName)

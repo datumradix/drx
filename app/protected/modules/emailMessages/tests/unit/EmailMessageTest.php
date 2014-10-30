@@ -548,11 +548,11 @@
             $job                        = new CampaignQueueMessagesInOutboxJob();
             $email                      = new Email();
             $email->emailAddress        = 'demo@zurmo.com';
-            $contact                    = ContactTestHelper::createContactByNameForOwner('contact', $this->user);
+            $contact                    = ContactTestHelper::createContactByNameForOwner('contact 01', $this->user);
             $contact->primaryEmail      = $email;
             $this->assertTrue($contact->save());
-            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList');
-            $campaign                   = CampaignTestHelper::createCampaign('campaign',
+            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 01');
+            $campaign                   = CampaignTestHelper::createCampaign('campaign 01',
                                                                                 'subject',
                                                                                 'text Content',
                                                                                 'Html Content',
@@ -581,6 +581,41 @@
             $outboxCount            = count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX));
             $outboxNonPausedCount   = count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX, true));
             $this->assertEquals($outboxCount, $outboxNonPausedCount + 1);
+        }
+
+        public function testGetByFolderTypeAndCampaignId()
+        {
+            $countBefore                = EmailMessage::getCount();
+            $job                        = new CampaignQueueMessagesInOutboxJob();
+            $email                      = new Email();
+            $email->emailAddress        = 'demo@zurmo.com';
+            $contact                    = ContactTestHelper::createContactByNameForOwner('contact 02', $this->user);
+            $contact->primaryEmail      = $email;
+            $this->assertTrue($contact->save());
+            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 02');
+            $campaign                   = CampaignTestHelper::createCampaign('campaign 02',
+                                                                                'subject',
+                                                                                'text Content',
+                                                                                'Html Content',
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                Campaign::STATUS_PROCESSING,
+                                                                                null,
+                                                                                0,
+                                                                                $marketingList);
+
+            $processed              = 0;
+            CampaignItemTestHelper::createCampaignItem($processed, $campaign, $contact);
+            $this->assertTrue($job->run());
+            $campaignItems          = CampaignItem::getAll();
+            $this->assertCount(1, $campaignItems);
+            $campaignItemsProcessed = CampaignItem::getByProcessedAndCampaignId(1, $campaign->id);
+            $this->assertCount(1, $campaignItemsProcessed);
+            $countAfter             = EmailMessage::getCount();
+            $this->assertEquals($countAfter, $countBefore + 1);
+            $outboxCount            = count(EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_OUTBOX, $campaign->id));
+            $this->assertEquals(1, $outboxCount);
         }
     }
 ?>

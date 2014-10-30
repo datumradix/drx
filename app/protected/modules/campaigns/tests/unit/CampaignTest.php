@@ -415,5 +415,77 @@
             );
             $this->assertEquals($expectedEditableAttributes, $editableAttributes);
         }
+
+        public function testSaveTogglesPausedActiveStatus()
+        {
+            $campaign   = CampaignTestHelper::createCampaign('beforeSavePausedToActiveToggleTest', 'subject', 'text');
+            $campaign->status   = Campaign::STATUS_PAUSED;
+            $this->assertTrue($campaign->save());
+            if ($campaign->togglePausedStatusToActive())
+            {
+                $this->assertEquals(Campaign::STATUS_ACTIVE, $campaign->status);
+            }
+            else
+            {
+                $this->assertEquals(Campaign::STATUS_PAUSED, $campaign->status);
+            }
+        }
+
+        public function testSavePurgesUnsetCampaignItemsForPausedToActiveStatusChangeIfNeeded()
+        {
+            $campaign                       = CampaignTestHelper::createCampaign('afterSaveDeleteUnsetCampaignItemsTest',
+                                                                                                    'subject', 'text');
+            // 3 items, 1 unprocessed, 1 processed with email in outbox, 1 processed with email in sent.
+            $campaignItem                   = CampaignItemTestHelper::createCampaignItem(1, $campaign);
+            $emailMessage                   = EmailMessageTestHelper::createOutboxEmail(Yii::app()->user->userModel, 'subject',
+                                                                                'html', 'text', 'from', 'from@zurmo.com',
+                                                                                'to', 'to@zurmo.com');
+            $campaignItem->emailMessage     = $emailMessage;
+            $this->assertTrue($campaignItem->unrestrictedSave());
+            $campaignItem2                  = CampaignItemTestHelper::createCampaignItem(1, $campaign);
+            $emailMessage2                  = EmailMessageTestHelper::createDraftSystemEmail('subject2', Yii::app()->user->userModel);
+            $box                            = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
+            $emailMessage2->folder          = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_SENT);
+            $this->assertTrue($emailMessage2->save());
+            $campaignItem2->emailMessage    = $emailMessage2;
+            $this->assertTrue($campaignItem2->unrestrictedSave());
+            CampaignItemTestHelper::createCampaignItem(0, $campaign);
+
+
+            $this->assertCount(2, CampaignItem::getByProcessedAndCampaignId(1, $campaign->id));
+            $this->assertCount(1, CampaignItem::getByProcessedAndCampaignId(0, $campaign->id));
+            $this->assertCount(1, EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_OUTBOX, $campaign->id));
+            $this->assertCount(1, EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_SENT, $campaign->id));
+
+            // set initial status
+            $campaign->status   = Campaign::STATUS_PAUSED;
+            $this->assertTrue($campaign->save());
+            $this->assertCount(2, CampaignItem::getByProcessedAndCampaignId(1, $campaign->id));
+            $this->assertCount(1, CampaignItem::getByProcessedAndCampaignId(0, $campaign->id));
+            $this->assertCount(1, EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_OUTBOX, $campaign->id));
+            $this->assertCount(1, EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_SENT, $campaign->id));
+
+            // change a non-dependent property, no change in campaign items
+            $campaign->status   = Campaign::STATUS_ACTIVE;
+            $campaign->name     = $campaign->name . 'modified';
+            $this->assertCount(2, CampaignItem::getByProcessedAndCampaignId(1, $campaign->id));
+            $this->assertCount(1, CampaignItem::getByProcessedAndCampaignId(0, $campaign->id));
+            $this->assertCount(1, EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_OUTBOX, $campaign->id));
+            $this->assertCount(1, EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_SENT, $campaign->id));
+
+            // reset status
+            $campaign->status   = Campaign::STATUS_PAUSED;
+            $this->assertTrue($campaign->save());
+
+            // change a dependent property, unset should be deleted.
+            $campaign->status   = Campaign::STATUS_ACTIVE;
+            $campaign->subject  = $campaign->subject . 'modified';
+            $this->assertTrue($campaign->save());
+            // deleted: 1 processed with email in outbox, 1 unprocessed.
+            $this->assertCount(1, CampaignItem::getByProcessedAndCampaignId(1, $campaign->id));
+            $this->assertCount(0, CampaignItem::getByProcessedAndCampaignId(0, $campaign->id));
+            $this->assertCount(0, EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_OUTBOX, $campaign->id));
+            $this->assertCount(1, EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_SENT, $campaign->id));
+        }
     }
 ?>
