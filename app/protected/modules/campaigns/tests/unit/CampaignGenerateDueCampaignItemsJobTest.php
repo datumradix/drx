@@ -367,6 +367,8 @@
             $campaignItems                          = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
             $this->assertNotEmpty($campaignItems);
             $this->assertCount(5, $campaignItems);
+            $oldCounter = 0;
+            $newCounter = 0;
             foreach ($campaignItems as $ci)
             {
                 $this->assertNotEmpty($ci->id);
@@ -376,12 +378,22 @@
                 $this->assertNotEmpty($ci->emailMessage->content->id);
                 $this->assertNotEmpty($ci->contact->id);
                 $dataIndex          = (in_array($ci->id, $oldCampaignItemIds))? 'old' : 'new';
+                if ($dataIndex == 'old')
+                {
+                    $oldCounter++;
+                }
+                else
+                {
+                    $newCounter++;
+                }
                 $this->assertEquals($data[$dataIndex]['subject'], $ci->emailMessage->subject);
                 $this->assertEquals($data[$dataIndex]['fromName'], $ci->emailMessage->sender->fromName);
                 $this->assertEquals($data[$dataIndex]['fromAddress'], $ci->emailMessage->sender->fromAddress);
                 $this->assertContains($data[$dataIndex]['textContent'], $ci->emailMessage->content->textContent);
                 $this->assertContains($data[$dataIndex]['htmlContent'], $ci->emailMessage->content->htmlContent);
             }
+            $this->assertEquals(4, $oldCounter);
+            $this->assertEquals(1, $newCounter);
         }
     }
 ?>
