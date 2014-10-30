@@ -270,8 +270,8 @@
                     'subject'       => 'Old Subject',
                     'fromName'      => 'Old From Name',
                     'fromAddress'   => 'old@zurmo.com',
-                    'textContent'   => 'Nld Text Content',
-                    'htmlContent'   => 'Nld Html Content'
+                    'textContent'   => 'Old Text Content',
+                    'htmlContent'   => 'Old Html Content'
                 ),
                 'new' => array(
                     'subject'       => 'New Subject',
@@ -345,6 +345,7 @@
                 $oldCampaignItemIds[]               = $ci->id;
             }
             $campaignItems[ count($campaignItems) -1 ]->delete();
+            array_pop($oldCampaignItemIds);
             $campaign->status   = Campaign::STATUS_ACTIVE;
             foreach ($data['new'] as $property => $value)
             {
@@ -392,8 +393,8 @@
                 $this->assertContains($data[$dataIndex]['textContent'], $ci->emailMessage->content->textContent);
                 $this->assertContains($data[$dataIndex]['htmlContent'], $ci->emailMessage->content->htmlContent);
             }
-            $this->assertEquals(4, $oldCounter);
-            $this->assertEquals(1, $newCounter);
+            $this->assertEquals(count($oldCampaignItemIds), $oldCounter);
+            $this->assertEquals(count($campaignItems) - count($oldCampaignItemIds), $newCounter);
         }
     }
 ?>

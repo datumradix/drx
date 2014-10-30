@@ -333,5 +333,54 @@
             }
             ZurmoRedBean::exec("DELETE FROM campaignitem WHERE processed = 0 and campaign_id = " . $this->id);
         }
+
+        public function getEditableAttributes()
+        {
+            if ($this->isNewModel || $this->status == static::STATUS_ACTIVE)
+            {
+                return $this->getEditableAttributesForNewOrActiveStatus();
+            }
+
+            if ($this->status == static::STATUS_PROCESSING || $this->status == static::STATUS_COMPLETED)
+            {
+                return $this->getEditableAttributesForProcessingOrCompletedStatus();
+            }
+
+            if ($this->status == static::STATUS_PAUSED)
+            {
+                return $this->getEditableAttributesForPausedStatus();
+            }
+            throw new Exception("Unable to determine editable attributes for id#" . $this->id . ' and status: ' . $this->status);
+        }
+
+        public function getEditableAttributesForNewOrActiveStatus()
+        {
+            $members            = static::getMemberAttributes();
+            $specialMembers     = array('marketingList');
+            $specialElements    = array('EmailTemplate', 'Files', 'Permissions');
+            $allowedAttributes  = CMap::mergeArray($members, $specialMembers, $specialElements);
+            return $allowedAttributes;
+        }
+
+        public function getEditableAttributesForProcessingOrCompletedStatus()
+        {
+            $allowedAttributes  = array('name');
+            return $allowedAttributes;
+        }
+
+        public function getEditableAttributesForPausedStatus()
+        {
+            $members            = static::getMemberAttributes();
+            $specialElements    = array('EmailTemplate', 'Files');
+            $allowedAttributes  = CMap::mergeArray($members, $specialElements);
+            return $allowedAttributes;
+        }
+
+        public function getMemberAttributes()
+        {
+            $metadata   = static::getMetadata();
+            $members    = $metadata[get_class($this)]['members'];
+            return $members;
+        }
     }
 ?>
