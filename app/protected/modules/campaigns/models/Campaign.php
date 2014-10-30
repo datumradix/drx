@@ -208,6 +208,8 @@
                     array('name',                   'required'),
                     array('name',                   'type',    'type' => 'string'),
                     array('name',                   'length',  'min'  => 1, 'max' => 64),
+                    // putting it on name just so this validator gets executed, other than that there is no binding at all
+                    array('name',                   'OnlyEditableAttributesAreSetValidator'),
                     array('status',                 'required'),
                     array('status',                 'type',    'type' => 'integer'),
                     array('status',                 'default', 'value' => static::STATUS_ACTIVE),
@@ -342,7 +344,8 @@
 
         public function getEditableAttributes()
         {
-            if ($this->isNewModel || $this->status == static::STATUS_ACTIVE)
+            // isNewModel check fails sometimes here, better to check for id < 0
+            if ($this->id < 0 || $this->status == static::STATUS_ACTIVE)
             {
                 return $this->getEditableAttributesForNewOrActiveStatus();
             }
@@ -363,7 +366,7 @@
         {
             $members            = static::getMemberAttributes();
             $specialMembers     = array('marketingList');
-            $specialElements    = array('EmailTemplate', 'Files', 'Rights and Permissions');
+            $specialElements    = array('EmailTemplate', 'Files', 'owner');
             $allowedAttributes  = CMap::mergeArray($members, $specialMembers, $specialElements);
             return $allowedAttributes;
         }
@@ -371,13 +374,17 @@
         public function getEditableAttributesForProcessingOrCompletedStatus()
         {
             $allowedAttributes  = array('name');
+            if ($this->status != static::STATUS_COMPLETED)
+            {
+                $allowedAttributes[] = 'status';
+            }
             return $allowedAttributes;
         }
 
         public function getEditableAttributesForPausedStatus()
         {
             $members            = static::getMemberAttributes();
-            $specialElements    = array('EmailTemplate', 'Files', 'Rights and Permissions');
+            $specialElements    = array('EmailTemplate', 'Files', 'owner');
             $allowedAttributes  = CMap::mergeArray($members, $specialElements);
             return $allowedAttributes;
         }
