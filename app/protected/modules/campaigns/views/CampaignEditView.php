@@ -166,7 +166,7 @@
         protected function renderHtmlAndTextContentElement($model, $attribute, $form)
         {
             $content = null;
-            if (!$this->isCampaignEditable())
+            if (!($this->model->isAttributeEditable('textContent') && $this->model->isAttributeEditable('htmlContent')))
             {
                 $element = new EmailTemplateHtmlAndTextContentElement($model, $attribute);
             }
@@ -200,7 +200,8 @@
          */
         protected function resolveElementInformationDuringFormLayoutRender(& $elementInformation)
         {
-            if (!$this->isCampaignEditable() && $elementInformation['attributeName'] != 'name')
+            $attributeName  = ($elementInformation['attributeName'] != 'null')? $elementInformation['attributeName'] : $elementInformation['type'];
+            if (!$this->model->isAttributeEditable($attributeName))
             {
                 $elementInformation['disabled'] = true;
             }
@@ -264,14 +265,9 @@
                         $(".redactor_box iframe").height(contentHeight + 50);');*/
         }
 
-        protected function isCampaignEditable()
-        {
-            return ($this->model->status == Campaign::STATUS_ACTIVE);
-        }
-
         protected function renderLabelForSaveButton()
         {
-            if ($this->isCampaignEditable())
+            if ($this->model->isAttributeEditable('sendOnDateTime'))
             {
                 return Zurmo::t("CampaignsModule", "Save and Schedule");
             }
@@ -285,7 +281,7 @@
         {
             assert('$form instanceof ZurmoActiveForm');
             $content = "<h3>".Zurmo::t('ZurmoModule', 'Rights and Permissions') . '</h3><div id="owner-box">';
-            if($this->isCampaignEditable())
+            if($this->model->isAttributeEditable('Rights and Permissions'))
             {
                 $element = new UserElement($this->getModel(), 'owner', $form);
             }

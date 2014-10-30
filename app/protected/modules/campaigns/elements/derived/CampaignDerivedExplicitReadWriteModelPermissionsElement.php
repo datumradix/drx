@@ -45,7 +45,7 @@
             $htmlOptions = array(
                 'id'   => $this->getEditableInputId($attributeName, $relationAttributeName),
             );
-            if($this->model->status == Campaign::STATUS_PROCESSING || $this->model->status == Campaign::STATUS_COMPLETED)
+            if(!$this->model->isAttributeEditable('Rights and Permissions'))
             {
                 $htmlOptions['disabled'] = true;
             }
