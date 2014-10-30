@@ -375,7 +375,7 @@
                 'marketingList',
                 'EmailTemplate',
                 'Files',
-                'Rights and Permissions',
+                'owner',
             );
             $editableAttributes         = $campaign->getEditableAttributes();
             $this->assertEquals($expectedEditableAttributes, $editableAttributes);
@@ -388,10 +388,11 @@
 
             $campaign->status           = Campaign::STATUS_PROCESSING;
             $editableAttributes         = $campaign->getEditableAttributes();
-            $expectedEditableAttributes = array('name');
+            $expectedEditableAttributes = array('name', 'status');
             $this->assertEquals($expectedEditableAttributes, $editableAttributes);
 
             $campaign->status           = Campaign::STATUS_COMPLETED;
+            $expectedEditableAttributes = array('name');
             $editableAttributes         = $campaign->getEditableAttributes();
             $this->assertEquals($expectedEditableAttributes, $editableAttributes);
 
@@ -410,7 +411,7 @@
                 'fromAddress',
                 'EmailTemplate',
                 'Files',
-                'Rights and Permissions',
+                'owner',
             );
             $this->assertEquals($expectedEditableAttributes, $editableAttributes);
         }

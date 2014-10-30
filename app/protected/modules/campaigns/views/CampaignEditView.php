@@ -281,7 +281,7 @@
         {
             assert('$form instanceof ZurmoActiveForm');
             $content = "<h3>".Zurmo::t('ZurmoModule', 'Rights and Permissions') . '</h3><div id="owner-box">';
-            if($this->model->isAttributeEditable('Rights and Permissions'))
+            if($this->model->isAttributeEditable('owner'))
             {
                 $element = new UserElement($this->getModel(), 'owner', $form);
             }
