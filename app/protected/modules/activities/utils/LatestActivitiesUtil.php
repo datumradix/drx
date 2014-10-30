@@ -173,7 +173,13 @@
                                             array($modelClassName), $relationItemIds, $ownedByFilter);
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
             $where = ModelDataProviderUtil::makeWhere($modelClassName, $searchAttributeDataArray[0][$modelClassName], $joinTablesAdapter);
-            return RedBeanModel::getCount($joinTablesAdapter, $where, $modelClassName, true);
+            $count = RedBeanModel::getCount($joinTablesAdapter, $where, $modelClassName, true);
+            if(isset($searchAttributeDataArray[1][$modelClassName]))
+            {
+                $where = ModelDataProviderUtil::makeWhere($modelClassName, $searchAttributeDataArray[1][$modelClassName], $joinTablesAdapter);
+                return $count + RedBeanModel::getCount($joinTablesAdapter, $where, $modelClassName, true);
+            }
+            return $count;
         }
     }
 ?>
