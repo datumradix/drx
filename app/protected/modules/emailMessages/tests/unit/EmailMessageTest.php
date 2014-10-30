@@ -69,11 +69,6 @@
             {
                 $this->markTestSkipped('Please fix the test email settings');
             }
-        }
-
-        public function setUp()
-        {
-            parent::setUp();
             $this->user                 = User::getByUsername('super');
             Yii::app()->user->userModel = $this->user;
         }

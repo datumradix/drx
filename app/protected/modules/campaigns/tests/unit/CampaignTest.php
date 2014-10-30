@@ -354,7 +354,7 @@
             $this->assertEquals(3, Campaign::getCount());
             $this->assertEquals(0, CampaignItem::getCount());
             $this->assertEquals(0, CampaignItemActivity::getCount());
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(0, EmailMessage::getCount());
         }
 
         public function testGetEditableAttributes()
