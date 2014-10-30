@@ -334,6 +334,12 @@
             ZurmoRedBean::exec("DELETE FROM campaignitem WHERE processed = 0 and campaign_id = " . $this->id);
         }
 
+        public function isAttributeEditable($attributeName)
+        {
+            $editableAttributes = $this->getEditableAttributes();
+            return in_array($attributeName, $editableAttributes);
+        }
+
         public function getEditableAttributes()
         {
             if ($this->isNewModel || $this->status == static::STATUS_ACTIVE)
@@ -357,7 +363,7 @@
         {
             $members            = static::getMemberAttributes();
             $specialMembers     = array('marketingList');
-            $specialElements    = array('EmailTemplate', 'Files', 'Permissions');
+            $specialElements    = array('EmailTemplate', 'Files', 'Rights and Permissions');
             $allowedAttributes  = CMap::mergeArray($members, $specialMembers, $specialElements);
             return $allowedAttributes;
         }
@@ -371,7 +377,7 @@
         public function getEditableAttributesForPausedStatus()
         {
             $members            = static::getMemberAttributes();
-            $specialElements    = array('EmailTemplate', 'Files');
+            $specialElements    = array('EmailTemplate', 'Files', 'Rights and Permissions');
             $allowedAttributes  = CMap::mergeArray($members, $specialElements);
             return $allowedAttributes;
         }

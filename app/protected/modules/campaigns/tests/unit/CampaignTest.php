@@ -375,7 +375,7 @@
                 'marketingList',
                 'EmailTemplate',
                 'Files',
-                'Permissions',
+                'Rights and Permissions',
             );
             $editableAttributes         = $campaign->getEditableAttributes();
             $this->assertEquals($expectedEditableAttributes, $editableAttributes);
@@ -410,6 +410,7 @@
                 'fromAddress',
                 'EmailTemplate',
                 'Files',
+                'Rights and Permissions',
             );
             $this->assertEquals($expectedEditableAttributes, $editableAttributes);
         }
