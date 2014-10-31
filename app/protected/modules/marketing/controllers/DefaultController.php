@@ -113,7 +113,7 @@
                 {
                     MarketingConfigurationFormAdapter::setConfigurationFromForm($form);
                     Yii::app()->user->setFlash('notification',
-                        Zurmo::t('ZurmoModule', 'Global configuration saved successfully.')
+                        Zurmo::t('ZurmoModule', 'Marketing configuration saved successfully.')
                     );
                     $this->redirect(Yii::app()->createUrl('configuration/default/index'));
                 }
