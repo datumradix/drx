@@ -349,7 +349,7 @@
                 $searchAttributesData =    // Not Coding Standard
                     $this->resolveSearchAttributeDataForAllLatestActivities($searchAttributesData);
             }
-            if($shouldResolveSearchAttributeDataForLatestActivities)
+            if ($shouldResolveSearchAttributeDataForLatestActivities)
             {
                 $searchAttributesData =    // Not Coding Standard
                     $this->resolveSearchAttributeDataForLatestActivities($searchAttributesData);
