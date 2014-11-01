@@ -10,7 +10,7 @@
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
      * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
      *
-     * Zurmo is distributed in the hope that it will be useful, but WITHOUT
+	 * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
      * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
@@ -62,19 +62,22 @@
         public static function findGameTableRowsThatAreDuplicatedByTypePersonKey($tableName)
         {
             assert('is_string($tableName)');
+            // Begin Not Coding Standard
             $sql = "SELECT count(*) as count, person_item_id, type, CONCAT(type, '_', person_item_id) as unique_column " .
                 "FROM `".$tableName."` " .
                 "GROUP BY CONCAT(type, '_', person_item_id) having count(CONCAT(type, '_', person_item_id)) > 1";
-
+            // End Not Coding Standard
             return ZurmoRedBean::getAll($sql);
         }
 
         public static function findGameTableRowsThatAreDuplicatedByPersonKey($tableName)
         {
             assert('is_string($tableName)');
+            // Begin Not Coding Standard
             $sql = "SELECT count(*) as count, person_item_id " .
                 "FROM `".$tableName."` " .
                 "GROUP BY person_item_id having count(person_item_id) > 1";
+            // End Not Coding Standard
             return ZurmoRedBean::getAll($sql);
         }
 
@@ -83,20 +86,20 @@
             assert('is_string($messageContent) || $messageContent === null');
             $modelToKeep = $models[0];
             $maxValue    = 0;
-            foreach($models as $model)
+            foreach ($models as $model)
             {
-                if(get_class($model) == 'GameCollection' || ($model->value > $maxValue))
+                if (get_class($model) == 'GameCollection' || ($model->value > $maxValue))
                 {
                     $modelToKeep = $model;
-                    if(get_class($model) != 'GameCollection')
+                    if (get_class($model) != 'GameCollection')
                     {
                         $maxValue    = $model->value;
                     }
                 }
             }
-            foreach($models as $model)
+            foreach ($models as $model)
             {
-                if($model->id != $modelToKeep->id)
+                if ($model->id != $modelToKeep->id)
                 {
                     $messageContent .=  'Deleting model: ' . get_class($model) . ' with id ' . $model->id . "<BR>";
                     $model->delete();
