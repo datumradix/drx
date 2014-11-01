@@ -381,7 +381,8 @@
                 )
             );
             $rules                      = $this->getExportProcessCompletedNotificationRulesForExportItem($exportItem);
-            NotificationsUtil::submit($message, $rules);
+            ExportUtil::emailNotificationMessageForCompletedExport($exportItem, $message, $rules);
+            //NotificationsUtil::submit($message, $rules);
         }
 
         /**
