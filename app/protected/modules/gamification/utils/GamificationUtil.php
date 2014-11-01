@@ -10,7 +10,7 @@
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
      * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
      *
-	 * Zurmo is distributed in the hope that it will be useful, but WITHOUT
+     * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
      * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
