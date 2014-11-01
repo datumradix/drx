@@ -5609,6 +5609,47 @@ div.radio-input{
 	}
 }
 
+/*Timeout and inactivity*/
+#timeout-dialog{
+    float: left;
+    width: 100% !important;
+    #gradient > .vertical(#f6f6f6, #ededed);
+    .b-shadow(inset 0 1px 0 0 #ffffff);
+    &:before{
+        content:'\006A'; //j
+        .symbly(80px);
+        float: left;
+        margin-right: 25px;
+        line-height: 0.5;
+    }
+    p{
+        line-height: 1.5;
+    }
+    .float-bar{
+        margin-top: 20px;
+        margin-bottom: 0;
+        padding: 0;
+    }
+    .form-toolbar{
+        text-align: right;
+        a:last-child{
+            margin-right: 0;
+        }
+    }
+}
+
+#timeout-countdown{
+    font-weight: bold;
+    color:#fff;
+    background: #a82d31;
+    padding: 0 2px 0 4px;
+    .radius(2px);
+}
+
+#timeout-message{
+    margin-bottom: 5px;
+}
+
 @import 'mixins.less';
 @import 'icons.less';
 @import 'buttons.less';
