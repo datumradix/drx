@@ -37,19 +37,26 @@
     /**
      * Class for working the campaign status
      */
-    class CampaignStatusListViewColumnAdapter extends ListViewColumnAdapter
+    class CampaignStatusListViewColumnAdapter extends TextListViewColumnAdapter
     {
-        /**
-         * @return array
-         */
         public function renderGridViewData()
         {
+            $className  = get_class($this);
+            $value      = $className . '::resolveStatusPill($data->status)';
             return array(
-                'name'   => 'moduleClassName',
-                'header' => Campaign::getAnAttributeLabel('status'),
-                'type'   => 'raw',
-                'value'  => 'CampaignStatusElement::renderNonEditableStringContent((int)$data->status)'
+                'value' => $value,
+                'type'  => 'raw',
             );
+        }
+
+        public static function resolveStatusPill($status)
+        {
+            $label      = CampaignStatusElement::renderNonEditableStringContent((int)$status);
+            $span       = ZurmoHtml::tag('span', array(), $label);
+            $content    = '<i>&#9679;</i>' . $span;
+            $class      = 'campaign-status ' . strtolower($label);
+            $content    = ZurmoHtml::tag('div', compact('class'), $content);
+            return $content;
         }
     }
 ?>
