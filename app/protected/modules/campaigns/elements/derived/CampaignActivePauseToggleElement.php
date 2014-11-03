@@ -34,53 +34,50 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Display the conversation status with buttons to change it.
-     */
-    class ConversationOpenCloseElement extends StateToggleElement
+    class CampaignActivePauseToggleElement extends StateToggleElement
     {
         protected function assertAttributeName()
         {
-            assert('$this->attribute == "isClosed"');
+            assert('$this->attribute == "status"');
         }
 
         protected function assertModelClass()
         {
-            assert('$this->model instanceof Conversation');
+            assert('$this->model instanceof Campaign');
         }
 
         protected static function resolveSelectedRadioButtonListOption(RedBeanModel $model)
         {
-            return $model->resolveIsClosedForNull();
+            return intval($model->status == Campaign::STATUS_PAUSED);
         }
 
         protected static function resolveStatusChangeUrl(RedBeanModel $model)
         {
-            $url    = Yii::app()->createUrl('conversations/default/changeIsClosed', array('id' => $model->id));
+            $url    = Yii::app()->createUrl('campaigns/default/togglePaused', array('id' => $model->id));
             return $url;
         }
 
         protected static function resolveSuccessMessage()
         {
-            return CJavaScript::quote(Zurmo::t('ConversationsModule', 'Conversation status was changed.'));
-        }
-
-        protected static function resolvePostNotificationSuccessScript()
-        {
-            return "$('#CommentInlineEditForModelView').toggle();";
+            return CJavaScript::quote(Zurmo::t('CampaignsModule', 'Campaign status was changed.'));
         }
 
         public static function getModelAttributeNames()
         {
             return array(
-                'isClosed',
+                'status',
             );
         }
 
         public static function getDropDownArray()
         {
-            return array('0' => Zurmo::t('Core', 'Open'),
-                '1' => Zurmo::t('ConversationsModule', 'Closed'));
+            return array('0' => Zurmo::t('CampaignsModule', 'Running'),
+                        '1' => Zurmo::t('CampaignsModule', 'Paused'));
+        }
+
+        protected static function renderStatusAreaLabel()
+        {
+            return null;
         }
     }
 ?>
