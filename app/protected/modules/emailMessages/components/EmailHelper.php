@@ -161,7 +161,7 @@
             $userEmailAccount = EmailAccount::getByUserAndName($user, $name);
             if ($userEmailAccount->useCustomOutboundSettings)
             {
-                $settingsToLoad = array_merge($this->settingsToLoad, array('fromName', 'fromAddress'));
+                $settingsToLoad = array_merge(static::$settingsToLoad, array('fromName', 'fromAddress'));
                 foreach ($settingsToLoad as $keyName)
                 {
                     if ($keyName == 'outboundPassword')
