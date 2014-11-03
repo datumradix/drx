@@ -41,39 +41,36 @@
      */
     abstract class AutoresponderAndCampaignItemsUtil
     {
-        public static $folder                   = null;
+        protected $itemTableName            = null;
 
-        public static $returnPath               = null;
+        protected $itemClass                = null;
 
-        public static $ownerModelRelationName   = null;
+        protected $itemId                   = null;
 
-        public static $emailMessageForeignKey   = null;
+        protected $personId                 = null;
 
-        public static $itemTableName            = null;
+        protected $_instance                = null;
 
-        public static $itemClass                = null;
-
-        public static $personId                 = null;
-
-        public static function processDueItem(OwnedModel $item)
+        public function processDueItem(OwnedModel $item)
         {
             assert('is_object($item)');
             $emailMessageId             = null;
-            $itemId                     = $item->id;
-            assert('static::$itemClass === "AutoresponderItem" || static::$itemClass === "CampaignItem"');
-            $contact                    = static::resolveContact($item);
-            $itemOwnerModel             = static::resolveItemOwnerModel($item);
+            $this->itemId               = intval($item->id);
+            $this->itemClass            = get_class($item);
+            assert('$this->itemClass === "AutoresponderItem" || $this->itemClass === "CampaignItem"');
+            $contact                    = $this->resolveContact($item);
+            $itemOwnerModel             = $this->resolveItemOwnerModel($item);
             if ($itemOwnerModel->id < 0)
             {
                 // the corresponding autoresponder/campaign has been deleted already.
                 $item->delete();
                 return false;
             }
-            static::$personId           = $contact->getClassId('Person');
+            $this->personId           = $contact->getClassId('Person');
 
-            if (static::skipMessage($contact, $itemOwnerModel))
+            if ($this->skipMessage($contact, $itemOwnerModel))
             {
-               static::createSkipActivity($itemId);
+               $this->createSkipActivity();
             }
             else
             {
@@ -82,27 +79,26 @@
                 assert('get_class($marketingList) === "MarketingList"');
                 $textContent                = $itemOwnerModel->textContent;
                 $htmlContent                = null;
-                if (static::supportsRichText($itemOwnerModel))
+                if ($this->supportsRichText($itemOwnerModel))
                 {
                     $htmlContent = $itemOwnerModel->htmlContent;
                 }
-                static::resolveContent($textContent, $htmlContent, $contact, $itemOwnerModel->enableTracking,
-                                       (int)$itemId, static::$itemClass, (int)$marketingList->id);
+                $this->resolveContent($textContent, $htmlContent, $contact, $itemOwnerModel->enableTracking, (int)$marketingList->id);
                 try
                 {
-                    $item->emailMessage   = static::resolveEmailMessage($textContent, $htmlContent, $itemOwnerModel,
-                                                                        $contact, $marketingList, $itemId);
+                    $item->emailMessage   = $this->resolveEmailMessage($textContent, $htmlContent, $itemOwnerModel,
+                                                                        $contact, $marketingList);
                 }
                 catch (MissingRecipientsForEmailMessageException $e)
                 {
-                   static::createSkipActivity($itemId);
+                   $this->createSkipActivity();
                 }
             }
-            $marked = static::markItemAsProcessedWithSQL($itemId, $item->emailMessage->id);
+            $marked = $this->markItemAsProcessedWithSQL($item->emailMessage->id);
             return $marked;
         }
 
-        protected static function resolveContact(OwnedModel $item)
+        protected function resolveContact(OwnedModel $item)
         {
             $contact                    = $item->contact;
             if (empty($contact) || $contact->id < 0)
@@ -112,15 +108,15 @@
             return $contact;
         }
 
-        protected static function resolveItemOwnerModel(OwnedModel $item)
+        protected function resolveItemOwnerModel(OwnedModel $item)
         {
-            $itemOwnerModel             = $item->{static::$ownerModelRelationName};
+            $itemOwnerModel             = $item->{$this->resolveItemOwnerModelRelationName()};
             assert('is_object($itemOwnerModel)');
             assert('get_class($itemOwnerModel) === "Autoresponder" || get_class($itemOwnerModel) === "Campaign"');
             return $itemOwnerModel;
         }
 
-        protected static function skipMessage(Contact $contact, Item $itemOwnerModel)
+        protected function skipMessage(Contact $contact, Item $itemOwnerModel)
         {
             return ($contact->primaryEmail->optOut ||
                 // TODO: @Shoaibi: Critical0: We could use SQL for getByMarketingListIdContactIdandUnsubscribed to save further performance here.
@@ -130,89 +126,91 @@
                         true) != false));
         }
 
-        protected static function supportsRichText(Item $itemOwnerModel)
+        protected function supportsRichText(Item $itemOwnerModel)
         {
-            return ((static::$itemClass == 'CampaignItem' && $itemOwnerModel->supportsRichText) ||
-                        (static::$itemClass == 'AutoresponderItem'));
+            return (($this->itemClass == 'CampaignItem' && $itemOwnerModel->supportsRichText) ||
+                        ($this->itemClass == 'AutoresponderItem'));
         }
 
-        protected static function createSkipActivity($itemId)
+        protected function createSkipActivity()
         {
-            $activityClass  = static::$itemClass . 'Activity';
+            $activityClass  = $this->itemClass . 'Activity';
             $type           = $activityClass::TYPE_SKIP;
-            $activityClass::createNewActivity($type, $itemId, static::$personId);
+            $activityClass::createNewActivity($type, $this->itemId, $this->personId);
         }
 
-        protected static function resolveContent(& $textContent, & $htmlContent, Contact $contact,
-                                                            $enableTracking, $modelId, $modelType, $marketingListId)
+        public function resolveContent(& $textContent, & $htmlContent, Contact $contact, $enableTracking,
+                                            $marketingListId, $preview = false)
         {
-            assert('is_int($modelId)');
             assert('is_int($marketingListId)');
             GlobalMarketingFooterUtil::resolveContentsForGlobalFooter($textContent, $htmlContent);
-            static::resolveContentsForMergeTags($textContent, $htmlContent, $contact,
-                                                $marketingListId, $modelId, $modelType);
-            ContentTrackingUtil::resolveContentsForTracking($textContent, $htmlContent, $enableTracking,
-                                                            $modelId, $modelType, static::$personId);
+            $this->resolveContentsForMergeTags($textContent, $htmlContent, $contact,
+                                                $marketingListId, $preview);
+            if ($enableTracking)
+            {
+                ContentTrackingUtil::resolveContentsForTracking($textContent, $htmlContent, $enableTracking,
+                    $this->itemId, $this->itemClass, $this->personId);
+            }
         }
 
-        public static function resolveContentsForMergeTags(& $textContent, & $htmlContent, Contact $contact,
-                                                            $marketingListId, $modelId, $modelType)
+        public function resolveContentsForMergeTags(& $textContent, & $htmlContent, Contact $contact,
+                                                            $marketingListId, $preview = false)
         {
-            static::resolveContentForMergeTags($textContent, $contact, false, $marketingListId, $modelId, $modelType);
-            static::resolveContentForMergeTags($htmlContent, $contact, true, $marketingListId, $modelId, $modelType);
+            $this->resolveContentForMergeTags($textContent, $contact, false, $marketingListId, $preview);
+            $this->resolveContentForMergeTags($htmlContent, $contact, true, $marketingListId, $preview);
         }
 
-        protected static function resolveContentForMergeTags(& $content, Contact $contact, $isHtmlContent,
-                                                                $marketingListId, $modelId, $modelType)
+        protected function resolveContentForMergeTags(& $content, Contact $contact, $isHtmlContent,
+                                                                $marketingListId, $preview = false)
         {
-            $resolved   = static::resolveMergeTags($content, $contact, $isHtmlContent,
-                                                    $marketingListId, $modelId, $modelType);
+            $resolved   = $this->resolveMergeTags($content, $contact, $isHtmlContent,
+                                                    $marketingListId, $preview);
             if ($resolved === false)
             {
                 throw new NotSupportedException(Zurmo::t('EmailTemplatesModule', 'Provided content contains few invalid merge tags.'));
             }
         }
 
-        protected static function resolveLanguageForContent()
+        protected function resolveLanguageForContent()
         {
             // TODO: @Shoaibi/@Jason: Low: we might add support for language
             return null;
         }
 
-        protected static function resolveEmailTemplateType()
+        protected function resolveEmailTemplateType()
         {
             return EmailTemplate::TYPE_CONTACT;
         }
 
-        protected static function resolveErrorOnFirstMissingMergeTag()
+        protected function resolveErrorOnFirstMissingMergeTag()
         {
             return true;
         }
 
-        protected static function resolveMergeTagsParams($marketingListId, $modelId, $modelType, $isHtmlContent = false)
+        protected function resolveMergeTagsParams($marketingListId, $isHtmlContent = false, $preview = false)
         {
-            $params     = GlobalMarketingFooterUtil::resolveFooterMergeTagsArray(static::$personId, $marketingListId,
-                                                                            $modelId, $modelType, true,
-                                                                            false, $isHtmlContent);
+            $params     = GlobalMarketingFooterUtil::resolveFooterMergeTagsArray($this->personId, $marketingListId,
+                                                                            $this->itemId, $this->itemClass, !$preview,
+                                                                            $preview, $isHtmlContent);
             return $params;
         }
 
-        protected static function resolveMergeTagsUtil($content)
+        protected function resolveMergeTagsUtil($content)
         {
-            $language       = static::resolveLanguageForContent();
-            $templateType   = static::resolveEmailTemplateType();
+            $language       = $this->resolveLanguageForContent();
+            $templateType   = $this->resolveEmailTemplateType();
             $util           = MergeTagsUtilFactory::make($templateType, $language, $content);
             return $util;
         }
 
-        protected static function resolveMergeTags(& $content, Contact $contact, $isHtmlContent,
-                                                   $marketingListId, $modelId, $modelType)
+        protected function resolveMergeTags(& $content, Contact $contact, $isHtmlContent,
+                                                   $marketingListId, $preview = false)
         {
             $invalidTags            = array();
-            $language               = static::resolveLanguageForContent();
-            $errorOnFirstMissing    = static::resolveErrorOnFirstMissingMergeTag();
-            $params                 = static::resolveMergeTagsParams($marketingListId, $modelId, $modelType, $isHtmlContent);
-            $util                   = static::resolveMergeTagsUtil($content);
+            $language               = $this->resolveLanguageForContent();
+            $errorOnFirstMissing    = $this->resolveErrorOnFirstMissingMergeTag();
+            $params                 = $this->resolveMergeTagsParams($marketingListId, $isHtmlContent, $preview);
+            $util                   = $this->resolveMergeTagsUtil($content);
             $resolvedContent        = $util->resolveMergeTags($contact, $invalidTags, $language,
                                                                 $errorOnFirstMissing, $params);
             if ($resolvedContent !== false)
@@ -223,56 +221,91 @@
             return false;
         }
 
-        protected static function resolveEmailMessage($textContent, $htmlContent, Item $itemOwnerModel,
-                                                    Contact $contact, MarketingList $marketingList, $itemId)
+        protected function resolveEmailMessage($textContent, $htmlContent, Item $itemOwnerModel,
+                                                    Contact $contact, MarketingList $marketingList)
         {
-            $emailMessage   = static::saveEmailMessage($textContent, $htmlContent, $itemOwnerModel,
-                                                        $contact, $marketingList, $itemId);
-            static::sendEmailMessage($emailMessage);
-            static::resolveExplicitPermissionsForEmailMessage($emailMessage, $marketingList);
+            $emailMessage   = $this->saveEmailMessage($textContent, $htmlContent, $itemOwnerModel,
+                                                        $contact, $marketingList);
+            $this->sendEmailMessage($emailMessage);
+            $this->resolveExplicitPermissionsForEmailMessage($emailMessage, $marketingList);
             return $emailMessage;
         }
 
-        protected static function saveEmailMessage($textContent, $htmlContent, Item $itemOwnerModel,
-                                                    Contact $contact, MarketingList $marketingList, $itemId)
+        protected function saveEmailMessage($textContent, $htmlContent, Item $itemOwnerModel,
+                                                    Contact $contact, MarketingList $marketingList)
         {
-            AutoresponderAndCampaignItemsEmailMessageUtil::$itemClass   = static::$itemClass;
-            AutoresponderAndCampaignItemsEmailMessageUtil::$personId    = static::$personId;
-            AutoresponderAndCampaignItemsEmailMessageUtil::$returnPath  = static::$returnPath;
+            $folder         = $this->resolveEmailFolder();
             $emailMessage   = AutoresponderAndCampaignItemsEmailMessageUtil::resolveAndSaveEmailMessage($textContent,
                                                                                                     $htmlContent,
                                                                                                     $itemOwnerModel,
                                                                                                     $contact,
                                                                                                     $marketingList,
-                                                                                                    $itemId,
-                                                                                                    static::$folder->id);
+                                                                                                    $this->itemId,
+                                                                                                    $folder->id,
+                                                                                                    $this->itemClass,
+                                                                                                    $this->personId);
             return $emailMessage;
         }
 
-        protected static function sendEmailMessage(EmailMessage & $emailMessage)
+        protected function sendEmailMessage(EmailMessage & $emailMessage)
         {
             Yii::app()->emailHelper->send($emailMessage, true, false);
         }
 
-        protected static function resolveExplicitPermissionsForEmailMessage(EmailMessage & $emailMessage, MarketingList $marketingList)
+        protected function resolveExplicitPermissionsForEmailMessage(EmailMessage & $emailMessage, MarketingList $marketingList)
         {
             $explicitReadWriteModelPermissions  = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($marketingList);
             ExplicitReadWriteModelPermissionsUtil::resolveExplicitReadWriteModelPermissions($emailMessage,
                                                                                     $explicitReadWriteModelPermissions);
         }
 
-        protected static function markItemAsProcessedWithSQL($itemId, $emailMessageId = null)
+        protected function markItemAsProcessedWithSQL($emailMessageId = null)
         {
-            $sql                    = "UPDATE " . DatabaseCompatibilityUtil::quoteString(static::$itemTableName);
+            $className              = $this->itemClass;
+            $itemTableName          = $className::getTableName();
+            $sql                    = "UPDATE " . DatabaseCompatibilityUtil::quoteString($itemTableName);
             $sql                    .= " SET " . DatabaseCompatibilityUtil::quoteString('processed') . ' = 1';
             if ($emailMessageId)
             {
-                $sql .= ", " . DatabaseCompatibilityUtil::quoteString(static::$emailMessageForeignKey);
+                $emailMessageForeignKey = RedBeanModel::getForeignKeyName($this->itemClass, 'emailMessage');
+                $sql .= ", " . DatabaseCompatibilityUtil::quoteString($emailMessageForeignKey);
                 $sql .= " = ${emailMessageId}";
             }
-            $sql                    .= " WHERE " . DatabaseCompatibilityUtil::quoteString('id') . " = ${itemId};";
+            $sql                    .= " WHERE " . DatabaseCompatibilityUtil::quoteString('id') . " = {$this->itemId};";
             $effectedRows           = ZurmoRedBean::exec($sql);
             return ($effectedRows == 1);
+        }
+
+        protected function resolveItemOwnerModelRelationName()
+        {
+            if ($this->itemClass == 'AutoresponderItem')
+            {
+                return 'autoresponder';
+            }
+            else
+            {
+                return 'campaign';
+            }
+        }
+
+        protected function resolveEmailBoxName()
+        {
+            if ($this->itemClass == "AutoresponderItem")
+            {
+                return EmailBox::AUTORESPONDERS_NAME;
+            }
+            else
+            {
+                return EmailBox::CAMPAIGNS_NAME;
+            }
+        }
+
+        protected function resolveEmailFolder()
+        {
+            $boxName            = $this->resolveEmailBoxName();
+            $box                = EmailBox::resolveAndGetByName($boxName);
+            $folder             = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
+            return $folder;
         }
     }
 ?>

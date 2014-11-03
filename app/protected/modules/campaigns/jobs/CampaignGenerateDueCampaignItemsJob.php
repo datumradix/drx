@@ -84,7 +84,8 @@
          */
         public function run()
         {
-            return CampaignItemsUtil::generateCampaignItemsForDueCampaigns();
+            $util   = new CampaignItemsUtil();
+            return $util->generateCampaignItemsForDueCampaigns();
         }
 
         public static function jobExecutionInQueueDependsOnTime()
