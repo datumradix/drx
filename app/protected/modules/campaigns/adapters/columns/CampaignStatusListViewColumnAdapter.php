@@ -44,6 +44,8 @@
             $className  = get_class($this);
             $value      = $className . '::resolveStatusPill($data->status)';
             return array(
+                'name'   => 'status',
+                'header' => Campaign::getAnAttributeLabel('status'),
                 'value' => $value,
                 'type'  => 'raw',
             );
