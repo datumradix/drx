@@ -182,12 +182,17 @@
             {
                 return null;
             }
-            return StringUtil::renderFluidTitleContent($this->getTitle());
+            return StringUtil::renderFluidTitleContent($this->getTitle(), $this->getPostTruncatedTitleContent());
         }
 
         public function getTitle()
         {
             return $this->title;
+        }
+
+        public function getPostTruncatedTitleContent()
+        {
+            return null;
         }
 
         /**
