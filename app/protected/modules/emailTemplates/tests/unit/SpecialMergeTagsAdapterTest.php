@@ -167,6 +167,7 @@
         */
         public function testResolveGlobalMarketingFooterHtmlWithValidNestedMergeTag()
         {
+            $errorOnFirstMissing    =  MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG;
             $model                  = Yii::app()->user->userModel;
             $params                 = array('personId'          => 1,
                                             'marketingListId'   => 2,
@@ -176,7 +177,8 @@
                                             'preview'           => false);
             $footer                 = GlobalMarketingFooterUtil::getContentByType(true, true);
             GlobalMarketingFooterUtil::setContentByType($footer, true);
-            $resolvedFooter         = SpecialMergeTagsAdapter::resolve('globalMarketingFooterHtml', $model, $params);
+            $resolvedFooter         = SpecialMergeTagsAdapter::resolve('globalMarketingFooterHtml', $model,
+                                                                        $errorOnFirstMissing, $params);
             $expectedFooter         = GlobalMarketingFooterUtil::getContentByType(true, false);
             $this->assertNotNull($resolvedFooter);
             // resolved one would be without merge tags, expected would have those.
@@ -218,6 +220,7 @@
          */
         public function testResolveGlobalMarketingFooterPlainTextWithValidNestedMergeTag()
         {
+            $errorOnFirstMissing    =  MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG;
             $model                  = Yii::app()->user->userModel;
             $params                 = array('personId'          => 1,
                                             'marketingListId'   => 2,
@@ -227,7 +230,8 @@
                                             'preview'           => false);
             $footer                 = GlobalMarketingFooterUtil::getContentByType(false, true);
             GlobalMarketingFooterUtil::setContentByType($footer, false);
-            $resolvedFooter         = SpecialMergeTagsAdapter::resolve('globalMarketingFooterPlainText', $model, $params);
+            $resolvedFooter         = SpecialMergeTagsAdapter::resolve('globalMarketingFooterPlainText', $model,
+                                                                            $errorOnFirstMissing, $params);
             $expectedFooter         = GlobalMarketingFooterUtil::getContentByType(false, false);
             $this->assertNotNull($resolvedFooter);
             // resolved one would be without merge tags, expected would have those.
@@ -258,6 +262,7 @@
          */
         public function testResolveUnsubscribeUrlWithoutAnyParams()
         {
+            $errorOnFirstMissing    =  MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG;
             $model                  = Yii::app()->user->userModel;
             $params                 = array();
             try
@@ -268,7 +273,8 @@
             catch (NotSupportedException $e)
             {
             }
-            $resolved               = SpecialMergeTagsAdapter::resolve('unsubscribeUrl', $model, $params);
+            $resolved               = SpecialMergeTagsAdapter::resolve('unsubscribeUrl', $model,
+                                                                        $errorOnFirstMissing, $params);
             $this->assertEquals(MergeTagsToModelAttributesAdapter::PROPERTY_NOT_FOUND, $resolved);
         }
 
@@ -277,6 +283,7 @@
          */
         public function testResolveUnsubscribeUrlWithMissingSomeParams()
         {
+            $errorOnFirstMissing    =  MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG;
             $model                  = Yii::app()->user->userModel;
             $params                 = array('personId' => 1, 'marketingListId' => 2);
             try
@@ -287,7 +294,8 @@
             catch (NotSupportedException $e)
             {
             }
-            $resolved               = SpecialMergeTagsAdapter::resolve('unsubscribeUrl', $model, $params);
+            $resolved               = SpecialMergeTagsAdapter::resolve('unsubscribeUrl', $model,
+                                                                        $errorOnFirstMissing, $params);
             $this->assertEquals(MergeTagsToModelAttributesAdapter::PROPERTY_NOT_FOUND, $resolved);
         }
 
@@ -296,6 +304,7 @@
          */
         public function testResolveUnsubscribeUrlWithMissingSomeOptionalParams()
         {
+            $errorOnFirstMissing    =  MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG;
             $model                  = Yii::app()->user->userModel;
             $params                 = array('personId'          => 1,
                                             'marketingListId'   => 2,
@@ -303,7 +312,8 @@
                                             'modelType'         => 'AutoresponderItem');
             $expected               = GlobalMarketingFooterUtil::resolveUnsubscribeUrlByArray($params);
             $this->assertContains('marketingLists/external/unsubscribe?hash=', $expected);
-            $resolved               = SpecialMergeTagsAdapter::resolve('unsubscribeUrl', $model, $params);
+            $resolved               = SpecialMergeTagsAdapter::resolve('unsubscribeUrl', $model,
+                                                                        $errorOnFirstMissing, $params);
             $this->assertContains('marketingLists/external/unsubscribe?hash=', $resolved);
             $expectedHash           = static::extractHashFromUrl($expected);
             $resolvedHash           = static::extractHashFromUrl($resolved);
@@ -317,6 +327,7 @@
          */
         public function testResolveUnsubscribeUrlWithoutModel()
         {
+            $errorOnFirstMissing    =  MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG;
             $model                  = null;
             $params                 = array('personId'          => 1,
                                             'marketingListId'   => 2,
@@ -326,7 +337,8 @@
                                             'preview'           => false);
             $expected               = GlobalMarketingFooterUtil::resolveUnsubscribeUrlByArray($params);
             $this->assertContains('marketingLists/external/unsubscribe?hash=', $expected);
-            $resolved               = SpecialMergeTagsAdapter::resolve('unsubscribeUrl', $model, $params);
+            $resolved               = SpecialMergeTagsAdapter::resolve('unsubscribeUrl', $model,
+                                                                        $errorOnFirstMissing, $params);
             $this->assertContains('marketingLists/external/unsubscribe?hash=', $resolved);
             $expectedHash           = static::extractHashFromUrl($expected);
             $resolvedHash           = static::extractHashFromUrl($resolved);
@@ -340,6 +352,7 @@
          */
         public function testResolveManageSubscriptionsUrlWithoutAnyParams()
         {
+            $errorOnFirstMissing    =  MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG;
             $model                  = Yii::app()->user->userModel;
             $params                 = array();
             try
@@ -350,7 +363,8 @@
             catch (NotSupportedException $e)
             {
             }
-            $resolved               = SpecialMergeTagsAdapter::resolve('manageSubscriptionsUrl', $model, $params);
+            $resolved               = SpecialMergeTagsAdapter::resolve('manageSubscriptionsUrl', $model,
+                                                                        $errorOnFirstMissing, $params);
             $this->assertEquals(MergeTagsToModelAttributesAdapter::PROPERTY_NOT_FOUND, $resolved);
         }
 
@@ -359,6 +373,7 @@
          */
         public function testResolveManageSubscriptionsUrlWithMissingSomeParams()
         {
+            $errorOnFirstMissing    =  MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG;
             $model                  = Yii::app()->user->userModel;
             $params                 = array('personId' => 1, 'marketingListId' => 2);
             try
@@ -369,7 +384,8 @@
             catch (NotSupportedException $e)
             {
             }
-            $resolved               = SpecialMergeTagsAdapter::resolve('manageSubscriptionsUrl', $model, $params);
+            $resolved               = SpecialMergeTagsAdapter::resolve('manageSubscriptionsUrl', $model,
+                                                                        $errorOnFirstMissing, $params);
             $this->assertEquals(MergeTagsToModelAttributesAdapter::PROPERTY_NOT_FOUND, $resolved);
         }
 
@@ -378,6 +394,7 @@
          */
         public function testResolveManageSubscriptionsUrlWithMissingSomeOptionalParams()
         {
+            $errorOnFirstMissing    =  MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG;
             $model                  = Yii::app()->user->userModel;
             $params                 = array('personId'          => 1,
                                                 'marketingListId'   => 2,
@@ -385,7 +402,8 @@
                                                 'modelType'         => 'AutoresponderItem');
             $expected               = GlobalMarketingFooterUtil::resolveManageSubscriptionsUrlByArray($params);
             $this->assertContains('marketingLists/external/manageSubscriptions?hash=', $expected);
-            $resolved               = SpecialMergeTagsAdapter::resolve('manageSubscriptionsUrl', $model, $params);
+            $resolved               = SpecialMergeTagsAdapter::resolve('manageSubscriptionsUrl', $model,
+                                                                        $errorOnFirstMissing, $params);
             $this->assertContains('marketingLists/external/manageSubscriptions?hash=', $resolved);
             $expectedHash           = static::extractHashFromUrl($expected);
             $resolvedHash           = static::extractHashFromUrl($resolved);
@@ -399,6 +417,7 @@
          */
         public function testResolveManageSubscriptionsUrlWithoutModel()
         {
+            $errorOnFirstMissing    =  MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG;
             $model                  = null;
             $params                 = array('personId'          => 1,
                                             'marketingListId'   => 2,
@@ -408,7 +427,8 @@
                                             'preview'           => false);
             $expected               = GlobalMarketingFooterUtil::resolveManageSubscriptionsUrlByArray($params);
             $this->assertContains('marketingLists/external/manageSubscriptions?hash=', $expected);
-            $resolved               = SpecialMergeTagsAdapter::resolve('manageSubscriptionsUrl', $model, $params);
+            $resolved               = SpecialMergeTagsAdapter::resolve('manageSubscriptionsUrl', $model,
+                                                                        $errorOnFirstMissing, $params);
             $this->assertContains('marketingLists/external/manageSubscriptions?hash=', $resolved);
             $expectedHash           = static::extractHashFromUrl($expected);
             $resolvedHash           = static::extractHashFromUrl($resolved);

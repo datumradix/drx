@@ -277,12 +277,12 @@
                 $contact        = Contact::getById($contactId);
                 $textContent    = $emailTemplate->textContent;
                 $htmlContent    = $emailTemplate->htmlContent;
-                GlobalMarketingFooterUtil::removeFooterMergeTags($textContent);
-                GlobalMarketingFooterUtil::removeFooterMergeTags($htmlContent);
-                // we have already stripped off the merge tags that could introduce problems,
-                // no need to send actual data for personId, modelId, modelType and marketingListId.
-                $util           = new CampaignItemsUtil();
-                $util->resolveContentsForMergeTags($textContent, $htmlContent, $contact, 0, false);
+                $invalidTags    = array();
+                MergeTagsContentResolverUtil::resolveContentsForGlobalFooterAndMergeTagsAndTracking($textContent,
+                                        $htmlContent, $contact, intval($emailTemplate->type),
+                                        MergeTagsToModelAttributesAdapter::ERROR_ON_FIRST_INVALID_TAG,
+                                        $emailTemplate->language, $invalidTags, null, true,
+                                        MergeTagsContentResolverUtil::REMOVE_GLOBAL_FOOTER_MERGE_TAGS_IF_PRESENT, false);
                 $emailTemplate->setTreatCurrentUserAsOwnerForPermissions(true);
                 $emailTemplate->textContent = stripslashes($textContent);
                 $emailTemplate->htmlContent = stripslashes($htmlContent);
@@ -653,8 +653,11 @@
             $textContent                        = $emailTemplate->textContent;
             if ($resolveMergeTags)
             {
-                $util                           = new CampaignItemsUtil();
-                $util->resolveContent($textContent, $htmlContent, $contact, false, 0, true);
+                MergeTagsContentResolverUtil::resolveContentsForGlobalFooterAndMergeTagsAndTracking($textContent,
+                                        $htmlContent, $contact, intval($emailTemplate->type),
+                                        MergeTagsToModelAttributesAdapter::SUPPRESS_INVALID_TAG_ERRORS_KEEP_TAG,
+                                        $emailTemplate->language, $invalidTags, null, true,
+                                        MergeTagsContentResolverUtil::ADD_GLOBAL_FOOTER_MERGE_TAGS_IF_MISSING, false);
             }
             $emailContent->textContent          = $textContent;
             $emailContent->htmlContent          = $htmlContent;
