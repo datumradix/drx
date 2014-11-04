@@ -369,7 +369,7 @@
         {
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $content = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
+            $content = EmailHelper::resolveAndGetDefaultFromAddress();
             $this->assertEquals('notification@zurmoalerts.com', $content);
         }
 
@@ -377,9 +377,9 @@
         {
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $content = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
+            $content = EmailHelper::resolveAndGetDefaultFromAddress();
             $this->assertEquals('notification@zurmoalerts.com', $content);
-            Yii::app()->emailHelper->setDefaultFromAddress($content);
+            EmailHelper::setDefaultFromAddress($content);
             $metadata = ZurmoModule::getMetadata();
             $this->assertEquals('notification@zurmoalerts.com', $metadata['global']['defaultFromAddress']);
         }
@@ -388,7 +388,7 @@
         {
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $content = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
+            $content = EmailHelper::resolveAndGetDefaultTestToAddress();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $content);
         }
 
@@ -396,9 +396,9 @@
         {
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $content = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
+            $content = EmailHelper::resolveAndGetDefaultTestToAddress();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $content);
-            Yii::app()->emailHelper->setDefaultTestToAddress($content);
+            EmailHelper::setDefaultTestToAddress($content);
             $metadata = ZurmoModule::getMetadata();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $metadata['global']['defaultTestToAddress']);
         }

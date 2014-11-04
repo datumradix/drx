@@ -234,22 +234,26 @@
             $contact            = ContactTestHelper::createContactByNameForOwner('autoresponderContact', Yii::app()->user->userModel);
             $saved              = AutoresponderItem::addNewItem(0, $processDateTime, $contact, $autoresponders[0]);
             $this->assertTrue($saved);
-            $autoresponderItems = AutoresponderItem::getByProcessedAndAutoresponderId(0,
-                                                                                        $autoresponderId);
-            //print_r($autoresponderItems[0]->id);
+            $autoresponderItems = AutoresponderItem::getByProcessedAndAutoresponderId(0, $autoresponderId);
             $this->assertNotEmpty($autoresponderItems);
             $this->assertCount(1, $autoresponderItems);
 
-            $autoresponderItemActivity                  = new AutoresponderItemActivity();
-            $autoresponderItemActivity->type            = AutoresponderItemActivity::TYPE_OPEN;
-            $autoresponderItemActivity->quantity        = 10;
-            $autoresponderItemActivity->latestSourceIP  = '10.11.12.13';
-            $autoresponderItemActivity->autoresponderItem = $autoresponderItems[0];
-            $this->assertTrue($autoresponderItemActivity->save());
-            //print_r($autoresponderItemActivity->id);
-
-            $autoresponderItemActivities = AutoresponderItemActivity::getAll();
-            $this->assertCount(1, $autoresponderItemActivities);
+            $fileNames                  = array('testImage.png', 'testZip.zip', 'testPDF.pdf');
+            $files                      = array();
+            foreach ($fileNames as $index => $fileName)
+            {
+                $file                       = ZurmoTestHelper::createFileModel($fileName);
+                $files[$index]['name']      = $fileName;
+                $files[$index]['type']      = $file->type;
+                $files[$index]['size']      = $file->size;
+                $files[$index]['contents']  = $file->fileContent->content;
+                $autoresponders[0]->files->add($file);
+            }
+            $this->assertTrue($autoresponders[0]->save());
+            $autoresponders = Autoresponder::getAll();
+            $this->assertNotEmpty($autoresponders[0]->files);
+            $this->assertCount(count($files), $autoresponders[0]->files);
+            $this->assertEquals(count($files), FileModel::getCount());
 
             $autoresponders[0]->delete();
 
@@ -259,8 +263,7 @@
             $autoresponderitems = AutoresponderItem::getByProcessedAndAutoresponderId(0, $autoresponderId);
             $this->assertEquals(0, count($autoresponderitems));
 
-            $autoresponderItemActivities = AutoresponderItemActivity::getAll();
-            $this->assertCount(0, $autoresponderItemActivities);
+            $this->assertEquals(0, FileModel::getCount());
         }
 
         public function testResolveNewTimeStampForDuration()
