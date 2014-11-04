@@ -40,5 +40,11 @@
         {
            return null;
         }
+
+        protected function resolveHtmlOptionsForRendering()
+        {
+            $htmlOptions = $this->getHtmlOptions();
+            return $htmlOptions;
+        }
     }
 ?>
