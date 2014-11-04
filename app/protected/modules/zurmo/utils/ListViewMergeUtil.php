@@ -315,6 +315,11 @@
             $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter('EmailMessage');
             $where               = RedBeanModelDataProvider::makeWhere('EmailMessage', $searchAttributesData[0]['EmailMessage'], $joinTablesAdapter);
             $models              = EmailMessage::getSubset($joinTablesAdapter, null, null, $where, null);
+            if (isset($searchAttributesData[1]['EmailMessage']))
+            {
+                $where  = RedBeanModelDataProvider::makeWhere('EmailMessage', $searchAttributesData[1]['EmailMessage'], $joinTablesAdapter);
+                $models = array_merge($models, EmailMessage::getSubset($joinTablesAdapter, null, null, $where, null));
+            }
             foreach ($models as $model)
             {
                 //Resolve sender

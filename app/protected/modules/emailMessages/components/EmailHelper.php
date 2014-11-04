@@ -345,7 +345,7 @@
             $mailer             = $this->getOutboundMailer();
             $this->populateMailer($mailer, $emailMessage);
             $this->sendEmail($mailer, $emailMessage);
-            $this->updateEmailMessageForSending($emailMessage, boolval($emailMessage->id > 0));
+            $this->updateEmailMessageForSending($emailMessage, (bool) ($emailMessage->id > 0));
         }
 
         /**
@@ -359,7 +359,9 @@
                 Yii::log("EmailMessage should have been saved by this point. Anyways, saving now", CLogger::LEVEL_INFO);
                 // we save it and return. No need to call SP as the message is saved already;
                 $emailMessage->save(false);
+                return;
             }
+            $nowTimestamp       = "'" . DateTimeUtil::convertTimestampToDbFormatDateTime(time()) . "'";
             $sendAttempts       = ($emailMessage->sendAttempts)? $emailMessage->sendAttempts : 1;
             $sentDateTime       = ($emailMessage->sentDateTime)? "'" . $emailMessage->sentDateTime . "'" : 'null';
             $serializedData     = ($emailMessage->error->serializedData)?
@@ -369,7 +371,8 @@
                                                                         ' . $sendAttempts . ',
                                                                         ' . $sentDateTime . ',
                                                                         ' . $emailMessage->folder->id . ',
-                                                                        ' . $serializedData .')';
+                                                                        ' . $serializedData . ',
+                                                                        ' . $nowTimestamp .')';
             ZurmoDatabaseCompatibilityUtil::callProcedureWithoutOuts($sql);
             $emailMessage->forget();
         }

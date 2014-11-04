@@ -55,6 +55,11 @@
                         'moduleClassName' => 'HomeModule',
                         'rightName' => HomeModule::RIGHT_DELETE_DASHBOARDS,
                    ),
+                    array(
+                        ZurmoBaseController::RIGHTS_FILTER_PATH . ' + pushDashboard',
+                        'moduleClassName' => 'ZurmoModule',
+                        'rightName' => ZurmoModule::RIGHT_PUSH_DASHBOARD_OR_LAYOUT,
+                    ),
                )
             );
         }
@@ -158,6 +163,8 @@
             {
                 $dashboard->owner = Yii::app()->user->userModel;
                 $dashboard->layoutId = Dashboard::getNextLayoutId();
+                $_POST['Dashboard']  = PostUtil::sanitizePostByDesignerTypeForSavingModel(
+                                       $dashboard, $_POST['Dashboard']);
                 $dashboard->setAttributes($_POST['Dashboard']);
                 assert('in_array($dashboard->layoutType, array_keys(Dashboard::getLayoutTypesData()))');
                 if ($dashboard->save())
@@ -184,6 +191,8 @@
             if (isset($_POST['Dashboard']))
             {
                 $oldLayoutType = $dashboard->layoutType;
+                $_POST['Dashboard']  = PostUtil::sanitizePostByDesignerTypeForSavingModel(
+                                       $dashboard, $_POST['Dashboard']);
                 $dashboard->setAttributes($_POST['Dashboard']);
                 assert('in_array($dashboard->layoutType, array_keys(Dashboard::getLayoutTypesData()))');
                 if ($dashboard->save())
@@ -248,6 +257,52 @@
             {
                 return (bool)$hideWelcomeViewGlobally;
             }
+        }
+
+        public function actionPushDashboard($id)
+        {
+            $dashboard = Dashboard::getById(intval($id));
+            $modelClassName = get_class($dashboard);
+            if (isset($_POST[$modelClassName]))
+            {
+                $groupsAndUsers = PushDashboardUtil::resolveGroupsAndUsersFromPost($_POST[$modelClassName]);
+                PushDashboardUtil::pushDashboardToUsers($dashboard, $groupsAndUsers);
+                Yii::app()->user->setFlash('notification', Zurmo::t('HomeModule', 'Dashboard pushed successfully'));
+                $this->redirect(array('default/dashboardDetails', 'id' => $dashboard->id));
+            }
+            $editView = new PushDashboardEditView($this->getId(), $this->getModule()->getId(), $dashboard,
+                        Zurmo::t('HomeModule', 'Push Dashboard'));
+            $view     = new HomePageView(ZurmoDefaultViewUtil::makeStandardViewForCurrentUser($this, $editView));
+            echo $view->render();
+        }
+
+        public function actionAutoCompleteGroupsAndUsers($term)
+        {
+            $pageSize = Yii::app()->pagination->resolveActiveForCurrentUserByType(
+                        'autoCompleteListPageSize', get_class($this->getModule()));
+            $groups   = ModelAutoCompleteUtil::getByPartialName('Group', $term, $pageSize);
+            $users    = UserSearch::getUsersByPartialFullNameOrAnyEmailAddress($term, $pageSize, null);
+            $autoCompleteResults = array();
+            foreach ($groups as $group)
+            {
+                $autoCompleteResults[] = array(
+                    'id'   => PushDashboardUtil::GROUP_PREFIX . $group['id'],
+                    'name' => $group['value']
+                );
+            }
+            foreach ($users as $user)
+            {
+                $autoCompleteResults[] = array(
+                    'id'   => PushDashboardUtil::USER_PREFIX . $user->id,
+                    'name' => MultipleContactsForMeetingElement::renderHtmlContentLabelFromUserAndKeyword($user, $term)
+                );
+            }
+            echo CJSON::encode($autoCompleteResults);
+        }
+
+        public function actionDetails($id)
+        {
+            $this->actionDashboardDetails($id);
         }
     }
 ?>

@@ -68,5 +68,18 @@
         {
             return 'ASearchFormTestModel';
         }
+
+        protected function dumbMethodToTestTranslations()
+        {
+            Zurmo::t('Core', 'A message for test translation with no line break');
+            Zurmo::t('Core', 'A message for test translation with ' .
+                                'two line breaks');
+            Zurmo::t('Core', 'A message' .
+                             ' for test' .
+                             ' translation with' .
+                             ' many' .
+                             ' line' .
+                             ' breaks');
+        }
     }
 ?>

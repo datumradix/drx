@@ -282,7 +282,7 @@
                 }
                 $items[$index]            = $item;
             }
-            echo CJSON::encode($items);
+            echo CJSON::encode(array('items' => $items, 'isMaxCountReached' => $dataProvider->getIsMaxCountReached()));
         }
 
         /**

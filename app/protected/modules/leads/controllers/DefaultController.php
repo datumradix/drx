@@ -365,8 +365,13 @@
             elseif (isset($_POST['Account']))
             {
                 $account = LeadsUtil::attributesToAccountWithNoPostData($contact, $account, $_POST['Account']);
-                $account->setAttributes($_POST['Account']);
-                if ($account->save())
+                $savedSuccessfully = false;
+                $modelToStringValue = null;
+                $postData = $_POST['Account'];
+                $controllerUtil   = static::getZurmoControllerUtil();
+                $account            = $controllerUtil->saveModelFromPost($postData, $account, $savedSuccessfully,
+                                                                            $modelToStringValue, false);
+                if ($savedSuccessfully)
                 {
                     $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($contact);
                     ExplicitReadWriteModelPermissionsUtil::resolveExplicitReadWriteModelPermissions($account, $explicitReadWriteModelPermissions);

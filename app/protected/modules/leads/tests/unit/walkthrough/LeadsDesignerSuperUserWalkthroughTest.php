@@ -174,7 +174,7 @@
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout,
                                       'LayoutPanelsTypeForm' => array('type' => FormLayout::PANELS_DISPLAY_TYPE_ALL)));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to LeadsSearchView.
             $this->setGetArray(array('moduleClassName' => 'LeadsModule',
@@ -183,7 +183,7 @@
                         'LeadStateDropDown');
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to LeadsListView.
             $this->setGetArray(array('moduleClassName' => 'LeadsModule',
@@ -191,7 +191,7 @@
             $layout = ContactsDesignerWalkthroughHelperUtil::getContactsListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to LeadsMassEditView.
             $this->setGetArray(array('moduleClassName' => 'LeadsModule',
@@ -200,7 +200,7 @@
                         'LeadStateDropDown');
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to LeadsModalListView.
             $this->setGetArray(array('moduleClassName' => 'LeadsModule',
@@ -208,7 +208,7 @@
             $layout = ContactsDesignerWalkthroughHelperUtil::getContactsListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
         }
 
         /**
@@ -447,8 +447,8 @@
 
             //Check if the lead name exits after the search is performed on the basis of the
             //custom fields added to the leads module.
-            //$this->assertTrue(strpos($content, "Displaying 1-1 of 1 result(s).") > 0); //removed until we show the count again in the listview.
-            $this->assertTrue(strpos($content, "Sarah Williams") > 0);
+            //$this->assertContains("Displaying 1-1 of 1 result(s).", $content); //removed until we show the count again in the listview.
+            $this->assertContains("Sarah Williams", $content);
         }
 
         /**
@@ -781,8 +781,8 @@
 
             //Check if the lead name exits after the search is performed on the basis of the
             //custom fields added to the leads module.
-            //$this->assertTrue(strpos($content, "Displaying 1-1 of 1 result(s).") > 0); //removed until we show the count again in the listview.
-            $this->assertTrue(strpos($content, "Sarah Williams Edit") > 0);
+            //$this->assertContains("Displaying 1-1 of 1 result(s).", $content); //removed until we show the count again in the listview.
+            $this->assertContains("Sarah Williams Edit", $content);
         }
 
         /**
@@ -828,8 +828,8 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default');
 
             //Assert that the edit lead does not exits after the search.
-            $this->assertTrue(strpos($content, "No results found") > 0);
-            $this->assertFalse(strpos($content, "26378 South Arlington Ave") > 0);
+            $this->assertContains("No results found", $content);
+            $this->assertNotContains("26378 South Arlington Ave", $content);
         }
 
         /**
@@ -846,7 +846,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected vlaue
-            $this->assertTrue(strpos($content, "reading") > 0);
+            $this->assertContains("reading", $content);
         }
 
         /**
@@ -872,7 +872,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected vlaue
-            $this->assertTrue(strpos($content, "surfing fr") > 0);
+            $this->assertContains("surfing fr", $content);
         }
     }
 ?>

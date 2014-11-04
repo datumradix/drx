@@ -89,7 +89,7 @@
                                      'longitude'     => $accounts[0]->billingAddress->longitude));
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('maps/default/mapAndPoint');
-            $this->assertTrue(strpos($content, 'plotMap') > 0);
+            $this->assertContains('plotMap', $content);
         }
      }
 ?>

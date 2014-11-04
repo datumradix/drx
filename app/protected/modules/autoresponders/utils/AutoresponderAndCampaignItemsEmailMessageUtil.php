@@ -68,12 +68,20 @@
                 throw new MissingRecipientsForEmailMessageException();
             }
             $userId                 = static::resolveCurrentUserId();
-            $ownerId                = $marketingList->owner->id;
+            if (get_class($itemOwnerModel) == 'Campaign')
+            {
+                $ownerId                = $itemOwnerModel->owner->id;
+            }
+            else
+            {
+                $ownerId                = $marketingList->owner->id;
+            }
             $subject                = $itemOwnerModel->subject;
             $serializedData         = serialize($subject);
             $headers                = static::resolveHeaders($itemId);
+            $nowTimestamp           = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
             $emailMessageData       = compact('subject', 'serializedData', 'textContent', 'htmlContent', 'userId', 'ownerId',
-                                                'headers', 'attachments', 'folderId');
+                                                'headers', 'attachments', 'folderId', 'nowTimestamp');
             $attachments            = array('relatedModelType' => strtolower(get_class($itemOwnerModel)),
                                             'relatedModelId' => $itemOwnerModel->id);
             $sender                 = static::resolveSender($marketingList, $itemOwnerModel);
@@ -163,7 +171,8 @@
                                                          recipientType,
                                                          contactItemId,
                                                          relatedModelType,
-                                                         relatedModelId)";
+                                                         relatedModelId,
+                                                         nowTimestamp)";
             return $query;
         }
 
@@ -200,7 +209,7 @@
             {
                 if (isset($value))
                 {
-                    $value  = ZurmoRedBean::$adapter->escape($value);
+                    $value  = DatabaseCompatibilityUtil::escape($value);
                 }
             }
         }

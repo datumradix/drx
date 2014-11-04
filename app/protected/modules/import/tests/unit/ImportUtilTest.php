@@ -75,13 +75,13 @@
             Yii::app()->user->userModel = User::getByUsername('super');
             $account = AccountTestHelper::createAccountByNameForOwner('account', Yii::app()->user->userModel);
             $content =  ImportUtil::resolveLinkMessageToModel($account);
-            $this->assertFalse(strpos($content, 'accounts/default/details?id') === false);
+            $this->assertContains('accounts/default/details?id', $content);
             $contact = ContactTestHelper::createContactByNameForOwner('contact', Yii::app()->user->userModel);
             $content =  ImportUtil::resolveLinkMessageToModel($contact);
-            $this->assertFalse(strpos($content, 'contacts/default/details?id') === false);
+            $this->assertContains('contacts/default/details?id', $content);
             $lead = LeadTestHelper::createLeadByNameForOwner('lead', Yii::app()->user->userModel);
             $content =  ImportUtil::resolveLinkMessageToModel($lead);
-            $this->assertFalse(strpos($content, 'leads/default/details?id') === false);
+            $this->assertContains('leads/default/details?id', $content);
         }
 
         public function testImportNameAndRelatedNameWithApostrophes()

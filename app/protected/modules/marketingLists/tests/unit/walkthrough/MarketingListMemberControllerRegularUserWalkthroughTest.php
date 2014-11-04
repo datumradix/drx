@@ -81,215 +81,6 @@
             Yii::app()->user->userModel = $this->user;
         }
 
-        public function testMassSubscribeActionsForSelectedIds()
-        {
-            $this->markTestSkipped("We do not support toggling unsubscribed back to subscribed using mass operations");
-            // MassSubscribe view for selected ids
-            $listId             = self::getModelIdByModelNameAndName('MarketingList', 'MarketingList1');
-            $this->assertNotEmpty($listId);
-            $list               = MarketingList::getById($listId);
-            $this->assertNotEmpty($list);
-            $members            = $list->marketingListMembers;
-            $this->assertNotEmpty($members);
-            $this->assertCount(17, $members);
-            $subscribedCount    = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($listId, 0);
-
-            $selectedIdsArray   = array();
-            foreach ($members as $member)
-            {
-                if ($member->unsubscribed == 1)
-                {
-                    $selectedIdsArray[]     = $member->id;
-                }
-                if (count($selectedIdsArray) === 4)
-                {
-                    break;
-                }
-            }
-            $this->assertNotEmpty($selectedIdsArray);
-            $selectedIds        = join(',', $selectedIdsArray); // Not Coding Standard
-            $this->setGetArray(
-                            array(
-                                'selectedIds'               => $selectedIds,
-                                'selectAll'                 => '',
-                                'id'                        => $listId
-                            )
-                        );  // Not Coding Standard
-            $content            = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massSubscribe');
-            $this->assertTrue(strpos($content, 'Mass Subscribe: Marketing List Members') !== false);
-            $this->assertTrue(strpos($content, '<strong>4</strong>&#160;Marketing List Members' .
-                                                                                ' selected for subscription') !== false);
-            // MassSubscribe view for all result selected ids
-            $this->setGetArray(
-                            array(
-                                'selectAll'                 => '1',
-                                'id'                        => $listId
-                            )
-                        );
-            $content            = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massSubscribe');
-            $this->assertTrue(strpos($content, '<strong>17</strong>&#160;Marketing List Members'.
-                                                                                ' selected for subscription') !== false);
-
-            // Mass Subscribe, multiple pages subscribe, first page
-            $selectedIdsArray   = array();
-            foreach ($members as $member)
-            {
-                if ($member->unsubscribed == 1)
-                {
-                    $selectedIdsArray[]     = $member->id;
-                }
-                if (count($selectedIdsArray) === 7)
-                {
-                    break;
-                }
-            }
-            $this->assertNotEmpty($selectedIdsArray);
-            $selectedIds        = join(',', $selectedIdsArray); // Not Coding Standard
-            $pageSize           = Yii::app()->pagination->getForCurrentUserByType('massEditProgressPageSize');
-            $this->assertEquals(5, $pageSize);
-            // MassSubscribe for selected ids for page 1
-            $this->setGetArray(
-                            array(
-                                'id'                                        => $listId,
-                                'selectedIds'                               => $selectedIds,
-                                'selectAll'                                 => '',
-                                'massSubscribe'                             => '',
-                                'MarketingListMembersPortletView_page'   => 1
-                            )
-                        );
-            $this->setPostArray(
-                            array(
-                                'selectedRecordCount' => 7
-                            )
-                        );
-            $this->runControllerWithExitExceptionAndGetContent('marketingLists/member/massSubscribe');
-            $expectedSubscribedCountAfterFirstRequest   = $subscribedCount + $pageSize;
-            $actualSubscribedCountAfterFirstRequest     = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($listId, 0);
-            $this->assertEquals($expectedSubscribedCountAfterFirstRequest, $actualSubscribedCountAfterFirstRequest);
-
-            // Mass Subscribe, multiple pages subscribe, second page
-            $this->setGetArray(
-                            array(
-                                'id'                        => $listId,
-                                'selectedIds'               => $selectedIds,
-                                'selectAll'                 => '',
-                                'massSubscribe'             => '',
-                                'MarketingListMember_page'  => 2
-                            )
-                        );
-            $this->setPostArray(
-                            array(
-                                'selectedRecordCount'       => 7
-                            )
-                        );
-            $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massSubscribeProgress');
-            $expectedSubscribedCountAfterSecondRequest   = $actualSubscribedCountAfterFirstRequest + (7 - $pageSize);
-            $actualSubscribedCountAfterSecondRequest     = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($listId, 0);
-            $this->assertEquals($expectedSubscribedCountAfterSecondRequest, $actualSubscribedCountAfterSecondRequest);
-        }
-
-        /**
-         * @depends testMassSubscribeActionsForSelectedIds
-         */
-        public function testMassSubscribePagesProperlyAndSubscribesAllSelected()
-        {
-            $this->markTestSkipped("We do not support toggling unsubscribed back to subscribed using mass operations");
-            // MassSubscribe for selected Record Count
-            $listId         = self::getModelIdByModelNameAndName('MarketingList', 'MarketingList2');
-            $this->assertNotEmpty($listId);
-            $list           = MarketingList::getById($listId);
-            $this->assertNotEmpty($list);
-            $members        = $list->marketingListMembers;
-            $this->assertEquals(17, count($members));
-            $subscribedCount    = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($listId, 0);
-
-            $this->setGetArray(
-                            array(
-                                'selectAll'                                 => '1',           // Not Coding Standard
-                                'MarketingListMembersPortletView_page'   => 1,
-                                'id'                                        => $listId
-                            )
-                        );
-            $this->setPostArray(
-                            array(
-                                'selectedRecordCount'                       => 17
-                            )
-                        );
-            // Run Mass Subscribe using progress save for page1.
-            $pageSize       = Yii::app()->pagination->getForCurrentUserByType('massEditProgressPageSize');
-            $this->assertEquals(5, $pageSize);
-            $this->runControllerWithExitExceptionAndGetContent('marketingLists/member/massSubscribe');
-            $expectedSubscribedCountAfterFirstRequest   = $subscribedCount + 3;
-            $actualSubscribedCountAfterFirstRequest     = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($listId, 0);
-            $this->assertEquals($expectedSubscribedCountAfterFirstRequest, $actualSubscribedCountAfterFirstRequest);
-
-            $this->setGetArray(
-                            array(
-                                'selectAll'                                 => '1',           // Not Coding Standard
-                                'MarketingListMember_page'                  => 2,
-                                'id'                                        => $listId
-                            )
-                        );
-            $this->setPostArray(
-                            array(
-                                'selectedRecordCount'                       => 17
-                            )
-                        );
-            // Run Mass Subscribe using progress save for page2.
-            $pageSize       = Yii::app()->pagination->getForCurrentUserByType('massEditProgressPageSize');
-            $this->assertEquals(5, $pageSize);
-            $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massSubscribeProgress');
-            $expectedSubscribedCountAfterSecondRequest   = $expectedSubscribedCountAfterFirstRequest + 2;
-            $actualSubscribedCountAfterSecondRequest     = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($listId, 0);
-            $this->assertEquals($expectedSubscribedCountAfterSecondRequest, $actualSubscribedCountAfterSecondRequest);
-
-            $this->setGetArray(
-                            array(
-                                'selectAll'                                 => '1',           // Not Coding Standard
-                                'MarketingListMember_page'                  => 3,
-                                'id'                                        => $listId
-                            )
-                        );
-            $this->setPostArray(
-                            array(
-                                'selectedRecordCount'                       => 17
-                            )
-                        );
-            // Run Mass Subscribe using progress save for page3.
-            $pageSize       = Yii::app()->pagination->getForCurrentUserByType('massEditProgressPageSize');
-            $this->assertEquals(5, $pageSize);
-            $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massSubscribeProgress');
-            $expectedSubscribedCountAfterThirdRequest   = $expectedSubscribedCountAfterSecondRequest + 3;
-            $actualSubscribedCountAfterThirdRequest     = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($listId, 0);
-            $this->assertEquals($expectedSubscribedCountAfterThirdRequest, $actualSubscribedCountAfterThirdRequest);
-
-            $this->setGetArray(
-                            array(
-                                'selectAll'                                 => '1',           // Not Coding Standard
-                                'MarketingListMember_page'                  => 4,
-                                'id' => $listId
-                            )
-                        );
-            $this->setPostArray(
-                            array(
-                                'selectedRecordCount'                       => 17
-                            )
-                        );
-            // Run Mass Subscribe using progress save for page4.
-            $pageSize       = Yii::app()->pagination->getForCurrentUserByType('massEditProgressPageSize');
-            $this->assertEquals(5, $pageSize);
-            $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massSubscribeProgress');
-            $expectedSubscribedCountAfterFourthRequest   = $expectedSubscribedCountAfterThirdRequest + 1;
-            $actualSubscribedCountAfterFourthRequest     = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($listId, 0);
-            $this->assertEquals($expectedSubscribedCountAfterFourthRequest, $actualSubscribedCountAfterFourthRequest);
-
-            $unsubscribedCount      = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($listId, 1);
-            $this->assertEquals(0, $unsubscribedCount);
-        }
-
-        /**
-         * @//depends testMassSubscribeActionsForSelectedIds
-         */
         public function testMassUnsubscribeActionsForSelectedIds()
         {
             // MassUnsubscribe view for selected ids
@@ -324,9 +115,10 @@
                             )
                         );  // Not Coding Standard
             $content            = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massUnsubscribe');
-            $this->assertTrue(strpos($content, 'Mass Unsubscribe: Marketing List Members') !== false);
-            $this->assertTrue(strpos($content, '<strong>4</strong>&#160;Marketing List Members' .
-                                                                                ' selected for unsubscription') !== false);
+            $this->assertContains('Mass Unsubscribe: Marketing List Members', $content);
+            $this->assertContains('<strong>4</strong>&#160;Marketing List Members' .
+                                  ' selected for unsubscription', $content);
+
             // MassUnsubscribe view for all result selected ids
             $this->setGetArray(
                             array(
@@ -335,8 +127,8 @@
                             )
                         );
             $content            = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massUnsubscribe');
-            $this->assertTrue(strpos($content, '<strong>17</strong>&#160;Marketing List Members'.
-                                                                                ' selected for unsubscription') !== false);
+            $this->assertContains('<strong>17</strong>&#160;Marketing List Members'.
+                                  ' selected for unsubscription', $content);
 
             // Mass Unsubscribe, multiple pages unsubscribe, first page
             $selectedIdsArray   = array();
@@ -532,9 +324,10 @@
                             )
                         );  // Not Coding Standard
             $content            = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massDelete');
-            $this->assertTrue(strpos($content, 'Mass Delete: Marketing List Members') !== false);
-            $this->assertTrue(strpos($content, '<strong>4</strong>&#160;Marketing List Members' .
-                                                                                    ' selected for removal') !== false);
+            $this->assertContains('Mass Delete: Marketing List Members', $content);
+            $this->assertContains('<strong>4</strong>&#160;Marketing List Members' .
+                                  ' selected for removal', $content);
+
             // MassDelete view for all result selected ids
             $this->setGetArray(
                             array(
@@ -543,8 +336,8 @@
                             )
                         );
             $content            = $this->runControllerWithNoExceptionsAndGetContent('marketingLists/member/massDelete');
-            $this->assertTrue(strpos($content, '<strong>17</strong>&#160;Marketing List Members'.
-                                                                                    ' selected for removal') !== false);
+            $this->assertContains('<strong>17</strong>&#160;Marketing List Members'.
+                                  ' selected for removal', $content);
 
             // Mass delete, multiple pages delete, first page
             $list               = MarketingList::getById($listId);

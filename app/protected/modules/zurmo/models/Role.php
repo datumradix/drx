@@ -36,6 +36,8 @@
 
     class Role extends Item
     {
+        protected static $roleIdToRoleCache = array();
+
         /**
          * @param string $name
          * @throws NotFoundException
@@ -61,6 +63,41 @@
                 return Zurmo::t('Core', '(Unnamed)');
             }
             return $this->name;
+        }
+
+        public static function getIdsByUsersMemberOfGroup($groupId)
+        {
+            $groupId    = intval($groupId);
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'             => 'users',
+                    'relatedModelData'          => array(
+                            'attributeName'             => 'groups',
+                            'relatedAttributeName'      => 'id',
+                            'operatorType'              => 'equals',
+                            'value'                     => $groupId,
+                    ),
+                ),
+            );
+            $searchAttributeData['structure'] = '1';
+            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            return static::getSubsetIds($joinTablesAdapter, null, null, $where);
+        }
+
+        public static function getFromCacheOrDatabase($roleId)
+        {
+            $roleId     = intval($roleId);
+            if (!isset(static::$roleIdToRoleCache[$roleId]))
+            {
+                static::$roleIdToRoleCache[$roleId] = static::getById($roleId);
+            }
+            return static::$roleIdToRoleCache[$roleId];
+        }
+
+        public static function forgetRoleIdToRoleCache()
+        {
+            static::$roleIdToRoleCache  = array();
         }
 
         protected static function translatedAttributeLabels($language)
@@ -106,6 +143,14 @@
             return 'RolesModule';
         }
 
+        protected function forgetPermissionsRightsAndPoliciesCache()
+        {
+            PermissionsCache::forgetAll();
+            Permission::resetCaches();
+            RightsCache::forgetAll();
+            PoliciesCache::forgetAll();
+        }
+
         protected function afterSave()
         {
             if (((isset($this->originalAttributeValues['role'])) || $this->isNewModel) &&
@@ -114,6 +159,11 @@
                 AllPermissionsOptimizationUtil::roleParentSet($this);
                 ReadPermissionsSubscriptionUtil::roleParentSet();
             }
+            if (isset($this->originalAttributeValues['role']) && $this->originalAttributeValues['role'][1] > 0)
+            {
+                $this->forgetPermissionsRightsAndPoliciesCache();
+            }
+            static::$roleIdToRoleCache[intval($this->id)] = $this;
             parent::afterSave();
         }
 
@@ -152,11 +202,10 @@
 
         protected function afterDelete()
         {
-            PermissionsCache::forgetAll();
-            RightsCache::forgetAll();
-            PoliciesCache::forgetAll();
+            $this->forgetPermissionsRightsAndPoliciesCache();
             ReadPermissionsSubscriptionUtil::roleHasBeenDeleted();
             AllPermissionsOptimizationCache::forgetAll();
+            static::forgetRoleIdToRoleCache();
         }
 
         protected function beforeValidate()

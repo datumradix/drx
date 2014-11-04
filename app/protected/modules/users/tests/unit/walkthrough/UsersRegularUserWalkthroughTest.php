@@ -84,8 +84,8 @@
 
             //Access to User Role edit link and control not available.
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/edit');
-            $this->assertFalse(strpos($content, 'User_role_SelectLink') !== false);
-            $this->assertFalse(strpos($content, 'User_role_name') !== false);
+            $this->assertNotContains('User_role_SelectLink', $content);
+            $this->assertNotContains('User_role_name', $content);
 
             //Check if the user who has right access for users can access any users audit trail.
             $bUser = $this->logoutCurrentUserLoginNewUserAndGetByUsername('bUser');
@@ -134,7 +134,7 @@
             $this->setGetArray(array('selectedIds' => '1,2,3', 'selectAll' => '')); // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithExitExceptionAndGetContent('users/default/massEdit');
-            $this->assertFalse(strpos($content, 'You have tried to access a page you do not have access to') === false);
+            $this->assertContains('You have tried to access a page you do not have access to', $content);
         }
 
         /**
@@ -149,8 +149,8 @@
             //Access to User to change the username.
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/edit');
 
-            $this->assertTrue(strpos($content, 'User_lastName') !== false);
-            $this->assertTrue(strpos($content, 'User_username') !== false);
+            $this->assertContains('User_lastName', $content);
+            $this->assertContains('User_username', $content);
 
             $this->setGetArray(array('id' => $cUser->id));
             $this->setPostArray(array(

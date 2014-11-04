@@ -56,5 +56,14 @@
                 static::$optionName($optionValue, $joinTablesAdapter, $where);
             }
         }
+
+        /**
+         * Sanitize term to prevent sql injection
+         * @param $term
+         */
+        protected static function sanitizeSearchTerm(& $term)
+        {
+            $term    = DatabaseCompatibilityUtil::escape($term);
+        }
     }
 ?>

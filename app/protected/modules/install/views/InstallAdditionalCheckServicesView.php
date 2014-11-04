@@ -115,7 +115,6 @@
                                         $this->checkResultsDisplayData[$passedIndexId],
                                         '<span class="pass">' . Zurmo::t('InstallModule', 'PASS') . '</span>');
             }
-            $content .= '<br/><br/>';
             $content .= ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('InstallModule', 'Recheck System')),
                                         '#', array('onclick' => 'window.location.reload()', 'class' => 'z-button'));
             $content .= '</td></tr></table>';
@@ -135,7 +134,7 @@
             assert('is_string($groupLabel) && $groupLabel != ""');
             assert('is_array($groupData)');
             assert('is_string($checkResultLabel) && $checkResultLabel != ""');
-            $content  = '<table>' . "\n";
+            $content  = '<table class="checked-services">' . "\n";
             $content .= '<colgroup><col/><col style="width:100px;" /></colgroup>' . "\n";
             $content .= '<tr><td>' . $groupLabel . '</td><td></td></tr>' . "\n";
             foreach ($groupData as $serviceDisplayData)
