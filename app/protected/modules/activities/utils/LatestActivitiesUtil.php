@@ -93,7 +93,7 @@
                     $searchAttributesData =    // Not Coding Standard
                         $mashableActivityRules->resolveSearchAttributeDataForAllLatestActivities($searchAttributesData);
                 }
-                if(static::shouldResolveSearchAttributeDataForLatestActivities())
+                if (static::shouldResolveSearchAttributeDataForLatestActivities())
                 {
                     $searchAttributesData =    // Not Coding Standard
                         $mashableActivityRules->resolveSearchAttributeDataForLatestActivities($searchAttributesData);
@@ -106,11 +106,9 @@
                     $modelClassName, $relationItemIds, $ownedByFilter,
                     static::shouldResolveSearchAttributeDataForLatestActivities(),
                     $modelClassNamesAndSearchAttributeData);
-
             }
             return $modelClassNamesAndSearchAttributeData;
         }
-
 
         /**
          * @return bool
@@ -173,7 +171,13 @@
                                             array($modelClassName), $relationItemIds, $ownedByFilter);
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
             $where = ModelDataProviderUtil::makeWhere($modelClassName, $searchAttributeDataArray[0][$modelClassName], $joinTablesAdapter);
-            return RedBeanModel::getCount($joinTablesAdapter, $where, $modelClassName, true);
+            $count = RedBeanModel::getCount($joinTablesAdapter, $where, $modelClassName, true);
+            if (isset($searchAttributeDataArray[1][$modelClassName]))
+            {
+                $where = ModelDataProviderUtil::makeWhere($modelClassName, $searchAttributeDataArray[1][$modelClassName], $joinTablesAdapter);
+                return $count + RedBeanModel::getCount($joinTablesAdapter, $where, $modelClassName, true);
+            }
+            return $count;
         }
     }
 ?>

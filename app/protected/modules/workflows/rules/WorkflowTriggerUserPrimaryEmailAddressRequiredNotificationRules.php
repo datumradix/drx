@@ -40,15 +40,25 @@
      */
     class WorkflowTriggerUserPrimaryEmailAddressRequiredNotificationRules extends NotificationRules
     {
-        public static function getDisplayName()
+        protected $canBeConfiguredByUser = false;
+
+        public function getDisplayName()
         {
             return Zurmo::t('WorkflowsModule',
                 'Please set your primary email address in your user profile in order to receive email messages triggered by the workflow engine.');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'WorkflowTriggerUserPrimaryEmailAddressRequired';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('WorkflowsModule');
         }
     }
 ?>

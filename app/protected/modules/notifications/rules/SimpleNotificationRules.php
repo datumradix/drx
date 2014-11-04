@@ -39,12 +39,12 @@
      */
     class SimpleNotificationRules extends NotificationRules
     {
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('NotificationsModule', 'A simple notification');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'Simple';
         }

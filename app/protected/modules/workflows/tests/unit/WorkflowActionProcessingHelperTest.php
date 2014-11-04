@@ -136,7 +136,6 @@
             $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $contact, Yii::app()->user->userModel);
             $helper->processNonUpdateSelfAction();
             $this->assertEquals(1, count(Notification::getAll()));
-
         }
 
         /**

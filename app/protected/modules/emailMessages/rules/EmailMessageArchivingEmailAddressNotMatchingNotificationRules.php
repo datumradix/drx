@@ -43,14 +43,32 @@
 
         protected $allowDuplicates = false;
 
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('EmailMessagesModule', 'Match archived emails');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'EmailMessageArchivingEmailAddressNotMatching';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('EmailMessagesModule');
+        }
+
+        public function getTooltipId()
+        {
+            return 'email-message-archiving-email-address-not-matching-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when an email I archived could not be matched to any contacts.');
         }
     }
 ?>

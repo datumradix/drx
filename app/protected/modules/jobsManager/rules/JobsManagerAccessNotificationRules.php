@@ -55,5 +55,13 @@
                 }
             }
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('JobsManagerModule');
+        }
     }
 ?>

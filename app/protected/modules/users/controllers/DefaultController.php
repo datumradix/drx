@@ -62,6 +62,8 @@
             $filters[] = array(
                     ZurmoBaseController::RIGHTS_FILTER_PATH .
                     ' - modalList, - switchTo, autoComplete, details, profile, edit, auditEventsModalList, changePassword, ' .
+                    'configurationEdit, emailConfiguration, securityDetails, notificationConfiguration, ' .
+                    'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard',
                     'configurationEdit, emailConfiguration, securityDetails, ' .
                     'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard, sendGridConfiguration, clearSendGridConfiguration',
                     'moduleClassName' => 'UsersModule',

@@ -338,6 +338,30 @@
             //Check getState data. since it should be updated for current user.
             $this->assertEquals(7, Yii::app()->user->getState('listPageSize'));
             $this->assertEquals(4, Yii::app()->user->getState('subListPageSize'));
+
+            //User Notification Configuration UI. Change aUser notification configuration values.
+            //First make sure settings all default values are true
+            $notificationSettings = UserNotificationUtil::getNotificationSettingsByUser($aUser);
+            $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingAttributes();
+            foreach($notificationSettingsNames as $setting)
+            {
+                list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($setting);
+                $this->assertTrue((bool)$notificationSettings[$settingName][$type]);
+            }
+            //Load up notification configuration page.
+            $this->setGetArray(array('id' => $aUser->id));
+            $this->runControllerWithNoExceptionsAndGetContent('users/default/notificationConfiguration');
+            //Post fake save that will pass validation.
+            $this->setGetArray(array('id' => $aUser->id));
+            $this->setPostArray(array('UserNotificationConfigurationForm' =>
+                array(
+                    'enableConversationInvitesNotificationInbox' => 0,
+                )));
+
+            $this->runControllerWithRedirectExceptionAndGetContent('users/default/notificationConfiguration');
+            $this->assertEquals('User notifications configuration saved successfully.', Yii::app()->user->getFlash('notification'));
+            //Check to make sure user notification configuration is actually changed.
+            $this->assertFalse((bool) UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($aUser, 'enableConversationInvitesNotification', 'inbox'));
         }
 
         /**
