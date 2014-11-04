@@ -113,8 +113,6 @@
                                             array $modelClassNamesAndSortAttributes = null, $sortDescending = false,
                                             $offset = null, $limit = null)
         {
-            assert('$modelClassNamesAndSortAttributes === null ||
-                    count($modelClassNamesAndSortAttributes) == count($modelClassNamesAndSearchAttributeData)');
             assert('is_bool($sortDescending)');
             $sqlStatementsToUnion = array();
             foreach ($modelClassNamesAndSearchAttributeData as $identifier => $modelClassNameAndSearchAttributeData)
