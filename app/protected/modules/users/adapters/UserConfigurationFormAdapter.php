@@ -53,7 +53,6 @@
             $form->themeColor                       = Yii::app()->themeManager->resolveAndGetThemeColorValue($user);
             $form->backgroundTexture                = Yii::app()->themeManager->resolveAndGetBackgroundTextureValue($user);
             $form->hideWelcomeView                  = static::resolveAndGetValue($user, 'hideWelcomeView');
-            $form->turnOffEmailNotifications        = static::resolveAndGetValue($user, 'turnOffEmailNotifications');
             $form->enableDesktopNotifications       = static::resolveAndGetValue($user, 'enableDesktopNotifications');
             $form->defaultPermissionGroupSetting    = static::resolveAndGetValue($user, 'defaultPermissionGroupSetting', false);
             $form->defaultPermissionSetting         = static::resolveAndGetDefaultPermissionSetting($user);
@@ -76,7 +75,6 @@
             Yii::app()->themeManager->setThemeColorValue($user, $form->themeColor);
             Yii::app()->themeManager->setBackgroundTextureValue ($user, $form->backgroundTexture);
             static::setValue($user, (bool)$form->hideWelcomeView, 'hideWelcomeView');
-            static::setValue($user, (bool)$form->turnOffEmailNotifications, 'turnOffEmailNotifications');
             static::setValue($user, (bool)$form->enableDesktopNotifications, 'enableDesktopNotifications');
             static::setValue($user, (int)$form->defaultPermissionSetting, 'defaultPermissionSetting', false);
             static::setDefaultPermissionGroupSetting($user, (int)$form->defaultPermissionGroupSetting,
