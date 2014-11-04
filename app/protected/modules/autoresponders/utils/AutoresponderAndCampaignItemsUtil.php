@@ -83,7 +83,15 @@
                 {
                     $htmlContent = $itemOwnerModel->htmlContent;
                 }
-                $this->resolveContent($textContent, $htmlContent, $contact, $itemOwnerModel->enableTracking, (int)$marketingList->id);
+                $invalidTags                = array();
+                MergeTagsContentResolverUtil::resolveContentsForGlobalFooterAndMergeTagsAndTracking($textContent,
+                                                            $htmlContent, $contact, $this->resolveEmailTemplateType(),
+                                                            $this->resolveErrorOnFirstMissingMergeTag(),
+                                                            $this->resolveLanguageForContent(),
+                                                            $invalidTags, intval($marketingList->id),
+                                                            false, MergeTagsContentResolverUtil::ADD_GLOBAL_FOOTER_MERGE_TAGS_IF_MISSING,
+                                                            (bool)$itemOwnerModel->enableTracking,
+                                                            $this->itemId, $this->itemClass, $this->personId);
                 try
                 {
                     $item->emailMessage   = $this->resolveEmailMessage($textContent, $htmlContent, $itemOwnerModel,
@@ -139,38 +147,6 @@
             $activityClass::createNewActivity($type, $this->itemId, $this->personId);
         }
 
-        public function resolveContent(& $textContent, & $htmlContent, Contact $contact, $enableTracking,
-                                            $marketingListId, $preview = false)
-        {
-            assert('is_int($marketingListId)');
-            GlobalMarketingFooterUtil::resolveContentsForGlobalFooter($textContent, $htmlContent);
-            $this->resolveContentsForMergeTags($textContent, $htmlContent, $contact,
-                                                $marketingListId, $preview);
-            if ($enableTracking)
-            {
-                ContentTrackingUtil::resolveContentsForTracking($textContent, $htmlContent, $enableTracking,
-                    $this->itemId, $this->itemClass, $this->personId);
-            }
-        }
-
-        public function resolveContentsForMergeTags(& $textContent, & $htmlContent, Contact $contact,
-                                                            $marketingListId, $preview = false)
-        {
-            $this->resolveContentForMergeTags($textContent, $contact, false, $marketingListId, $preview);
-            $this->resolveContentForMergeTags($htmlContent, $contact, true, $marketingListId, $preview);
-        }
-
-        protected function resolveContentForMergeTags(& $content, Contact $contact, $isHtmlContent,
-                                                                $marketingListId, $preview = false)
-        {
-            $resolved   = $this->resolveMergeTags($content, $contact, $isHtmlContent,
-                                                    $marketingListId, $preview);
-            if ($resolved === false)
-            {
-                throw new NotSupportedException(Zurmo::t('EmailTemplatesModule', 'Provided content contains few invalid merge tags.'));
-            }
-        }
-
         protected function resolveLanguageForContent()
         {
             // TODO: @Shoaibi/@Jason: Low: we might add support for language
@@ -184,41 +160,7 @@
 
         protected function resolveErrorOnFirstMissingMergeTag()
         {
-            return true;
-        }
-
-        protected function resolveMergeTagsParams($marketingListId, $isHtmlContent = false, $preview = false)
-        {
-            $params     = GlobalMarketingFooterUtil::resolveFooterMergeTagsArray($this->personId, $marketingListId,
-                                                                            $this->itemId, $this->itemClass, !$preview,
-                                                                            $preview, $isHtmlContent);
-            return $params;
-        }
-
-        protected function resolveMergeTagsUtil($content)
-        {
-            $language       = $this->resolveLanguageForContent();
-            $templateType   = $this->resolveEmailTemplateType();
-            $util           = MergeTagsUtilFactory::make($templateType, $language, $content);
-            return $util;
-        }
-
-        protected function resolveMergeTags(& $content, Contact $contact, $isHtmlContent,
-                                                   $marketingListId, $preview = false)
-        {
-            $invalidTags            = array();
-            $language               = $this->resolveLanguageForContent();
-            $errorOnFirstMissing    = $this->resolveErrorOnFirstMissingMergeTag();
-            $params                 = $this->resolveMergeTagsParams($marketingListId, $isHtmlContent, $preview);
-            $util                   = $this->resolveMergeTagsUtil($content);
-            $resolvedContent        = $util->resolveMergeTags($contact, $invalidTags, $language,
-                                                                $errorOnFirstMissing, $params);
-            if ($resolvedContent !== false)
-            {
-                $content    = $resolvedContent;
-                return true;
-            }
-            return false;
+            return MergeTagsToModelAttributesAdapter::ERROR_ON_FIRST_INVALID_TAG;
         }
 
         protected function resolveEmailMessage($textContent, $htmlContent, Item $itemOwnerModel,

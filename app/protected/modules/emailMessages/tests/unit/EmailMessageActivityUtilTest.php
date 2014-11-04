@@ -481,7 +481,7 @@ HTML;
         protected static function resolveContentForMergeTags(& $content)
         {
             $language               = null;
-            $errorOnFirstMissing    = true;
+            $errorOnFirstMissing    = MergeTagsToModelAttributesAdapter::ERROR_ON_FIRST_INVALID_TAG;
             $templateType           = EmailTemplate::TYPE_CONTACT;
             $invalidTags            = array();
             $textMergeTagsUtil      = MergeTagsUtilFactory::make($templateType, $language, $content);

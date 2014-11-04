@@ -40,11 +40,19 @@
      */
     class MergeTagsToModelAttributesAdapter
     {
-        const PROPERTY_NOT_FOUND = "!MERGETAG-TO-ATTR-FAILED";
+        const PROPERTY_NOT_FOUND                                = "!MERGETAG-TO-ATTR-FAILED";
+
+        const ERROR_ON_FIRST_INVALID_TAG                        = 1;
+
+        const DO_NOT_ERROR_ON_FIRST_INVALID_TAG                 = 0;
+
+        const SUPPRESS_INVALID_TAG_ERRORS_REPLACE_WITH_EMPTY    = -1;
+
+        const SUPPRESS_INVALID_TAG_ERRORS_KEEP_TAG              = -2;
 
         public static function resolveMergeTagsArrayToAttributesFromModel(& $mergeTags, $model,
                                                                           & $invalidTags = array(), $language,
-                                                                          $errorOnFirstMissing = false,
+                                                                          $errorOnFirstMissing = self::DO_NOT_ERROR_ON_FIRST_INVALID_TAG,
                                                                           $params = array())
         {
             assert('$language == null || is_string($language)');
@@ -62,17 +70,19 @@
                                                                                                 $model,
                                                                                                 $language,
                                                                                                 $timeQualifier,
+                                                                                                $errorOnFirstMissing,
                                                                                                 $params);
                 if ($resolvedValue === static::PROPERTY_NOT_FOUND)
                 {
-                    if ($errorOnFirstMissing)
+                    if ($errorOnFirstMissing === static::ERROR_ON_FIRST_INVALID_TAG)
                     {
                         return false;
                     }
-                    else
+                    if ($errorOnFirstMissing === static::SUPPRESS_INVALID_TAG_ERRORS_KEEP_TAG)
                     {
-                        $invalidTags[] = $mergeTag;
+                        $resolvedMergeTags[$mergeTag] = MergeTagsUtil::TAG_PREFIX . $mergeTag . MergeTagsUtil::TAG_SUFFIX;
                     }
+                    $invalidTags[] = $mergeTag;
                 }
                 else
                 {
@@ -80,7 +90,13 @@
                 }
             }
             $mergeTags = $resolvedMergeTags;
-            return (empty($invalidTags));
+            if ($errorOnFirstMissing === static::DO_NOT_ERROR_ON_FIRST_INVALID_TAG)
+            {
+                return (empty($invalidTags));
+            }
+
+            //$errorOnFirstMissing === static::SUPPRESS_INVALID_TAG_ERRORS
+            return true;
         }
 
         protected static function stripTimeDelimiterAndReturnQualifier(& $mergeTag)
@@ -99,12 +115,13 @@
         }
 
         protected static function resolveMergeTagToStandardOrRelatedAttribute($attributeAccessorString, $model,
-                                                                              $language, $timeQualifier, $params)
+                                                                              $language, $timeQualifier,
+                                                                              $errorOnFirstMissing, $params)
         {
             $attributeName = strtok($attributeAccessorString, '->');
             if (SpecialMergeTagsAdapter::isSpecialMergeTag($attributeName, $timeQualifier))
             {
-                return SpecialMergeTagsAdapter::resolve($attributeName, $model, $params);
+                return SpecialMergeTagsAdapter::resolve($attributeName, $model, $errorOnFirstMissing, $params);
             }
             else
             {
@@ -128,6 +145,7 @@
                                     $activityItem,
                                     $language,
                                     $timeQualifier,
+                                    $errorOnFirstMissing,
                                     $params);
                             }
                             if (get_class($activityItem) == 'Item' && array_search(ucfirst($attributeName), $activityItemsModelClassNamesData) !== false)
@@ -144,6 +162,7 @@
                                             $castedDownModel,
                                             $language,
                                             $timeQualifier,
+                                            $errorOnFirstMissing,
                                             $params);
                                     }
                                 }
@@ -165,6 +184,7 @@
                                     $model,
                                     $language,
                                     $timeQualifier,
+                                    $errorOnFirstMissing,
                                     $params);
                             }
                         }
@@ -218,7 +238,8 @@
                         }
                     }
                     return static::resolveMergeTagToStandardOrRelatedAttribute($attributeAccessorString, $model,
-                                                                                $language, $timeQualifier, $params);
+                                                                                $language, $timeQualifier,
+                                                                                $errorOnFirstMissing, $params);
                 }
                 else
                 {
