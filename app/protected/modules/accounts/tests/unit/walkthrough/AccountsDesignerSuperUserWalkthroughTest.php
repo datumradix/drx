@@ -203,7 +203,7 @@
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout,
                                       'LayoutPanelsTypeForm' => array('type' => FormLayout::PANELS_DISPLAY_TYPE_ALL)));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to AccountsSearchView.
             $this->setGetArray(array('moduleClassName' => 'AccountsModule',
@@ -211,7 +211,7 @@
             $layout = AccountsDesignerWalkthroughHelperUtil::getAccountsSearchViewLayoutWithAllCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to AccountsModalSearchView.
             $this->setGetArray(array('moduleClassName' => 'AccountsModule',
@@ -219,7 +219,7 @@
             $layout = AccountsDesignerWalkthroughHelperUtil::getAccountsSearchViewLayoutWithAllCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to AccountsListView.
             $this->setGetArray(array('moduleClassName' => 'AccountsModule',
@@ -227,7 +227,7 @@
             $layout = AccountsDesignerWalkthroughHelperUtil::getAccountsListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to AccountsRelatedListView.
             $this->setGetArray(array('moduleClassName' => 'AccountsModule',
@@ -235,7 +235,7 @@
             $layout = AccountsDesignerWalkthroughHelperUtil::getAccountsListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to AccountsModalListView.
             $this->setGetArray(array('moduleClassName' => 'AccountsModule',
@@ -243,7 +243,7 @@
             $layout = AccountsDesignerWalkthroughHelperUtil::getAccountsListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to AccountsMassEditView.
             $this->setGetArray(array('moduleClassName' => 'AccountsModule',
@@ -251,7 +251,7 @@
             $layout = AccountsDesignerWalkthroughHelperUtil::getAccountsMassEditViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Add all fields to AccountConvertToView.
             $this->setGetArray(array('moduleClassName' => 'AccountsModule',
@@ -466,8 +466,8 @@
 
             //Check if the account name exists after the search is performed on the basis of the
             //custom fields added to the accounts module.
-            //$this->assertTrue(strpos($content, "Displaying 1-1 of 1 result(s).") > 0); //removed until we show the count again in the listview.
-            $this->assertTrue(strpos($content, "myNewAccount") > 0);
+            //$this->assertContains("Displaying 1-1 of 1 result(s).", $content); //removed until we show the count again in the listview.
+            $this->assertContains("myNewAccount", $content);
         }
 
         /**
@@ -762,8 +762,8 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default');
 
             //Assert that the edit account exits after the edit and is diaplayed on the search page.
-            //$this->assertTrue(strpos($content, "Displaying 1-1 of 1 result(s).") > 0); //removed until we show the count again in the listview.
-            $this->assertTrue(strpos($content, "myEditAccount") > 0);
+            //$this->assertContains("Displaying 1-1 of 1 result(s).", $content); //removed until we show the count again in the listview.
+            $this->assertContains("myEditAccount", $content);
         }
 
         /**
@@ -782,8 +782,8 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default');
 
             //Assert that the edit account exits after the edit and is diaplayed on the search page.
-            //$this->assertTrue(strpos($content, "Displaying 1-1 of 1 result(s).") > 0); //removed until we show the count again in the listview.
-            $this->assertTrue(strpos($content, "myEditAccount") > 0);
+            //$this->assertContains("Displaying 1-1 of 1 result(s).", $content); //removed until we show the count again in the listview.
+            $this->assertContains("myEditAccount", $content);
         }
 
         /**
@@ -1149,8 +1149,8 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default');
 
             //Assert that the edit account does not exits after the search.
-            $this->assertTrue(strpos($content, "No results found") > 0);
-            $this->assertFalse(strpos($content, "26378 South Arlington Ave") > 0);
+            $this->assertContains("No results found", $content);
+            $this->assertNotContains("26378 South Arlington Ave", $content);
         }
 
         /**
@@ -1167,7 +1167,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected vlaue
-            $this->assertTrue(strpos($content, "reading") > 0);
+            $this->assertContains("reading", $content);
         }
 
         /**
@@ -1193,7 +1193,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected vlaue
-            $this->assertTrue(strpos($content, "surfing fr") > 0);
+            $this->assertContains("surfing fr", $content);
         }
     }
 ?>

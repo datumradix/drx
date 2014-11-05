@@ -158,5 +158,16 @@
         {
             return true;
         }
+
+        /**
+         * Used for determining if job should be executed at exact time or latter
+         * For example CampaignGenerateDueCampaignItems need to be executed at exact time or latter to trigger some actions
+         * This is used in JobQueues
+         * @return bool
+         */
+        public static function jobExecutionInQueueDependsOnTime()
+        {
+            return false;
+        }
     }
 ?>

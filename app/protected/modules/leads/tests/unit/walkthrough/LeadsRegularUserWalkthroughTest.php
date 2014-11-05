@@ -130,7 +130,7 @@
             //Test nobody with elevated rights.
             Yii::app()->user->userModel = User::getByUsername('nobody');
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/list');
-            $this->assertFalse(strpos($content, 'Thomas Paine') === false);
+            $this->assertContains('Thomas Paine', $content);
             $this->runControllerWithNoExceptionsAndGetContent('leads/default/create');
 
             //Test nobody can view an existing lead he owns.
@@ -138,7 +138,7 @@
 
             //At this point the listview for leads should show the search/list and not the helper screen.
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/list');
-            $this->assertTrue(strpos($content, 'Thomas Paine') === false);
+            $this->assertNotContains('Thomas Paine', $content);
 
             $this->setGetArray(array('id' => $lead->id));
             $this->runControllerWithNoExceptionsAndGetContent('leads/default/edit');
@@ -625,7 +625,7 @@
             //At this point because the account is required, the view will not come up properly.
             $this->setGetArray (array('id' => $lead->id));
             $content = $this->runControllerWithExitExceptionAndGetContent('leads/default/convert');
-            $this->assertFalse(strpos($content, 'Conversion is set to require an account.  Currently you do not have access to the accounts module.') === false);
+            $this->assertContains('Conversion is set to require an account.  Currently you do not have access to the accounts module.', $content);
         }
 
          /**
@@ -653,7 +653,7 @@
             $this->setGetArray(array('selectedIds' => $selectedIds, 'selectAll' => ''));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>3</strong>&#160;Leads selected for removal') === false);
+            $this->assertContains('<strong>3</strong>&#160;Leads selected for removal', $content);
 
             //calculating leads after adding 4 new records
             $leads = Contact::getAll();
@@ -723,7 +723,7 @@
 
             $leads = Contact::getAll();
             //BelinaLead1 was converted to a contact, so she is not removed
-            $this->assertFalse(strpos(serialize($leads), 'BelinaLead1') === false);
+            $this->assertContains('BelinaLead1', serialize($leads));
             $this->assertEquals(1, count($leads));
         }
     }

@@ -244,7 +244,8 @@
 
         protected static function getUserMenuTopLevelItem()
         {
-            return array(array('dynamicLabelContent'  => Yii::app()->user->userModel->getAvatarImage(25),
+            $userAvatar = ZurmoHtml::tag('span', array('class' => 'avatar-holder'), Yii::app()->user->userModel->getAvatarImage(25));
+	        return array(array('dynamicLabelContent'  => $userAvatar,
                                'labelSpanHtmlOptions' => array('class' => 'avatar-holder'),
                                'label'                => Yii::app()->user->userModel->username,
                                'url'                  => null));

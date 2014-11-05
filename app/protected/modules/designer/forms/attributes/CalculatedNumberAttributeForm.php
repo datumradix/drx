@@ -116,6 +116,7 @@
         public function validateAttributeNameDoesNotExists()
         {
             assert('$this->modelClassName != null');
+            parent::validateAttributeNameDoesNotExists();
             try
             {
                 $models = CalculatedDerivedAttributeMetadata::

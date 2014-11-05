@@ -63,7 +63,7 @@
          */
         protected static function sanitizeSearchTerm(& $term)
         {
-            $term    = ZurmoRedBean::$adapter->escape($term);
+            $term    = DatabaseCompatibilityUtil::escape($term);
         }
     }
 ?>

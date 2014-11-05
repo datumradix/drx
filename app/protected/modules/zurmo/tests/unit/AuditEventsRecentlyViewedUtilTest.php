@@ -156,8 +156,8 @@
 
             $content = AuditEventsRecentlyViewedUtil::getRecentlyViewedAjaxContentByUser(Yii::app()->user->userModel, 5);
             $this->assertNotEmpty($content);
-            $this->assertTrue(strpos($content, 'Dooble2') !== false);
-            $this->assertTrue(strpos($content, 'Dooble1') !== false);
+            $this->assertContains('Dooble2', $content);
+            $this->assertContains('Dooble1', $content);
         }
 
         public function testDeleteModelFromRecentlyViewed()

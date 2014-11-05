@@ -61,7 +61,7 @@
 
             //test that the welcome screen appears
             $content = $this->runControllerWithNoExceptionsAndGetContent('home/default/welcome');
-            $this->assertFalse(strpos($content, 'Go to the dashboard') === false);
+            $this->assertContains('Go to the dashboard', $content);
 
             //Change setting so user ignores welcome view.
             $form                    = UserConfigurationFormAdapter::makeFormFromUserConfigurationByUser($super);
@@ -99,7 +99,7 @@
             $this->setGetArray (array('id'      => $superDashboard->id));
             $this->setPostArray(array('Dashboard' => array('name' => '')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('home/default/editDashboard');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Load Model Detail Views
             $this->setGetArray(array('id' => -1));
@@ -444,12 +444,12 @@
             $this->runControllerWithNoExceptionsAndGetContent('home/default/editDashboard');
             $this->setPostArray(array('Dashboard' => array('layoutType' => '100')));
             $editActionContent = $this->runControllerWithRedirectExceptionAndGetContent('home/default/editDashboard');
-            $this->assertTrue(strpos($editActionContent, 'Undefined variable: maxPositionInColumn1') === false);
+            $this->assertNotContains('Undefined variable: maxPositionInColumn1', $editActionContent);
             $this->resetGetArray();
             $this->setGetArray(array('id' => $myDataDashboard->id));
             $this->resetPostArray();
             $this->runControllerWithNoExceptionsAndGetContent('home/default/dashboardDetails');
-            $this->assertTrue(strpos($editActionContent, 'Undefined offset: 2') === false);
+            $this->assertNotContains('Undefined offset: 2', $editActionContent);
         }
     }
 ?>
