@@ -398,7 +398,7 @@
          * Set lastZurmoStableVersion global pconfiguration property.
          * @param string $zurmoVersion
          */
-        public static function setGetMoreUrl()
+        protected static function setGetMoreUrl()
         {
             $getMoreUrl = "http://www.zurmo.com/needSupport.php";
 
