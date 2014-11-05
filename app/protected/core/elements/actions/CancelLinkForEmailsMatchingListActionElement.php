@@ -44,7 +44,14 @@
         protected function resolveHtmlOptionsForRendering()
         {
             $htmlOptions = $this->getHtmlOptions();
-            return CMap::mergeArray($htmlOptions, array('class' => 'cancel-button ' . $htmlOptions['class']));
+            if(isset($htmlOptions['class']))
+            {
+                return CMap::mergeArray($htmlOptions, array('class' => 'cancel-button ' . $htmlOptions['class']));
+            }
+            else
+            {
+                return CMap::mergeArray($htmlOptions, array('class' => 'cancel-button'));
+            }
         }
     }
 ?>
