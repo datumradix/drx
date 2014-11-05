@@ -40,5 +40,11 @@
         {
            return null;
         }
+
+        protected function resolveHtmlOptionsForRendering()
+        {
+            $htmlOptions = $this->getHtmlOptions();
+            return CMap::mergeArray($htmlOptions, array('class' => 'cancel-button ' . $htmlOptions['class']));
+        }
     }
 ?>
