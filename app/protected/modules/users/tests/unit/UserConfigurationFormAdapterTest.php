@@ -60,7 +60,6 @@
             $this->assertEquals('blue',             Yii::app()->themeManager->resolveAndGetThemeColorValue($sally));
             $this->assertEquals(null,               Yii::app()->themeManager->resolveAndGetBackgroundTextureValue($sally));
             $this->assertFalse(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'hideWelcomeView'));
-            $this->assertFalse(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'turnOffEmailNotifications'));
             $this->assertFalse(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'enableDesktopNotifications'));
             $this->assertNull(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'defaultPermissionGroupSetting', false));
             $this->assertEquals(UserConfigurationFormAdapter::resolveAndGetDefaultPermissionSetting($sally), UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_EVERYONE);
@@ -84,7 +83,6 @@
             $this->assertEquals('blue',             Yii::app()->themeManager->resolveAndGetThemeColorValue($billy));
             $this->assertEquals(null,               Yii::app()->themeManager->resolveAndGetBackgroundTextureValue($billy));
             $this->assertFalse(UserConfigurationFormAdapter::resolveAndGetValue($billy, 'hideWelcomeView'));
-            $this->assertFalse(UserConfigurationFormAdapter::resolveAndGetValue($billy, 'turnOffEmailNotifications'));
             $this->assertFalse(UserConfigurationFormAdapter::resolveAndGetValue($billy, 'enableDesktopNotifications'));
             $this->assertNull(UserConfigurationFormAdapter::resolveAndGetValue($billy, 'defaultPermissionGroupSetting', false));
             $this->assertEquals(UserConfigurationFormAdapter::resolveAndGetDefaultPermissionSetting($billy), UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_EVERYONE);
@@ -98,7 +96,6 @@
             $form->themeColor                       = 'lime';
             $form->backgroundTexture                = 'paper';
             $form->hideWelcomeView                  = true;
-            $form->turnOffEmailNotifications        = true;
             $form->enableDesktopNotifications       = true;
             $form->defaultPermissionSetting         = UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_OWNER_AND_USERS_IN_GROUP;
             $form->defaultPermissionGroupSetting    = 6;
@@ -114,10 +111,8 @@
             $this->assertEquals('lime',             Yii::app()->themeManager->resolveAndGetThemeColorValue($billy));
             $this->assertEquals('paper',            Yii::app()->themeManager->resolveAndGetBackgroundTextureValue($billy));
             $this->assertTrue(UserConfigurationFormAdapter::resolveAndGetValue($billy, 'hideWelcomeView'));
-            $this->assertTrue(UserConfigurationFormAdapter::resolveAndGetValue($billy, 'turnOffEmailNotifications'));
             $this->assertTrue(UserConfigurationFormAdapter::resolveAndGetValue($billy, 'enableDesktopNotifications'));
             $this->assertFalse(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'hideWelcomeView'));
-            $this->assertFalse(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'turnOffEmailNotifications'));
             $this->assertFalse(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'enableDesktopNotifications'));
             $this->assertEquals(UserConfigurationFormAdapter::resolveAndGetDefaultPermissionSetting($billy),
                 UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_OWNER_AND_USERS_IN_GROUP);
@@ -137,7 +132,6 @@
             $this->assertEquals('lime',             Yii::app()->themeManager->resolveAndGetThemeColorValue($sally));
             $this->assertEquals('paper',            Yii::app()->themeManager->resolveAndGetBackgroundTextureValue($sally));
             $this->assertTrue(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'hideWelcomeView'));
-            $this->assertTrue(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'turnOffEmailNotifications'));
             $this->assertTrue(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'enableDesktopNotifications'));
             $this->assertEquals(UserConfigurationFormAdapter::resolveAndGetDefaultPermissionSetting($sally), UserConfigurationForm::DEFAULT_PERMISSIONS_SETTING_OWNER_AND_USERS_IN_GROUP);
             $this->assertEquals(UserConfigurationFormAdapter::resolveAndGetValue($sally, 'defaultPermissionGroupSetting', false), 6);

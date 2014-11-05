@@ -68,7 +68,7 @@
                 throw new MissingRecipientsForEmailMessageException();
             }
             $userId                 = static::resolveCurrentUserId();
-            if(get_class($itemOwnerModel) == 'Campaign')
+            if (get_class($itemOwnerModel) == 'Campaign')
             {
                 $ownerId                = $itemOwnerModel->owner->id;
             }

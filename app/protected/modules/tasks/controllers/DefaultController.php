@@ -341,6 +341,8 @@
             if ($relationAttributeName == 'project')
             {
                 ProjectsUtil::logAddTaskEvent($task);
+                ProjectsNotificationUtil::submitProjectNotificationMessage($task->project, ProjectAuditEvent::TASK_ADDED, 
+                                                                           $task, Yii::app()->user->userModel);
             }
             $this->actionModalDetails($task->id);
         }
@@ -384,6 +386,8 @@
             if ($copyToTask->project->id > 0)
             {
                 ProjectsUtil::logAddTaskEvent($copyToTask);
+                ProjectsNotificationUtil::submitProjectNotificationMessage($copyToTask->project, ProjectAuditEvent::TASK_ADDED,
+                                                                           $copyToTask, Yii::app()->user->userModel);
             }
             $this->actionModalDetails($copyToTask->id);
         }
