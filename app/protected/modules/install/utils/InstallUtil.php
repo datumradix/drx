@@ -599,6 +599,11 @@
             $user->lastName     = 'User';
             $user->setPassword($password);
             $user->setIsRootUser();
+            if (Yii::app()->edition == 'Commercial')
+            {
+                $user->hideFromLeaderboard = true;
+                $user->hideFromSelecting = true;
+            }
             $saved = $user->save();
             if (!$saved)
             {

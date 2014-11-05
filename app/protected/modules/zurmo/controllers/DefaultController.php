@@ -347,7 +347,7 @@
                 }
                 if (isset($_POST[$formModelClassName][SearchForm::SELECTED_LIST_ATTRIBUTES]))
                 {
-                    $listAttributesSelector         = new ListAttributesSelector($viewClassName, $model->getModuleClassName());
+                    $listAttributesSelector         = new ListAttributesSelector($viewClassName, $model->getModuleClassName(), $modelClassName);
                     $listAttributesSelector->setSelected($_POST[$formModelClassName][SearchForm::SELECTED_LIST_ATTRIBUTES]);
                     $searchForm->setListAttributesSelector($listAttributesSelector);
                     unset($_POST[$formModelClassName][SearchForm::SELECTED_LIST_ATTRIBUTES]);

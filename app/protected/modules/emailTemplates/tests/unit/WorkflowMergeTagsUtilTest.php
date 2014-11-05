@@ -788,7 +788,7 @@
             $this->assertTrue($resolvedContent !== false);
             $this->assertNotEquals($resolvedContent, $content);
             $expectedSuffix                 = '/emailTemplates/default/details?id=' . static::$emailTemplate->id;
-            $this->assertTrue(strpos($resolvedContent, $expectedSuffix) !== false);
+            $this->assertContains($expectedSuffix, $resolvedContent);
             $this->assertEmpty($this->invalidTags);
 
             $content                        = '[[WAS%MODEL^URL]]';
@@ -883,7 +883,7 @@
             $resolvedContent                = $mergeTagsUtil->resolveMergeTags(self::$emailTemplate, $this->invalidTags);
             $this->assertTrue($resolvedContent !== false);
             $this->assertNotEquals($resolvedContent, $content);
-            $this->assertTrue(strpos($resolvedContent, 'localhost') === 0);
+            $this->assertContains('localhost', $resolvedContent);
             $this->assertEmpty($this->invalidTags);
         }
 

@@ -56,41 +56,57 @@
 	}
 	table{
 		width:100%;
-		table{
-			border-color: #DDDEDE;
-			border-style: solid;
-			border-width: 0 0 1px 0;
-			border-spacing: 0;
-			border-collapse: collapse;
-			td{
-				border-color: #DDDEDE;
-				border-style: solid;
-				border-width: 1px 1px 0 0;
-				padding-left:10px;
-			}
-			tr{
-				border-color: #DDDEDE;
-				border-style: solid;
-				border-width: 0 0 0 1px;
-				border-spacing: 0;
-			}
-			tr:first-child{
-				border-left:none;
-				td{
-					border:none;
-					font-weight:bold;
-				}
-			}
-		}
 		/*inside another table to prevent hover effect on the main table*/
 		table tr:hover{
-			background-color:none;
-			color:@textColor;
+			//background-color:none;
+			//color:@textColor;
 		}
 		td{
-			padding:8px 2px;
+			//padding:8px 2px;
 		}
 	}
+}
+
+.checked-services{
+    border-color: #DDDEDE;
+    border-style: solid;
+    border-width: 0 0 1px 0;
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 15px;
+    td{
+        border-color: #DDDEDE;
+        border-style: solid;
+        border-width: 1px 1px 0 0;
+        padding:10px;
+    }
+    tr{
+        border-color: #DDDEDE;
+        border-style: solid;
+        border-width: 0 0 0 1px;
+        border-spacing: 0;
+    }
+    tr:hover{
+        background-color:none;
+        color:@textColor;
+    }
+    tr:first-child{
+        border-left:none;
+        td{
+            border:none;
+            font-weight:bold;
+            padding-left: 2px;
+        }
+    }
+    span{
+        &.pass,
+        &.fail,
+        &.warning{
+            display: block;
+            text-align: center;
+        }
+    }
 }
 
 #install-form{
@@ -104,11 +120,12 @@
 	th{
 		width:26%;
 		vertical-align:top;
-		padding-top: 8px;
-	}
+        padding:10px;
+    }
 	td{
 		width:37%;
-	}
+        padding:10px;
+    }
 	th+td{
 		vertical-align:top;
 	}

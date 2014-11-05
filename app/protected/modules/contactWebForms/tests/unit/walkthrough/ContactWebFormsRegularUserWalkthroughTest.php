@@ -97,14 +97,14 @@
             Yii::app()->user->userModel = $nobody;
             $content = $this->runControllerWithNoExceptionsAndGetContent('contactWebForms/default/list');
 
-            $this->assertFalse(strpos($content, 'Billy Corgan') === false);
+            $this->assertContains('Billy Corgan', $content);
             $this->runControllerWithNoExceptionsAndGetContent('contactWebForms/default/create');
             //Test nobody can view an existing web forms he owns.
             $contactWebForm = ContactWebFormTestHelper::createContactWebFormByName('webFormOwnedByNobody', $nobody);
 
             //At this point the listview for web forms should show the search/list and not the helper screen.
             $content = $this->runControllerWithNoExceptionsAndGetContent('contactWebForms/default/list');
-            $this->assertTrue(strpos($content, 'Billy Corgan') === false);
+            $this->assertNotContains('Billy Corgan', $content);
 
             $this->setGetArray(array('id' => $contactWebForm->id));
             $this->runControllerWithNoExceptionsAndGetContent('contactWebForms/default/edit');
@@ -420,7 +420,7 @@
             unset($contactWebForm);
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('aUser');
             $content = $this->runControllerWithNoExceptionsAndGetContent('contactWebForms/default');
-            $this->assertFalse(strpos($content, 'Fatal error: Method ContactWebForm::__toString() must not throw an exception') > 0);
+            $this->assertNotContains('Fatal error: Method ContactWebForm::__toString() must not throw an exception', $content);
         }
     }
 ?>

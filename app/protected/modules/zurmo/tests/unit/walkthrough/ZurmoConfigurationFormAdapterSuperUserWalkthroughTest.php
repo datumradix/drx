@@ -64,10 +64,10 @@
                                       )
                                );
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/configurationEdit');
-            $this->assertFalse(strpos($content, 'Dashboard portlet list page size') === false);
-            $this->assertFalse(strpos($content, 'List page size cannot be blank.') === false);
-            $this->assertFalse(strpos($content, 'Popup list page size cannot be blank.') === false);
-            $this->assertFalse(strpos($content, 'Sublist page size cannot be blank.') === false);
+            $this->assertContains('Dashboard portlet list page size', $content);
+            $this->assertContains('List page size cannot be blank.', $content);
+            $this->assertContains('Popup list page size cannot be blank.', $content);
+            $this->assertContains('Sublist page size cannot be blank.', $content);
 
             //checking with proper values for required fields
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');

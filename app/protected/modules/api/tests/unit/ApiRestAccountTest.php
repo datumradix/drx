@@ -1283,6 +1283,7 @@
             );
             $data['name'] = 'ABCD';
             $data['createdDateTime']     = '2014-06-12 15:22:41';
+            $data['modifiedDateTime']    = '2014-06-12 15:28:41';
             $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));
 
             $response = json_decode($response, true);
@@ -1322,7 +1323,8 @@
                 'ZURMO_TOKEN: ' . $authenticationData['token'],
                 'ZURMO_API_REQUEST_TYPE: REST',
             );
-            $data['createdDateTime']     = '2014-06-12 14:22:41';
+            $data['createdDateTime']     = '2014-06-12 14:26:41';
+            $data['createdDateTime']     = '2014-06-12 14:28:41';
             $response = $this->createApiCallWithRelativeUrl('update/' . $account->id, 'PUT', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);

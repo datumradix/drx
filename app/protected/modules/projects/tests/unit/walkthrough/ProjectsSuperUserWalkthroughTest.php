@@ -68,12 +68,12 @@
             $this->runControllerWithNoExceptionsAndGetContent('projects/default/create');
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('projects/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertContains('anyMixedAttributes', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('projects/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
             $this->resetGetArray();
 
             //Default Controller actions requiring some sort of parameter via POST or GET
@@ -103,7 +103,7 @@
             $this->setGetArray (array('id'      => $superProjectId));
             $this->setPostArray(array('Project' => array('name' => '')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('projects/default/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Load Model Detail Views
             $this->setGetArray(array('id' => $superProjectId));
@@ -181,13 +181,13 @@
             $this->resetPostArray();
             $content                = $this->runControllerWithNoExceptionsAndGetContent('projects/default/massDelete');
 
-            $this->assertTrue(strpos($content, '<strong>5</strong>&#160;Projects selected for removal') > 0);
+            $this->assertContains('<strong>5</strong>&#160;Projects selected for removal', $content);
 
              //MassDelete view for all result selected ids
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('projects/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>13</strong>&#160;Projects selected for removal') === false);
+            $this->assertContains('<strong>13</strong>&#160;Projects selected for removal', $content);
 
             //MassDelete for selected Record Count
             $projects               = Project::getAll();
@@ -285,7 +285,7 @@
             $id = $project->id;
             $this->setGetArray(array('id' => $id));
             $content = $this->runControllerWithNoExceptionsAndGetContent('projects/default/copy');
-            $this->assertTrue(strpos($content, 'My Project 1') > 0);
+            $this->assertContains('My Project 1', $content);
             $projects = Project::getAll();
             $this->assertEquals(1, count($projects));
         }

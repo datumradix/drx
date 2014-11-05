@@ -79,7 +79,7 @@
             catch (ExitException $e)
             {
                 $compareString = 'You have tried to access a page you do not have access to';
-                $this->assertFalse(strpos($this->endAndGetOutputBuffer(), $compareString) === false);
+                $this->assertContains($compareString, $this->endAndGetOutputBuffer());
             }
 
             $super                      = User::getByUsername('super');
@@ -127,7 +127,7 @@
             catch (ExitException $e)
             {
                 $compareString = 'You have tried to access a page you do not have access to';
-                $this->assertFalse(strpos($this->endAndGetOutputBuffer(), $compareString) === false);
+                $this->assertContains($compareString, $this->endAndGetOutputBuffer());
             }
             Yii::app()->user->userModel = User::getByUsername('super');
             $account = AccountTestHelper::createAccountByNameForOwner('BettyInc', $betty);
@@ -176,7 +176,7 @@
             catch (ExitException $e)
             {
                 $compareString = 'You have tried to access a page you do not have access to';
-                $this->assertFalse(strpos($this->endAndGetOutputBuffer(), $compareString) === false);
+                $this->assertContains($compareString, $this->endAndGetOutputBuffer());
             }
 
             $accounts = Account::getByName('BettyInc');
@@ -227,7 +227,7 @@
             catch (ExitException $e)
             {
                 $compareString = 'You have tried to access a page you do not have access to';
-                $this->assertFalse(strpos($this->endAndGetOutputBuffer(), $compareString) === false);
+                $this->assertContains($compareString, $this->endAndGetOutputBuffer());
             }
 
             $accounts = Account::getByName('BettyInc');

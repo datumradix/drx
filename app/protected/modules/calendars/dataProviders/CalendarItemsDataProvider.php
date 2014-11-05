@@ -212,33 +212,48 @@
          */
         protected function makeReportBySavedCalendar(SavedCalendar $savedCalendar)
         {
-            $moduleClassName  = $savedCalendar->moduleClassName;
-            $report           = SavedCalendarToReportAdapter::makeReportBySavedCalendar($savedCalendar);
-            $existingFilters  = $report->getFilters();
-            //Before and after dates
-            $startFilter = new FilterForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(), $report->getType());
-            $startFilter->attributeIndexOrDerivedType = $savedCalendar->startAttributeName;
-            $startFilter->value                       = $this->startDate;
-            $startFilter->valueType                   = MixedDateTypesSearchFormAttributeMappingRules::TYPE_BEFORE;
-            $report->addFilter($startFilter);
-            $endFilter = new FilterForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(), $report->getType());
-            if ($savedCalendar->endAttributeName != null)
+            $moduleClassName      = $savedCalendar->moduleClassName;
+            $report               = SavedCalendarToReportAdapter::makeReportBySavedCalendar($savedCalendar);
+            $existingFilters      = $report->getFilters();
+            $existingFiltersCount = count($existingFilters);
+            $newFiltersToAdd      = array();
+            $newStructureToAdd    = null;
+
+            $this->processFiltersAndStructureForMeetingsThatStartAndEndAfterRange($newFiltersToAdd, $newStructureToAdd, $existingFiltersCount, $savedCalendar, $report);
+            $this->processFiltersAndStructureForMeetingsThatStartBeforeRange($newFiltersToAdd, $newStructureToAdd, $existingFiltersCount, $savedCalendar, $report);
+            $this->processFiltersAndStructureForMeetingsThatEndAfterRange($newFiltersToAdd, $newStructureToAdd, $existingFiltersCount, $savedCalendar, $report);
+            foreach ($newFiltersToAdd as $filter)
             {
-                $endFilter->attributeIndexOrDerivedType = $savedCalendar->endAttributeName;
+                $report->addFilter($filter);
+            }
+            if ($report->getFiltersStructure() != null)
+            {
+                $report->setFiltersStructure($report->getFiltersStructure() . " AND ({$newStructureToAdd})");
             }
             else
             {
-                $endFilter->attributeIndexOrDerivedType = $savedCalendar->startAttributeName;
+                $report->setFiltersStructure($newStructureToAdd);
             }
-            $endFilter->value                       = $this->endDate;
-            $endFilter->valueType                   = MixedDateTypesSearchFormAttributeMappingRules::TYPE_AFTER;
-            $report->addFilter($endFilter);
-            //In between dates
+
+            $displayAttribute = new DisplayAttributeForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(),
+                                    $report->getType());
+            $displayAttribute->attributeIndexOrDerivedType = 'id';
+            $report->addDisplayAttribute($displayAttribute);
+            return $report;
+        }
+
+        protected function processFiltersAndStructureForMeetingsThatStartAndEndAfterRange(& $filters, & $structure, & $filtersCount, SavedCalendar $savedCalendar, Report $report)
+        {
+            if (count($filters) != 0)
+            {
+                $structure .= ' OR ';
+            }
+            $moduleClassName = $savedCalendar->moduleClassName;
             $startFilter = new FilterForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(), $report->getType());
             $startFilter->attributeIndexOrDerivedType = $savedCalendar->startAttributeName;
             $startFilter->value                       = $this->startDate;
             $startFilter->valueType                   = MixedDateTypesSearchFormAttributeMappingRules::TYPE_AFTER;
-            $report->addFilter($startFilter);
+            $filters[] = $startFilter;
             $endFilter = new FilterForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(), $report->getType());
             if ($savedCalendar->endAttributeName != null)
             {
@@ -250,22 +265,65 @@
             }
             $endFilter->value                       = $this->endDate;
             $endFilter->valueType                   = MixedDateTypesSearchFormAttributeMappingRules::TYPE_BEFORE;
-            $report->addFilter($endFilter);
-            if (count($existingFilters) > 0)
+            $filters[] = $endFilter;
+            $structure .= '(' . ($filtersCount + 1) . ' AND ' . ($filtersCount + 2) . ')';
+            $filtersCount += 2;
+        }
+
+        protected function processFiltersAndStructureForMeetingsThatStartBeforeRange(& $filters, & $structure, & $filtersCount, SavedCalendar $savedCalendar, Report $report)
+        {
+            if (count($filters) != 0)
             {
-                $filtersCount = count($existingFilters);
-                $report->setFiltersStructure($report->getFiltersStructure() .
-                                             ' AND (' . ($filtersCount + 1) . ' OR ' . ($filtersCount + 2) . ' OR (' . ($filtersCount + 3) . ' AND ' . ($filtersCount + 4) . '))');
+                $structure .= ' OR ';
+            }
+            $moduleClassName = $savedCalendar->moduleClassName;
+            $startFilter = new FilterForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(), $report->getType());
+            $startFilter->attributeIndexOrDerivedType = $savedCalendar->startAttributeName;
+            $startFilter->value                       = $this->startDate;
+            $startFilter->valueType                   = MixedDateTypesSearchFormAttributeMappingRules::TYPE_BEFORE;
+            $filters[] = $startFilter;
+            $endFilter = new FilterForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(), $report->getType());
+            if ($savedCalendar->endAttributeName != null)
+            {
+                $endFilter->attributeIndexOrDerivedType = $savedCalendar->endAttributeName;
             }
             else
             {
-                $report->setFiltersStructure('1 OR 2 OR (3 AND 4)');
+                $endFilter->attributeIndexOrDerivedType = $savedCalendar->startAttributeName;
             }
-            $displayAttribute = new DisplayAttributeForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(),
-                                    $report->getType());
-            $displayAttribute->attributeIndexOrDerivedType = 'id';
-            $report->addDisplayAttribute($displayAttribute);
-            return $report;
+            $endFilter->value                       = $this->startDate;
+            $endFilter->valueType                   = MixedDateTypesSearchFormAttributeMappingRules::TYPE_AFTER;
+            $filters[] = $endFilter;
+            $structure .= '(' . ($filtersCount + 1) . ' AND ' . ($filtersCount + 2) . ')';
+            $filtersCount += 2;
+        }
+
+        protected function processFiltersAndStructureForMeetingsThatEndAfterRange(& $filters, & $structure, & $filtersCount, SavedCalendar $savedCalendar, Report $report)
+        {
+            if (count($filters) != 0)
+            {
+                $structure .= ' OR ';
+            }
+            $moduleClassName = $savedCalendar->moduleClassName;
+            $startFilter = new FilterForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(), $report->getType());
+            $startFilter->attributeIndexOrDerivedType = $savedCalendar->startAttributeName;
+            $startFilter->value                       = $this->endDate;
+            $startFilter->valueType                   = MixedDateTypesSearchFormAttributeMappingRules::TYPE_BEFORE;
+            $filters[] = $startFilter;
+            $endFilter = new FilterForReportForm($moduleClassName, $moduleClassName::getPrimaryModelName(), $report->getType());
+            if ($savedCalendar->endAttributeName != null)
+            {
+                $endFilter->attributeIndexOrDerivedType = $savedCalendar->endAttributeName;
+            }
+            else
+            {
+                $endFilter->attributeIndexOrDerivedType = $savedCalendar->startAttributeName;
+            }
+            $endFilter->value                       = $this->endDate;
+            $endFilter->valueType                   = MixedDateTypesSearchFormAttributeMappingRules::TYPE_AFTER;
+            $filters[] = $endFilter;
+            $structure .= '(' . ($filtersCount + 1) . ' AND ' . ($filtersCount + 2) . ')';
+            $filtersCount += 2;
         }
 
         /**
