@@ -623,10 +623,6 @@
             $translationParams = LabelUtil::getTranslationParamsForAllModules();
             foreach ($menuItems as $itemKey => $item)
             {
-                if (Yii::app()->edition != 'Community' && $menuItems[$itemKey]['label'] == "eval:Zurmo::t('ZurmoModule', 'Get More')")
-                {
-                    $menuItems[$itemKey]['url'] = "https://zurmo.zendesk.com/home";
-                }
                 foreach ($labelElements as $labelElement)
                 {
                     MetadataUtil::resolveEvaluateSubString($menuItems[$itemKey][$labelElement], 'translationParams', $translationParams);
