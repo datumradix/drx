@@ -80,13 +80,12 @@
 
         public function actionGetAuthenticatedUser()
         {
-            $loggedUser = Yii::app()->user->userModel;
-            if (!$loggedUser instanceof User)
+            if (Yii::app()->user->isGuest)
             {
                 $message = Zurmo::t('ZurmoModule', 'You must be logged to use this method.');
                 throw new ApiException($message);
             }
-            $result    =  $this->processRead($loggedUser->id);
+            $result    =  $this->processRead(Yii::app()->user->userModel->id);
             Yii::app()->apiHelper->sendResponse($result);
         }
 
