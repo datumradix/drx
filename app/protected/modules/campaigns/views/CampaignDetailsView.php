@@ -82,12 +82,11 @@
         protected function renderContent()
         {
             // TODO: @Shoaibi/@Jason: Low: Do security walkthrough
-            $actionElementBarContent        = $this->renderActionElementBar(false);
-            $content                        = $this->renderTitleContent();
-            $content                       .= ZurmoHtml::tag('div', array('class' => 'view-toolbar-container clearfix'),
-                                                ZurmoHtml::tag('nav', array('class' => 'pillbox clearfix'),
-                                                                                    $actionElementBarContent));
-            $content                        .= $this->renderRightSideContent();
+            $actionElementBarContent = $this->renderActionElementBar(false);
+	        $pillbox  = ZurmoHtml::tag('nav', array('class' => 'pillbox clearfix'), $actionElementBarContent);
+	        $switch   = $this->renderRightSideContent();
+            $content  = $this->renderTitleContent();
+            $content .= ZurmoHtml::tag('div', array('class' => 'view-toolbar-container clearfix'), $pillbox . $switch );
             return $content;
         }
 
@@ -99,8 +98,6 @@
             {
                 $content .= $this->renderCampaignActivePauseToggleElement();
             }
-            $content  = ZurmoHtml::tag('div', array('class' => 'right-side-edit-view-panel thread-info'), $content);
-            $content  = ZurmoHtml::tag('div', array('class' => 'right-column'), $content);
             return $content;
         }
 

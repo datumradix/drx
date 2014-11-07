@@ -58,8 +58,6 @@
             $content    = '<i>&#9679;</i>' . $span;
             $class      = 'campaign-status ' . strtolower($label);
             $content    = ZurmoHtml::tag('div', compact('class'), $content);
-	        $content    = ZurmoHtml::tag('div', array('class' => 'clearfix'), $content);
-	        $content    = ZurmoHtml::tag('div', array('class' => 'continuum'), $content);
             return $content;
         }
     }

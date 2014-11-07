@@ -519,7 +519,7 @@ a + .autoresponder-stats{
     }
 }
 
-.campaign-status,
+//.campaign-status,
 .gmail-user-stage-status,
 .import-item-stage-status,
 .export-item-stage-status,
@@ -577,6 +577,63 @@ a + .autoresponder-stats{
 		font-size: 10px;
 		font-weight: bold;
 	}
+}
+
+@-webkit-keyframes led-throb { 50% {.opacity(10);  -webkit-transform: scale(1.2); }}
+@-moz-keyframes led-throb {    50% {.opacity(10);     -moz-transform: scale(1.2); }}
+@-o-keyframes led-throb {      50% {.opacity(10);       -o-transform: scale(1.2); }}
+@-ms-keyframes led-throb {     50% {.opacity(10);      -ms-transform: scale(1.2); }}
+@keyframes led-throb {         50% {.opacity(10);          transform: scale(1.2); }}
+
+.campaign-status{
+    text-align: center;
+    float: left;
+    .smaller();
+    width: auto;
+    font-weight: 700;
+    position:relative;
+    color:@textColor;
+    text-shadow:#fff 0 1px 0;
+    margin: 0;
+    padding-right: 6px;
+    line-height:20px;
+    display:inline-block;
+    span{
+        font-size: 10px;
+        font-weight: bold;
+    }
+    i{
+        font-weight: bold;
+        line-height: 1;
+        padding:0 6px;
+        color: #cccccc;
+        .t-shadow(0 0 5px #cccccc);
+        -webkit-transform-origin: 50%;
+        -moz-transform-origin: 50%;
+        -ms-transform-origin: 50%;
+        -o-transform-origin: 50%;
+        transform-origin: 50%;
+    }
+    &.completed  i {
+        color: #97c43d;
+        .t-shadow(0 0 5px #97c43d);
+    }
+    &.processing i,
+    &.active i{
+        color: #ffd900;
+        .t-shadow(0 0 5px #ffd900);
+    }
+    &.processing i{
+             -o-animation: led-throb 0.5s ease-in-out infinite;
+            -ms-animation: led-throb 0.5s ease-in-out infinite;
+           -moz-animation: led-throb 0.5s ease-in-out infinite;
+        -webkit-animation: led-throb 0.5s ease-in-out infinite;
+                animation: led-throb 0.5s ease-in-out infinite;
+    }
+    &.paused i{
+        color: #c43d53;
+        .t-shadow(0 0 5px #c43d53);
+    }
 }
 
 .led{
