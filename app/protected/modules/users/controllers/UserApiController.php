@@ -78,6 +78,18 @@
             Yii::app()->apiHelper->sendResponse($result);
         }
 
+        public function actionGetAuthenticatedUser()
+        {
+            $loggedUser = Yii::app()->user->userModel;
+            if (!$loggedUser instanceof User)
+            {
+                $message = Zurmo::t('ZurmoModule', 'You must be logged to use this method.');
+                throw new ApiException($message);
+            }
+            $result    =  $this->processRead($loggedUser->id);
+            Yii::app()->apiHelper->sendResponse($result);
+        }
+
         protected function resolvePasswordParameter(& $params)
         {
             // We have to encrypt password
