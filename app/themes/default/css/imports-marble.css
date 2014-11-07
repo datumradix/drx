@@ -8562,13 +8562,13 @@ a + .autoresponder-stats {
   margin-right: 0;
   font-size: 8px;
 }
+.campaign-status,
 .gmail-user-stage-status,
 .import-item-stage-status,
 .export-item-stage-status,
 .email-recipient-stage-status {
   text-align: center;
   float: left;
-  margin-left: 2%;
   font-size: 11px;
   width: auto;
   font-weight: 700;
@@ -8581,12 +8581,19 @@ a + .autoresponder-stats {
   display: inline-block;
   border-left: 1px solid #bababa;
 }
+.campaign-status.completed i,
+.campaign-status.stage-true i,
+.campaign-status.stage-running i,
+.gmail-user-stage-status.completed i,
 .gmail-user-stage-status.stage-true i,
 .gmail-user-stage-status.stage-running i,
+.import-item-stage-status.completed i,
 .import-item-stage-status.stage-true i,
 .import-item-stage-status.stage-running i,
+.export-item-stage-status.completed i,
 .export-item-stage-status.stage-true i,
 .export-item-stage-status.stage-running i,
+.email-recipient-stage-status.completed i,
 .email-recipient-stage-status.stage-true i,
 .email-recipient-stage-status.stage-running i {
   color: #97c43d;
@@ -8596,6 +8603,7 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #97c43d;
   text-shadow: 0 0 5px #97c43d;
 }
+.campaign-status.stage-running i,
 .gmail-user-stage-status.stage-running i,
 .import-item-stage-status.stage-running i,
 .export-item-stage-status.stage-running i,
@@ -8606,6 +8614,7 @@ a + .autoresponder-stats {
   -webkit-animation: led-throb 0.25s;
   animation: led-throb 0.25s;
 }
+.campaign-status.stage-false i,
 .gmail-user-stage-status.stage-false i,
 .import-item-stage-status.stage-false i,
 .export-item-stage-status.stage-false i,
@@ -8617,12 +8626,24 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #c43d53;
   text-shadow: 0 0 5px #c43d53;
 }
+.campaign-status.processing i,
+.campaign-status.active i,
+.campaign-status.stage-pending i,
+.campaign-status i,
+.gmail-user-stage-status.processing i,
+.gmail-user-stage-status.active i,
 .gmail-user-stage-status.stage-pending i,
 .gmail-user-stage-status i,
+.import-item-stage-status.processing i,
+.import-item-stage-status.active i,
 .import-item-stage-status.stage-pending i,
 .import-item-stage-status i,
+.export-item-stage-status.processing i,
+.export-item-stage-status.active i,
 .export-item-stage-status.stage-pending i,
 .export-item-stage-status i,
+.email-recipient-stage-status.processing i,
+.email-recipient-stage-status.active i,
 .email-recipient-stage-status.stage-pending i,
 .email-recipient-stage-status i {
   font-weight: bold;
@@ -8635,12 +8656,14 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #ffd900;
   text-shadow: 0 0 5px #ffd900;
 }
+.campaign-status:first-child,
 .gmail-user-stage-status:first-child,
 .import-item-stage-status:first-child,
 .export-item-stage-status:first-child,
 .email-recipient-stage-status:first-child {
   border-left: none;
 }
+.campaign-status span,
 .gmail-user-stage-status span,
 .import-item-stage-status span,
 .export-item-stage-status span,
@@ -8673,6 +8696,64 @@ a + .autoresponder-stats {
   -ms-text-shadow: 0 0 5px #c43d53;
   -o-text-shadow: 0 0 5px #c43d53;
   text-shadow: 0 0 5px #c43d53;
+}
+.campaign-status-badge {
+  position: relative;
+  top: -1px;
+  margin-left: 8px;
+  color: #fff;
+  background: gold;
+  font-size: 11px;
+  padding: 2px 4px;
+  -webkit-text-shadow: none;
+  -moz-text-shadow: none;
+  -ms-text-shadow: none;
+  -o-text-shadow: none;
+  text-shadow: none;
+  background-color: #e4b600;
+  background-repeat: repeat-x;
+  background-image: -ms-linear-gradient(top,#ffcc00,#e4b600);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#ffcc00),color-stop(100%,#e4b600));
+  background-image: -webkit-linear-gradient(top,#ffcc00,#e4b600);
+  background-image: -o-linear-gradient(top,#ffcc00,#e4b600);
+  background-image: -moz-linear-gradient(top,#ffcc00,#e4b600);
+  background-image: linear-gradient(top,#ffcc00,#e4b600);
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+  font-weight: normal;
+}
+.campaign-status-badge.status-true {
+  background-color: #6fa82d;
+  background-repeat: repeat-x;
+  background-image: -ms-linear-gradient(top,#97c43d,#6fa82d);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#97c43d),color-stop(100%,#6fa82d));
+  background-image: -webkit-linear-gradient(top,#97c43d,#6fa82d);
+  background-image: -o-linear-gradient(top,#97c43d,#6fa82d);
+  background-image: -moz-linear-gradient(top,#97c43d,#6fa82d);
+  background-image: linear-gradient(top,#97c43d,#6fa82d);
+}
+.campaign-status-badge.status-true:before {
+  margin-right: 4px;
+  content: "✔";
+  color: #476c1d;
+}
+.campaign-status-badge.status-false {
+  background-color: #a82d31;
+  background-repeat: repeat-x;
+  background-image: -ms-linear-gradient(top,#c43d53,#a82d31);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#c43d53),color-stop(100%,#a82d31));
+  background-image: -webkit-linear-gradient(top,#c43d53,#a82d31);
+  background-image: -o-linear-gradient(top,#c43d53,#a82d31);
+  background-image: -moz-linear-gradient(top,#c43d53,#a82d31);
+  background-image: linear-gradient(top,#c43d53,#a82d31);
+}
+.campaign-status-badge.status-false:before {
+  margin-right: 4px;
+  content: "✖";
+  color: #6c1d1f;
 }
 .CampaignItemsRelatedListView .icon-empty:before {
   content: "f";
