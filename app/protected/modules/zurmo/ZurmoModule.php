@@ -395,8 +395,7 @@
         }
 
         /**
-         * Set lastZurmoStableVersion global pconfiguration property.
-         * @param string $zurmoVersion
+         * Set getMoreUrl according to edition.
          */
         protected static function setGetMoreUrl()
         {
