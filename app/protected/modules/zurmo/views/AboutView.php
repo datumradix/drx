@@ -65,7 +65,7 @@
             $content .= '</p>';
             $content .= '<p>';
             $content .= Zurmo::t('ZurmoModule', '<strong>Achieve more with a Zurmo subscription</strong> {url}.',
-                array('{url}' => '<a href="http://www.zurmo.com/needSupport.php?s=about">Learn More</a>'));
+                array('{url}' => '<a href="http://www.zurmo.com/needSupport.php">Learn More</a>'));
             $content .= '<br/>';
             $content .= '</p>';
             $content .= '</div>

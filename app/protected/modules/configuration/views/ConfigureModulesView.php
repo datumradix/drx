@@ -72,7 +72,7 @@
                 'to training and consulting, blazing fast hosting, ' .
                 'and in-depth documentation with a Zurmo subscription.');
 	        $content .= ZurmoHtml::closeTag('p');
-	        $content .= '<a href="http://www.zurmo.com/needSupport.php?s=amenu" class="z-button"><span class="z-label">' .
+	        $content .= '<a href="http://www.zurmo.com/needSupport.php" class="z-button"><span class="z-label">' .
                         Zurmo::t('ZurmoModule', 'Learn More' . '</span></a>');
 	        $content .= ZurmoHtml::closeTag('div');
 	        $content .= ZurmoHtml::closeTag('div');
