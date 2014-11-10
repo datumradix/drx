@@ -399,7 +399,7 @@
          */
         protected static function setGetMoreUrl()
         {
-            $getMoreUrl = "http://www.zurmo.com/needSupport.php";
+            $getMoreUrl = "http://www.zurmo.com/needSupport.php?source=menu";
 
             if (Yii::app()->edition != 'Community')
             {
