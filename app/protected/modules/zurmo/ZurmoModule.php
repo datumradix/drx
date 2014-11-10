@@ -163,7 +163,7 @@
                     ),
                     array(
                         'label'  => "eval:Zurmo::t('ZurmoModule', 'Get More')",
-                        'url'    => self::setGetMoreUrl(),
+                        'url'    => 'eval:self::resolveGetMoreUrl()',
                         'order'  => 9,
                         'mobile' => true,
                     ),
@@ -397,7 +397,7 @@
         /**
          * Set getMoreUrl according to edition.
          */
-        protected static function setGetMoreUrl()
+        protected static function resolveGetMoreUrl()
         {
             $getMoreUrl = "http://www.zurmo.com/needSupport.php?source=menu";
 
