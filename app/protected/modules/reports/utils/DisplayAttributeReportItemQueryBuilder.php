@@ -40,7 +40,7 @@
     class DisplayAttributeReportItemQueryBuilder extends ReportItemQueryBuilder
     {
         /**
-         * @var RedBeanModelSelectQueryAdapter
+         * @var RedBeanModelSelectQueryAdapter 
          */
         protected $selectQueryAdapter;
 
