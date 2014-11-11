@@ -37,7 +37,7 @@
     /**
      * Helper class for working with autoresponderItem
      */
-    abstract class AutoresponderItemsUtil extends AutoresponderAndCampaignItemsUtil
+    class AutoresponderItemsUtil extends AutoresponderAndCampaignItemsUtil
     {
     }
 ?>

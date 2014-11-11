@@ -277,12 +277,12 @@
                 $contact        = Contact::getById($contactId);
                 $textContent    = $emailTemplate->textContent;
                 $htmlContent    = $emailTemplate->htmlContent;
-                GlobalMarketingFooterUtil::removeFooterMergeTags($textContent);
-                GlobalMarketingFooterUtil::removeFooterMergeTags($htmlContent);
-                // we have already stripped off the merge tags that could introduce problems,
-                // no need to send actual data for personId, modelId, modelType and marketingListId.
-                AutoresponderAndCampaignItemsUtil::resolveContentsForMergeTags($textContent, $htmlContent, $contact,
-                                                                                null, null, null, null);
+                $invalidTags    = array();
+                MergeTagsContentResolverUtil::resolveContentsForGlobalFooterAndMergeTagsAndTracking($textContent,
+                                        $htmlContent, $contact, intval($emailTemplate->type),
+                                        MergeTagsToModelAttributesAdapter::ERROR_ON_FIRST_INVALID_TAG,
+                                        $emailTemplate->language, $invalidTags, null, true,
+                                        MergeTagsContentResolverUtil::REMOVE_GLOBAL_FOOTER_MERGE_TAGS_IF_PRESENT, false);
                 $emailTemplate->setTreatCurrentUserAsOwnerForPermissions(true);
                 $emailTemplate->textContent = stripslashes($textContent);
                 $emailTemplate->htmlContent = stripslashes($htmlContent);
@@ -618,7 +618,7 @@
             echo $htmlContent;
         }
 
-        public function actionSendTestEmail($id, $contactId = null, $emailAddress = null, $useHtmlContent = 1)
+        public function actionSendTestEmail($id, $contactId = null, $emailAddress = null, $useHtmlContent = 1, $resolveMergeTags = 1)
         {
             $emailTemplate  = EmailTemplate::getById(intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($emailTemplate);
@@ -633,22 +633,38 @@
             {
                 $contact    = Contact::getById(intval($contactId));
             }
-            static::resolveEmailMessage($emailTemplate, $contact, $htmlContent, $emailAddress);
+            else
+            {
+                $contact                                = static::resolveDefaultRecipient();
+                if ($emailAddress)
+                {
+                    $contact->primaryEmail->emailAddress    = $emailAddress;
+                }
+            }
+            static::resolveEmailMessage($emailTemplate, $contact, $htmlContent, $resolveMergeTags);
         }
 
-        protected static function resolveEmailMessage(EmailTemplate $emailTemplate, Contact $contact = null, $htmlContent, $emailAddress = null)
+        protected static function resolveEmailMessage(EmailTemplate $emailTemplate, $contact, $htmlContent, $resolveMergeTags = 1)
         {
             // TODO: @Shoaibi: Critical: Refactor this and AutoresponderAndCampaignItemsUtil
             $emailMessage                       = new EmailMessage();
             $emailMessage->subject              = $emailTemplate->subject;
             $emailContent                       = new EmailMessageContent();
-            $emailContent->textContent          = $emailTemplate->textContent;
-            // we do not need to do : EmailTemplateSerializedDataToHtmlUtil::resolveHtmlByEmailTemplateModel($emailTemplate);
-            // check __set of EmailTemplate.
+            $textContent                        = $emailTemplate->textContent;
+            if ($resolveMergeTags)
+            {
+                MergeTagsContentResolverUtil::resolveContentsForGlobalFooterAndMergeTagsAndTracking($textContent,
+                                        $htmlContent, $contact, intval($emailTemplate->type),
+                                        MergeTagsToModelAttributesAdapter::SUPPRESS_INVALID_TAG_ERRORS_KEEP_TAG,
+                                        $emailTemplate->language, $invalidTags, null, true,
+                                        MergeTagsContentResolverUtil::ADD_GLOBAL_FOOTER_MERGE_TAGS_IF_MISSING, false);
+            }
+            $emailContent->textContent          = $textContent;
             $emailContent->htmlContent          = $htmlContent;
             $emailMessage->content              = $emailContent;
             $emailMessage->sender               = static::resolveSender();
-            static::resolveRecipient($emailMessage, $contact, $emailAddress);
+            static::resolveRecipient($emailMessage, $contact);
+            // TODO: @Shoaibi: Critical: Resolve Attachments
             $box                                = EmailBox::resolveAndGetByName(EmailBox::USER_DEFAULT_NAME);
             $emailMessage->folder               = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
             Yii::app()->emailHelper->sendImmediately($emailMessage);
@@ -670,25 +686,12 @@
             return $sender;
         }
 
-        protected static function resolveRecipient(EmailMessage $emailMessage, Contact $contact = null, $emailAddress = null)
+        protected static function resolveRecipient(EmailMessage $emailMessage, $contact)
         {
-            if ($contact === null)
-            {
-                $contact  = static::resolveDefaultRecipient();
-            }
-            if ($emailAddress == null)
-            {
-                $primaryEmailAddress    = $contact->primaryEmail->emailAddress;
-            }
-            else
-            {
-                $primaryEmailAddress    = $emailAddress;
-            }
-
-            if ($primaryEmailAddress != null)
+            if ($contact->primaryEmail->emailAddress != null)
             {
                 $recipient                  = new EmailMessageRecipient();
-                $recipient->toAddress       = $primaryEmailAddress;
+                $recipient->toAddress       = $contact->primaryEmail->emailAddress;
                 $recipient->toName          = strval($contact);
                 $recipient->type            = EmailMessageRecipient::TYPE_TO;
                 $recipient->personsOrAccounts->add($contact);
