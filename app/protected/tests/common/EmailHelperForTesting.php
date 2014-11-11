@@ -93,8 +93,25 @@
             assert('isset($to) || isset($cc) || isset($bcc)');
             assert('is_array($attachments) || !isset($attachments)');
             assert('is_array($parts) || !isset($parts)');
-            $mailer = new ZurmoSwiftMailer();
-            $mailer->init();
+            $toName = null;
+            $toAddress = null;
+            if(is_string($to))
+            {
+                $toAddress = $to;
+            }
+            elseif(is_array($to))
+            {
+                foreach($to as $key => $value)
+                {
+                    $toName     = $key;
+                    $toAddress  = $value;
+                }
+            }
+            $emailMessage = EmailMessageTestHelper::createOutboxEmail(Yii::app()->user->userModel,
+                                                      $subject, $htmlContent, $textContent, null, $from, $toName, $toAddress,
+                                                      $attachments);
+            $mailer = new ZurmoSwiftMailer($emailMessage, null);
+            /*$mailer->init();
             if (!$settings)
             {
                 $mailer->mailer   = $this->outboundType;
@@ -181,7 +198,7 @@
                 {
                     $mailer->attachFromPath($file);
                 }
-            }
+            }*/
 
             $mailer->headers    = $headers;
             $acceptedRecipients = $mailer->send();

@@ -81,6 +81,15 @@
             Yii::app()->jobQueue->deleteAll();
         }
 
+        public function setUp()
+        {
+            parent::setUp();
+            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
+            {
+                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Email test settings are missing.'));
+            }
+        }
+
         public function testSend()
         {
             $super                      = User::getByUsername('super');
