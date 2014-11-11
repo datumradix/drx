@@ -163,7 +163,7 @@
                     ),
                     array(
                         'label'  => "eval:Zurmo::t('ZurmoModule', 'Get More')",
-                        'url'    => 'eval:self::resolveGetMoreUrl()',
+                        'url'    => 'eval:ZurmoModule::resolveGetMoreUrl()',
                         'order'  => 9,
                         'mobile' => true,
                     ),
@@ -400,12 +400,10 @@
         protected static function resolveGetMoreUrl()
         {
             $getMoreUrl = "http://www.zurmo.com/needSupport.php?source=menu";
-
             if (Yii::app()->edition != 'Community')
             {
                 $getMoreUrl = "https://zurmo.zendesk.com/home";
             }
-
             return $getMoreUrl;
         }
     }
