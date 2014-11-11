@@ -174,7 +174,7 @@
             {
                 $content .= ZurmoHtml::tag('div', array('class' => 'left-column'), $this->renderMergeTagsContent());
                 $element = new EmailTemplateHtmlAndTextContentElement($model, $attribute , $form);
-                $element->plugins = array('fontfamily', 'fontsize', 'fontcolor', 'mergetags', 'imagegallery');
+                $element->plugins = array('fontfamily', 'fontsize', 'fontcolor', 'imagegallery');
             }
             if ($form !== null)
             {
