@@ -95,7 +95,7 @@
                 return (empty($invalidTags));
             }
 
-            //$errorOnFirstMissing === static::SUPPRESS_INVALID_TAG_ERRORS
+            //$errorOnFirstMissing === SUPPRESS_INVALID_TAG_ERRORS_REPLACE_WITH_EMPTY OR SUPPRESS_INVALID_TAG_ERRORS_KEEP_TAG
             return true;
         }
 
