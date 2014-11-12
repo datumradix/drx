@@ -204,9 +204,17 @@
             $this->assertTrue($result);
 
             $emailMessages = EmailMessage::getAll();
-            $this->assertEquals(1, count($emailMessages));
-            $emailMessage = $emailMessages[0];
+            $this->assertEquals(2, count($emailMessages));
 
+            //Message with unmatched notification
+            $emailMessage = $emailMessages[0];
+            $this->assertEquals('Match archived emails', $emailMessage->subject);
+            $this->assertContains('At least one archived email message does not match any records in the system', trim($emailMessage->content->textContent));
+            $this->assertContains('At least one archived email message does not match any records in the system', trim($emailMessage->content->htmlContent));
+            $this->assertEquals('steve@example.com', $emailMessage->recipients[0]->toAddress);
+
+            //Message archived unmatched
+            $emailMessage = $emailMessages[1];
             $this->assertEquals($imapMessage->subject, $emailMessage->subject);
             $this->assertEquals($imapMessage->textBody, trim($emailMessage->content->textContent));
             $this->assertEquals($imapMessage->htmlBody, trim($emailMessage->content->htmlContent));
