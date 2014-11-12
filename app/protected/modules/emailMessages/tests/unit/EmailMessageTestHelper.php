@@ -76,8 +76,7 @@
         public static function createOutboxEmail(User $owner, $subject,
                                                        $htmlContent, $textContent,
                                                        $fromName, $fromAddress,
-                                                       $toName, $toAddress, $ccAddress = null, $bccAddress = null,
-                                                       $attachments = null)
+                                                       $toName, $toAddress, $ccAddress = null, $bccAddress = null)
         {
             $emailMessage              = new EmailMessage();
             $emailMessage->owner       = $owner;
@@ -124,8 +123,6 @@
             $saved = $emailMessage->save();
             if (!$saved)
             {
-                print_r($emailMessage->getErrors());
-                exit;
                 throw new NotSupportedException();
             }
             return $emailMessage;

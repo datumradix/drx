@@ -107,10 +107,9 @@
                     $toAddress  = $value;
                 }
             }
-            print "To name is " . $toName . " , to address is " . $toAddress . "\n";
             $emailMessage = EmailMessageTestHelper::createOutboxEmail(Yii::app()->user->userModel,
                                                       $subject, $htmlContent, $textContent, null, $from, $toName, $toAddress,
-                                                      null, null, $attachments);
+                                                      null, null);
             $mailer = new ZurmoSwiftMailer($emailMessage, null);
             /*$mailer->init();
             if (!$settings)
@@ -191,7 +190,7 @@
             elseif (is_string($bcc))
             {
                 $mailer->addAddressByType($bcc, '', EmailMessageRecipient::TYPE_BCC);
-            }
+            }*/
 
             if (isset($attachments) && !empty($attachments))
             {
@@ -199,7 +198,7 @@
                 {
                     $mailer->attachFromPath($file);
                 }
-            }*/
+            }
 
             $mailer->headers    = $headers;
             $acceptedRecipients = $mailer->send();
