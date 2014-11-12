@@ -151,7 +151,7 @@
             $filePath_1    = $pathToFiles . DIRECTORY_SEPARATOR . 'table.csv';
             $filePath_2    = $pathToFiles . DIRECTORY_SEPARATOR . 'image.png';
             $filePath_3    = $pathToFiles . DIRECTORY_SEPARATOR . 'text.txt';
-
+            print Yii::app()->params['emailTestAccounts']['testEmailAddress'] . "\n";
             Yii::app()->emailHelper->sendRawEmail("Email from Steve",
                                                   $user->primaryEmail->emailAddress,
                                                   Yii::app()->params['emailTestAccounts']['testEmailAddress'],
