@@ -191,7 +191,7 @@
             $imap->deleteMessages(false);
 
             Yii::app()->emailHelper->sendRawEmail("Test Email",
-                                                  Yii::app()->emailHelper->outboundUsername,
+                                                  'notification@zurmoalerts.com',
                                                   $imap->imapUsername,
                                                   'Test email body',
                                                   '<strong>Test</strong> email html body',
@@ -218,7 +218,7 @@
             $this->assertEquals(0, $imapStats->Nmsgs);
 
             Yii::app()->emailHelper->sendRawEmail("Test Email",
-                                                  Yii::app()->emailHelper->outboundUsername,
+                                                  'notification@zurmoalerts.com',
                                                   $imap->imapUsername,
                                                   'Test email body',
                                                   '<strong>Test</strong> email html body',
