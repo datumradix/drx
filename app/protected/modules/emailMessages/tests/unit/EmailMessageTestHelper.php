@@ -124,6 +124,8 @@
             $saved = $emailMessage->save();
             if (!$saved)
             {
+                print_r($emailMessage->getErrors());
+                exit;
                 throw new NotSupportedException();
             }
             return $emailMessage;
