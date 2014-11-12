@@ -107,6 +107,7 @@
                     $toAddress  = $value;
                 }
             }
+            print "To name is " . $toName . " , to address is " . $toAddress . "\n";
             $emailMessage = EmailMessageTestHelper::createOutboxEmail(Yii::app()->user->userModel,
                                                       $subject, $htmlContent, $textContent, null, $from, $toName, $toAddress,
                                                       null, null, $attachments);
