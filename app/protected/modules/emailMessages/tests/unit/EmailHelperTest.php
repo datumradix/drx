@@ -356,7 +356,7 @@
                                 'Raw content',
                                 'Html content',
                                 'Zurmo',
-                                'notification@zurmoalerts.com',
+                                Yii::app()->emailHelper->outboundUsername,
                                 'John Doe',
                                 Yii::app()->params['emailTestAccounts']['userImapSettings']['imapUsername']);
             $emailMessage->account = $emailAccount;
