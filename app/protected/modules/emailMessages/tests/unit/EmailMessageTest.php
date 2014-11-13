@@ -46,6 +46,27 @@
             UserTestHelper::createBasicUser('jason');
             $box = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             EmailBoxUtil::createBoxAndDefaultFoldersByUserAndName($jane, 'JaneBox');
+            if (EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
+            {
+                EmailMessageTestHelper::createEmailAccountForMailerFactory($jane);
+            }
+            Yii::app()->emailHelper->outboundType      = 'smtp';
+            Yii::app()->emailHelper->outboundHost     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundHost'];
+            Yii::app()->emailHelper->outboundPort     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPort'];
+            Yii::app()->emailHelper->outboundUsername = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundUsername'];
+            Yii::app()->emailHelper->outboundPassword = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPassword'];
+            Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundSecurity'];
+            Yii::app()->emailHelper->setOutboundSettings();
+            Yii::app()->emailHelper->init();
+        }
+
+        public function setUp()
+        {
+            parent::setUp();
+            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
+            {
+                $this->markTestSkipped('Please fix the test email settings');
+            }
         }
 
         /**

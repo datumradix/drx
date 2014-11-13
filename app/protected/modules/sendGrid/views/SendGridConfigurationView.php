@@ -34,21 +34,61 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMembersMassSubscribeProgressView extends MassEditProgressView
+    /**
+     * Edit and details view for the admin configuration view for sendgrid.
+     */
+    class SendGridConfigurationView extends EditAndDetailsView
     {
-        protected function getMessagePrefix()
+        /**
+         * @return string
+         */
+        public function getTitle()
         {
-            return Zurmo::t('Core', 'Subscribing');
+            return Zurmo::t('SendGridModule', 'SendGrid Configuration');
         }
 
-        protected function getCompleteMessageSuffix()
+        /**
+         * @return array
+         */
+        public static function getDefaultMetadata()
         {
-            return Zurmo::t('Core', 'subscribed successfully');
+            $metadata = array(
+                'global' => array(
+                    'toolbar' => array(
+                        'elements' => array(
+                            array('type' => 'SaveButton',        'renderType' => 'Edit'),
+                            array('type' => 'ConfigurationLink', 'label' => "eval:Zurmo::t('Core', 'Cancel')"),
+                            array('type' => 'EditLink',          'renderType' => 'Details'),
+                        ),
+                    ),
+                    'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
+                    'panels' => array(
+                        array(
+                            'rows' => array(
+                               array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'enableSendgrid',
+                                                      'type' => 'CheckBox'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            );
+            return $metadata;
         }
 
-        protected function headerLabelPrefixContent()
+        /**
+         * @return mixed
+         */
+        protected function getNewModelTitleLabel()
         {
-            return Zurmo::t('Core', 'Mass Subscribe');
+            return null;
         }
     }
 ?>

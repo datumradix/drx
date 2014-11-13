@@ -95,6 +95,18 @@
         {
             if ($error = Yii::app()->errorHandler->error)
             {
+                if($error['type'] == 'RedBean_Exception_SQL')
+                {
+                    $error['message'] = null;
+                    $content = 'Exception class: ' . $error['type'];
+                    if ($error['message'] != null)
+                    {
+                        $content .= ' Thrown with message: ' . $error['message'];
+                    }
+                    $content .= "\n" . $error['trace'];
+                    Yii::log($content, CLogger::LEVEL_WARNING);
+
+                }
                 if (Yii::app()->request->isAjaxRequest)
                 {
                     echo $error['message'];

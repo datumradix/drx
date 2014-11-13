@@ -178,7 +178,7 @@
                     'htmlContent',
                     'textContent',
                     'fromName',
-                    'fromAddress',
+                    'fromAddress'
                 ),
                 'rules' => array(
                     array('name',                   'required'),
@@ -210,7 +210,7 @@
                     array('textContent',            'CampaignMergeTagsValidator', 'except' => 'searchModel'),
                     array('enableTracking',         'boolean'),
                     array('enableTracking',         'default', 'value' => false),
-                    array('marketingList',          'required'),
+                    array('marketingList',          'required')
                 ),
                 'relations' => array(
                     'campaignItems'     => array(static::HAS_MANY, 'CampaignItem'),
@@ -225,7 +225,7 @@
                     'supportsRichText' => 'CheckBox',
                     'enableTracking'   => 'CheckBox',
                     'sendOnDateTime'   => 'DateTime',
-                    'status'           => 'CampaignStatus',
+                    'status'           => 'CampaignStatus'
                 ),
                 'defaultSortAttribute' => 'name',
             );
@@ -301,13 +301,11 @@
 
         protected function afterDelete()
         {
-            parent::afterDelete();
-            $campaignitems = CampaignItem::getByProcessedAndCampaignId(0, $this->id);
-            foreach ($campaignitems as $campaignitem)
+            foreach ($this->campaignItems as $item)
             {
-                ZurmoRedBean::exec("DELETE FROM campaignitemactivity WHERE campaignitem_id = " . $campaignitem->id);
+                $item->delete();
             }
-            ZurmoRedBean::exec("DELETE FROM campaignitem WHERE processed = 0 and campaign_id = " . $this->id);
+            return parent::afterDelete();
         }
     }
 ?>

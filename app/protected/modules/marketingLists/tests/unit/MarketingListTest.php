@@ -118,11 +118,35 @@
          */
         public function testDeleteMarketingList()
         {
-            $marketingLists = MarketingList::getAll();
-            $this->assertEquals(2, count($marketingLists));
+            $marketingLists         = MarketingList::getAll();
+            $this->assertCount(2, $marketingLists);
+            $marketingListId        = $marketingLists[0]->id;
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingLists[0]);
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingLists[0]);
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingLists[1]);
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingLists[1]);
+            AutoresponderTestHelper::createAutoresponder('subject 01', 'text content', 'html content', 1,
+                                                            Autoresponder::OPERATION_SUBSCRIBE, true, $marketingLists[0]);
+            AutoresponderTestHelper::createAutoresponder('subject 02', 'text content', 'html content', 1,
+                                                            Autoresponder::OPERATION_SUBSCRIBE, true, $marketingLists[1]);
+            $autoresponders = Autoresponder::getByOperationTypeAndMarketingListId(Autoresponder::OPERATION_SUBSCRIBE,
+                                                                                    $marketingListId);
+            $this->assertCount(1, $autoresponders);
+            $this->assertEquals(2, Autoresponder::getCount());
+            $marketingListMembersCount  = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingListId, 0);
+            $this->assertEquals(2, $marketingListMembersCount);
+            $marketingLists[0]->forgetAll();
+            $marketingLists         = MarketingList::getAll();
             $marketingLists[0]->delete();
             $marketingLists = MarketingList::getAll();
-            $this->assertEquals(1, count($marketingLists));
+            $this->assertCount(1, $marketingLists);
+            $autoresponders = Autoresponder::getByOperationTypeAndMarketingListId(Autoresponder::OPERATION_SUBSCRIBE,
+                                                                                    $marketingListId);
+            $this->assertCount(0, $autoresponders);
+            $this->assertEquals(1, Autoresponder::getCount());
+            $marketingListMembersCount  = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingListId, 0);
+            $this->assertEquals(0, $marketingListMembersCount);
+            $this->assertEquals(2, MarketingListMember::getCount());
         }
     }
 ?>
