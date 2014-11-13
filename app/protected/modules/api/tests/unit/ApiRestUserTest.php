@@ -65,6 +65,30 @@
         /**
          * @depends testGetUser
          */
+        public function testGetAuthenticatedUser()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $super->primaryEmail->emailAddress   = 'super@zurmo.org';
+            $this->assertTrue($super->save());
+            Yii::app()->user->userModel = $super;
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $compareData  =  $this->getModelToApiDataUtilData($super);
+            $response = $this->createApiCallWithRelativeUrl('getAuthenticatedUser', 'GET', $headers);
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals($compareData, $response['data']);
+        }
+
+        /**
+         * @depends testGetUser
+         */
         public function testDeleteUser()
         {
             Yii::app()->user->userModel        = User::getByUsername('super');

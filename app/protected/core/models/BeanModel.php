@@ -290,8 +290,7 @@
         {
             assert('self::isRelation($relationName, get_called_class())');
             if (static::getRelationType($relationName) == RedBeanModel::HAS_MANY  ||
-               static::getRelationType($relationName) == RedBeanModel::HAS_MANY_BELONGS_TO ||
-               static::getRelationType($relationName) == RedBeanModel::HAS_ONE_BELONGS_TO)
+                static::getRelationType($relationName) == RedBeanModel::HAS_ONE_BELONGS_TO)
             {
                 return true;
             }
@@ -306,7 +305,7 @@
         {
             assert('self::isRelation($relationName, get_called_class())');
             if (static::getRelationType($relationName) == RedBeanModel::HAS_MANY_BELONGS_TO ||
-               static::getRelationType($relationName) == RedBeanModel::HAS_ONE)
+                static::getRelationType($relationName) == RedBeanModel::HAS_ONE)
             {
                 return true;
             }
