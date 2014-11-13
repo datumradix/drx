@@ -353,7 +353,7 @@
                 {
                     if (!$isUrlAllowedToGuests)
                     {
-                        Yii::app()->user->setFlash('notification', Zurmo::t('ZurmoModule', 'Application is in sandbox mode.'));
+                        //Yii::app()->user->setFlash('notification', Zurmo::t('ZurmoModule', 'Application is in sandbox mode.'));
                     }
                 }
             }

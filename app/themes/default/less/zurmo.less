@@ -948,6 +948,26 @@ body > .ui-autocomplete{
 	}
 }
 
+.sandbox-notification{
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding:5px 10px;
+    text-align: center;
+    color: #111111;
+    .smaller();
+    font-weight: bold;
+    width: auto;
+    box-shadow: 0 0 8px 0 rgba(102, 102, 102, 0.3);
+    border-radius: 0 0 2px 2px;
+    .t-shadow(0 1px 0 rgba(255, 255, 255, 0.4));
+    #gradient > .vertical(#ffcc00, #e4b600);
+    border: 1px solid rgba(70, 70, 70, 0.7);
+    border-top: none;
+}
+
 .logo-and-search{
 	position: absolute;
 	top: 0;
@@ -1466,6 +1486,13 @@ body > .ui-autocomplete{
 		}
 	}
 }
+
+body.sandbox-mode{
+    .AppContent{
+        padding-top: 85px;
+    }
+}
+
 
 #ErrorView{
 	margin-left: 0;
