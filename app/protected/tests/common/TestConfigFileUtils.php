@@ -170,14 +170,14 @@ EOD;
             'imapFolder'       => '',
         ),
         'sendGridGlobalSettings' => array(
-            'host'            => 'smtp.sendgrid.net',
-            'port'            => 25,
+            'host'            => '',
+            'port'            => '',
             'apiUsername'     => '',
             'apiPassword'     => ''
         ),
         'sendGridUserSettings' => array(
-            'host'            => 'smtp.sendgrid.net',
-            'port'            => 25,
+            'host'            => '',
+            'port'            => '',
             'apiUsername'     => '',
             'apiPassword'     => ''
         ),
