@@ -101,7 +101,7 @@
                             if ($customField instanceof CustomField &&
                                 ($customField->value === null || $customField->value === ''))
                             {
-                                $customField->value = $customField->data->defaultValue;
+                                $customField->setWithoutModifyingModel('value', $customField->data->defaultValue);
                             }
                             elseif ($customField instanceof MultipleValuesCustomField &&
                                  $customField->values->count() == 0 && isset($customField->data->defaultValue))

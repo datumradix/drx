@@ -378,6 +378,50 @@
             $this->assertEquals('super@zurmo.com',   $emailMessages[1]->recipients[0]->toAddress);
 
             $emailMessages[0]->delete();
+            $emailMessages[1]->delete();
+        }
+
+        /**
+         * To try to show failure of https://www.pivotaltracker.com/story/show/81571830
+         * Using trademark symbol to demonstrate merge tag resolution working correctly and it properly printing
+         * text after the trademark symbol
+         */
+        public function testNonAlphaNumericSymbolsAsMergeTagFields()
+        {
+            $account                       = AccountTestHelper::createAccountByNameForOwner('Candyland™', Yii::app()->user->userModel);
+            $emailTemplate                 = new EmailTemplate();
+            $emailTemplate->builtType      = EmailTemplate::BUILT_TYPE_PASTED_HTML;
+            $emailTemplate->modelClassName = 'Account';
+            $emailTemplate->type           = 1;
+            $emailTemplate->name           = 'some template';
+            $emailTemplate->subject        = 'some subject [[NAME]] is great';
+            $emailTemplate->htmlContent    = 'Account HTML: [[NAME]] after the merge tag is resolved';
+            $emailTemplate->textContent    = 'Account Text: [[NAME]] after the merge tag is resolved';
+            $this->assertTrue($emailTemplate->save());
+            $message                       = new EmailMessageForWorkflowForm('Account', Workflow::TYPE_ON_SAVE);
+
+            $recipients = array(array('type'             => WorkflowEmailMessageRecipientForm::TYPE_DYNAMIC_TRIGGERED_MODEL_USER,
+                                      'audienceType'     => EmailMessageRecipient::TYPE_TO,
+                                      'dynamicUserType'  => DynamicTriggeredModelUserWorkflowEmailMessageRecipientForm::
+                                        DYNAMIC_USER_TYPE_CREATED_BY_USER));
+            $message->emailTemplateId = $emailTemplate->id;
+            $message->sendFromType    = EmailMessageForWorkflowForm::SEND_FROM_TYPE_CUSTOM;
+            $message->sendFromAddress = 'someone@zurmo.com';
+            $message->sendFromName    = 'Jason';
+            $message->setAttributes(array(EmailMessageForWorkflowForm::EMAIL_MESSAGE_RECIPIENTS => $recipients));
+
+            $helper = new WorkflowEmailMessageProcessingHelper($message, $account, Yii::app()->user->userModel);
+            $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            $helper->process();
+            $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            $emailMessages = EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX);
+            $this->assertEquals('some subject Candyland™ is great',   $emailMessages[0]->subject);
+            $this->assertEquals('Account Text: Candyland™ after the merge tag is resolved',
+                $emailMessages[0]->content->textContent);
+            $this->assertEquals('Account HTML: Candyland™ after the merge tag is resolved',
+                $emailMessages[0]->content->htmlContent);
         }
     }
 ?>
