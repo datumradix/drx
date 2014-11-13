@@ -93,6 +93,16 @@
             parent::tearDownAfterClass();
         }
 
+        public function testSetWithoutModifyingModel()
+        {
+            $a = new A();
+            $this->assertFalse($a->isModified());
+            $a->setWithoutModifyingModel('name', 'another name');
+            $this->assertFalse($a->isModified());
+            $a->name = 'a name';
+            $this->assertTrue($a->isModified());
+        }
+
         public function testA()
         {
             $a = new A();
