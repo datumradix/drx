@@ -53,7 +53,58 @@
 //            $a->name = 'AAA';
 //            $a->save();
         }
+/**
+        public function testEmptyOpportunityGetsCreatedOnProductEdit()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
 
+            $opportunity              = OpportunityTestHelper::createOpportunityByNameForOwner('mySuperOpp', $super);
+            $name                     = 'Amazing Kid Sample';
+            $productTemplateName      = ProductsDemoDataMaker::getProductTemplateForProduct($name);
+            $productTemplate          = ProductTemplateTestHelper::createProductTemplateByName($productTemplateName);
+            $model                    = new Product();
+            $name                     = 'My Simple Product';
+            $model->name              = $name;
+            $model->quantity          = 4;
+            $model->stage->value      = 'Open';
+            $model->priceFrequency    = $productTemplate->priceFrequency;
+            $model->sellPrice->value  = $productTemplate->sellPrice->value;
+            $model->type              = $productTemplate->type;
+            $this->assertTrue($model->save());
+
+            $productId = $model->id;
+            $model->forget();
+
+            $opportunityCount = Opportunity::getCount();
+            echo 'this count' . $opportunityCount;
+
+            $product = Product::getById($productId);
+            $postData['name']        = 'a new name';
+            $postData['opportunity'] = array('id' => '');
+
+            $postData2 = $postData;
+            $postData2['explicitReadWriteModelPermissions'] = array('type' => 1);
+            $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::resolveByPostDataAndModelThenMake($postData2, $product);
+
+
+            $product->setAttributes($postData);
+            $this->assertEquals('a new name', $product->name);
+            $this->assertTrue($model->save());
+
+
+            $success = ExplicitReadWriteModelPermissionsUtil::
+                resolveExplicitReadWriteModelPermissions($model, $explicitReadWriteModelPermissions);
+            $this->assertTrue($success);
+
+            //todo: assert related is empty and same before. careful
+            $this->assertTrue($model->opportunity->id < 0);
+
+            $opportunityCount = Opportunity::getCount();
+            echo 'this count after' . $opportunityCount; //todo: move this function and do a compare
+
+        }
+**/
         public function testDemoDataMaker()
         {
             $model                    = new Product();
