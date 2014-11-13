@@ -34,39 +34,40 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Filter used by user controller to ascertain whether the global email settings has been configured or not.
-     * If not, then the user is instructed to contact the administrator for them to set this up.
-     */
-    class EmailConfigurationCheckControllerFilter extends CFilter
+    class CampaignSendTestEmailUtil extends SendTestEmailUtil
     {
-        public $controller;
-
-        public $renderWithoutPageView   = false;
-
-        protected function preFilter($filterChain)
+        protected function resolveSenderByModel(OwnedSecurableItem $model)
         {
-            if (isset($_POST['ajax']))
+            // check if campaign has its own fromName and fromAddress set
+            if (isset($model->fromName, $model->fromAddress))
             {
-                return true;
+                return $this->resolveSenderByNameAndEmailAddress($model->fromName, $model->fromAddress);
+
             }
-            if (Yii::app()->emailHelper->outboundHost != null)
+            // else check if we have marketingList set and related marketingList's fromName and fromAddress is set
+            if (isset($model->marketingList, $model->marketingList->fromName, $model->marketingList->fromAddress))
             {
-                return true;
+                return $this->resolveSenderByNameAndEmailAddress($model->marketingList->fromName,
+                                                                $model->marketingList->fromAddress);
             }
-            $messageView                  = new NoGlobalEmailConfigurationYetView();
-            if ($this->renderWithoutPageView)
+        }
+
+        protected function resolveSupportsRichTextByModel(OwnedSecurableItem $model)
+        {
+            return $model->supportsRichText;
+        }
+
+        protected function resolveEnableTrackingByModel(OwnedSecurableItem $model)
+        {
+            return $model->enableTracking;
+        }
+
+        protected function resolveMarketingListIdByModel(OwnedSecurableItem $model)
+        {
+            if (isset($model->marketingList, $model->marketingList->id))
             {
-                echo $messageView->render();
+                return $model->marketingList->id;
             }
-            else
-            {
-                $pageViewClassName = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
-                $view = new $pageViewClassName(ZurmoDefaultViewUtil::
-                                                        makeStandardViewForCurrentUser($this->controller, $messageView));
-                echo $view->render();
-            }
-            return false;
         }
     }
 ?>

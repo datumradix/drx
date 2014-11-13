@@ -62,7 +62,8 @@
                 $invalidTags        = array();
                 $mergeTagCount      = $mergeTagsUtil->extractMergeTagsPlaceHolders();
                 $params             = $this->resolveMergeTagParams();
-                if ($mergeTagCount && !$mergeTagsUtil->resolveMergeTagsArrayToAttributes($model, $invalidTags, null, false, $params))
+                if ($mergeTagCount && !$mergeTagsUtil->resolveMergeTagsArrayToAttributes($model, $invalidTags, null,
+                                        MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG, $params))
                 {
                     $passedValidation = false;
                     if (!empty($invalidTags))

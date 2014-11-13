@@ -65,14 +65,16 @@
             return (empty($timeQualifier) && array_key_exists($attributeName, static::$specialAttributesResolver));
         }
 
-        public static function resolve($attributeName, $model = null, $params = array())
+        public static function resolve($attributeName, $model = null,
+                                       $errorOnFirstMissing = MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG,
+                                       $params = array())
         {
             $methodName                         = static::$specialAttributesResolver[$attributeName];
             // we send $model to all, those which need it use it, other get it as optional param.
             $resolvedSpecialMergeTagContent     = static::$methodName($model, $params);
             if (in_array($attributeName, static::$containsNestedMergeTags))
             {
-                static::resolveContentForNestedMergeTags($resolvedSpecialMergeTagContent, $model, $params);
+                static::resolveContentForNestedMergeTags($resolvedSpecialMergeTagContent, $model, $errorOnFirstMissing, $params);
             }
             return $resolvedSpecialMergeTagContent;
         }
@@ -202,13 +204,14 @@
             }
         }
 
-        protected static function resolveContentForNestedMergeTags(& $resolvedSpecialMergeTagContent, $model = null, $params = array())
+        protected static function resolveContentForNestedMergeTags(& $resolvedSpecialMergeTagContent, $model = null,
+                                                                   $errorOnFirstMissing = MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG,
+                                                                   $params = array())
         {
             $language               = null;
             $type                   = EmailTemplate::TYPE_WORKFLOW;
             $invalidTags            = array();
             $language               = null;
-            $errorOnFirstMissing    = false;
             if ($model instanceof Contact)
             {
                 $type   = EmailTemplate::TYPE_CONTACT;

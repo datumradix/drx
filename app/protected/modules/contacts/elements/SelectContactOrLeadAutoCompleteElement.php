@@ -34,39 +34,22 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Filter used by user controller to ascertain whether the global email settings has been configured or not.
-     * If not, then the user is instructed to contact the administrator for them to set this up.
-     */
-    class EmailConfigurationCheckControllerFilter extends CFilter
+    abstract class SelectContactOrLeadAutoCompleteElement extends AutoCompleteTextElement
     {
-        public $controller;
-
-        public $renderWithoutPageView   = false;
-
-        protected function preFilter($filterChain)
+        protected function getSource()
         {
-            if (isset($_POST['ajax']))
-            {
-                return true;
-            }
-            if (Yii::app()->emailHelper->outboundHost != null)
-            {
-                return true;
-            }
-            $messageView                  = new NoGlobalEmailConfigurationYetView();
-            if ($this->renderWithoutPageView)
-            {
-                echo $messageView->render();
-            }
-            else
-            {
-                $pageViewClassName = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
-                $view = new $pageViewClassName(ZurmoDefaultViewUtil::
-                                                        makeStandardViewForCurrentUser($this->controller, $messageView));
-                echo $view->render();
-            }
-            return false;
+            return Yii::app()->createUrl('/contacts/variableContactState/autoCompleteAllContacts');
+        }
+
+        protected function getSourceUrlForSelectLink()
+        {
+            return '/contacts/variableContactState/modalListAllContacts';
+        }
+
+        protected function getModalTitleForSelectingModel()
+        {
+            return  Zurmo::t('ContactsModule', 'Select ContactsModuleSingularLabel/LeadsModuleSingularLabel',
+                                LabelUtil::getTranslationParamsForAllModules());
         }
     }
 ?>

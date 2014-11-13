@@ -71,6 +71,7 @@
 
         protected function renderContent()
         {
+            SendTestEmailModalEditView::registerSendTestEmailScriptsForDetailsView($this->modelId, $this->modelClassName);
             // TODO: @Shoaibi/@Jason: Low: Do security walkthrough
             $actionElementBarContent        = $this->renderActionElementBar(false);
             $content                        = $this->renderTitleContent();

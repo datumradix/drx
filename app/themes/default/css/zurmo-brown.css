@@ -1604,10 +1604,11 @@ body > .ui-autocomplete {
   font-weight: bold;
   color: #555;
   margin: 0 0 5px 0;
+  line-height: 1;
 }
 #MenuView a,
 #RecentlyViewedView a {
-  line-height: 28px;
+  line-height: 1;
   display: block;
   position: relative;
   -webkit-border-radius: 4px;
@@ -1621,21 +1622,7 @@ body > .ui-autocomplete {
   -o-text-shadow: rgba(255,255,255,0.8) 0px 1px;
   text-shadow: rgba(255,255,255,0.8) 0px 1px;
   width: 100%;
-}
-#MenuView a span,
-#RecentlyViewedView a span {
-  display: inline-block;
-  text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-  -webkit-text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  line-height: 1;
-  position: relative;
-  top: 2px;
-  left: 8px;
-  padding-right: 5px;
-  max-width: 80%;
+  padding: 2px;
 }
 #MenuView .over > a,
 #MenuView .active > a,
@@ -1669,6 +1656,21 @@ body > .ui-autocomplete {
   -o-text-shadow: 0px 1px 0 #d5b25f !important;
   text-shadow: 0px 1px 0 #d5b25f !important;
 }
+#MenuView span,
+#RecentlyViewedView span {
+  display: inline-block;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 1.5;
+  position: relative;
+  top: 3px;
+  left: 8px;
+  padding-right: 5px;
+  max-width: 80%;
+}
 #MenuView i,
 #RecentlyViewedView i {
   font-style: normal;
@@ -1677,7 +1679,7 @@ body > .ui-autocomplete {
   font-family: "zurmo_gamification_symbly_rRg";
   width: 24px;
   height: 24px;
-  line-height: 22px;
+  line-height: 1;
   background: #FFF;
   background-color: #ffffff;
   background-repeat: repeat-x;
@@ -1695,8 +1697,10 @@ body > .ui-autocomplete {
   display: inline-block;
   text-align: center;
   position: relative;
-  top: 1px;
-  left: 2px;
+}
+#MenuView i:before,
+#RecentlyViewedView i:before {
+  line-height: 1;
 }
 #MenuView li i:before,
 #RecentlyViewedView li i:before {
@@ -2037,14 +2041,10 @@ body > .ui-autocomplete {
 #MenuView.admin-menu .parent ul i {
   display: none;
 }
-#mashableInbox a > span {
-  overflow: visible;
-  top: 0;
-}
 #mashableInbox .unread-inbox-count {
   overflow: visible;
   position: relative;
-  top: -1px;
+  top: -3px;
   margin-left: 4px;
   display: inline-block;
   -webkit-border-radius: 3px;

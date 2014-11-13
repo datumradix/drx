@@ -34,39 +34,48 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Filter used by user controller to ascertain whether the global email settings has been configured or not.
-     * If not, then the user is instructed to contact the administrator for them to set this up.
-     */
-    class EmailConfigurationCheckControllerFilter extends CFilter
+    class SendTestEmailLinkActionElement extends ModalListLinkActionElement
     {
-        public $controller;
-
-        public $renderWithoutPageView   = false;
-
-        protected function preFilter($filterChain)
+        public static function shouldRenderAsDropDownWhenRequired()
         {
-            if (isset($_POST['ajax']))
-            {
-                return true;
-            }
-            if (Yii::app()->emailHelper->outboundHost != null)
-            {
-                return true;
-            }
-            $messageView                  = new NoGlobalEmailConfigurationYetView();
-            if ($this->renderWithoutPageView)
-            {
-                echo $messageView->render();
-            }
-            else
-            {
-                $pageViewClassName = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
-                $view = new $pageViewClassName(ZurmoDefaultViewUtil::
-                                                        makeStandardViewForCurrentUser($this->controller, $messageView));
-                echo $view->render();
-            }
             return false;
+        }
+
+        protected function getAjaxLinkTitle()
+        {
+            return $this->getLabel();
+        }
+
+        protected function getDefaultLabel()
+        {
+            return Zurmo::t('MarketingModule', 'Send Test Email');
+        }
+
+        protected function getRouteAction()
+        {
+            return '/modalSendTest/';
+        }
+
+        protected function getDefaultRoute()
+        {
+            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . $this->getRouteAction());
+        }
+
+        protected function getAjaxOptions()
+        {
+            $parentAjaxOptions = parent::getAjaxOptions();
+            $modalViewAjaxOptions = ModalView::getAjaxOptionsForModalLink($this->getDefaultLabel());
+            if (!isset($this->params['ajaxOptions']))
+            {
+                $this->params['ajaxOptions'] = array();
+            }
+            return CMap::mergeArray($parentAjaxOptions, $modalViewAjaxOptions, $this->params['ajaxOptions']);
+        }
+
+        protected function resolveHtmlOptionsForRendering()
+        {
+            $htmlOptions = $this->getHtmlOptions();
+            return CMap::mergeArray($htmlOptions, array('class' => 'cancel-button'));
         }
     }
 ?>

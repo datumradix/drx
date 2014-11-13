@@ -62,8 +62,11 @@
             $editElementContent     = $editElement->renderMenuItem();
             $copyElement            = new CopyLinkActionElement($this->controllerId, $this->moduleId, $this->modelId);
             $copyElementContent     = $copyElement->renderMenuItem();
+            $sendTestElement        = new SendTestEmailLinkActionElement($this->controllerId, $this->moduleId, $this->modelId);
+            $sendTestElementContent = $sendTestElement->renderMenuItem();
             // TODO: @Shoaibi/@Jason: Low: securable on these items from the outside coming in?
-            $menuItems              = array( $editElementContent, $deleteElementContent, $copyElementContent);
+            $menuItems              = array( $sendTestElementContent, $editElementContent,
+                                            $deleteElementContent, $copyElementContent);
             return $menuItems;
         }
     }

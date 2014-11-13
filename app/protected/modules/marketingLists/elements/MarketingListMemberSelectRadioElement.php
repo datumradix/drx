@@ -34,91 +34,14 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMemberSelectRadioElement extends Element
+    class MarketingListMemberSelectRadioElement extends TogglePrimaryOrSecondaryInputRadioElement
     {
-        public function getEditableHtmlOptions()
+        protected function assertModelType()
         {
-            $htmlOptions = array(
-                'name'      => $this->getEditableInputName(),
-                'id'        => $this->getEditableInputId(),
-                'class'     => $this->attribute,
-                'separator' => ' ',
-                'template'  => '{input}{label}',
-            );
-            return $htmlOptions;
-        }
-
-        /**
-         * Renders the setting as a radio list.
-         * @return A string containing the element's content.
-         */
-        protected function renderControlEditable()
-        {
-            $this->registerScripts();
             assert('$this->model instanceof MarketingListMemberSelectForm');
-            $content = $this->form->radioButtonList(
-                                            $this->model,
-                                            $this->attribute,
-                                            $this->getArray(),
-                                            $this->getEditableHtmlOptions()
-                                        );
-            return $content;
         }
 
-        protected function renderControlNonEditable()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected function registerScripts()
-        {
-            $selectContactBoxId    = $this->getSelectContactOrLeadSearchBoxId();
-            $selectReportBoxId     = $this->getSelectReportSearchBoxId();
-            Yii::app()->clientScript->registerScript($this->getListViewGridId() . '-toggleSelectContactOrReportSearchBoxVisibility', '
-                function toggleSelectContactOrReportByRadioButtonId(radioButtonIdSuffix)
-                {
-                    var selectContactBoxId  = "#' . $selectContactBoxId . '";
-                    var selectReportBoxId   = "#' . $selectReportBoxId . '";
-                    var hideBoxId           = selectReportBoxId;
-                    var showBoxId           = selectContactBoxId;
-                    if (radioButtonIdSuffix === undefined)
-                    {
-                        var radioButtonIdSuffix = 0;
-                    }
-                    else
-                    {
-                        var radioButtonIdSuffix = radioButtonIdSuffix;
-                    }
-                    var radioButtonId       = "#' . $this->getEditableInputId() . '_" + radioButtonIdSuffix;
-                    if ($(radioButtonId).attr("checked") !== "checked")
-                    {
-                        $(radioButtonId).attr("checked", "checked");
-                    }
-                    if (radioButtonIdSuffix == 1)
-                    {
-                        showBoxId = selectReportBoxId;
-                        hideBoxId = selectContactBoxId;
-                    }
-                    $(hideBoxId).hide();
-                    $(showBoxId).show();
-                }
-                toggleSelectContactOrReportByRadioButtonId(); // call it on page load to ensure proper radio buttons checked and divs shown
-                $(".' . $this->attribute . '").unbind("change.action").bind("change.action", function(event)
-                    {
-                        radioButtonId       = ($(this)).attr("id");
-                        selectContactOrReportRadioButtonSuffix = radioButtonId.charAt(radioButtonId.length - 1);
-                        toggleSelectContactOrReportByRadioButtonId(selectContactOrReportRadioButtonSuffix);
-                    }
-                );
-            ');
-        }
-
-        protected function renderLabel()
-        {
-            return null;
-        }
-
-        protected function getArray()
+        protected function getDataArray()
         {
             $data = array(
                         Zurmo::t('MarketingListsModule', 'From ContactsModulePluralLabel/LeadsModulePluralLabel',
@@ -127,16 +50,6 @@
                                                                         LabelUtil::getTranslationParamsForAllModules()),
                     );
             return $data;
-        }
-
-        protected function getSelectContactOrLeadSearchBoxId()
-        {
-            return ArrayUtil::getArrayValueWithExceptionIfNotFound($this->params, 'selectContactSearchBoxId');
-        }
-
-        protected function getSelectReportSearchBoxId()
-        {
-            return ArrayUtil::getArrayValueWithExceptionIfNotFound($this->params, 'selectReportSearchBoxId');
         }
     }
 ?>
