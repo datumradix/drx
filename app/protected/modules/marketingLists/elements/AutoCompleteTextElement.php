@@ -37,8 +37,6 @@
     // TODO: @Shoaibi/@Jason: Low: This should be refactored and used everywhere instead of manually creating clip.
     abstract class AutoCompleteTextElement extends TextElement
     {
-        protected $shouldRenderSelectLink = false;
-
         abstract protected function getWidgetValue();
 
         abstract protected function getSource();
@@ -86,7 +84,7 @@
 
         protected function renderSelectLink()
         {
-            if (!$this->shouldRenderSelectLink)
+            if (!$this->shouldRenderSelectLink())
             {
                 return null;
             }
@@ -176,6 +174,20 @@
         protected function getAfterChangeSelectIdScript()
         {
             throw new NotImplementedException();
+        }
+
+        protected function shouldRenderSelectLink()
+        {
+            if (isset($this->params['shouldRenderSelectLink']))
+            {
+                return $this->params['shouldRenderSelectLink'];
+            }
+            return $this->shouldRenderSelectLinkDefault();
+        }
+
+        protected function shouldRenderSelectLinkDefault()
+        {
+            return false;
         }
     }
 ?>

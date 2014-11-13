@@ -34,39 +34,33 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Filter used by user controller to ascertain whether the global email settings has been configured or not.
-     * If not, then the user is instructed to contact the administrator for them to set this up.
-     */
-    class EmailConfigurationCheckControllerFilter extends CFilter
+    class SendTestEmailForm extends CFormModel
     {
-        public $controller;
+        public $selectContactOrLeadSearchBox;
 
-        public $renderWithoutPageView   = false;
+        public $inputEmailAddressBox;
 
-        protected function preFilter($filterChain)
+        public $selectContactOrEmailRadioButton;
+
+        public function rules()
         {
-            if (isset($_POST['ajax']))
+            return array(
+                array('selectContactOrLeadSearchBox',       'type',    'type' => 'string'),
+                array('inputEmailAddressBox',               'type',    'type' => 'string'),
+                array('inputEmailAddressBox',               'email'),
+                array('selectContactOrEmailRadioButton',    'type',    'type' => 'string'),
+                array('selectContactOrEmailRadioButton',    'validateAtLeastOneIsProvided'),
+            );
+        }
+
+        public function validateAtLeastOneIsProvided($attribute, $params)
+        {
+            if (!(empty($this->selectContactOrLeadSearchBox) xor empty($this->inputEmailAddressBox)))
             {
-                return true;
+                $this->addError($attribute, Zurmo::t('MarketingModule', 'Please provide an email or select a contact.'));
+                return false;
             }
-            if (Yii::app()->emailHelper->outboundHost != null)
-            {
-                return true;
-            }
-            $messageView                  = new NoGlobalEmailConfigurationYetView();
-            if ($this->renderWithoutPageView)
-            {
-                echo $messageView->render();
-            }
-            else
-            {
-                $pageViewClassName = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
-                $view = new $pageViewClassName(ZurmoDefaultViewUtil::
-                                                        makeStandardViewForCurrentUser($this->controller, $messageView));
-                echo $view->render();
-            }
-            return false;
+            return true;
         }
     }
 ?>

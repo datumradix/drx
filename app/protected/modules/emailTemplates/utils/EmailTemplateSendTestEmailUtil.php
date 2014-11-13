@@ -34,39 +34,26 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Filter used by user controller to ascertain whether the global email settings has been configured or not.
-     * If not, then the user is instructed to contact the administrator for them to set this up.
-     */
-    class EmailConfigurationCheckControllerFilter extends CFilter
+    class EmailTemplateSendTestEmailUtil extends SendTestEmailUtil
     {
-        public $controller;
-
-        public $renderWithoutPageView   = false;
-
-        protected function preFilter($filterChain)
+        protected function resolveContentByPostSourceData(array $sourceData)
         {
-            if (isset($_POST['ajax']))
+            $content    = parent::resolveContentByPostSourceData($sourceData);
+            if (static::PREFER_SERIALIZED_DATA_OVER_HTML_CONTENT && isset($sourceData['serializedData']))
             {
-                return true;
+                $content['htmlContent'] = EmailTemplateSerializedDataToHtmlUtil::resolveHtmlBySerializedData($sourceData['serializedData']);
             }
-            if (Yii::app()->emailHelper->outboundHost != null)
-            {
-                return true;
-            }
-            $messageView                  = new NoGlobalEmailConfigurationYetView();
-            if ($this->renderWithoutPageView)
-            {
-                echo $messageView->render();
-            }
-            else
-            {
-                $pageViewClassName = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
-                $view = new $pageViewClassName(ZurmoDefaultViewUtil::
-                                                        makeStandardViewForCurrentUser($this->controller, $messageView));
-                echo $view->render();
-            }
-            return false;
+            return $content;
+        }
+
+        protected function resolveTypeByModel(OwnedSecurableItem $model)
+        {
+            return $model->type;
+        }
+
+        protected function resolveLanguageByModel(OwnedSecurableItem $model)
+        {
+            return $model->language;
         }
     }
 ?>
