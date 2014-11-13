@@ -86,7 +86,7 @@
                                                                         );
             $content                        = $formStart;
             $content                       .= $this->renderCloseButton();
-            $selectContactOrReportElement   = new SelectContactOrReportElement(new MarketingListMemberSelectForm(),
+            $selectContactOrReportElement   = new SelectContactOrReportCompositeElement(new MarketingListMemberSelectForm(),
                                                             null,
                                                             $form,
                                                             array(

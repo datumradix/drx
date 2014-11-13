@@ -34,39 +34,61 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Filter used by user controller to ascertain whether the global email settings has been configured or not.
-     * If not, then the user is instructed to contact the administrator for them to set this up.
-     */
-    class EmailConfigurationCheckControllerFilter extends CFilter
+    class SelectContactOrInputEmailCompositeElement extends SelectPrimaryOrSecondaryCompositeElement
     {
-        public $controller;
-
-        public $renderWithoutPageView   = false;
-
-        protected function preFilter($filterChain)
+        protected function resolveRadioElementAttributeName()
         {
-            if (isset($_POST['ajax']))
+            return 'selectContactOrEmailRadioButton';
+        }
+
+        protected function resolveRadioElementClassName()
+        {
+            return 'SelectContactOrInputEmailRadioElement';
+        }
+
+        protected function resolvePrimaryInputElementAttributeName()
+        {
+            return 'selectContactOrLeadSearchBox';
+        }
+
+        protected function resolvePrimaryInputClassName()
+        {
+            return 'SelectTestEmailContactOrLeadAutoCompleteElement';
+        }
+
+        protected function resolveSecondaryInputElementAttributeName()
+        {
+            return 'inputEmailAddressBox';
+        }
+
+        protected function resolveSecondaryInputClassName()
+        {
+            return 'TextElement';
+        }
+
+        protected function resolvePrimaryInputElementEditableTemplate()
+        {
+            return '{content}';
+        }
+
+        protected function resolveSecondaryInputElementEditableTemplate()
+        {
+            return $this->resolvePrimaryInputElementEditableTemplate();
+        }
+
+        protected function resolveRadioElementEditableTemplate()
+        {
+            return $this->resolvePrimaryInputElementEditableTemplate();
+        }
+
+        protected function renderPostInputContent($renderPrimaryInput = true)
+        {
+            if (!$renderPrimaryInput)
             {
-                return true;
+                $message    = Zurmo::t('MarketingModule', 'Your account would be used to resolve any merge tags present.');
+                $content    = ZurmoHtml::tag('h4', array(), $message);
+                return $content;
             }
-            if (Yii::app()->emailHelper->outboundHost != null)
-            {
-                return true;
-            }
-            $messageView                  = new NoGlobalEmailConfigurationYetView();
-            if ($this->renderWithoutPageView)
-            {
-                echo $messageView->render();
-            }
-            else
-            {
-                $pageViewClassName = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
-                $view = new $pageViewClassName(ZurmoDefaultViewUtil::
-                                                        makeStandardViewForCurrentUser($this->controller, $messageView));
-                echo $view->render();
-            }
-            return false;
         }
     }
 ?>

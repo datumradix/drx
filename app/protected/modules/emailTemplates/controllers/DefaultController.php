@@ -34,7 +34,7 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class EmailTemplatesDefaultController extends ZurmoModuleController
+    class EmailTemplatesDefaultController extends EmailTemplatesOrCampaignsBaseController
     {
         const ZERO_MODELS_FOR_WORKFLOW_CHECK_FILTER_PATH =
             'application.modules.emailTemplates.controllers.filters.EmailTemplatesForWorkflowZeroModelsCheckControllerFilter';
@@ -618,92 +618,6 @@
             echo $htmlContent;
         }
 
-        public function actionSendTestEmail($id, $contactId = null, $emailAddress = null, $useHtmlContent = 1, $resolveMergeTags = 1)
-        {
-            $emailTemplate  = EmailTemplate::getById(intval($id));
-            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($emailTemplate);
-            $htmlContent    = $emailTemplate->htmlContent;
-            if (!$useHtmlContent)
-            {
-                $htmlContent    = EmailTemplateSerializedDataToHtmlUtil::resolveHtmlByEmailTemplateModel($emailTemplate,
-                                                                                                                false);
-            }
-            $contact        = null;
-            if (isset($contactId))
-            {
-                $contact    = Contact::getById(intval($contactId));
-            }
-            else
-            {
-                $contact                                = static::resolveDefaultRecipient();
-                if ($emailAddress)
-                {
-                    $contact->primaryEmail->emailAddress    = $emailAddress;
-                }
-            }
-            static::resolveEmailMessage($emailTemplate, $contact, $htmlContent, $resolveMergeTags);
-        }
-
-        protected static function resolveEmailMessage(EmailTemplate $emailTemplate, $contact, $htmlContent, $resolveMergeTags = 1)
-        {
-            // TODO: @Shoaibi: Critical: Refactor this and AutoresponderAndCampaignItemsUtil
-            $emailMessage                       = new EmailMessage();
-            $emailMessage->subject              = $emailTemplate->subject;
-            $emailContent                       = new EmailMessageContent();
-            $textContent                        = $emailTemplate->textContent;
-            if ($resolveMergeTags)
-            {
-                MergeTagsContentResolverUtil::resolveContentsForGlobalFooterAndMergeTagsAndTracking($textContent,
-                                        $htmlContent, $contact, intval($emailTemplate->type),
-                                        MergeTagsToModelAttributesAdapter::SUPPRESS_INVALID_TAG_ERRORS_KEEP_TAG,
-                                        $emailTemplate->language, $invalidTags, null, true,
-                                        MergeTagsContentResolverUtil::ADD_GLOBAL_FOOTER_MERGE_TAGS_IF_MISSING, false);
-            }
-            $emailContent->textContent          = $textContent;
-            $emailContent->htmlContent          = $htmlContent;
-            $emailMessage->content              = $emailContent;
-            $emailMessage->sender               = static::resolveSender();
-            static::resolveRecipient($emailMessage, $contact);
-            // TODO: @Shoaibi: Critical: Resolve Attachments
-            $box                                = EmailBox::resolveAndGetByName(EmailBox::USER_DEFAULT_NAME);
-            $emailMessage->folder               = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
-            Yii::app()->emailHelper->sendImmediately($emailMessage);
-            $emailMessage->owner                = $emailTemplate->owner;
-            $explicitReadWriteModelPermissions  = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($emailTemplate);
-            ExplicitReadWriteModelPermissionsUtil::resolveExplicitReadWriteModelPermissions($emailMessage,
-                                                                                    $explicitReadWriteModelPermissions);
-            if (!$emailMessage->save())
-            {
-                throw new FailedToSaveModelException("Unable to save EmailMessage");
-            }
-        }
-
-        protected static function resolveSender()
-        {
-            $sender                         = new EmailMessageSender();
-            $sender->fromAddress            = Yii::app()->emailHelper->resolveFromAddressByUser(Yii::app()->user->userModel);
-            $sender->fromName               = strval(Yii::app()->user->userModel);
-            return $sender;
-        }
-
-        protected static function resolveRecipient(EmailMessage $emailMessage, $contact)
-        {
-            if ($contact->primaryEmail->emailAddress != null)
-            {
-                $recipient                  = new EmailMessageRecipient();
-                $recipient->toAddress       = $contact->primaryEmail->emailAddress;
-                $recipient->toName          = strval($contact);
-                $recipient->type            = EmailMessageRecipient::TYPE_TO;
-                $recipient->personsOrAccounts->add($contact);
-                $emailMessage->recipients->add($recipient);
-            }
-        }
-
-        protected static function resolveDefaultRecipient()
-        {
-            return Yii::app()->user->userModel;
-        }
-
         public function actionModalList($stateMetadataAdapterClassName = null)
         {
             $modalListLinkProvider = new SelectFromRelatedEditModalListLinkProvider(
@@ -728,6 +642,11 @@
                     'label' => Zurmo::t('Core', 'No results found')));
             }
             echo CJSON::encode($autoCompleteResults);
+        }
+
+        protected function getSendTestEmailUtil()
+        {
+            return 'EmailTemplateSendTestEmailUtil';
         }
     }
 ?>
