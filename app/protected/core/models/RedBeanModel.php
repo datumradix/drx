@@ -1443,6 +1443,24 @@
         }
 
         /**
+         * Use when you need to do an unrestrictedSet externally from the model
+         * @param $attributeName
+         * @param $value
+         */
+        public function setWithoutModifyingModel($attributeName, $value)
+        {
+            if ($attributeName == 'id' ||
+                ($this->isAttributeReadOnly($attributeName) && !$this->isAllowedToSetReadOnlyAttribute($attributeName)))
+            {
+                $this->__set($attributeName, $value);
+            }
+            else
+            {
+                $this->unrestrictedSet($attributeName, $value);
+            }
+        }
+
+        /**
          * A protected version of __set() for models to talk to themselves
          * to use their dynamically created members from 'members'
          * and 'relations' in its metadata.
