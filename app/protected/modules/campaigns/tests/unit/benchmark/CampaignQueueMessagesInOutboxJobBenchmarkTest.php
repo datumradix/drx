@@ -267,8 +267,6 @@ MTG;
                 $this->assertEquals(strval($contact), $recipients[0]->toName);
                 $this->assertEquals($email->emailAddress, $recipients[0]->toAddress);
                 $this->assertEquals(EmailMessageRecipient::TYPE_TO, $recipients[0]->type);
-                // TODO: @Shoaibi/@Sergio: Critical0: come back and fix it.
-                //$this->assertEquals($contact, $recipients[0]->personsOrAccounts[0]);
                 $this->assertNotEmpty($emailMessage->files);
                 $this->assertCount(count($files), $emailMessage->files);
                 foreach ($campaign->files as $index => $file)
