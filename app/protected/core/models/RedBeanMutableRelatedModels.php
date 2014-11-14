@@ -198,5 +198,10 @@
         {
             return $this->modified || parent::isModified();
         }
+
+        public function setNotModified()
+        {
+            $this->modified = false;
+        }
     }
 ?>
