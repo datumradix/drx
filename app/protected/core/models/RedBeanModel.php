@@ -1443,24 +1443,6 @@
         }
 
         /**
-         * Use when you need to do an unrestrictedSet externally from the model
-         * @param $attributeName
-         * @param $value
-         */
-        public function setWithoutModifyingModel($attributeName, $value)
-        {
-            if ($attributeName == 'id' ||
-                ($this->isAttributeReadOnly($attributeName) && !$this->isAllowedToSetReadOnlyAttribute($attributeName)))
-            {
-                $this->__set($attributeName, $value);
-            }
-            else
-            {
-                $this->unrestrictedSet($attributeName, $value);
-            }
-        }
-
-        /**
          * A protected version of __set() for models to talk to themselves
          * to use their dynamically created members from 'members'
          * and 'relations' in its metadata.
@@ -1954,9 +1936,10 @@
                             if (!in_array($relationType, array(self::HAS_ONE_BELONGS_TO,
                                                                self::HAS_MANY_BELONGS_TO)))
                             {
-                                if ($relatedModel->isModified() ||
-                                    ($this->isAttributeRequired($relationName)))
+                                if ($this->isRelatedModelReallyModified($relatedModel, $relationAndOwns[$relationName][0], $relationAndOwns[$relationName][2])
+                                    || $this->isAttributeRequired($relationName))
                                 {
+
                                     //If the attribute is required, but already exists and has not been modified we do
                                     //not have to worry about saving it.
                                     if ($this->isSavableFromRelation &&
@@ -2003,7 +1986,8 @@
                                 }
                                 //Needed to exclude HAS_ONE_BELONGS_TO because an additional column was being created
                                 //on the wrong side.
-                                if ($relationType != static::HAS_ONE_BELONGS_TO && ($relatedModel->isModified() ||
+                                if ($relationType != static::HAS_ONE_BELONGS_TO &&
+                                    ($this->isRelatedModelReallyModified($relatedModel, $relationAndOwns[$relationName][0], $relationAndOwns[$relationName][2]) ||
                                     $relatedModel->id > 0       ||
                                     $this->isAttributeRequired($relationName)))
                                 {
@@ -2044,6 +2028,47 @@
                 $this->isSaving = false;
                 throw $e;
             }
+        }
+
+        /**
+         * See Stories #82063952 and #82699138
+         * @see isReallyModified
+         * @param $relatedModel
+         * @param $relationType integer
+         * @param $isOwned boolean
+         * @return bool
+         */
+        public function isRelatedModelReallyModified($relatedModel, $relationType, $isOwned)
+        {
+            assert('is_int($relationType)');
+            assert('is_bool($isOwned)');
+            if($relatedModel instanceof RedBeanModel)
+            {
+                return $relatedModel->isReallyModified($relationType, $isOwned);
+            }
+            else
+            {
+                return $relatedModel->isModified();
+            }
+        }
+
+        /**
+         * See Stories #82063952 and #82699138
+         * Overridden in OwnedSecurableItem.  This means the fix is scoped down to just classes that extend
+         * OwnedSecurableItem, but the bug with isModified only manifests when there are default values on related
+         * models, which has only occurred on subClasses of OwnedSecurableItem.
+         *
+         * This fix is probably temporarily until the way isModified() and save() methods work in RedBeanModel
+         * is refactored. This would be a large refactoring.
+         * @param $relationType integer
+         * @param $isOwned boolean
+         * @return bool
+         */
+        public function isReallyModified($relationType, $isOwned)
+        {
+            assert('is_int($relationType)');
+            assert('is_bool($isOwned)');
+            return $this->isModified();
         }
 
         /**
