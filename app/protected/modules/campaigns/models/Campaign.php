@@ -58,8 +58,8 @@
         {
             return array(
                 static::STATUS_PAUSED       => Zurmo::t('CampaignsModule', 'Paused'),
-                static::STATUS_ACTIVE       => Zurmo::t('Core', 'Active'),
-                static::STATUS_PROCESSING   => Zurmo::t('Core', 'Processing'),
+                static::STATUS_ACTIVE       => Zurmo::t('Core', 'Scheduled'),
+                static::STATUS_PROCESSING   => Zurmo::t('Core', 'Sending'),
                 static::STATUS_COMPLETED    => Zurmo::t('Core', 'Completed'),
             );
         }
