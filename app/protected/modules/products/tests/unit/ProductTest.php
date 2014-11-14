@@ -78,36 +78,23 @@
             $model->priceFrequency    = $productTemplate->priceFrequency;
             $model->sellPrice->value  = $productTemplate->sellPrice->value;
             $model->type              = $productTemplate->type;
-            $this->assertTrue($model->save());
 
-            $productId = $model->id;
-            $model->forget();
-
-            $product = Product::getById($productId);
-            $this->assertFalse($product->account->isModified());
-            $this->assertFalse($product->opportunity->isModified());
-
-            $postData['name']        = 'a new name';
-            $postData['account'] = array('id' => '');
-            $postData['contact'] = array('id' => '');
+            $postData = array();
             $postData['opportunity'] = array('id' => '');
-            $postData['productTemplate'] = array('id' => '');
-            $postData['type'] = 1;
-            $postData['priceFrequency'] = 1;
-            $postData['sellPrice'] = array('currency' => array('id' => 1), 'value' => 0);
-            $postData['stage'] = array('value' => 'Open');
-            $postData['owner'] = array('id' => $super->id);
-            $postData2 = $postData;
-            $postData2['explicitReadWriteModelPermissions'] = array('type' => 1);
-            $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::resolveByPostDataAndModelThenMake($postData2, $product);
-            $product->setAttributes($postData);
-            $this->assertEquals('a new name', $product->name);
-            $this->assertTrue($model->save());
-            $success = ExplicitReadWriteModelPermissionsUtil::
-                resolveExplicitReadWriteModelPermissions($model, $explicitReadWriteModelPermissions);
-            $this->assertTrue($success);
+            $model->setAttributes($postData);
+
+            $model->validate();
+            $sanitizedOwnerData = array('owner' => array('id' => $super->id));
+            $model->setAttributes($sanitizedOwnerData);
+            $model->validate(array('owner'));
+            $this->assertTrue($model->opportunity->id < 0); //need to check this to call get first.
+            $this->assertTrue($model->save(false));
+
+
+            $this->assertTrue($model->save(false));
             $this->assertTrue($model->opportunity->id < 0);
             $model->delete();
+            $productTemplate->delete();
         }
 
         public function testDemoDataMaker()
