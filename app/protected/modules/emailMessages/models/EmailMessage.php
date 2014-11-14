@@ -76,6 +76,15 @@
             return $this->subject;
         }
 
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'subject';
+        }
+
         public static function getModuleClassName()
         {
             return 'EmailMessagesModule';
