@@ -8747,8 +8747,8 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #97c43d;
   text-shadow: 0 0 5px #97c43d;
 }
-.campaign-status.processing i,
-.campaign-status.active i {
+.campaign-status.sending i,
+.campaign-status.scheduled i {
   color: #ffd900;
   -webkit-text-shadow: 0 0 5px #ffd900;
   -moz-text-shadow: 0 0 5px #ffd900;
@@ -8756,7 +8756,7 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #ffd900;
   text-shadow: 0 0 5px #ffd900;
 }
-.campaign-status.processing i {
+.campaign-status.sending i {
   -o-animation: led-throb 0.5s ease-in-out infinite;
   -ms-animation: led-throb 0.5s ease-in-out infinite;
   -moz-animation: led-throb 0.5s ease-in-out infinite;
