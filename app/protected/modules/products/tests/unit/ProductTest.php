@@ -50,17 +50,12 @@
             $contactWithNoAccount   = ContactTestHelper::createContactByNameForOwner('noAccountContact', $super);
             $everyoneGroup = Group::getByName(Group::EVERYONE_GROUP_NAME);
             $everyoneGroup->save();
-//            $a = new Group();
-//            $a->name = 'AAA';
-//            $a->save();
         }
 
         /**
          * Shows a bug with opportunity as a product relation. The bug is when there is a default customField value
-         * Needed to have OpportunityTestHelper::createOpportunityStagesIfDoesNotExist() instantiated in this test
-         * to show the problem.
-         * The fix was to change how CustomFieldsModel was processing derived construction.  Needed to not have
-         * the isModified flag set to true when the defaultValue is set on customField
+         * The fix is the use of isReallyModified() to now determine if during save() if the model has really been modified
+         * If it is a new model, then for example 'name' must not be empty, otherwise it is has not really been modified
          */
         public function testEmptyOpportunityGetsCreatedOnProductEdit()
         {

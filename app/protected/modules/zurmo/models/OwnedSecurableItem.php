@@ -115,7 +115,7 @@
 
         /**
          * Used to signal @see isReallyModified
-         * @return string - attribute that must have a value on the model.
+         * @return string - attribute that must have a value on the model when saving.
          */
         protected static function getModifiedSignalAttribute()
         {
