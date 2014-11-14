@@ -58,8 +58,8 @@
             $statusDropDownArray    = Campaign::getStatusDropDownArray();
             $this->assertNotEmpty($statusDropDownArray);
             $this->assertEquals('Paused',       $statusDropDownArray[1]);
-            $this->assertEquals('Active',       $statusDropDownArray[2]);
-            $this->assertEquals('Processing',   $statusDropDownArray[3]);
+            $this->assertEquals('Scheduled',       $statusDropDownArray[2]);
+            $this->assertEquals('Sending',   $statusDropDownArray[3]);
             $this->assertEquals('Completed',    $statusDropDownArray[4]);
         }
 
