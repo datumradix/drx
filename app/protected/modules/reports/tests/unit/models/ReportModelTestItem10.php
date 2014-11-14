@@ -39,6 +39,15 @@
      */
     class ReportModelTestItem10 extends OwnedSecurableItem
     {
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return null;
+        }
+
         public static function getDefaultMetadata()
         {
             $metadata = parent::getDefaultMetadata();

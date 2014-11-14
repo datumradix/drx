@@ -51,6 +51,15 @@
             return Zurmo::t('Core', '(Unnamed)');
         }
 
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'exportFileName';
+        }
+
         public static function getModuleClassName()
         {
             return 'ExportModule';
