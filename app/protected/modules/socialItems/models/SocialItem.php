@@ -57,6 +57,15 @@
             return $this->description;
         }
 
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'description';
+        }
+
         public static function getModuleClassName()
         {
             return 'SocialItemsModule';
