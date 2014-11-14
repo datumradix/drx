@@ -72,5 +72,15 @@
             );
             return $metadata;
         }
+
+        /**
+         * Used when setting up default values for validators.  Need to make sure the model does not show as being
+         * modified during that initial setup. see https://www.pivotaltracker.com/story/show/82699138
+         */
+        public function setNotModified()
+        {
+            //$this->multipleValuesCustomField->setNotModified();
+            parent::setNotModified();
+        }
     }
 ?>

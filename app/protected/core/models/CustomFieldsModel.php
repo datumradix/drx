@@ -107,7 +107,7 @@
                                  $customField->values->count() == 0 && isset($customField->data->defaultValue))
                             {
                                 $customFieldValue = new CustomFieldValue();
-                                $customFieldValue->value = $customField->data->defaultValue;
+                                $customFieldValue->setWithoutModifyingModel('value', $customField->data->defaultValue);
                                 $customField->values->add($customFieldValue);
                             }
                         }

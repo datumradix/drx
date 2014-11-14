@@ -95,23 +95,28 @@
                     $isNullRelatedModel ||
                     $isNewUnmodifiedRelatedModel)
                 {
-                    $model->$attributeName = $thisValue;
+                    $model->setWithoutModifyingModel($attributeName, $thisValue);
                 }
                 if ($isEmptyMultipleValuesCustomField)
                 {
-                    $customFieldValue        = new CustomFieldValue();
-                    $customFieldValue->value = $thisValue;
+                    $customFieldValue = new CustomFieldValue();
+                    $customFieldValue->setWithoutModifyingModel('value', $thisValue);
                     $model->$attributeName->values->add($customFieldValue);
+
+                    $model->$attributeName->values->setNotModified(); //todo: bad
+                    $customFieldValue->setNotModified(); //todo: bad
+
+
                 }
                 elseif ($isEmptyCustomField)
                 {
                     if ($this->value instanceof CustomField)
                     {
-                        $model->$attributeName = $thisValue;
+                        $model->setWithoutModifyingModel($attributeName, $thisValue);
                     }
                     else
                     {
-                        $model->$attributeName->value = $this->value;
+                        $model->$attributeName->setWithoutModifyingModel('value', $this->value);
                     }
                 }
             }
