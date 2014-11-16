@@ -70,7 +70,7 @@
             $content .= '<p>' .Zurmo::t('HomeModule', 'Get more features, proactive support, access ' .
                                                'to training and consulting, blazing fast hosting, ' .
                                                'and in-depth documentation with a Zurmo subscription.');
-            $content .= '<br/><a href="http://www.zurmo.com/needSupport.php?source=about">' .
+            $content .= '<br/><a href="http://www.zurmo.com/needSupport.php?source=welcome">' .
                         Zurmo::t('ZurmoModule', 'Learn More' . '</a>');
             $content .= '</p></div>';
             return $content;

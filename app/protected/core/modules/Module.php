@@ -213,7 +213,7 @@
                         isset($metadata['global']['singularModuleLabels'][$language]))
                     {
                         $label = $metadata['global']['singularModuleLabels'][$language];
-                        return preg_match('/^[a-z]/', $label) ? ucwords($label) : $label;
+                        return StringUtil::makeWordsUpperCase($label);
                     }
                 case 'SingularLowerCase':
                     if ( isset($metadata['global']['singularModuleLabels']) &&
@@ -226,7 +226,7 @@
                         isset($metadata['global']['pluralModuleLabels'][$language]))
                     {
                         $label = $metadata['global']['pluralModuleLabels'][$language];
-                        return preg_match('/^[a-z]/', $label) ? ucwords($label) : $label;
+                        return StringUtil::makeWordsUpperCase($label);
                     }
                 case 'PluralLowerCase':
                     if ( isset($metadata['global']['pluralModuleLabels']) &&
