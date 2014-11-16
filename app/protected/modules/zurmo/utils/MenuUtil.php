@@ -455,9 +455,7 @@
                                                                   $user);
                     $headerMenuItems = array_merge($headerMenuItems,
                                                     self::resolveMenuItemsForLanguageLocalization
-                                                    ($menuItems, get_class($module)),
-                                                    self::resolveMenuItemsForEvaluateUrl
-                                                    ($menuItems));
+                                                    ($menuItems, get_class($module)));
                 }
             }
             $orderedHeaderMenuItems = array();
@@ -670,24 +668,6 @@
                     }
                 }
             }
-        }
-
-        /**
-         * Given a menu item array, each url element, specified by $urlElements,
-         * will be evaluated
-         * @return menu item array
-         */
-        protected static function resolveMenuItemsForEvaluateUrl($menuItems, $urlElements = array('url'))
-        {
-            assert('is_array($menuItems)');
-            foreach ($menuItems as $itemKey => $item)
-            {
-                foreach ($urlElements as $urlElement)
-                {
-                    MetadataUtil::resolveEvaluateSubString($menuItems[$itemKey][$urlElement]);
-                }
-            }
-            return $menuItems;
         }
     }
 ?>
