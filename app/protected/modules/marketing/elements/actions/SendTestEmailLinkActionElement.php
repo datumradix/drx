@@ -41,6 +41,15 @@
             return false;
         }
 
+	    public function render()
+	    {
+		    $content = ZurmoHtml::tag('span', array('class' => 'z-label'), $this->getLabel());
+		    return ZurmoHtml::ajaxLink($content, $this->getDefaultRoute(),
+			    $this->getAjaxLinkOptions(),
+			    $this->resolveHtmlOptionsForRendering()
+		    );
+	    }
+
         protected function getAjaxLinkTitle()
         {
             return $this->getLabel();
@@ -75,7 +84,7 @@
         protected function resolveHtmlOptionsForRendering()
         {
             $htmlOptions = $this->getHtmlOptions();
-            return CMap::mergeArray($htmlOptions, array('class' => 'cancel-button'));
+            return CMap::mergeArray($htmlOptions, array('class' => 'wizard-secondary-action-button'));
         }
     }
 ?>
