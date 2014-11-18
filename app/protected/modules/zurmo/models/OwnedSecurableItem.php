@@ -86,6 +86,42 @@
             }
         }
 
+        /**
+         * See Stories #82063952 and #82699138
+         * Detects if the model is changed outside of being altered by a default value. An example is a new opportunity
+         * that has a default stage value.  This shows as isModified=true but this is not sufficient to signal a save
+         * is needed.  The 'name' attribute for example is a good signal that the model has in fact been modified.
+         *
+         * @see RedBeanModel::isReallyModified
+         * @param $relationType integer
+         * @param $isOwned boolean
+         * @return bool
+         */
+        public function isReallyModified($relationType, $isOwned)
+        {
+            assert('is_int($relationType)');
+            assert('is_bool($isOwned)');
+            if($relationType == self::HAS_ONE || $relationType == self::HAS_MANY_BELONGS_TO)
+            {
+                $modifiedSignalAttribute = static::getModifiedSignalAttribute();
+                if($modifiedSignalAttribute != null &&
+                   !$isOwned && $this->id < 0 && $this->isModified() && $this->$modifiedSignalAttribute == null)
+                {
+                    return false;
+                }
+            }
+            return $this->isModified();
+        }
+
+        /**
+         * Used to signal @see isReallyModified
+         * @return string - attribute that must have a value on the model when saving.
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'name';
+        }
+
         public function getEffectivePermissions($permitable = null)
         {
             assert('$permitable === null || $permitable instanceof Permitable');

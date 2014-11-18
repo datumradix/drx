@@ -44,22 +44,24 @@
             Yii::app()->user->userModel = $super;
             //Setup test data owned by the super user.
             $account                = AccountTestHelper::createAccountByNameForOwner('superAccount', $super);
+            OpportunityTestHelper::createOpportunityStagesIfDoesNotExist();
             $opportunity            = OpportunityTestHelper::createOpportunityByNameForOwner('superOpportunity', $super);
             $productTemplate        = ProductTemplateTestHelper::createProductTemplateByName('superProductTemplate');
             $contactWithNoAccount   = ContactTestHelper::createContactByNameForOwner('noAccountContact', $super);
             $everyoneGroup = Group::getByName(Group::EVERYONE_GROUP_NAME);
             $everyoneGroup->save();
-//            $a = new Group();
-//            $a->name = 'AAA';
-//            $a->save();
         }
-/**
+
+        /**
+         * Shows a bug with opportunity as a product relation. The bug is when there is a default customField value
+         * The fix is the use of isReallyModified() to now determine if during save() if the model has really been modified
+         * If it is a new model, then for example 'name' must not be empty, otherwise it is has not really been modified
+         */
         public function testEmptyOpportunityGetsCreatedOnProductEdit()
         {
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
 
-            $opportunity              = OpportunityTestHelper::createOpportunityByNameForOwner('mySuperOpp', $super);
             $name                     = 'Amazing Kid Sample';
             $productTemplateName      = ProductsDemoDataMaker::getProductTemplateForProduct($name);
             $productTemplate          = ProductTemplateTestHelper::createProductTemplateByName($productTemplateName);
@@ -71,42 +73,28 @@
             $model->priceFrequency    = $productTemplate->priceFrequency;
             $model->sellPrice->value  = $productTemplate->sellPrice->value;
             $model->type              = $productTemplate->type;
-            $this->assertTrue($model->save());
 
-            $productId = $model->id;
-            $model->forget();
-
-            $opportunityCount = Opportunity::getCount();
-            echo 'this count' . $opportunityCount;
-
-            $product = Product::getById($productId);
-            $postData['name']        = 'a new name';
+            $postData = array();
             $postData['opportunity'] = array('id' => '');
+            $model->setAttributes($postData);
 
-            $postData2 = $postData;
-            $postData2['explicitReadWriteModelPermissions'] = array('type' => 1);
-            $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::resolveByPostDataAndModelThenMake($postData2, $product);
+            $model->validate();
+            $sanitizedOwnerData = array('owner' => array('id' => $super->id));
+            $model->setAttributes($sanitizedOwnerData);
+            $model->validate(array('owner'));
+            $this->assertTrue($model->opportunity->id < 0); //need to check this to call get first.
+            $this->assertTrue($model->save(false));
 
 
-            $product->setAttributes($postData);
-            $this->assertEquals('a new name', $product->name);
-            $this->assertTrue($model->save());
-
-
-            $success = ExplicitReadWriteModelPermissionsUtil::
-                resolveExplicitReadWriteModelPermissions($model, $explicitReadWriteModelPermissions);
-            $this->assertTrue($success);
-
-            //todo: assert related is empty and same before. careful
+            $this->assertTrue($model->save(false));
             $this->assertTrue($model->opportunity->id < 0);
-
-            $opportunityCount = Opportunity::getCount();
-            echo 'this count after' . $opportunityCount; //todo: move this function and do a compare
-
+            $model->delete();
+            $productTemplate->delete();
         }
-**/
+
         public function testDemoDataMaker()
         {
+            Yii::app()->user->userModel = User::getByUsername('super');
             $model                    = new Product();
             $name                     = 'Amazing Kid Sample';
             $productTemplateName      = ProductsDemoDataMaker::getProductTemplateForProduct($name);
