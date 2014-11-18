@@ -4590,23 +4590,22 @@ div.wide.form .errorMessage {
   }
 }
 .tooltip {
-  width: 10px;
-  height: 10px !important;
-  line-height: 10px !important;
+  line-height: 11px !important;
+  width: 12px !important;
+  height: 12px !important;
   display: inline-block;
   background: #fff;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
-  border-radius: 10px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
   border: 1px solid #ccc;
   color: #333;
-  font-weight: 500;
-  font-size: 8px;
+  font-weight: 400 !important;
+  font-size: 8px !important;
   text-align: center;
   cursor: pointer;
-  vertical-align: super;
   margin: 0 4px;
 }
 .qtip {
@@ -6072,9 +6071,12 @@ a.dashboard-link .z-label {
 #welcome-content:after {
   clear: both;
 }
+#welcome-content.has-message .help-section {
+  width: 30%;
+}
 .help-section {
   border-top: 1px solid #fff;
-  padding: 30px 0 0 15px;
+  padding: 30px 50px 0 0;
   width: 50%;
   float: left;
   font-size: 12px;
@@ -6095,6 +6097,9 @@ a.dashboard-link .z-label {
 .help-section a {
   color: #666;
   font-weight: bold;
+}
+.get-pro-message-small {
+  width: 40%;
 }
 #tip-of-day-next-page-link {
   margin-left: 16px;
@@ -6173,6 +6178,62 @@ a.dashboard-link .z-label {
   background-image: -webkit-linear-gradient(0deg,rgba(255,255,255,0) 55%,#ffffff 100%);
   background-image: -ms-linear-gradient(90deg,rgba(255,255,255,0) 55%,#ffffff 100%);
   background-image: linear-gradient(90deg,rgba(255,255,255,0) 55%,#ffffff 100%);
+}
+.get-pro-message {
+  background-color: #36719f !important;
+  background-repeat: repeat-x !important;
+  background-image: -ms-radial-gradient(circle,#3d82b6,#36719f) !important;
+  background-image: -webkit-gradient(circle,color-stop(0%,#3d82b6),color-stop(100%,#36719f)) !important;
+  background-image: -webkit-radial-gradient(circle,#3d82b6,#36719f) !important;
+  background-image: -o-radial-gradient(circle,#3d82b6,#36719f) !important;
+  background-image: -moz-radial-gradient(circle,#3d82b6,#36719f) !important;
+  background-image: radial-gradient(circle,#3d82b6,#36719f) !important;
+}
+.get-pro-message > div {
+  padding: 30px;
+  background: url("../images/get-pro-screens.png") right bottom no-repeat;
+}
+.get-pro-message h2 {
+  font-weight: 100;
+  color: #e9c71b;
+  -webkit-text-shadow: none;
+  -moz-text-shadow: none;
+  -ms-text-shadow: none;
+  -o-text-shadow: none;
+  text-shadow: none;
+  margin-bottom: 15px;
+  font-size: 42px;
+}
+.get-pro-message p {
+  margin-bottom: 15px;
+  line-height: 1.4;
+  color: #fff;
+  font-size: 18px;
+  padding-right: 230px;
+}
+.get-pro-message .z-label {
+  line-height: 36px !important;
+  font-size: 16px;
+  font-weight: 400;
+}
+.get-pro-message-small {
+  width: 40%;
+  font-weight: bold;
+  padding-right: 60px;
+}
+.get-pro-message-small h3 {
+  font-weight: 400;
+  color: #e9c71b;
+  -webkit-text-shadow: none;
+  -moz-text-shadow: none;
+  -ms-text-shadow: none;
+  -o-text-shadow: none;
+  text-shadow: none;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+.get-pro-message-small p {
+  line-height: 1.5;
 }
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
   #LoginView,
@@ -8485,6 +8546,21 @@ a + .autoresponder-stats {
   -ms-box-shadow: inset 0 0 1px 1px #efefef;
   -o-box-shadow: inset 0 0 1px 1px #efefef;
   box-shadow: inset 0 0 1px 1px #efefef;
+}
+.last-email-activity-status {
+  float: none;
+  margin-left: 8px;
+  position: absolute;
+  top: 2px;
+  display: inline-block;
+}
+.last-email-activity-status .continuum {
+  margin-right: 4px;
+}
+.last-email-activity-status .tooltip {
+  font-weight: normal;
+  margin-right: 0;
+  font-size: 8px;
 }
 .gmail-user-stage-status,
 .import-item-stage-status,

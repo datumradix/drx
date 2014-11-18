@@ -92,7 +92,10 @@
             $this->assertCount(1, $emailMessage2->recipients);
 
             //One email message was sent to Super but not to Steven
-            UserConfigurationFormAdapter::setValue($steven, true, 'turnOffEmailNotifications');
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableConversationNewCommentNotification']['email'] = false;
+            UserNotificationUtil::
+                    setValue($steven, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
             CommentsUtil::sendNotificationOnNewComment($conversation, $comment, $jack, array($steven, $super));
             $this->assertEquals(3, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
