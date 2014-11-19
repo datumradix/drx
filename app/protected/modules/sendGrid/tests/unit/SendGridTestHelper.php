@@ -42,16 +42,20 @@
 
             if (isset(Yii::app()->params['emailTestAccounts']))
             {
-                $sendGridGlobalSettings     = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings'];
-                $sendGridUserSettings       = Yii::app()->params['emailTestAccounts']['sendGridUserSettings'];
-                if ( $sendGridGlobalSettings['host'] != '' &&
-                     $sendGridUserSettings['host'] != '' && $sendGridUserSettings['apiUsername'] != '' &&
-                     $sendGridUserSettings['apiPassword'] != '' && $sendGridGlobalSettings['apiUsername'] != '' &&
-                     $sendGridGlobalSettings['apiPassword'] != '' &&
-                     Yii::app()->params['emailTestAccounts']['testEmailAddress'] != ''
-                )
+                if(isset(Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings'])
+                    && isset(Yii::app()->params['emailTestAccounts']['sendGridUserSettings']))
                 {
-                    $isSetSendGridEmailAccountsTestConfiguration = true;
+                    $sendGridGlobalSettings     = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings'];
+                    $sendGridUserSettings       = Yii::app()->params['emailTestAccounts']['sendGridUserSettings'];
+                    if ( $sendGridGlobalSettings['host'] != '' &&
+                         $sendGridUserSettings['host'] != '' && $sendGridUserSettings['apiUsername'] != '' &&
+                         $sendGridUserSettings['apiPassword'] != '' && $sendGridGlobalSettings['apiUsername'] != '' &&
+                         $sendGridGlobalSettings['apiPassword'] != '' &&
+                         Yii::app()->params['emailTestAccounts']['testEmailAddress'] != ''
+                    )
+                    {
+                        $isSetSendGridEmailAccountsTestConfiguration = true;
+                    }
                 }
             }
             return $isSetSendGridEmailAccountsTestConfiguration;
