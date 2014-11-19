@@ -44,18 +44,57 @@
             Yii::app()->user->userModel = $super;
             //Setup test data owned by the super user.
             $account                = AccountTestHelper::createAccountByNameForOwner('superAccount', $super);
+            OpportunityTestHelper::createOpportunityStagesIfDoesNotExist();
             $opportunity            = OpportunityTestHelper::createOpportunityByNameForOwner('superOpportunity', $super);
             $productTemplate        = ProductTemplateTestHelper::createProductTemplateByName('superProductTemplate');
             $contactWithNoAccount   = ContactTestHelper::createContactByNameForOwner('noAccountContact', $super);
             $everyoneGroup = Group::getByName(Group::EVERYONE_GROUP_NAME);
             $everyoneGroup->save();
-//            $a = new Group();
-//            $a->name = 'AAA';
-//            $a->save();
+        }
+
+        /**
+         * Shows a bug with opportunity as a product relation. The bug is when there is a default customField value
+         * The fix is the use of isReallyModified() to now determine if during save() if the model has really been modified
+         * If it is a new model, then for example 'name' must not be empty, otherwise it is has not really been modified
+         */
+        public function testEmptyOpportunityGetsCreatedOnProductEdit()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+
+            $name                     = 'Amazing Kid Sample';
+            $productTemplateName      = ProductsDemoDataMaker::getProductTemplateForProduct($name);
+            $productTemplate          = ProductTemplateTestHelper::createProductTemplateByName($productTemplateName);
+            $model                    = new Product();
+            $name                     = 'My Simple Product';
+            $model->name              = $name;
+            $model->quantity          = 4;
+            $model->stage->value      = 'Open';
+            $model->priceFrequency    = $productTemplate->priceFrequency;
+            $model->sellPrice->value  = $productTemplate->sellPrice->value;
+            $model->type              = $productTemplate->type;
+
+            $postData = array();
+            $postData['opportunity'] = array('id' => '');
+            $model->setAttributes($postData);
+
+            $model->validate();
+            $sanitizedOwnerData = array('owner' => array('id' => $super->id));
+            $model->setAttributes($sanitizedOwnerData);
+            $model->validate(array('owner'));
+            $this->assertTrue($model->opportunity->id < 0); //need to check this to call get first.
+            $this->assertTrue($model->save(false));
+
+
+            $this->assertTrue($model->save(false));
+            $this->assertTrue($model->opportunity->id < 0);
+            $model->delete();
+            $productTemplate->delete();
         }
 
         public function testDemoDataMaker()
         {
+            Yii::app()->user->userModel = User::getByUsername('super');
             $model                    = new Product();
             $name                     = 'Amazing Kid Sample';
             $productTemplateName      = ProductsDemoDataMaker::getProductTemplateForProduct($name);

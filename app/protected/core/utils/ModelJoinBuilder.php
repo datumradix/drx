@@ -567,7 +567,7 @@
                 $this->resolveSettingDistinctForARelationAttributeThatIsHasMany();
                 return $onTableAliasName;
             }
-            elseif ($this->modelAttributeToDataProviderAdapter->getRelationType() == RedBeanModel::HAS_ONE)
+            elseif ($this->modelAttributeToDataProviderAdapter->isRelationTypeAHasOneVariant())
             {
                 return $this->resolveJoinsForForARelationAttributeThatIsAHasOne($onTableAliasName);
             }

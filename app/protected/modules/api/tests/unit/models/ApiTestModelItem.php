@@ -44,6 +44,15 @@
             return self::getByNameOrEquivalent('firstName', $name);
         }
 
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string - attribute that must have a value on the model.
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'string';
+        }
+
         protected static function translatedAttributeLabels($language)
         {
             return array_merge(parent::translatedAttributeLabels($language),
