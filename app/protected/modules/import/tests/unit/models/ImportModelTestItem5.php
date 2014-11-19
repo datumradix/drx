@@ -36,6 +36,16 @@
 
     class ImportModelTestItem5 extends OwnedSecurableItem
     {
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * Not sure how it will work for a date field. returning null to ignore for now.
+         * @return string | null
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return null;
+        }
+
         public static function getDefaultMetadata()
         {
             $metadata = parent::getDefaultMetadata();

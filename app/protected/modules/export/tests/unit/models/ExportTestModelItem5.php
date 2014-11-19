@@ -39,6 +39,15 @@
     */
     class ExportTestModelItem5 extends OwnedSecurableItem
     {
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'emailAddress';
+        }
+
         public static function getDefaultMetadata()
         {
             $metadata = parent::getDefaultMetadata();

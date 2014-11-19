@@ -1180,24 +1180,16 @@ body > .ui-autocomplete{
 		font-weight: bold;
 		color:#555;
 		margin:0 0 5px 0;
+        line-height: 1;
 	}
 	a{
-		line-height: 28px;
+		line-height: 1;
 		display:block;
 		position: relative;
 		.radius( 4px );
 		.t-shadow( rgba(255, 255, 255, 0.8) 0px 1px);
 		width: 100%;
-		span{
-			display: inline-block;
-			.text-overflow();
-			line-height: 1;
-			position: relative;
-			top: 2px;
-			left: 8px;
-			padding-right: 5px;
-			max-width: 80%;
-		}
+        padding: 2px;
 	}
 	.over > a,
 	.active > a,
@@ -1211,20 +1203,33 @@ body > .ui-autocomplete{
 			.t-shadow( 0px 1px 0 lighten(@themeColorBtnDefault, 15%) ) !important;
 		}
 	}
+    span{
+        display: inline-block;
+        .text-overflow();
+        line-height: 1.5;
+        position: relative;
+        top: 3px;
+        left: 8px;
+        padding-right: 5px;
+        max-width: 80%;
+    }
 	i{
 		font-style:normal;
 		.symbly(24px);
 		width:24px;
 		height:24px;
-		line-height:22px;
+		line-height:1;
 		background:#FFF;
 		#gradient > .vertical(#f5f5f5, #ffffff);
 		.radius(4px);
 		display:inline-block;
 		text-align:center;
 		position:relative;
-		top:1px;
-		left: 2px;
+		//top:1px;
+		//left: 2px;
+        &:before{
+            line-height: 1;
+        }
 	}
 	/*deafult for if an icon doesnt exist*/
 	li{
@@ -1406,14 +1411,10 @@ body > .ui-autocomplete{
 }
 
 #mashableInbox{
-	a > span{
-		overflow: visible;
-		top: 0;
-	}
 	.unread-inbox-count{
 		overflow: visible;
         position: relative;
-        top: -1px;
+        top: -3px;
 		margin-left: 4px;
 		display: inline-block;
 		.radius(3px);

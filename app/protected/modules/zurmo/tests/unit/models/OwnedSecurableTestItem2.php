@@ -36,6 +36,15 @@
 
     class OwnedSecurableTestItem2 extends OwnedSecurableItem
     {
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'member';
+        }
+
         public static function getDefaultMetadata()
         {
             $metadata = parent::getDefaultMetadata();

@@ -55,6 +55,15 @@
             }
         }
 
+        public function setUp()
+        {
+            parent::setUp();
+            if (!SendGridTestHelper::isSetSendGridAccountTestConfiguration())
+            {
+                $this->markTestSkipped(Zurmo::t('SendGridModule', 'Email test settings are missing.'));
+            }
+        }
+
         public function testResolveAndGetByUserAndName()
         {
             //Test a user that not have a Primary Email Address
