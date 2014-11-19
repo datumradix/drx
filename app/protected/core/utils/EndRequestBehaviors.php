@@ -93,11 +93,17 @@
 
         /**
          * Process any points that need to be tabulated based on scoring that occurred during the request.
-         * @param CEvent $event
+         * Use of areAllClassesImported() is to ensure the available classes are imported to run this end request.
+         * If not, then an error has occurred very early in execution and these classes are not required to run.
+         * Does not run if there is already an error as this can cause problems if an additional error is generated
+         * during this execution.
          */
         public function handleGamification()
         {
-            if (Yii::app()->user->userModel != null && Yii::app()->gameHelper instanceof GameHelper)
+            if (Yii::app()->errorHandler->error == null &&
+                Yii::app()->areAllClassesImported() &&
+                Yii::app()->user->userModel != null &&
+                Yii::app()->gameHelper instanceof GameHelper)
             {
                 Yii::app()->gameHelper->processDeferredPoints();
                 Yii::app()->gameHelper->resolveNewBadges();
@@ -105,9 +111,17 @@
             }
         }
 
+        /**
+         * Use of areAllClassesImported() is to ensure the available classes are imported to run this end request.
+         * If not, then an error has occurred very early in execution and these classes are not required to run.
+         * Does not run if there is already an error as this can cause problems if an additional error is generated
+         * during this execution.
+         */
         public function handleJobQueue()
         {
-            if (Yii::app()->user->userModel != null)
+            if (Yii::app()->errorHandler->error == null &&
+                Yii::app()->areAllClassesImported() &&
+                Yii::app()->user->userModel != null)
             {
                 Yii::app()->jobQueue->processAll();
             }
