@@ -93,9 +93,9 @@
             assert('isset($to) || isset($cc) || isset($bcc)');
             assert('is_array($attachments) || !isset($attachments)');
             assert('is_array($parts) || !isset($parts)');
-            $toName = null;
-            $toAddress = null;
-            if(is_string($to))
+            $mailer = new ZurmoSwiftMailer();
+            $mailer->init();
+            if (!$settings)
             {
                 $toAddress = $to;
             }

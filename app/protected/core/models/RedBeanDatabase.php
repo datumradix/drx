@@ -41,6 +41,7 @@
      * Abstraction over the top of an application database accessed via
      * <a href="http://www.redbeanphp.com/">RedBean</a>.
      */
+    Yii::import('application.core.models.ZurmoRedBean');
     class RedBeanDatabase
     {
         private static $isSetup      = false;

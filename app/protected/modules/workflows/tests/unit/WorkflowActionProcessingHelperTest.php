@@ -475,6 +475,7 @@
                                                     'value'  => 'some new model'));
             $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
             $model = new WorkflowModelTestItem2();
+            $model->name = 'a name';
             $relatedModel = new WorkflowModelTestItem();
             $relatedModel->lastName = 'lastName';
             $relatedModel->string   = 'string';

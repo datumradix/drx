@@ -113,6 +113,7 @@
                 }
                 GeneralCache::cacheEntry('filesClassMap', Yii::$classMap);
             }
+            Yii::app()->setAllClassesAreImported();
         }
 
         public function handleLibraryCompatibilityCheck()

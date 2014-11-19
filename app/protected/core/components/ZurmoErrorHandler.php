@@ -34,41 +34,20 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class OwnedSecurableTestItem2 extends OwnedSecurableItem
+    class ZurmoErrorHandler extends CErrorHandler
     {
-        /**
-         * @see OwnedSecurableItem::getModifiedSignalAttribute()
-         * @return string
-         */
-        protected static function getModifiedSignalAttribute()
+        protected function render($view, $data)
         {
-            return 'member';
-        }
-
-        public static function getDefaultMetadata()
-        {
-            $metadata = parent::getDefaultMetadata();
-            $metadata[__CLASS__] = array(
-                'members' => array(
-                    'member',
-                ),
-                'rules' => array(
-                    array('member', 'required'),
-                    array('member', 'type', 'type' => 'string'),
-                    array('member', 'length', 'max' => 255),
-                ),
-            );
-            return $metadata;
-        }
-
-        public static function getModuleClassName()
-        {
-            return 'ZurmoModule';
-        }
-
-        public static function hasReadPermissionsOptimization()
-        {
-            return true;
+            if(Yii::app()->areAllClassesImported())
+            {
+                parent::render($view,$data);
+            }
+            else
+            {
+                $data['version']= $this->getVersionInfo();
+                $data['time']   = time();
+                $data['admin']  = $this->adminInfo;
+                include($this->getViewFile($view,$data['code']));
+            }
         }
     }
-?>

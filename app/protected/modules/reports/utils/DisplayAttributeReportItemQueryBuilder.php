@@ -35,12 +35,12 @@
      ********************************************************************************/
 
     /**
-     * Populate the RedBeanModelSelectQueryAdapter with the necessary columns or calculations to select
+     * Populate the RedBeanModelSelectQueryAdapter with the necessary columns or calculations to select 
      */
     class DisplayAttributeReportItemQueryBuilder extends ReportItemQueryBuilder
     {
         /**
-         * @var RedBeanModelSelectQueryAdapter
+         * @var RedBeanModelSelectQueryAdapter 
          */
         protected $selectQueryAdapter;
 

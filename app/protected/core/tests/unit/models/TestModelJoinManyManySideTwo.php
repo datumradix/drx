@@ -34,15 +34,11 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class OwnedSecurableTestItem2 extends OwnedSecurableItem
+    class TestModelJoinManyManySideTwo extends RedBeanModel
     {
-        /**
-         * @see OwnedSecurableItem::getModifiedSignalAttribute()
-         * @return string
-         */
-        protected static function getModifiedSignalAttribute()
+        public static function canSaveMetadata()
         {
-            return 'member';
+            return true;
         }
 
         public static function getDefaultMetadata()
@@ -50,25 +46,28 @@
             $metadata = parent::getDefaultMetadata();
             $metadata[__CLASS__] = array(
                 'members' => array(
-                    'member',
+                    'name',
+                    'manyManyTwoField'
+                ),
+                'relations' => array(
+                    'testModelJoinManyManySides'      => array(static::MANY_MANY,   'TestModelJoinManyManySide' ),
                 ),
                 'rules' => array(
-                    array('member', 'required'),
-                    array('member', 'type', 'type' => 'string'),
-                    array('member', 'length', 'max' => 255),
+                    array('name',             'type',     'type' => 'string'),
+                    array('manyManyTwoField', 'type',     'type' => 'string'),
                 ),
             );
             return $metadata;
         }
 
-        public static function getModuleClassName()
-        {
-            return 'ZurmoModule';
-        }
-
-        public static function hasReadPermissionsOptimization()
+        public static function isTypeDeletable()
         {
             return true;
+        }
+
+        public static function getModuleClassName()
+        {
+            return 'TestModule';
         }
     }
 ?>

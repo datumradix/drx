@@ -65,6 +65,14 @@
          */
         protected $resolveAlwaysAsAbsoluteUrl = false;
 
+
+        /**
+         * Set this after the handleImports event is processed. This will signal that all classes are imported
+         * and we can use the errorAction specified in ZurmoEventHandler. Otherwise use default errorAction
+         * @var bool
+         */
+        protected $allClassesImported = false;
+
         /**
          * Override to handle when debug is turned on and the checksum fails on cached models.
          */
@@ -327,6 +335,16 @@
         public function setResolveAlwaysAsAbsoluteUrl()
         {
             $this->resolveAlwaysAsAbsoluteUrl = true;
+        }
+
+        public function setAllClassesAreImported()
+        {
+            $this->allClassesImported = true;
+        }
+
+        public function areAllClassesImported()
+        {
+            return $this->allClassesImported;
         }
     }
 ?>
