@@ -252,7 +252,7 @@
                 $this->assertEquals(0, $imapStats->Nmsgs);
 
                 $emailMessage = EmailMessageTestHelper::createOutboxEmail($super, 'Test email',
-                    'Raw content', ',b>html content</b>end.', // Not Coding Standard
+                    'Raw content', ',<b>html content</b>end.', // Not Coding Standard
                     'Zurmo', Yii::app()->emailHelper->outboundUsername,
                     'Ivica', Yii::app()->params['emailTestAccounts']['userImapSettings']['imapUsername']);
 
@@ -274,7 +274,6 @@
 
                 $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
                 $this->assertEquals(6, Yii::app()->emailHelper->getSentCount());
-                Yii::app()->emailHelper->sendQueued();
                 $job = new ProcessOutboundEmailJob();
                 $this->assertTrue($job->run());
                 $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
@@ -364,8 +363,6 @@
 
             $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
-            Yii::app()->emailHelper->sendQueued();
-
             $job = new ProcessOutboundEmailJob();
             $this->assertTrue($job->run());
             //Since user email account has invalid settings message is not sent
