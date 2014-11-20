@@ -95,26 +95,57 @@
             $emailMessage->sender      = $sender;
 
             //Recipient is billy.
-            $recipient                 = new EmailMessageRecipient();
-            $recipient->toAddress      = $toAddress;
-            $recipient->toName         = $toName;
-            $recipient->type           = EmailMessageRecipient::TYPE_TO;
-            $emailMessage->recipients->add($recipient);
-            if($ccAddress != null)
+            if($toAddress != null)
             {
                 $recipient                 = new EmailMessageRecipient();
-                $recipient->toAddress      = $ccAddress;
-                $recipient->toName         = null;
-                $recipient->type           = EmailMessageRecipient::TYPE_CC;
+                $recipient->toAddress      = $toAddress;
+                $recipient->toName         = $toName;
+                $recipient->type           = EmailMessageRecipient::TYPE_TO;
                 $emailMessage->recipients->add($recipient);
+            }
+            if($ccAddress != null)
+            {
+                if(is_string($ccAddress))
+                {
+                    $recipient                 = new EmailMessageRecipient();
+                    $recipient->toAddress      = $ccAddress;
+                    $recipient->toName         = null;
+                    $recipient->type           = EmailMessageRecipient::TYPE_CC;
+                    $emailMessage->recipients->add($recipient);
+                }
+                if(is_array($ccAddress))
+                {
+                    foreach($ccAddress as $val)
+                    {
+                        $recipient                 = new EmailMessageRecipient();
+                        $recipient->toAddress      = $val;
+                        $recipient->toName         = null;
+                        $recipient->type           = EmailMessageRecipient::TYPE_CC;
+                        $emailMessage->recipients->add($recipient);
+                    }
+                }
             }
             if($bccAddress != null)
             {
-                $recipient                 = new EmailMessageRecipient();
-                $recipient->toAddress      = $bccAddress;
-                $recipient->toName         = null;
-                $recipient->type           = EmailMessageRecipient::TYPE_BCC;
-                $emailMessage->recipients->add($recipient);
+                if(is_string($bccAddress))
+                {
+                    $recipient                 = new EmailMessageRecipient();
+                    $recipient->toAddress      = $bccAddress;
+                    $recipient->toName         = null;
+                    $recipient->type           = EmailMessageRecipient::TYPE_BCC;
+                    $emailMessage->recipients->add($recipient);
+                }
+                if(is_array($bccAddress))
+                {
+                    foreach($bccAddress as $val)
+                    {
+                        $recipient                 = new EmailMessageRecipient();
+                        $recipient->toAddress      = $val;
+                        $recipient->toName         = null;
+                        $recipient->type           = EmailMessageRecipient::TYPE_BCC;
+                        $emailMessage->recipients->add($recipient);
+                    }
+                }
             }
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX);
@@ -123,6 +154,8 @@
             $saved = $emailMessage->save();
             if (!$saved)
             {
+                print_r($emailMessage->getErrors());
+                exit;
                 throw new NotSupportedException();
             }
             return $emailMessage;

@@ -109,7 +109,7 @@
             }
             $emailMessage = EmailMessageTestHelper::createOutboxEmail(Yii::app()->user->userModel,
                                                       $subject, $htmlContent, $textContent, null, $from, $toName, $toAddress,
-                                                      null, null);
+                                                      $cc, $bcc);
             $mailer = new ZurmoSwiftMailer($emailMessage, null);
             if (!empty($parts))
             {
