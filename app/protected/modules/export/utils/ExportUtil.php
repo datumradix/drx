@@ -66,28 +66,5 @@
         {
             return Zurmo::t('ExportModule', 'Export Completed');
         }
-
-        /**
-         * Given a NotificationMessage and a NotificationRule email the owner of exportitem of success.
-         * @param NotificationMessage $message
-         * @param ExportItem $exportItem
-         * @param NotificationRules $rules
-         * @throws NotSupportedException
-         */
-        public static function emailNotificationMessageForCompletedExport(ExportItem $exportItem, NotificationMessage $message, NotificationRules $rules)
-        {
-            $peopleToSendNotification = $rules->getUsers();
-            foreach ($peopleToSendNotification as $person)
-            {
-                if ($person->primaryEmail->emailAddress != null &&
-                    !UserConfigurationFormAdapter::resolveAndGetValue($person, 'turnOffEmailNotifications'))
-                {
-                    EmailNotificationUtil::resolveAndSendEmail($exportItem->owner,
-                        array($person),
-                        static::getEmailSubject($exportItem),
-                        $message);
-                }
-            }
-        }
     }
 ?>
