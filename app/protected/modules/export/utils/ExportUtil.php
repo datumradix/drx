@@ -57,14 +57,5 @@
             $dataProvider->getPagination()->setPageSize($totalItems);
             return serialize($dataProvider);
         }
-
-        /**
-         * @param ExportItem $exportItem
-         * @return string
-         */
-        public static function getEmailSubject(ExportItem $exportItem)
-        {
-            return Zurmo::t('ExportModule', 'Export Completed');
-        }
     }
 ?>
