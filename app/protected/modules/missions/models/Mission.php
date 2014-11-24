@@ -80,6 +80,15 @@
             }
         }
 
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'description';
+        }
+
         public function onCreated()
         {
             parent::onCreated();

@@ -88,6 +88,15 @@
             }
         }
 
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'subject';
+        }
+
         public function resolveIsClosedForNull()
         {
             if ($this->isClosed == true)
