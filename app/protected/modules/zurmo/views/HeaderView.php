@@ -88,12 +88,12 @@
 
             $logoAndSearchContent = $this->renderLogoAndSearchContent();
             $userActionsContent   = $this->renderUserActionsContent();
-	        $sandboxContent       = '';
-	        if (Yii::app()->isApplicationInSandboxMode())
-	        {
-		        $sandboxContent = ZurmoHtml::tag('div', array('class' => 'sandbox-notification'),
-			        Zurmo::t('ZurmoModule', 'Application is in sandbox mode.'));
-	        }
+            $sandboxContent       = '';
+            if (Yii::app()->isApplicationInSandboxMode())
+            {
+                $sandboxContent = ZurmoHtml::tag('div', array('class' => 'sandbox-notification'),
+                    Zurmo::t('ZurmoModule', 'Application is in sandbox mode.'));
+            }
             $content  = ZurmoHtml::tag('div', array('class' => 'logo-and-search'), $logoAndSearchContent);
             $content .= ZurmoHtml::tag('div', array('class' => 'user-actions clearfix'), $userActionsContent);
             return ZurmoHtml::tag('div', array('class' => 'container clearfix'), $content . $sandboxContent);
