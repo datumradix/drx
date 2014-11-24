@@ -198,7 +198,8 @@
 
         protected static function sendEmail(Notification $notification)
         {
-            if ($notification->owner->primaryEmail->emailAddress !== null)
+            if ($notification->owner->primaryEmail->emailAddress != null &&
+                !UserConfigurationFormAdapter::resolveAndGetValue($notification->owner, 'turnOffEmailNotifications'))
             {
                 $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
                 $emailMessage               = new EmailMessage();
@@ -260,7 +261,7 @@
                     $notification->type                = $type;
                     $notification->notificationMessage = $message;
                     $notificationSettingName = static::resolveNotificationSettingNameFromType($type);
-                    if (static::resolveToSaveNotification() && 
+                    if (static::resolveToSaveNotification() &&
                         UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($user, $notificationSettingName, 'inbox'))
                     {
                         $saved = $notification->save();
@@ -283,7 +284,7 @@
         {
             return true;
         }
-        
+
         /**
          * Resolve notification setting name from its type
          * @param string $type
