@@ -212,7 +212,15 @@
                 foreach ($emailTemplate->files as $file)
                 {
                     $emailMessageFile   = FileModelUtil::makeByFileModel($file);
-                    $emailMessage->files->add($emailMessageFile);
+                    if ($emailMessageFile instanceof FileModel)
+                    {
+                        $emailMessage->files->add($emailMessageFile);
+                    }
+                    else
+                    {
+                        $logContent = "\n EmailTemplate model with id: " . $emailTemplate->id . " is missing attachment.\n";
+                        Yii::log($logContent, CLogger::LEVEL_WARNING);
+                    }
                 }
             }
         }
