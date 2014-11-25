@@ -248,5 +248,14 @@
                 // End Not Coding Standard
             }
         }
+
+        protected function resolveAndWrapDockableViewToolbarContent($content)
+        {
+            assert('is_string($content)');
+            $content = ZurmoHtml::tag('div', array('class' => 'form-toolbar'), $content);
+            $content = ZurmoHtml::tag('div', array('class' => 'view-toolbar-container clearfix'), $content);
+            return $content;
+        }
+
     }
 ?>
