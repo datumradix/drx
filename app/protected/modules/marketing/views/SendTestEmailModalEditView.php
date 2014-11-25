@@ -47,6 +47,8 @@
          */
         protected $wrapContentInWrapperDiv = false;
 
+	    protected $disableFloatOnToolbar  = true;
+
         public function __construct($controllerId, $moduleId, $model, $title = null)
         {
             assert('$title == null || is_string($title)');
@@ -247,14 +249,6 @@
                     ");
                 // End Not Coding Standard
             }
-        }
-
-        protected function resolveAndWrapDockableViewToolbarContent($content)
-        {
-            assert('is_string($content)');
-            $content = ZurmoHtml::tag('div', array('class' => 'form-toolbar'), $content);
-            $content = ZurmoHtml::tag('div', array('class' => 'view-toolbar-container clearfix'), $content);
-            return $content;
         }
 
     }
