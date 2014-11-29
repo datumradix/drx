@@ -156,16 +156,16 @@
             $modelManyManySideTwoItem1->testModelJoinManyManySides->add($modelManyManyItem2);
 
             $saved = $modelHasManyOfListItem->save();
-            assert('$saved');
+            assert('$saved'); // Not Coding Standard
 
             $saved = $modelHasOneOfListItem->save();
-            assert('$saved');
+            assert('$saved'); // Not Coding Standard
 
             $saved = $modelManyManyItem1->save();
-            assert('$saved');
+            assert('$saved'); // Not Coding Standard
 
             $saved = $modelManyManySideTwoItem1->save();
-            assert('$saved');
+            assert('$saved'); // Not Coding Standard
         }
     }
 ?>
