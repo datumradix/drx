@@ -44,12 +44,12 @@
 
         protected $allowDuplicates = false;
 
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('MarketingListsModule', "Invalid Workflow Rule");
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'MalformedWorkflowMissingMarketingList';
         }

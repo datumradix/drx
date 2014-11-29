@@ -43,12 +43,12 @@
 
         protected $allowDuplicates = false;
 
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('GamificationModule', "The game engine needs to be repaired");
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'RepairGamification';
         }

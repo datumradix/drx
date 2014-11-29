@@ -93,87 +93,28 @@
             assert('isset($to) || isset($cc) || isset($bcc)');
             assert('is_array($attachments) || !isset($attachments)');
             assert('is_array($parts) || !isset($parts)');
-            $mailer           = $this->getOutboundMailer();
-            if (!$settings)
+            $toName = null;
+            $toAddress = null;
+            if(is_string($to))
             {
-                $mailer->mailer   = $this->outboundType;
-                $mailer->host     = $this->outboundHost;
-                $mailer->port     = $this->outboundPort;
-                $mailer->username = $this->outboundUsername;
-                $mailer->password = $this->outboundPassword;
-                $mailer->security = $this->outboundSecurity;
+                $toAddress = $to;
             }
-            else
+            elseif(is_array($to))
             {
-                //$mailer->mailer   = $settings['outboundType'];
-                $mailer->host     = $settings['outboundHost'];
-                $mailer->port     = $settings['outboundPort'];
-                $mailer->username = $settings['outboundUsername'];
-                $mailer->password = $settings['outboundPassword'];
-                $mailer->security = $settings['outboundSecurity'];
-            }
-
-            $mailer->Subject  = $subject;
-            if (empty($parts))
-            {
-                if ($htmlContent == null && $textContent != null)
+                foreach($to as $key => $value)
                 {
-                    $mailer->body     = $textContent;
-                    $mailer->altBody  = $textContent;
-                }
-                elseif ($htmlContent != null && $textContent == null)
-                {
-                    $mailer->body     = $htmlContent;
-                }
-                elseif ($htmlContent != null && $textContent != null)
-                {
-                    $mailer->body     = $htmlContent;
-                    $mailer->altBody  = $textContent;
+                    $toName     = $key;
+                    $toAddress  = $value;
                 }
             }
-            else
+            $emailMessage = EmailMessageTestHelper::createOutboxEmail(Yii::app()->user->userModel,
+                                                      $subject, $htmlContent, $textContent, null, $from, $toName, $toAddress,
+                                                      $cc, $bcc);
+            $mailer = new ZurmoSwiftMailer($emailMessage, null);
+            if (!empty($parts))
             {
                 $mailer->parts = $parts;
             }
-
-            $mailer->From = $from;
-
-            if (is_array($to) && !empty($to))
-            {
-                foreach ($to as $recipientEmail)
-                {
-                    $mailer->addAddressByType($recipientEmail, '', EmailMessageRecipient::TYPE_TO);
-                }
-            }
-            elseif (is_string($to))
-            {
-                $mailer->addAddressByType($to, '', EmailMessageRecipient::TYPE_TO);
-            }
-
-            if (is_array($cc) && !empty($cc))
-            {
-                foreach ($cc as $recipientEmail)
-                {
-                    $mailer->addAddressByType($recipientEmail, '', EmailMessageRecipient::TYPE_CC);
-                }
-            }
-            elseif (is_string($cc))
-            {
-                $mailer->addAddressByType($cc, '', EmailMessageRecipient::TYPE_CC);
-            }
-
-            if (is_array($bcc) && !empty($bcc))
-            {
-                foreach ($bcc as $recipientEmail)
-                {
-                    $mailer->addAddressByType($recipientEmail, '', EmailMessageRecipient::TYPE_BCC);
-                }
-            }
-            elseif (is_string($bcc))
-            {
-                $mailer->addAddressByType($bcc, '', EmailMessageRecipient::TYPE_BCC);
-            }
-
             if (isset($attachments) && !empty($attachments))
             {
                 foreach ($attachments as $file)

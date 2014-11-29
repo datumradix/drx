@@ -123,27 +123,40 @@
         /**
          * @depends testCreateAndGetEmailMessageActivityById
          */
-        public function testDeleteEmailMessageActivity()
-        {
-            $emailMessageActivities = EmailMessageActivity::getAll();
-            $this->assertCount(3, $emailMessageActivities);
-            $emailMessageActivities[0]->delete();
-            $emailMessageActivities = EmailMessageActivity::getAll();
-            $this->assertEquals(2, count($emailMessageActivities));
-        }
-
-        /**
-         * @depends testCreateAndGetEmailMessageActivityById
-         */
         public function testEmailMessageActivityStringValue()
         {
             $emailMessageActivities = EmailMessageActivity::getAll();
-            $this->assertCount(2, $emailMessageActivities);
+            $this->assertCount(3, $emailMessageActivities);
             $types  = EmailMessageActivity::getTypesArray();
             $type   = $types[$emailMessageActivities[0]->type];
             $expectedStringValue = $emailMessageActivities[0]->latestDateTime . ': ' .
                                     strval($emailMessageActivities[0]->person) . '/' . $type;
             $this->assertEquals($expectedStringValue, strval($emailMessageActivities[0]));
+        }
+
+        /**
+         * @depends testCreateAndGetEmailMessageActivityById
+         */
+        public function testDeleteEmailMessageActivity()
+        {
+            $emailMessageActivities = EmailMessageActivity::getAll();
+            $this->assertCount(3, $emailMessageActivities);
+            $this->assertEquals(1, EmailMessageUrl::getCount());
+            $emailMessageActivities[0]->delete();
+
+            $emailMessageActivities = EmailMessageActivity::getAll();
+            $this->assertEquals(2, count($emailMessageActivities));
+            $this->assertEquals(1, EmailMessageUrl::getCount());
+            $emailMessageActivities[0]->delete();
+
+            $emailMessageActivities = EmailMessageActivity::getAll();
+            $this->assertEquals(1, count($emailMessageActivities));
+            $this->assertEquals(1, EmailMessageUrl::getCount());
+            $emailMessageActivities[0]->delete();
+
+            $emailMessageActivities = EmailMessageActivity::getAll();
+            $this->assertEquals(0, count($emailMessageActivities));
+            $this->assertEquals(0, EmailMessageUrl::getCount());
         }
     }
 ?>

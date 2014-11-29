@@ -84,13 +84,24 @@
 
         protected function renderContent()
         {
+            if (!Yii::app()->userInterface->isMobile())
+            {
+                $this->renderSessionTimeout();
+            }
             $this->renderLoginRequiredAjaxResponse();
-
             $logoAndSearchContent = $this->renderLogoAndSearchContent();
             $userActionsContent   = $this->renderUserActionsContent();
             $content  = ZurmoHtml::tag('div', array('class' => 'logo-and-search'), $logoAndSearchContent);
             $content .= ZurmoHtml::tag('div', array('class' => 'user-actions clearfix'), $userActionsContent);
             return ZurmoHtml::tag('div', array('class' => 'container clearfix'), $content);
+        }
+
+        protected function renderSessionTimeout()
+        {
+            $cClipWidget = new CClipWidget();
+            $cClipWidget->beginClip("SessionTimeout");
+            $cClipWidget->widget('application.core.widgets.SessionTimeout');
+            $cClipWidget->endClip();
         }
 
         protected function renderLogoAndSearchContent()

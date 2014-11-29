@@ -259,7 +259,7 @@
             $this->assertEquals(1, count($messages));
             $this->assertEquals("Test Email", $messages[0]->subject);
             $this->assertEquals("Test email body", trim($messages[0]->textBody));
-            $this->assertEquals("<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
+            $this->assertEquals('<!-- zurmo css inline -->' . PHP_EOL . "<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
             $this->assertEquals($imap->imapUsername, $messages[0]->to[0]['email']);
             $this->assertEquals(Yii::app()->emailHelper->outboundUsername, $messages[0]->fromEmail);
         }
@@ -291,7 +291,7 @@
             $this->assertEquals(1, count($messages));
             $this->assertEquals("Test Email", $messages[0]->subject);
             $this->assertEquals("Test email body", trim($messages[0]->textBody));
-            $this->assertEquals("<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
+            $this->assertEquals('<!-- zurmo css inline -->' . PHP_EOL . "<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
             $this->assertEquals($imap->imapUsername, $messages[0]->to[0]['email']);
             $this->assertEquals(Yii::app()->params['emailTestAccounts']['userImapSettings']['imapUsername'], $messages[0]->cc[0]['email']);
             $this->assertEquals(Yii::app()->emailHelper->outboundUsername, $messages[0]->fromEmail);
@@ -336,7 +336,7 @@
             $this->assertEquals(1, count($messages));
             $this->assertEquals("Test Email", $messages[0]->subject);
             $this->assertEquals("Test email body", trim($messages[0]->textBody));
-            $this->assertEquals("<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
+            $this->assertEquals('<!-- zurmo css inline -->' . PHP_EOL . "<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
             $this->assertEquals($imap->imapUsername, $messages[0]->to[0]['email']);
             $this->assertEquals(Yii::app()->emailHelper->outboundUsername, $messages[0]->fromEmail);
             $this->assertNotEmpty($messages[0]->headers);
@@ -374,7 +374,7 @@
             $this->assertEquals(1, count($messages));
             $this->assertEquals("Test Email", $messages[0]->subject);
             $this->assertEquals("Test email body", trim($messages[0]->textBody));
-            $this->assertEquals("<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
+            $this->assertEquals('<!-- zurmo css inline -->' . PHP_EOL . "<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
             $this->assertEquals($imap->imapUsername, $messages[0]->cc[0]['email']);
             $this->assertEquals(Yii::app()->emailHelper->outboundUsername, $messages[0]->fromEmail);
         }

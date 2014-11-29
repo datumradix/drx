@@ -81,6 +81,15 @@
             Yii::app()->jobQueue->deleteAll();
         }
 
+        public function setUp()
+        {
+            parent::setUp();
+            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
+            {
+                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Email test settings are missing.'));
+            }
+        }
+
         public function testSend()
         {
             $super                      = User::getByUsername('super');
@@ -243,7 +252,7 @@
                 $this->assertEquals(0, $imapStats->Nmsgs);
 
                 $emailMessage = EmailMessageTestHelper::createOutboxEmail($super, 'Test email',
-                    'Raw content', ',b>html content</b>end.', // Not Coding Standard
+                    'Raw content', ',<b>html content</b>end.', // Not Coding Standard
                     'Zurmo', Yii::app()->emailHelper->outboundUsername,
                     'Ivica', Yii::app()->params['emailTestAccounts']['userImapSettings']['imapUsername']);
 
@@ -265,7 +274,6 @@
 
                 $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
                 $this->assertEquals(6, Yii::app()->emailHelper->getSentCount());
-                Yii::app()->emailHelper->sendQueued();
                 $job = new ProcessOutboundEmailJob();
                 $this->assertTrue($job->run());
                 $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
@@ -355,8 +363,6 @@
 
             $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
-            Yii::app()->emailHelper->sendQueued();
-
             $job = new ProcessOutboundEmailJob();
             $this->assertTrue($job->run());
             //Since user email account has invalid settings message is not sent
@@ -369,7 +375,7 @@
         {
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $content = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
+            $content = EmailHelper::resolveAndGetDefaultFromAddress();
             $this->assertEquals('notification@zurmoalerts.com', $content);
         }
 
@@ -377,9 +383,9 @@
         {
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $content = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
+            $content = EmailHelper::resolveAndGetDefaultFromAddress();
             $this->assertEquals('notification@zurmoalerts.com', $content);
-            Yii::app()->emailHelper->setDefaultFromAddress($content);
+            EmailHelper::setDefaultFromAddress($content);
             $metadata = ZurmoModule::getMetadata();
             $this->assertEquals('notification@zurmoalerts.com', $metadata['global']['defaultFromAddress']);
         }
@@ -388,7 +394,7 @@
         {
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $content = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
+            $content = EmailHelper::resolveAndGetDefaultTestToAddress();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $content);
         }
 
@@ -396,9 +402,9 @@
         {
             $super                      = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $content = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
+            $content = EmailHelper::resolveAndGetDefaultTestToAddress();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $content);
-            Yii::app()->emailHelper->setDefaultTestToAddress($content);
+            EmailHelper::setDefaultTestToAddress($content);
             $metadata = ZurmoModule::getMetadata();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $metadata['global']['defaultTestToAddress']);
         }
