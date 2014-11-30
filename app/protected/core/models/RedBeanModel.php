@@ -1936,10 +1936,9 @@
                             if (!in_array($relationType, array(self::HAS_ONE_BELONGS_TO,
                                                                self::HAS_MANY_BELONGS_TO)))
                             {
-                                if ($this->isRelatedModelReallyModified($relatedModel, $relationAndOwns[$relationName][0], $relationAndOwns[$relationName][2])
-                                    || $this->isAttributeRequired($relationName))
+                                if ($this->isRelatedModelReallyModified($relatedModel, $relationAndOwns[$relationName][0],
+                                        $relationAndOwns[$relationName][2]) || $this->isAttributeRequired($relationName))
                                 {
-
                                     //If the attribute is required, but already exists and has not been modified we do
                                     //not have to worry about saving it.
                                     if ($this->isSavableFromRelation &&
@@ -2042,7 +2041,7 @@
         {
             assert('is_int($relationType)');
             assert('is_bool($isOwned)');
-            if($relatedModel instanceof RedBeanModel)
+            if ($relatedModel instanceof RedBeanModel)
             {
                 return $relatedModel->isReallyModified($relationType, $isOwned);
             }
