@@ -101,10 +101,10 @@
         {
             assert('is_int($relationType)');
             assert('is_bool($isOwned)');
-            if($relationType == self::HAS_ONE || $relationType == self::HAS_MANY_BELONGS_TO)
+            if ($relationType == self::HAS_ONE || $relationType == self::HAS_MANY_BELONGS_TO)
             {
                 $modifiedSignalAttribute = static::getModifiedSignalAttribute();
-                if($modifiedSignalAttribute != null &&
+                if ($modifiedSignalAttribute != null &&
                    !$isOwned && $this->id < 0 && $this->isModified() && $this->$modifiedSignalAttribute == null)
                 {
                     return false;
