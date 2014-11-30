@@ -2,15 +2,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://localhost/" />
-<title>CreateEditDeleteNotesForContacts</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="selenium.base" href="http://localhost/"/>
+    <title>CreateEditDeleteNotesForContacts</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Create Edit Delete Notes For Contacts</td></tr>
-</thead><tbody>
+<tr>
+    <td rowspan="1" colspan="3">Create Edit Delete Notes For Contacts</td>
+</tr>
+</thead>
+<tbody>
 <tr>
     <td>setTimeout</td>
     <td>45000</td>
@@ -113,9 +116,9 @@
     <td>30000</td>
 </tr>
 <tr>
-<td>waitForText</td>
-<td>//div[@id='list-viewContactLatestActivitiesForPortletView']/table/tbody/tr/td/div/span/a</td>
-<td>This is an Inline Note ${randomSuffix} for contact without more options</td>
+    <td>waitForText</td>
+    <td>//div[@id='list-viewContactLatestActivitiesForPortletView']/table/tbody/tr/td/div/span/a</td>
+    <td>This is an Inline Note ${randomSuffix} for contact without more options</td>
 </tr>
 <tr>
     <td>assertText</td>
@@ -649,7 +652,7 @@
     <td>waitForText</td>
     <td>//div[@id='list-viewmodal']/div[2]/table/tbody/tr/td[1]/a</td>
     <td>Test Opportunity ${randomSuffix}</td>
- </tr>
+</tr>
 <tr>
     <td>verifyTextPresent</td>
     <td>Test Opportunity ${randomSuffix}</td>
@@ -941,6 +944,7 @@
     <td></td>
 </tr>
 <!--- Create, Edit and Delete an Inline Note With feeding information for more options ends here -->
-</tbody></table>
+</tbody>
+</table>
 </body>
 </html>

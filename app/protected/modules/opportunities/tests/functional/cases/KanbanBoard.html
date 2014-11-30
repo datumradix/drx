@@ -2,15 +2,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://localhost/" />
-<title>KanbanBoard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="selenium.base" href="http://localhost/"/>
+    <title>KanbanBoard</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Kanban Board</td></tr>
-</thead><tbody>
+<tr>
+    <td rowspan="1" colspan="3">Kanban Board</td>
+</tr>
+</thead>
+<tbody>
 <tr>
     <td>setTimeout</td>
     <td>45000</td>
@@ -18,39 +21,39 @@
 </tr>
 <!--Go to opportunities list-->
 <tr>
-	<td>open</td>
-	<td>index.php/opportunities/default</td>
-	<td></td>
+    <td>open</td>
+    <td>index.php/opportunities/default</td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Create</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>Create</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Update</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>Update</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Export</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>Export</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Delete</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>Delete</td>
+    <td></td>
 </tr>
 <!--Go to opportunities kanban board view-->
 <tr>
@@ -74,24 +77,24 @@
     <td>30000</td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Create</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>Create</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextNotPresent</td>
-	<td>Update</td>
-	<td></td>
+    <td>assertTextNotPresent</td>
+    <td>Update</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextNotPresent</td>
-	<td>Export</td>
-	<td></td>
+    <td>assertTextNotPresent</td>
+    <td>Export</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertElementNotPresent</td>
-	<td>link=delete</td>
-	<td></td>
+    <td>assertElementNotPresent</td>
+    <td>link=delete</td>
+    <td></td>
 </tr>
 <!--change visible column and theme-->
 <tr>
@@ -213,25 +216,26 @@
     <td>30000</td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Create</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>Create</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Update</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>Update</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Export</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>Export</td>
+    <td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Delete</td>
-	<td></td>
+    <td>assertTextPresent</td>
+    <td>Delete</td>
+    <td></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </body>
 </html>
