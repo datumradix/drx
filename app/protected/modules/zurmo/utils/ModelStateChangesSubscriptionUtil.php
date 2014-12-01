@@ -116,6 +116,22 @@
         }
 
         /**
+         * Get total number of deleted models
+         * @param $serviceName
+         * @param $modelClassName
+         * @param $timestamp
+         * @param null $stateMetadataAdapterClassName
+         * @return int
+         */
+        public static function getDeletedModelsCount($serviceName, $modelClassName, $timestamp,
+                                                     $stateMetadataAdapterClassName = null)
+        {
+            $items = self::getDeletedModelIds($serviceName, $modelClassName, null, 0, $timestamp,
+                $stateMetadataAdapterClassName = null);
+            return count($items);
+        }
+
+        /**
          * Get array of modified models
          * @param $modelClassName
          * @param $pageSize

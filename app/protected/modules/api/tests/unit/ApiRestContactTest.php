@@ -39,6 +39,13 @@
     */
     class ApiRestContactTest extends ApiRestTest
     {
+        public static function setUpBeforeClass()
+        {
+            parent::setUpBeforeClass();
+            ContactsModule::loadStartingData();
+            ReadPermissionsSubscriptionUtil::buildTables();
+        }
+
         public function testGetContact()
         {
             $super = User::getByUsername('super');
@@ -50,7 +57,6 @@
                 'ZURMO_TOKEN: ' . $authenticationData['token'],
                 'ZURMO_API_REQUEST_TYPE: REST',
             );
-            $this->assertTrue(ContactsModule::loadStartingData());
             $contact = ContactTestHelper::createContactByNameForOwner('First', $super);
             $compareData  = $this->getModelToApiDataUtilData($contact);
 
@@ -1348,6 +1354,69 @@
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertEquals(0, count($response['errors']));
+        }
+
+        public function testGetDeletedContacts()
+        {
+            $timestamp = time();
+            sleep(1);
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Contact');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            $contact1 = ContactTestHelper::createContactByNameForOwner('Michael', $super);
+            $contact2 = ContactTestHelper::createContactByNameForOwner('Michael2', $super);
+            $contact3 = ContactTestHelper::createContactByNameForOwner('Michael3', $super);
+            $this->assertTrue($job->run());
+            sleep(1);
+            $contactId1 = $contact1->id;
+            $contactId2 = $contact2->id;
+            $contactId3 = $contact3->id;
+            $contact1->delete();
+            $contact2->delete();
+            $contact3->delete();
+
+            $this->assertTrue($job->run());
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+            $this->assertContains($contactId1, $response['data']['items']);
+            $this->assertContains($contactId2, $response['data']['items']);
+
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => 0,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 2
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(2, $response['data']['currentPage']);
+            $this->assertContains($contactId3, $response['data']['items']);
         }
 
         protected function getApiControllerClassName()
