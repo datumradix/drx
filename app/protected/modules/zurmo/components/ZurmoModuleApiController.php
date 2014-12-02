@@ -952,10 +952,13 @@
             $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
             if (!isset($params['userId']) || (int)$params['userId'] < 0)
             {
-                $message = Zurmo::t('ZurmoModule', 'userId is not specified.');
-                throw new ApiException($message);
+                $userId = Yii::app()->user->userModel->id;
             }
-            $userId = (int)$params['userId'];
+            else
+            {
+                $userId = (int)$params['userId'];
+            }
+
             try
             {
                 $user = User::getById($userId);

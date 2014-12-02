@@ -954,6 +954,69 @@
             $this->assertEquals(1, count($response['errors']));
         }
 
+        public function testGetDeletedTasks()
+        {
+            $timestamp = time();
+            sleep(1);
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Task');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            $task1 = TaskTestHelper::createTaskByNameForOwner('Task1', $super);
+            $task2 = TaskTestHelper::createTaskByNameForOwner('Task2', $super);
+            $task3 = TaskTestHelper::createTaskByNameForOwner('Task3', $super);
+            $this->assertTrue($job->run());
+            sleep(1);
+            $taskId1 = $task1->id;
+            $taskId2 = $task2->id;
+            $taskId3 = $task3->id;
+            $task1->delete();
+            $task2->delete();
+            $task3->delete();
+
+            $this->assertTrue($job->run());
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+            $this->assertContains($taskId1, $response['data']['items']);
+            $this->assertContains($taskId2, $response['data']['items']);
+
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => 0,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 2
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(2, $response['data']['currentPage']);
+            $this->assertContains($taskId3, $response['data']['items']);
+        }
+
         protected function getApiControllerClassName()
         {
             Yii::import('application.modules.tasks.controllers.TaskApiController', true);

@@ -1013,6 +1013,68 @@
             $this->assertEquals(1, count($response['errors']));
         }
 
+        public function testGetDeletedMeetings()
+        {
+            $timestamp = time();
+            sleep(1);
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Meeting');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            $meeting1 = MeetingTestHelper::createMeetingByNameForOwner('Meeting1', $super);
+            $meeting2 = MeetingTestHelper::createMeetingByNameForOwner('Meeting2', $super);
+            $meeting3 = MeetingTestHelper::createMeetingByNameForOwner('Meeting3', $super);
+            $this->assertTrue($job->run());
+            sleep(1);
+            $meetingId1 = $meeting1->id;
+            $meetingId2 = $meeting2->id;
+            $meetingId3 = $meeting3->id;
+            $meeting1->delete();
+            $meeting2->delete();
+            $meeting3->delete();
+
+            $this->assertTrue($job->run());
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+            $this->assertContains($meetingId1, $response['data']['items']);
+            $this->assertContains($meetingId2, $response['data']['items']);
+
+            $data = array(
+                'sinceTimestamp' => 0,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 2
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(2, $response['data']['currentPage']);
+            $this->assertContains($meetingId3, $response['data']['items']);
+        }
+
         protected function getApiControllerClassName()
         {
             Yii::import('application.modules.meetings.controllers.MeetingApiController', true);

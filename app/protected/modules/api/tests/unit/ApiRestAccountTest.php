@@ -1345,6 +1345,69 @@
             $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
         }
 
+        public function testGetDeletedAccounts()
+        {
+            $timestamp = time();
+            sleep(1);
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Account');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            $account1 = AccountTestHelper::createAccountByNameForOwner('Account1', $super);
+            $account2 = AccountTestHelper::createAccountByNameForOwner('Account2', $super);
+            $account3 = AccountTestHelper::createAccountByNameForOwner('Account3', $super);
+            $this->assertTrue($job->run());
+            sleep(1);
+            $accountId1 = $account1->id;
+            $accountId2 = $account2->id;
+            $accountId3 = $account3->id;
+            $account1->delete();
+            $account2->delete();
+            $account3->delete();
+
+            $this->assertTrue($job->run());
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+            $this->assertContains($accountId1, $response['data']['items']);
+            $this->assertContains($accountId2, $response['data']['items']);
+
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => 0,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 2
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(2, $response['data']['currentPage']);
+            $this->assertContains($accountId3, $response['data']['items']);
+        }
+
         protected function getApiControllerClassName()
         {
             Yii::import('application.modules.accounts.controllers.AccountApiController', true);
