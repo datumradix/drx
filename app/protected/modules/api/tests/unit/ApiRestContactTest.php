@@ -48,6 +48,7 @@
 
         public function testGetContact()
         {
+            exit;
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
             $authenticationData = $this->login();
@@ -1354,6 +1355,52 @@
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertEquals(0, count($response['errors']));
+        }
+
+        public function testGetCreatedContacts()
+        {
+            $timestamp = time();
+            sleep(1);
+            $steven = UserTestHelper::createBasicUser('Steven');
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Contact');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            ReadPermissionsOptimizationUtil::rebuild();
+
+            $contact1 = ContactTestHelper::createContactByNameForOwner('Mike', $super);
+            sleep(1);
+            $contact2 = ContactTestHelper::createContactByNameForOwner('Jake', $super);
+            sleep(1);
+            $contact3 = ContactTestHelper::createContactByNameForOwner('Joe',  $super);
+            sleep(1);
+            $contact1->primaryEmail->emailAddress = 'mike@example.com';
+            $contact1->companyName = "IBM";
+            $this->assertTrue($contact1->save());
+            $contact2->primaryEmail->emailAddress = 'jake@example.com';
+            $this->assertTrue($contact2->save());
+            $contact3->primaryEmail->emailAddress = 'joe@example.com';
+            $this->assertTrue($contact3->save());
+            $this->assertTrue($job->run());
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getCreatedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
         }
 
         public function testGetDeletedContacts()
