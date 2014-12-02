@@ -40,7 +40,7 @@
     class ModelStateChangesSubscriptionUtil
     {
         /**
-         * Get array of new or modified models
+         * Get array of new models
          * @param $serviceName
          * @param $modelClassName
          * @param $pageSize
@@ -54,6 +54,43 @@
         public static function getCreatedModels($serviceName, $modelClassName, $pageSize, $offset, $timestamp,
                                                 $stateMetadataAdapterClassName = null, $owner = null,
                                                 $checkIfModelCreationApiSyncUtilIsNull = true)
+        {
+            $where = '';
+            $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
+            self::makeJoinAdapterAndWhereClauseForGetCreatedModels($serviceName, $modelClassName, $timestamp,
+                $stateMetadataAdapterClassName, $owner,
+                $checkIfModelCreationApiSyncUtilIsNull,
+                $joinTablesAdapter, $where);
+            return $modelClassName::getSubset($joinTablesAdapter, $offset, $pageSize, $where);
+        }
+
+        /**
+         * Get count of new models
+         * @param $serviceName
+         * @param $modelClassName
+         * @param $timestamp
+         * @param null $stateMetadataAdapterClassName
+         * @param null $owner
+         * @param bool $checkIfModelCreationApiSyncUtilIsNull
+         * @return bool
+         */
+        public static function getCreatedModelsCount($serviceName, $modelClassName, $timestamp,
+                                                $stateMetadataAdapterClassName = null, $owner = null,
+                                                $checkIfModelCreationApiSyncUtilIsNull = true)
+        {
+            $where = '';
+            $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
+            self::makeJoinAdapterAndWhereClauseForGetCreatedModels($serviceName, $modelClassName, $timestamp,
+                $stateMetadataAdapterClassName, $owner,
+                $checkIfModelCreationApiSyncUtilIsNull,
+                $joinTablesAdapter, $where);
+            return $modelClassName::getCount($joinTablesAdapter, $where, null, true);
+        }
+
+        protected static function makeJoinAdapterAndWhereClauseForGetCreatedModels($serviceName, $modelClassName, $timestamp,
+                                                                            $stateMetadataAdapterClassName = null, $owner = null,
+                                                                            $checkIfModelCreationApiSyncUtilIsNull = true,
+                                                                            & $joinTablesAdapter, & $where)
         {
             $metadata = array();
 
@@ -92,7 +129,6 @@
                 $metadata = $stateMetadataAdapter->getAdaptedDataProviderMetadata();
             }
             $where  = RedBeanModelDataProvider::makeWhere($modelClassName, $metadata, $joinTablesAdapter);
-            return $modelClassName::getSubset($joinTablesAdapter, $offset, $pageSize, $where);
         }
 
         /**
@@ -146,43 +182,88 @@
         {
             if ($timestamp != 0)
             {
-                $metadata = array();
-                $dateTime = DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp);
-                $metadata['clauses'] = array(
-                    1 => array(
-                        'attributeName'        => 'modifiedDateTime',
-                        'operatorType'         => 'greaterThan',
-                        'value'                => $dateTime
-                    )
-                );
-
-                if (isset($owner) && $owner instanceof User)
-                {
-                    $metadata['clauses'][2] = array(
-                        'attributeName'        => 'owner',
-                        'operatorType'         => 'equals',
-                        'value'                => $owner->id
-                    );
-                    $metadata['structure'] = "(1 AND 2) AND (item.modifiedDateTime > (3 + item.createdDateTime))";
-                }
-                else
-                {
-                    $metadata['structure'] = "1 AND (item.modifiedDateTime > (3 + item.createdDateTime))";
-                }
-
+                $where = '';
                 $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
-                if ($stateMetadataAdapterClassName != null)
-                {
-                    $stateMetadataAdapter = new $stateMetadataAdapterClassName($metadata);
-                    $metadata = $stateMetadataAdapter->getAdaptedDataProviderMetadata();
-                }
-                $where  = RedBeanModelDataProvider::makeWhere($modelClassName, $metadata, $joinTablesAdapter);
+                self::makeJoinAdapterAndWhereClauseForGetUpdatedModels($modelClassName, $timestamp,
+                                                                       $stateMetadataAdapterClassName, $owner,
+                                                                       $joinTablesAdapter, $where);
                 return $modelClassName::getSubset($joinTablesAdapter, $offset, $pageSize, $where, 'modifiedDateTime asc');
             }
             else
             {
                 return array();
             }
+        }
+
+        /**
+         * Get count of modified models
+         * @param $modelClassName
+         * @param $timestamp
+         * @param null $stateMetadataAdapterClassName
+         * @param null $owner
+         * @return mixed
+         */
+        public static function getUpdatedModelsCount($modelClassName, $timestamp,
+                                                $stateMetadataAdapterClassName = null, $owner = null)
+        {
+            if ($timestamp != 0)
+            {
+                $where = '';
+                $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
+                self::makeJoinAdapterAndWhereClauseForGetUpdatedModels($modelClassName, $timestamp,
+                    $stateMetadataAdapterClassName, $owner,
+                    $joinTablesAdapter, $where);
+                return $modelClassName::getCount($joinTablesAdapter, $where, null, true);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        /**
+         * @param $modelClassName
+         * @param $timestamp
+         * @param null $stateMetadataAdapterClassName
+         * @param null $owner
+         * @param $joinTablesAdapter
+         * @param $where
+         */
+        protected static function makeJoinAdapterAndWhereClauseForGetUpdatedModels($modelClassName, $timestamp,
+                                                                                   $stateMetadataAdapterClassName = null, $owner = null,
+                                                                                   & $joinTablesAdapter, & $where)
+        {
+            $metadata = array();
+            $dateTime = DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp);
+            $metadata['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'modifiedDateTime',
+                    'operatorType'         => 'greaterThan',
+                    'value'                => $dateTime
+                )
+            );
+
+            if (isset($owner) && $owner instanceof User)
+            {
+                $metadata['clauses'][2] = array(
+                    'attributeName'        => 'owner',
+                    'operatorType'         => 'equals',
+                    'value'                => $owner->id
+                );
+                $metadata['structure'] = "(1 AND 2) AND (item.modifiedDateTime > (3 + item.createdDateTime))";
+            }
+            else
+            {
+                $metadata['structure'] = "1 AND (item.modifiedDateTime > (3 + item.createdDateTime))";
+            }
+
+            $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
+            if ($stateMetadataAdapterClassName != null)
+            {
+                $stateMetadataAdapter = new $stateMetadataAdapterClassName($metadata);
+                $metadata = $stateMetadataAdapter->getAdaptedDataProviderMetadata();
+            }
+            $where  = RedBeanModelDataProvider::makeWhere($modelClassName, $metadata, $joinTablesAdapter);
         }
     }
 ?>

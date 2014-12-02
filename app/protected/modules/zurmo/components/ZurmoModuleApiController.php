@@ -1019,5 +1019,152 @@
             }
             return $result;
         }
+
+        protected function processGetCreatedItems($params)
+        {
+            $modelClassName = $this->getModelName();
+            $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
+            if (!isset($params['userId']) || (int)$params['userId'] < 0)
+            {
+                $userId = Yii::app()->user->userModel->id;
+            }
+            else
+            {
+                $userId = (int)$params['userId'];
+            }
+
+            try
+            {
+                $user = User::getById($userId);
+            }
+            catch (NotFoundException $e)
+            {
+                $message = Zurmo::t('ZurmoModule', 'Invalid userId.');
+                throw new ApiException($message);
+            }
+
+            if (!isset($params['sinceTimestamp']))
+            {
+                $sinceTimestamp = 0;
+            }
+            else
+            {
+                $sinceTimestamp = (int)$params['sinceTimestamp'];
+            }
+
+            $pageSize    = Yii::app()->pagination->getGlobalValueByType('apiListPageSize');
+            if (isset($params['pagination']['pageSize']))
+            {
+                $pageSize = (int)$params['pagination']['pageSize'];
+            }
+
+            // Get offset. Please note that API client provide page number, and we need to convert it into offset,
+            // which is parameter of RedBeanModel::getSubset function
+            if (isset($params['pagination']['page']) && (int)$params['pagination']['page'] > 0)
+            {
+                $currentPage = (int)$params['pagination']['page'];
+            }
+            else
+            {
+                $currentPage = 1;
+            }
+            $offset = $this->getOffsetFromCurrentPageAndPageSize($currentPage, $pageSize);
+
+            $models = ModelStateChangesSubscriptionUtil::getCreatedModels('API', $modelClassName, $pageSize, $offset, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
+            $totalItems = ModelStateChangesSubscriptionUtil::getCreatedModelsCount('API', $modelClassName, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
+            $data = array(
+                'totalCount' => $totalItems,
+                'pageSize' => $pageSize,
+                'currentPage' => $currentPage
+            );
+
+            if (is_array($models) && !empty($models))
+            {
+                foreach ($models as $model)
+                {
+                    $data['items'][] = static::getModelToApiDataUtilData($model);
+                }
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            else
+            {
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            return $result;
+        }
+
+        public function processGetModifiedItems($params)
+        {
+            $modelClassName = $this->getModelName();
+            $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
+            if (!isset($params['userId']) || (int)$params['userId'] < 0)
+            {
+                $userId = Yii::app()->user->userModel->id;
+            }
+            else
+            {
+                $userId = (int)$params['userId'];
+            }
+
+            try
+            {
+                $user = User::getById($userId);
+            }
+            catch (NotFoundException $e)
+            {
+                $message = Zurmo::t('ZurmoModule', 'Invalid userId.');
+                throw new ApiException($message);
+            }
+
+            if (!isset($params['sinceTimestamp']))
+            {
+                $sinceTimestamp = 0;
+            }
+            else
+            {
+                $sinceTimestamp = (int)$params['sinceTimestamp'];
+            }
+
+            $pageSize    = Yii::app()->pagination->getGlobalValueByType('apiListPageSize');
+            if (isset($params['pagination']['pageSize']))
+            {
+                $pageSize = (int)$params['pagination']['pageSize'];
+            }
+
+            // Get offset. Please note that API client provide page number, and we need to convert it into offset,
+            // which is parameter of RedBeanModel::getSubset function
+            if (isset($params['pagination']['page']) && (int)$params['pagination']['page'] > 0)
+            {
+                $currentPage = (int)$params['pagination']['page'];
+            }
+            else
+            {
+                $currentPage = 1;
+            }
+            $offset = $this->getOffsetFromCurrentPageAndPageSize($currentPage, $pageSize);
+
+            $models = ModelStateChangesSubscriptionUtil::getUpdatedModels($modelClassName, $pageSize, $offset, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
+            $totalItems = ModelStateChangesSubscriptionUtil::getUpdatedModelsCount('API', $modelClassName, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
+
+            $data = array(
+                'totalCount' => $totalItems,
+                'pageSize' => $pageSize,
+                'currentPage' => $currentPage
+            );
+
+            if (is_array($models) && !empty($models))
+            {
+                foreach ($models as $model)
+                {
+                    $data['items'][] = static::getModelToApiDataUtilData($model);
+                }
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            else
+            {
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            return $result;
+        }
     }
 ?>
