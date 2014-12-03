@@ -625,10 +625,14 @@
             $secondAccount = AccountTestHelper::createAccountByNameTypeAndIndustryForOwner('Second Account', 'Customer', 'Automotive', $super);
 
             MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('First Meeting', $super, $firstAccount);
-            MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('Second Meeting', $super, $firstAccount);
+            $secondMeeting = MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('Second Meeting', $super, $firstAccount);
             MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('Third Meeting', $super, $secondAccount);
             MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('Forth Meeting', $anotherUser, $secondAccount);
             MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('Fifth Meeting', $super, $firstAccount);
+
+            $billy = User::getByUsername('billy');
+            $secondMeeting->userAttendees->add($billy);
+            $this->assertTrue($secondMeeting->save());
 
             $searchParams = array(
                 'pagination' => array(
@@ -899,6 +903,51 @@
             $this->assertEquals(1, count($response['data']['items']));
             $this->assertEquals(3, $response['data']['totalCount']);
             $this->assertEquals(2, $response['data']['currentPage']);
+            $this->assertEquals('Second Meeting', $response['data']['items'][0]['name']);
+        }
+
+        public function testNewSearchForMeetingsWithUserAttendees()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel        = $super;
+            $billy = User::getByUsername('billy');
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $data = array(
+                'search' => array(
+                    'modelClassName' => 'Meeting',
+                    'searchAttributeData' => array(
+                        'clauses' => array(
+                            1 => array(
+                                'attributeName'        => 'userAttendees',
+                                'relatedAttributeName' => 'id',
+                                'operatorType'         => 'equals',
+                                'value'                => $billy->id,
+                            ),
+                        ),
+                        'structure' => '1',
+                    ),
+                ),
+                'pagination' => array(
+                    'page'     => 1,
+                    'pageSize' => 2,
+                ),
+                'sort' => 'name asc',
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('search/filter/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals(1, count($response['data']['items']));
+            $this->assertEquals(1, $response['data']['totalCount']);
+            $this->assertEquals(1, $response['data']['currentPage']);
             $this->assertEquals('Second Meeting', $response['data']['items'][0]['name']);
         }
 

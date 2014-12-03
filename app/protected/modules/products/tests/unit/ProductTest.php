@@ -85,7 +85,6 @@
             $this->assertTrue($model->opportunity->id < 0); //need to check this to call get first.
             $this->assertTrue($model->save(false));
 
-
             $this->assertTrue($model->save(false));
             $this->assertTrue($model->opportunity->id < 0);
             $model->delete();
