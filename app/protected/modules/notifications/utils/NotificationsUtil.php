@@ -169,24 +169,18 @@
         }
 
         protected static function processNotification(NotificationMessage $message, $type, $users,
-                                                      $allowDuplicates, $allowSendingEmail)
+                                                      $allowDuplicates, $isCritical)
         {
             assert('is_string($type) && $type != ""');
             assert('is_array($users) && count($users) > 0');
             assert('is_bool($allowDuplicates)');
-            assert('is_bool($allowSendingEmail)');
+            assert('is_bool($isCritical)');
             $notifications = static::resolveAndGetNotifications($users, $type, $message, $allowDuplicates);
-            if (static::resolveShouldSendEmailIfCritical())
+            if (static::resolveShouldSendEmailIfCritical() && $isCritical)
             {
                 foreach ($notifications as $notification)
                 {
-                    $notificationSettingName = static::resolveNotificationSettingNameFromType($notification->type);
-                    if ($allowSendingEmail &&
-                        UserNotificationUtil::
-                            isEnabledByUserAndNotificationNameAndType($notification->owner, $notificationSettingName, 'email'))
-                    {
-                        static::sendEmail($notification);
-                    }
+                    static::sendEmail($notification);
                 }
             }
         }
@@ -261,7 +255,7 @@
                     $notification->type                = $type;
                     $notification->notificationMessage = $message;
                     $notificationSettingName = static::resolveNotificationSettingNameFromType($type);
-                    if (static::resolveToSaveNotification() &&
+                    if (static::resolveToSaveNotification() && 
                         UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($user, $notificationSettingName, 'inbox'))
                     {
                         $saved = $notification->save();
@@ -284,7 +278,7 @@
         {
             return true;
         }
-
+        
         /**
          * Resolve notification setting name from its type
          * @param string $type

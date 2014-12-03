@@ -57,6 +57,15 @@
             }
         }
 
+        public function setUp()
+        {
+            parent::setUp();
+            if (!SendGridTestHelper::isSetSendGridAccountTestConfiguration())
+            {
+                $this->markTestSkipped(Zurmo::t('SendGridModule', 'Email test settings are missing.'));
+            }
+        }
+
         /**
          * @covers ZurmoSendGridMailer::sendTestEmail
          * @covers ZurmoSendGridMailer::sendEmail

@@ -57,8 +57,6 @@
             Smtpapi::register_autoloader();
             if (SendGridTestHelper::isSetSendGridAccountTestConfiguration())
             {
-                //$steve = UserTestHelper::createBasicUser('steve');
-                //EmailMessageTestHelper::createEmailAccount($steve);
                 Yii::app()->sendGridEmailHelper->apiUsername = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiUsername'];
                 Yii::app()->sendGridEmailHelper->apiPassword = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiPassword'];
                 Yii::app()->sendGridEmailHelper->setApiSettings();
@@ -67,6 +65,15 @@
             }
             // Delete item from jobQueue, that is created when new user is created
             Yii::app()->jobQueue->deleteAll();
+        }
+
+        public function setUp()
+        {
+            parent::setUp();
+            if (!SendGridTestHelper::isSetSendGridAccountTestConfiguration())
+            {
+                $this->markTestSkipped(Zurmo::t('SendGridModule', 'Email test settings are missing.'));
+            }
         }
 
         public function testSend()

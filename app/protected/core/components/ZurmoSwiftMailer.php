@@ -209,7 +209,10 @@
          */
         protected function populateSettings()
         {
-            if ($this->emailAccount != null && $this->emailAccount->useCustomOutboundSettings)
+            if ($this->emailAccount != null && $this->emailAccount->outboundHost != null
+                && $this->emailAccount->outboundPort != null
+                && $this->emailAccount->outboundUsername != null
+                && $this->emailAccount->outboundPassword != null)
             {
                 $this->host     = $this->emailAccount->outboundHost;
                 $this->port     = $this->emailAccount->outboundPort;
