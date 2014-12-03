@@ -127,10 +127,11 @@
          * Call this method to process all email Messages in the queue. This is typically called by a scheduled job
          * or cron.  This will process all emails in a TYPE_OUTBOX folder or TYPE_OUTBOX_ERROR folder. If the message
          * has already been sent 3 times then it will be moved to a failure folder.
-         * @param bool|null $count
-         * @return bool number of queued messages to be sent
+         * @param null $count
+         * @param bool $excludePausedCampaignMessages
+         * @throws NotImplementedException
          */
-        public function sendQueued($count = null)
+        public function sendQueued($count = null, $excludePausedCampaignMessages = true)
         {
             throw new NotImplementedException();
         }

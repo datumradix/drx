@@ -233,6 +233,20 @@
             echo CampaignItemSummaryListViewColumnAdapter::resolveDrillDownMetricsSummaryContent($campaignItem);
         }
 
+        public function actionTogglePaused($id)
+        {
+            $campaign               = Campaign::GetById(intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($campaign);
+            $campaign->status       = ($campaign->status == Campaign::STATUS_PAUSED)?
+                                            Campaign::STATUS_ACTIVE : Campaign::STATUS_PAUSED;
+            $saved                  = $campaign->save();
+            if (!$saved)
+            {
+                throw new FailedToSaveModelException("Unable to toggle status");
+            }
+            echo true;
+        }
+
         protected static function getSearchFormClassName()
         {
             return 'CampaignsSearchForm';
