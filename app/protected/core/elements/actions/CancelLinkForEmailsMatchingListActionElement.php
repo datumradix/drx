@@ -44,7 +44,7 @@
         protected function resolveHtmlOptionsForRendering()
         {
             $htmlOptions = $this->getHtmlOptions();
-            if(isset($htmlOptions['class']))
+            if (isset($htmlOptions['class']))
             {
                 return CMap::mergeArray($htmlOptions, array('class' => 'cancel-button ' . $htmlOptions['class']));
             }
