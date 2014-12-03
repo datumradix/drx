@@ -236,6 +236,8 @@
                             'name'      => $fromNameToSendMessagesFrom,
                             'address'   => $fromAddressToSendMessagesFrom
                         );
+                        $emailMessage = EmailMessageHelper::sendTestEmail($emailHelper, $from,
+                                                                      $configurationForm->aTestToAddress);
                     }
                     else
                     {

@@ -115,6 +115,45 @@
             {
                 $mailer->parts = $parts;
             }
+
+            $mailer->From = $from;
+
+            if (is_array($to) && !empty($to))
+            {
+                foreach ($to as $recipientEmail)
+                {
+                    $mailer->addAddressByType($recipientEmail, '', EmailMessageRecipient::TYPE_TO);
+                }
+            }
+            elseif (is_string($to))
+            {
+                $mailer->addAddressByType($to, '', EmailMessageRecipient::TYPE_TO);
+            }
+
+            if (is_array($cc) && !empty($cc))
+            {
+                foreach ($cc as $recipientEmail)
+                {
+                    $mailer->addAddressByType($recipientEmail, '', EmailMessageRecipient::TYPE_CC);
+                }
+            }
+            elseif (is_string($cc))
+            {
+                $mailer->addAddressByType($cc, '', EmailMessageRecipient::TYPE_CC);
+            }
+
+            if (is_array($bcc) && !empty($bcc))
+            {
+                foreach ($bcc as $recipientEmail)
+                {
+                    $mailer->addAddressByType($recipientEmail, '', EmailMessageRecipient::TYPE_BCC);
+                }
+            }
+            elseif (is_string($bcc))
+            {
+                $mailer->addAddressByType($bcc, '', EmailMessageRecipient::TYPE_BCC);
+            }
+
             if (isset($attachments) && !empty($attachments))
             {
                 foreach ($attachments as $file)

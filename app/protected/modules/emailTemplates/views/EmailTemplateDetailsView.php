@@ -42,6 +42,7 @@
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
+                            array('type'    => 'SendTestEmailLink'),
                             array('type'    => 'EditLink', 'renderType' => 'Details'),
                             array('type'    => 'EmailTemplateDeleteLink'),
                         ),
@@ -109,6 +110,7 @@
 
         protected function renderAfterFormLayoutForDetailsContent($form = null)
         {
+            SendTestEmailModalEditView::registerSendTestEmailScriptsForDetailsView($this->modelId, $this->modelClassName);
             $content    = $this->renderHtmlAndTextContentElement($this->model, null, $form);
             $content    .= parent::renderAfterFormLayoutForDetailsContent($form);
             return $content;
