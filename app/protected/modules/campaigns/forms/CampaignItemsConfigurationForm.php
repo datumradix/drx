@@ -50,6 +50,10 @@
 
         const  BOUNCED_STAGE            = 'Bounced';
 
+        const UNSUBSCRIBED_STAGE        = 'Unsubscribed';
+
+        const SKIPPED_STAGE             = 'Skipped';
+
         /**
          * All option when filtering by stage which includes all the campaign email recipients
          * irrespective of the stage
@@ -70,10 +74,36 @@
         public static function getFilterStages()
         {
             return array(
-                self::OPENED_STAGE  => Zurmo::t('CampaignsModule', self::OPENED_STAGE),
-                self::CLICKED_STAGE => Zurmo::t('CampaignsModule', self::CLICKED_STAGE),
-                self::BOUNCED_STAGE => Zurmo::t('CampaignsModule', self::BOUNCED_STAGE),
+                self::OPENED_STAGE          => Zurmo::t('CampaignsModule', self::OPENED_STAGE),
+                self::CLICKED_STAGE         => Zurmo::t('CampaignsModule', self::CLICKED_STAGE),
+                self::BOUNCED_STAGE         => Zurmo::t('CampaignsModule', self::BOUNCED_STAGE),
+                self::SKIPPED_STAGE         => Zurmo::t('CampaignsModule', self::SKIPPED_STAGE),
+                self::UNSUBSCRIBED_STAGE    => Zurmo::t('CampaignsModule', self::UNSUBSCRIBED_STAGE),
             );
+        }
+
+        public static function resolveCampaignItemActivityType($stage)
+        {
+            $type   = null;
+            switch($stage)
+            {
+                case CampaignItemsConfigurationForm::OPENED_STAGE:
+                    $type   = CampaignItemActivity::TYPE_OPEN;
+                    break;
+                case CampaignItemsConfigurationForm::CLICKED_STAGE:
+                    $type   = CampaignItemActivity::TYPE_CLICK;
+                    break;
+                case CampaignItemsConfigurationForm::BOUNCED_STAGE:
+                    $type   = CampaignItemActivity::TYPE_BOUNCE;
+                    break;
+                case CampaignItemsConfigurationForm::SKIPPED_STAGE:
+                    $type   = CampaignItemActivity::TYPE_SKIP;
+                    break;
+                case CampaignItemsConfigurationForm::UNSUBSCRIBED_STAGE:
+                    $type   = CampaignItemActivity::TYPE_UNSUBSCRIBE;
+                    break;
+            }
+            return $type;
         }
     }
 ?>

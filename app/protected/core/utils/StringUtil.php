@@ -97,10 +97,11 @@
             }
         }
 
-        public static function renderFluidTitleContent($title)
+        public static function renderFluidTitleContent($title, $postTruncatedTitleContent = null)
         {
             assert('$title == null || is_string($title)');
             $content = static::renderFluidContent($title);
+            $content .= $postTruncatedTitleContent;
             return ZurmoHtml::tag('h1', array(), $content);
         }
 

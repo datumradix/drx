@@ -38,6 +38,7 @@
     {
         public static $emailHelperSendEmailThroughTransport;
 
+        protected $user = null;
         protected static $userpsg;
         protected static $usercstmsmtp;
         protected static $basicuser;
@@ -88,6 +89,8 @@
             {
                 $this->markTestSkipped('Please fix the test email settings');
             }
+            $this->user                 = User::getByUsername('super');
+            Yii::app()->user->userModel = $this->user;
         }
 
         public function testResolveMailerWithSendGridEnabled()
@@ -149,7 +152,6 @@
 
         public function testResolveMailerWithSendGridDisabled()
         {
-            Yii::app()->user->userModel = User::getByUsername('super');
             Yii::app()->sendGridEmailHelper->apiUsername = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiUsername'];
             Yii::app()->sendGridEmailHelper->apiPassword = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']['apiPassword'];
             Yii::app()->sendGridEmailHelper->setApiSettings();
@@ -187,8 +189,7 @@
 
         public function testResolveMailerWithItemsData()
         {
-            Yii::app()->user->userModel = User::getByUsername('super');
-            $contact = ContactTestHelper::createContactByNameForOwner('mailercontact', Yii::app()->user->userModel);
+            $contact = ContactTestHelper::createContactByNameForOwner('mailercontact', $this->user);
             $campaignItem                          = new CampaignItem();
             $campaignItem->processed               = 0;
             $campaignItem->contact                 = $contact;
