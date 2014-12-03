@@ -1666,7 +1666,6 @@
             $this->assertArrayHasKey('members', $userMetaData);
             $this->assertCount(11, $userMetaData['members']);
 
-
             // unset a member from User and Person, update metadata
             unset($userMetaData['members'][1]);
             unset($personMetaData['members'][1]);

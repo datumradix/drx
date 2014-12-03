@@ -226,7 +226,7 @@
                     $emailAccount->outboundHost     = $configurationForm->host;
                     $emailAccount->outboundPort     = $configurationForm->port;
                     $emailAccount->outboundUsername = $configurationForm->username;
-                    $emailAccount->outboundPassword = $configurationForm->password;
+                    $emailAccount->outboundPassword = ZurmoPasswordSecurityUtil::encrypt($configurationForm->password);
                     $emailAccount->outboundSecurity = $configurationForm->security;
                     $isUser = false;
                     if (isset($fromNameToSendMessagesFrom) && isset($fromAddressToSendMessagesFrom))
@@ -236,6 +236,8 @@
                             'name'      => $fromNameToSendMessagesFrom,
                             'address'   => $fromAddressToSendMessagesFrom
                         );
+                        $emailMessage = EmailMessageHelper::sendTestEmail($emailHelper, $from,
+                                                                      $configurationForm->aTestToAddress);
                     }
                     else
                     {

@@ -256,19 +256,19 @@
             $duplicateModelsData['GamePoint']      = $gamePointDuplicateData;
             $gameScoreDuplicateData                = GamificationUtil::findGameTableRowsThatAreDuplicatedByTypePersonKey(GameScore::getTableName());
             $duplicateModelsData['GameScore']      = $gameScoreDuplicateData;
-            foreach($duplicateModelsData as $modelClassName => $duplicatesData)
+            foreach ($duplicateModelsData as $modelClassName => $duplicatesData)
             {
-                if(empty($duplicatesData))
+                if (empty($duplicatesData))
                 {
                     echo 'No duplicates found for ' . $modelClassName . "<BR>";
                 }
                 else
                 {
                     echo 'Duplicates discovered for ' . $modelClassName . "<BR>";
-                    foreach($duplicatesData as $typePersonKeyDuplicateData)
+                    foreach ($duplicatesData as $typePersonKeyDuplicateData)
                     {
                         $searchAttributeData = array();
-                        if($modelClassName == 'GameCoin')
+                        if ($modelClassName == 'GameCoin')
                         {
                             $searchAttributeData['clauses'] = array(
                                 1 => array(
@@ -300,7 +300,7 @@
                         $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
                         $where  = RedBeanModelDataProvider::makeWhere($modelClassName, $searchAttributeData, $joinTablesAdapter);
                         $models = $modelClassName::getSubset($joinTablesAdapter, null, null, $where, null);
-                        if($modelClassName == 'GameCoin')
+                        if ($modelClassName == 'GameCoin')
                         {
                             echo $modelClassName . ' --- Quantity of duplicates: ' . count($models) .
                                 ' --- for person_item_id: ' . $typePersonKeyDuplicateData['person_item_id'] . "<BR>";

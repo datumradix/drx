@@ -852,3 +852,45 @@ a + .autoresponder-stats{
 		margin-top: 15px;
 	}
 }
+
+/*Send Test Email Modal*/
+#SendTestEmailModalEditView{
+    div.wide.form{
+        float: left;
+    }
+    .attributesContainer{
+        padding-bottom: 0;
+    }
+    td{
+        padding-left: 0;
+        padding-bottom: 0;
+    }
+    label{
+        float: none;
+        margin-right: 30px;
+    }
+    #select-primary-or-secondary-radio{
+        margin-bottom: 10px;
+    }
+    input[type="radio"]{
+        margin-right: 8px;
+    }
+    #secondary-input-id{
+        h4{
+            margin-top: 5px;
+        }
+    }
+}
+
+a[id^="SendTestEmailLinkActionElement"]{
+    .z-label{
+        &:after{
+            content: "7";
+            .symbly(20px);
+            line-height: 1;
+            position: relative;
+            right: -10px;
+            top: 1px;
+        }
+    }
+}

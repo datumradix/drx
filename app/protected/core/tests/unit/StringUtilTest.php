@@ -56,5 +56,14 @@
             $newSting     = StringUtil::getChoppedStringContent($testString, 119);
             $this->assertEquals($compareSting, $newSting);
         }
+
+        public function testMakeWordsUpperCase()
+        {
+            $this->assertEquals('Account',           StringUtil::makeWordsUpperCase('account'));
+            $this->assertEquals('Account We Won 1A', StringUtil::makeWordsUpperCase('account we won 1a'));
+            $this->assertEquals('Account We Won 1A', StringUtil::makeWordsUpperCase('Account We Won 1a'));
+            $this->assertEquals('Äccount We Won 1Ä', StringUtil::makeWordsUpperCase('äccount we won 1ä'));
+            $this->assertEquals('Äccount',           StringUtil::makeWordsUpperCase('äccount'));
+        }
     }
 ?>

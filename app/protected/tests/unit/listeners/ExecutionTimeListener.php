@@ -47,14 +47,14 @@
 
         public function startTest(PHPUnit_Framework_Test $test)
         {
-            echo PHP_EOL . "Starting: " . $test->getName();
+            echo PHP_EOL . "Starting: " . $this->getTestName($test);
         }
 
         public function endTest(PHPUnit_Framework_Test $test, $length)
         {
             if ($length > $this->__timeLimit)
             {
-                echo PHP_EOL . "Name: " . $test->getName() . " took " . round($length, $this->__precision) . " second(s)" . PHP_EOL;
+                echo PHP_EOL . $this->getTestName($test) . " took " . round($length, $this->__precision) . " second(s)" . PHP_EOL;
             }
         }
 
@@ -80,6 +80,15 @@
 
         public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
         {
+        }
+
+        public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+        {
+        }
+
+        protected function getTestName(PHPUnit_Framework_Test $test, $separator = ':')
+        {
+            return get_class($test) . $separator . $test->getName();
         }
     }
 ?>

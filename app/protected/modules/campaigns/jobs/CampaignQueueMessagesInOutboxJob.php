@@ -66,7 +66,6 @@
 
         protected function processRun()
         {
-            parent::processRun();
             $batchSize = $this->resolveBatchSize();
             if ($batchSize != null)
             {
@@ -128,7 +127,8 @@
 
         protected function processCampaignItemInQueue(CampaignItem $campaignItem)
         {
-            CampaignItemsUtil::processDueItem($campaignItem);
+            $util   = new CampaignItemsUtil();
+            $util->processDueItem($campaignItem);
         }
 
         /**

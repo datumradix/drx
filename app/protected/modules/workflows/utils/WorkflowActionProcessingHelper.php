@@ -466,7 +466,7 @@
                 $marketingList   = MarketingList::getById((int)$marketingListId);
                 $marketingList->addNewMember((int)$this->triggeredModel->id, false);
             }
-            catch(NotFoundException $e)
+            catch (NotFoundException $e)
             {
                 $this->logAndNotifyOnMissingMarketingListModel(ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST);
             }
@@ -534,7 +534,7 @@
                     //Does the marketing list still exist
                     MarketingList::getById((int)$marketingListId);
                 }
-                catch(NotFoundException $e)
+                catch (NotFoundException $e)
                 {
                     $this->logAndNotifyOnMissingMarketingListModel(ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST);
                 }
@@ -545,7 +545,7 @@
         {
             assert('$type == ActionForWorkflowForm::TYPE_SUBSCRIBE_TO_LIST ||
                     $type == ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST');
-            if($type == ActionForWorkflowForm::TYPE_SUBSCRIBE_TO_LIST)
+            if ($type == ActionForWorkflowForm::TYPE_SUBSCRIBE_TO_LIST)
             {
                 $logContent = "\n Workflow model with id: " . $this->workflowId . ' is malformed. Subscribe action references invalid marketing list';
                 Yii::log($logContent, CLogger::LEVEL_WARNING);

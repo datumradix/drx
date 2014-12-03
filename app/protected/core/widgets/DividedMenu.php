@@ -207,5 +207,35 @@
             }
             return false;
         }
+
+        protected function renderMenuItem($item)
+        {
+            if ((isset($item['ajaxLinkOptions'])))
+            {
+                if ($this->linkLabelWrapper === null)
+                {
+                    $label = $item['label'];
+                }
+                else
+                {
+                    $label =  ZurmoHtml::tag($this->linkLabelWrapper, $this->linkLabelWrapperHtmlOptions, $item['label']);
+                }
+                return ZurmoHtml::ajaxLink($label, $item['url'], $item['ajaxLinkOptions'], $this->resolveHtmlOptions($item));
+            }
+            else
+            {
+                return parent::renderMenuItem($item);
+            }
+        }
+
+        protected function resolveHtmlOptions(array $item)
+        {
+            $htmlOptions = array();
+            if (isset($item['linkOptions']))
+            {
+                $htmlOptions = $item['linkOptions'];
+            }
+            return $htmlOptions;
+        }
     }
 ?>

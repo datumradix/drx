@@ -376,7 +376,7 @@
             $message->htmlContent       = Zurmo::t('ExportModule', 'Export of {fileName} requested on {dateTime} is completed. <a href="{url}">Click here</a> to download file!',
                 array(
                     '{fileName}' => $exportItem->exportFileName,
-                    '{url}'      => Yii::app()->createUrl('export/default/download', array('id' => $exportItem->id)),
+                    '{url}'      => Yii::app()->createAbsoluteUrl('export/default/download', array('id' => $exportItem->id)),
                     '{dateTime}' => DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay($exportItem->createdDateTime, 'long'),
                 )
             );

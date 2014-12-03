@@ -58,6 +58,9 @@
                          array('label'   => Zurmo::t('SendGridModule', 'SendGrid'),
                                'url'     => $this->getRouteFormMenuItems() . '/sendGridConfiguration?id=' . $this->modelId,
                                'itemOptions' => array( 'id'   => 'ffff')),
+                         array('label'   => Zurmo::t('UsersModule', 'Notifications'),
+                               'url'     => $this->getRouteFormMenuItems() . '/notificationConfiguration?id=' . $this->modelId,
+                               'itemOptions' => array( 'id'   => 'nnn')),
                          );
         }
 

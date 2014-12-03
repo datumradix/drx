@@ -113,6 +113,7 @@
                 'class'       => 'application.modules.zurmo.components.ZurmoAuthenticationHelper',
             ),
             'errorHandler' => array(
+                'class'       => 'application.core.components.ZurmoErrorHandler',
                 'errorAction' => 'zurmo/default/error',
             ),
             'format' => array(
@@ -380,6 +381,7 @@
         'import' => array(
             'application.core.exceptions.NotFoundException',
             'application.core.exceptions.NotSupportedException',
+            'application.core.models.RedBeanDatabase',
             'application.core.utils.ArrayUtil',
             'application.core.utils.FileUtil',
             'application.core.utils.ZurmoCache',

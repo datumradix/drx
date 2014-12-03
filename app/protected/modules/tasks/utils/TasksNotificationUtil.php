@@ -65,14 +65,14 @@
         {
             assert('is_string($action)');
             $message = static::getNotificationMessageByAction($task, $action, $relatedUser, $comment);
-            $rule = new TaskNotificationRules();
+            $notificationRulesClassName = static::resolveNotificationRulesClassByAction($action);
+            $rule = new $notificationRulesClassName();
             $peopleToSendNotification = static::resolvePeopleToSendNotification($task, $action, $relatedUser);
             foreach ($peopleToSendNotification as $person)
             {
                 $rule->addUser($person);
             }
             $rule->setModel($task);
-            $rule->setCritical(true);
             $rule->setAllowDuplicates(true);
             static::processTaskNotification($message, $rule, $action);
         }
@@ -94,7 +94,7 @@
                 return;
             }
             $notifications = static::resolveAndGetNotifications($users, $rule->getType(), $message, $rule->allowDuplicates());
-            if (static::resolveShouldSendEmailIfCritical() && $rule->isCritical())
+            if (static::resolveShouldSendEmailIfCritical())
             {
                 foreach ($notifications as $notification)
                 {
@@ -295,8 +295,10 @@
         protected static function sendTaskEmail(Notification $notification, TaskNotificationRules $rule, $action)
         {
             assert('is_string($action)');
+            $notificationSettingName = static::resolveNotificationSettingNameFromType($rule->getType());
             if ($notification->owner->primaryEmail->emailAddress !== null &&
-                !UserConfigurationFormAdapter::resolveAndGetValue($notification->owner, 'turnOffEmailNotifications'))
+                UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($notification->owner,
+                                                                                $notificationSettingName, 'email'))
             {
                 $emailMessage               = static::makeEmailMessage($notification, $rule, $action);
                 $emailMessage->content      = static::makeEmailContent($notification);
@@ -379,7 +381,38 @@
          */
         protected static function resolveToSaveNotification()
         {
-            return false;
+            return true;
+        }
+
+        /**
+         * Resolve the notification rules class name by action name
+         * @return string
+         */
+        protected static function resolveNotificationRulesClassByAction($action)
+        {
+            switch ($action)
+            {
+                case TasksNotificationUtil::TASK_NEW:
+                    return 'NewTaskNotificationRules';
+                    break;
+                case TasksNotificationUtil::TASK_STATUS_BECOMES_AWAITING_ACCEPTANCE:
+                    return 'DeliveredTaskNotificationRules';
+                    break;
+                case TasksNotificationUtil::TASK_STATUS_BECOMES_COMPLETED:
+                    return 'AcceptedTaskNotificationRules';
+                    break;
+                case TasksNotificationUtil::TASK_STATUS_BECOMES_REJECTED:
+                    return 'RejectedTaskNotificationRules';
+                    break;
+                case TasksNotificationUtil::TASK_OWNER_CHANGE:
+                    return 'TaskOwnerChangeNotificationRules';
+                    break;
+                case TasksNotificationUtil::TASK_NEW_COMMENT:
+                    return 'TaskNewCommentNotificationRules';
+                    break;
+                default:
+                    throw new NotFoundException();
+            }
         }
     }
 ?>

@@ -92,5 +92,10 @@
         {
             return false;
         }
+
+        public function requireAllRequiredFieldsInLayout()
+        {
+            return true;
+        }
     }
 ?>

@@ -76,7 +76,7 @@
         public static function createOutboxEmail(User $owner, $subject,
                                                        $htmlContent, $textContent,
                                                        $fromName, $fromAddress,
-                                                       $toName, $toAddress)
+                                                       $toName, $toAddress, $ccAddress = null, $bccAddress = null)
         {
             $emailMessage              = new EmailMessage();
             $emailMessage->owner       = $owner;
@@ -95,12 +95,58 @@
             $emailMessage->sender      = $sender;
 
             //Recipient is billy.
-            $recipient                 = new EmailMessageRecipient();
-            $recipient->toAddress      = $toAddress;
-            $recipient->toName         = $toName;
-            $recipient->type           = EmailMessageRecipient::TYPE_TO;
-            $emailMessage->recipients->add($recipient);
-
+            if($toAddress != null)
+            {
+                $recipient                 = new EmailMessageRecipient();
+                $recipient->toAddress      = $toAddress;
+                $recipient->toName         = $toName;
+                $recipient->type           = EmailMessageRecipient::TYPE_TO;
+                $emailMessage->recipients->add($recipient);
+            }
+            if($ccAddress != null)
+            {
+                if(is_string($ccAddress))
+                {
+                    $recipient                 = new EmailMessageRecipient();
+                    $recipient->toAddress      = $ccAddress;
+                    $recipient->toName         = null;
+                    $recipient->type           = EmailMessageRecipient::TYPE_CC;
+                    $emailMessage->recipients->add($recipient);
+                }
+                if(is_array($ccAddress))
+                {
+                    foreach($ccAddress as $val)
+                    {
+                        $recipient                 = new EmailMessageRecipient();
+                        $recipient->toAddress      = $val;
+                        $recipient->toName         = null;
+                        $recipient->type           = EmailMessageRecipient::TYPE_CC;
+                        $emailMessage->recipients->add($recipient);
+                    }
+                }
+            }
+            if($bccAddress != null)
+            {
+                if(is_string($bccAddress))
+                {
+                    $recipient                 = new EmailMessageRecipient();
+                    $recipient->toAddress      = $bccAddress;
+                    $recipient->toName         = null;
+                    $recipient->type           = EmailMessageRecipient::TYPE_BCC;
+                    $emailMessage->recipients->add($recipient);
+                }
+                if(is_array($bccAddress))
+                {
+                    foreach($bccAddress as $val)
+                    {
+                        $recipient                 = new EmailMessageRecipient();
+                        $recipient->toAddress      = $val;
+                        $recipient->toName         = null;
+                        $recipient->type           = EmailMessageRecipient::TYPE_BCC;
+                        $emailMessage->recipients->add($recipient);
+                    }
+                }
+            }
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX);
 

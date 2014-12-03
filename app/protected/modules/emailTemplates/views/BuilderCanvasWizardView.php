@@ -93,6 +93,11 @@
             return EmailTemplateWizardForm::SERIALIZED_DATA_VALIDATION_SCENARIO;
         }
 
+        protected function renderSendTestEmailButton()
+        {
+            return true;
+        }
+
         /**
          * @return string
          */

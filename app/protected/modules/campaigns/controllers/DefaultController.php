@@ -34,7 +34,7 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class CampaignsDefaultController extends ZurmoModuleController
+    class CampaignsDefaultController extends EmailTemplatesOrCampaignsBaseController
     {
         const USER_REQUIRED_MODULES_ACCESS_FILTER_PATH =
             'application.modules.campaigns.controllers.filters.UserCanAccessRequiredModulesForCampaignCheckControllerFilter';
@@ -255,6 +255,11 @@
         protected static function getZurmoControllerUtil()
         {
             return new CampaignZurmoControllerUtil();
+        }
+
+        protected function getSendTestEmailUtil()
+        {
+            return 'CampaignSendTestEmailUtil';
         }
     }
 ?>

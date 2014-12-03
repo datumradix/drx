@@ -81,6 +81,7 @@
 
         protected function renderContent()
         {
+            SendTestEmailModalEditView::registerSendTestEmailScriptsForDetailsView($this->modelId, $this->modelClassName);
             // TODO: @Shoaibi/@Jason: Low: Do security walkthrough
             $actionElementBarContent = $this->renderActionElementBar(false);
 	        $pillbox  = ZurmoHtml::tag('nav', array('class' => 'pillbox clearfix'), $actionElementBarContent);
