@@ -97,11 +97,11 @@
   padding: 0 25px;
   line-height: 24px;
   white-space: nowrap;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  -ms-border-radius: 2px;
-  -o-border-radius: 2px;
-  border-radius: 2px;
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  -ms-border-radius: 1px;
+  -o-border-radius: 1px;
+  border-radius: 1px;
   -webkit-text-shadow: 0px -1px 0 rgba(0,0,0,0.2) !important;
   -moz-text-shadow: 0px -1px 0 rgba(0,0,0,0.2) !important;
   -ms-text-shadow: 0px -1px 0 rgba(0,0,0,0.2) !important;
@@ -371,6 +371,98 @@ a:active .z-label {
 .white-button:hover .z-label,
 .cancel-button:hover .z-label,
 .portlet-create-button:hover .z-label {
+  color: #7CB830 !important;
+  background-image: none;
+  background-color: #fefefe !important;
+  background-repeat: repeat-x !important;
+  background-image: -ms-linear-gradient(top,#f5f5f5,#fefefe) !important;
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#f5f5f5),color-stop(100%,#fefefe)) !important;
+  background-image: -webkit-linear-gradient(top,#f5f5f5,#fefefe) !important;
+  background-image: -o-linear-gradient(top,#f5f5f5,#fefefe) !important;
+  background-image: -moz-linear-gradient(top,#f5f5f5,#fefefe) !important;
+  background-image: linear-gradient(top,#f5f5f5,#fefefe) !important;
+  -webkit-text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
+  -moz-text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
+  -ms-text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
+  -o-text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
+  text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
+}
+.wizard-secondary-action-button {
+  line-height: 1;
+  cursor: pointer;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+  position: relative;
+  display: inline-block;
+  text-indent: 0;
+  -webkit-box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), 0 0 2px 0 rgba(153, 153, 153, 0.15);
+  -moz-box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), 0 0 2px 0 rgba(153, 153, 153, 0.15);
+  -ms-box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), 0 0 2px 0 rgba(153, 153, 153, 0.15);
+  -o-box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), 0 0 2px 0 rgba(153, 153, 153, 0.15);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2), 0 0 2px 0 rgba(153, 153, 153, 0.15);
+  *zoom: 1;
+  -webkit-transition: all 0.14s cubic-bezier(0.390,0.575,0.565,1.000);
+  -moz-transition: all 0.14s cubic-bezier(0.390,0.575,0.565,1.000);
+  -ms-transition: all 0.14s cubic-bezier(0.390,0.575,0.565,1.000);
+  -o-transition: all 0.14s cubic-bezier(0.390,0.575,0.565,1.000);
+  transition: all 0.14s cubic-bezier(0.390,0.575,0.565,1.000);
+  -ms-transform: translate(0px,0);
+  -moz-transform: translate(0px,0);
+  -webkit-transform: translate3d(0px,0,0);
+  transform: translate(0px,0);
+  border-top: 1px solid rgba(200,200,200,0.4);
+  border-left: 1px solid rgba(185,185,185,0.4);
+  border-right: 1px solid rgba(185,185,185,0.4);
+  border-bottom: 1px solid rgba(170,170,170,0.4);
+}
+.wizard-secondary-action-button:before,
+.wizard-secondary-action-button:after {
+  content: " ";
+  display: table;
+}
+.wizard-secondary-action-button:after {
+  clear: both;
+}
+.wizard-secondary-action-button:hover {
+  -webkit-box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.5), 0 0 7px 0 rgba(75, 75, 75, 0.25);
+  -moz-box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.5), 0 0 7px 0 rgba(75, 75, 75, 0.25);
+  -ms-box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.5), 0 0 7px 0 rgba(75, 75, 75, 0.25);
+  -o-box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.5), 0 0 7px 0 rgba(75, 75, 75, 0.25);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.5), 0 0 7px 0 rgba(75, 75, 75, 0.25);
+}
+.wizard-secondary-action-button.disabled {
+  pointer-events: none;
+  filter: alpha(opacity=50);
+  -khtml-opacity: 0.5;
+  -moz-opacity: 0.5;
+  opacity: 0.5;
+  -webkit-filter: grayscale(85%);
+  -moz-filter: grayscale(85%);
+  -ms-filter: grayscale(85%);
+  -o-filter: grayscale(85%);
+  filter: grayscale(85%);
+  filter: gray;
+}
+.wizard-secondary-action-button .z-label {
+  color: #666;
+  -webkit-text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
+  -moz-text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
+  -ms-text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
+  -o-text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
+  text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
+  background-color: #f5f5f5;
+  background-repeat: repeat-x;
+  background-image: -ms-linear-gradient(top,#fefefe,#f5f5f5);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#fefefe),color-stop(100%,#f5f5f5));
+  background-image: -webkit-linear-gradient(top,#fefefe,#f5f5f5);
+  background-image: -o-linear-gradient(top,#fefefe,#f5f5f5);
+  background-image: -moz-linear-gradient(top,#fefefe,#f5f5f5);
+  background-image: linear-gradient(top,#fefefe,#f5f5f5);
+}
+.wizard-secondary-action-button:hover .z-label {
   color: #7CB830 !important;
   background-image: none;
   background-color: #fefefe !important;
@@ -2617,6 +2709,18 @@ table.configuration-list tr:last-child td {
   background-image: -o-linear-gradient(top,#c43d53,#a82d31);
   background-image: -moz-linear-gradient(top,#c43d53,#a82d31);
   background-image: linear-gradient(top,#c43d53,#a82d31);
+}
+.notificationConfigurationTableHead span {
+  display: inline-block;
+  font-weight: bold;
+  width: 45px;
+}
+.enableInboxAndEmailNotifications span {
+  display: inline-block;
+  width: 45px;
+}
+.enableInboxAndEmailNotifications span {
+  padding-left: 8px;
 }
 .available-portlets {
   padding: 15px 15px 0 15px;
@@ -7177,26 +7281,37 @@ a.user-link {
 #cc-bcc-fields .recipient {
   margin-top: 15px;
 }
+#NoGlobalEmailConfigurationYetView,
 #NoUserEmailConfigurationYetView {
   *zoom: 1;
   padding: 0 0 30px 0;
 }
+#NoGlobalEmailConfigurationYetView:before,
+#NoGlobalEmailConfigurationYetView:after,
 #NoUserEmailConfigurationYetView:before,
 #NoUserEmailConfigurationYetView:after {
   content: " ";
   display: table;
 }
+#NoGlobalEmailConfigurationYetView:after,
 #NoUserEmailConfigurationYetView:after {
   clear: both;
 }
+#NoGlobalEmailConfigurationYetView .large-icon,
 #NoUserEmailConfigurationYetView .large-icon {
   margin-top: 0;
 }
+#NoGlobalEmailConfigurationYetView .large-icon:after,
 #NoUserEmailConfigurationYetView .large-icon:after {
   font-size: 220px;
 }
+#NoGlobalEmailConfigurationYetView p,
 #NoUserEmailConfigurationYetView p {
   margin-top: 15px;
+}
+#NoGlobalEmailConfigurationYetView .z-button,
+#NoUserEmailConfigurationYetView .z-button {
+  margin-top: 20px;
 }
 #redactor_modal input[type="text"],
 #redactor_modal input[type="password"],
@@ -9144,6 +9259,39 @@ a + .autoresponder-stats {
   display: block;
   margin-top: 15px;
 }
+#SendTestEmailModalEditView div.wide.form {
+  float: left;
+}
+#SendTestEmailModalEditView .attributesContainer {
+  padding-bottom: 0;
+}
+#SendTestEmailModalEditView td {
+  padding-left: 0;
+  padding-bottom: 0;
+}
+#SendTestEmailModalEditView label {
+  float: none;
+  margin-right: 30px;
+}
+#SendTestEmailModalEditView #select-primary-or-secondary-radio {
+  margin-bottom: 10px;
+}
+#SendTestEmailModalEditView input[type="radio"] {
+  margin-right: 8px;
+}
+#SendTestEmailModalEditView #secondary-input-id h4 {
+  margin-top: 5px;
+}
+a[id^="SendTestEmailLinkActionElement"] .z-label:after {
+  content: "7";
+  font-weight: normal !important;
+  font-size: 20px;
+  font-family: "zurmo_gamification_symbly_rRg";
+  line-height: 1;
+  position: relative;
+  right: -10px;
+  top: 1px;
+}
 #kanban-holder {
   background-color: #f0f0f0;
   background-repeat: repeat-x;
@@ -9821,18 +9969,25 @@ div.showing-panel {
   font-size: 14px;
 }
 .business-card .contact-details {
+  *zoom: 1;
   clear: left;
-  color: #111;
   font-size: 14px;
   color: #666;
   margin-bottom: 7px;
   margin-top: 10px;
 }
+.business-card .contact-details:before,
+.business-card .contact-details:after {
+  content: " ";
+  display: table;
+}
+.business-card .contact-details:after {
+  clear: both;
+}
 .business-card .contact-details > span {
   margin: 5px 20px 5px 0;
   color: #333;
   white-space: nowrap;
-  float: left;
 }
 .business-card .address {
   clear: left;
@@ -12016,7 +12171,7 @@ div[id^="builderimageelement"] ~ .redactor_box iframe {
   font-size: 400px;
   line-height: 60%;
   float: left;
-  width: 25%;
+  width: 30%;
   text-align: center;
   border-right: 1px solid #ccc;
   margin-right: 30px;

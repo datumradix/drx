@@ -56,7 +56,7 @@
                                         $rules->getType(),
                                         $users,
                                         $rules->allowDuplicates(),
-                                        $rules->isCritical());
+                                        $rules->allowSendingEmail());
         }
 
         /**
@@ -192,7 +192,7 @@
 
         protected static function sendEmail(Notification $notification)
         {
-            if ($notification->owner->primaryEmail->emailAddress !== null &&
+            if ($notification->owner->primaryEmail->emailAddress != null &&
                 !UserConfigurationFormAdapter::resolveAndGetValue($notification->owner, 'turnOffEmailNotifications'))
             {
                 $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
@@ -254,7 +254,9 @@
                     $notification->owner               = $user;
                     $notification->type                = $type;
                     $notification->notificationMessage = $message;
-                    if (static::resolveToSaveNotification())
+                    $notificationSettingName = static::resolveNotificationSettingNameFromType($type);
+                    if (static::resolveToSaveNotification() && 
+                        UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($user, $notificationSettingName, 'inbox'))
                     {
                         $saved = $notification->save();
                         if (!$saved)
@@ -275,6 +277,17 @@
         protected static function resolveToSaveNotification()
         {
             return true;
+        }
+        
+        /**
+         * Resolve notification setting name from its type
+         * @param string $type
+         * @return string
+         */
+        protected static function resolveNotificationSettingNameFromType($type)
+        {
+            assert('is_string($type) && $type != ""');
+            return 'enable'.$type.'Notification';
         }
     }
 ?>

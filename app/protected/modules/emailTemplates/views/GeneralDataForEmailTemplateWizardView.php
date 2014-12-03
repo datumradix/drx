@@ -198,6 +198,7 @@
         protected function registerScripts()
         {
             parent::registerScripts();
+            $this->registerSendTestEmailScriptsForWizardView();
             $this->registerSetIsDraftToZeroScript();
             $this->registerTrashSomeDataOnModuleChangeScript();
             if ($this->model->isWorkflowTemplate())
@@ -208,7 +209,7 @@
 
         protected function registerOnChangeModelClassNameChangeScript()
         {
-            $jquerySelector = $this->resolveModuleClassNameJQuerySelector();
+            $jquerySelector             = $this->resolveModuleClassNameJQuerySelector();
             $moduleClassNameSelector    = static::resolveModelClassNameHiddenInputJQuerySelector();
             Yii::app()->clientScript->registerScript('setIsDraftToZero', "
                 $('{$jquerySelector}').on('change', function() {
@@ -301,6 +302,46 @@
                                                                                                 $stepCount, $model);
             $script                     = $script . PHP_EOL . $parentScript;
             return $script;
+        }
+
+        protected function registerSendTestEmailScriptsForWizardView()
+        {
+            $scriptName = 'compile-send-test-email-data-for-email-template-wizard-view';
+            if (Yii::app()->clientScript->isScriptRegistered($scriptName))
+            {
+                return;
+            }
+            else
+            {
+                $functionName   = SendTestEmailModalEditView::COMPILE_SEND_TEST_EMAIL_DATA_JS_FUNCTION_NAME;
+                // Begin Not Coding Standard
+                Yii::app()->clientScript->registerScript($scriptName, "
+                window.{$functionName} = function ()
+                    {
+                        var testData    = {
+                                subject         : $('#" . ZurmoHtml::activeId($this->model, 'subject') . "').val(),
+                                textContent     : $('#" . ZurmoHtml::activeId($this->model, 'textContent') . "').val(),
+                                language        : $('#" . ZurmoHtml::activeId($this->model, 'language') . "').val(),
+                                type            : $('#" . ZurmoHtml::activeId($this->model, 'type') . "').val(),
+                                attachmentIds   : new Array()
+                        };
+                        $(':input[name*=filesIds]').each(function()
+                        {
+                            testData.attachmentIds.push($(this).val());
+                        });
+                        if (" . intval($this->model->isPastedHtmlTemplate()) . ")
+                        {
+                            testData.htmlContent        = $('#" . ZurmoHtml::activeId($this->model, 'htmlContent') . "').val();
+                        }
+                        else if (" . intval($this->model->isBuilderTemplate()) . ")
+                        {
+                            testData.serializedData = JSON.stringify({dom: $.parseJSON(emailTemplateEditor.compileSerializedData())});
+                        }
+                        return testData;
+                    }
+                    ");
+                // End Not Coding Standard
+            }
         }
     }
 ?>

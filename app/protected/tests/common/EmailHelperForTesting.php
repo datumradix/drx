@@ -93,46 +93,25 @@
             assert('isset($to) || isset($cc) || isset($bcc)');
             assert('is_array($attachments) || !isset($attachments)');
             assert('is_array($parts) || !isset($parts)');
-            $mailer = new ZurmoSwiftMailer();
-            $mailer->init();
-            if (!$settings)
+            $toName = null;
+            $toAddress = null;
+            if(is_string($to))
             {
-                $mailer->mailer   = $this->outboundType;
-                $mailer->host     = $this->outboundHost;
-                $mailer->port     = $this->outboundPort;
-                $mailer->username = $this->outboundUsername;
-                $mailer->password = $this->outboundPassword;
-                $mailer->security = $this->outboundSecurity;
+                $toAddress = $to;
             }
-            else
+            elseif(is_array($to))
             {
-                //$mailer->mailer   = $settings['outboundType'];
-                $mailer->host     = $settings['outboundHost'];
-                $mailer->port     = $settings['outboundPort'];
-                $mailer->username = $settings['outboundUsername'];
-                $mailer->password = $settings['outboundPassword'];
-                $mailer->security = $settings['outboundSecurity'];
-            }
-
-            $mailer->Subject  = $subject;
-            if (empty($parts))
-            {
-                if ($htmlContent == null && $textContent != null)
+                foreach($to as $key => $value)
                 {
-                    $mailer->body     = $textContent;
-                    $mailer->altBody  = $textContent;
-                }
-                elseif ($htmlContent != null && $textContent == null)
-                {
-                    $mailer->body     = $htmlContent;
-                }
-                elseif ($htmlContent != null && $textContent != null)
-                {
-                    $mailer->body     = $htmlContent;
-                    $mailer->altBody  = $textContent;
+                    $toName     = $key;
+                    $toAddress  = $value;
                 }
             }
-            else
+            $emailMessage = EmailMessageTestHelper::createOutboxEmail(Yii::app()->user->userModel,
+                                                      $subject, $htmlContent, $textContent, null, $from, $toName, $toAddress,
+                                                      $cc, $bcc);
+            $mailer = new ZurmoSwiftMailer($emailMessage, null);
+            if (!empty($parts))
             {
                 $mailer->parts = $parts;
             }

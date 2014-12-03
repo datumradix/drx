@@ -41,24 +41,24 @@
         public static function resolveContentsForTracking(& $textContent, & $htmlContent, $enableTracking, $modelId,
                                                             $modelType, $personId)
         {
-            if (!empty($textContent))
-            {
-                static::resolveContentForTracking($enableTracking, $textContent, $modelId, $modelType, $personId, false);
-            }
-            if (!empty($htmlContent))
-            {
-                static::resolveContentForTracking($enableTracking, $htmlContent, $modelId, $modelType, $personId, true);
-            }
-        }
-
-        public static function resolveContentForTracking($tracking, & $content, $modelId, $modelType, $personId,
-                                                         $isHtmlContent)
-        {
-            assert('is_int($modelId)');
-            if (!$tracking)
+            if (!$enableTracking)
             {
                 return true;
             }
+            if (!empty($textContent))
+            {
+                static::resolveContentForTracking($textContent, $modelId, $modelType, $personId, false);
+            }
+            if (!empty($htmlContent))
+            {
+                static::resolveContentForTracking($htmlContent, $modelId, $modelType, $personId, true);
+            }
+        }
+
+        public static function resolveContentForTracking(& $content, $modelId, $modelType, $personId,
+                                                         $isHtmlContent)
+        {
+            assert('is_int($modelId)');
             if (strpos($content, static::resolveBaseTrackingUrl()) !== false) // it already contains few tracking  urls in the content
             {
                 return false;

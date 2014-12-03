@@ -44,8 +44,6 @@
 
         public $editableTemplate = '<td colspan="{colspan}">{content}</td>';
 
-        protected $shouldRenderSelectLink = true;
-
         abstract protected function getSelectType();
 
         protected function getSubscribeUrl()
@@ -238,6 +236,11 @@
         protected function getAfterChangeSelectIdScript()
         {
             return "subscribeContactsToMarketingList{$this->getSelectType()} ($(this), event, $(this).val(), 1, 0, 0);";
+        }
+
+        protected function shouldRenderSelectLinkDefault()
+        {
+            return true;
         }
     }
 ?>

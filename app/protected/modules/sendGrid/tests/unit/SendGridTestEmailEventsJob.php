@@ -57,7 +57,7 @@
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             if($sendGridPluginEnabled)
             {
-                $this->processEventData('files/testsendgridwebhookdump.log', null);
+                $this->processEventData(dirname(__FILE__) . '/files/testsendgridwebhookdump.log', null);
             }
             return true;
         }
@@ -98,10 +98,9 @@
 
         /**
          * Process actiity information.
-         * @param array $value
          * @param int $type
          */
-        protected function processActivityInformation($value, $type)
+        protected function processActivityInformation($value)
         {
             $type                       = $this->getActivityTypeByEvent($value);
             if($type == EmailMessageActivity::TYPE_BOUNCE)

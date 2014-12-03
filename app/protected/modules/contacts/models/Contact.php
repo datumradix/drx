@@ -212,6 +212,7 @@
         public function setLatestActivityDateTime($dateTime)
         {
             assert('is_string($dateTime)');
+            AuditUtil::saveOriginalAttributeValue($this, 'latestActivityDateTime', $dateTime);
             $this->unrestrictedSet('latestActivityDateTime', $dateTime);
         }
 

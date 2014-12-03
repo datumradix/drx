@@ -100,8 +100,8 @@
         protected function renderActionBarContent()
         {
             $currentPageUrl  = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/runDiagnostic/');
-	        $content = ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('InstallModule', 'Recheck System')),
-		                $currentPageUrl, array('class' => 'z-button'));
+            $content = ZurmoHtml::link(ZurmoHtml::wrapLabel(Zurmo::t('InstallModule', 'Recheck System')),
+                        $currentPageUrl, array('class' => 'z-button'));
             return $content;
         }
     }

@@ -224,7 +224,7 @@
         public function resolveAdditionalScriptContentForEmailTemplate($stepCount, & $script)
         {
         }
-        
+
         public function resolveQueueModelEditAndDetailsViewOnLoadScript($model)
         {
         }

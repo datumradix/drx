@@ -41,14 +41,29 @@
     {
         protected $critical    = true;
 
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('JobsManagerModule', 'New stable Zurmo release available', LabelUtil::getTranslationParamsForAllModules());
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'NewZurmoVersionAvailable';
+        }
+
+        public function isSuperAdministratorNotification()
+        {
+            return true;
+        }
+
+        public function getTooltipId()
+        {
+            return 'new-zurmo-version-available-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when a newer version of Zurmo is available.');
         }
     }
 ?>

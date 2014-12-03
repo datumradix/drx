@@ -88,6 +88,10 @@
             parent::setUp();
             $this->user                 = User::getByUsername('super');
             Yii::app()->user->userModel = $this->user;
+            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
+            {
+                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Email test settings are missing.'));
+            }
         }
 
         public function testSend()
@@ -109,6 +113,9 @@
          */
         public function testSendQueued()
         {
+            $super                      = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+
             //add a message in the outbox_error folder.
             $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $this->user);
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
@@ -300,6 +307,9 @@
          */
         public function testTooManySendAttemptsResultingInFailure()
         {
+            $super                      = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+
             if (EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
             {
                 //add a message in the outbox_error folder.
