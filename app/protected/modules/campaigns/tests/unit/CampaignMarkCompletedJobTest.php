@@ -195,6 +195,32 @@
             $this->assertEquals(Campaign::STATUS_COMPLETED, $campaignProcessing->status);
         }
 
+        public function testRunWithCampaignWithActiveStatusAndAllItemsProcessed()
+        {
+            $contact                = ContactTestHelper::createContactByNameForOwner('contact 03', $this->user);
+            $marketingList          = MarketingListTestHelper::populateMarketingListByName('marketingList 04');
+            $campaignProcessing     = CampaignTestHelper::createCampaign('Processing With Processed Items',
+                'subject',
+                'text Content',
+                'Html Content',
+                null,
+                null,
+                null,
+                Campaign::STATUS_ACTIVE,
+                null,
+                null,
+                $marketingList);
+            $campaignProcessingId    = $campaignProcessing->id;
+            $this->assertNotNull($campaignProcessing);
+            CampaignItemTestHelper::createCampaignItem(1, $campaignProcessing, $contact);
+            $campaignProcessing->forgetAll();
+            $job                    = new CampaignMarkCompletedJob();
+            $this->assertTrue($job->run());
+            $campaignProcessing         = Campaign::getById($campaignProcessingId);
+            $this->assertNotNull($campaignProcessing);
+            $this->assertEquals(Campaign::STATUS_COMPLETED, $campaignProcessing->status);
+        }
+
         /**
          * @depends testRunWithCampaignWithProcessingStatusAndProcessedItems
          */
