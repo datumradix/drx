@@ -315,8 +315,14 @@
         protected function afterSave()
         {
             $this->deleteCampaignItemsForUnsetEmailMessagesIfPausedToggledToActiveStatus();
+            $resolveForOldModel = false;
+            if (isset($this->originalAttributeValues['status']) && $this->status == static::STATUS_ACTIVE)
+            {
+                $resolveForOldModel = true;
+            }
+
             Yii::app()->jobQueue->resolveToAddJobTypeByModelByDateTimeAttribute($this, 'sendOnDateTime',
-                                                                                'CampaignGenerateDueCampaignItems');
+                                                                                'CampaignGenerateDueCampaignItems', $resolveForOldModel);
             parent::afterSave();
         }
 
