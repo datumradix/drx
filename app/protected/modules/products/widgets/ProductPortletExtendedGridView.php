@@ -75,17 +75,17 @@
 
                     if ($model->priceFrequency == ProductTemplate::PRICE_FREQUENCY_ONE_TIME)
                     {
-                        $oneTimeTotal += $this->getAdjustedTotalByCurrency($model);
+                        $oneTimeTotal += ProductElementUtil::getAdjustedTotalByCurrency($model);
                     }
 
                     if ($model->priceFrequency == ProductTemplate::PRICE_FREQUENCY_MONTHLY)
                     {
-                        $monthlyTotal += $this->getAdjustedTotalByCurrency($model);
+                        $monthlyTotal += ProductElementUtil::getAdjustedTotalByCurrency($model);
                     }
 
                     if ($model->priceFrequency == ProductTemplate::PRICE_FREQUENCY_ANNUALLY)
                     {
-                        $annualTotal  += $this->getAdjustedTotalByCurrency($model);
+                        $annualTotal  += ProductElementUtil::getAdjustedTotalByCurrency($model);
                     }
                 }
             }
