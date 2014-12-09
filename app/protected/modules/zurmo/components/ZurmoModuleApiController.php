@@ -946,28 +946,16 @@
             return $stateMetadataAdapterClassName;
         }
 
+        /**
+         * Get array of deleted items since beginning or since datetime in past
+         * @param array $params
+         * @return ApiResult
+         * @throws ApiException
+         */
         protected function processGetDeletedItems($params)
         {
             $modelClassName = $this->getModelName();
             $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
-            if (!isset($params['userId']) || (int)$params['userId'] < 0)
-            {
-                $userId = Yii::app()->user->userModel->id;
-            }
-            else
-            {
-                $userId = (int)$params['userId'];
-            }
-
-            try
-            {
-                $user = User::getById($userId);
-            }
-            catch (NotFoundException $e)
-            {
-                $message = Zurmo::t('ZurmoModule', 'Invalid userId.');
-                throw new ApiException($message);
-            }
 
             if (!isset($params['sinceTimestamp']))
             {
@@ -1020,28 +1008,16 @@
             return $result;
         }
 
+        /**
+         * Get array of newly created items since beginning or since datetime in past
+         * @param $params
+         * @return ApiResult
+         * @throws ApiException
+         */
         protected function processGetCreatedItems($params)
         {
             $modelClassName = $this->getModelName();
             $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
-            if (!isset($params['userId']) || (int)$params['userId'] < 0)
-            {
-                $userId = Yii::app()->user->userModel->id;
-            }
-            else
-            {
-                $userId = (int)$params['userId'];
-            }
-
-            try
-            {
-                $user = User::getById($userId);
-            }
-            catch (NotFoundException $e)
-            {
-                $message = Zurmo::t('ZurmoModule', 'Invalid userId.');
-                throw new ApiException($message);
-            }
 
             if (!isset($params['sinceTimestamp']))
             {
@@ -1093,28 +1069,16 @@
             return $result;
         }
 
+        /**
+         * Get array of modified items since beginning or since datetime in past
+         * @param $params
+         * @return ApiResult
+         * @throws ApiException
+         */
         public function processGetModifiedItems($params)
         {
             $modelClassName = $this->getModelName();
             $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
-            if (!isset($params['userId']) || (int)$params['userId'] < 0)
-            {
-                $userId = Yii::app()->user->userModel->id;
-            }
-            else
-            {
-                $userId = (int)$params['userId'];
-            }
-
-            try
-            {
-                $user = User::getById($userId);
-            }
-            catch (NotFoundException $e)
-            {
-                $message = Zurmo::t('ZurmoModule', 'Invalid userId.');
-                throw new ApiException($message);
-            }
 
             if (!isset($params['sinceTimestamp']))
             {
