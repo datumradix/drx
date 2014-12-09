@@ -232,5 +232,10 @@
         public function resolveQueueModelEditViewOnRuleTypeChangeScript($model)
         {
         }
+
+        public function resolveExtraToolbarContentForView($viewClassName, $controllerId, $moduleId, $modelId)
+        {
+            return null;
+        }
     }
 ?>
