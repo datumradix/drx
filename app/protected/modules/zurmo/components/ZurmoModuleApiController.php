@@ -1106,10 +1106,8 @@
                 $currentPage = 1;
             }
             $offset = $this->getOffsetFromCurrentPageAndPageSize($currentPage, $pageSize);
-
             $models = ModelStateChangesSubscriptionUtil::getUpdatedModels($modelClassName, $pageSize, $offset, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
-            $totalItems = ModelStateChangesSubscriptionUtil::getUpdatedModelsCount('API', $modelClassName, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
-
+            $totalItems = ModelStateChangesSubscriptionUtil::getUpdatedModelsCount($modelClassName, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
             $data = array(
                 'totalCount' => $totalItems,
                 'pageSize' => $pageSize,
