@@ -442,6 +442,27 @@
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
 
+            // Pause the campaign
+            $campaign->status   = Campaign::STATUS_PAUSED;
+            $this->assertTrue($campaign->save());
+
+            // ensure campaign items are still there
+            $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
+            $this->assertCount(5, $campaignItems);
+            $this->assertNotEmpty($campaignItems);
+
+            // Unpause campaign
+            $campaign->forgetAll();
+            $campaign           = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_PAUSED, $campaign->status);
+            $campaign->status   = Campaign::STATUS_ACTIVE;
+            $this->assertTrue($campaign->save());
+
+            // ensure campaign items are still there
+            $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
+            $this->assertCount(5, $campaignItems);
+            $this->assertNotEmpty($campaignItems);
+
             // Run CampaignMarkCompleted
             $job                    = new CampaignMarkCompletedJob();
             $this->assertTrue($job->run());
