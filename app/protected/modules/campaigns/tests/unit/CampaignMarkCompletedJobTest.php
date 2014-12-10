@@ -195,32 +195,6 @@
             $this->assertEquals(Campaign::STATUS_COMPLETED, $campaignProcessing->status);
         }
 
-        public function testRunWithCampaignWithActiveStatusAndAllItemsProcessed()
-        {
-            $contact                = ContactTestHelper::createContactByNameForOwner('contact 03', $this->user);
-            $marketingList          = MarketingListTestHelper::populateMarketingListByName('marketingList 04');
-            $campaignProcessing     = CampaignTestHelper::createCampaign('Processing With Processed Items',
-                'subject',
-                'text Content',
-                'Html Content',
-                null,
-                null,
-                null,
-                Campaign::STATUS_ACTIVE,
-                null,
-                null,
-                $marketingList);
-            $campaignProcessingId    = $campaignProcessing->id;
-            $this->assertNotNull($campaignProcessing);
-            CampaignItemTestHelper::createCampaignItem(1, $campaignProcessing, $contact);
-            $campaignProcessing->forgetAll();
-            $job                    = new CampaignMarkCompletedJob();
-            $this->assertTrue($job->run());
-            $campaignProcessing         = Campaign::getById($campaignProcessingId);
-            $this->assertNotNull($campaignProcessing);
-            $this->assertEquals(Campaign::STATUS_COMPLETED, $campaignProcessing->status);
-        }
-
         /**
          * @depends testRunWithCampaignWithProcessingStatusAndProcessedItems
          */
@@ -301,6 +275,181 @@
             $campaign03 = Campaign::getById($campaign03Id);
             $this->assertNotNull($campaign03);
             $this->assertEquals(Campaign::STATUS_COMPLETED, $campaign03->status);
+        }
+
+        public function testRunWithCampaignPausedAfterAllItemsGeneratedAndThenUnpaused()
+        {
+            // Cleanup
+            Campaign::deleteAll();
+            $this->assertEquals(0, Campaign::getCount());
+            $this->assertEquals(0, CampaignItem::getCount());
+            $this->assertEquals(0, CampaignItemActivity::getCount());
+            MarketingList::deleteAll();
+            $this->assertEquals(0, MarketingList::getCount());
+            $this->assertEquals(0, MarketingListMember::getCount());
+            EmailMessage::deleteAll();
+            $this->assertEquals(0, EmailMessage::getCount());
+            $this->assertEquals(0, EmailMessageContent::getCount());
+            $this->assertEquals(0, EmailMessageSender::getCount());
+            $this->assertEquals(0, EmailMessageRecipient::getCount());
+            Contact::deleteAll();
+            $this->assertEquals(0, Contact::getCount());
+
+            // setup an email address for contacts
+            $email                      = new Email();
+            $email->emailAddress        = 'demo@zurmo.com';
+
+            // create a marketing list with 5 members
+            $marketingList      = MarketingListTestHelper::createMarketingListByName('marketingList 05');
+            $marketingListId    = $marketingList->id;
+            for ($i = 1; $i <= 5; $i++)
+            {
+                $contact = ContactTestHelper::createContactByNameForOwner('campaignContact 0' . $i, $this->user);
+                $contact->primaryEmail      = $email;
+                $this->assertTrue($contact->save());
+                MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
+            }
+            $marketingList->forgetAll();
+
+            // create a due campaign with that marketing list
+            $campaign           = CampaignTestHelper::createCampaign('campaign 04',
+                                                                    'subject',
+                                                                    'text Content',
+                                                                    'Html Content',
+                                                                    null,
+                                                                    null,
+                                                                    null,
+                                                                    null,
+                                                                    null,
+                                                                    null,
+                                                                    MarketingList::getById($marketingListId));
+            $campaignId         = $campaign->id;
+
+            // we have to do this to ensure when we retrieve the data status is updated from db.
+            $campaign->forgetAll();
+            $this->assertEmpty(CampaignItem::getAll());
+
+            // Run CampaignGenerateDueCampaignItemsJob
+            $job                = new CampaignGenerateDueCampaignItemsJob();
+            $this->assertTrue($job->run());
+            $campaign           = Campaign::getById($campaignId);
+
+            // ensure status is processing
+            $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+
+            // ensure 5 campaign items have been generated
+            $this->assertEquals(5, CampaignItem::getCount());
+
+            // ensure all 5 campaign items are unprocessed
+            $campaignItems      = CampaignItem::getByProcessedAndCampaignId(0, $campaignId);
+            $this->assertNotEmpty($campaignItems);
+            $this->assertCount(5, $campaignItems);
+
+            // Run CampaignQueueMessagesInOutboxJob
+            $job                = new CampaignQueueMessagesInOutboxJob();
+            $this->assertTrue($job->run());
+
+            // Ensure campaign status
+            $campaign->forgetAll();
+            $campaign           = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+
+            // ensure all 5 campaign items are processed
+            $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
+            $this->assertNotEmpty($campaignItems);
+            $this->assertCount(5, $campaignItems);
+
+            // Ensure 5 new email messages
+            $this->assertEquals(5, EmailMessage::getCount());
+            $this->assertEquals(5, EmailHelper::getQueuedCount());
+
+            // Run ProcessOutboundEmail
+            $job                = new ProcessOutboundEmailJob();
+            $this->assertTrue($job->run());
+
+            // Ensure no email address were attempted to be sent
+            $this->assertEquals(5, EmailMessage::getCount());
+            foreach (EmailMessage::getAll() as $emailMessage)
+            {
+                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_OUTBOX_ERROR);
+            }
+
+            // Ensure campaign status
+            $campaign->forgetAll();
+            $campaign           = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+
+            // Pause the campaign
+            $campaign->status   = Campaign::STATUS_PAUSED;
+            $this->assertTrue($campaign->save());
+
+            // ensure campaign items are still there
+            $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
+            $this->assertCount(5, $campaignItems);
+            $this->assertNotEmpty($campaignItems);
+
+            // Unpause campaign
+            $campaign->forgetAll();
+            $campaign           = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_PAUSED, $campaign->status);
+            $campaign->status   = Campaign::STATUS_ACTIVE;
+            $this->assertTrue($campaign->save());
+
+            // ensure campaign items are still there
+            $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
+            $this->assertCount(5, $campaignItems);
+            $this->assertNotEmpty($campaignItems);
+
+            // Ensure status change
+            $campaign->forgetAll();
+            $campaign           = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_ACTIVE, $campaign->status);
+
+            // Run CampaignGenerateDueCampaignItemsJob
+            $job                = new CampaignGenerateDueCampaignItemsJob();
+            $this->assertTrue($job->run());
+
+            // Ensure campaign status change
+            $campaign->forgetAll();
+            $campaign           = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+
+            // Run CampaignQueueMessagesInOutboxJob
+            $job                = new CampaignQueueMessagesInOutboxJob();
+            $this->assertTrue($job->run());
+
+            // Ensure 5 new email messages
+            $this->assertEquals(5, EmailMessage::getCount());
+
+            // Ensure campaign status
+            $campaign->forgetAll();
+            $campaign           = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+
+            // Run ProcessOutboundEmail
+            $job                = new ProcessOutboundEmailJob();
+            $this->assertTrue($job->run());
+
+            // Ensure no email address were attempted to be sent
+            $this->assertEquals(5, EmailMessage::getCount());
+            foreach (EmailMessage::getAll() as $emailMessage)
+            {
+                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_OUTBOX_ERROR);
+            }
+
+            // Ensure campaign status
+            $campaign->forgetAll();
+            $campaign           = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+
+            // Run CampaignMarkCompleted
+            $job                    = new CampaignMarkCompletedJob();
+            $this->assertTrue($job->run());
+
+            // Ensure campaign status change
+            $campaign->forgetAll();
+            $campaign           = Campaign::getById($campaignId);
+            $this->assertEquals(Campaign::STATUS_COMPLETED, $campaign->status);
         }
     }
 ?>
