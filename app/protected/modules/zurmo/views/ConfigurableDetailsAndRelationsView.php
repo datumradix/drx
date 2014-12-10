@@ -240,7 +240,7 @@
          */
         protected function resolveExtraToolbarContent()
         {
-            return null;
+            return Yii::app()->custom->resolveExtraToolbarContentForView(get_class($this), $this->controllerId, $this->moduleId, $this->modelId);
         }
     }
 ?>
