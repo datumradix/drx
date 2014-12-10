@@ -325,10 +325,51 @@
                                                                     MarketingList::getById($marketingListId));
             $campaignId         = $campaign->id;
 
+            /*
+             * Run 1:
+             * CampaignGenerateDueCampaignItemsJob
+             * status == processing
+             * items generated but unprocessed
+             *
+             * CampaignQueueMessagesInOutboxJob
+             * status == processing
+             * items processed with email messages generated and queued
+             *
+             * ProcessOutboundEmailJob
+             * status == processing
+             * email items attempted to be sent
+             *
+             * Run 2:
+             * Pause the campaign
+             * items are processed and still present
+             *
+             * Unpause the campaign
+             * status == active
+             * items are processed and still present
+             *
+             * CampaignGenerateDueCampaignItemsJob
+             * status == processing
+             * ensure all items are present and processed
+             *
+             * CampaignQueueMessagesInOutboxJob
+             * status == processing
+             * ensure all items are present and processed
+             * ensure all email messages are present with correct folder type
+             *
+             * ProcessOutboundEmailJob
+             * ensure all email messages are present with correct folder type
+             * status == processing
+             *
+             *
+             * Run 3:
+             * Mark Campaign as Completed
+             * status == completed
+             */
             // we have to do this to ensure when we retrieve the data status is updated from db.
             $campaign->forgetAll();
             $this->assertEmpty(CampaignItem::getAll());
 
+            // Run 1 starts here
             // Run CampaignGenerateDueCampaignItemsJob
             $job                = new CampaignGenerateDueCampaignItemsJob();
             $this->assertTrue($job->run());
@@ -350,7 +391,6 @@
             $this->assertTrue($job->run());
 
             // Ensure campaign status
-            $campaign->forgetAll();
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
 
@@ -375,10 +415,12 @@
             }
 
             // Ensure campaign status
-            $campaign->forgetAll();
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
 
+            // end of Run 1
+
+            // Run 2 starts here
             // Pause the campaign
             $campaign->status   = Campaign::STATUS_PAUSED;
             $this->assertTrue($campaign->save());
@@ -389,7 +431,6 @@
             $this->assertNotEmpty($campaignItems);
 
             // Unpause campaign
-            $campaign->forgetAll();
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_PAUSED, $campaign->status);
             $campaign->status   = Campaign::STATUS_ACTIVE;
@@ -401,7 +442,6 @@
             $this->assertNotEmpty($campaignItems);
 
             // Ensure status change
-            $campaign->forgetAll();
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_ACTIVE, $campaign->status);
 
@@ -410,21 +450,33 @@
             $this->assertTrue($job->run());
 
             // Ensure campaign status change
-            $campaign->forgetAll();
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+
+            // ensure all 5 campaign items are processed
+            $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
+            $this->assertNotEmpty($campaignItems);
+            $this->assertCount(5, $campaignItems);
 
             // Run CampaignQueueMessagesInOutboxJob
             $job                = new CampaignQueueMessagesInOutboxJob();
             $this->assertTrue($job->run());
 
-            // Ensure 5 new email messages
-            $this->assertEquals(5, EmailMessage::getCount());
-
             // Ensure campaign status
-            $campaign->forgetAll();
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+
+            // ensure all 5 campaign items are processed
+            $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
+            $this->assertNotEmpty($campaignItems);
+            $this->assertCount(5, $campaignItems);
+
+            // Ensure 5 new email messages
+            $this->assertEquals(5, EmailMessage::getCount());
+            foreach (EmailMessage::getAll() as $emailMessage)
+            {
+                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_OUTBOX_ERROR);
+            }
 
             // Run ProcessOutboundEmail
             $job                = new ProcessOutboundEmailJob();
@@ -438,49 +490,19 @@
             }
 
             // Ensure campaign status
-            $campaign->forgetAll();
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
+            // end of Run 2
 
-            // Pause the campaign
-            $campaign->status   = Campaign::STATUS_PAUSED;
-            $this->assertTrue($campaign->save());
-
-            // ensure campaign items are still there
-            $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
-            $this->assertCount(5, $campaignItems);
-            $this->assertNotEmpty($campaignItems);
-
-            // Unpause campaign
-            $campaign->forgetAll();
-            $campaign           = Campaign::getById($campaignId);
-            $this->assertEquals(Campaign::STATUS_PAUSED, $campaign->status);
-            $campaign->status   = Campaign::STATUS_ACTIVE;
-            $this->assertTrue($campaign->save());
-
-            // ensure campaign items are still there
-            $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
-            $this->assertCount(5, $campaignItems);
-            $this->assertNotEmpty($campaignItems);
-
-            // Run CampaignGenerateDueCampaignItemsJob
-            $job                = new CampaignGenerateDueCampaignItemsJob();
-            $this->assertTrue($job->run());
-            // Run CampaignQueueMessagesInOutboxJob
-            $job                = new CampaignQueueMessagesInOutboxJob();
-            $this->assertTrue($job->run());
-            // Run ProcessOutboundEmail
-            $job                = new ProcessOutboundEmailJob();
-            $this->assertTrue($job->run());
-
+            // Run 3 starts here
             // Run CampaignMarkCompleted
             $job                    = new CampaignMarkCompletedJob();
             $this->assertTrue($job->run());
 
             // Ensure campaign status change
-            $campaign->forgetAll();
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_COMPLETED, $campaign->status);
+            // end of Run 3
         }
     }
 ?>
