@@ -463,6 +463,16 @@
             $this->assertCount(5, $campaignItems);
             $this->assertNotEmpty($campaignItems);
 
+            // Run CampaignGenerateDueCampaignItemsJob
+            $job                = new CampaignGenerateDueCampaignItemsJob();
+            $this->assertTrue($job->run());
+            // Run CampaignQueueMessagesInOutboxJob
+            $job                = new CampaignQueueMessagesInOutboxJob();
+            $this->assertTrue($job->run());
+            // Run ProcessOutboundEmail
+            $job                = new ProcessOutboundEmailJob();
+            $this->assertTrue($job->run());
+
             // Run CampaignMarkCompleted
             $job                    = new CampaignMarkCompletedJob();
             $this->assertTrue($job->run());
