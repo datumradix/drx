@@ -45,102 +45,6 @@
             ContactsModule::loadStartingData();
             ReadPermissionsSubscriptionUtil::buildTables();
         }
-        public function testGetModifiedContacts()
-        {
-            $timestamp = time();
-            sleep(1);
-            $super = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
-            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Contact');
-            $job = new ReadPermissionSubscriptionUpdateJob();
-            $contact1 = ContactTestHelper::createContactByNameForOwner('Michael', $super);
-            $contact2 = ContactTestHelper::createContactByNameForOwner('Michael2', $super);
-            $contact3 = ContactTestHelper::createContactByNameForOwner('Michael3', $super);
-            $contact4 = ContactTestHelper::createContactByNameForOwner('Michael4', $super);
-            $this->assertTrue($job->run());
-            sleep(1);
-
-            $authenticationData = $this->login();
-            $headers = array(
-                'Accept: application/json',
-                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
-                'ZURMO_TOKEN: ' . $authenticationData['token'],
-                'ZURMO_API_REQUEST_TYPE: REST',
-            );
-
-            $data = array(
-                'sinceTimestamp' => $timestamp,
-                'pagination' => array(
-                    'pageSize' => 2,
-                    'page'     => 1
-                )
-            );
-
-            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
-            $response = json_decode($response, true);
-            $this->assertEquals(0, $response['data']['totalCount']);
-            $this->assertEquals(2, $response['data']['pageSize']);
-            $this->assertEquals(1, $response['data']['currentPage']);
-
-            $contact1->firstName = "Micheal Modified";
-            $this->assertTrue($contact1->save());
-            sleep(1);
-            $contact3->firstName = "Micheal Modified";
-            $this->assertTrue($contact3->save());
-            sleep(1);
-            $contact4->firstName = "Micheal Modified";
-            $this->assertTrue($contact4->save());
-            sleep(1);
-
-            $data = array(
-                'sinceTimestamp' => $timestamp,
-                'pagination' => array(
-                    'pageSize' => 2,
-                    'page'     => 1
-                )
-            );
-
-            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
-            $response = json_decode($response, true);
-            $this->assertEquals(3, $response['data']['totalCount']);
-            $this->assertEquals(2, $response['data']['pageSize']);
-            $this->assertEquals(1, $response['data']['currentPage']);
-
-            $this->assertEquals($contact1->id, $response['data']['items'][0]['id']);
-            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
-            $this->assertEquals($contact1->firstName, $response['data']['items'][0]['firstName']);
-            $this->assertEquals($contact1->lastName, $response['data']['items'][0]['lastName']);
-            $this->assertEquals($contact1->companyName, $response['data']['items'][0]['companyName']);
-            $this->assertEquals($contact1->primaryEmail->emailAddress, $response['data']['items'][0]['primaryEmail']['emailAddress']);
-
-            $this->assertEquals($contact3->id, $response['data']['items'][1]['id']);
-            $this->assertEquals($super->id, $response['data']['items'][1]['owner']['id']);
-            $this->assertEquals($contact3->firstName, $response['data']['items'][1]['firstName']);
-            $this->assertEquals($contact3->lastName, $response['data']['items'][1]['lastName']);
-            $this->assertEquals($contact3->companyName, $response['data']['items'][1]['companyName']);
-            $this->assertEquals($contact3->primaryEmail->emailAddress, $response['data']['items'][1]['primaryEmail']['emailAddress']);
-
-            $data = array(
-                'sinceTimestamp' => $timestamp,
-                'pagination' => array(
-                    'pageSize' => 2,
-                    'page'     => 2
-                )
-            );
-
-            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
-            $response = json_decode($response, true);
-            $this->assertEquals(3, $response['data']['totalCount']);
-            $this->assertEquals(2, $response['data']['pageSize']);
-            $this->assertEquals(2, $response['data']['currentPage']);
-
-            $this->assertEquals($contact4->id, $response['data']['items'][0]['id']);
-            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
-            $this->assertEquals($contact4->firstName, $response['data']['items'][0]['firstName']);
-            $this->assertEquals($contact4->lastName, $response['data']['items'][0]['lastName']);
-            $this->assertEquals($contact4->companyName, $response['data']['items'][0]['companyName']);
-            $this->assertEquals($contact4->primaryEmail->emailAddress, $response['data']['items'][0]['primaryEmail']['emailAddress']);
-        }
 
         public function testGetContact()
         {
@@ -1610,7 +1514,7 @@
          * part of read permission subscription tests
          * @throws NotFoundException
          */
-        public function atestGetModifiedContacts()
+        public function testGetModifiedContacts()
         {
             $timestamp = time();
             sleep(1);
@@ -1621,6 +1525,7 @@
             $contact1 = ContactTestHelper::createContactByNameForOwner('Michael', $super);
             $contact2 = ContactTestHelper::createContactByNameForOwner('Michael2', $super);
             $contact3 = ContactTestHelper::createContactByNameForOwner('Michael3', $super);
+            $contact4 = ContactTestHelper::createContactByNameForOwner('Michael4', $super);
             $this->assertTrue($job->run());
             sleep(1);
 
@@ -1631,6 +1536,7 @@
                 'ZURMO_TOKEN: ' . $authenticationData['token'],
                 'ZURMO_API_REQUEST_TYPE: REST',
             );
+
             $data = array(
                 'sinceTimestamp' => $timestamp,
                 'pagination' => array(
@@ -1645,20 +1551,66 @@
             $this->assertEquals(2, $response['data']['pageSize']);
             $this->assertEquals(1, $response['data']['currentPage']);
 
+            $timestamp = time();
+            sleep(1);
+            $contact1->firstName = "Micheal Modified";
+            $this->assertTrue($contact1->save());
+            sleep(1);
+            $contact3->firstName = "Micheal Modified";
+            $this->assertTrue($contact3->save());
+            sleep(1);
+            $contact4->firstName = "Micheal Modified";
+            $this->assertTrue($contact4->save());
+            sleep(1);
+
             $data = array(
-                'sinceTimestamp' => 0,
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $this->assertEquals($contact1->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($contact1->firstName, $response['data']['items'][0]['firstName']);
+            $this->assertEquals($contact1->lastName, $response['data']['items'][0]['lastName']);
+            $this->assertEquals($contact1->companyName, $response['data']['items'][0]['companyName']);
+            $this->assertEquals($contact1->primaryEmail->emailAddress, $response['data']['items'][0]['primaryEmail']['emailAddress']);
+
+            $this->assertEquals($contact3->id, $response['data']['items'][1]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][1]['owner']['id']);
+            $this->assertEquals($contact3->firstName, $response['data']['items'][1]['firstName']);
+            $this->assertEquals($contact3->lastName, $response['data']['items'][1]['lastName']);
+            $this->assertEquals($contact3->companyName, $response['data']['items'][1]['companyName']);
+            $this->assertEquals($contact3->primaryEmail->emailAddress, $response['data']['items'][1]['primaryEmail']['emailAddress']);
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 2
                 )
             );
 
-            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(3, $response['data']['totalCount']);
             $this->assertEquals(2, $response['data']['pageSize']);
             $this->assertEquals(2, $response['data']['currentPage']);
-            $this->assertContains($contactId3, $response['data']['items']);
+
+            $this->assertEquals($contact4->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($contact4->firstName, $response['data']['items'][0]['firstName']);
+            $this->assertEquals($contact4->lastName, $response['data']['items'][0]['lastName']);
+            $this->assertEquals($contact4->companyName, $response['data']['items'][0]['companyName']);
+            $this->assertEquals($contact4->primaryEmail->emailAddress, $response['data']['items'][0]['primaryEmail']['emailAddress']);
         }
 
         /**
