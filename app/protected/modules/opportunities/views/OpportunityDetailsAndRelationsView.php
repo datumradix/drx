@@ -98,14 +98,5 @@
             TasksUtil::resolveShouldOpenToTaskForDetailsAndRelationsView();
             return $content;
         }
-
-        /**
-         * Resolve extra toolbar content.
-         * @return string
-         */
-        protected function resolveExtraToolbarContent()
-        {
-            return Yii::app()->custom->resolveExtraToolbarContentForView(get_class($this), $this->controllerId, $this->moduleId, $this->modelId);
-        }
     }
 ?>
