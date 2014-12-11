@@ -195,10 +195,10 @@
          * @param $parentContent string
          * @return string
          */
-        public function renderPortletHeadContentForOpenTaskPortletOnDetailsAndRelationsView($viewClassName,
-                                                                                            $params,
-                                                                                            $defaultOptionsContent,
-                                                                                            $parentContent)
+        public function renderHeadContentForPortletOnDetailsAndRelationsView($viewClassName,
+                                                                             $params,
+                                                                             $defaultOptionsContent,
+                                                                             $parentContent)
         {
             return $parentContent;
         }
@@ -231,6 +231,11 @@
 
         public function resolveQueueModelEditViewOnRuleTypeChangeScript($model)
         {
+        }
+
+        public function resolveExtraToolbarContentForView($viewClassName, $controllerId, $moduleId, $modelId)
+        {
+            return null;
         }
     }
 ?>
