@@ -11046,7 +11046,6 @@ div.special-pager .hidden.next:after {
   -o-text-shadow: 0 -1px 0 #fff;
   text-shadow: 0 -1px 0 #fff;
   position: relative;
-  z-index: 10;
   overflow: hidden;
   background: url("../images/game-dashboard/blue-chalkboard-blurred.jpg") left top repeat;
   z-index: 100;
@@ -11080,11 +11079,6 @@ div.special-pager .hidden.next:after {
   background-size: 100% auto;
 }
 .gd-collection-panel > div {
-  -webkit-transform: translate(0);
-  -moz-transform: translate(0);
-  -o-transform: translate(0);
-  -ms-transform: translate(0);
-  transform: translate(0);
   position: absolute;
   top: 0;
   left: 0;
@@ -11194,10 +11188,12 @@ div.special-pager .hidden.next:after {
   width: auto;
 }
 .gd-collection-item-redeemed {
-  margin-top: -10px;
-  display: inline-block;
+  margin-top: -8px;
+  display: block;
   float: right;
   text-align: center;
+  position: absolute;
+  right: 0;
 }
 .gd-collection-item-redeemed img {
   max-width: 70px;
