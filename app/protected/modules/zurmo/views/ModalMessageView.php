@@ -47,18 +47,23 @@
         public function __construct($message)
         {
             assert('is_string($message)');
-            $this->message = $message;
+            $this->message      = $message;
         }
 
         protected function renderContent()
         {
-            $this->setCssClasses(array_merge($this->getCssClasses(), $this->additionalCssClasses()));
+            $this->setCssClasses($this->getCssClasses());
             return nl2br($this->message);
         }
 
-        protected function additionalCssClasses()
+        public function getCssClasses()
         {
-            return array();
+            return CMap::mergeArray($this->getDefaultCssClasses(), parent::getCssClasses());
+        }
+
+        protected function getDefaultCssClasses()
+        {
+            return array('modal-result-message');
         }
     }
 ?>

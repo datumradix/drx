@@ -120,6 +120,7 @@
         protected function renderSuccessMessage()
         {
             $messageContent     = Zurmo::t('MarketingModule', 'Test Email was successfully sent');
+            //$content = ZurmoHtml::tag('div', array('class' => 'modal-result-message'), $message);
             $messageView        = new TestEmailSentView($messageContent);
             $view               = new ModalView($this,
                                     $messageView,
@@ -127,7 +128,6 @@
                                     Zurmo::t('EmailMessagesModule', 'Send Test Email Results')
                                 );
             echo $view->render();
-
         }
 
         protected function throwAccessDeniedExceptionIfModuleIsInaccessible()

@@ -34,52 +34,18 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class CampaignsListView extends SecuredListView
+    /**
+     * Adds extra support for SavedReport specific properties
+     */
+    class SavedReportCopyModelUtil extends ZurmoCopyModelUtil
     {
-        public static function getDefaultMetadata()
+        /**
+         * Overriding to fix bug https://www.pivotaltracker.com/story/show/82341930
+         * @param RedBeanModel $model
+         * @param RedBeanModel $copyToModel
+         */
+        protected static function resolveExplicitPermissions(RedBeanModel $model, RedBeanModel $copyToModel)
         {
-            $metadata = array(
-                'global' => array(
-                    'nonPlaceableAttributeNames' => array(
-                        'htmlContent',
-                        'textContent',
-                    ),
-                     'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'status', 'type' => 'CampaignStatus'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'sendOnDateTime', 'type' => 'DateTime'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            );
-            return $metadata;
         }
     }
 ?>

@@ -36,9 +36,9 @@
 
     class TestEmailSentView extends ModalMessageView
     {
-        protected function additionalCssClasses()
+        protected function getDefaultCssClasses()
         {
-            return array('send-email-test');
+            return CMap::mergeArray(parent::getDefaultCssClasses(), array('send-email-test'));
         }
     }
 ?>

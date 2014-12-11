@@ -58,8 +58,8 @@
         {
             return array(
                 static::STATUS_PAUSED       => Zurmo::t('CampaignsModule', 'Paused'),
-                static::STATUS_ACTIVE       => Zurmo::t('Core', 'Active'),
-                static::STATUS_PROCESSING   => Zurmo::t('Core', 'Processing'),
+                static::STATUS_ACTIVE       => Zurmo::t('Core', 'Scheduled'),
+                static::STATUS_PROCESSING   => Zurmo::t('Core', 'Sending'),
                 static::STATUS_COMPLETED    => Zurmo::t('Core', 'Completed'),
             );
         }
@@ -184,6 +184,8 @@
                     array('name',                   'required'),
                     array('name',                   'type',    'type' => 'string'),
                     array('name',                   'length',  'min'  => 1, 'max' => 64),
+                    // putting it on name just so this validator gets executed, other than that there is no binding at all
+                    array('name',                   'OnlyEditableAttributesAreSetValidator'),
                     array('status',                 'required'),
                     array('status',                 'type',    'type' => 'integer'),
                     array('status',                 'default', 'value' => static::STATUS_ACTIVE),
@@ -292,10 +294,35 @@
             return true;
         }
 
+        public function togglePausedStatusToActive()
+        {
+            // if this is true by default(install), demo data can't create campaigns that are paused.
+            // tests that expect the status to be left paused would fail too.
+            // we could hack here but using scenarios, is_cli, etc but nothing would be too definite without
+            // making a nice spaghetti here.
+            return false;
+        }
+
+        protected function beforeSave()
+        {
+            if ($this->togglePausedStatusToActive() && $this->status == static::STATUS_PAUSED)
+            {
+                $this->status = static::STATUS_ACTIVE;
+            }
+            return parent::beforeSave();
+        }
+
         protected function afterSave()
         {
+            $this->deleteCampaignItemsForUnsetEmailMessagesIfPausedToggledToActiveStatus();
+            $resolveForOldModel = false;
+            if (isset($this->originalAttributeValues['status']) && $this->status == static::STATUS_ACTIVE)
+            {
+                $resolveForOldModel = true;
+            }
+
             Yii::app()->jobQueue->resolveToAddJobTypeByModelByDateTimeAttribute($this, 'sendOnDateTime',
-                                                                                'CampaignGenerateDueCampaignItems');
+                                                                                'CampaignGenerateDueCampaignItems', $resolveForOldModel);
             parent::afterSave();
         }
 
@@ -306,6 +333,102 @@
                 $item->delete();
             }
             return parent::afterDelete();
+        }
+
+        protected function deleteCampaignItemsForUnsetEmailMessagesIfPausedToggledToActiveStatus()
+        {
+            if (!isset($this->originalAttributeValues['status']) ||
+                $this->originalAttributeValues['status'] != static::STATUS_PAUSED)
+            {
+                return;
+            }
+            $modifiedAttributeKeys              = array_keys(array_filter($this->originalAttributeValues));
+            $dependentAttributesModified        = array_diff($modifiedAttributeKeys, array('name', 'status'));
+            $purgeUnsentCampaignItems           = (!empty($dependentAttributesModified));
+            if ($purgeUnsentCampaignItems)
+            {
+                $this->deleteUnprocessedCampaignItems();
+                $unsetEmailMessagesForCurrentCampaign = EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_OUTBOX, $this->id);
+                foreach ($unsetEmailMessagesForCurrentCampaign as $emailMessage) {
+                    // deleting campaign item should automatically delete any associated data.
+                    $emailMessage->campaignItem->delete();
+                }
+            }
+        }
+
+        protected function deleteUnprocessedCampaignItems()
+        {
+            $campaignitems = CampaignItem::getByProcessedAndCampaignId(0, $this->id);
+            foreach ($campaignitems as $campaignitem)
+            {
+                $campaignitem->delete();
+            }
+        }
+
+        public function isAttributeEditable($attributeName)
+        {
+            $editableAttributes = $this->getEditableAttributes();
+            return in_array($attributeName, $editableAttributes);
+        }
+
+        public function getEditableAttributes()
+        {
+            // isNewModel check fails sometimes here, better to check for id < 0
+            if ($this->id < 0 || $this->status == static::STATUS_ACTIVE)
+            {
+                return $this->getEditableAttributesForNewOrActiveStatus();
+            }
+
+            if ($this->status == static::STATUS_PROCESSING || $this->status == static::STATUS_COMPLETED)
+            {
+                return $this->getEditableAttributesForProcessingOrCompletedStatus();
+            }
+
+            if ($this->status == static::STATUS_PAUSED)
+            {
+                return $this->getEditableAttributesForPausedStatus();
+            }
+            throw new Exception("Unable to determine editable attributes for id#" . $this->id . ' and status: ' . $this->status);
+        }
+
+        public function getEditableAttributesForNewOrActiveStatus()
+        {
+            $members            = static::getMemberAttributes();
+            $specialMembers     = array('marketingList');
+            $specialElements    = array('EmailTemplate', 'Files', 'owner');
+            $allowedAttributes  = CMap::mergeArray($members, $specialMembers, $specialElements);
+            return $allowedAttributes;
+        }
+
+        public function getEditableAttributesForProcessingOrCompletedStatus()
+        {
+            $allowedAttributes  = array('name');
+            // either the current status should not be completed(e.g. processing, as that is the only status under
+            //                                                          which this function would be called)
+            // or we should have moved from a processing status(to completed, as that is the only status under
+            //                                                          which this function would be called)
+            if ($this->status != static::STATUS_COMPLETED ||
+                (isset($this->originalAttributeValues['status']) &&
+                    $this->originalAttributeValues['status'] == static::STATUS_PROCESSING))
+            {
+                $allowedAttributes[] = 'status';
+            }
+            return $allowedAttributes;
+        }
+
+        public function getEditableAttributesForPausedStatus()
+        {
+            $members            = static::getMemberAttributes();
+            $specialElements    = array('EmailTemplate', 'Files', 'owner');
+            $allowedAttributes  = CMap::mergeArray($members, $specialElements);
+            return $allowedAttributes;
+        }
+
+        public function getMemberAttributes()
+        {
+            $metadata   = static::getMetadata();
+            $members    = $metadata[get_class($this)]['members'];
+            return $members;
         }
     }
 ?>

@@ -66,6 +66,10 @@
 
         public function validateSelectedContact($attribute, $params)
         {
+            if ($this->selectContactOrEmailRadioButton == 1)
+            {
+                return true;
+            }
             $matches    = array();
             preg_match('#\((\d+)\)#', $this->selectContactOrLeadSearchBox, $matches);
             $contactId  = (isset($matches[1]))? $matches[1] : null;
@@ -73,7 +77,12 @@
             {
                 try
                 {
-                    Contact::getById($contactId);
+                    $contact = Contact::getById($contactId);
+                    if (empty($contact->primaryEmail->emailAddress))
+                    {
+                        $this->addError($attribute, Zurmo::t('MarketingModule', 'Selected contact does not have a valid primary email address.'));
+                        return false;
+                    }
                     return true;
                 }
                 catch (NotFoundException $e)

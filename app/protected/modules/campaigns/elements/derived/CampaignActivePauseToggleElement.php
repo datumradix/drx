@@ -34,52 +34,50 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class CampaignsListView extends SecuredListView
+    class CampaignActivePauseToggleElement extends StateToggleElement
     {
-        public static function getDefaultMetadata()
+        protected function assertAttributeName()
         {
-            $metadata = array(
-                'global' => array(
-                    'nonPlaceableAttributeNames' => array(
-                        'htmlContent',
-                        'textContent',
-                    ),
-                     'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'status', 'type' => 'CampaignStatus'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'sendOnDateTime', 'type' => 'DateTime'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
+            assert('$this->attribute == "status"');
+        }
+
+        protected function assertModelClass()
+        {
+            assert('$this->model instanceof Campaign');
+        }
+
+        protected static function resolveSelectedRadioButtonListOption(RedBeanModel $model)
+        {
+            return intval($model->status == Campaign::STATUS_PAUSED);
+        }
+
+        protected static function resolveStatusChangeUrl(RedBeanModel $model)
+        {
+            $url    = Yii::app()->createUrl('campaigns/default/togglePaused', array('id' => $model->id));
+            return $url;
+        }
+
+        protected static function resolveSuccessMessage()
+        {
+            return CJavaScript::quote(Zurmo::t('CampaignsModule', 'Campaign status was changed.'));
+        }
+
+        public static function getModelAttributeNames()
+        {
+            return array(
+                'status',
             );
-            return $metadata;
+        }
+
+        public static function getDropDownArray()
+        {
+            return array('0' => Zurmo::t('CampaignsModule', 'Running'),
+                         '1' => Zurmo::t('CampaignsModule', 'Paused'));
+        }
+
+        protected static function renderStatusAreaLabel()
+        {
+            return null;
         }
     }
 ?>

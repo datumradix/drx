@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,27 +31,30 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2013. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Derived version of @see ExplicitReadWriteModelPermissionsElement for campaign.
-     */
-    class CampaignDerivedExplicitReadWriteModelPermissionsElement extends DerivedExplicitReadWriteModelPermissionsElement
+    class OnlyEditableAttributesAreSetValidator extends CValidator
     {
-        public function getEditableHtmlOptions()
+        protected function validateAttribute($object, $attribute)
         {
-            list($attributeName, $relationAttributeName) = $this->resolveAttributeNameAndRelatedAttributes();
-            $htmlOptions = array(
-                'id'   => $this->getEditableInputId($attributeName, $relationAttributeName),
-            );
-            if(!$this->model->isAttributeEditable('owner'))
+            if (!($object instanceof Item))
             {
-                $htmlOptions['disabled'] = true;
+                throw new Exception(get_class() . ' works with originalAttributeValues which is only available for Item or subclasses');
             }
-            $htmlOptions['template']  = '<div class="radio-input">{input}{label}</div>';
-            $htmlOptions['separator'] = '';
-            return $htmlOptions;
+            if (!method_exists($object, 'getEditableAttributes'))
+            {
+                throw new Exception(get_class($object) . ' does not contain getEditableAttributes()');
+            }
+
+            $modifiedAttributeKeys              = array_keys(array_filter($object->originalAttributeValues));
+            $nonEditableModifiedAttributeKeys   = array_diff($modifiedAttributeKeys, $object->getEditableAttributes());
+            $passedValidation                   = (empty($nonEditableModifiedAttributeKeys));
+            foreach ($nonEditableModifiedAttributeKeys as $nonEditableAttributeKey)
+            {
+                $this->addError($object, $nonEditableAttributeKey, Zurmo::t('Core', 'Write access is prohibited.'));
+            }
+            return $passedValidation;
         }
     }
 ?>

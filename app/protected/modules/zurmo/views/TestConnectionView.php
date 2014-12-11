@@ -39,9 +39,9 @@
      */
     class TestConnectionView extends ModalMessageView
     {
-        protected function additionalCssClasses()
+        protected function getDefaultCssClasses()
         {
-            return array('connection-test');
+            return CMap::mergeArray(parent::getDefaultCssClasses(), array('connection-test'));
         }
     }
 ?>

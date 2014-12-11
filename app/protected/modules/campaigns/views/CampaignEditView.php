@@ -153,7 +153,6 @@
 
         protected function renderContent()
         {
-            $this->registerSendTestEmailScriptsForEditView();
             $this->registerCopyInfoFromMarketingListScript();
             $this->registerRedactorHeightScript();
             return parent::renderContent();
@@ -176,7 +175,7 @@
             {
                 $content .= ZurmoHtml::tag('div', array('class' => 'left-column'), $this->renderMergeTagsContent());
                 $element = new EmailTemplateHtmlAndTextContentElement($model, $attribute , $form);
-                $element->plugins = array('fontfamily', 'fontsize', 'fontcolor', 'imagegallery');
+                $element->plugins = array('fontfamily', 'fontsize', 'fontcolor');
             }
             if ($form !== null)
             {
@@ -273,7 +272,7 @@
 
         protected function renderLabelForSaveButton()
         {
-            if ($this->isCampaignEditable())
+            if ($this->model->isAttributeEditable('sendOnDateTime'))
             {
                 return Zurmo::t("CampaignsModule", "Save and Schedule");
             }
@@ -287,7 +286,7 @@
         {
             assert('$form instanceof ZurmoActiveForm');
             $content = "<h3>".Zurmo::t('ZurmoModule', 'Rights and Permissions') . '</h3><div id="owner-box">';
-            if ($this->isCampaignEditable())
+            if($this->model->isAttributeEditable('owner'))
             {
                 $element = new UserElement($this->getModel(), 'owner', $form);
             }

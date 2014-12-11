@@ -166,18 +166,7 @@
 
             if ($this->configurationForm->filteredByStage != CampaignItemsConfigurationForm::FILTERED_BY_ALL_STAGES)
             {
-                switch($this->configurationForm->filteredByStage)
-                {
-                    case CampaignItemsConfigurationForm::OPENED_STAGE:
-                        $type = CampaignItemActivity::TYPE_OPEN;
-                        break;
-                    case CampaignItemsConfigurationForm::CLICKED_STAGE:
-                        $type = CampaignItemActivity::TYPE_CLICK;
-                        break;
-                    case CampaignItemsConfigurationForm::BOUNCED_STAGE:
-                        $type = CampaignItemActivity::TYPE_BOUNCE;
-                        break;
-                }
+                $type   = CampaignItemsConfigurationForm::resolveCampaignItemActivityType($this->configurationForm->filteredByStage);
                 $searchAttributeData['clauses'][2] = array(
                     'attributeName'             => 'campaignItemActivities',
                     'relatedAttributeName'      => 'type',
