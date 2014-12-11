@@ -1971,7 +1971,7 @@ table.configuration-list tr:last-child td {
 #testImapConnection {
   margin: 0;
 }
-.connection-test {
+.modal-result-message {
   min-height: 60px;
   padding: 15px;
   line-height: 150%;

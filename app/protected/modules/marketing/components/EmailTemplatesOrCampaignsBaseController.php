@@ -118,7 +118,8 @@
         protected function renderSuccessMessage()
         {
             $message    = Zurmo::t('MarketingModule', 'Test Email was successfully sent');
-            echo $message;
+	        $content = ZurmoHtml::tag('div', array('class' => 'modal-result-message'), $message);
+            echo $content;
             Yii::app()->end(0, false);
         }
 

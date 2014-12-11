@@ -52,7 +52,7 @@
 
         protected function renderContent()
         {
-            $this->setCssClasses(array_merge($this->getCssClasses(), array('connection-test')));
+            $this->setCssClasses(array_merge($this->getCssClasses(), array('modal-result-message')));
             return nl2br($this->message);
         }
     }
