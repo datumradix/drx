@@ -128,5 +128,24 @@
                 }
             }
         }
+
+        /**
+         * Cleanup models and read permission tables
+         * @param $modelClassName
+         */
+        protected function deleteAllModelsAndRecordsFromReadPermissionTable($modelClassName)
+        {
+            $models = $modelClassName::getAll();
+            foreach ($models as $model)
+            {
+                $model->delete();
+            }
+            $tableName = ReadPermissionsSubscriptionUtil::getSubscriptionTableName($modelClassName);
+            $sql = "DELETE FROM $tableName";
+            ZurmoRedBean::exec($sql);
+            $tableName = ReadPermissionsSubscriptionUtil::getAccountSubscriptionTempBuildTableName($modelClassName);
+            $sql = "DELETE FROM $tableName";
+            ZurmoRedBean::exec($sql);
+        }
     }
 ?>
