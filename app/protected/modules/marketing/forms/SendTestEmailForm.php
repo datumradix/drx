@@ -46,6 +46,7 @@
         {
             return array(
                 array('selectContactOrLeadSearchBox',       'type',    'type' => 'string'),
+                array('selectContactOrLeadSearchBox',       'validateSelectedContact'),
                 array('inputEmailAddressBox',               'type',    'type' => 'string'),
                 array('inputEmailAddressBox',               'email'),
                 array('selectContactOrEmailRadioButton',    'type',    'type' => 'string'),
@@ -60,6 +61,27 @@
                 $this->addError($attribute, Zurmo::t('MarketingModule', 'Please provide an email or select a contact.'));
                 return false;
             }
+            return true;
+        }
+
+        public function validateSelectedContact($attribute, $params)
+        {
+            $matches    = array();
+            preg_match('#\((\d+)\)#', $this->selectContactOrLeadSearchBox, $matches);
+            $contactId  = (isset($matches[1]))? $matches[1] : null;
+            if (!empty($contactId))
+            {
+                try
+                {
+                    Contact::getById($contactId);
+                    return true;
+                }
+                catch (NotFoundException $e)
+                {
+
+                }
+            }
+            $this->addError($attribute, Zurmo::t('MarketingModule', 'Please select a valid contact.'));
             return true;
         }
     }
