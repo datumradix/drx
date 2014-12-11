@@ -34,14 +34,11 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * View used to render message content as a result of sending a test email.  This is rendered in a modal window.
-     */
-    class TestConnectionView extends ModalMessageView
+    class TestEmailSentView extends ModalMessageView
     {
         protected function additionalCssClasses()
         {
-            return array('connection-test');
+            return array('send-email-test');
         }
     }
 ?>
