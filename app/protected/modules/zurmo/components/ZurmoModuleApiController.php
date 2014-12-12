@@ -945,5 +945,188 @@
             }
             return $stateMetadataAdapterClassName;
         }
+
+        /**
+         * Get array of deleted items since beginning or since datetime in past
+         * @param array $params
+         * @return ApiResult
+         * @throws ApiException
+         */
+        protected function processGetDeletedItems($params)
+        {
+            $modelClassName = $this->getModelName();
+            $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
+
+            if (!isset($params['sinceTimestamp']))
+            {
+                $sinceTimestamp = 0;
+            }
+            else
+            {
+                $sinceTimestamp = (int)$params['sinceTimestamp'];
+            }
+
+            $pageSize    = Yii::app()->pagination->getGlobalValueByType('apiListPageSize');
+            if (isset($params['pagination']['pageSize']))
+            {
+                $pageSize = (int)$params['pagination']['pageSize'];
+            }
+
+            // Get offset. Please note that API client provide page number, and we need to convert it into offset,
+            // which is parameter of RedBeanModel::getSubset function
+            if (isset($params['pagination']['page']) && (int)$params['pagination']['page'] > 0)
+            {
+                $currentPage = (int)$params['pagination']['page'];
+            }
+            else
+            {
+                $currentPage = 1;
+            }
+            $offset = $this->getOffsetFromCurrentPageAndPageSize($currentPage, $pageSize);
+
+            $modelIds = ModelStateChangesSubscriptionUtil::getDeletedModelIds('API', $modelClassName, $pageSize, $offset, $sinceTimestamp, $stateMetadataAdapterClassName);
+            $totalItems = ModelStateChangesSubscriptionUtil::getDeletedModelsCount('API', $modelClassName, $sinceTimestamp, $stateMetadataAdapterClassName);
+
+            $data = array(
+                'totalCount' => $totalItems,
+                'pageSize' => $pageSize,
+                'currentPage' => $currentPage
+            );
+
+            if ($totalItems > 0 && is_array($modelIds) && !empty($modelIds))
+            {
+                foreach ($modelIds as $modelId)
+                {
+                    $data['items'][] = $modelId;
+                }
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            else
+            {
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            return $result;
+        }
+
+        /**
+         * Get array of newly created items since beginning or since datetime in past
+         * @param $params
+         * @return ApiResult
+         * @throws ApiException
+         */
+        protected function processGetCreatedItems($params)
+        {
+            $modelClassName = $this->getModelName();
+            $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
+
+            if (!isset($params['sinceTimestamp']))
+            {
+                $sinceTimestamp = 0;
+            }
+            else
+            {
+                $sinceTimestamp = (int)$params['sinceTimestamp'];
+            }
+
+            $pageSize    = Yii::app()->pagination->getGlobalValueByType('apiListPageSize');
+            if (isset($params['pagination']['pageSize']))
+            {
+                $pageSize = (int)$params['pagination']['pageSize'];
+            }
+
+            // Get offset. Please note that API client provide page number, and we need to convert it into offset,
+            // which is parameter of RedBeanModel::getSubset function
+            if (isset($params['pagination']['page']) && (int)$params['pagination']['page'] > 0)
+            {
+                $currentPage = (int)$params['pagination']['page'];
+            }
+            else
+            {
+                $currentPage = 1;
+            }
+            $offset = $this->getOffsetFromCurrentPageAndPageSize($currentPage, $pageSize);
+
+            $models = ModelStateChangesSubscriptionUtil::getCreatedModels('API', $modelClassName, $pageSize, $offset, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
+            $totalItems = ModelStateChangesSubscriptionUtil::getCreatedModelsCount('API', $modelClassName, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
+            $data = array(
+                'totalCount' => $totalItems,
+                'pageSize' => $pageSize,
+                'currentPage' => $currentPage
+            );
+
+            if (is_array($models) && !empty($models))
+            {
+                foreach ($models as $model)
+                {
+                    $data['items'][] = static::getModelToApiDataUtilData($model);
+                }
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            else
+            {
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            return $result;
+        }
+
+        /**
+         * Get array of modified items since beginning or since datetime in past
+         * @param $params
+         * @return ApiResult
+         * @throws ApiException
+         */
+        public function processGetModifiedItems($params)
+        {
+            $modelClassName = $this->getModelName();
+            $stateMetadataAdapterClassName = $this->resolveStateMetadataAdapterClassName();
+
+            if (!isset($params['sinceTimestamp']))
+            {
+                $sinceTimestamp = 0;
+            }
+            else
+            {
+                $sinceTimestamp = (int)$params['sinceTimestamp'];
+            }
+
+            $pageSize    = Yii::app()->pagination->getGlobalValueByType('apiListPageSize');
+            if (isset($params['pagination']['pageSize']))
+            {
+                $pageSize = (int)$params['pagination']['pageSize'];
+            }
+
+            // Get offset. Please note that API client provide page number, and we need to convert it into offset,
+            // which is parameter of RedBeanModel::getSubset function
+            if (isset($params['pagination']['page']) && (int)$params['pagination']['page'] > 0)
+            {
+                $currentPage = (int)$params['pagination']['page'];
+            }
+            else
+            {
+                $currentPage = 1;
+            }
+            $offset = $this->getOffsetFromCurrentPageAndPageSize($currentPage, $pageSize);
+            $models = ModelStateChangesSubscriptionUtil::getUpdatedModels($modelClassName, $pageSize, $offset, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
+            $totalItems = ModelStateChangesSubscriptionUtil::getUpdatedModelsCount($modelClassName, $sinceTimestamp, $stateMetadataAdapterClassName, Yii::app()->user->userModel);
+            $data = array(
+                'totalCount' => $totalItems,
+                'pageSize' => $pageSize,
+                'currentPage' => $currentPage
+            );
+
+            if (is_array($models) && !empty($models))
+            {
+                foreach ($models as $model)
+                {
+                    $data['items'][] = static::getModelToApiDataUtilData($model);
+                }
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            else
+            {
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            return $result;
+        }
     }
 ?>

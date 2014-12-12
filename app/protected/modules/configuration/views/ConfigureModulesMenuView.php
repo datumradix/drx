@@ -97,6 +97,10 @@
                 {
                     continue;
                 }
+                if (!Yii::app()->custom->resolveIsConfigurationMenuItemVisibleForCurrentUser($item))
+                {
+                    continue; 
+                }
                 $routeParams = array();
                 if (isset($item['routeParams']))
                 {

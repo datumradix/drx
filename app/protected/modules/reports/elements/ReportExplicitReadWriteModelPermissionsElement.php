@@ -42,11 +42,18 @@
     {
         protected function resolveSelectedType()
         {
-            $resolveSelectedType = parent::resolveSelectedType();
-            if ($resolveSelectedType === null)
+            if (!$this->model->isNew())
             {
-                $selectedType = UserConfigurationFormAdapter::resolveAndGetDefaultPermissionSetting(
-                                                                    Yii::app()->user->userModel);
+                return parent::resolveSelectedType();
+            }
+            $selectedType = UserConfigurationFormAdapter::resolveAndGetDefaultPermissionSetting(
+                            Yii::app()->user->userModel);
+            if (null == $selectedType)
+            {
+                return parent::resolveSelectedType();
+            }
+            else
+            {
                 return static::resolveUserPermissionConfigurationToPermissionType($selectedType);
             }
             return $resolveSelectedType;

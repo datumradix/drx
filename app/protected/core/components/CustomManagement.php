@@ -232,6 +232,11 @@
         public function resolveQueueModelEditViewOnRuleTypeChangeScript($model)
         {
         }
+        
+        public function resolveIsConfigurationMenuItemVisibleForCurrentUser($menuItem)
+        {
+            return true;
+        }
 
         public function resolveExtraToolbarContentForView($viewClassName, $controllerId, $moduleId, $modelId)
         {
