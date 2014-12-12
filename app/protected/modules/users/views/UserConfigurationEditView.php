@@ -120,15 +120,6 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'enableDesktopNotifications', 'type' => 'DesktopNotification'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
                                                 array('attributeName' => 'hideFromSelecting', 'type' => 'HideFromSelecting'),
                                             ),
                                         ),
