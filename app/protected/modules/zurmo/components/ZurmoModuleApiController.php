@@ -598,7 +598,8 @@
 
         /**
          * Create new model
-         * @param array $data
+         * @param $data
+         * @return ApiResult
          * @throws ApiException
          */
         protected function processCreate($data)
@@ -763,11 +764,9 @@
         }
 
         /**
-         *
          * @param RedBeanModel $model
          * @param array $modelRelations
-         * @throws NotSupportedException
-         * @throws FailedToSaveModelException
+         * @return bool
          * @throws ApiException
          */
         protected function manageModelRelations($model, $modelRelations)
@@ -1125,6 +1124,54 @@
             else
             {
                 $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            return $result;
+        }
+
+        public function processGetManyManyRelationshipModels($params)
+        {
+            try
+            {
+                $modelId        = $params['id'];
+                $relationName   = $params['relationName'];
+                $modelClassName = $params['modelClassName'];
+
+                if (!class_exists($modelClassName, false))
+                {
+                    $message = Zurmo::t('ZurmoModule', 'The specified class name was invalid.');
+                    throw new ApiException($message);
+                }
+                try
+                {
+                    $model = $modelClassName::getById(intval($modelId));
+                }
+                catch (NotFoundException $e)
+                {
+                    $message = Zurmo::t('ZurmoModule', 'The ID specified was invalid.');
+                    throw new ApiException($message);
+                }
+
+                $relatedModelClassName = $model->getRelationModelClassName($relationName);
+                if ($model->isRelation($relationName) &&
+                    $model->getRelationType($relationName) == RedBeanModel::MANY_MANY)
+                {
+                    $data = array();
+                    foreach ($model->{$relationName} as $item)
+                    {
+                        $data[$relationName][] = array('class' => $relatedModelClassName, 'id' => $item->id);
+                    }
+                    $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+                }
+                else
+                {
+                    $message = Zurmo::t('ZurmoModule', 'The specified relationship name does not exist or is not MANY_MANY type.');
+                    throw new ApiException($message);
+                }
+            }
+            catch (Exception $e)
+            {
+                $message = $e->getMessage();
+                throw new ApiException($message);
             }
             return $result;
         }
