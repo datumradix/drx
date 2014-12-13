@@ -275,7 +275,7 @@
                                                 'New', 'In ProgressD', 'RecycledC', 'QualifiedA', 'CustomerF', 'YRE'
                                     ),
                                     'contactStatesDataExistingValues' => array(
-                                                'New', 'In Progress', 'Recycled', 'Qualified', 'Customer', 'YRE'
+                                                'New', 'In Progress', 'Recycled', 'Qualified', 'Customer'
                                     )
                                     );
             $this->createCustomAttributeWalkthroughSequence('ContactsModule', 'state', 'ContactState',
