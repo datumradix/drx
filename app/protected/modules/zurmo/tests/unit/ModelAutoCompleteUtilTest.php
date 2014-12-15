@@ -348,5 +348,18 @@
             $this->assertEquals('Big Elephant',        $data[1]['label']);
             $this->assertEquals('Animal Crackers', $data[2]['label']);
         }
+
+        public function testGetGenericResultSanitizePartialName()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $this->assertTrue(ZurmoRedBean::$writer->doesTableExist(User::getTableName()));
+            AccountTestHelper::createAccountByNameForOwner('Test account', $super);
+            AccountTestHelper::createAccountByNameForOwner('Test account 2', $super);
+            $term   = "Test%');drop TABLE _user-- ";
+            $data = ModelAutoCompleteUtil::getByPartialName('Account', $term, 5);
+            $this->assertTrue(ZurmoRedBean::$writer->doesTableExist(User::getTableName()));
+            $this->assertEmpty($data);
+        }
     }
 ?>

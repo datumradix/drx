@@ -88,12 +88,11 @@
         protected function renderOperationHighlight()
         {
             $highlightOperation = substr($this->title, 0, strpos($this->title, ':'));
-            $highlightMessage = $highlightOperation . ' is not reversable';
             return ZurmoHtml::tag('strong',
                                     array(),
                                     ZurmoHtml::tag('em',
                                                     array(),
-                                                    Zurmo::t('Core', $highlightMessage)
+                                                    Zurmo::t('Core', '{operation} is not reversible', array('{operation}' => $highlightOperation))
                                                 )
                                 ) . ZurmoHtml::tag('br');
         }

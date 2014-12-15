@@ -51,6 +51,15 @@
             return Zurmo::t('Core', '(Unnamed)');
         }
 
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'exportFileName';
+        }
+
         public static function getModuleClassName()
         {
             return 'ExportModule';
@@ -130,7 +139,7 @@
         {
             if ($this->isNewModel && !$this->isCompleted)
             {
-                Yii::app()->jobQueue->add('Export');
+                Yii::app()->jobQueue->add('Export', 5);
             }
             parent::afterSave();
         }

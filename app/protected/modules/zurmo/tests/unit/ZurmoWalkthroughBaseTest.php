@@ -256,14 +256,14 @@
         protected function runControllerShouldResultInAccessFailureAndGetContent($route)
         {
             $content = $this->runControllerWithExitExceptionAndGetContent($route);
-            $this->assertFalse(strpos($content, 'You have tried to access a page you do not have access to.') === false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
             return $content;
         }
 
         protected function runControllerShouldResultInAjaxAccessFailureAndGetContent($route)
         {
             $content = $this->runControllerWithExitExceptionAndGetContent($route);
-            $this->assertFalse(strpos($content, 'failure') === false);
+            $this->assertContains('failure', $content);
             return $content;
         }
 

@@ -213,15 +213,29 @@
 
         /**
          * While populating Saved Layouts, featured templates would have respective icon and background color.
+         * @param EmailTemplate $emailTemplate
          * @return null
          */
-        public function resolveThumbnailForFeaturedEmailTemplate()
+        public function resolveThumbnailForFeaturedEmailTemplate(EmailTemplate $emailTemplate)
         {
             return null;
         }
 
         public function resolveAdditionalScriptContentForEmailTemplate($stepCount, & $script)
         {
+        }
+
+        public function resolveQueueModelEditAndDetailsViewOnLoadScript($model)
+        {
+        }
+
+        public function resolveQueueModelEditViewOnRuleTypeChangeScript($model)
+        {
+        }
+        
+        public function resolveIsConfigurationMenuItemVisibleForCurrentUser($menuItem)
+        {
+            return true;
         }
     }
 ?>

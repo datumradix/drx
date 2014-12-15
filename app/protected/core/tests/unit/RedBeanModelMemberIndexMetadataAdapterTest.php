@@ -61,7 +61,7 @@
             $resolvedIndexName  = RedBeanModelMemberIndexMetadataAdapter::resolveRandomIndexName($indexName, true);
             $this->assertNotEmpty($resolvedIndexName);
             $this->assertNotEquals($indexName, $resolvedIndexName);
-            $this->assertTrue(strpos($resolvedIndexName, 'unique_') === 0);
+            $this->assertContains('unique_', $resolvedIndexName);
         }
 
         /**

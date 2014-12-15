@@ -315,7 +315,10 @@
             $imapMessage->createdDate   = $mailHeaderInfo->date;
             $imapMessage->uid           = $this->getMessageUId($mailHeaderInfo->Msgno);
             $imapMessage->msgNumber     = $mailHeaderInfo->Msgno;
-            $imapMessage->msgId         = $mailHeaderInfo->message_id;
+            if (isset($mailHeaderInfo->message_id))
+            {
+                $imapMessage->msgId         = $mailHeaderInfo->message_id;
+            }
             $imapMessage->headers       = $this->resolveAndParseMessageHeaders($messageNumber);
             return $imapMessage;
         }

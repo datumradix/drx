@@ -84,9 +84,9 @@
                                               ContactWebFormsUtil::getNonPlacedAttributes($this->model),
                                               $this->getEditableHtmlOptions());
             $title       = ZurmoHtml::tag('h4', array(), Zurmo::t('ContactWebFormsModule', 'Available Fields'));
-            $fieldsText  = 'Check the fields that you like to add to your form, you can then change their order or remove them';
             $description = ZurmoHtml::tag('span', array('class' => 'row-description'),
-                           Zurmo::t('ContactWebFormsModule', $fieldsText));
+                           Zurmo::t('ContactWebFormsModule', 'Check the fields that you like to add to your form, ' .
+                                                             'you can then change their order or remove them'));
             $content    .= ZurmoHtml::tag('div', array('class' => 'right-column'), $title . $description . $clip );
             return $content;
         }

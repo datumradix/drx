@@ -77,9 +77,9 @@
             $emailContent  = new EmailMessageContent();
             $url           = static::getUrlToEmail($model);
             $shortUrl      = ShortUrlUtil::createShortUrl($url);
-            $textContent   = Zurmo::t('CommentsModule', "Hello, {lineBreak} {updaterName} added a new comment to the " .
-                                             "{strongStartTag}{modelName}{strongEndTag}: {lineBreak}" .
-                                             "\"{commentDescription}.\" {lineBreak}{lineBreak} {url} ",
+            $textContent   = Zurmo::t('CommentsModule', 'Hello, {lineBreak} {updaterName} added a new comment to the ' .
+                                             '{strongStartTag}{modelName}{strongEndTag}: {lineBreak}' .
+                                             '"{commentDescription}." {lineBreak}{lineBreak} {url} ',
                                     array('{lineBreak}'           => "\n",
                                           '{strongStartTag}'      => null,
                                           '{strongEndTag}'        => null,
@@ -91,9 +91,9 @@
                                         ));
             $emailContent->textContent  = EmailNotificationUtil::
                                                 resolveNotificationTextTemplate($textContent);
-            $htmlContent = Zurmo::t('CommentsModule', "Hello, {lineBreak} {updaterName} added a new comment to the " .
-                                             "{strongStartTag}{url}{strongEndTag}: {lineBreak}" .
-                                             "\"{commentDescription}.\"",
+            $htmlContent = Zurmo::t('CommentsModule', 'Hello, {lineBreak} {updaterName} added a new comment to the ' .
+                                             '{strongStartTag}{url}{strongEndTag}: {lineBreak}' .
+                                             '"{commentDescription}."',
                                array('{lineBreak}'           => "<br/>",
                                      '{strongStartTag}'      => '<strong>',
                                      '{strongEndTag}'        => '</strong>',

@@ -101,10 +101,17 @@
             $this->assertTrue($this->contact->save());
             AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($this->contact, $betty);
 
+            //Forgetting campaignItem is needed because of commit - aeedffa06467
+            //Not entirely sure why this is the case though. It only affects tests when securityOptimization is false
+            $this->campaignItem->forgetAll();
+            $campaigns                  = Campaign::getAll();
+            $this->campaignItem         = $campaigns[0]->campaignItems[0];
+
             //Betty has now access to contact but not the emailMessage
             Yii::app()->user->userModel = $betty;
             $content = CampaignItemSummaryListViewColumnAdapter::
                             resolveContactAndMetricsSummary($this->campaignItem);
+
             $this->assertContains('You cannot see the performance metrics due to limited access', $content);
 
             //Giving betty access to emailMessage

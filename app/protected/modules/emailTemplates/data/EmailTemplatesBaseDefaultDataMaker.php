@@ -77,14 +77,16 @@
 
         protected function makeImages()
         {
-            $imagesUrlToImport = array(
-                '200x50' => 'http://placehold.it/200x50',
-                '200x200' => 'http://placehold.it/200x200',
-                '580x180' => 'http://placehold.it/580x180'
+            $imagesNamesToImport = array(
+                '200x50' => '200x50.gif',
+                '200x200' => '200x200.gif',
+                '580x180' => '580x180.gif',
+                'googleMaps' => 'staticmap.png'
             );
-            foreach ($imagesUrlToImport as $type => $url)
+            foreach ($imagesNamesToImport as $type => $name)
             {
-                $fileUploadData = ImageFileModelUtil::importFromUrl($url);
+                $path = Yii::getPathOfAlias('application.modules.emailTemplates.views.assets.images') . DIRECTORY_SEPARATOR . $name;
+                $fileUploadData = ImageFileModelUtil::saveImageFromTemporaryFile($path, $type);
                 $this->importedImages[$type] = $fileUploadData['id'];
             }
         }

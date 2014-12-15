@@ -58,6 +58,15 @@
             }
         }
 
+        /**
+         * @see OwnedSecurableItem::getModifiedSignalAttribute()
+         * @return string
+         */
+        protected static function getModifiedSignalAttribute()
+        {
+            return 'lastName';
+        }
+
         public function getFullName()
         {
             $fullName = array();

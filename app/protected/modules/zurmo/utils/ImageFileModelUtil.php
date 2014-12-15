@@ -94,6 +94,11 @@
             {
                 $layout = static::getDefaultLayout();
             }
+            $imagePath = ImageFileModel::getImageCachePathByFileName($imageFileModel->getImageCacheFileName(), false);
+            if (!file_exists($imagePath))
+            {
+                $imageFileModel->createImageCache();
+            }
             static::resolveWidthAndHeightAttributesIfTheyAreMissing($imageFileModel);
             $url                   = static::getUrlForGetImageFromImageFileName($imageFileModel->getImageCacheFileName(), true);
             $urlForPreview         = Yii::app()->createAbsoluteUrl('zurmo/imageModel/modalPreview', array('fileName' => $imageFileModel->getImageCacheFileName()));

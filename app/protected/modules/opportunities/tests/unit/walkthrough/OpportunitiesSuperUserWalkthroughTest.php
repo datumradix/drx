@@ -82,12 +82,12 @@
             $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/create');
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertContains('anyMixedAttributes', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
             $this->resetGetArray();
 
             //Default Controller actions requiring some sort of parameter via POST or GET
@@ -119,7 +119,7 @@
             $this->setGetArray (array('id'      => $superOpportunityId));
             $this->setPostArray(array('Opportunity' => array('name' => '')));
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Load Model Detail Views
             $this->setGetArray(array('id' => $superOpportunityId));
@@ -131,13 +131,13 @@
             $this->setGetArray(array('selectedIds' => '4,5,6,7,8,9', 'selectAll' => '')); // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>6</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>6</strong>&#160;records selected for updating', $content);
 
             //MassEdit view for all result selected ids
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/massEdit');
-            $this->assertFalse(strpos($content, '<strong>12</strong>&#160;records selected for updating') === false);
+            $this->assertContains('<strong>12</strong>&#160;records selected for updating', $content);
 
             //save Model MassEdit for selected Ids
             //Test that the 2 contacts do not have the office phone number we are populating them with.
@@ -236,13 +236,13 @@
             //save Modal MassEdit using progress load for page 2, 3 and 4.
             $this->setGetArray(array('selectAll' => '1', 'Opportunity_page' => 2));
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":16') === false);
+            $this->assertContains('"value":16', $content);
             $this->setGetArray(array('selectAll' => '1', 'Opportunity_page' => 3));
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":25') === false);
+            $this->assertContains('"value":25', $content);
             $this->setGetArray(array('selectAll' => '1', 'Opportunity_page' => 4));
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/massEditProgressSave');
-            $this->assertFalse(strpos($content, '"value":33') === false);
+            $this->assertContains('"value":33', $content);
             //Set page size back to old value.
             Yii::app()->pagination->setForCurrentUserByType('massEditProgressPageSize', $pageSize);
 
@@ -606,13 +606,13 @@
             $this->setGetArray(array('selectedIds' => '5,6,7,8,9', 'selectAll' => '', ));  // Not Coding Standard
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>5</strong>&#160;Opportunities selected for removal') === false);
+            $this->assertContains('<strong>5</strong>&#160;Opportunities selected for removal', $content);
 
             //MassDelete view for all result selected ids
             $this->setGetArray(array('selectAll' => '1'));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/massDelete');
-            $this->assertFalse(strpos($content, '<strong>14</strong>&#160;Opportunities selected for removal') === false);
+            $this->assertContains('<strong>14</strong>&#160;Opportunities selected for removal', $content);
 
             //MassDelete for selected ids for page 1
             $this->setGetArray(array(

@@ -79,7 +79,7 @@
             $this->setGetArray(array('id' => $task->id, 'uniquePageId' => 'TaskCheckItemInlineEditForModelView'));
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/taskCheckItems/inlineCreateTaskCheckItemFromAjax', false);
-            $this->assertTrue(strpos($content, 'TaskCheckListItem_name') > 0);
+            $this->assertContains('TaskCheckListItem_name', $content);
         }
 
         /**
@@ -96,7 +96,7 @@
             $this->setGetArray(array('relatedModelId' => $task->id, 'relatedModelClassName' => 'Task',
                                         'relatedModelRelationName' => 'checkListItems', 'uniquePageId' => null));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/taskCheckItems/ajaxCheckItemListForRelatedTaskModel');
-            $this->assertTrue(strpos($content, 'TaskCheckListItemsForTaskView') > 0);
+            $this->assertContains('TaskCheckListItemsForTaskView', $content);
         }
 
         /**
