@@ -308,7 +308,7 @@
                 $emailMessage->folder       = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
                 try
                 {
-                    Yii::app()->emailHelper->sendImmediately($emailMessage);
+                    Yii::app()->emailHelper->send($emailMessage);
                 }
                 catch (CException $e)
                 {
