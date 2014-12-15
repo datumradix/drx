@@ -48,7 +48,7 @@
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $content = $this->runControllerWithNoExceptionsAndGetContent('contactWebForms/defaultContactWebFormEntry/list');
-            $this->assertTrue(strpos($content, 'include(ContactWebFormsDefaultController.php)') === false);
+            $this->assertNotContains('include(ContactWebFormsDefaultController.php)', $content);
         }
     }
 ?>

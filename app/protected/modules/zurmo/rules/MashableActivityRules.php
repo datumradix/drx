@@ -155,6 +155,32 @@
         }
 
         /**
+         * Override if needed to massage the searchAttributesData['structure'] before processing
+         * @see EmailMessageMashableActivityRules for an example of an override
+         * @param $searchAttributesDataStructure
+         */
+        public static function resolveSearchAttributesDataStructure(& $searchAttributesDataStructure)
+        {
+            assert('is_string($searchAttributesDataStructure) || $searchAttributesDataStructure === null');
+        }
+
+        /**
+         * Override if you need to add additional search data. @see EmailMessageMashableActivityRules
+         * for an example of how this is utilized.
+         * @param $modelClassName
+         * @param $relationItemIds
+         * @param $ownedByFilter
+         * @param $shouldResolveSearchAttributeDataForLatestActivities
+         * @param $modelClassNamesAndSearchAttributeData
+         */
+        public function resolveAdditionalSearchAttributesDataByModelClassNameAndRelatedItemIds(
+            $modelClassName, $relationItemIds, $ownedByFilter,
+            $shouldResolveSearchAttributeDataForLatestActivities,
+            & $modelClassNamesAndSearchAttributeData)
+        {
+        }
+
+        /**
          * @param array $searchAttributesData
          * @param int $userId
          */

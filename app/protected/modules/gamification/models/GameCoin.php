@@ -71,10 +71,12 @@
             $searchAttributeData['structure'] = '1';
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('GameCoin');
             $where  = RedBeanModelDataProvider::makeWhere('GameCoin', $searchAttributeData, $joinTablesAdapter);
-            $models = self::getSubset($joinTablesAdapter, null, null, $where, null);
+            $models = self::getSubset($joinTablesAdapter, null, 2, $where, null);
             if (count($models) > 1)
             {
-                throw new NotSupportedException();
+                $logContent  = 'Duplicate Game Coin for Person: ' . $person->id;
+                GamificationUtil::logAndNotifyOnDuplicateGameModel($logContent);
+                return $models[0];
             }
             if (count($models) == 0)
             {

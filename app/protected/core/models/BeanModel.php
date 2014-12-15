@@ -290,8 +290,7 @@
         {
             assert('self::isRelation($relationName, get_called_class())');
             if (static::getRelationType($relationName) == RedBeanModel::HAS_MANY  ||
-               static::getRelationType($relationName) == RedBeanModel::HAS_MANY_BELONGS_TO ||
-               static::getRelationType($relationName) == RedBeanModel::HAS_ONE_BELONGS_TO)
+                static::getRelationType($relationName) == RedBeanModel::HAS_ONE_BELONGS_TO)
             {
                 return true;
             }
@@ -306,7 +305,7 @@
         {
             assert('self::isRelation($relationName, get_called_class())');
             if (static::getRelationType($relationName) == RedBeanModel::HAS_MANY_BELONGS_TO ||
-               static::getRelationType($relationName) == RedBeanModel::HAS_ONE)
+                static::getRelationType($relationName) == RedBeanModel::HAS_ONE)
             {
                 return true;
             }
@@ -647,12 +646,11 @@
                     if ($relationType == self::HAS_MANY_BELONGS_TO &&
                         strtolower($relationName) != strtolower($relationModelClassName))
                     {
-                        $label = 'Relations of type HAS_MANY_BELONGS_TO must have the relation name ' .
-                            'the same as the related model class name. Relation: {relationName} ' .
-                            'Relation model class name: {relationModelClassName}';
-                        throw new NotSupportedException(Zurmo::t('Core', $label,
-                            array('{relationName}' => $relationName,
-                                '{relationModelClassName}' => $relationModelClassName)));
+                        throw new NotSupportedException(Zurmo::t('Core', 'Relations of type HAS_MANY_BELONGS_TO must have the relation name ' .
+                                                                         'the same as the related model class name. Relation: {relationName} ' .
+                                                                         'Relation model class name: {relationModelClassName}',
+                                                                         array('{relationName}' => $relationName,
+                                                                               '{relationModelClassName}' => $relationModelClassName)));
                     }
                     if (count($relationTypeModelClassNameAndOwns) >= 3 &&
                         $relationTypeModelClassNameAndOwns[2] == self::OWNED)

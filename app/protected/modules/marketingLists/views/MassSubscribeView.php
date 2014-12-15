@@ -72,12 +72,11 @@
         protected function renderOperationHighlight()
         {
             $highlightOperation = substr($this->title, 0, strpos($this->title, ':'));
-            $highlightMessage = $highlightOperation;
             return ZurmoHtml::tag('strong',
                 array(),
                 ZurmoHtml::tag('em',
                     array(),
-                    Zurmo::t('Core', $highlightMessage)
+                    $highlightOperation
                 )
             ) . ZurmoHtml::tag('br');
         }

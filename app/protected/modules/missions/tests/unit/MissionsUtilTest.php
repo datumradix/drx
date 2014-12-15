@@ -172,13 +172,35 @@
             Yii::app()->user->userModel         = $super;
             $steven                             = User::getByUsername('steven');
             $jack                               = User::getByUsername('jack');
+            // assert steven is active user
+            $this->assertEquals(1, $steven->isActive);
+            // assert steven is active user
+            $this->assertEquals(1, $jack->isActive);
+            // assert steven have access to missions module
             $this->assertTrue (RightsUtil::canUserAccessModule('MissionsModule', $steven));
+            // assert jack dont have access to missions module
             $this->assertFalse(RightsUtil::canUserAccessModule('MissionsModule', $jack));
             $missions                           = Mission::getAll();
             $mission                            = $missions[0];
             $people                             = MissionsUtil::resolvePeopleToSendNotificationToOnNewMission($mission);
+            // assert active user will get notification on creation of new mission
+            $this->assertEquals(1, count($people));
             $this->assertNotContains($super,  $people);
             $this->assertContains   ($steven, $people);
+            $this->assertNotContains($jack,   $people);
+            // Change the user's status to inactive and confirm the changes in rights and isActive attribute.
+            $steven = User::getByUsername('steven');
+            $steven->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB, RIGHT::DENY);
+            $this->assertTrue($steven->save());
+            // assert steven is inactive user
+            $this->assertEquals(0, $steven->isActive);
+            $missions                           = Mission::getAll();
+            $mission                            = $missions[0];
+            $people                             = MissionsUtil::resolvePeopleToSendNotificationToOnNewMission($mission);
+            // assert inactive user won't get notification on creation of new mission
+            $this->assertEquals(0, count($people));
+            $this->assertNotContains($super,  $people);
+            $this->assertNotContains($steven, $people);
             $this->assertNotContains($jack,   $people);
         }
     }

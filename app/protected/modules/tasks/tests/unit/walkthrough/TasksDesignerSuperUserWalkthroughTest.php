@@ -171,14 +171,14 @@
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout,
                                       'LayoutPanelsTypeForm' => array('type' => FormLayout::PANELS_DISPLAY_TYPE_ALL)));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             //Edit view dont have all required fields placed
             $layout = TasksDesignerWalkthroughHelperUtil::getTaskEditAndDetailsViewLayoutWithoutAllRequiredFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout,
                 'LayoutPanelsTypeForm' => array('type' => FormLayout::PANELS_DISPLAY_TYPE_ALL)));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'All required fields must be placed in this layout.') === false);
+            $this->assertContains('All required fields must be placed in this layout.', $content);
 
             //Add all fields to OpenTasksForAccountRelatedListView.
             $this->setGetArray(array('moduleClassName' => 'TasksModule',
@@ -186,21 +186,21 @@
             $layout = TasksDesignerWalkthroughHelperUtil::getTasksRelatedListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             $this->setGetArray(array('moduleClassName' => 'TasksModule',
                                      'viewClassName'   => 'OpenTasksForContactRelatedListView'));
             $layout = TasksDesignerWalkthroughHelperUtil::getTasksRelatedListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
 
             $this->setGetArray(array('moduleClassName' => 'TasksModule',
                                      'viewClassName'   => 'OpenTasksForOpportunityRelatedListView'));
             $layout = TasksDesignerWalkthroughHelperUtil::getTasksRelatedListViewLayoutWithAllStandardAndCustomFieldsPlaced();
             $this->setPostArray(array('save'  => 'Save', 'layout' => $layout));
             $content = $this->runControllerWithExitExceptionAndGetContent('designer/default/LayoutEdit');
-            $this->assertFalse(strpos($content, 'Layout saved successfully') === false);
+            $this->assertContains('Layout saved successfully', $content);
         }
 
         /**
@@ -568,7 +568,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected vlaue
-            $this->assertTrue(strpos($content, "reading") > 0);
+            $this->assertContains("reading", $content);
         }
 
         /**
@@ -594,7 +594,7 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/autoCompleteCustomFieldData');
 
             //Check if the returned content contains the expected vlaue.
-            $this->assertTrue(strpos($content, "surfing fr") > 0);
+            $this->assertContains("surfing fr", $content);
         }
     }
 ?>

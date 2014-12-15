@@ -162,11 +162,20 @@
                     {
                         $model->clearExplicitReadWriteModelPermissionsForWorkflow();
                     }
+                    if ($model instanceof Item)
+                    {
+                        $oldScenario = $model->getScenario();
+                        $model->setScenario('doNotSetModifiedDateTimeOrUser');
+                    }
                     if ($explicitReadWriteModelPermissions != null)
                     {
                         $success = ExplicitReadWriteModelPermissionsUtil::
                         resolveExplicitReadWriteModelPermissions($model, $explicitReadWriteModelPermissions);
                         //todo: handle if success is false, means adding/removing permissions save failed.
+                    }
+                    if ($model instanceof Item)
+                    {
+                        $model->setScenario($oldScenario);
                     }
                     $savedSuccessfully = true;
                     $this->afterSuccessfulSave($model);

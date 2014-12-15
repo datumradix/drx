@@ -251,7 +251,7 @@
                                                         <!-- header left: logo and link to homepage -->
                                                         <td width="320" valign="top">
                                                             <!-- set an image for header left - must be 320px width (height can be variable) -->
-                                                            <a href="#" target="_blank"><img src="[[BASE^URL]]/themes/default/images/demo/email-template-demo-one/ZurmoLogo.png" width="320" height="64" border="0" alt="Header (left)" /></a>
+                                                            <a href="#" target="_blank"><img src="' . PlaceholderImageUtil::resolveUrlForThemeFile('/default/images/demo/email-template-demo-one/ZurmoLogo.png') . '" width="320" height="64" border="0" alt="Header (left)" /></a>
                                                         </td>
                                                         <!-- /header left -->
                                                         <!-- header right: hidden in mobile version -->
@@ -292,7 +292,7 @@
                                                     <!-- hero article main image: must be 560px x 186px -->
                                                     <tr>
                                                         <td>
-                                                            <img src="[[BASE^URL]]/themes/default/images/demo/email-template-demo-one/grass.jpg" width="560" height="280" border="0" alt="" class="heroimage" />
+                                                            <img src="' . PlaceholderImageUtil::resolveUrlForThemeFile('/default/images/demo/email-template-demo-one/grass.jpg') . '" width="560" height="280" border="0" alt="" class="heroimage" />
                                                         </td>
                                                     </tr>
                                                     <!-- /hero article main image -->
@@ -326,7 +326,7 @@
                                                         <!-- /standard article textarea -->
                                                         <!-- standard article main image: hidden in mobile version - must be 280px width (height can be variable) -->
                                                         <td class="hide">
-                                                            <img style="margin-bottom:1em;" src="[[BASE^URL]]/themes/default/images/demo/email-template-demo-one/demo1.jpg" width="260" height="260" border="0" alt="" />
+                                                            <img style="margin-bottom:1em;" src="' . PlaceholderImageUtil::resolveUrlForThemeFile('/default/images/demo/email-template-demo-one/demo1.jpg') . '" width="260" height="260" border="0" alt="" />
                                                         </td>
                                                         <!-- /standard article main image -->
                                                     </tr>
@@ -338,7 +338,7 @@
                                                     <tr valign="top">
                                                         <!-- standard article main image: hidden in mobile version - must be 280px width (height can be variable) -->
                                                         <td class="hide">
-                                                            <img style="margin-bottom:1em;" src="[[BASE^URL]]/themes/default/images/demo/email-template-demo-one/demo2.jpg" width="260" height="260" border="0" alt="" />
+                                                            <img style="margin-bottom:1em;" src="' . PlaceholderImageUtil::resolveUrlForThemeFile('/default/images/demo/email-template-demo-one/demo2.jpg') . '" width="260" height="260" border="0" alt="" />
                                                         </td>
                                                         <!-- /standard article main image -->
                                                         <!-- standard article textarea -->
@@ -388,11 +388,11 @@
                                                                 <tr>
                                                                     <td style="color:#333333;">
                                                                         <p>
-                                                                            <a href="#" target="_blank"><img style="margin-left:1em;" align="right" src="[[BASE^URL]]/themes/default/images/demo/email-template-demo-one/facebook.gif" width="32" height="32" border="0" alt="Facebook" /></a>
-                                                                            <a href="#" target="_blank"><img style="margin-left:1em;" align="right" src="[[BASE^URL]]/themes/default/images/demo/email-template-demo-one/googleplus.gif" width="32" height="32" border="0" alt="Google+" /></a>
-                                                                            <a href="#" target="_blank"><img style="margin-left:1em;" align="right" src="[[BASE^URL]]/themes/default/images/demo/email-template-demo-one/linkedin.gif" width="32" height="32" border="0" alt="LinkedIn" /></a>
-                                                                            <a href="#" target="_blank"><img style="margin-left:1em;" align="right" src="[[BASE^URL]]/themes/default/images/demo/email-template-demo-one/twitter.gif" width="32" height="32" border="0" alt="Twitter" /></a>
-                                                                            <a href="#" target="_blank"><img style="margin-left:1em;" align="right" src="[[BASE^URL]]/themes/default/images/demo/email-template-demo-one/youtube.gif" width="32" height="32" border="0" alt="YouTube" /></a>
+                                                                            <a href="#" target="_blank"><img style="margin-left:1em;" align="right" src="' . PlaceholderImageUtil::resolveUrlForThemeFile('/default/images/demo/email-template-demo-one/facebook.gif') . '" width="32" height="32" border="0" alt="Facebook" /></a>
+                                                                            <a href="#" target="_blank"><img style="margin-left:1em;" align="right" src="' . PlaceholderImageUtil::resolveUrlForThemeFile('/default/images/demo/email-template-demo-one/googleplus.gif') . '" width="32" height="32" border="0" alt="Google+" /></a>
+                                                                            <a href="#" target="_blank"><img style="margin-left:1em;" align="right" src="' . PlaceholderImageUtil::resolveUrlForThemeFile('/default/images/demo/email-template-demo-one/linkedin.gif') . '" width="32" height="32" border="0" alt="LinkedIn" /></a>
+                                                                            <a href="#" target="_blank"><img style="margin-left:1em;" align="right" src="' . PlaceholderImageUtil::resolveUrlForThemeFile('/default/images/demo/email-template-demo-one/twitter.gif') . '" width="32" height="32" border="0" alt="Twitter" /></a>
+                                                                            <a href="#" target="_blank"><img style="margin-left:1em;" align="right" src="' . PlaceholderImageUtil::resolveUrlForThemeFile('/default/images/demo/email-template-demo-one/youtube.gif') . '" width="32" height="32" border="0" alt="YouTube" /></a>
                                                                         </p>
                                                                     </td>
                                                                 </tr>

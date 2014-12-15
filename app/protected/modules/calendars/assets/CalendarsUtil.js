@@ -59,7 +59,7 @@ function getModuleDateTimeAttributes(moduleName, url, targetId, attributeName)
         });
 }
 
-function getCalendarEvents(url, inputId, maxCount)
+function getCalendarEvents(url, inputId)
 {
     $('#' + inputId).fullCalendar('removeEvents');
     var events = function(start, end, callback) {
@@ -84,7 +84,11 @@ function getCalendarEvents(url, inputId, maxCount)
             },
             success: function(data) {
                 var events = [];
-                $(data).each(function() {
+                if(data.isMaxCountReached)
+                {
+                    $('#calItemCountResult').show();
+                }
+                $(data.items).each(function() {
                     var endDateTime = '';
                     var allDay = false;
                     var className = '';
@@ -109,10 +113,6 @@ function getCalendarEvents(url, inputId, maxCount)
                         className : className,
                         allDay: allDay
                     });
-                    if(events.length == parseInt(maxCount))
-                    {
-                        $('#calItemCountResult').show();
-                    }
                 });
                 callback(events);
                 $('.mycalendar,.sharedcalendar').removeAttr('disabled');

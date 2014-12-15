@@ -61,7 +61,7 @@
         {
             $embedScript            = ContactWebFormsUtil::getEmbedScript(1);
             $this->assertNotEmpty($embedScript);
-            $this->assertTrue(strpos($embedScript, 'zurmoExternalWebForm') !== false);
+            $this->assertContains('zurmoExternalWebForm', $embedScript);
         }
     }
 ?>

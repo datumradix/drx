@@ -725,7 +725,7 @@
             $this->assertTrue($resolvedContent !== false);
             $this->assertNotEquals($resolvedContent, $content);
             $expectedSuffix                 = '/emailTemplates/default/details?id=' . static::$emailTemplate->id;
-            $this->assertTrue(strpos($resolvedContent, $expectedSuffix) !== false);
+            $this->assertContains($expectedSuffix, $resolvedContent);
             $this->assertEmpty($this->invalidTags);
         }
 
@@ -742,7 +742,7 @@
             $this->assertTrue($resolvedContent !== false);
             $this->assertNotEquals($resolvedContent, $content);
             $expectedSuffix                 = '/contacts/default/details?id=' . static::$contact->id;
-            $this->assertTrue(strpos($resolvedContent, $expectedSuffix) !== false);
+            $this->assertContains($expectedSuffix, $resolvedContent);
             $this->assertEmpty($this->invalidTags);
 
             $content                        = '[[MODEL^URL]]';
@@ -753,7 +753,7 @@
             $this->assertTrue($resolvedContent !== false);
             $this->assertNotEquals($resolvedContent, $content);
             $expectedSuffix                 = '/leads/default/details?id=' . static::$lead->id;
-            $this->assertTrue(strpos($resolvedContent, $expectedSuffix) !== false);
+            $this->assertContains($expectedSuffix, $resolvedContent);
             $this->assertEmpty($this->invalidTags);
         }
 
@@ -849,7 +849,7 @@
             $resolvedContent                = $mergeTagsUtil->resolveMergeTags(self::$emailTemplate, $this->invalidTags);
             $this->assertTrue($resolvedContent !== false);
             $this->assertNotEquals($resolvedContent, $content);
-            $this->assertTrue(strpos($resolvedContent, 'localhost') === 0);
+            $this->assertContains('localhost', $resolvedContent);
             $this->assertEmpty($this->invalidTags);
         }
 

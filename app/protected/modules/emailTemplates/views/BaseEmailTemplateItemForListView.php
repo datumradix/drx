@@ -145,7 +145,7 @@
         {
             if ($this->model->isFeatured)
             {
-                if ($thumbnail = Yii::app()->custom->resolveThumbnailForFeaturedEmailTemplate())
+                if ($thumbnail = Yii::app()->custom->resolveThumbnailForFeaturedEmailTemplate($this->model))
                 {
                     return $thumbnail;
                 }

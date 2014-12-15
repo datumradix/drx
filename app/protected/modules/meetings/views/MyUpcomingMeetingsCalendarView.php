@@ -114,7 +114,7 @@
 
         public static function getAdditionalOptionMenuItems()
         {
-            return array(array('label' => 'Create Meeting',
+            return array(array('label' => Zurmo::t('MeetingsModule', 'Create Meeting'),
                             'url' => Yii::app()->createUrl('/meetings/default/createMeeting',
                                                     array('redirectUrl' => Yii::app()->request->getRequestUri()))));
         }

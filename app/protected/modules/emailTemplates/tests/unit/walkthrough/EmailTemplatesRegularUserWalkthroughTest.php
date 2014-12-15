@@ -129,7 +129,7 @@
         {
             $this->setGetArray(array('id' => static::$templateOwnedBySuper->id, 'className' => 'EmailTemplate'));
             $content = $this->runControllerWithExitExceptionAndGetContent('emailTemplates/default/getHtmlContent');
-            $this->assertTrue(strpos($content, 'You have tried to access a page you do not have access to.') !== false);
+            $this->assertContains('You have tried to access a page you do not have access to.', $content);
         }
 
         public function testDetailsJsonActionForWorkflow()

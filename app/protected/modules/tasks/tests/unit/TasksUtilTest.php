@@ -106,8 +106,8 @@
             $task   = $tasks[0];
 
             $content = TasksUtil::getTaskSubscriberData($task);
-            $this->assertTrue(strpos($content, 'gravatar') > 0);
-            $this->assertTrue(strpos($content, 'users/default/details') !== false);
+            $this->assertContains('gravatar', $content);
+            $this->assertContains('users/default/details', $content);
         }
 
         /**
@@ -218,7 +218,7 @@
                 $task->save();
             }
             $link = TasksUtil::getKanbanSubscriptionLink($task, 0);
-            $this->assertTrue(strpos($link, 'unsubscribe-task-link') > 0);
+            $this->assertContains('unsubscribe-task-link', $link);
             $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
             foreach ($task->notificationSubscribers as $notificationSubscriber)
             {
@@ -230,7 +230,7 @@
             }
             $task->save();
             $link = TasksUtil::getKanbanSubscriptionLink($task, 0);
-            $this->assertTrue(strpos($link, 'subscribe-task-link') > 0);
+            $this->assertContains('subscribe-task-link', $link);
         }
 
         /**
@@ -248,7 +248,7 @@
                 $task->save();
             }
             $link = TasksUtil::getDetailSubscriptionLink($task, 0);
-            $this->assertTrue(strpos($link, 'detail-unsubscribe-task-link') > 0);
+            $this->assertContains('detail-unsubscribe-task-link', $link);
             $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
             foreach ($task->notificationSubscribers as $index => $notificationSubscriber)
             {
@@ -260,7 +260,7 @@
             }
             $task->save();
             $link = TasksUtil::getDetailSubscriptionLink($task, 0);
-            $this->assertTrue(strpos($link, 'detail-subscribe-task-link') > 0);
+            $this->assertContains('detail-subscribe-task-link', $link);
         }
 
         /**
@@ -320,7 +320,7 @@
             $task   = $tasks[0];
             $this->assertEquals(2, count($task->checkListItems));
             $content = TasksUtil::renderCompletionProgressBarContent($task);
-            $this->assertTrue(strpos($content, 'completion-percentage-bar') > 0);
+            $this->assertContains('completion-percentage-bar', $content);
         }
 
         /**
@@ -343,7 +343,7 @@
             $tasks  = Task::getByName('MyTest');
             $task   = $tasks[0];
             $content = TasksUtil::renderCompletionDateTime($task);
-            $this->assertTrue(strpos($content, 'Completed On:') > 0);
+            $this->assertContains('Completed On:', $content);
         }
 
         /**
@@ -587,10 +587,10 @@
             TasksUtil::addSubscriber($hellodear, $task);
             $this->assertTrue($task->save());
             $content = TasksUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
-            $this->assertTrue(strpos($content, 'gravatar') > 0);
-            $this->assertTrue(strpos($content, 'users/default/details') !== false);
-            $this->assertTrue(strpos($content, 'hellodear') !== false);
-            $this->assertTrue(strpos($content, 'task-owner') !== false);
+            $this->assertContains('gravatar', $content);
+            $this->assertContains('users/default/details', $content);
+            $this->assertContains('hellodear', $content);
+            $this->assertContains('task-owner', $content);
         }
     }
 ?>

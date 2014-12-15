@@ -49,9 +49,9 @@
         {
             if ($this->isSetCaptchaKeys() === false)
             {
-                $message = 'Please set ReCaptcha keys in Global Configuration to enable captcha for web forms.';
+                $message = Zurmo::t('ContactWebFormsModule', 'Please set ReCaptcha keys in Global Configuration to enable captcha for web forms.');
                 $message = ZurmoHtml::tag('span', array('class' => 'row-description'), $message);
-                return parent::renderControlEditable() . Zurmo::t('ContactWebFormsModule', $message);
+                return parent::renderControlEditable() . $message;
             }
             return parent::renderControlEditable();
         }

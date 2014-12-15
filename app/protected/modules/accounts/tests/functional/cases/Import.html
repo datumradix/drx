@@ -2,94 +2,97 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://localhost/" />
-<title>Import</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="selenium.base" href="http://localhost/"/>
+    <title>Import</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Import</td></tr>
-</thead><tbody>
 <tr>
-	<td>setTimeout</td>
-	<td>45000</td>
-	<td></td>
+    <td rowspan="1" colspan="3">Import</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>setTimeout</td>
+    <td>45000</td>
+    <td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//li[@id='accounts']/a/span</td>
-	<td></td>
+    <td>clickAndWait</td>
+    <td>//li[@id='accounts']/a/span</td>
+    <td></td>
 </tr>
 <tr>
-	<td>storeText</td>
-	<td>css=div.list-view-items-summary-clone</td>
-	<td>countResultsString</td>
+    <td>storeText</td>
+    <td>css=div.list-view-items-summary-clone</td>
+    <td>countResultsString</td>
 </tr>
 <tr>
-	<td>storeEval</td>
-	<td>parseInt(storedVars['countResultsString'].split(' ')[0])</td>
-	<td>countResults</td>
+    <td>storeEval</td>
+    <td>parseInt(storedVars['countResultsString'].split(' ')[0])</td>
+    <td>countResults</td>
 </tr>
 <tr>
-	<td>open</td>
-	<td>index.php/accounts/default</td>
-	<td></td>
+    <td>open</td>
+    <td>index.php/accounts/default</td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>link=Administration</td>
-	<td>Administration</td>
+    <td>assertText</td>
+    <td>link=Administration</td>
+    <td>Administration</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Administration</td>
-	<td></td>
+    <td>click</td>
+    <td>link=Administration</td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>link=Import</td>
-	<td>Import</td>
+    <td>assertText</td>
+    <td>link=Import</td>
+    <td>Import</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Import</td>
-	<td></td>
+    <td>clickAndWait</td>
+    <td>link=Import</td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>id=ImportWizardForm_importRulesType_2</td>
-	<td></td>
+    <td>click</td>
+    <td>id=ImportWizardForm_importRulesType_2</td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>assertText</td>
@@ -183,174 +186,174 @@
 </tr>
 
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_9_attributeIndexOrDerivedType</td>
-	<td>label=Name</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_9_attributeIndexOrDerivedType</td>
+    <td>label=Name</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_5_attributeIndexOrDerivedType</td>
-	<td>label=Owner</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_5_attributeIndexOrDerivedType</td>
+    <td>label=Owner</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_5_mappingRulesData_UserValueTypeModelAttributeMappingRuleForm_type</td>
-	<td>label=Zurmo Username</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_5_mappingRulesData_UserValueTypeModelAttributeMappingRuleForm_type</td>
+    <td>label=Zurmo Username</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_6_attributeIndexOrDerivedType</td>
-	<td>label=Annual Revenue</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_6_attributeIndexOrDerivedType</td>
+    <td>label=Annual Revenue</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_7_attributeIndexOrDerivedType</td>
-	<td>label=Description</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_7_attributeIndexOrDerivedType</td>
+    <td>label=Description</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_8_attributeIndexOrDerivedType</td>
-	<td>label=Employees</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_8_attributeIndexOrDerivedType</td>
+    <td>label=Employees</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_10_attributeIndexOrDerivedType</td>
-	<td>label=Office Phone</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_10_attributeIndexOrDerivedType</td>
+    <td>label=Office Phone</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_11_attributeIndexOrDerivedType</td>
-	<td>label=Office Fax</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_11_attributeIndexOrDerivedType</td>
+    <td>label=Office Fax</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_12_attributeIndexOrDerivedType</td>
-	<td>label=Website</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_12_attributeIndexOrDerivedType</td>
+    <td>label=Website</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_13_attributeIndexOrDerivedType</td>
-	<td>label=Billing Address - City</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_13_attributeIndexOrDerivedType</td>
+    <td>label=Billing Address - City</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_14_attributeIndexOrDerivedType</td>
-	<td>label=Billing Address - Country</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_14_attributeIndexOrDerivedType</td>
+    <td>label=Billing Address - Country</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_15_attributeIndexOrDerivedType</td>
-	<td>label=Billing Address - Postal Code</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_15_attributeIndexOrDerivedType</td>
+    <td>label=Billing Address - Postal Code</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_16_attributeIndexOrDerivedType</td>
-	<td>label=Billing Address - Street 1</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_16_attributeIndexOrDerivedType</td>
+    <td>label=Billing Address - Street 1</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_17_attributeIndexOrDerivedType</td>
-	<td>label=Billing Address - Street 2</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_17_attributeIndexOrDerivedType</td>
+    <td>label=Billing Address - Street 2</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_18_attributeIndexOrDerivedType</td>
-	<td>label=Billing Address - State</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_18_attributeIndexOrDerivedType</td>
+    <td>label=Billing Address - State</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_19_attributeIndexOrDerivedType</td>
-	<td>label=Industry</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_19_attributeIndexOrDerivedType</td>
+    <td>label=Industry</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>id=ImportWizardForm_column_32_attributeIndexOrDerivedType</td>
-	<td>label=Type</td>
+    <td>select</td>
+    <td>id=ImportWizardForm_column_32_attributeIndexOrDerivedType</td>
+    <td>label=Type</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>clickAndWait</td>
@@ -358,9 +361,9 @@
     <td></td>
 </tr>
 <tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
     <td>waitForCondition</td>
@@ -373,19 +376,19 @@
     <td></td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>//form[@id='edit-form']/div[2]/div/ul/li[1]/strong</td>
-	<td>6</td>
+    <td>assertText</td>
+    <td>//form[@id='edit-form']/div[2]/div/ul/li[1]/strong</td>
+    <td>6</td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>//form[@id='edit-form']/div[2]/div/ul/li[2]/strong</td>
-	<td>0</td>
+    <td>assertText</td>
+    <td>//form[@id='edit-form']/div[2]/div/ul/li[2]/strong</td>
+    <td>0</td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>//form[@id='edit-form']/div[2]/div/ul/li[3]/strong</td>
-	<td>0</td>
+    <td>assertText</td>
+    <td>//form[@id='edit-form']/div[2]/div/ul/li[3]/strong</td>
+    <td>0</td>
 </tr>
 <tr>
     <td>assertText</td>
@@ -413,85 +416,86 @@
     <td></td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>//form[@id='edit-form']/div[2]/div/ul/li[1]/strong</td>
-	<td>6</td>
+    <td>assertText</td>
+    <td>//form[@id='edit-form']/div[2]/div/ul/li[1]/strong</td>
+    <td>6</td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>//form[@id='edit-form']/div[2]/div/ul/li[2]/strong</td>
-	<td>0</td>
+    <td>assertText</td>
+    <td>//form[@id='edit-form']/div[2]/div/ul/li[2]/strong</td>
+    <td>0</td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>//form[@id='edit-form']/div[2]/div/ul/li[3]/strong</td>
-	<td>0</td>
+    <td>assertText</td>
+    <td>//form[@id='edit-form']/div[2]/div/ul/li[3]/strong</td>
+    <td>0</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='MenuView']/ul/li/a/span</td>
-	<td></td>
+    <td>clickAndWait</td>
+    <td>//div[@id='MenuView']/ul/li/a/span</td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//li[@id='accounts']/a/span</td>
-	<td></td>
+    <td>clickAndWait</td>
+    <td>//li[@id='accounts']/a/span</td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>storeText</td>
-	<td>css=div.list-view-items-summary-clone</td>
-	<td>countResultsStringForTest</td>
+    <td>storeText</td>
+    <td>css=div.list-view-items-summary-clone</td>
+    <td>countResultsStringForTest</td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>storeEval</td>
-	<td>parseInt(storedVars['countResultsStringForTest'].split(' ')[0])</td>
-	<td>countResultsForTest</td>
+    <td>storeEval</td>
+    <td>parseInt(storedVars['countResultsStringForTest'].split(' ')[0])</td>
+    <td>countResultsForTest</td>
 </tr>
 <tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
-	<td>assertEval</td>
-	<td>storedVars['countResultsForTest'] == storedVars['countResults'] + 6</td>
-	<td>true</td>
+    <td>assertEval</td>
+    <td>storedVars['countResultsForTest'] == storedVars['countResults'] + 6</td>
+    <td>true</td>
 </tr>
 <tr>
-	<td>waitForPageToLoad</td>
-	<td></td>
-	<td></td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
 </tr>
 <tr>
-	<td>waitForCondition</td>
-	<td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
-	<td>30000</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </body>
 </html>

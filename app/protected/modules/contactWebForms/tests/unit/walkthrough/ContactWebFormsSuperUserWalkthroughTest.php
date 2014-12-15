@@ -68,12 +68,12 @@
             $this->runControllerWithNoExceptionsAndGetContent('contactWebForms/default/create');
 
             $content = $this->runControllerWithNoExceptionsAndGetContent('contactWebForms/default/list');
-            $this->assertFalse(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertContains('anyMixedAttributes', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('contactWebForms/default/list');
-            $this->assertTrue(strpos($content, 'anyMixedAttributes') === false);
+            $this->assertNotContains('anyMixedAttributes', $content);
             $this->resetGetArray();
 
             //Default Controller actions requiring some sort of parameter via POST or GET
@@ -107,7 +107,7 @@
             $this->setGetArray (array('id'       => $contactWebFormId));
             $this->setPostArray(array('ContactWebForm' => array('name' => ''), 'ContactWebFormAttributeForm' => $attributes));
             $content = $this->runControllerWithNoExceptionsAndGetContent('contactWebForms/default/edit');
-            $this->assertFalse(strpos($content, 'Name cannot be blank') === false);
+            $this->assertContains('Name cannot be blank', $content);
 
             //Load Model Detail Views
             $this->setGetArray(array('id' => $contactWebFormId));

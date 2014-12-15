@@ -119,12 +119,13 @@
             $this->resetGetArray();
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/login');
-            $this->assertTrue(strpos($content, 'xyzabc') === false);
+            $this->assertNotContains('xyzabc', $content);
+            
             //Add content and test that it shows up properly.
             $content = '<div style="padding: 7px 7px 7px 80px; color: red;"><b>xyzabc</b></div>';
             ZurmoConfigurationUtil::setByModuleName('ZurmoModule', 'loginViewExtraHeaderContent', $content);
             $content = $this->runControllerWithNoExceptionsAndGetContent('zurmo/default/login');
-            $this->assertTrue(strpos($content, 'xyzabc') !== false);
+            $this->assertContains('xyzabc', $content);
 
             //Configuration administration user interface.
             //First make sure settings are not what we are setting them too.

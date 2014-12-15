@@ -42,12 +42,11 @@
     {
         /**
          * Override so it don't resolve the $searchAttributesData for LatestActivities
-         * @param $searchAttributesData
-         * @param $mashableActivityRules
+         * @return bool
          */
-        protected static function resolveSearchAttributeDataForLatestActivities(& $searchAttributesData, $mashableActivityRules)
+        protected static function shouldResolveSearchAttributeDataForLatestActivities()
         {
-            return;
+            return false;
         }
     }
 ?>

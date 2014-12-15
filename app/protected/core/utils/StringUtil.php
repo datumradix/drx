@@ -251,5 +251,15 @@
                     return $value;
             }
         }
+
+        /**
+         * Similar to calling ucwords() except this handles multiple-byte encoding properly
+         * @param $string
+         * @return string
+         */
+        public static function makeWordsUpperCase($string)
+        {
+            return mb_convert_case($string, MB_CASE_TITLE, 'UTF-8');
+        }
     }
 ?>

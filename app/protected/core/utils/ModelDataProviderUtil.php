@@ -304,11 +304,15 @@
             assert('is_int($clausePosition)');
             assert('is_array($clauseInformation["relatedModelData"]) && count($clauseInformation["relatedModelData"]) > 0');
             assert('is_string($onTableAliasName) || $onTableAliasName == null');
-            $relatedAttributName = isset($clauseInformation['relatedModelData']['attributeName']) ? $clauseInformation['relatedModelData']['attributeName'] : null;
+            $relatedAttributeName = null;
+            if (isset($clauseInformation['relatedModelData']['attributeName']))
+            {
+                $relatedAttributeName =  $clauseInformation['relatedModelData']['attributeName'];
+            }
             $modelAttributeToDataProviderAdapter = new RedBeanModelAttributeToDataProviderAdapter(
                                                    $modelClassName,
                                                    $clauseInformation['attributeName'],
-                                                   $relatedAttributName);
+                                                   $relatedAttributeName);
             $builder                             = new ModelWhereAndJoinBuilder($modelAttributeToDataProviderAdapter,
                                                    $joinTablesAdapter, true);
                                                    $builder->resolveJoins($onTableAliasName,

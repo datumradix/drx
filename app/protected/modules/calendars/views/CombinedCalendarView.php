@@ -179,7 +179,8 @@
          */
         public function renderOverMaxCountText()
         {
-            $label = Zurmo::t('CalendarsModule', 'Only displaying the first X calendar items. Try using filters to narrow your results ');
+            $label = Zurmo::t('CalendarsModule', 'Only displaying the first {count} calendar items. Try using filters to narrow your results ',
+                                array('{count}' => CalendarItemsDataProvider::MAXIMUM_CALENDAR_ITEMS_COUNT));
             $content  = '<div class="general-issue-notice" id="calItemCountResult" style="display:none"><span class="icon-notice"></span><p>';
             $content .= $label;
             $content .= '</p></div>';
