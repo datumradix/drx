@@ -36,6 +36,8 @@
 
     abstract class SelectContactOrLeadAutoCompleteElement extends AutoCompleteTextElement
     {
+        const MODAL_CONTAINER_PREFIX    = 'modalContainer';
+
         protected function getSource()
         {
             return Yii::app()->createUrl('/contacts/variableContactState/autoCompleteAllContacts');
@@ -50,6 +52,21 @@
         {
             return  Zurmo::t('ContactsModule', 'Select ContactsModuleSingularLabel/LeadsModuleSingularLabel',
                                 LabelUtil::getTranslationParamsForAllModules());
+        }
+
+        protected function shouldRenderSelectLinkDefault()
+        {
+            return true;
+        }
+
+        protected function getAfterChangeSelectIdScript()
+        {
+            return null;
+        }
+
+        protected function getModalContainerId()
+        {
+            return self::MODAL_CONTAINER_PREFIX . '-' . $this->form->id;
         }
     }
 ?>

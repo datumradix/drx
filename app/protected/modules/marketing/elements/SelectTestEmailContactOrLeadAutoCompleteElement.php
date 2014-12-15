@@ -64,12 +64,28 @@
             // Begin Not Coding Standard
             return 'js: function(event, ui)
                     {
-                        var value   = ui.item.value + " (" + ui.item.id + ")";
+                        var value   = ui.item.value;
+                        $("#' . $this->getIdForHiddenSelectLinkField() . '").val(ui.item.id);
                         $("#' . $this->getWidgetId() . '").val(value);
                         event.preventDefault();
                         return false;
                     }';
             // End Not Coding Standard
+        }
+
+        protected function getWidgetId()
+        {
+            return $this->getEditableInputId('name');
+        }
+
+        protected function getWidgetName()
+        {
+            return $this->getEditableInputName('name');
+        }
+
+        protected function getNameForHiddenSelectLinkField()
+        {
+            return $this->getEditableInputName();
         }
     }
 ?>
