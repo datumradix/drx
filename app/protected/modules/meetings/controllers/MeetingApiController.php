@@ -73,5 +73,15 @@
             $result    =  $this->processGetModifiedItems($params['data']);
             Yii::app()->apiHelper->sendResponse($result);
         }
+
+        /**
+         * Get all user attendees for specified meeting
+         */
+        public function actionGetUserAttendees()
+        {
+            $params = Yii::app()->apiRequest->getParams();
+            $result    =  $this->processGetManyManyRelationshipModels($params['data']);
+            Yii::app()->apiHelper->sendResponse($result);
+        }
     }
 ?>
