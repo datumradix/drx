@@ -77,7 +77,7 @@
         /**
          * Get all user attendees for specified meeting
          */
-        public function actionGetManyManyRelationshipModelIds()
+        public function actionGetUserAttendees()
         {
             $params = Yii::app()->apiRequest->getParams();
             $result    =  $this->processGetManyManyRelationshipModels($params['data']);

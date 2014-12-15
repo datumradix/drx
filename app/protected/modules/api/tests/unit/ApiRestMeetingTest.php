@@ -1330,7 +1330,7 @@
                 'relationName' => 'userAttendees',
             );
 
-            $response = $this->createApiCallWithRelativeUrl('getManyManyRelationshipModelIds/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertEmpty($response['data']);
@@ -1338,7 +1338,7 @@
             $meeting->userAttendees->add($alisa);
             $meeting->userAttendees->add($alicia);
             $this->assertTrue($meeting->save());
-            $response = $this->createApiCallWithRelativeUrl('getManyManyRelationshipModelIds/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertEquals(2, count($response['data']['userAttendees']));
@@ -1353,7 +1353,7 @@
                 'relationName' => 'userAttendees',
             );
 
-            $response = $this->createApiCallWithRelativeUrl('getManyManyRelationshipModelIds/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
             $this->assertEquals('The specified class name was invalid.', $response['message']);
@@ -1364,7 +1364,7 @@
                 'relationName' => 'owner', // This is not MANY_MANY relationship
             );
 
-            $response = $this->createApiCallWithRelativeUrl('getManyManyRelationshipModelIds/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
             $this->assertEquals('The specified relationship name does not exist or is not MANY_MANY type.', $response['message']);
