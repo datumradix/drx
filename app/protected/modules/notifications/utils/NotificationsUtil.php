@@ -56,7 +56,8 @@
                                         $rules->getType(),
                                         $users,
                                         $rules->allowDuplicates(),
-                                        $rules->allowSendingEmail());
+                                        $rules->allowSendingEmail(),
+                                        $rules->isCritical());
         }
 
         /**
@@ -169,19 +170,29 @@
         }
 
         protected static function processNotification(NotificationMessage $message, $type, $users,
-                                                      $allowDuplicates, $isCritical)
+                                                      $allowDuplicates, $allowSendingEmail, $isCritical)
         {
             assert('is_string($type) && $type != ""');
             assert('is_array($users) && count($users) > 0');
             assert('is_bool($allowDuplicates)');
+            assert('is_bool($allowSendingEmail)');
             assert('is_bool($isCritical)');
+            if ($allowSendingEmail)
+            {
+                return;
+            }
             $notifications = static::resolveAndGetNotifications($users, $type, $message, $allowDuplicates);
             if (static::resolveShouldSendEmailIfCritical() && $isCritical)
             {
-                foreach ($notifications as $notification)
-                {
-                    static::sendEmail($notification);
-                }
+                $sendImmediately = true;
+            }
+            else
+            {
+                $sendImmediately = false;
+            }
+            foreach ($notifications as $notification)
+            {
+                static::sendEmail($notification, $sendImmediately);
             }
         }
 
@@ -190,7 +201,7 @@
             return true;
         }
 
-        protected static function sendEmail(Notification $notification)
+        protected static function sendEmail(Notification $notification, $sendImmediately)
         {
             if ($notification->owner->primaryEmail->emailAddress != null &&
                 !UserConfigurationFormAdapter::resolveAndGetValue($notification->owner, 'turnOffEmailNotifications'))
@@ -225,7 +236,15 @@
                 }
                 try
                 {
-                    Yii::app()->emailHelper->sendImmediately($emailMessage);
+                    if ($sendImmediately)
+                    {
+                        Yii::app()->emailHelper->sendImmediately($emailMessage);
+                    }
+                    else
+                    {
+                        Yii::app()->emailHelper->send($emailMessage);
+                    }
+
                 }
                 catch (CException $e)
                 {
