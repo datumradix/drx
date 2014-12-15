@@ -388,7 +388,7 @@
                                     $emailData['content']['textContent'], $emailData['content']['htmlContent'],
                                     $userOrContact, intval($emailData['type']), static::ERROR_ON_FIRST_MISSING_MERGE_TAG,
                                     $emailData['language'], $invalidTags, $emailData['marketingListId'],
-                                    static::PREVIEW_MODE, static::ADD_GLOBAL_FOOTER_DEFAULT, $emailData['enableTracking'],
+                                    static::PREVIEW_MODE, static::ADD_GLOBAL_FOOTER_DEFAULT, (bool) $emailData['enableTracking'],
                                     0, 'CampaignItem', 0); // sending these three just in the case where enableTracking is true
             $emailContent                       = new EmailMessageContent();
             $emailContent->textContent          = $emailData['content']['textContent'];
