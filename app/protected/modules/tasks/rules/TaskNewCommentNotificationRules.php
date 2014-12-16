@@ -39,7 +39,7 @@
      */
     class TaskNewCommentNotificationRules extends TaskNotificationRules
     {
-        protected $allowSendingEmail    = false;
+        protected $allowSendingEmail    = true;
         protected $allowDuplicates      = true;
 
         /**
