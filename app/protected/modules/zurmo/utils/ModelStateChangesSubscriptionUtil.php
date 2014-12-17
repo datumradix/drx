@@ -55,13 +55,20 @@
                                                 $stateMetadataAdapterClassName = null, $owner = null,
                                                 $checkIfModelCreationApiSyncUtilIsNull = true)
         {
-            $where = '';
+            $where = null;
             $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
-            self::makeJoinAdapterAndWhereClauseForGetCreatedModels($serviceName, $modelClassName, $timestamp,
+            $result = self::makeJoinAdapterAndWhereClauseForGetCreatedModels($serviceName, $modelClassName, $timestamp,
                 $stateMetadataAdapterClassName, $owner,
                 $checkIfModelCreationApiSyncUtilIsNull,
                 $joinTablesAdapter, $where);
-            return $modelClassName::getSubset($joinTablesAdapter, $offset, $pageSize, $where);
+            if ($result === false)
+            {
+                return false;
+            }
+            else
+            {
+                return $modelClassName::getSubset($joinTablesAdapter, $offset, $pageSize, $where);
+            }
         }
 
         /**
@@ -78,13 +85,20 @@
                                                 $stateMetadataAdapterClassName = null, $owner = null,
                                                 $checkIfModelCreationApiSyncUtilIsNull = true)
         {
-            $where = '';
+            $where = null;
             $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
-            self::makeJoinAdapterAndWhereClauseForGetCreatedModels($serviceName, $modelClassName, $timestamp,
+            $result = self::makeJoinAdapterAndWhereClauseForGetCreatedModels($serviceName, $modelClassName, $timestamp,
                 $stateMetadataAdapterClassName, $owner,
                 $checkIfModelCreationApiSyncUtilIsNull,
                 $joinTablesAdapter, $where);
-            return $modelClassName::getCount($joinTablesAdapter, $where, null, true);
+            if ($result === false)
+            {
+                return 0;
+            }
+            else
+            {
+                return $modelClassName::getCount($joinTablesAdapter, $where, null, true);
+            }
         }
 
         protected static function makeJoinAdapterAndWhereClauseForGetCreatedModels($serviceName, $modelClassName, $timestamp,
@@ -121,7 +135,6 @@
             {
                 $metadata['structure'] = "1";
             }
-
             $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
             if ($stateMetadataAdapterClassName != null)
             {
@@ -182,7 +195,7 @@
         {
             if ($timestamp != 0)
             {
-                $where = '';
+                $where = null;
                 $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
                 self::makeJoinAdapterAndWhereClauseForGetUpdatedModels($modelClassName, $timestamp,
                                                                        $stateMetadataAdapterClassName, $owner,
@@ -208,7 +221,7 @@
         {
             if ($timestamp != 0)
             {
-                $where = '';
+                $where = null;
                 $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelClassName);
                 self::makeJoinAdapterAndWhereClauseForGetUpdatedModels($modelClassName, $timestamp,
                     $stateMetadataAdapterClassName, $owner,
