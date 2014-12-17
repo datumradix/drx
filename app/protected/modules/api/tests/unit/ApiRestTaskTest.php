@@ -954,6 +954,302 @@
             $this->assertEquals(1, count($response['errors']));
         }
 
+        /**
+         * Test if all newly created items was pulled from read permission tables via API.
+         * Please note that here we do not test if data are inserted in read permission tables correctly, that is
+         * part of read permission subscription tests
+         * @throws NotFoundException
+         * @throws NotImplementedException
+         * @throws NotSupportedException
+         */
+        public function testGetCreatedTasks()
+        {
+            $timestamp = time();
+            sleep(1);
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $lisa = UserTestHelper::createBasicUser('Lisa');
+            $lisa->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API);
+            $lisa->setRight('TasksModule', TasksModule::getAccessRight());
+            $this->assertTrue($lisa->save());
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Task');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            ReadPermissionsOptimizationUtil::rebuild();
+
+            $task1 = TaskTestHelper::createTaskByNameForOwner('Task1', $super);
+            sleep(1);
+            $task2 = TaskTestHelper::createTaskByNameForOwner('Task2', $super);
+            sleep(1);
+            $task3 = TaskTestHelper::createTaskByNameForOwner('Task3', $super);
+            sleep(1);
+            $this->assertTrue($job->run());
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getCreatedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $this->assertEquals($task1->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($task1->name, $response['data']['items'][0]['name']);
+
+            $this->assertEquals($task2->id, $response['data']['items'][1]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][1]['owner']['id']);
+            $this->assertEquals($task2->name, $response['data']['items'][1]['name']);
+
+            $data = array(
+                'sinceTimestamp' => 0,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 2
+                )
+            );
+            $response = $this->createApiCallWithRelativeUrl('getCreatedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(2, $response['data']['currentPage']);
+
+            $this->assertEquals($task3->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($task3->name, $response['data']['items'][0]['name']);
+
+            // Change owner of $contact1, it should appear in Lisa's created contacts
+            $task1->owner = $lisa;
+            $this->assertTrue($task1->save());
+            sleep(1);
+            $this->assertTrue($job->run());
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getCreatedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(2, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $this->assertEquals($task2->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($task2->name, $response['data']['items'][0]['name']);
+
+            $this->assertEquals($task3->id, $response['data']['items'][1]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][1]['owner']['id']);
+            $this->assertEquals($task3->name, $response['data']['items'][1]['name']);
+
+            $authenticationData = $this->login('lisa', 'lisa');
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getCreatedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(1, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $this->assertEquals($task1->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($lisa->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($task1->name, $response['data']['items'][0]['name']);
+        }
+
+        /**
+         * Test if all modified items was pulled via API correctly.
+         * Please note that here we do not test if data are inserted in read permission tables correctly, that is
+         * part of read permission subscription tests
+         * @throws NotFoundException
+         */
+        public function testGetModifiedTasks()
+        {
+            $timestamp = time();
+            sleep(1);
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Task');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            $task1 = TaskTestHelper::createTaskByNameForOwner('Task1', $super);
+            $task2 = TaskTestHelper::createTaskByNameForOwner('Task2', $super);
+            $task3 = TaskTestHelper::createTaskByNameForOwner('Task3', $super);
+            $task4 = TaskTestHelper::createTaskByNameForOwner('Task4', $super);
+            $this->assertTrue($job->run());
+            sleep(1);
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(0, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $timestamp = time();
+            sleep(1);
+            $task1->name = "Task1 Modified";
+            $this->assertTrue($task1->save());
+            sleep(1);
+            $task3->name = "Task1 Modified";
+            $this->assertTrue($task3->save());
+            sleep(1);
+            $task4->name = "Task1 Modified";
+            $this->assertTrue($task4->save());
+            sleep(1);
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $this->assertEquals($task1->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($task1->name, $response['data']['items'][0]['name']);
+
+            $this->assertEquals($task3->id, $response['data']['items'][1]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][1]['owner']['id']);
+            $this->assertEquals($task3->name, $response['data']['items'][1]['name']);
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 2
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(2, $response['data']['currentPage']);
+
+            $this->assertEquals($task4->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($task4->name, $response['data']['items'][0]['name']);
+        }
+
+        /**
+         * Test if all deleted items was pulled from read permission tables via API.
+         * Please note that here we do not test if data are inserted in read permission tables correctly, that is
+         * part of read permission subscription tests
+         * @throws NotFoundException
+         */
+        public function testGetDeletedTasks()
+        {
+            $timestamp = time();
+            sleep(1);
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Task');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            $task1 = TaskTestHelper::createTaskByNameForOwner('Task1', $super);
+            $task2 = TaskTestHelper::createTaskByNameForOwner('Task2', $super);
+            $task3 = TaskTestHelper::createTaskByNameForOwner('Task3', $super);
+            $this->assertTrue($job->run());
+            sleep(1);
+            $taskId1 = $task1->id;
+            $taskId2 = $task2->id;
+            $taskId3 = $task3->id;
+            $task1->delete();
+            $task2->delete();
+            $task3->delete();
+
+            $this->assertTrue($job->run());
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+            $this->assertContains($taskId1, $response['data']['items']);
+            $this->assertContains($taskId2, $response['data']['items']);
+
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => 0,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 2
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(2, $response['data']['currentPage']);
+            $this->assertContains($taskId3, $response['data']['items']);
+        }
+
         protected function getApiControllerClassName()
         {
             Yii::import('application.modules.tasks.controllers.TaskApiController', true);

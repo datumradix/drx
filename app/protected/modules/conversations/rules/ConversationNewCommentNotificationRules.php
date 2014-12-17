@@ -39,7 +39,7 @@
      */
     class ConversationNewCommentNotificationRules extends SimpleNotificationRules
     {
-        protected $allowSendingEmail    = false;
+        protected $allowSendingEmail    = true;
         protected $allowDuplicates      = true;
 
         public function getDisplayName()

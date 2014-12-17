@@ -314,7 +314,7 @@
                 $emailMessage->folder   = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_ERROR);
                 $emailMessage->error    = $emailMessageSendError;
             }
-            $this->updateEmailMessageForSending($emailMessage, (bool) ($emailMessage->id > 0));
+            $this->updateEmailMessageForSending($emailMessage, false);
         }
 
         /**

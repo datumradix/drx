@@ -64,7 +64,19 @@
                 $stateNames = array();
                 foreach ($states as $state)
                 {
-                    if (in_array($state->name, $contactStatesData))
+                    if (in_array($state->name, $contactStatesDataExistingValues))
+                    {
+                        //todo: just don't match up the swap
+                        $order                   = array_search($state->name, $contactStatesDataExistingValues);
+                        $state->name             = $contactStatesData[$order];
+                        $state->order            = $order;
+                        $state->serializedLabels = $this->makeSerializedLabelsByLabelsAndOrder($contactStatesLabels,
+                            (int)$state->order);
+                        $saved                   = $state->save();
+                        assert('$saved');
+                        $stateNames[]            = $state->name;
+                    }
+                    elseif (in_array($state->name, $contactStatesData))
                     {
                         $stateNames[]            = $state->name;
                         $state->order            = array_search($state->name, $contactStatesData);
@@ -72,17 +84,6 @@
                                                                                                (int)$state->order);
                         $saved        = $state->save();
                         assert('$saved');
-                    }
-                    elseif (in_array($state->name, $contactStatesDataExistingValues))
-                    {
-                        $order                   = array_search($state->name, $contactStatesDataExistingValues);
-                        $state->name             = $contactStatesData[$order];
-                        $state->order            = $order;
-                        $state->serializedLabels = $this->makeSerializedLabelsByLabelsAndOrder($contactStatesLabels,
-                                                                                               (int)$state->order);
-                        $saved                   = $state->save();
-                        assert('$saved');
-                        $stateNames[]            = $state->name;
                     }
                     else
                     {
