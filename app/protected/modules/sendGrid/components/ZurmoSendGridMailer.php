@@ -192,7 +192,7 @@
                     unlink($path);
                 }
             }
-            $saved = $emailMessage->save();
+            $saved = $emailMessage->save(false);
             if (!$saved)
             {
                 throw new FailedToSaveModelException();

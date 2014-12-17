@@ -43,5 +43,35 @@
         {
             return 'LeadsSearchForm';
         }
+
+        /**
+         * Get array or models and send response
+         */
+        public function actionGetDeletedItems()
+        {
+            $params = Yii::app()->apiRequest->getParams();
+            $result    =  $this->processGetDeletedItems($params['data']);
+            Yii::app()->apiHelper->sendResponse($result);
+        }
+
+        /**
+         * Get array or models and send response
+         */
+        public function actionGetCreatedItems()
+        {
+            $params = Yii::app()->apiRequest->getParams();
+            $result    =  $this->processGetCreatedItems($params['data']);
+            Yii::app()->apiHelper->sendResponse($result);
+        }
+
+        /**
+         * Get array or models and send response
+         */
+        public function actionGetModifiedItems()
+        {
+            $params = Yii::app()->apiRequest->getParams();
+            $result    =  $this->processGetModifiedItems($params['data']);
+            Yii::app()->apiHelper->sendResponse($result);
+        }
     }
 ?>

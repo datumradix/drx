@@ -233,9 +233,19 @@
         {
         }
 
+        public function resolveIsConfigurationMenuItemVisibleForCurrentUser($menuItem)
+        {
+            return true;
+        }
+
         public function resolveExtraToolbarContentForView($viewClassName, $controllerId, $moduleId, $modelId)
         {
             return null;
+        }
+
+        public function resolveColumnAdapterClassNameForView($viewClassName, $columnInformation)
+        {
+            return ucfirst($columnInformation['type']) . 'ListViewColumnAdapter';
         }
     }
 ?>
