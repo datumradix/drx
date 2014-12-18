@@ -1829,7 +1829,7 @@
             $this->assertContains('<label>Who can read and write</label><div ' .
                                   'class="radio-input">', $content);
             $this->assertContains('<input id="BuilderEmailTemplateWizardForm_explicitReadWriteModel' .
-                                  'Permissions_type_0" value="" type="radio" name="BuilderEmailTemplate' .
+                                  'Permissions_type_0" value="" checked="checked" type="radio" name="BuilderEmailTemplate' .
                                   'WizardForm[explicitReadWriteModelPermissions][type]"', $content);
             $this->assertContains('<label for="BuilderEmailTemplateWizardForm_explicitReadWriteModel' .
                                   'Permissions_type_0">Owner</label>', $content);
