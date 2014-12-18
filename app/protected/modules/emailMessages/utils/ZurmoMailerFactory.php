@@ -66,6 +66,7 @@
             $apiUser             = Yii::app()->sendGridEmailHelper->apiUsername;
             $apiPassword         = Yii::app()->sendGridEmailHelper->apiPassword;
             $user                = $this->emailMessage->owner;
+            $defaultMailerClassName = static::resolveDefaultMailerClassName();
             if($user != null)
             {
                 $this->sendGridEmailAccount = SendGridEmailAccount::resolveAndGetByUserAndName($user, null, false);
@@ -83,7 +84,7 @@
                     //Check for personal settings
                     if($this->shouldCustomUserSettingsBeUsed())
                     {
-                        return new ZurmoSwiftMailer($this->emailMessage, $this->emailAccount);
+                        return new $defaultMailerClassName($this->emailMessage, $this->emailAccount);
                     }
                     else
                     {
@@ -95,14 +96,14 @@
                         else
                         {
                             $this->updateMailerDetailsForEmailMessage('smtp', 'global');
-                            return new ZurmoSwiftMailer($this->emailMessage, null);
+                            return new $defaultMailerClassName($this->emailMessage, null);
                         }
                     }
                 }
             }
             elseif($user != null && $this->shouldCustomUserSettingsBeUsed() === true)
             {
-                return new ZurmoSwiftMailer($this->emailMessage, $this->emailAccount);
+                return new $defaultMailerClassName($this->emailMessage, $this->emailAccount);
             }
             elseif($this->sendGridPluginEnabled && $apiUser != null && $apiPassword != null)
             {
@@ -112,7 +113,7 @@
             else
             {
                 $this->updateMailerDetailsForEmailMessage('smtp', 'global');
-                return new ZurmoSwiftMailer($this->emailMessage, null);
+                return new $defaultMailerClassName($this->emailMessage, null);
             }
         }
 
@@ -193,5 +194,14 @@
             $emailMessage->mailerSettings   = $mailerSettings;
             $emailMessage->save();
             $this->emailMessage = $emailMessage;
+        }
+
+        /**
+         * Resolve default mailer class name.
+         * @return string
+         */
+        protected static function resolveDefaultMailerClassName()
+        {
+            return 'ZurmoSwiftMailer';
         }
     }
