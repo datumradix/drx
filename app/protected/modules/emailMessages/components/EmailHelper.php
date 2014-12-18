@@ -216,7 +216,8 @@
             {
                 throw new NotSupportedException();
             }
-            $mailerFactory  = new ZurmoMailerFactory($emailMessage);
+            $mailerFactoryClass = static::resolveMailerFactoryClass();
+            $mailerFactory  = new $mailerFactoryClass($emailMessage);
             $mailer         = $mailerFactory->resolveMailer();
             $mailer->sendEmail();
         }
@@ -452,6 +453,15 @@
             $emailMessage->folder = $folder;
             $saved = $emailMessage->save($validate);
             return $saved;
+        }
+
+        /**
+         * Resolve mailer factory class.
+         * @return string
+         */
+        protected static function resolveMailerFactoryClass()
+        {
+            return 'ZurmoMailerFactory';
         }
     }
 ?>

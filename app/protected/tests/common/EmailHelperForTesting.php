@@ -42,25 +42,6 @@
     {
         public $sendEmailThroughTransport = false;
 
-        /**
-         * Override to avoid actually sending emails out through transport.
-         * (non-PHPdoc)
-         * @see EmailHelper::sendEmail()
-         */
-        protected function sendEmail(Mailer $mailer, EmailMessage $emailMessage)
-        {
-            if (!$this->sendEmailThroughTransport)
-            {
-                $emailMessage->error        = null;
-                $emailMessage->folder       = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
-                $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
-            }
-            else
-            {
-                parent::sendEmail($mailer, $emailMessage);
-            }
-        }
-
         //For testing only
         public function getSentCount()
         {
@@ -173,6 +154,15 @@
                 // To-Do: make exception or something else
                 echo "There was error while sending email";
             }
+        }
+
+        /**
+         * Resolve mailer factory class.
+         * @return string
+         */
+        protected static function resolveMailerFactoryClass()
+        {
+            return 'ZurmoMailerFactoryForTesting';
         }
     }
 ?>
