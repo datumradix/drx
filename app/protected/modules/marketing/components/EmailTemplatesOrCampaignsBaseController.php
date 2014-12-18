@@ -112,15 +112,22 @@
                 // most reasonable thing would be to throw a 404 error.
                 throw new CHttpException(404);
             }
+            Yii::app()->getClientScript()->setToAjaxMode();
             $this->renderSuccessMessage();
+            Yii::app()->end(0, false);
         }
 
         protected function renderSuccessMessage()
         {
-            $message    = Zurmo::t('MarketingModule', 'Test Email was successfully sent');
-	        $content = ZurmoHtml::tag('div', array('class' => 'modal-result-message'), $message);
-            echo $content;
-            Yii::app()->end(0, false);
+            $messageContent     = Zurmo::t('MarketingModule', 'Test Email was successfully sent');
+            //$content = ZurmoHtml::tag('div', array('class' => 'modal-result-message'), $message);
+            $messageView        = new TestEmailSentView($messageContent);
+            $view               = new ModalView($this,
+                                    $messageView,
+                                    'modalContainer',
+                                    Zurmo::t('EmailMessagesModule', 'Send Test Email Results')
+                                );
+            echo $view->render();
         }
 
         protected function throwAccessDeniedExceptionIfModuleIsInaccessible()
