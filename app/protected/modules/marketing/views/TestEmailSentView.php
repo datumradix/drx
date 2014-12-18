@@ -34,58 +34,11 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class SelectTestEmailContactOrLeadAutoCompleteElement extends SelectContactOrLeadAutoCompleteElement
+    class TestEmailSentView extends ModalMessageView
     {
-        protected function getWidgetValue()
+        protected function getDefaultCssClasses()
         {
-            return null;
-        }
-
-        protected function getOptions()
-        {
-            return array(
-                'autoFill'  => false,
-                'select'    => $this->getWidgetSelectActionJS(),
-                'search'    => 'js:function(event, ui) { $(this).makeOrRemoveTogglableSpinner(true,  $(this).parent()) }',
-                'open'      => 'js:function(event, ui) { $(this).makeOrRemoveTogglableSpinner(false, $(this).parent()) }',
-                'close'     => 'js:function(event, ui) { $(this).makeOrRemoveTogglableSpinner(false, $(this).parent()) }',
-                'response'  => 'js:function(event, ui)
-                    {
-                        if (ui.content.length < 1)
-                        {
-                            $(this).makeOrRemoveTogglableSpinner(false, $(this).parent());
-                        }
-                    }'
-            );
-        }
-
-        protected function getWidgetSelectActionJS()
-        {
-            // Begin Not Coding Standard
-            return 'js: function(event, ui)
-                    {
-                        var value   = ui.item.value;
-                        $("#' . $this->getIdForHiddenSelectLinkField() . '").val(ui.item.id);
-                        $("#' . $this->getWidgetId() . '").val(value);
-                        event.preventDefault();
-                        return false;
-                    }';
-            // End Not Coding Standard
-        }
-
-        protected function getWidgetId()
-        {
-            return $this->getEditableInputId('name');
-        }
-
-        protected function getWidgetName()
-        {
-            return $this->getEditableInputName('name');
-        }
-
-        protected function getNameForHiddenSelectLinkField()
-        {
-            return $this->getEditableInputName();
+            return CMap::mergeArray(parent::getDefaultCssClasses(), array('send-email-test'));
         }
     }
 ?>

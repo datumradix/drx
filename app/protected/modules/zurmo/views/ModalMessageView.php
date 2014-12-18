@@ -34,58 +34,36 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class SelectTestEmailContactOrLeadAutoCompleteElement extends SelectContactOrLeadAutoCompleteElement
+    /**
+     * View used to render message content.  This is rendered in a modal window.
+     */
+    abstract class ModalMessageView extends View
     {
-        protected function getWidgetValue()
+        protected $message;
+
+        /**
+         * @param string $message
+         */
+        public function __construct($message)
         {
-            return null;
+            assert('is_string($message)');
+            $this->message      = $message;
         }
 
-        protected function getOptions()
+        protected function renderContent()
         {
-            return array(
-                'autoFill'  => false,
-                'select'    => $this->getWidgetSelectActionJS(),
-                'search'    => 'js:function(event, ui) { $(this).makeOrRemoveTogglableSpinner(true,  $(this).parent()) }',
-                'open'      => 'js:function(event, ui) { $(this).makeOrRemoveTogglableSpinner(false, $(this).parent()) }',
-                'close'     => 'js:function(event, ui) { $(this).makeOrRemoveTogglableSpinner(false, $(this).parent()) }',
-                'response'  => 'js:function(event, ui)
-                    {
-                        if (ui.content.length < 1)
-                        {
-                            $(this).makeOrRemoveTogglableSpinner(false, $(this).parent());
-                        }
-                    }'
-            );
+            $this->setCssClasses($this->getCssClasses());
+            return nl2br($this->message);
         }
 
-        protected function getWidgetSelectActionJS()
+        public function getCssClasses()
         {
-            // Begin Not Coding Standard
-            return 'js: function(event, ui)
-                    {
-                        var value   = ui.item.value;
-                        $("#' . $this->getIdForHiddenSelectLinkField() . '").val(ui.item.id);
-                        $("#' . $this->getWidgetId() . '").val(value);
-                        event.preventDefault();
-                        return false;
-                    }';
-            // End Not Coding Standard
+            return CMap::mergeArray($this->getDefaultCssClasses(), parent::getCssClasses());
         }
 
-        protected function getWidgetId()
+        protected function getDefaultCssClasses()
         {
-            return $this->getEditableInputId('name');
-        }
-
-        protected function getWidgetName()
-        {
-            return $this->getEditableInputName('name');
-        }
-
-        protected function getNameForHiddenSelectLinkField()
-        {
-            return $this->getEditableInputName();
+            return array('modal-result-message');
         }
     }
 ?>

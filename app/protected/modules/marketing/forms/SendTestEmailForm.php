@@ -46,20 +46,54 @@
         {
             return array(
                 array('selectContactOrLeadSearchBox',       'type',    'type' => 'string'),
+                array('selectContactOrLeadSearchBox',       'validateSelectedContact'),
                 array('inputEmailAddressBox',               'type',    'type' => 'string'),
-                array('inputEmailAddressBox',               'email'),
+                array('inputEmailAddressBox',               'validateProvidedEmail'),
                 array('selectContactOrEmailRadioButton',    'type',    'type' => 'string'),
-                array('selectContactOrEmailRadioButton',    'validateAtLeastOneIsProvided'),
             );
         }
 
-        public function validateAtLeastOneIsProvided($attribute, $params)
+        public function validateProvidedEmail($attribute, $params)
         {
-            if (!(empty($this->selectContactOrLeadSearchBox) xor empty($this->inputEmailAddressBox)))
+            if ($this->selectContactOrEmailRadioButton == 0)
             {
-                $this->addError($attribute, Zurmo::t('MarketingModule', 'Please provide an email or select a contact.'));
+                return true;
+            }
+
+            $emailValidator = new CEmailValidator();
+            if (!$emailValidator->validateValue($this->inputEmailAddressBox))
+            {
+                $this->addError($attribute, Zurmo::t('MarketingModule', 'Please provide an email address.'));
                 return false;
             }
+            return true;
+        }
+
+        public function validateSelectedContact($attribute, $params)
+        {
+            if ($this->selectContactOrEmailRadioButton == 1)
+            {
+                return true;
+            }
+            $contactId  = $this->selectContactOrLeadSearchBox;
+            if (!empty($contactId))
+            {
+                try
+                {
+                    $contact = Contact::getById((int) $contactId);
+                    if (empty($contact->primaryEmail->emailAddress))
+                    {
+                        $this->addError($attribute, Zurmo::t('MarketingModule', 'Selected contact does not have a valid primary email address.'));
+                        return false;
+                    }
+                    return true;
+                }
+                catch (NotFoundException $e)
+                {
+
+                }
+            }
+            $this->addError($attribute, Zurmo::t('MarketingModule', 'Please select a valid contact.'));
             return true;
         }
     }

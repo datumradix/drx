@@ -163,7 +163,7 @@
             $secondaryInputWrapperId    = SelectContactOrInputEmailCompositeElement::SECONDARY_INPUT_WRAPPER_ID;
 
             $radioSelector              = "\$('form#{$formId} #{$radioWrapperId} input:radio:checked')";
-            $primaryInputSelector       = "\$('form#{$formId} #{$primaryInputWrapperId} input:text')";
+            $primaryInputSelector       = "\$('form#{$formId} #{$primaryInputWrapperId} input:hidden')";
             $secondaryInputSelector     = "\$('form#{$formId} #{$secondaryInputWrapperId} input:text')";
             $scriptName                 = 'resolveSendTestModalFormData';
 
@@ -182,9 +182,7 @@
                         if (selectedRadioValue == 0)
                         {
                             selectedContactValue    = " . $primaryInputSelector . ".val();
-                            var regExp              = /\(([^)]+)\)/;
-                            var matches             = selectedContactValue.match(regExp);
-                            data.contactId          = matches[1];
+                            data.contactId          = selectedContactValue;
                         }
                         else
                         {
