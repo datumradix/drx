@@ -60,6 +60,12 @@
         protected $maintenanceMode;
 
         /**
+         * Is application in sandbox mode or not.
+         * @var boolean
+         */
+        protected $sandboxMode = false;
+
+        /**
          * Flag to determine relative URLs or absolute URLs
          * @var bool
          */
@@ -287,6 +293,11 @@
         public function isApplicationInMaintenanceMode()
         {
             return $this->maintenanceMode;
+        }
+
+        public function isApplicationInSandboxMode()
+        {
+            return $this->sandboxMode;
         }
 
         public function getEdition()

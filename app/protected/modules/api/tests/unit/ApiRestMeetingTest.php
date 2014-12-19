@@ -1188,7 +1188,7 @@
             $this->assertEquals(1, $response['data']['currentPage']);
 
             $timestamp = time();
-            sleep(1);
+            sleep(2);
             $meeting1->name = "Meeting1 Modified";
             $this->assertTrue($meeting1->save());
             sleep(1);
@@ -1197,7 +1197,7 @@
             sleep(1);
             $meeting4->name = "Meeting3 Modified";
             $this->assertTrue($meeting4->save());
-            sleep(1);
+            sleep(2);
 
             $data = array(
                 'sinceTimestamp' => $timestamp,
@@ -1306,6 +1306,68 @@
             $this->assertEquals(2, $response['data']['pageSize']);
             $this->assertEquals(2, $response['data']['currentPage']);
             $this->assertContains($meetingId3, $response['data']['items']);
+        }
+
+        public function testGetManyManyRelationshipModelIds()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $alisa  = UserTestHelper::createBasicUser('Alisa');
+            $alicia = UserTestHelper::createBasicUser('Alicia');
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $meeting = MeetingTestHelper::createMeetingByNameForOwner('Meeting With User Attendees', $super);
+            $data = array(
+                'id' => $meeting->id,
+                'modelClassName' => 'Meeting',
+                'relationName' => 'userAttendees',
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEmpty($response['data']);
+
+            $meeting->userAttendees->add($alisa);
+            $meeting->userAttendees->add($alicia);
+            $this->assertTrue($meeting->save());
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals(2, count($response['data']['userAttendees']));
+            $this->assertEquals('User', $response['data']['userAttendees'][0]['class']);
+            $this->assertEquals($alisa->id, $response['data']['userAttendees'][0]['id']);
+            $this->assertEquals('User', $response['data']['userAttendees'][1]['class']);
+            $this->assertEquals($alicia->id, $response['data']['userAttendees'][1]['id']);
+
+            $data = array(
+                'id' => $meeting->id,
+                'modelClassName' => 'NonExistingModel',
+                'relationName' => 'userAttendees',
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
+            $this->assertEquals('The specified class name was invalid.', $response['message']);
+
+            $data = array(
+                'id' => $meeting->id,
+                'modelClassName' => 'Meeting',
+                'relationName' => 'owner', // This is not MANY_MANY relationship
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
+            $this->assertEquals('The specified relationship name does not exist or is not MANY_MANY type.', $response['message']);
         }
 
         protected function getApiControllerClassName()

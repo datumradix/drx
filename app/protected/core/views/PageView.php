@@ -340,6 +340,10 @@
             {
                 $classContent .= ' mobile-app';
             }
+	        if (Yii::app()->isApplicationInSandboxMode())
+	        {
+		        $classContent .= ' sandbox-mode';
+	        }
             Yii::app()->userInterface->resolveCollapseClassForBody($classContent);
             return '<body class="' . $classContent . '">';
         }

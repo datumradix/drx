@@ -72,6 +72,12 @@
          */
         protected $maintenanceMode;
 
+        /**
+         * Is application in sandbox mode or not.
+         * @var boolean
+         */
+        protected $sandboxMode = false;
+
         public function isApplicationInstalled()
         {
             return $this->installed;
@@ -80,6 +86,11 @@
         public function isApplicationInMaintenanceMode()
         {
             return $this->maintenanceMode;
+        }
+
+        public function isApplicationInSandboxMode()
+        {
+            return $this->sandboxMode;
         }
 
         public function getEdition()
