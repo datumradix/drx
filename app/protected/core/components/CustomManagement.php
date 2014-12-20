@@ -232,7 +232,7 @@
         public function resolveQueueModelEditViewOnRuleTypeChangeScript($model)
         {
         }
-        
+
         public function resolveIsConfigurationMenuItemVisibleForCurrentUser($menuItem)
         {
             return true;
