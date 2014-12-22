@@ -93,7 +93,6 @@
 
         protected function processRun()
         {
-            parent::processRun();
             $batchSize                   = $this->resolveBatchSize();
             if ($batchSize != null)
             {
@@ -143,7 +142,8 @@
 
         protected function processAutoresponderItemInQueue(AutoresponderItem $autoresponderItem)
         {
-            AutoresponderItemsUtil::processDueItem($autoresponderItem);
+            $util   = new AutoresponderItemsUtil();
+            $util->processDueItem($autoresponderItem);
         }
 
         /**

@@ -37,23 +37,11 @@
     /**
      * View used to render message content as a result of sending a test email.  This is rendered in a modal window.
      */
-    class TestConnectionView extends View
+    class TestConnectionView extends ModalMessageView
     {
-        protected $message;
-
-        /**
-         * @param string $message
-         */
-        public function __construct($message)
+        protected function getDefaultCssClasses()
         {
-            assert('is_string($message)');
-            $this->message = $message;
-        }
-
-        protected function renderContent()
-        {
-            $this->setCssClasses(array_merge($this->getCssClasses(), array('connection-test')));
-            return nl2br($this->message);
+            return CMap::mergeArray(parent::getDefaultCssClasses(), array('connection-test'));
         }
     }
 ?>

@@ -34,36 +34,30 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class MarketingListMembersSubscribeMenuActionElement extends MarketingListMembersActionMenuActionElement
+    /**
+     * Class for Zurmo specific SwiftMailer functionality for testing.
+     */
+    class ZurmoSwiftMailerForTesting extends ZurmoSwiftMailer
     {
-        protected function getSelectedMenuNameSuffix()
+        /**
+         * Override to avoid actually sending emails out through transport.
+         * (non-PHPdoc)
+         * @see ZurmoSwiftMailer::sendEmail()
+         */
+        public function sendEmail()
         {
-            return '-massSubscribeSelected';
-        }
-
-        protected function getAllMenuNameSuffix()
-        {
-            return '-massSubscribeAll';
-        }
-
-        protected function getActionId()
-        {
-            return 'massSubscribe';
-        }
-
-        protected function getScriptNameSuffixForSelectedMenu()
-        {
-            return '-listViewMassActionSubscribeSelected';
-        }
-
-        protected function getScriptNameSuffixForAllMenu()
-        {
-            return '-listViewMassActionSubscribeAll';
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('Core', 'Subscribe');
+            $emailMessage = $this->emailMessage;
+            $sendEmailThroughTransport = Yii::app()->emailHelper->sendEmailThroughTransport;
+            if(!$sendEmailThroughTransport)
+            {
+                $emailMessage->error        = null;
+                $emailMessage->folder       = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
+                $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
+            }
+            else
+            {
+                parent::sendEmail();
+            }
         }
     }
 ?>

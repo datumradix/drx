@@ -55,7 +55,7 @@
         {
             return ZurmoHtml::ajaxLink($this->getLabel(), $this->getDefaultRoute(),
                 $this->getAjaxLinkOptions(),
-                $this->getHtmlOptions()
+                $this->resolveHtmlOptionsForRendering()
             );
         }
 
@@ -65,7 +65,7 @@
             {
                 return array('label'           => $this->getLabel(),
                              'url'             => $this->getDefaultRoute(),
-                             'linkOptions'     => $this->getHtmlOptions(),
+                             'linkOptions'     => $this->resolveHtmlOptionsForRenderingMenuItem(),
                              'itemOptions'     => array('id' => get_class($this)),
                              'ajaxLinkOptions' => $this->getAjaxLinkOptions()
                 );

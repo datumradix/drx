@@ -46,7 +46,7 @@
 
         protected function renderContent()
         {
-            ZurmoNotificationUtil::renderDesktopNotificationsScript();
+            //ZurmoNotificationUtil::renderDesktopNotificationsScript(); Disabled for now until better browser support
             if (ZurmoConfigurationFormAdapter::getRealtimeUpdatesEnabled())
             {
                 ZurmoNotificationUtil::renderAutoUpdaterScript();

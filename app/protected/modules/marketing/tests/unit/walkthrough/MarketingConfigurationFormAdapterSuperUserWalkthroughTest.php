@@ -72,7 +72,7 @@
                 )
             );
             $this->runControllerWithRedirectExceptionAndGetContent('marketing/default/configurationEdit');
-            $this->assertEquals('Global configuration saved successfully.', Yii::app()->user->getFlash('notification'));
+            $this->assertEquals('Marketing configuration saved successfully.', Yii::app()->user->getFlash('notification'));
         }
     }
 ?>

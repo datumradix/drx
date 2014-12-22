@@ -38,6 +38,8 @@
     {
         public static $emailHelperSendEmailThroughTransport;
 
+        protected $user = null;
+
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
@@ -81,11 +83,20 @@
             Yii::app()->jobQueue->deleteAll();
         }
 
+        public function setUp()
+        {
+            parent::setUp();
+            $this->user                 = User::getByUsername('super');
+            Yii::app()->user->userModel = $this->user;
+            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
+            {
+                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Email test settings are missing.'));
+            }
+        }
+
         public function testSend()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
-            $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email', $super);
+            $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email', $this->user);
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $this->assertEquals(0, count(Yii::app()->jobQueue->getAll()));
@@ -106,7 +117,7 @@
             Yii::app()->user->userModel = $super;
 
             //add a message in the outbox_error folder.
-            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $super);
+            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $this->user);
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX_ERROR);
             $emailMessage->save();
@@ -118,17 +129,17 @@
             $this->assertEquals(2, Yii::app()->emailHelper->getSentCount());
 
             //add a message in the outbox folder.
-            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 3', $super);
+            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 3', $this->user);
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX);
             $emailMessage->save();
             //add a message in the outbox_error folder.
-            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 4', $super);
+            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 4', $this->user);
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX_ERROR);
             $emailMessage->save();
             //add a message in the outbox_error folder.
-            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 5', $super);
+            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 5', $this->user);
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX_ERROR);
             $emailMessage->save();
@@ -148,9 +159,7 @@
          */
         public function testSendImmediately()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
-            $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $super);
+            $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $this->user);
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(5, Yii::app()->emailHelper->getSentCount());
             Yii::app()->emailHelper->sendImmediately($emailMessage);
@@ -228,8 +237,6 @@
          */
         public function testSendRealEmail()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             if (EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
             {
@@ -242,7 +249,7 @@
                 $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
                 $this->assertEquals(0, $imapStats->Nmsgs);
 
-                $emailMessage = EmailMessageTestHelper::createOutboxEmail($super, 'Test email',
+                $emailMessage = EmailMessageTestHelper::createOutboxEmail($this->user, 'Test email',
                     'Raw content', ',b>html content</b>end.', // Not Coding Standard
                     'Zurmo', Yii::app()->emailHelper->outboundUsername,
                     'Ivica', Yii::app()->params['emailTestAccounts']['userImapSettings']['imapUsername']);
@@ -306,7 +313,7 @@
             if (EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
             {
                 //add a message in the outbox_error folder.
-                $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $super);
+                $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $this->user);
                 $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
                 $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX_ERROR);
                 $emailMessage->sendAttempts = 5;
@@ -367,40 +374,72 @@
 
         public function testResolveAndGetDefaultFromAddress()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $content = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
             $this->assertEquals('notification@zurmoalerts.com', $content);
         }
 
         public function testSetDefaultFromAddress()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $content = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
             $this->assertEquals('notification@zurmoalerts.com', $content);
-            Yii::app()->emailHelper->setDefaultFromAddress($content);
+            EmailHelper::setDefaultFromAddress($content);
             $metadata = ZurmoModule::getMetadata();
             $this->assertEquals('notification@zurmoalerts.com', $metadata['global']['defaultFromAddress']);
         }
 
         public function testResolveAndGetDefaultTestToAddress()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $content = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $content);
         }
 
         public function testSetDefaultTestToAddress()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $content = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $content);
-            Yii::app()->emailHelper->setDefaultTestToAddress($content);
+            EmailHelper::setDefaultTestToAddress($content);
             $metadata = ZurmoModule::getMetadata();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $metadata['global']['defaultTestToAddress']);
+        }
+
+        /**
+         * @depends testSendQueued
+         */
+        public function testSendQueuedSkipsPausedCampaignMessages()
+        {
+            $job                        = new CampaignQueueMessagesInOutboxJob();
+            $email                      = new Email();
+            $email->emailAddress        = 'demo@zurmo.com';
+            $contact                    = ContactTestHelper::createContactByNameForOwner('contact', $this->user);
+            $contact->primaryEmail      = $email;
+            $this->assertTrue($contact->save());
+            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList');
+            $campaign                   = CampaignTestHelper::createCampaign('campaign',
+                                                                                'subject',
+                                                                                'text Content',
+                                                                                'Html Content',
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                Campaign::STATUS_PROCESSING,
+                                                                                null,
+                                                                                0,
+                                                                                $marketingList);
+
+            $processed              = 0;
+            CampaignItemTestHelper::createCampaignItem($processed, $campaign, $contact);
+            $this->assertTrue($job->run());
+            $campaignItems          = CampaignItem::getAll();
+            $this->assertCount(1, $campaignItems);
+            $campaignItemsProcessed = CampaignItem::getByProcessedAndCampaignId(1, $campaign->id);
+            $this->assertCount(1, $campaignItemsProcessed);
+            $campaign->status       = Campaign::STATUS_PAUSED;
+            $this->assertTrue($campaign->save());
+            $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            Yii::app()->emailHelper->sendQueued();
+            $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
         }
     }
 ?>
