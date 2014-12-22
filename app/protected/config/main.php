@@ -81,6 +81,11 @@
         $maintenanceMode = false;
     }
 
+    if (!isset($sandboxMode))
+    {
+        $sandboxMode = false;
+    }
+
     $config = CMap::mergeArray(
         require(COMMON_ROOT . '/protected/config/common.php'),
         array(
@@ -89,6 +94,7 @@
             'theme'           => $theme,
             'installed'       => $installed,
             'maintenanceMode' => $maintenanceMode,
+            'sandboxMode'     => $sandboxMode,
             'components'  => array(
                 'db' => array(
                     'connectionString' => $connectionString,

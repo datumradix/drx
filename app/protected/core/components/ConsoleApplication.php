@@ -73,6 +73,12 @@
         protected $maintenanceMode;
 
         /**
+         * Is application in sandbox mode or not.
+         * @var boolean
+         */
+        protected $sandboxMode = false;
+
+        /**
          * Set this after the handleImports event is processed. This will signal that all classes are imported
          * and we can use the errorAction specified in ZurmoEventHandler. Otherwise use default errorAction
          * @var bool
@@ -87,6 +93,11 @@
         public function isApplicationInMaintenanceMode()
         {
             return $this->maintenanceMode;
+        }
+
+        public function isApplicationInSandboxMode()
+        {
+            return $this->sandboxMode;
         }
 
         public function getEdition()
