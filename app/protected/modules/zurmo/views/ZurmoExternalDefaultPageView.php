@@ -104,11 +104,12 @@
                     $cs->registerCssFile($themeBaseUrl . '/css/custom.css' .
                         ZurmoAssetManager::getCssAndJavascriptHashQueryString("themes/$themeName/css/custom.css"));
                 }
-                if (Yii::app()->userInterface->isMobile())
+                // https://www.pivotaltracker.com/story/show/82070424
+                /*if (Yii::app()->userInterface->isMobile())
                 {
-                    //todo: remove this?
                     $cs->registerCssFile($themeBaseUrl . '/css/mobile.css');
                 }
+                */
                 if (Yii::app()->getRequest()->isContextiveExternalRequest())
                 {
                     $cs->registerCssFile($themeBaseUrl . '/css/gmail.css' .
