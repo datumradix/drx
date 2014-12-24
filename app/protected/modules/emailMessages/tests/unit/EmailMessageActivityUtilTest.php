@@ -474,8 +474,9 @@ HTML;
         {
             return (GlobalMarketingFooterUtil::resolveContentGlobalFooter($content, $isHtmlContent) &&
                     static::resolveContentForMergeTags($content) &&
-                    ContentTrackingUtil::resolveContentForTracking($tracking, $content, 1, 'AutoresponderItem',
-                                                                                1, $isHtmlContent));
+                    (!($tracking) || ($tracking && ContentTrackingUtil::resolveContentForTracking($content, 1, 'AutoresponderItem',
+                                                                                    1, $isHtmlContent)))
+                    );
         }
 
         protected static function resolveContentForMergeTags(& $content)
