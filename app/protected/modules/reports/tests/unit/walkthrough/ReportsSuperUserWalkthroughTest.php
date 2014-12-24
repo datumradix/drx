@@ -508,16 +508,7 @@
             $content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/list');
             $this->assertNotContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
             $this->setGetArray(array('id' => $savedReports[0]->id));
-            try
-            {
-                $this->runControllerWithNoExceptionsAndGetContent('/reports/default/details');
-                $this->fail('Accessing details action should have thrown ExitException');
-            }
-            catch (ExitException $e)
-            {
-                // just cleanup buffer
-                $this->endAndGetOutputBuffer();
-            }
+            $this->runControllerWithAccessDeniedSecurityExceptionAndGetContent('/reports/default/details');
 
             // clone the report.
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
@@ -557,16 +548,7 @@
             $content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/list');
             $this->assertNotContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
             $this->setGetArray(array('id' => $savedReports[0]->id));
-            try
-            {
-                $this->runControllerWithNoExceptionsAndGetContent('/reports/default/details');
-                $this->fail('Accessing details action should have thrown ExitException');
-            }
-            catch (ExitException $e)
-            {
-                // just cleanup buffer
-                $this->endAndGetOutputBuffer();
-            }
+            $this->runControllerWithAccessDeniedSecurityExceptionAndGetContent('/reports/default/details');
         }
 
         //todo: test saving a report and changing owner so you don't have permissions anymore. it should do a flashbar and redirect you to the list view.
