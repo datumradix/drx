@@ -625,10 +625,14 @@
             $secondAccount = AccountTestHelper::createAccountByNameTypeAndIndustryForOwner('Second Account', 'Customer', 'Automotive', $super);
 
             MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('First Meeting', $super, $firstAccount);
-            MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('Second Meeting', $super, $firstAccount);
+            $secondMeeting = MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('Second Meeting', $super, $firstAccount);
             MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('Third Meeting', $super, $secondAccount);
             MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('Forth Meeting', $anotherUser, $secondAccount);
             MeetingTestHelper::createMeetingWithOwnerAndRelatedAccount('Fifth Meeting', $super, $firstAccount);
+
+            $billy = User::getByUsername('billy');
+            $secondMeeting->userAttendees->add($billy);
+            $this->assertTrue($secondMeeting->save());
 
             $searchParams = array(
                 'pagination' => array(
@@ -902,6 +906,51 @@
             $this->assertEquals('Second Meeting', $response['data']['items'][0]['name']);
         }
 
+        public function testNewSearchForMeetingsWithUserAttendees()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel        = $super;
+            $billy = User::getByUsername('billy');
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $data = array(
+                'search' => array(
+                    'modelClassName' => 'Meeting',
+                    'searchAttributeData' => array(
+                        'clauses' => array(
+                            1 => array(
+                                'attributeName'        => 'userAttendees',
+                                'relatedAttributeName' => 'id',
+                                'operatorType'         => 'equals',
+                                'value'                => $billy->id,
+                            ),
+                        ),
+                        'structure' => '1',
+                    ),
+                ),
+                'pagination' => array(
+                    'page'     => 1,
+                    'pageSize' => 2,
+                ),
+                'sort' => 'name asc',
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('search/filter/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals(1, count($response['data']['items']));
+            $this->assertEquals(1, $response['data']['totalCount']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+            $this->assertEquals('Second Meeting', $response['data']['items'][0]['name']);
+        }
+
         public function testEditMeetingWithIncompleteData()
         {
             $super = User::getByUsername('super');
@@ -962,6 +1011,363 @@
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
             $this->assertEquals(1, count($response['errors']));
+        }
+
+        /**
+         * Test if all newly created items was pulled from read permission tables via API.
+         * Please note that here we do not test if data are inserted in read permission tables correctly, that is
+         * part of read permission subscription tests
+         * @throws NotFoundException
+         * @throws NotImplementedException
+         * @throws NotSupportedException
+         */
+        public function testGetCreatedMeetings()
+        {
+            $timestamp = time();
+            sleep(1);
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $lisa = UserTestHelper::createBasicUser('Lisa');
+            $lisa->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API);
+            $lisa->setRight('MeetingsModule', MeetingsModule::getAccessRight());
+            $this->assertTrue($lisa->save());
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Meeting');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            ReadPermissionsOptimizationUtil::rebuild();
+
+            $meeting1 = MeetingTestHelper::createMeetingByNameForOwner('Meeting1', $super);
+            sleep(1);
+            $meeting2 = MeetingTestHelper::createMeetingByNameForOwner('Meeting2', $super);
+            sleep(1);
+            $meeting3 = MeetingTestHelper::createMeetingByNameForOwner('Meeting3', $super);
+            sleep(1);
+            $this->assertTrue($job->run());
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getCreatedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $this->assertEquals($meeting1->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($meeting1->name, $response['data']['items'][0]['name']);
+
+            $this->assertEquals($meeting2->id, $response['data']['items'][1]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][1]['owner']['id']);
+            $this->assertEquals($meeting2->name, $response['data']['items'][1]['name']);
+
+            $data = array(
+                'sinceTimestamp' => 0,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 2
+                )
+            );
+            $response = $this->createApiCallWithRelativeUrl('getCreatedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(2, $response['data']['currentPage']);
+
+            $this->assertEquals($meeting3->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($meeting3->name, $response['data']['items'][0]['name']);
+
+            // Change owner of $contact1, it should appear in Lisa's created contacts
+            $meeting1->owner = $lisa;
+            $this->assertTrue($meeting1->save());
+            sleep(1);
+            $this->assertTrue($job->run());
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getCreatedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(2, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $this->assertEquals($meeting2->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($meeting2->name, $response['data']['items'][0]['name']);
+
+            $this->assertEquals($meeting3->id, $response['data']['items'][1]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][1]['owner']['id']);
+            $this->assertEquals($meeting3->name, $response['data']['items'][1]['name']);
+
+            $authenticationData = $this->login('lisa', 'lisa');
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getCreatedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(1, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $this->assertEquals($meeting1->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($lisa->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($meeting1->name, $response['data']['items'][0]['name']);
+        }
+
+        /**
+         * Test if all modified items was pulled via API correctly.
+         * Please note that here we do not test if data are inserted in read permission tables correctly, that is
+         * part of read permission subscription tests
+         * @throws NotFoundException
+         */
+        public function testGetModifiedMeetings()
+        {
+            $timestamp = time();
+            sleep(1);
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Meeting');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            $meeting1 = MeetingTestHelper::createMeetingByNameForOwner('Meeting1', $super);
+            $meeting2 = MeetingTestHelper::createMeetingByNameForOwner('Meeting2', $super);
+            $meeting3 = MeetingTestHelper::createMeetingByNameForOwner('Meeting3', $super);
+            $meeting4 = MeetingTestHelper::createMeetingByNameForOwner('Meeting4', $super);
+            $this->assertTrue($job->run());
+            sleep(1);
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(0, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $timestamp = time();
+            sleep(2);
+            $meeting1->name = "Meeting1 Modified";
+            $this->assertTrue($meeting1->save());
+            sleep(1);
+            $meeting3->name = "Meeting2 Modified";
+            $this->assertTrue($meeting3->save());
+            sleep(1);
+            $meeting4->name = "Meeting3 Modified";
+            $this->assertTrue($meeting4->save());
+            sleep(2);
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+
+            $this->assertEquals($meeting1->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($meeting1->name, $response['data']['items'][0]['name']);
+
+            $this->assertEquals($meeting3->id, $response['data']['items'][1]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][1]['owner']['id']);
+            $this->assertEquals($meeting3->name, $response['data']['items'][1]['name']);
+
+            $data = array(
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 2
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getModifiedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(2, $response['data']['currentPage']);
+
+            $this->assertEquals($meeting4->id, $response['data']['items'][0]['id']);
+            $this->assertEquals($super->id, $response['data']['items'][0]['owner']['id']);
+            $this->assertEquals($meeting4->name, $response['data']['items'][0]['name']);
+        }
+
+        /**
+         * Test if all deleted items was pulled from read permission tables via API.
+         * Please note that here we do not test if data are inserted in read permission tables correctly, that is
+         * part of read permission subscription tests
+         * @throws NotFoundException
+         */
+        public function testGetDeletedMeetings()
+        {
+            $timestamp = time();
+            sleep(1);
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $this->deleteAllModelsAndRecordsFromReadPermissionTable('Meeting');
+            $job = new ReadPermissionSubscriptionUpdateJob();
+            $meeting1 = MeetingTestHelper::createMeetingByNameForOwner('Meeting1', $super);
+            $meeting2 = MeetingTestHelper::createMeetingByNameForOwner('Meeting2', $super);
+            $meeting3 = MeetingTestHelper::createMeetingByNameForOwner('Meeting3', $super);
+            $this->assertTrue($job->run());
+            sleep(1);
+            $meetingId1 = $meeting1->id;
+            $meetingId2 = $meeting2->id;
+            $meetingId3 = $meeting3->id;
+            $meeting1->delete();
+            $meeting2->delete();
+            $meeting3->delete();
+
+            $this->assertTrue($job->run());
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $data = array(
+                'userId' => $super->id,
+                'sinceTimestamp' => $timestamp,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 1
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(1, $response['data']['currentPage']);
+            $this->assertContains($meetingId1, $response['data']['items']);
+            $this->assertContains($meetingId2, $response['data']['items']);
+
+            $data = array(
+                'sinceTimestamp' => 0,
+                'pagination' => array(
+                    'pageSize' => 2,
+                    'page'     => 2
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getDeletedItems/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(3, $response['data']['totalCount']);
+            $this->assertEquals(2, $response['data']['pageSize']);
+            $this->assertEquals(2, $response['data']['currentPage']);
+            $this->assertContains($meetingId3, $response['data']['items']);
+        }
+
+        public function testGetManyManyRelationshipModelIds()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $alisa  = UserTestHelper::createBasicUser('Alisa');
+            $alicia = UserTestHelper::createBasicUser('Alicia');
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $meeting = MeetingTestHelper::createMeetingByNameForOwner('Meeting With User Attendees', $super);
+            $data = array(
+                'id' => $meeting->id,
+                'modelClassName' => 'Meeting',
+                'relationName' => 'userAttendees',
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEmpty($response['data']);
+
+            $meeting->userAttendees->add($alisa);
+            $meeting->userAttendees->add($alicia);
+            $this->assertTrue($meeting->save());
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals(2, count($response['data']['userAttendees']));
+            $this->assertEquals('User', $response['data']['userAttendees'][0]['class']);
+            $this->assertEquals($alisa->id, $response['data']['userAttendees'][0]['id']);
+            $this->assertEquals('User', $response['data']['userAttendees'][1]['class']);
+            $this->assertEquals($alicia->id, $response['data']['userAttendees'][1]['id']);
+
+            $data = array(
+                'id' => $meeting->id,
+                'modelClassName' => 'NonExistingModel',
+                'relationName' => 'userAttendees',
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
+            $this->assertEquals('The specified class name was invalid.', $response['message']);
+
+            $data = array(
+                'id' => $meeting->id,
+                'modelClassName' => 'Meeting',
+                'relationName' => 'owner', // This is not MANY_MANY relationship
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
+            $this->assertEquals('The specified relationship name does not exist or is not MANY_MANY type.', $response['message']);
         }
 
         protected function getApiControllerClassName()
