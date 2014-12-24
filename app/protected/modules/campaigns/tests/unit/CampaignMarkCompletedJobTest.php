@@ -411,7 +411,7 @@
             $this->assertEquals(5, EmailMessage::getCount());
             foreach (EmailMessage::getAll() as $emailMessage)
             {
-                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_OUTBOX_ERROR);
+                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_SENT);
             }
 
             // Ensure campaign status
@@ -475,7 +475,7 @@
             $this->assertEquals(5, EmailMessage::getCount());
             foreach (EmailMessage::getAll() as $emailMessage)
             {
-                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_OUTBOX_ERROR);
+                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_OUTBOX);
             }
 
             // Run ProcessOutboundEmail
@@ -486,7 +486,7 @@
             $this->assertEquals(5, EmailMessage::getCount());
             foreach (EmailMessage::getAll() as $emailMessage)
             {
-                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_OUTBOX_ERROR);
+                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_SENT);
             }
 
             // Ensure campaign status
