@@ -53,6 +53,7 @@
                 $emailMessage->error        = null;
                 $emailMessage->folder       = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
                 $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
+                $emailMessage->save();
             }
             else
             {
