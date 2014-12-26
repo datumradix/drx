@@ -70,14 +70,7 @@
                 Yii::app()->imap->setInboundSettings();
                 Yii::app()->imap->init();
 
-                Yii::app()->emailHelper->outboundHost     = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundHost'];
-                Yii::app()->emailHelper->outboundPort     = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundPort'];
-                Yii::app()->emailHelper->outboundUsername = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundUsername'];
-                Yii::app()->emailHelper->outboundPassword = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundPassword'];
-                Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundSecurity'];
-                Yii::app()->emailHelper->sendEmailThroughTransport = true;
-                Yii::app()->emailHelper->setOutboundSettings();
-                Yii::app()->emailHelper->init();
+                self::loadEmailHelperWithTestCredentials();
             }
             // Delete item from jobQueue, that is created when new user is created
             Yii::app()->jobQueue->deleteAll();
@@ -237,6 +230,7 @@
          */
         public function testSendRealEmail()
         {
+            self::loadEmailHelperWithTestCredentials();
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             if (EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
             {
@@ -440,6 +434,21 @@
             Yii::app()->emailHelper->sendQueued();
             $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+        }
+
+        /**
+         * Loads email helper with test credentials
+         */
+        protected static function loadEmailHelperWithTestCredentials()
+        {
+            Yii::app()->emailHelper->outboundHost     = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundHost'];
+            Yii::app()->emailHelper->outboundPort     = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundPort'];
+            Yii::app()->emailHelper->outboundUsername = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundUsername'];
+            Yii::app()->emailHelper->outboundPassword = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundPassword'];
+            Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundSecurity'];
+            Yii::app()->emailHelper->sendEmailThroughTransport = true;
+            Yii::app()->emailHelper->setOutboundSettings();
+            Yii::app()->emailHelper->init();
         }
     }
 ?>
