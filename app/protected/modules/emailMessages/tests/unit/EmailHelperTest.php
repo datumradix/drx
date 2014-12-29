@@ -401,6 +401,7 @@
          */
         public function testSendQueuedSkipsPausedCampaignMessages()
         {
+            EmailMessage::deleteAll();
             $job                        = new CampaignQueueMessagesInOutboxJob();
             $email                      = new Email();
             $email->emailAddress        = 'demo@zurmo.com';
