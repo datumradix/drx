@@ -77,7 +77,42 @@
             $rules->addUser($billy);
             NotificationsUtil::submit($message, $rules);
 
-            //Critical email are not used anymore, all emails are sent based on the user configuration
+            //non critical notification emails are queued.
+            $this->assertEquals(2, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            $notifications              = Notification::getAll();
+            $this->assertCount(2, $notifications);
+        }
+
+
+        public function testSubmitCritical()
+        {
+            Notification::deleteAll();
+            EmailMessage::deleteAll();
+            $super                                    = User::getByUsername('super');
+            $emailAddress                             = new Email();
+            $emailAddress->emailAddress               = 'sometest@zurmoalerts.com';
+            $super->primaryEmail                      = $emailAddress;
+            $saved                                    = $super->save();
+            $this->assertTrue($saved);
+            $billy                                    = User::getByUsername('billy');
+            $emailAddress                             = new Email();
+            $emailAddress->emailAddress               = 'sometest2@zurmoalerts.com';
+            $billy->primaryEmail                      = $emailAddress;
+            $saved                                    = $billy->save();
+            $this->assertTrue($saved);
+            $notifications              = Notification::getAll();
+            $this->assertEquals(0, count($notifications));
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content';
+            $message->htmlContent       = 'html content';
+            $rules                      = new SimpleNotificationRules();
+            $rules->addUser($super);
+            $rules->addUser($billy);
+            $rules->setCritical(true);
+            NotificationsUtil::submit($message, $rules);
+
+            //critical notification emails are sent directly
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(2, Yii::app()->emailHelper->getSentCount());
             $notifications              = Notification::getAll();
@@ -93,6 +128,7 @@
             $message->textContent       = 'text content';
             $message->htmlContent       = 'html content';
             $rules                      = new SimpleNotificationRules();
+            $rules->setCritical(true);
             $rules->setAllowDuplicates(false);
             $rules->addUser($super);
             NotificationsUtil::submit($message, $rules);
