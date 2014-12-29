@@ -51,7 +51,7 @@
             Yii::app()->user->userModel = User::getByUsername('super');
             $menu = MenuUtil::getAccessibleShortcutsCreateMenuByCurrentUser();
             $this->assertEquals(3, count($menu));
-            $this->assertEquals(8, count($menu['items']));
+            $this->assertEquals(9, count($menu['items']));
             Yii::app()->user->userModel = User::getByUsername('billy');
             $menu = MenuUtil::getAccessibleShortcutsCreateMenuByCurrentUser();
             $this->assertEquals(0, count($menu));
@@ -203,9 +203,24 @@
                             'right'  => ReportsModule::RIGHT_CREATE_REPORTS,
                             'mobile' => false,
                         ),
+                        array(
+                            'label' => 'Project',
+                            'url'   => array('/projects/default/create'),
+                            'right' => ProjectsModule::RIGHT_CREATE_PROJECTS,
+                            'mobile' => true,
+                        ),
+
                 ),
             );
+            // Re keying and slice the items from main array as we just unset the index 7 menuItem and we may have
+            // items that are below that e.g. index 8, 9, 10, ...
+            // If we don't do this the keys will mismatch and assertEquals will fail.
+            $menuItemsReKeyedItems = array_values($menuItems['items']);
+            unset($menuItems['items']);
+            $compareDataReKeyedItems = array_values($compareData['items']);
+            unset($compareData['items']);
             $this->assertEquals($compareData, $menuItems);
+            $this->assertEquals($compareDataReKeyedItems, $menuItemsReKeyedItems);
             AccountsModule::setMetadata($backupMetadata);
         }
     }
