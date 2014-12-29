@@ -407,8 +407,9 @@
             $job                = new ProcessOutboundEmailJob();
             $this->assertTrue($job->run());
 
-            // Ensure no email address were attempted to be sent
+            // Ensure all email were sent
             $this->assertEquals(5, EmailMessage::getCount());
+            $this->assertEquals(0, EmailHelper::getQueuedCount());
             foreach (EmailMessage::getAll() as $emailMessage)
             {
                 $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_SENT);
@@ -453,7 +454,7 @@
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
 
-            // ensure all 5 campaign items are processed
+            // ensure all 5 (previously created in run1) campaign items are still processed
             $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
             $this->assertNotEmpty($campaignItems);
             $this->assertCount(5, $campaignItems);
@@ -466,23 +467,23 @@
             $campaign           = Campaign::getById($campaignId);
             $this->assertEquals(Campaign::STATUS_PROCESSING, $campaign->status);
 
-            // ensure all 5 campaign items are processed
+            // ensure all 5 (previously created in run1) campaign items are still processed
             $campaignItems      = CampaignItem::getByProcessedAndCampaignId(1, $campaignId);
             $this->assertNotEmpty($campaignItems);
             $this->assertCount(5, $campaignItems);
 
-            // Ensure 5 new email messages
+            // Ensure all 5 (previously created and sent in run1) emails are sent.
             $this->assertEquals(5, EmailMessage::getCount());
             foreach (EmailMessage::getAll() as $emailMessage)
             {
-                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_OUTBOX);
+                $this->assertEquals($emailMessage->folder->type, EmailFolder::TYPE_SENT);
             }
 
             // Run ProcessOutboundEmail
             $job                = new ProcessOutboundEmailJob();
             $this->assertTrue($job->run());
 
-            // Ensure no email address were attempted to be sent
+            // Ensure all 5 (previously created and sent in run1) emails are sent.
             $this->assertEquals(5, EmailMessage::getCount());
             foreach (EmailMessage::getAll() as $emailMessage)
             {
