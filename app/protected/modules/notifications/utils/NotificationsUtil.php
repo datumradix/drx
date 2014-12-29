@@ -177,7 +177,7 @@
             assert('is_bool($allowDuplicates)');
             assert('is_bool($allowSendingEmail)');
             assert('is_bool($isCritical)');
-            if ($allowSendingEmail)
+            if (!$allowSendingEmail)
             {
                 return;
             }
@@ -274,7 +274,7 @@
                     $notification->type                = $type;
                     $notification->notificationMessage = $message;
                     $notificationSettingName = static::resolveNotificationSettingNameFromType($type);
-                    if (static::resolveToSaveNotification() && 
+                    if (static::resolveToSaveNotification() &&
                         UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($user, $notificationSettingName, 'inbox'))
                     {
                         $saved = $notification->save();
@@ -297,7 +297,7 @@
         {
             return true;
         }
-        
+
         /**
          * Resolve notification setting name from its type
          * @param string $type
