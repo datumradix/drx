@@ -107,7 +107,6 @@
                 }
 
                 exec($command, $output);
-                
                 // Check if user got email
                 sleep(30);
                 self::$userImap->connect();
