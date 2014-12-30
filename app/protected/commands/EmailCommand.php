@@ -135,7 +135,7 @@ EOD;
         {
             Yii::app()->emailHelper->outboundSecurity = null;
         }
-
+        Yii::app()->emailHelper->setOutboundSettings();
         echo "\n";
         echo 'Using type:' . Yii::app()->emailHelper->outboundType . "\n";
         echo 'Using host:' . Yii::app()->emailHelper->outboundHost . "\n";
