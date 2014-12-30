@@ -167,20 +167,20 @@
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(2, EmailMessage::getCount());
+            $this->assertEquals(3, EmailMessage::getCount());
             $emailMessages = EmailMessage::getAll();
 
             //Message with unmatched notification
-            $emailMessage = $emailMessages[0];
+            $emailMessage = $emailMessages[1];
             $this->assertEquals('Match archived emails', $emailMessage->subject);
             $this->assertContains('At least one archived email message does not match any records in the system', trim($emailMessage->content->textContent));
             $this->assertContains('At least one archived email message does not match any records in the system', trim($emailMessage->content->htmlContent));
 
-            $emailMessage = $emailMessages[1];
+            $emailMessage = $emailMessages[2];
 
             $this->assertEquals('Email from Steve', $emailMessage->subject);
             $this->assertEquals('Email from Steve', trim($emailMessage->content->textContent));
-            $this->assertEquals('<strong>Email</strong> from Steve', trim($emailMessage->content->htmlContent));
+            $this->assertEquals('<!-- zurmo css inline --><strong>Email</strong> from Steve', preg_replace( "/\r|\n/", "", $emailMessage->content->htmlContent));
             $this->assertEquals($user->primaryEmail->emailAddress, $emailMessage->sender->fromAddress);
 
             $this->assertEquals(1, count($emailMessage->recipients));
@@ -248,13 +248,13 @@
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(2, EmailMessage::getCount());
             $emailMessages = EmailMessage::getAll();
-            $emailMessage = $emailMessages[0];
+            $emailMessage = $emailMessages[1];
 
             $this->assertEquals('Email from Steve 2', $emailMessage->subject);
             $this->assertEquals('Email from Steve', trim($emailMessage->content->textContent));
-            $this->assertEquals('<strong>Email</strong> from Steve', trim($emailMessage->content->htmlContent));
+            $this->assertEquals('<!-- zurmo css inline --><strong>Email</strong> from Steve', preg_replace( "/\r|\n/", "", $emailMessage->content->htmlContent));
             $this->assertEquals($user->primaryEmail->emailAddress, $emailMessage->sender->fromAddress);
 
             $this->assertEquals(1, count($emailMessage->recipients));
@@ -339,9 +339,9 @@ To: Steve <steve@example.com>
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(2, EmailMessage::getCount());
             $emailMessages = EmailMessage::getAll();
-            $emailMessage = $emailMessages[0];
+            $emailMessage = $emailMessages[1];
 
             $this->assertEquals($subject, $emailMessage->subject);
             $this->assertContains('Hello Steve', $emailMessage->content->textContent);
@@ -403,7 +403,7 @@ To: Steve <steve@example.com>
             $this->assertFalse($job->run());
             $this->assertContains('Failed to process Message id', $job->getErrorMessage());
 
-            $this->assertEquals(0, EmailMessage::getCount());
+            $this->assertEquals(1, EmailMessage::getCount());
             $this->assertEquals(1, Notification::getCountByTypeAndUser('EmailMessageOwnerNotExist', $super));
             $notifications = Notification::getByTypeAndUser('EmailMessageOwnerNotExist', $super);
             $this->assertContains('Email address does not exist in system', $notifications[0]->notificationMessage->textContent);
@@ -469,13 +469,13 @@ To: Steve <steve@example.com>
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(2, EmailMessage::getCount());
             $emailMessages = EmailMessage::getAll();
-            $emailMessage = $emailMessages[0];
+            $emailMessage = $emailMessages[1];
 
             $this->assertEquals('Email from Steve 3', $emailMessage->subject);
             $this->assertEquals('Email from Steve', trim($emailMessage->content->textContent));
-            $this->assertEquals('<strong>Email</strong> from Steve', trim($emailMessage->content->htmlContent));
+            $this->assertEquals('<!-- zurmo css inline --><strong>Email</strong> from Steve', preg_replace( "/\r|\n/", "", $emailMessage->content->htmlContent));
             $this->assertEquals($user->primaryEmail->emailAddress, $emailMessage->sender->fromAddress);
 
             $this->assertEquals(1, count($emailMessage->recipients));
@@ -490,7 +490,7 @@ To: Steve <steve@example.com>
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(2, EmailMessage::getCount());
             $this->assertEquals(1, Notification::getCountByTypeAndUser('EmailMessageArchivingEmailAddressNotMatching', $user));
         }
     }
