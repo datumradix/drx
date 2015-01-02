@@ -53,6 +53,41 @@
             ContactTestHelper::createContactWithAccountByNameForOwner('superContact', $super, $account);
         }
 
+        public static function makeRowsAndColumnsReportPostDataForAccounts()
+        {
+            return array(
+                'validationScenario' => 'ValidateForDisplayAttributes',
+                'RowsAndColumnsReportWizardForm' => array(
+                    'moduleClassName' => 'AccountsModule',
+                    'Filters' => array(
+                        '0' => array(
+                            'structurePosition' => 1,
+                            'attributeIndexOrDerivedType' => 'name',
+                            'operator' => 'isNotNull',
+                            'value' => '',
+                            'availableAtRunTime' => '0')),
+                    'filtersStructure' => '1',
+                    'displayAttributes' => '',
+                    'DisplayAttributes' => array(
+                        '0' => array(
+                            'attributeIndexOrDerivedType' => 'name',
+                            'label' => 'Name')),
+
+                    'name' => 'some rows and columns report for accounts',
+                    'description' => 'some rows and columns report description for accounts',
+                    'currencyConversionType' => '1',
+                    'spotConversionCurrencyCode' => '',
+                    'ownerId' => Yii::app()->user->userModel->id,
+                    'ownerName' => 'Super User',
+                    'explicitReadWriteModelPermissions' => array(
+                        'type' => '',
+                        'nonEveryoneGroup' => '4')),
+                'FiltersRowCounter' => '1',
+                'DisplayAttributesRowCounter' => '1',
+                'OrderBysRowCounter' => '0',
+            );
+        }
+
         public static function makeRowsAndColumnsReportPostData()
         {
             return array(
@@ -371,7 +406,7 @@
             // create users and groups.
             $everyoneGroup              = Group::getByName(Group::EVERYONE_GROUP_NAME);
             $everyoneGroup->setRight('ReportsModule', ReportsModule::getAccessRight());
-            $everyoneGroup->setRight('ReportsTestModule', ReportsTestModule::RIGHT_ACCESS_REPORTS_TESTS);
+            $everyoneGroup->setRight('AccountsModule', AccountsModule::RIGHT_ACCESS_ACCOUNTS);
             $this->assertTrue($everyoneGroup->save());
             $everyoneGroup->forgetAll();
 
@@ -386,7 +421,7 @@
             $john                       = User::getByUsername('john');
             $johnGroup                  = Group::getByName('John Group');
 
-            $basePostData               = static::makeRowsAndColumnsReportPostData();
+            $basePostData               = static::makeRowsAndColumnsReportPostDataForAccounts();
             $basePostData['save']       = 'save';
             $description                = StringUtil::generateRandomString(40);
 
@@ -420,10 +455,9 @@
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('jim');
             $this->resetPostArray();
             $this->resetGetArray();
-            // TODO: @Shoaibi/@Sergio/@Jason: Critical: This fails for some reason. Fails even if owner is set to jim.
-            //$content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/list');
-            //$this->assertContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
-            //$this->assertEquals(substr_count($content, $postData['RowsAndColumnsReportWizardForm']['name']), 1);
+            $content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/list');
+            $this->assertContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
+            $this->assertEquals(substr_count($content, $postData['RowsAndColumnsReportWizardForm']['name']), 1);
 
             $this->setGetArray(array('id' => $savedReports[0]->id));
             $content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/details');
@@ -450,10 +484,9 @@
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('jim');
             $this->resetPostArray();
             $this->resetGetArray();
-            // TODO: @Shoaibi/@Sergio/@Jason: Critical: This fails for some reason. Same issue as source report above.
-            //$content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/list');
-            //$this->assertContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
-            //$this->assertEquals(substr_count($content, $postData['RowsAndColumnsReportWizardForm']['name']), 1);
+            $content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/list');
+            $this->assertContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
+            $this->assertEquals(substr_count($content, $postData['RowsAndColumnsReportWizardForm']['name']), 1);
 
             $this->setGetArray(array('id' => $savedReports[1]->id));
             $content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/details');
@@ -493,10 +526,9 @@
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('john');
             $this->resetPostArray();
             $this->resetGetArray();
-            // TODO: @Shoaibi/@Sergio/@Jason: Critical: This fails for some reason. Same issue as above.
-            //$content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/list');
-            //$this->assertContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
-            //$this->assertEquals(substr_count($content, $postData['RowsAndColumnsReportWizardForm']['name']), 1);
+            $content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/list');
+            $this->assertContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
+            $this->assertEquals(substr_count($content, $postData['RowsAndColumnsReportWizardForm']['name']), 1);
             $this->setGetArray(array('id' => $savedReports[0]->id));
             $content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/details');
             $this->assertContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
@@ -532,10 +564,9 @@
             $this->logoutCurrentUserLoginNewUserAndGetByUsername('john');
             $this->resetPostArray();
             $this->resetGetArray();
-            // TODO: @Shoaibi/@Sergio/@Jason: Critical: This fails for some reason. Same issue as above.
-            //$content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/list');
-            //$this->assertContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
-            //$this->assertEquals(substr_count($content, $postData['RowsAndColumnsReportWizardForm']['name']), 1);
+            $content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/list');
+            $this->assertContains($postData['RowsAndColumnsReportWizardForm']['name'], $content);
+            $this->assertEquals(substr_count($content, $postData['RowsAndColumnsReportWizardForm']['name']), 1);
 
             $this->setGetArray(array('id' => $savedReports[1]->id));
             $content        = $this->runControllerWithNoExceptionsAndGetContent('/reports/default/details');
