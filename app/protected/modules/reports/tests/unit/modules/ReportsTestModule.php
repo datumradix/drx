@@ -85,5 +85,10 @@
         {
             return 'Reports Tests';
         }
+
+        public static function isReportable()
+        {
+            return true;
+        }
     }
 ?>
