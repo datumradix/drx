@@ -76,6 +76,15 @@
             $this->actionIndex();
         }
 
+        public function actionUpdateSchemaByModelClassName($className)
+        {
+            $messageLogger = new MessageLogger();
+            RedBeanModelsToTablesAdapter::generateTablesFromModelClassNames(array($className), $messageLogger);
+            echo "<pre>";
+            print_r($messageLogger->printMessages(true));
+            echo "</pre>";
+        }
+
         public function actionReadMetadata($className)
         {
             if (!Group::isUserASuperAdministrator(Yii::app()->user->userModel))

@@ -169,6 +169,18 @@ EOD;
             'imapSSL'          => '',
             'imapFolder'       => '',
         ),
+        'sendGridGlobalSettings' => array(
+            'host'            => '',
+            'port'            => '',
+            'apiUsername'     => '',
+            'apiPassword'     => ''
+        ),
+        'sendGridUserSettings' => array(
+            'host'            => '',
+            'port'            => '',
+            'apiUsername'     => '',
+            'apiPassword'     => ''
+        ),
         'testEmailAddress'     => '',
         'bounceTestEmailAddress' => '',
     );

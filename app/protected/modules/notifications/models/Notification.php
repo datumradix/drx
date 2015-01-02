@@ -53,7 +53,8 @@
             $notificationRulesClassName = $this->type . 'NotificationRules';
             if (@class_exists($notificationRulesClassName))
             {
-                return $notificationRulesClassName::getDisplayName();
+                $rule = NotificationRulesFactory::createNotificationRulesByType($this->type);
+                return $rule->getDisplayName();
             }
             else
             {

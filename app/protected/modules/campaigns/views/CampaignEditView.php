@@ -44,6 +44,7 @@
                         'elements' => array(
                             array('type'    => 'SaveButton', 'label' => 'eval:static::renderLabelForSaveButton()'),
                             array('type'    => 'CancelLink'),
+                            array('type'    => 'SendTestEmailLink'),
                             array('type'    => 'CampaignDeleteLink'),
                         ),
                     ),
@@ -271,7 +272,7 @@
 
         protected function renderLabelForSaveButton()
         {
-            if ($this->isCampaignEditable())
+            if ($this->model->isAttributeEditable('sendOnDateTime'))
             {
                 return Zurmo::t("CampaignsModule", "Save and Schedule");
             }
@@ -285,7 +286,7 @@
         {
             assert('$form instanceof ZurmoActiveForm');
             $content = "<h3>".Zurmo::t('ZurmoModule', 'Rights and Permissions') . '</h3><div id="owner-box">';
-            if ($this->isCampaignEditable())
+            if($this->model->isAttributeEditable('owner'))
             {
                 $element = new UserElement($this->getModel(), 'owner', $form);
             }
@@ -299,6 +300,42 @@
             $element->editableTemplate = '{label}{content}{error}';
             $content .= $element->render();
             return $content;
+        }
+
+        protected function registerSendTestEmailScriptsForEditView()
+        {
+            $scriptName = $this->modelClassName. '-compile-send-test-email-data-for-campaign-edit-view';
+            if (Yii::app()->clientScript->isScriptRegistered($scriptName))
+            {
+                return;
+            }
+            else
+            {
+                $functionName   = SendTestEmailModalEditView::COMPILE_SEND_TEST_EMAIL_DATA_JS_FUNCTION_NAME;
+                // Begin Not Coding Standard
+                Yii::app()->clientScript->registerScript($scriptName, "
+                window.{$functionName} = function ()
+                    {
+                        var testData    = {
+                            fromName            : $('#" . ZurmoHtml::activeId($this->model, 'fromName') . "').val(),
+                            fromAddress         : $('#" . ZurmoHtml::activeId($this->model, 'fromAddress') . "').val(),
+                            subject             : $('#" . ZurmoHtml::activeId($this->model, 'subject') . "').val(),
+                            textContent         : $('#" . ZurmoHtml::activeId($this->model, 'textContent') . "').val(),
+                            htmlContent         : $('#" . ZurmoHtml::activeId($this->model, 'htmlContent') . "').val(),
+                            marketingListId     : $('#" . ZurmoHtml::activeId($this->model, '_marketingList_id') . "').val(),
+                            enableTracking      : $('input:checkbox[name*=enableTracking]').prop('checked') ? 1 : 0,
+                            supportsRichText    : $('input:checkbox[name*=supportsRichText]').prop('checked') ? 1 : 0,
+                            attachmentIds	    : new Array()
+                        };
+                        $(':input[name*=filesIds]').each(function()
+                        {
+                            testData.attachmentIds.push($(this).val());
+                        });
+                        return testData;
+                    }
+                    ");
+                // End Not Coding Standard
+            }
         }
     }
 ?>

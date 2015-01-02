@@ -169,12 +169,13 @@
          * @param RedBeanModel $model
          * @param $attributeName
          * @param $jobType
+         * @param bool $resolveForOldModel If job should be resolved to an old model
          */
-        public function resolveToAddJobTypeByModelByDateTimeAttribute(RedBeanModel $model, $attributeName, $jobType)
+        public function resolveToAddJobTypeByModelByDateTimeAttribute(RedBeanModel $model, $attributeName, $jobType, $resolveForOldModel = false)
         {
             assert('is_string($attributeName)');
             assert('is_string($jobType)');
-            if ($model->getIsNewModel() || isset($model->originalAttributeValues[$attributeName]))
+            if ($model->getIsNewModel() || isset($model->originalAttributeValues[$attributeName]) || $resolveForOldModel)
             {
                 if (DateTimeUtil::isDateTimeStringNull($model->{$attributeName}))
                 {

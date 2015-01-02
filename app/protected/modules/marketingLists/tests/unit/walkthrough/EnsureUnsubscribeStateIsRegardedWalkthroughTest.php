@@ -56,8 +56,6 @@
 
         protected $contactsMassSubscribeUrl         = 'contacts/default/massSubscribe';
 
-        protected $marketingMassSubscribeUrl        = 'marketingLists/member/massSubscribe';
-
         protected $marketingMassUnsubscribeUrl      = 'marketingLists/member/massUnsubscribe';
 
         public static function setUpBeforeClass()
@@ -198,35 +196,6 @@
                                   static::$marketingList->id . '_1" checked="checked" type="radio" name="marketingListsManage' .
                                   'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id, $content);
             $this->assertEquals(1, MarketingListMember::getCount());
-        }
-
-        public function testMassSubscribeAllSelectedFromMemberController()
-        {
-            $subscribedCount    = MarketingListMember::getCountByMarketingListIdAndUnsubscribed(
-                                                                                            static::$marketingList->id,
-                                                                                            0);
-            $this->assertEquals(0, $subscribedCount);
-
-            $this->setGetArray(
-                array(
-                    'selectAll'                                 => '1',           // Not Coding Standard
-                    'MarketingListMembersPortletView_page'      => 1,
-                    'id'                                        => static::$marketingList->id,
-                )
-            );
-            $this->setPostArray(
-                array(
-                    'selectedRecordCount'                       => MarketingListMember::getCount()
-                )
-            );
-            $pageSize       = Yii::app()->pagination->getForCurrentUserByType('massEditProgressPageSize');
-            $this->assertEquals(5, $pageSize);
-            $this->runControllerWithRedirectExceptionAndGetUrl($this->marketingMassSubscribeUrl);
-            $expectedSubscribedCountAfterFirstRequest   = 0;
-            $actualSubscribedCountAfterFirstRequest     = MarketingListMember::getCountByMarketingListIdAndUnsubscribed(
-                                                                                            static::$marketingList->id,
-                                                                                            0);
-            $this->assertEquals($expectedSubscribedCountAfterFirstRequest, $actualSubscribedCountAfterFirstRequest);
         }
 
         public function testMassUnsubscribeAllSelectedFromMemberController()

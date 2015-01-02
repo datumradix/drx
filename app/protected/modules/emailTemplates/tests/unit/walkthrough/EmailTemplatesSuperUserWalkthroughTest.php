@@ -1227,11 +1227,13 @@
             $this->assertContains('<a id="contentCancelLink" class="cancel-button" href="#">' .
                                   '<span class="z-label">Previous</span></a>', $content);
             $this->assertContains('<a id="contentFinishLink" name="save" class="attachLoading z-button"' .
-                                  ' onclick="js:$(this).addClass(&quot;attachLoadingTarget&quot;);' .
-                                  'jQuery.yii.submitForm(this, &#039;&#039;, {&#039;save&#039;:&#039;' .
-                                  'save&#039;}); return false;" href="#"><span class="z-spinner">' .
-                                  '</span><span class="z-icon"></span><span class="z-label">Save</span>' .
-                                  '</a></div></div></div></div></div></form>', $content);
+                                    ' onclick="js:$(this).addClass(&quot;attachLoadingTarget&quot;);' .
+                                    'jQuery.yii.submitForm(this, &#039;&#039;, {&#039;save&#039;:&#039;' .
+                                    'save&#039;}); return false;" href="#"><span class="z-spinner">' .
+                                    '</span><span class="z-icon"></span><span class="z-label">Save</span>' .
+                                    '</a><a id="SendTestEmailLinkActionElement', $content);
+            $this->assertContains('class="wizard-secondary-action-button" href="#"><span class="z-label">' .
+                                    'Send Test Email</span></a></div></div></div></div></div></form>', $content);
         }
 
         /**
@@ -1396,11 +1398,13 @@
             $this->assertContains('<a id="contentCancelLink" class="cancel-button" href="#">' .
                                   '<span class="z-label">Previous</span></a>', $content);
             $this->assertContains('<a id="contentFinishLink" name="save" class="attachLoading z-button"' .
-                                  ' onclick="js:$(this).addClass(&quot;attachLoadingTarget&quot;);' .
-                                  'jQuery.yii.submitForm(this, &#039;&#039;, {&#039;save&#039;:&#039;' .
-                                  'save&#039;}); return false;" href="#"><span class="z-spinner">' .
-                                  '</span><span class="z-icon"></span><span class="z-label">Save</span>' .
-                                  '</a></div></div></div></div></div></form>', $content);
+                                    ' onclick="js:$(this).addClass(&quot;attachLoadingTarget&quot;);' .
+                                    'jQuery.yii.submitForm(this, &#039;&#039;, {&#039;save&#039;:&#039;' .
+                                    'save&#039;}); return false;" href="#"><span class="z-spinner">' .
+                                    '</span><span class="z-icon"></span><span class="z-label">Save</span>' .
+                                    '</a><a id="SendTestEmailLinkActionElement', $content);
+            $this->assertContains('class="wizard-secondary-action-button" href="#"><span class="z-label">' .
+                                    'Send Test Email</span></a></div></div></div></div></div></form>', $content);
         }
 
         /**

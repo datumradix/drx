@@ -78,5 +78,27 @@
             );
             return $metadata;
         }
+
+        /**
+         * Process input column information to fetch column data
+         */
+        protected function processColumnInfoToFetchColumnData($columnInformation)
+        {
+            $columnClassName = Yii::app()->custom->resolveColumnAdapterClassNameForView(get_class($this), $columnInformation);
+            if (@class_exists($columnClassName))
+            {
+                $columnAdapter      = new $columnClassName($columnInformation['attributeName'], $this, array_slice($columnInformation, 1));
+                $column = $columnAdapter->renderGridViewData();
+                if (!isset($column['class']))
+                {
+                    $column['class'] = 'DataColumn';
+                }
+            }
+            else
+            {
+                $column =  parent::processColumnInfoToFetchColumnData($columnInformation);
+            }
+            return $column;
+        }
     }
 ?>

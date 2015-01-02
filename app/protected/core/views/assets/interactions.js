@@ -346,14 +346,14 @@ var windowTop, diff;
 
 $.fn.dockFloatingBar = function(){
     if ($('html').hasClass('zurmo') === true && $('body').hasClass('mobile-app') === false){
-        if ($('.float-bar').find('.disable-float-bar').length == 0) {
+        if ($('.AppContent .float-bar').find('.disable-float-bar').length == 0) {
             windowTop = $(window).scrollTop();
             diff = $(document).height() - $(window).height() - 100; //100px is to dock it before scrolling all the way to the bottom
             if( windowTop > diff ) {
-                $('.float-bar .view-toolbar-container').addClass('dock');
+                $('.AppContent .float-bar .view-toolbar-container').addClass('dock');
             } else {
                 if( $('.wrapper').height() > $('.AppNavigation').height() ) {
-                    $('.float-bar .view-toolbar-container').removeClass('dock');
+                    $('.AppContent .float-bar .view-toolbar-container').removeClass('dock');
                 }
             }
         }

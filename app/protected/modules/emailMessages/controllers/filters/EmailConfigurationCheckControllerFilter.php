@@ -42,6 +42,8 @@
     {
         public $controller;
 
+        public $renderWithoutPageView   = false;
+
         protected function preFilter($filterChain)
         {
             if (isset($_POST['ajax']))
@@ -53,10 +55,17 @@
                 return true;
             }
             $messageView                  = new NoGlobalEmailConfigurationYetView();
-            $pageViewClassName            = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
-            $view                         = new $pageViewClassName(ZurmoDefaultViewUtil::
-                                                 makeStandardViewForCurrentUser($this->controller, $messageView));
-            echo $view->render();
+            if ($this->renderWithoutPageView)
+            {
+                echo $messageView->render();
+            }
+            else
+            {
+                $pageViewClassName = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
+                $view = new $pageViewClassName(ZurmoDefaultViewUtil::
+                                                        makeStandardViewForCurrentUser($this->controller, $messageView));
+                echo $view->render();
+            }
             return false;
         }
     }

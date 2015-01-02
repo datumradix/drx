@@ -47,7 +47,7 @@
             $metadata['global'] = array(
                 'tabMenuItems' => array(
                     array(
-                        'label'               => Zurmo::t('EmailMessagesModule', 'Inbox'),
+                        'label'               => "eval:Zurmo::t('EmailMessagesModule', 'Inbox')",
                         'url'                 => array('/mashableInbox/default'),
                         'dynamicLabelContent' => 'eval:MashableUtil::renderUnreadCountForDynamicLabelContent()',
                         'mobile'              => true,

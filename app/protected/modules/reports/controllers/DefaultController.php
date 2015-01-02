@@ -475,7 +475,7 @@
                 $savedReport              = new SavedReport();
                 $oldReport                = SavedReport::getById(intval($id));
                 ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($oldReport);
-                ZurmoCopyModelUtil::copy($oldReport, $savedReport);
+                SavedReportCopyModelUtil::copy($oldReport, $savedReport);
                 $report                   = SavedReportToReportAdapter::makeReportBySavedReport($savedReport);
             }
             else

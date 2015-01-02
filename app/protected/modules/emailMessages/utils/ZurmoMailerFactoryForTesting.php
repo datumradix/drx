@@ -33,37 +33,17 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-
-    class MarketingListMembersSubscribeMenuActionElement extends MarketingListMembersActionMenuActionElement
+    /**
+     * Resolve mailer required to send email while testing.
+     */
+    class ZurmoMailerFactoryForTesting extends ZurmoMailerFactory
     {
-        protected function getSelectedMenuNameSuffix()
+        /**
+         * Resolve default mailer class name.
+         * @return string
+         */
+        protected static function resolveDefaultMailerClassName()
         {
-            return '-massSubscribeSelected';
-        }
-
-        protected function getAllMenuNameSuffix()
-        {
-            return '-massSubscribeAll';
-        }
-
-        protected function getActionId()
-        {
-            return 'massSubscribe';
-        }
-
-        protected function getScriptNameSuffixForSelectedMenu()
-        {
-            return '-listViewMassActionSubscribeSelected';
-        }
-
-        protected function getScriptNameSuffixForAllMenu()
-        {
-            return '-listViewMassActionSubscribeAll';
-        }
-
-        protected function getDefaultLabel()
-        {
-            return Zurmo::t('Core', 'Subscribe');
+            return 'ZurmoSwiftMailerForTesting';
         }
     }
-?>
