@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -48,14 +48,14 @@
         public static function sendNotificationOnNewComment(RedBeanModel $relatedModel, Comment $comment, $senderPerson, $peopleToSendNotification)
         {
             if (count($peopleToSendNotification) > 0)
-            {   
+            {
                 $notificationSettingName = static::resolveOnNewCommentNotificationSettingNameByModel($relatedModel);
                 $notificationRulesClassName = static::resolveNotificationRulesClassByModel($relatedModel);
                 $rules = new $notificationRulesClassName();
-                
+
                 foreach ($peopleToSendNotification as $people)
                 {
-                    
+
                     if ($people->primaryEmail->emailAddress !== null &&
                         UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($people, $notificationSettingName, 'email'))
                     {
@@ -154,7 +154,7 @@
                 return Yii::app()->createAbsoluteUrl('tasks/default/details/', array('id' => $model->id));
             }
         }
-        
+
         /**
          * Send notification without email
          * @param NotificationRules $rules
@@ -170,7 +170,7 @@
             $notificationMessage->htmlContent       = DataUtil::purifyHtml($htmlContent);
             NotificationsUtil::submit($notificationMessage, $rules);
         }
-        
+
         /**
          * Resolve the notification setting name by model
          * @return string
@@ -179,7 +179,7 @@
         {
             return 'enable' . get_class($model) . 'NewCommentNotification';
         }
-        
+
         /**
          * Resolve the notification rules class name by model
          * @return string
