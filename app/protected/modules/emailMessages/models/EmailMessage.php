@@ -44,12 +44,12 @@
             return 'EmailMessage';
         }
 
-        public static function getAllByFolderType($type)
+        public static function getAllByFolderType($type, $excludePausedCampaignMessages = false)
         {
-            return static::getByFolderType($type, null);
+            return static::getByFolderType($type, null, $excludePausedCampaignMessages);
         }
 
-        public static function getByFolderType($type, $count)
+        public static function getByFolderType($type, $count = null, $excludePausedCampaignMessages = false)
         {
             assert('is_string($type)');
             $searchAttributeData = array();
@@ -62,6 +62,52 @@
                 ),
             );
             $searchAttributeData['structure'] = '1';
+            if ($excludePausedCampaignMessages)
+            {
+                $searchAttributeData['clauses'][2] = array(
+                    'attributeName'             => 'campaignItem',
+                    'relatedModelData'          => array(
+                        'attributeName'                 => 'campaign',
+                        'relatedAttributeName'          => 'status',
+                        'operatorType'                  => 'doesNotEqual',
+                        'value'                         => Campaign::STATUS_PAUSED
+                    ),
+                );
+                $searchAttributeData['clauses'][3] = array(
+                    'attributeName'             => 'campaignItem',
+                    'relatedAttributeName'      => 'id',
+                    'operatorType'              => 'isNull',
+                    'value'                     => null,
+                );
+                $searchAttributeData['structure'] = '1 and (2 or 3)';
+            }
+            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('EmailMessage');
+            $where = RedBeanModelDataProvider::makeWhere('EmailMessage', $searchAttributeData, $joinTablesAdapter);
+            return self::getSubset($joinTablesAdapter, null, $count, $where, null);
+        }
+
+        public static function getByFolderTypeAndCampaignId($type, $campaignId, $count = null)
+        {
+            assert('is_string($type)');
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'folder',
+                    'relatedAttributeName' => 'type',
+                    'operatorType'         => 'equals',
+                    'value'                => $type,
+                ),
+                2 => array(
+                    'attributeName'             => 'campaignItem',
+                    'relatedModelData'          => array(
+                        'attributeName'                 => 'campaign',
+                        'relatedAttributeName'          => 'id',
+                        'operatorType'                  => 'equals',
+                        'value'                         => intval($campaignId)
+                    ),
+                ),
+            );
+            $searchAttributeData['structure'] = '1 and 2';
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('EmailMessage');
             $where = RedBeanModelDataProvider::makeWhere('EmailMessage', $searchAttributeData, $joinTablesAdapter);
             return self::getSubset($joinTablesAdapter, null, $count, $where, null);
@@ -106,6 +152,8 @@
                     'sentDateTime',
                     'sendOnDateTime',
                     'headers',
+                    'mailerType',
+                    'mailerSettings'
                 ),
                 'relations' => array(
                     'folder'        => array(static::HAS_ONE,  'EmailFolder', static::NOT_OWNED,
@@ -121,6 +169,7 @@
                                                 static::LINK_TYPE_SPECIFIC, 'error'),
                     'account'       => array(static::HAS_ONE,  'EmailAccount', static::NOT_OWNED,
                                                 static::LINK_TYPE_SPECIFIC, 'account'),
+                    'campaignItem'  => array(static::HAS_ONE_BELONGS_TO, 'CampaignItem', static::NOT_OWNED),
                 ),
                 'rules' => array(
                     array('subject',         'required'),
@@ -133,10 +182,14 @@
                     array('sentDateTime',    'type', 'type' => 'datetime'),
                     array('sendOnDateTime',  'type', 'type' => 'datetime'),
                     array('headers',         'type', 'type' => 'string'),
+                    array('mailerType',      'type',    'type' => 'string'),
+                    array('mailerSettings',  'type',    'type' => 'string'),
                 ),
                 'elements' => array(
                     'sentDateTime'  => 'DateTime',
                     'files'         => 'Files',
+                    'mailerType'    => 'Text',
+                    'mailerSettings'=> 'Text'
                 )
             );
             return $metadata;

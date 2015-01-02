@@ -474,14 +474,15 @@ HTML;
         {
             return (GlobalMarketingFooterUtil::resolveContentGlobalFooter($content, $isHtmlContent) &&
                     static::resolveContentForMergeTags($content) &&
-                    ContentTrackingUtil::resolveContentForTracking($tracking, $content, 1, 'AutoresponderItem',
-                                                                                1, $isHtmlContent));
+                    (!($tracking) || ($tracking && ContentTrackingUtil::resolveContentForTracking($content, 1, 'AutoresponderItem',
+                                                                                    1, $isHtmlContent)))
+                    );
         }
 
         protected static function resolveContentForMergeTags(& $content)
         {
             $language               = null;
-            $errorOnFirstMissing    = true;
+            $errorOnFirstMissing    = MergeTagsToModelAttributesAdapter::ERROR_ON_FIRST_INVALID_TAG;
             $templateType           = EmailTemplate::TYPE_CONTACT;
             $invalidTags            = array();
             $textMergeTagsUtil      = MergeTagsUtilFactory::make($templateType, $language, $content);

@@ -56,6 +56,7 @@
                                         $rules->getType(),
                                         $users,
                                         $rules->allowDuplicates(),
+                                        $rules->allowSendingEmail(),
                                         $rules->isCritical());
         }
 
@@ -169,19 +170,29 @@
         }
 
         protected static function processNotification(NotificationMessage $message, $type, $users,
-                                                      $allowDuplicates, $isCritical)
+                                                      $allowDuplicates, $allowSendingEmail, $isCritical)
         {
             assert('is_string($type) && $type != ""');
             assert('is_array($users) && count($users) > 0');
             assert('is_bool($allowDuplicates)');
+            assert('is_bool($allowSendingEmail)');
             assert('is_bool($isCritical)');
+            if (!$allowSendingEmail)
+            {
+                return;
+            }
             $notifications = static::resolveAndGetNotifications($users, $type, $message, $allowDuplicates);
             if (static::resolveShouldSendEmailIfCritical() && $isCritical)
             {
-                foreach ($notifications as $notification)
-                {
-                    static::sendEmail($notification);
-                }
+                $sendImmediately = true;
+            }
+            else
+            {
+                $sendImmediately = false;
+            }
+            foreach ($notifications as $notification)
+            {
+                static::sendEmail($notification, $sendImmediately);
             }
         }
 
@@ -190,7 +201,7 @@
             return true;
         }
 
-        protected static function sendEmail(Notification $notification)
+        protected static function sendEmail(Notification $notification, $sendImmediately)
         {
             if ($notification->owner->primaryEmail->emailAddress != null &&
                 !UserConfigurationFormAdapter::resolveAndGetValue($notification->owner, 'turnOffEmailNotifications'))
@@ -225,7 +236,15 @@
                 }
                 try
                 {
-                    Yii::app()->emailHelper->sendImmediately($emailMessage);
+                    if ($sendImmediately)
+                    {
+                        Yii::app()->emailHelper->sendImmediately($emailMessage);
+                    }
+                    else
+                    {
+                        Yii::app()->emailHelper->send($emailMessage);
+                    }
+
                 }
                 catch (CException $e)
                 {
@@ -254,7 +273,9 @@
                     $notification->owner               = $user;
                     $notification->type                = $type;
                     $notification->notificationMessage = $message;
-                    if (static::resolveToSaveNotification())
+                    $notificationSettingName = static::resolveNotificationSettingNameFromType($type);
+                    if (static::resolveToSaveNotification() &&
+                        UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($user, $notificationSettingName, 'inbox'))
                     {
                         $saved = $notification->save();
                         if (!$saved)
@@ -275,6 +296,17 @@
         protected static function resolveToSaveNotification()
         {
             return true;
+        }
+
+        /**
+         * Resolve notification setting name from its type
+         * @param string $type
+         * @return string
+         */
+        protected static function resolveNotificationSettingNameFromType($type)
+        {
+            assert('is_string($type) && $type != ""');
+            return 'enable'.$type.'Notification';
         }
     }
 ?>

@@ -111,31 +111,9 @@ EOD;
         {
             $this->usageError('The specified username does not exist.');
         }
-        if ($host != null)
-        {
-            Yii::app()->emailHelper->outboundHost = $host;
-        }
-        if ($port != null)
-        {
-            Yii::app()->emailHelper->outboundPort = $port;
-        }
-        if ($outboundUsername != null)
-        {
-            Yii::app()->emailHelper->outboundUsername = $outboundUsername;
-        }
-        if ($outboundUsername != null)
-        {
-            Yii::app()->emailHelper->outboundPassword = $outboundPassword;
-        }
-        if ($outboundSecurity != null && $outboundSecurity != '' && $outboundSecurity != 'false')
-        {
-            Yii::app()->emailHelper->outboundSecurity = $outboundSecurity;
-        }
-        else
-        {
-            Yii::app()->emailHelper->outboundSecurity = null;
-        }
-
+        //Store the original settings in DB
+        $originalSettings = Yii::app()->emailHelper->getOutboundSettings();
+        $this->setEmailHelperSettings($host, $port, $outboundUsername, $outboundPassword, $outboundSecurity);
         echo "\n";
         echo 'Using type:' . Yii::app()->emailHelper->outboundType . "\n";
         echo 'Using host:' . Yii::app()->emailHelper->outboundHost . "\n";
@@ -177,7 +155,12 @@ EOD;
             $this->addErrorsAsUsageErrors($emailMessage->getErrors());
         }
         Yii::app()->emailHelper->sendImmediately($emailMessage);
-
+        //Restore the original settings in DB
+        foreach($originalSettings as $key => $setting)
+        {
+            Yii::app()->emailHelper->$key = $setting;
+        }
+        Yii::app()->emailHelper->setOutboundSettings();
         if (!$emailMessage->hasSendError())
         {
             echo Zurmo::t('EmailMessagesModule', 'Message successfully sent') . "\n";
@@ -226,6 +209,43 @@ EOD;
                 }
             }
         }
+    }
+
+    /**
+     * Set email helper settings.
+     * @param string $host
+     * @param integer $port
+     * @param string $outboundUsername
+     * @param string $outboundPassword
+     * @param boolean $outboundSecurity
+     */
+    protected function setEmailHelperSettings($host, $port, $outboundUsername, $outboundPassword, $outboundSecurity)
+    {
+        if ($host != null)
+        {
+            Yii::app()->emailHelper->outboundHost = $host;
+        }
+        if ($port != null)
+        {
+            Yii::app()->emailHelper->outboundPort = $port;
+        }
+        if ($outboundUsername != null)
+        {
+            Yii::app()->emailHelper->outboundUsername = $outboundUsername;
+        }
+        if ($outboundPassword != null)
+        {
+            Yii::app()->emailHelper->outboundPassword = $outboundPassword;
+        }
+        if ($outboundSecurity != null && $outboundSecurity != '' && $outboundSecurity != 'false')
+        {
+            Yii::app()->emailHelper->outboundSecurity = $outboundSecurity;
+        }
+        else
+        {
+            Yii::app()->emailHelper->outboundSecurity = null;
+        }
+        Yii::app()->emailHelper->setOutboundSettings();
     }
 }
 ?>

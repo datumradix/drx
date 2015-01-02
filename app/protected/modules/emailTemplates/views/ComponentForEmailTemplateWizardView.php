@@ -103,6 +103,28 @@
             return 'emailTemplates';
         }
 
+        protected function renderActionLinksContent()
+        {
+            $content    = parent::renderActionLinksContent();
+            if ($this->renderSendTestEmailButton())
+            {
+                $content    .= $this->renderSendTestEmailButtonContent();
+            }
+            return $content;
+        }
+
+        protected function renderSendTestEmailButton()
+        {
+            return false;
+        }
+
+        protected function renderSendTestEmailButtonContent()
+        {
+            $element    = new SendTestEmailLinkActionElement(static::getControllerId(), static::getModuleId(), $this->modelId);
+            $content    = $element->render();
+            return $content;
+        }
+
         protected function renderTextElement(& $content, $attributeName, $template = null)
         {
             $element            = new TextElement($this->model, $attributeName, $this->form);

@@ -227,7 +227,7 @@
         {
             $parentContent          = parent::renderPortletHeadContent();
             $defaultOptionsContent  = $this->renderWrapperAndActionElementMenu(Zurmo::t('Core', 'Options'));
-            $wrappedContent         = Yii::app()->custom->renderPortletHeadContentForOpenTaskPortletOnDetailsAndRelationsView(get_class($this),
+            $wrappedContent         = Yii::app()->custom->renderHeadContentForPortletOnDetailsAndRelationsView(get_class($this),
                                                                                                                       $this->params,
                                                                                                                       $defaultOptionsContent,
                                                                                                                       $parentContent);

@@ -37,12 +37,12 @@
     /**
      * Helper class for working with campaignItem
      */
-    abstract class CampaignItemsUtil extends AutoresponderAndCampaignItemsUtil
+    class CampaignItemsUtil extends AutoresponderAndCampaignItemsUtil
     {
         /**
          * @return bool
          */
-        public static function generateCampaignItemsForDueCampaigns()
+        public function generateCampaignItemsForDueCampaigns()
         {
             $nowTimestamp           = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
             // Begin Not Coding Standard

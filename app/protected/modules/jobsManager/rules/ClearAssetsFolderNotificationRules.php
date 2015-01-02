@@ -41,14 +41,28 @@
     {
         protected $critical    = false;
 
-        public static function getDisplayName()
+        protected $canBeConfiguredByUser = false;
+
+        protected $defaultValueForEmailSetting = false;
+
+        public function getDisplayName()
         {
             return Zurmo::t('JobsManagerModule', 'Clear the assets folder on server(optional).');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'ClearAssetsFolder';
+        }
+
+        public function getTooltipId()
+        {
+            return 'clear-assets-folder-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when assets folder need to be cleaned.');
         }
     }
 ?>

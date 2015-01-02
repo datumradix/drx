@@ -49,16 +49,6 @@
             $this->assertFalse($rules->allowDuplicates());
         }
 
-        public function testSetGetIsCritical()
-        {
-            $rules = new SimpleNotificationRules();
-            $this->assertFalse($rules->isCritical());
-            $rules->setCritical(true);
-            $this->assertTrue($rules->isCritical());
-            $rules->setCritical(false);
-            $this->assertFalse($rules->isCritical());
-        }
-
         public function testGetType()
         {
             $rules = new SimpleNotificationRules();

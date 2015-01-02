@@ -195,10 +195,10 @@
          * @param $parentContent string
          * @return string
          */
-        public function renderPortletHeadContentForOpenTaskPortletOnDetailsAndRelationsView($viewClassName,
-                                                                                            $params,
-                                                                                            $defaultOptionsContent,
-                                                                                            $parentContent)
+        public function renderHeadContentForPortletOnDetailsAndRelationsView($viewClassName,
+                                                                             $params,
+                                                                             $defaultOptionsContent,
+                                                                             $parentContent)
         {
             return $parentContent;
         }
@@ -236,6 +236,16 @@
         public function resolveIsConfigurationMenuItemVisibleForCurrentUser($menuItem)
         {
             return true;
+        }
+
+        public function resolveExtraToolbarContentForView($viewClassName, $controllerId, $moduleId, $modelId)
+        {
+            return null;
+        }
+
+        public function resolveColumnAdapterClassNameForView($viewClassName, $columnInformation)
+        {
+            return ucfirst($columnInformation['type']) . 'ListViewColumnAdapter';
         }
     }
 ?>

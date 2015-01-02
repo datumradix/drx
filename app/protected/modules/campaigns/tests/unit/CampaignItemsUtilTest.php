@@ -476,7 +476,8 @@
             //Process open campaigns.
             Yii::app()->jobQueue->deleteAll();
             $this->assertCount(0, Yii::app()->jobQueue->getAll());
-            $this->assertTrue(CampaignItemsUtil::generateCampaignItemsForDueCampaigns());
+            $util           = new CampaignItemsUtil();
+            $this->assertTrue($util->generateCampaignItemsForDueCampaigns());
             $jobs = Yii::app()->jobQueue->getAll();
             $this->assertCount(1, $jobs);
             $this->assertEquals('CampaignQueueMessagesInOutbox', $jobs[5][0]['jobType']);

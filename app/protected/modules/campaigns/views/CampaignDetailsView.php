@@ -69,15 +69,49 @@
             return strval($this->model) . ' - ' . Zurmo::t('CampaignsModule', 'Campaign');
         }
 
+        public function getPostTruncatedTitleContent()
+        {
+            if ($this->isCampaignCompleted())
+            {
+                $label  = Zurmo::t('CampaignsModule', 'Completed');
+                return ZurmoHtml::tag('span', array('class' => 'campaign-status-badge status-true'), $label);
+            }
+            return parent::getPostTruncatedTitleContent();
+        }
+
         protected function renderContent()
         {
+            SendTestEmailModalEditView::registerSendTestEmailScriptsForDetailsView($this->modelId, $this->modelClassName);
             // TODO: @Shoaibi/@Jason: Low: Do security walkthrough
-            $actionElementBarContent        = $this->renderActionElementBar(false);
-            $content                        = $this->renderTitleContent();
-            $content                       .= ZurmoHtml::tag('div', array('class' => 'view-toolbar-container clearfix'),
-                                                ZurmoHtml::tag('nav', array('class' => 'pillbox clearfix'),
-                                                                                    $actionElementBarContent));
+            $actionElementBarContent = $this->renderActionElementBar(false);
+	        $pillbox  = ZurmoHtml::tag('nav', array('class' => 'pillbox clearfix'), $actionElementBarContent);
+	        $switch   = $this->renderRightSideContent();
+            $content  = $this->renderTitleContent();
+            $content .= ZurmoHtml::tag('div', array('class' => 'view-toolbar-container clearfix'), $pillbox . $switch );
             return $content;
+        }
+
+        protected function renderRightSideContent($form = null)
+        {
+            assert('$form == null');
+            $content  = null;
+            if (!$this->isCampaignCompleted())
+            {
+                $content .= $this->renderCampaignActivePauseToggleElement();
+            }
+            return $content;
+        }
+
+        protected function renderCampaignActivePauseToggleElement()
+        {
+            $element = new CampaignActivePauseToggleElement($this->model, 'status');
+            $content = $element->render();
+            return $content;
+        }
+
+        protected function isCampaignCompleted()
+        {
+            return ($this->model->status == Campaign::STATUS_COMPLETED);
         }
     }
 ?>
