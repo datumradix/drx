@@ -350,7 +350,7 @@
             $this->assertContains('<footer id="FooterView">', $content);
             $this->assertContains('<a href="http://www.zurmo.com" id="credit-link" ' .
                                   'class="clearfix">', $content);
-            $this->assertContains('<span>Copyright &#169; Zurmo Inc., 2014. ' .
+            $this->assertContains('<span>Copyright &#169; Zurmo Inc., 2015. ' .
                                   'All rights reserved.</span></a>', $content);
         }
 
@@ -485,7 +485,7 @@
             $this->assertContains('<footer id="FooterView">', $content);
             $this->assertContains('<a href="http://www.zurmo.com" id="credit-link" ' .
                                   'class="clearfix">', $content);
-            $this->assertContains('<span>Copyright &#169; Zurmo Inc., 2014. ' .
+            $this->assertContains('<span>Copyright &#169; Zurmo Inc., 2015. ' .
                                   'All rights reserved.</span></a>', $content);
             $this->assertContains('<td>marketingList 02</td>', $content);
             $this->assertContains('<td><div class="switch">', $content);
