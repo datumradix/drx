@@ -36,9 +36,15 @@
 
     class IntegerAttributeForm extends MinMaxValueAttributeForm
     {
+        /**
+         * Setting maxLength to null so the auto-schema generator does not get confused and add a length rule which
+         * is unnecessary.  That extra rule confuses the column to think it is a varchar.
+         * @param RedBeanModel $model
+         * @param null $attributeName
+         */
         public function __construct(RedBeanModel $model = null, $attributeName = null)
         {
-            $this->maxLength = 11;
+            $this->maxLength = null;
             parent::__construct($model, $attributeName);
         }
 

@@ -36,8 +36,7 @@
 
     /**
      * Class EmailTemplateSerializedDataToHtmlUtil
-     * Utility class to resolve serializedData of an email template into html with option to also
-     * resolve merge tags at the same time.
+     * Utility class to resolve serializedData of an email template into html
      */
     class EmailTemplateSerializedDataToHtmlUtil
     {
@@ -45,13 +44,12 @@
          * Resolve html for a builder template provided its id
          * @param $emailTemplateId
          * @param bool $renderForCanvas
-         * @param OwnedSecurableItem $attachedMergeTagModel
          * @return bool|null|string
          */
-        public static function resolveHtmlByEmailTemplateId($emailTemplateId, $renderForCanvas = false, OwnedSecurableItem $attachedMergeTagModel = null)
+        public static function resolveHtmlByEmailTemplateId($emailTemplateId, $renderForCanvas = false)
         {
             $emailTemplate  = EmailTemplate::getById(intval($emailTemplateId));
-            $resolvedHtml   = static::resolveHtmlByEmailTemplateModel($emailTemplate, $renderForCanvas, $attachedMergeTagModel);
+            $resolvedHtml   = static::resolveHtmlByEmailTemplateModel($emailTemplate, $renderForCanvas);
             return $resolvedHtml;
         }
 
@@ -59,14 +57,13 @@
          * Resolve html for a builder template provided the model itself.
          * @param EmailTemplate $emailTemplate
          * @param bool $renderForCanvas
-         * @param OwnedSecurableItem $attachedMergeTagModel
          * @return bool|null|string
          */
-        public static function resolveHtmlByEmailTemplateModel(EmailTemplate $emailTemplate, $renderForCanvas = false, OwnedSecurableItem $attachedMergeTagModel = null)
+        public static function resolveHtmlByEmailTemplateModel(EmailTemplate $emailTemplate, $renderForCanvas = false)
         {
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($emailTemplate);
             $serializedData = $emailTemplate->serializedData;
-            $resolvedHtml   = static::resolveHtmlBySerializedData($serializedData, $renderForCanvas, $attachedMergeTagModel, $emailTemplate->type, $emailTemplate->language);
+            $resolvedHtml   = static::resolveHtmlBySerializedData($serializedData, $renderForCanvas);
             return $resolvedHtml;
         }
 
@@ -74,18 +71,15 @@
          * Resolve html for provided serialized data
          * @param $serializedData
          * @param bool $renderForCanvas
-         * @param OwnedSecurableItem $attachedMergeTagModel
-         * @param null $type
-         * @param null $language
          * @return bool|null|string
          */
-        public static function resolveHtmlBySerializedData($serializedData, $renderForCanvas = false, OwnedSecurableItem $attachedMergeTagModel = null, $type = null, $language = null)
+        public static function resolveHtmlBySerializedData($serializedData, $renderForCanvas = false)
         {
             $unserializedData   = CJSON::decode($serializedData);
             $resolvedHtml       = null;
             if (!empty($unserializedData))
             {
-                $resolvedHtml       = static::resolveHtmlByUnserializedData($unserializedData, $renderForCanvas, $attachedMergeTagModel, $type, $language);
+                $resolvedHtml       = static::resolveHtmlByUnserializedData($unserializedData, $renderForCanvas);
             }
             return $resolvedHtml;
         }
@@ -94,12 +88,9 @@
          * Resolve html for provided unserialized data array
          * @param array $unserializedData
          * @param bool $renderForCanvas
-         * @param OwnedSecurableItem $attachedMergeTagModel
-         * @param null $type
-         * @param null $language
          * @return bool|null|string
          */
-        public static function resolveHtmlByUnserializedData(array $unserializedData, $renderForCanvas = false, OwnedSecurableItem $attachedMergeTagModel = null, $type = null, $language = null)
+        public static function resolveHtmlByUnserializedData(array $unserializedData, $renderForCanvas = false)
         {
             $resolvedHtml   = null;
             $dom            = ArrayUtil::getArrayValue($unserializedData, 'dom');
@@ -122,40 +113,7 @@
             {
                 return null;
             }
-            if (isset($attachedMergeTagModel))
-            {
-                $resolvedHtml   = static::resolveMergeTagsByModel($resolvedHtml, $attachedMergeTagModel, $type, $language);
-            }
             return $resolvedHtml;
-        }
-
-        /**
-         * Resolve merge tags present in html
-         * @param $html
-         * @param OwnedSecurableItem $attachedMergeTagModel
-         * @param null $type
-         * @param null $language
-         * @return bool|string
-         * @throws FailedToResolveMergeTagsException
-         */
-        public static function resolveMergeTagsByModel($html, OwnedSecurableItem $attachedMergeTagModel, $type = null, $language = null)
-        {
-            $invalidTags = array();
-            if (!isset($type))
-            {
-                $type = EmailTemplate::TYPE_CONTACT;
-                if (get_class($attachedMergeTagModel) != 'Contact')
-                {
-                    $type = EmailTemplate::TYPE_WORKFLOW;
-                }
-            }
-            $mergeTagsUtil              = MergeTagsUtilFactory::make($type, $language, $html);
-            $resolvedContent            = $mergeTagsUtil->resolveMergeTags($attachedMergeTagModel, $invalidTags, $language);
-            if ($resolvedContent == false)
-            {
-                throw new FailedToResolveMergeTagsException();
-            }
-            return $resolvedContent;
         }
     }
 ?>

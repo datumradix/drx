@@ -454,8 +454,8 @@
                                                                   $metadata['global']['userHeaderMenuItems'],
                                                                   $user);
                     $headerMenuItems = array_merge($headerMenuItems,
-                                                   self::resolveMenuItemsForLanguageLocalization
-                                                   ($menuItems, get_class($module)));
+                                                    self::resolveMenuItemsForLanguageLocalization
+                                                    ($menuItems, get_class($module)));
                 }
             }
             $orderedHeaderMenuItems = array();
@@ -616,6 +616,7 @@
         protected static function resolveMenuItemsForLanguageLocalization(   $menuItems,
                                                                     $moduleClassName,
                                                                     $labelElements = array('label'),
+                                                                    $urlElements = array('url'),
                                                                     $ajaxLinkOptionsElements = array('ajaxLinkOptions'))
         {
             assert('is_array($menuItems)');
@@ -626,6 +627,10 @@
                 foreach ($labelElements as $labelElement)
                 {
                     MetadataUtil::resolveEvaluateSubString($menuItems[$itemKey][$labelElement], 'translationParams', $translationParams);
+                }
+                foreach ($urlElements as $urlElement)
+                {
+                    MetadataUtil::resolveEvaluateSubString($menuItems[$itemKey][$urlElement]);
                 }
                 if (isset($item['items']))
                 {

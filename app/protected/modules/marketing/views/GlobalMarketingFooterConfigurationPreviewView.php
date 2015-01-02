@@ -65,7 +65,8 @@
             $model              = Yii::app()->user->userModel;
             $params             = $this->resolveMergeTagParams();
             $util               = MergeTagsUtilFactory::make($type, $language, $this->placeholderContent);
-            $resolvedContent    = $util->resolveMergeTags($model, $invalidTags, $language, false, $params);
+            $resolvedContent    = $util->resolveMergeTags($model, $invalidTags, $language,
+                                        MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG, $params);
             if ($resolvedContent !== false)
             {
                 $this->placeholderContent = $resolvedContent;

@@ -271,7 +271,7 @@
          * Resolve maximum columns by layout id
          * @return int
          */
-        private function resolveMaximumColumnsByLayoutId()
+        protected function resolveMaximumColumnsByLayoutId()
         {
             $layoutTypes    = ConfigurableDetailsAndRelationsView::getLayoutTypesData();
             $layoutType     = $layoutTypes[ConfigurableDetailsAndRelationsView::getDefaultLayoutType()];
@@ -283,7 +283,7 @@
          * Reset portlet positions when a new portlet is added on the detail view
          * @param int $maximumColumns
          */
-        private function resetPortletsInColumnToAccomodateNewPortlet($maximumColumns)
+        protected function resetPortletsInColumnToAccomodateNewPortlet($maximumColumns)
         {
             $portletCollection = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition($_GET['uniqueLayoutId'], Yii::app()->user->userModel->id, array());
             $maximumIndexFromCollection = max(array_keys($portletCollection));

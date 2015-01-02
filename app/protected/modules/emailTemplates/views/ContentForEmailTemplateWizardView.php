@@ -70,6 +70,11 @@
             return EmailTemplateWizardForm::PLAIN_AND_RICH_CONTENT_VALIDATION_SCENARIO;
         }
 
+        protected function renderSendTestEmailButton()
+        {
+            return true;
+        }
+
         public static function redirectAfterSave()
         {
             return true;

@@ -364,7 +364,8 @@
             $mergeTagsUtil = MergeTagsUtilFactory::make(EmailTemplate::TYPE_WORKFLOW, null, $content);
             $this->assertTrue($mergeTagsUtil instanceof MergeTagsUtil);
             $this->assertTrue($mergeTagsUtil instanceof WorkflowMergeTagsUtil);
-            $resolvedContent = $mergeTagsUtil->resolveMergeTags(self::$emailTemplate, $this->invalidTags, null, true);
+            $resolvedContent = $mergeTagsUtil->resolveMergeTags(self::$emailTemplate, $this->invalidTags, null,
+                                                        MergeTagsToModelAttributesAdapter::ERROR_ON_FIRST_INVALID_TAG);
             $this->assertFalse($resolvedContent);
             $this->assertNotEquals($resolvedContent, $content);
             $this->assertEmpty($this->invalidTags);

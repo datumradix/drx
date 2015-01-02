@@ -34,7 +34,7 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class EmailTemplatesDefaultController extends ZurmoModuleController
+    class EmailTemplatesDefaultController extends EmailTemplatesOrCampaignsBaseController
     {
         const ZERO_MODELS_FOR_WORKFLOW_CHECK_FILTER_PATH =
             'application.modules.emailTemplates.controllers.filters.EmailTemplatesForWorkflowZeroModelsCheckControllerFilter';
@@ -277,12 +277,12 @@
                 $contact        = Contact::getById($contactId);
                 $textContent    = $emailTemplate->textContent;
                 $htmlContent    = $emailTemplate->htmlContent;
-                GlobalMarketingFooterUtil::removeFooterMergeTags($textContent);
-                GlobalMarketingFooterUtil::removeFooterMergeTags($htmlContent);
-                // we have already stripped off the merge tags that could introduce problems,
-                // no need to send actual data for personId, modelId, modelType and marketingListId.
-                AutoresponderAndCampaignItemsUtil::resolveContentsForMergeTags($textContent, $htmlContent, $contact,
-                                                                                null, null, null, null);
+                $invalidTags    = array();
+                MergeTagsContentResolverUtil::resolveContentsForGlobalFooterAndMergeTagsAndTracking($textContent,
+                                        $htmlContent, $contact, intval($emailTemplate->type),
+                                        MergeTagsToModelAttributesAdapter::ERROR_ON_FIRST_INVALID_TAG,
+                                        $emailTemplate->language, $invalidTags, null, true,
+                                        MergeTagsContentResolverUtil::REMOVE_GLOBAL_FOOTER_MERGE_TAGS_IF_PRESENT, false);
                 $emailTemplate->setTreatCurrentUserAsOwnerForPermissions(true);
                 $emailTemplate->textContent = stripslashes($textContent);
                 $emailTemplate->htmlContent = stripslashes($htmlContent);
@@ -618,89 +618,6 @@
             echo $htmlContent;
         }
 
-        public function actionSendTestEmail($id, $contactId = null, $emailAddress = null, $useHtmlContent = 1)
-        {
-            $emailTemplate  = EmailTemplate::getById(intval($id));
-            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($emailTemplate);
-            $htmlContent    = $emailTemplate->htmlContent;
-            if (!$useHtmlContent)
-            {
-                $htmlContent    = EmailTemplateSerializedDataToHtmlUtil::resolveHtmlByEmailTemplateModel($emailTemplate,
-                                                                                                                false);
-            }
-            $contact        = null;
-            if (isset($contactId))
-            {
-                $contact    = Contact::getById(intval($contactId));
-            }
-            static::resolveEmailMessage($emailTemplate, $contact, $htmlContent, $emailAddress);
-        }
-
-        protected static function resolveEmailMessage(EmailTemplate $emailTemplate, Contact $contact = null, $htmlContent, $emailAddress = null)
-        {
-            // TODO: @Shoaibi: Critical: Refactor this and AutoresponderAndCampaignItemsUtil
-            $emailMessage                       = new EmailMessage();
-            $emailMessage->subject              = $emailTemplate->subject;
-            $emailContent                       = new EmailMessageContent();
-            $emailContent->textContent          = $emailTemplate->textContent;
-            // we do not need to do : EmailTemplateSerializedDataToHtmlUtil::resolveHtmlByEmailTemplateModel($emailTemplate);
-            // check __set of EmailTemplate.
-            $emailContent->htmlContent          = $htmlContent;
-            $emailMessage->content              = $emailContent;
-            $emailMessage->sender               = static::resolveSender();
-            static::resolveRecipient($emailMessage, $contact, $emailAddress);
-            $box                                = EmailBox::resolveAndGetByName(EmailBox::USER_DEFAULT_NAME);
-            $emailMessage->folder               = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
-            Yii::app()->emailHelper->sendImmediately($emailMessage);
-            $emailMessage->owner                = $emailTemplate->owner;
-            $explicitReadWriteModelPermissions  = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($emailTemplate);
-            ExplicitReadWriteModelPermissionsUtil::resolveExplicitReadWriteModelPermissions($emailMessage,
-                                                                                    $explicitReadWriteModelPermissions);
-            if (!$emailMessage->save())
-            {
-                throw new FailedToSaveModelException("Unable to save EmailMessage");
-            }
-        }
-
-        protected static function resolveSender()
-        {
-            $sender                         = new EmailMessageSender();
-            $sender->fromAddress            = Yii::app()->emailHelper->resolveFromAddressByUser(Yii::app()->user->userModel);
-            $sender->fromName               = strval(Yii::app()->user->userModel);
-            return $sender;
-        }
-
-        protected static function resolveRecipient(EmailMessage $emailMessage, Contact $contact = null, $emailAddress = null)
-        {
-            if ($contact === null)
-            {
-                $contact  = static::resolveDefaultRecipient();
-            }
-            if ($emailAddress == null)
-            {
-                $primaryEmailAddress    = $contact->primaryEmail->emailAddress;
-            }
-            else
-            {
-                $primaryEmailAddress    = $emailAddress;
-            }
-
-            if ($primaryEmailAddress != null)
-            {
-                $recipient                  = new EmailMessageRecipient();
-                $recipient->toAddress       = $primaryEmailAddress;
-                $recipient->toName          = strval($contact);
-                $recipient->type            = EmailMessageRecipient::TYPE_TO;
-                $recipient->personsOrAccounts->add($contact);
-                $emailMessage->recipients->add($recipient);
-            }
-        }
-
-        protected static function resolveDefaultRecipient()
-        {
-            return Yii::app()->user->userModel;
-        }
-
         public function actionModalList($stateMetadataAdapterClassName = null)
         {
             $modalListLinkProvider = new SelectFromRelatedEditModalListLinkProvider(
@@ -725,6 +642,11 @@
                     'label' => Zurmo::t('Core', 'No results found')));
             }
             echo CJSON::encode($autoCompleteResults);
+        }
+
+        protected function getSendTestEmailUtil()
+        {
+            return 'EmailTemplateSendTestEmailUtil';
         }
     }
 ?>

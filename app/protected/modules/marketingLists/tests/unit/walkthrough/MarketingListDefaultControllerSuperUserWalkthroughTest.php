@@ -253,7 +253,6 @@
             $this->assertContains('<span class="button-label">Add Contact/Lead</span>', $content);
             $this->assertContains('From Contacts/Leads</label>', $content);
             $this->assertContains('From Report</label>', $content);
-            $this->assertContains('<span class="button-label">Subscribe</span>', $content);
             $this->assertContains('<span class="button-label">Unsubscribe</span>', $content);
             $this->assertContains('<span class="button-label">Delete</span>', $content);
         }

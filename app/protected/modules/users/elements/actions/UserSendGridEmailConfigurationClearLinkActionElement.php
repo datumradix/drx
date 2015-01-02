@@ -33,28 +33,30 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-
-    class MarketingListMembersMassSubscribeView extends MarketingListMembersMassEditActionView
+    /**
+     * Renders clear link button on saved user sendgrid email configuration form.
+     */
+    class UserSendGridEmailConfigurationClearLinkActionElement extends CancelLinkActionElement
     {
-        public static function getDefaultMetadata()
+        /**
+         * @return string
+         */
+        protected function getDefaultRoute()
         {
-            $metadata = array(
-                'global' => array(
-                    'toolbar' => array(
-                        'elements' => array(
-                            array('type' => 'MarketingListMembersSubscribeButton',
-                                'htmlOptions' => 'eval:$this->getSubmitButtonHtmlOptions()',
-                            ),
-                        ),
-                    ),
-                ),
-            );
-            return CMap::mergeArray(parent::getDefaultMetadata(), $metadata);
+            $getData = GetUtil::getData();
+            if (isset($getData['id']) && $getData['id'] != '')
+            {
+                return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/clearSendGridConfiguration/', array('id' => $getData['id']));
+            }
+            else
+            {
+                return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId);
+            }
         }
 
-        protected function renderItemOperationType()
+        protected function getDefaultLabel()
         {
-            return 'subscription';
+            return Zurmo::t('Core', 'Clear');
         }
     }
 ?>

@@ -162,8 +162,8 @@
                         'mobile' => false,
                     ),
                     array(
-                        'label'  => "eval:Zurmo::t('ZurmoModule', 'Need Support?')",
-                        'url'    => 'http://www.zurmo.com/needSupport.php',
+                        'label'  => "eval:Zurmo::t('ZurmoModule', 'Get More')",
+                        'url'    => 'eval:ZurmoModule::resolveGetMoreUrl()',
                         'order'  => 9,
                         'mobile' => true,
                     ),
@@ -395,6 +395,19 @@
         protected static function getPluralModuleLabel($language)
         {
             return Yii::app()->label;
+        }
+
+        /**
+         * Set getMoreUrl according to edition.
+         */
+        public static function resolveGetMoreUrl()
+        {
+            $getMoreUrl = "http://www.zurmo.com/needSupport.php?source=menu";
+            if (Yii::app()->edition != 'Community')
+            {
+                $getMoreUrl = "https://zurmo.zendesk.com/home";
+            }
+            return $getMoreUrl;
         }
     }
 ?>

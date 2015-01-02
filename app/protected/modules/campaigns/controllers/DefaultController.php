@@ -34,7 +34,7 @@
      * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
-    class CampaignsDefaultController extends ZurmoModuleController
+    class CampaignsDefaultController extends EmailTemplatesOrCampaignsBaseController
     {
         const USER_REQUIRED_MODULES_ACCESS_FILTER_PATH =
             'application.modules.campaigns.controllers.filters.UserCanAccessRequiredModulesForCampaignCheckControllerFilter';
@@ -233,6 +233,20 @@
             echo CampaignItemSummaryListViewColumnAdapter::resolveDrillDownMetricsSummaryContent($campaignItem);
         }
 
+        public function actionTogglePaused($id)
+        {
+            $campaign               = Campaign::GetById(intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($campaign);
+            $campaign->status       = ($campaign->status == Campaign::STATUS_PAUSED)?
+                                            Campaign::STATUS_ACTIVE : Campaign::STATUS_PAUSED;
+            $saved                  = $campaign->save();
+            if (!$saved)
+            {
+                throw new FailedToSaveModelException("Unable to toggle status");
+            }
+            echo true;
+        }
+
         protected static function getSearchFormClassName()
         {
             return 'CampaignsSearchForm';
@@ -241,6 +255,11 @@
         protected static function getZurmoControllerUtil()
         {
             return new CampaignZurmoControllerUtil();
+        }
+
+        protected function getSendTestEmailUtil()
+        {
+            return 'CampaignSendTestEmailUtil';
         }
     }
 ?>

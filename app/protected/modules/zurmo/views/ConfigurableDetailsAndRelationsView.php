@@ -110,6 +110,7 @@
                 {
                     $content = $kanbanToggleLink. $this->resolveAndRenderLockingLink($renderedInForm);
                 }
+                $content .= $this->resolveExtraToolbarContent();
                 $toolbarContent = ZurmoHtml::tag('nav', array('class' => 'pillbox clearfix'), $content);
             }
             $toolbarContent = ZurmoHtml::tag('div', array('class' => 'view-toolbar-container widgets-lock clearfix '), $toolbarContent);
@@ -231,6 +232,15 @@
         public static function getDefaultLayoutType()
         {
             return '75,25'; // Not Coding Standard
+        }
+
+        /**
+         * Resolve extra toolbar content.
+         * @return string
+         */
+        protected function resolveExtraToolbarContent()
+        {
+            return Yii::app()->custom->resolveExtraToolbarContentForView(get_class($this), $this->controllerId, $this->moduleId, $this->modelId);
         }
     }
 ?>
