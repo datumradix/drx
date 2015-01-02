@@ -8239,6 +8239,9 @@ body .overlay-view .after-form-details-content a:hover {
 .MarketingListMembersListView .items {
   background: #fff;
 }
+.marketing-list-members-list {
+  float: none !important;
+}
 #marketing-list-member-select-contact-or-report-form {
   padding: 15px;
   position: relative;
