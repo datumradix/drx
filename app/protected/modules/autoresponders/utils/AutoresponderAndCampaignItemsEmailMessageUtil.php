@@ -41,12 +41,6 @@
      */
     abstract class AutoresponderAndCampaignItemsEmailMessageUtil
     {
-        public static $itemClass                        = null;
-
-        public static $returnPath                       = null;
-
-        public static $personId                         = null;
-
         const CONTENT_ID                                = "@contentId";
 
         const SENDER_ID                                 = "@senderId";
@@ -60,7 +54,8 @@
         const NULL_FLAG                                 = "!~~NULL~~!"; // Not Coding Standard
 
         public static function resolveAndSaveEmailMessage($textContent, $htmlContent, Item $itemOwnerModel,
-                                                    Contact $contact, MarketingList $marketingList, $itemId, $folderId)
+                                                    Contact $contact, MarketingList $marketingList, $itemId, $folderId,
+                                                    $itemClass, $personId)
         {
             $recipient              = static::resolveRecipient($contact);
             if (empty($recipient))
@@ -78,7 +73,7 @@
             }
             $subject                = $itemOwnerModel->subject;
             $serializedData         = serialize($subject);
-            $headers                = static::resolveHeaders($itemId);
+            $headers                = static::resolveHeaders($itemId, $itemClass, $personId);
             $nowTimestamp           = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
             $emailMessageData       = compact('subject', 'serializedData', 'textContent', 'htmlContent', 'userId', 'ownerId',
                                                 'headers', 'attachments', 'folderId', 'nowTimestamp');
@@ -134,17 +129,21 @@
             return $recipient;
         }
 
-        protected static function resolveHeaders($zurmoItemId)
+        protected static function resolveHeaders($zurmoItemId, $zurmoItemClass, $zurmoPersonId)
         {
-            $zurmoItemClass     = static::$itemClass;
-            $zurmoPersonId      = static::$personId;
-            $headers            = compact('zurmoItemId', 'zurmoItemClass', 'zurmoPersonId');
-            if (static::$returnPath)
+            $headers                = compact('zurmoItemId', 'zurmoItemClass', 'zurmoPersonId');
+            $returnPath             = static::resolveReturnPath();
+            if ($returnPath)
             {
-                $headers['Return-Path'] = static::$returnPath;
+                $headers['Return-Path'] = $returnPath;
             }
-            $headers            = serialize($headers);
+            $headers                = serialize($headers);
             return $headers;
+        }
+
+        protected static function resolveReturnPath()
+        {
+            return ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'bounceReturnPath');
         }
 
         protected static function saveEmailMessageWithRelated(array $emailMessageData)

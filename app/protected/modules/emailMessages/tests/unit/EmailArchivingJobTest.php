@@ -101,6 +101,10 @@
                 $user->primaryEmail->emailAddress = Yii::app()->params['emailTestAccounts']['userImapSettings']['imapUsername'];
                 $this->assertTrue($user->save());
             }
+            else
+            {
+                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Test email settings are not configured in perInstanceTest.php file.'));
+            }
         }
 
         public static function tearDownAfterClass()
@@ -126,10 +130,6 @@
          */
         public function testRunCaseOne()
         {
-            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
-            {
-                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Test email settings are not configured in perInstanceTest.php file.'));
-            }
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
             $user = User::getByUsername('steve');
@@ -151,7 +151,6 @@
             $filePath_1    = $pathToFiles . DIRECTORY_SEPARATOR . 'table.csv';
             $filePath_2    = $pathToFiles . DIRECTORY_SEPARATOR . 'image.png';
             $filePath_3    = $pathToFiles . DIRECTORY_SEPARATOR . 'text.txt';
-
             Yii::app()->emailHelper->sendRawEmail("Email from Steve",
                                                   $user->primaryEmail->emailAddress,
                                                   Yii::app()->params['emailTestAccounts']['testEmailAddress'],
@@ -168,13 +167,20 @@
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(3, EmailMessage::getCount());
             $emailMessages = EmailMessage::getAll();
-            $emailMessage = $emailMessages[0];
+
+            //Message with unmatched notification
+            $emailMessage = $emailMessages[1];
+            $this->assertEquals('Match archived emails', $emailMessage->subject);
+            $this->assertContains('At least one archived email message does not match any records in the system', trim($emailMessage->content->textContent));
+            $this->assertContains('At least one archived email message does not match any records in the system', trim($emailMessage->content->htmlContent));
+
+            $emailMessage = $emailMessages[2];
 
             $this->assertEquals('Email from Steve', $emailMessage->subject);
             $this->assertEquals('Email from Steve', trim($emailMessage->content->textContent));
-            $this->assertEquals('<strong>Email</strong> from Steve', trim($emailMessage->content->htmlContent));
+            $this->assertEquals('<!-- zurmo css inline --><strong>Email</strong> from Steve', preg_replace( "/\r|\n/", "", $emailMessage->content->htmlContent));
             $this->assertEquals($user->primaryEmail->emailAddress, $emailMessage->sender->fromAddress);
 
             $this->assertEquals(1, count($emailMessage->recipients));
@@ -201,10 +207,6 @@
          */
         public function testRunCaseTwo()
         {
-            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
-            {
-                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Test email settings are not configured in perInstanceTest.php file.'));
-            }
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
             $user = User::getByUsername('steve');
@@ -246,13 +248,13 @@
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(2, EmailMessage::getCount());
             $emailMessages = EmailMessage::getAll();
-            $emailMessage = $emailMessages[0];
+            $emailMessage = $emailMessages[1];
 
             $this->assertEquals('Email from Steve 2', $emailMessage->subject);
             $this->assertEquals('Email from Steve', trim($emailMessage->content->textContent));
-            $this->assertEquals('<strong>Email</strong> from Steve', trim($emailMessage->content->htmlContent));
+            $this->assertEquals('<!-- zurmo css inline --><strong>Email</strong> from Steve', preg_replace( "/\r|\n/", "", $emailMessage->content->htmlContent));
             $this->assertEquals($user->primaryEmail->emailAddress, $emailMessage->sender->fromAddress);
 
             $this->assertEquals(1, count($emailMessage->recipients));
@@ -278,10 +280,6 @@
          */
         public function testRunCaseThree()
         {
-            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
-            {
-                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Test email settings are not configured in perInstanceTest.php file.'));
-            }
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
             $user = User::getByUsername('steve');
@@ -341,9 +339,9 @@ To: Steve <steve@example.com>
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(2, EmailMessage::getCount());
             $emailMessages = EmailMessage::getAll();
-            $emailMessage = $emailMessages[0];
+            $emailMessage = $emailMessages[1];
 
             $this->assertEquals($subject, $emailMessage->subject);
             $this->assertContains('Hello Steve', $emailMessage->content->textContent);
@@ -369,10 +367,6 @@ To: Steve <steve@example.com>
          */
         public function testRunCaseFour()
         {
-            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
-            {
-                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Test email settings are not configured in perInstanceTest.php file.'));
-            }
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
             $user = User::getByUsername('steve');
@@ -409,7 +403,7 @@ To: Steve <steve@example.com>
             $this->assertFalse($job->run());
             $this->assertContains('Failed to process Message id', $job->getErrorMessage());
 
-            $this->assertEquals(0, EmailMessage::getCount());
+            $this->assertEquals(1, EmailMessage::getCount());
             $this->assertEquals(1, Notification::getCountByTypeAndUser('EmailMessageOwnerNotExist', $super));
             $notifications = Notification::getByTypeAndUser('EmailMessageOwnerNotExist', $super);
             $this->assertContains('Email address does not exist in system', $notifications[0]->notificationMessage->textContent);
@@ -425,10 +419,6 @@ To: Steve <steve@example.com>
          */
         public function testRunCaseFive()
         {
-            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
-            {
-                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Test email settings are not configured in perInstanceTest.php file.'));
-            }
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
             $user = User::getByUsername('steve');
@@ -479,13 +469,13 @@ To: Steve <steve@example.com>
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(2, EmailMessage::getCount());
             $emailMessages = EmailMessage::getAll();
-            $emailMessage = $emailMessages[0];
+            $emailMessage = $emailMessages[1];
 
             $this->assertEquals('Email from Steve 3', $emailMessage->subject);
             $this->assertEquals('Email from Steve', trim($emailMessage->content->textContent));
-            $this->assertEquals('<strong>Email</strong> from Steve', trim($emailMessage->content->htmlContent));
+            $this->assertEquals('<!-- zurmo css inline --><strong>Email</strong> from Steve', preg_replace( "/\r|\n/", "", $emailMessage->content->htmlContent));
             $this->assertEquals($user->primaryEmail->emailAddress, $emailMessage->sender->fromAddress);
 
             $this->assertEquals(1, count($emailMessage->recipients));
@@ -500,7 +490,7 @@ To: Steve <steve@example.com>
 
             $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
-            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(2, EmailMessage::getCount());
             $this->assertEquals(1, Notification::getCountByTypeAndUser('EmailMessageArchivingEmailAddressNotMatching', $user));
         }
     }

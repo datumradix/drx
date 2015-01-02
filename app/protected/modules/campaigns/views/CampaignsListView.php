@@ -51,19 +51,19 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
+                                                array('attributeName' => 'status', 'type' => 'CampaignStatus'),
                                             ),
                                         ),
-                                    ),
+                                    )
                                 ),
                                 array('cells' =>
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'status', 'type' => 'CampaignStatus'),
+                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
                                             ),
                                         ),
-                                    )
+                                    ),
                                 ),
                                 array('cells' =>
                                     array(

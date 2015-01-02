@@ -146,9 +146,9 @@
 
                         function deleteExistingAttachments()
                         {
-                            $("table.files tr.template-download td.name span.upload-actions.delete button.icon-delete:first")
+                            $("div.attributesContainer div.panel .form-fields div.fileupload-content table.files tr.template-download td.name span.upload-actions.delete button.icon-delete:first")
                                 .click();
-                            $("table.files tr.template-download")
+                            $("div.attributesContainer div.panel .form-fields div.fileupload-content table.files tr.template-download")
                                 .remove();
                         }
 

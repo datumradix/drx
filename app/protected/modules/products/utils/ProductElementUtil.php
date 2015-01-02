@@ -92,5 +92,28 @@
                          $translatedAttributeLabels['priceFrequency']           => $priceFrequency,
                          $translatedAttributeLabels['sellPrice']                => $sellPrice);
         }
+
+        /**
+         * Gets the adjusted value of the price by comparing the currency to the
+         * base currency
+         * @param RedBeanModel $model
+         * @return float
+         */
+        public static function getAdjustedTotalByCurrency($model)
+        {
+            $price = 0;
+            $currentUserCurrency    = Yii::app()->currencyHelper->getActiveCurrencyForCurrentUser();
+            $currency               = $model->sellPrice->currency;
+            if ($currency->rateToBase == $currentUserCurrency->rateToBase )
+            {
+                $price = $model->sellPrice->value * $model->quantity;
+            }
+            else
+            {
+                $price = (($model->sellPrice->value * $currency->rateToBase)
+                                / ($currentUserCurrency->rateToBase)) * $model->quantity;
+            }
+            return $price;
+        }
     }
 ?>

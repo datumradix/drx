@@ -84,7 +84,10 @@
          */
         public function run()
         {
-            return CampaignItemsUtil::generateCampaignItemsForDueCampaigns();
+            // we need either this or need to call forget() on each campaign we are processing inside tests
+            Campaign::forgetAll();
+            $util   = new CampaignItemsUtil();
+            return $util->generateCampaignItemsForDueCampaigns();
         }
 
         public static function jobExecutionInQueueDependsOnTime()
