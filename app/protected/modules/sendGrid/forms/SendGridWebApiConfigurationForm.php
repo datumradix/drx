@@ -71,8 +71,8 @@
                 'username'                             => Zurmo::t('ZurmoModule', 'Username'),
                 'password'                             => Zurmo::t('ZurmoModule', 'Password'),
                 'aTestToAddress'                       => Zurmo::t('SendGridModule', 'Send a test email to'),
-                'eventWebhookUrl'                      => Zurmo::t('SendGridModule', 'Event webhook url'),
-                'eventWebhookFilePath'                 => Zurmo::t('SendGridModule', 'Event webhook file path'),
+                'eventWebhookUrl'                      => Zurmo::t('SendGridModule', 'Event data log file url<br/><small>(e.g. http://xyz.com/dump.log. <br/>Name of the log file should be what is given in webhook file below.)</small>'),
+                'eventWebhookFilePath'                 => Zurmo::t('SendGridModule', 'Event webhook file path<br/><small>(e.g. http://xyz.com/testwebhook.php)</small>'),
             );
         }
     }

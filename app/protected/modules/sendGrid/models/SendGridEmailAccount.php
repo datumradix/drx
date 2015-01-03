@@ -208,8 +208,8 @@
                     'apiUsername'               => Zurmo::t('SendGridModule', 'Api Username',             array(), null, $language),
                     'replyToAddress'            => Zurmo::t('SendGridModule', 'Reply To Address',              array(), null, $language),
                     'user'                      => Zurmo::t('UsersModule',         'User',                          array(), null, $language),
-                    'eventWebhookUrl'           => Zurmo::t('SendGridModule', 'Event webhook url',             array(), null, $language),
-                    'eventWebhookFilePath'      => Zurmo::t('SendGridModule', 'Event webhook file path',       array(), null, $language),
+                    'eventWebhookUrl'           => Zurmo::t('SendGridModule', 'Event data log file url<br/><small>(e.g. http://xyz.com/dump.log. <br/>Name of the log file should be what is given in webhook file below.)</small>',             array(), null, $language),
+                    'eventWebhookFilePath'      => Zurmo::t('SendGridModule', 'Event webhook file path<br/><small>(e.g. http://xyz.com/testwebhook.php)</small>',       array(), null, $language),
                 )
             );
         }
