@@ -177,11 +177,11 @@
             assert('is_bool($allowDuplicates)');
             assert('is_bool($allowSendingEmail)');
             assert('is_bool($isCritical)');
+            $notifications = static::resolveAndGetNotifications($users, $type, $message, $allowDuplicates);
             if (!$allowSendingEmail)
             {
                 return;
             }
-            $notifications = static::resolveAndGetNotifications($users, $type, $message, $allowDuplicates);
             if (static::resolveShouldSendEmailIfCritical() && $isCritical)
             {
                 $sendImmediately = true;
@@ -192,7 +192,13 @@
             }
             foreach ($notifications as $notification)
             {
-                static::sendEmail($notification, $sendImmediately);
+                $notificationSettingName = static::resolveNotificationSettingNameFromType($notification->type);
+                if ($allowSendingEmail &&
+                    UserNotificationUtil::
+                    isEnabledByUserAndNotificationNameAndType($notification->owner, $notificationSettingName, 'email'))
+                {
+                    static::sendEmail($notification, $sendImmediately);
+                }
             }
         }
 
@@ -203,8 +209,7 @@
 
         protected static function sendEmail(Notification $notification, $sendImmediately)
         {
-            if ($notification->owner->primaryEmail->emailAddress != null &&
-                !UserConfigurationFormAdapter::resolveAndGetValue($notification->owner, 'turnOffEmailNotifications'))
+            if ($notification->owner->primaryEmail->emailAddress != null)
             {
                 $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
                 $emailMessage               = new EmailMessage();
