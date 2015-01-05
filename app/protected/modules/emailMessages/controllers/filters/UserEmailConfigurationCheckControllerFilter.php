@@ -50,12 +50,23 @@
             }
             catch (NotFoundException $e)
             {
-                $redirectUrl = Yii::app()->request->getParam('redirectUrl');
-                $messageView = new NoUserEmailConfigurationYetView($redirectUrl);
-                $view        = new ModalView($this->controller, $messageView);
-                Yii::app()->getClientScript()->setToAjaxMode();
-                echo $view->render();
-                return false;
+                try
+                {
+                    $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
+                    if($sendGridPluginEnabled)
+                    {
+                        SendGridEmailAccount::getByUserAndName(Yii::app()->user->userModel, null);
+                    }
+                }
+                catch(NotFoundException $e)
+                {
+                    $redirectUrl = Yii::app()->request->getParam('redirectUrl');
+                    $messageView = new NoUserEmailConfigurationYetView($redirectUrl);
+                    $view        = new ModalView($this->controller, $messageView);
+                    Yii::app()->getClientScript()->setToAjaxMode();
+                    echo $view->render();
+                    return false;
+                }
             }
             return true;
         }
