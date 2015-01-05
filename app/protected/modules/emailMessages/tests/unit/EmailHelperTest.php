@@ -449,7 +449,7 @@
             Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundSecurity'];
             Yii::app()->emailHelper->sendEmailThroughTransport = true;
             Yii::app()->emailHelper->setOutboundSettings();
-            Yii::app()->emailHelper->init();
+            //Yii::app()->emailHelper->init();
         }
     }
 ?>
