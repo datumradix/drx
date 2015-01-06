@@ -34,40 +34,25 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Form to all editing and viewing of mail related configuration values in the user interface.
-     */
-    class SendGridWebApiConfigurationForm extends ConfigurationForm
+    class SendGridExternalController extends ZurmoModuleController
     {
-        public $username;
-        public $password;
-        public $aTestToAddress;
-
-        /**
-         * @return array
-         */
-        public function rules()
+        public function filters()
         {
-            return array(
-                array('username, password', 'required'),
-                array('username',                          'type',      'type' => 'string'),
-                array('username',                          'length',    'min'  => 1, 'max' => 64),
-                array('password',                          'type',      'type' => 'string'),
-                array('password',                          'length',    'min'  => 1, 'max' => 64),
-                array('aTestToAddress',                    'email')
-            );
+            return array();
+        }
+
+        public function beforeAction($action)
+        {
+            Yii::app()->user->userModel = BaseControlUserConfigUtil::getUserToRunAs();
+            return parent::beforeAction($action);
         }
 
         /**
-         * @return array
+         * Writes log.
          */
-        public function attributeLabels()
+        public function actionWriteLog($username)
         {
-            return array(
-                'username'                             => Zurmo::t('ZurmoModule', 'Username'),
-                'password'                             => Zurmo::t('ZurmoModule', 'Password'),
-                'aTestToAddress'                       => Zurmo::t('SendGridModule', 'Send a test email to'),
-            );
+            SendGridLogUtil::writeLog($username, $HTTP_RAW_POST_DATA);
         }
     }
 ?>
