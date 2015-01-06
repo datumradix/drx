@@ -64,5 +64,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when someone rejects a story that I own.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('TasksModule', 'REJECTED {relatedModel}: {task}', $this->getParamsForEmailSubject());
+        }
     }
 ?>

@@ -53,6 +53,7 @@
                 foreach ($peopleToSendNotification as $people)
                 {
                     $rules->addUser($people);
+                    $rules->setModel($relatedModel);
                 }
                 $notificationMessage = static::createNotificationMessage($relatedModel, $comment);
                 NotificationsUtil::submit($notificationMessage, $rules);
@@ -60,60 +61,6 @@
             else
             {
                 return;
-            }
-        }
-
-        /**
-         * @param RedBeanModel $model
-         * @param Comment $comment
-         * @param User $user
-         * @return EmailMessageContent
-         */
-        protected static function getEmailContent(RedBeanModel $model, Comment $comment, User $user)
-        {
-            $emailContent  = new EmailMessageContent();
-            $url           = static::getUrlToEmail($model);
-            $shortUrl      = ShortUrlUtil::createShortUrl($url);
-            $textContent   = Zurmo::t('CommentsModule', 'Hello, {lineBreak} {updaterName} added a new comment to the ' .
-                                             '{strongStartTag}{modelName}{strongEndTag}: {lineBreak}' .
-                                             '"{commentDescription}." {lineBreak}{lineBreak} {url} ',
-                                    array('{lineBreak}'           => "\n",
-                                          '{strongStartTag}'      => null,
-                                          '{strongEndTag}'        => null,
-                                          '{updaterName}'         => strval($comment->createdByUser),
-                                          '{modelName}'           => $model->getModelLabelByTypeAndLanguage(
-                                                                     'SingularLowerCase'),
-                                          '{commentDescription}'  => strval($comment),
-                                          '{url}'                 => $shortUrl
-                                        ));
-            $emailContent->textContent  = EmailNotificationUtil::
-                                                resolveNotificationTextTemplate($textContent);
-            $htmlContent = Zurmo::t('CommentsModule', 'Hello, {lineBreak} {updaterName} added a new comment to the ' .
-                                             '{strongStartTag}{url}{strongEndTag}: {lineBreak}' .
-                                             '"{commentDescription}."',
-                               array('{lineBreak}'           => "<br/>",
-                                     '{strongStartTag}'      => '<strong>',
-                                     '{strongEndTag}'        => '</strong>',
-                                     '{updaterName}'         => strval($comment->createdByUser),
-                                     '{commentDescription}'  => strval($comment),
-                                     '{url}'                 => ZurmoHtml::link($model->getModelLabelByTypeAndLanguage(
-                                                                'SingularLowerCase'), $url)
-                                   ));
-            $emailContent->htmlContent  = EmailNotificationUtil::resolveNotificationHtmlTemplate($htmlContent);
-            return $emailContent;
-        }
-
-        /**
-         * @param $model
-         * @return string
-         */
-        public static function getEmailSubject($model)
-        {
-            if ($model instanceof Conversation || $model instanceof Mission)
-            {
-                return Zurmo::t('CommentsModule', 'New comment on {modelName}: {subject}',
-                                    array('{subject}'   => strval($model),
-                                          '{modelName}' => $model->getModelLabelByTypeAndLanguage('SingularLowerCase')));
             }
         }
 
