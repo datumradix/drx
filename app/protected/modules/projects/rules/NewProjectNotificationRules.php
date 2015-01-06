@@ -64,5 +64,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when a new Project is created.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('ProjectsModule', 'PROJECT: {project}', $this->getParamsForEmailSubject());
+        }
     }
 ?>

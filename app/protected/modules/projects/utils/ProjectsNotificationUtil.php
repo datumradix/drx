@@ -82,7 +82,7 @@
             {
                 return;
             }
-            $notifications = static::resolveAndGetNotifications($users, $rule->getType(), $message, $rule->allowDuplicates());
+            $notifications = static::resolveAndGetNotifications($message, $rule);
             if (static::resolveShouldSendEmailIfCritical())
             {
                 foreach ($notifications as $notification)
@@ -159,40 +159,6 @@
         }
 
         /**
-         * Gets email subject for the notification
-         * @param Project $project
-         * @param $action
-         * @param Task $task
-         * @return string
-         */
-        public static function getProjectEmailSubject(Project $project, $action, Task $task = null)
-        {
-            assert('$project instanceof Project');
-            $params = array('{project}'         => strval($project),
-                            '{task}'            => strval($task));
-            if ($action == ProjectAuditEvent::PROJECT_CREATED)
-            {
-                return Zurmo::t('ProjectsModule', 'PROJECT: {project}', $params);
-            }
-            elseif ($action == ProjectAuditEvent::TASK_ADDED)
-            {
-                return Zurmo::t('ProjectsModule', 'NEW TASK: {task} for PROJECT: {project}', $params);
-            }
-            elseif ($action == ProjectAuditEvent::COMMENT_ADDED)
-            {
-                return Zurmo::t('ProjectsModule', 'NEW COMMENT for TASK: {task}, PROJECT: {project}', $params);
-            }
-            elseif ($action == ProjectAuditEvent::TASK_STATUS_CHANGED)
-            {
-                return Zurmo::t('ProjectsModule', 'TASK STATUS CHANGE for TASK: {task}, PROJECT: {project}', $params);
-            }
-            elseif ($action == ProjectAuditEvent::PROJECT_ARCHIVED)
-            {
-                return Zurmo::t('ProjectsModule', 'PROJECT: {project}', $params);
-            }
-        }
-
-        /**
          * Gets email message for the notification
          * @param Project $project
          * @param $action
@@ -263,7 +229,8 @@
                 UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($notification->owner,
                                                                                 $notificationSettingName, 'email'))
             {
-                $emailMessage               = static::makeEmailMessage($rule, $action);
+                $emailMessage               = static::makeEmailMessage();
+                $emailMessage->subject      = static::getEmailSubject($rule, $action);
                 $emailMessage->content      = static::makeEmailContent($notification);
                 $emailMessage->sender       = static::makeSender();
                 $emailMessage->recipients->add(static::makeRecipient($notification));
@@ -278,74 +245,6 @@
                     //Not sure what to do yet when catching an exception here. Currently ignoring gracefully.
                 }
             }
-        }
-
-        /**
-         *
-         * @param ProjectNotificationRules $rule
-         * @param string $action
-         * @return EmailMessage
-         */
-        protected static function makeEmailMessage(ProjectNotificationRules $rule, $action)
-        {
-            assert('is_string($action)');
-            $emailMessage               = new EmailMessage();
-            $emailMessage->owner        = Yii::app()->user->userModel;
-            $project                    = $rule->getModel();
-            $task                       = $rule->getAdditionalModel();
-            $emailMessage->subject      = static::getProjectEmailSubject($project, $action, $task);
-            return $emailMessage;
-        }
-
-        /**
-         * @param Notification $notification
-         * @return EmailMessageContent
-         */
-        protected static function makeEmailContent(Notification $notification)
-        {
-            $emailContent               = new EmailMessageContent();
-            $emailContent->textContent  = EmailNotificationUtil::
-                                            resolveNotificationTextTemplate(
-                                            $notification->notificationMessage->textContent);
-            $emailContent->htmlContent  = EmailNotificationUtil::
-                                            resolveNotificationHtmlTemplate(
-                                            $notification->notificationMessage->htmlContent);
-            return $emailContent;
-        }
-
-        /**
-         * @return EmailMessageSender
-         */
-        protected static function makeSender()
-        {
-            $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
-            $sender                     = new EmailMessageSender();
-            $sender->fromAddress        = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
-            $sender->fromName           = strval($userToSendMessagesFrom);
-            return $sender;
-        }
-
-        /**
-         * @param Notification $notification
-         * @return EmailMessageRecipient
-         */
-        protected static function makeRecipient(Notification $notification)
-        {
-            $recipient                  = new EmailMessageRecipient();
-            $recipient->toAddress       = $notification->owner->primaryEmail->emailAddress;
-            $recipient->toName          = strval($notification->owner);
-            $recipient->type            = EmailMessageRecipient::TYPE_TO;
-            $recipient->personsOrAccounts->add($notification->owner);
-            return $recipient;
-        }
-
-        /**
-         * Resolve to save notification
-         * @return bool
-         */
-        protected static function resolveToSaveNotification()
-        {
-            return true;
         }
 
         /**

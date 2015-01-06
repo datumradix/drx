@@ -64,5 +64,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when someone delivers a story that I have requested.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('TasksModule', 'DELIVERED {relatedModel}: {task}', $this->getParamsForEmailSubject());
+        }
     }
 ?>

@@ -39,18 +39,7 @@
      */
     abstract class ProjectNotificationRules extends NotificationRules
     {
-        protected $model;
         protected $additionalModel;
-
-        public function getModel()
-        {
-            return $this->model;
-        }
-
-        public function setModel($model)
-        {
-            $this->model = $model;
-        }
 
         public function getAdditionalModel()
         {
@@ -76,6 +65,14 @@
         public function getModuleClassNames()
         {
             return array('ProjectsModule');
+        }
+
+        protected function getParamsForEmailSubject()
+        {
+            assert('$this->model instanceof Project');
+            assert('$this->additionalModel instanceof Task');
+            return array('{project}'         => strval($this->model),
+                         '{task}'            => strval($this->additionalModel));
         }
     }
 ?>
