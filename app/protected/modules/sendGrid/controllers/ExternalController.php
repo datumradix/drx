@@ -52,7 +52,7 @@
          */
         public function actionWriteLog($username)
         {
-            SendGridLogUtil::writeLog($username, 'php://input');
+            SendGridLogUtil::writeLog($username);
         }
     }
 ?>
