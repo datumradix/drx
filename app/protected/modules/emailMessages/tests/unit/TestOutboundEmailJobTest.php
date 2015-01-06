@@ -48,7 +48,6 @@
             Yii::app()->emailHelper->outboundPassword = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPassword'];
             Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundSecurity'];
             Yii::app()->emailHelper->setOutboundSettings();
-            Yii::app()->emailHelper->init();
         }
 
         public function setUp()

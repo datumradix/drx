@@ -144,7 +144,7 @@
 
         protected function loadOutboundSettings()
         {
-            $settings = self::getOutboundSettings();
+            $settings = $this->getOutboundSettings();
             foreach ($settings as $keyName => $keyValue)
             {
                 $this->$keyName = $keyValue;
@@ -272,7 +272,7 @@
          * Get outbound settings.
          * @return array
          */
-        public static function getOutboundSettings()
+        public function getOutboundSettings()
         {
             $settings = array();
             foreach (static::$settingsToLoad as $keyName)

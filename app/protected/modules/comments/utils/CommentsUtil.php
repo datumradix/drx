@@ -42,38 +42,20 @@
         /**
          * @param RedBeanModel $relatedModel
          * @param Comment $comment
-         * @param $senderPerson
          * @param array $peopleToSendNotification
          */
-        public static function sendNotificationOnNewComment(RedBeanModel $relatedModel, Comment $comment, $senderPerson, $peopleToSendNotification)
+        public static function sendNotificationOnNewComment(RedBeanModel $relatedModel, Comment $comment, $peopleToSendNotification)
         {
             if (count($peopleToSendNotification) > 0)
             {
-                $notificationSettingName = static::resolveOnNewCommentNotificationSettingNameByModel($relatedModel);
                 $notificationRulesClassName = static::resolveNotificationRulesClassByModel($relatedModel);
                 $rules = new $notificationRulesClassName();
-
                 foreach ($peopleToSendNotification as $people)
                 {
-
-                    if ($people->primaryEmail->emailAddress !== null &&
-                        UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($people, $notificationSettingName, 'email'))
-                    {
-                        $subject = self::getEmailSubject($relatedModel);
-                        $content = self::getEmailContent($relatedModel, $comment, $people);
-                        EmailNotificationUtil::resolveAndSendEmail($senderPerson, array($people), $subject, $content);
-                    }
-                    if ($people->primaryEmail->emailAddress !== null &&
-                        UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($people, $notificationSettingName, 'inbox'))
-                    {
-                        $rules->addUser($people);
-                    }
+                    $rules->addUser($people);
                 }
-                $peopleToSendNotificationOnly = $rules->getUsers();
-                if (count($peopleToSendNotificationOnly) > 0)
-                {
-                    static::sendNotificationWithoutEmail($rules, $comment);
-                }
+                $notificationMessage = static::createNotificationMessage($relatedModel, $comment);
+                NotificationsUtil::submit($notificationMessage, $rules);
             }
             else
             {
@@ -87,7 +69,7 @@
          * @param User $user
          * @return EmailMessageContent
          */
-        public static function getEmailContent(RedBeanModel $model, Comment $comment, User $user)
+        protected static function getEmailContent(RedBeanModel $model, Comment $comment, User $user)
         {
             $emailContent  = new EmailMessageContent();
             $url           = static::getUrlToEmail($model);
@@ -156,19 +138,42 @@
         }
 
         /**
-         * Send notification without email
-         * @param NotificationRules $rules
+         * Creates notification message for new comment
+         * @param $model
          * @param Comment $comment
-         * @return string
+         * @return NotificationMessage
          */
-        protected static function sendNotificationWithoutEmail(NotificationRules $rules, Comment $comment)
+        protected static function createNotificationMessage($model, Comment $comment)
         {
-            $textContent = $comment;
-            $htmlContent = $comment;
-            $notificationMessage                    = new NotificationMessage();
-            $notificationMessage->textContent       = $textContent;
-            $notificationMessage->htmlContent       = DataUtil::purifyHtml($htmlContent);
-            NotificationsUtil::submit($notificationMessage, $rules);
+            $notificationMessage  = new NotificationMessage();
+            $url           = static::getUrlToEmail($model);
+            $shortUrl      = ShortUrlUtil::createShortUrl($url);
+            $textContent   = Zurmo::t('CommentsModule', 'Hello, {lineBreak} {updaterName} added a new comment to the ' .
+                '{strongStartTag}{modelName}{strongEndTag}: {lineBreak}' .
+                '"{commentDescription}." {lineBreak}{lineBreak} {url} ',
+                array('{lineBreak}'           => "\n",
+                    '{strongStartTag}'      => null,
+                    '{strongEndTag}'        => null,
+                    '{updaterName}'         => strval($comment->createdByUser),
+                    '{modelName}'           => $model->getModelLabelByTypeAndLanguage(
+                        'SingularLowerCase'),
+                    '{commentDescription}'  => strval($comment),
+                    '{url}'                 => $shortUrl
+                ));
+            $notificationMessage->textContent  = $textContent;
+            $htmlContent = Zurmo::t('CommentsModule', 'Hello, {lineBreak} {updaterName} added a new comment to the ' .
+                '{strongStartTag}{url}{strongEndTag}: {lineBreak}' .
+                '"{commentDescription}."',
+                array('{lineBreak}'           => "<br/>",
+                    '{strongStartTag}'      => '<strong>',
+                    '{strongEndTag}'        => '</strong>',
+                    '{updaterName}'         => strval($comment->createdByUser),
+                    '{commentDescription}'  => strval($comment),
+                    '{url}'                 => ZurmoHtml::link($model->getModelLabelByTypeAndLanguage(
+                        'SingularLowerCase'), $url)
+                ));
+            $notificationMessage->htmlContent  = DataUtil::purifyHtml($htmlContent);
+            return $notificationMessage;
         }
 
         /**

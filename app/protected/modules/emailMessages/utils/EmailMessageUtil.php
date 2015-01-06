@@ -84,13 +84,23 @@
             {
                 static::attachFilesToMessage($postData['filesIds'], $emailMessageForm->getModel());
             }
-            $emailAccount                           = EmailAccount::getByUserAndName($userToSendMessagesFrom);
             $sender                                 = new EmailMessageSender();
+
+            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
+            if($sendGridPluginEnabled)
+            {
+                $emailAccount                       = SendGridEmailAccount::getByUserAndName($userToSendMessagesFrom);
+                $emailMessageForm->sendGridAccount  = $emailAccount;
+            }
+            else
+            {
+                $emailAccount                       = EmailAccount::getByUserAndName($userToSendMessagesFrom);
+                $emailMessageForm->account          = $emailAccount;
+            }
             $sender->fromName                       = $emailAccount->fromName;
             $sender->fromAddress                    = $emailAccount->fromAddress;
             $sender->personsOrAccounts->add($userToSendMessagesFrom);
             $emailMessageForm->sender               = $sender;
-            $emailMessageForm->account              = $emailAccount;
             $box                                    = EmailBoxUtil::getDefaultEmailBoxByUser($userToSendMessagesFrom);
             $emailMessageForm->folder               = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX);
             return $emailMessageForm;
