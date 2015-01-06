@@ -40,16 +40,15 @@
          * Write log for send
          * @param string $username
          */
-        public static function writeLog($username)
+        public static function writeLog($username, $rawData)
         {
             $logFile = static::getLogFilePath($username);
-            $fp = fopen($logFile, 'a+');
-            chmod($logFile, 0777);
-            flock($fp, LOCK_EX);
-            fwrite($fp, print_r($HTTP_RAW_POST_DATA, true));
-            flock($fp, LOCK_UN);
-            fclose($fp);
-            echo "ok";
+            $fp = @fopen($logFile, 'a+');
+            @chmod($logFile, 0777);
+            @flock($fp, LOCK_EX);
+            @fwrite($fp, print_r($rawData, true));
+            @flock($fp, LOCK_UN);
+            @fclose($fp);
         }
 
         /**
