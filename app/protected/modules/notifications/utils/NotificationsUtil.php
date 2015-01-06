@@ -193,13 +193,7 @@
             }
             foreach ($notifications as $notification)
             {
-                $notificationSettingName = static::resolveNotificationSettingNameFromType($notification->type);
-                if ($rules->allowSendingEmail() &&
-                    UserNotificationUtil::
-                    isEnabledByUserAndNotificationNameAndType($notification->owner, $notificationSettingName, 'email'))
-                {
-                    static::sendEmail($notification, $sendImmediately, $rules);
-                }
+                static::sendEmail($notification, $sendImmediately, $rules);
             }
         }
 
@@ -210,35 +204,31 @@
 
         protected static function sendEmail(Notification $notification, $sendImmediately, NotificationRules $rules)
         {
-            if ($notification->owner->primaryEmail->emailAddress != null)
-            {
-                $emailMessage               = static::makeEmailMessage();
-                $emailMessage->owner        = Yii::app()->user->userModel;
-                $emailMessage->subject      = static::getEmailSubject($notification, $rules);
-                $emailMessage->content      = static::makeEmailContent($notification);
-                $emailMessage->sender       = static::makeSender();
-                $emailMessage->recipients->add(static::makeRecipient($notification));
-                $box                        = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
-                $emailMessage->folder       = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
-                if (!$emailMessage->save())
-                {
-                    throw new FailedToSaveModelException();
-                }
-                try
-                {
-                    if ($sendImmediately)
-                    {
-                        Yii::app()->emailHelper->sendImmediately($emailMessage);
+            $notificationSettingName = static::resolveNotificationSettingNameFromType($notification->type);
+            if ($rules->allowSendingEmail() &&
+                UserNotificationUtil::
+                isEnabledByUserAndNotificationNameAndType($notification->owner, $notificationSettingName, 'email')) {
+                if ($notification->owner->primaryEmail->emailAddress != null) {
+                    $emailMessage = static::makeEmailMessage();
+                    $emailMessage->subject = static::getEmailSubject($notification, $rules);
+                    $emailMessage->content = static::makeEmailContent($notification);
+                    $emailMessage->sender = static::makeSender();
+                    $emailMessage->recipients->add(static::makeRecipient($notification));
+                    $box = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
+                    $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
+                    if (!$emailMessage->save()) {
+                        throw new FailedToSaveModelException();
                     }
-                    else
-                    {
-                        Yii::app()->emailHelper->send($emailMessage);
-                    }
+                    try {
+                        if ($sendImmediately) {
+                            Yii::app()->emailHelper->sendImmediately($emailMessage);
+                        } else {
+                            Yii::app()->emailHelper->send($emailMessage);
+                        }
 
-                }
-                catch (CException $e)
-                {
-                    //Not sure what to do yet when catching an exception here. Currently ignoring gracefully.
+                    } catch (CException $e) {
+                        //Not sure what to do yet when catching an exception here. Currently ignoring gracefully.
+                    }
                 }
             }
         }
@@ -303,7 +293,6 @@
          */
         protected static function makeEmailMessage()
         {
-            assert('is_string($action)');
             $emailMessage               = new EmailMessage();
             $emailMessage->owner        = Yii::app()->user->userModel;
             return $emailMessage;
