@@ -52,7 +52,7 @@
          */
         public function actionWriteLog($username)
         {
-            SendGridLogUtil::writeLog($username, $HTTP_RAW_POST_DATA);
+            SendGridLogUtil::writeLog($username, 'php://input');
         }
     }
 ?>
