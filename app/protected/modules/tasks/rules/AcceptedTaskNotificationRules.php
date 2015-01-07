@@ -64,5 +64,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when someone accepts a story that I own.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('TasksModule', 'ACCEPTED {relatedModel}: {task}', $this->getParamsForEmailSubject());
+        }
     }
 ?>

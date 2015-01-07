@@ -48,7 +48,8 @@
                                                         'contacts/external/',
                                                         'zurmo/imageModel/getImage/',
                                                         'zurmo/imageModel/getThumb/',
-                                                        'min/serve');
+                                                        'min/serve',
+                                                        'sendGrid/external/writeLog');
 
         public function handleLoadActivitiesObserver()
         {

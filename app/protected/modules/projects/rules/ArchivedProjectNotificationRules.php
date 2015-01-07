@@ -64,5 +64,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when a Project is archived.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('ProjectsModule', 'PROJECT: {project}', $this->getParamsForEmailSubject());
+        }
     }
 ?>

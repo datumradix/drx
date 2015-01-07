@@ -82,6 +82,18 @@
          */
         protected $canBeConfiguredByUser = true;
 
+        protected $model;
+
+        public function getModel()
+        {
+            return $this->model;
+        }
+
+        public function setModel($model)
+        {
+            $this->model = $model;
+        }
+
         /**
          * @returns Translated label that describes this rule type.
          */
@@ -228,6 +240,14 @@
             throw new NotImplementedException();
         }
 
+        /**
+         * The subject to be used in the email notification
+         * @throws NotImplementedException
+         */
+        public function getSubjectForEmailNotification()
+        {
+            throw new NotImplementedException();
+        }
 
         public function getDefaultValue($type)
         {
