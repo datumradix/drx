@@ -230,7 +230,7 @@
                                                                                 $notificationSettingName, 'email'))
             {
                 $emailMessage               = static::makeEmailMessage();
-                $emailMessage->subject      = static::getEmailSubject($rule, $action);
+                $emailMessage->subject      = static::getEmailSubject($notification, $rule);
                 $emailMessage->content      = static::makeEmailContent($notification);
                 $emailMessage->sender       = static::makeSender();
                 $emailMessage->recipients->add(static::makeRecipient($notification));
