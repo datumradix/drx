@@ -64,26 +64,13 @@
         public $fromAddress;
 
         /**
-         * Event webhook url.
-         * @var string
-         */
-        public $eventWebhookUrl;
-        /**
-         * Event webhook url.
-         * @var string
-         */
-        public $eventWebhookFilePath;
-
-        /**
          * Contains array of settings to load during initialization from the configuration table.
          * @see loadApiSettings
          * @var array
          */
         protected $settingsToLoad = array(
             'apiUsername',
-            'apiPassword',
-            'eventWebhookUrl',
-            'eventWebhookFilePath'
+            'apiPassword'
         );
 
         /**
