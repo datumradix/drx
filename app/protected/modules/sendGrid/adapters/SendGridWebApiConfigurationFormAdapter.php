@@ -48,8 +48,6 @@
             $form                                    = new SendGridWebApiConfigurationForm();
             $form->username                          = Yii::app()->sendGridEmailHelper->apiUsername;
             $form->password                          = Yii::app()->sendGridEmailHelper->apiPassword;
-            $form->eventWebhookUrl                   = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
-            $form->eventWebhookFilePath              = Yii::app()->sendGridEmailHelper->eventWebhookFilePath;
             return $form;
         }
 
@@ -61,8 +59,6 @@
         {
             Yii::app()->sendGridEmailHelper->apiUsername  = $form->username;
             Yii::app()->sendGridEmailHelper->apiPassword  = $form->password;
-            Yii::app()->sendGridEmailHelper->eventWebhookUrl  = $form->eventWebhookUrl;
-            Yii::app()->sendGridEmailHelper->eventWebhookFilePath  = $form->eventWebhookFilePath;
             Yii::app()->sendGridEmailHelper->setApiSettings();
        }
     }

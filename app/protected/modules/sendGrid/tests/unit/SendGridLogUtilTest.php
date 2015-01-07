@@ -33,41 +33,28 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
-
-    /**
-     * Form to all editing and viewing of mail related configuration values in the user interface.
-     */
-    class SendGridWebApiConfigurationForm extends ConfigurationForm
+    class SendGridLogUtilTest extends ZurmoBaseTest
     {
-        public $username;
-        public $password;
-        public $aTestToAddress;
-
-        /**
-         * @return array
-         */
-        public function rules()
+        public static function setUpBeforeClass()
         {
-            return array(
-                array('username, password', 'required'),
-                array('username',                          'type',      'type' => 'string'),
-                array('username',                          'length',    'min'  => 1, 'max' => 64),
-                array('password',                          'type',      'type' => 'string'),
-                array('password',                          'length',    'min'  => 1, 'max' => 64),
-                array('aTestToAddress',                    'email')
-            );
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
         }
 
-        /**
-         * @return array
-         */
-        public function attributeLabels()
+        public function setUp()
         {
-            return array(
-                'username'                             => Zurmo::t('ZurmoModule', 'Username'),
-                'password'                             => Zurmo::t('ZurmoModule', 'Password'),
-                'aTestToAddress'                       => Zurmo::t('SendGridModule', 'Send a test email to'),
-            );
+            parent::setUp();
+        }
+
+        public function testWriteLog()
+        {
+            $rawData = file_get_contents(dirname(__FILE__) . '/files/testsendgridwebhookdump.log');
+            SendGridLogUtil::writeLog('test', $rawData);
+            $logPath = SendGridLogUtil::getLogFilePath('test');
+            $this->assertTrue(file_exists($logPath));
+            $testContent = file_get_contents($logPath);
+            $this->assertEquals($rawData, $testContent);
+            @unlink($logPath);
         }
     }
 ?>

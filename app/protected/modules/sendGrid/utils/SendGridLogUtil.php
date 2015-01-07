@@ -34,40 +34,40 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Form to all editing and viewing of mail related configuration values in the user interface.
-     */
-    class SendGridWebApiConfigurationForm extends ConfigurationForm
+    class SendGridLogUtil
     {
-        public $username;
-        public $password;
-        public $aTestToAddress;
-
         /**
-         * @return array
+         * Write log for send
+         * @param string $apiUsername
          */
-        public function rules()
+        public static function writeLog($apiUsername, $rawData)
         {
-            return array(
-                array('username, password', 'required'),
-                array('username',                          'type',      'type' => 'string'),
-                array('username',                          'length',    'min'  => 1, 'max' => 64),
-                array('password',                          'type',      'type' => 'string'),
-                array('password',                          'length',    'min'  => 1, 'max' => 64),
-                array('aTestToAddress',                    'email')
-            );
+            $logFile = static::getLogFilePath($apiUsername);
+            $fp = fopen($logFile, 'a+');
+            if($fp)
+            {
+                if(empty($rawData))
+                {
+                    $rawData = CJSON::encode(array('data' => 'empty data'));
+                }
+                fwrite($fp, print_r($rawData, true));
+                fclose($fp);
+            }
         }
 
         /**
-         * @return array
+         * Get log file path.
+         * @param string $apiUsername
+         * @return string
          */
-        public function attributeLabels()
+        public static function getLogFilePath($apiUsername)
         {
-            return array(
-                'username'                             => Zurmo::t('ZurmoModule', 'Username'),
-                'password'                             => Zurmo::t('ZurmoModule', 'Password'),
-                'aTestToAddress'                       => Zurmo::t('SendGridModule', 'Send a test email to'),
-            );
+            $logDir = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs';
+            if(!file_exists($logDir))
+            {
+                mkdir($logDir);
+            }
+            return $logDir . DIRECTORY_SEPARATOR . $apiUsername . '-sendgrid.log';
         }
     }
 ?>
