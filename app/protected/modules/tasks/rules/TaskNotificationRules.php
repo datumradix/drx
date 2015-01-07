@@ -39,18 +39,6 @@
      */
     abstract class TaskNotificationRules extends NotificationRules
     {
-        protected $model;
-
-        public function getModel()
-        {
-            return $this->model;
-        }
-
-        public function setModel($model)
-        {
-            $this->model = $model;
-        }
-
         /**
          * @return The type of the NotificationRules
          */
@@ -65,6 +53,19 @@
         public function getModuleClassNames()
         {
             return array('TasksModule');
+        }
+
+        protected function getParamsForEmailSubject()
+        {
+            assert('$this->model instanceof Task');
+            $relatedModelStringValue = TasksUtil::resolveFirstRelatedModelStringValue($this->model);
+            if ($relatedModelStringValue != null)
+            {
+                $relatedModelStringValue = '(' . $relatedModelStringValue . ')';
+            }
+            $params = array('{task}'         => strval($this->model),
+                            '{relatedModel}' => $relatedModelStringValue);
+            return $params;
         }
     }
 ?>

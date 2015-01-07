@@ -64,5 +64,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me of new comments on Tasks for Projects I own.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('ProjectsModule', 'NEW COMMENT for TASK: {task}, PROJECT: {project}', $this->getParamsForEmailSubject());
+        }
     }
 ?>
