@@ -38,11 +38,11 @@
     {
         /**
          * Write log for send
-         * @param string $username
+         * @param string $apiUsername
          */
-        public static function writeLog($username, $rawData)
+        public static function writeLog($apiUsername, $rawData)
         {
-            $logFile = static::getLogFilePath($username);
+            $logFile = static::getLogFilePath($apiUsername);
             $fp = fopen($logFile, 'a+');
             if($fp)
             {
@@ -57,19 +57,17 @@
 
         /**
          * Get log file path.
-         * @param string $username
+         * @param string $apiUsername
+         * @return string
          */
-        public static function getLogFilePath($username)
+        public static function getLogFilePath($apiUsername)
         {
-            $basePath = Yii::app()->basePath;
-            $logDir   = dirname($basePath) . DIRECTORY_SEPARATOR . 'sendgridLogs';
-
-            //$logDir = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs';
+            $logDir = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs';
             if(!file_exists($logDir))
             {
                 mkdir($logDir);
             }
-            return $logDir . DIRECTORY_SEPARATOR . $username . '-sendgrid.log';
+            return $logDir . DIRECTORY_SEPARATOR . $apiUsername . '-sendgrid.log';
         }
     }
 ?>

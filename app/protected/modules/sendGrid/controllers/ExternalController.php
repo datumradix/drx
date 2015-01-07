@@ -41,6 +41,10 @@
             return array();
         }
 
+        /**
+         * @param CAction $action action to run
+         * @return boolean whether the action should be executed.
+         */
         public function beforeAction($action)
         {
             Yii::app()->user->userModel = BaseControlUserConfigUtil::getUserToRunAs();
@@ -49,6 +53,9 @@
 
         /**
          * Writes log.
+         * @param string $username Username for the sendgrid api
+         * @see Global configuration screen for sendgrid. The username there is what is being
+         * input here.
          */
         public function actionWriteLog($username)
         {
