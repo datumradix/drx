@@ -70,16 +70,22 @@
             $sendGridEmailAccounts = SendGridEmailAccount::getAll();
             foreach($sendGridEmailAccounts as $sendGridEmailAccount)
             {
-                if($sendGridEmailAccount->eventWebhookUrl != null)
+                $eventWebhookFilePath = SendGridLogUtil::getLogFilePath($sendGridEmailAccount->apiUsername);
+                if($eventWebhookFilePath != null)
                 {
-                    $this->processEventData($sendGridEmailAccount->eventWebhookUrl, $sendGridEmailAccount->eventWebhookFilePath);
+                    $this->processEventData($eventWebhookFilePath);
+                    @file_put_contents($eventWebhookFilePath, '');
                 }
             }
             //Global
-            $globalWebHookUrl = Yii::app()->sendGridEmailHelper->eventWebhookUrl;
-            if($globalWebHookUrl != null)
+            if(Yii::app()->sendGridEmailHelper->apiUsername != '')
             {
-                $this->processEventData($globalWebHookUrl, Yii::app()->sendGridEmailHelper->eventWebhookFilePath);
+                $globalWebHookFilePath = SendGridLogUtil::getLogFilePath(Yii::app()->sendGridEmailHelper->apiUsername);
+                if($globalWebHookFilePath != null)
+                {
+                    $this->processEventData($globalWebHookFilePath);
+                    @file_put_contents($globalWebHookFilePath, '');
+                }
             }
             return true;
         }
@@ -122,15 +128,14 @@
 
         /**
          * Process event data.
-         * @param string $eventWebhookUrl
          * @param string $eventWebhookFilePath
          * @return void
          */
-        protected function processEventData($eventWebhookUrl, $eventWebhookFilePath)
+        protected function processEventData($eventWebhookFilePath)
         {
-            if($eventWebhookUrl != null)
+            if($eventWebhookFilePath != null)
             {
-                $content = $this->resolveFileContent($eventWebhookUrl);
+                $content = $this->resolveFileContent($eventWebhookFilePath);
                 preg_match_all('/\[{(.*?)}\]/i', $content, $matches);
                 $data = array();
                 foreach($matches[1] as $string)
@@ -148,30 +153,7 @@
                         }
                     }
                 }
-                $this->deleteFileContent($eventWebhookFilePath);
             }
-        }
-
-        /**
-         * Deletes file content.
-         * @param string $eventWebhookFilePath
-         * @return void
-         */
-        protected function deleteFileContent($eventWebhookFilePath)
-        {
-            // Initialize cURL
-            $ch = curl_init();
-            // Set URL on which you want to post the Form and/or data
-            curl_setopt($ch, CURLOPT_URL, $eventWebhookFilePath);
-            // Set post to true
-            curl_setopt($ch, CURLOPT_POST, true);
-            // Data+Files to be posted
-            curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode(''));
-            // Pass TRUE or 1 if you want to wait for and catch the response against the request made
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,     array('Content-Type: text/plain'));
-            // Execute the request
-            $response = curl_exec($ch);
         }
 
         /**
@@ -194,12 +176,12 @@
 
         /**
          * Resolve file content.
-         * @param string $eventWebhookUrl
+         * @param string $eventWebhookFilePath
          * @return string
          */
-        protected function resolveFileContent($eventWebhookUrl)
+        protected function resolveFileContent($eventWebhookFilePath)
         {
-            return file_get_contents($eventWebhookUrl);
+            return file_get_contents($eventWebhookFilePath);
         }
 
         /**

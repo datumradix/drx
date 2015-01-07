@@ -34,43 +34,40 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * A  NotificationRules to manage when a new task is created
-     */
-    class NewTaskNotificationRules extends TaskNotificationRules
+    class SendGridLogUtil
     {
         /**
-         * @returns Translated label that describes this rule type.
+         * Write log for send
+         * @param string $apiUsername
          */
-        public function getDisplayName()
+        public static function writeLog($apiUsername, $rawData)
         {
-            return Zurmo::t('TasksModule', 'New Tasks');
+            $logFile = static::getLogFilePath($apiUsername);
+            $fp = fopen($logFile, 'a+');
+            if($fp)
+            {
+                if(empty($rawData))
+                {
+                    $rawData = CJSON::encode(array('data' => 'empty data'));
+                }
+                fwrite($fp, print_r($rawData, true));
+                fclose($fp);
+            }
         }
 
         /**
-         * @return The type of the NotificationRules
+         * Get log file path.
+         * @param string $apiUsername
+         * @return string
          */
-        public function getType()
+        public static function getLogFilePath($apiUsername)
         {
-            return 'NewTask';
-        }
-
-        public function getTooltipId()
-        {
-            return 'new-task-notification-tooltip';
-        }
-
-        public function getTooltipTitle()
-        {
-            return Zurmo::t('UsersModule', 'Notify me when I have a new Task assigned.');
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getSubjectForEmailNotification()
-        {
-            return Zurmo::t('TasksModule', 'ASSIGNMENT {relatedModel}: {task}', $this->getParamsForEmailSubject());
+            $logDir = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs';
+            if(!file_exists($logDir))
+            {
+                mkdir($logDir);
+            }
+            return $logDir . DIRECTORY_SEPARATOR . $apiUsername . '-sendgrid.log';
         }
     }
 ?>

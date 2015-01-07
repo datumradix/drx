@@ -57,7 +57,15 @@
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             if($sendGridPluginEnabled)
             {
-                $this->processEventData(dirname(__FILE__) . '/files/testsendgridwebhookdump.log', null);
+                $logPath = SendGridLogUtil::getLogFilePath('testemailjob');
+                if(file_exists($logPath))
+                {
+                    @file_put_contents($logPath, '');
+                }
+                $rawData = file_get_contents(dirname(__FILE__) . '/files/testsendgridwebhookdump.log');
+                SendGridLogUtil::writeLog('testemailjob', $rawData);
+                $this->processEventData($logPath);
+                @unlink($logPath);
             }
             return true;
         }
@@ -84,16 +92,6 @@
             $emailMessageActivity->quantity                = 10;
             $emailMessageActivity->save();
             return $emailMessageActivity;
-        }
-
-        /**
-         * Deletes file content.
-         * @param string $eventWebhookFilePath
-         * @return void
-         */
-        protected function deleteFileContent($eventWebhookFilePath)
-        {
-
         }
 
         /**

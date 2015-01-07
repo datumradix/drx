@@ -34,43 +34,32 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * A  NotificationRules to manage when a new task is created
-     */
-    class NewTaskNotificationRules extends TaskNotificationRules
+    class SendGridExternalController extends ZurmoModuleController
     {
-        /**
-         * @returns Translated label that describes this rule type.
-         */
-        public function getDisplayName()
+        public function filters()
         {
-            return Zurmo::t('TasksModule', 'New Tasks');
+            return array();
         }
 
         /**
-         * @return The type of the NotificationRules
+         * @param CAction $action action to run
+         * @return boolean whether the action should be executed.
          */
-        public function getType()
+        public function beforeAction($action)
         {
-            return 'NewTask';
-        }
-
-        public function getTooltipId()
-        {
-            return 'new-task-notification-tooltip';
-        }
-
-        public function getTooltipTitle()
-        {
-            return Zurmo::t('UsersModule', 'Notify me when I have a new Task assigned.');
+            Yii::app()->user->userModel = BaseControlUserConfigUtil::getUserToRunAs();
+            return parent::beforeAction($action);
         }
 
         /**
-         * @inheritdoc
+         * Writes log.
+         * @param string $username Username for the sendgrid api
+         * @see Global configuration screen for sendgrid. The username there is what is being
+         * input here.
          */
-        public function getSubjectForEmailNotification()
+        public function actionWriteLog($username)
         {
-            return Zurmo::t('TasksModule', 'ASSIGNMENT {relatedModel}: {task}', $this->getParamsForEmailSubject());
+            SendGridLogUtil::writeLog($username, file_get_contents("php://input"));
         }
     }
 ?>

@@ -64,5 +64,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when the owner changes on a task that I have requested.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('TasksModule', 'ASSIGNMENT {relatedModel}: {task}', $this->getParamsForEmailSubject());
+        }
     }
 ?>

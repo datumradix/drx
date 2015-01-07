@@ -33,44 +33,28 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
-
-    /**
-     * A  NotificationRules to manage when a new task is created
-     */
-    class NewTaskNotificationRules extends TaskNotificationRules
+    class SendGridLogUtilTest extends ZurmoBaseTest
     {
-        /**
-         * @returns Translated label that describes this rule type.
-         */
-        public function getDisplayName()
+        public static function setUpBeforeClass()
         {
-            return Zurmo::t('TasksModule', 'New Tasks');
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
         }
 
-        /**
-         * @return The type of the NotificationRules
-         */
-        public function getType()
+        public function setUp()
         {
-            return 'NewTask';
+            parent::setUp();
         }
 
-        public function getTooltipId()
+        public function testWriteLog()
         {
-            return 'new-task-notification-tooltip';
-        }
-
-        public function getTooltipTitle()
-        {
-            return Zurmo::t('UsersModule', 'Notify me when I have a new Task assigned.');
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getSubjectForEmailNotification()
-        {
-            return Zurmo::t('TasksModule', 'ASSIGNMENT {relatedModel}: {task}', $this->getParamsForEmailSubject());
+            $rawData = file_get_contents(dirname(__FILE__) . '/files/testsendgridwebhookdump.log');
+            SendGridLogUtil::writeLog('test', $rawData);
+            $logPath = SendGridLogUtil::getLogFilePath('test');
+            $this->assertTrue(file_exists($logPath));
+            $testContent = file_get_contents($logPath);
+            $this->assertEquals($rawData, $testContent);
+            @unlink($logPath);
         }
     }
 ?>
