@@ -64,5 +64,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when I have a new Task assigned.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('TasksModule', 'ASSIGNMENT {relatedModel}: {task}', $this->getParamsForEmailSubject());
+        }
     }
 ?>

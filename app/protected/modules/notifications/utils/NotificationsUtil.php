@@ -52,12 +52,7 @@
             {
                 throw new NotSupportedException();
             }
-            static::processNotification($message,
-                                        $rules->getType(),
-                                        $users,
-                                        $rules->allowDuplicates(),
-                                        $rules->allowSendingEmail(),
-                                        $rules->isCritical());
+            static::processNotification($message, $rules);
         }
 
         /**
@@ -164,25 +159,31 @@
             return $content;
         }
 
-        protected static function getEmailSubject()
+        protected static function getEmailSubject(Notification $notification, NotificationRules $rules)
         {
-            return Zurmo::t('NotificationsModule', 'You have a new notification');
+            try
+            {
+                $subject = $rules->getSubjectForEmailNotification();
+            }
+            catch (NotImplementedException $exception)
+            {
+                $subject = '';
+            }
+            if (!$subject)
+            {
+                $subject = strval($notification);
+            }
+            return $subject;
         }
 
-        protected static function processNotification(NotificationMessage $message, $type, $users,
-                                                      $allowDuplicates, $allowSendingEmail, $isCritical)
+        protected static function processNotification(NotificationMessage $message, NotificationRules $rules)
         {
-            assert('is_string($type) && $type != ""');
-            assert('is_array($users) && count($users) > 0');
-            assert('is_bool($allowDuplicates)');
-            assert('is_bool($allowSendingEmail)');
-            assert('is_bool($isCritical)');
-            if (!$allowSendingEmail)
+            $notifications = static::resolveAndGetNotifications($message, $rules);
+            if (!$rules->allowSendingEmail())
             {
                 return;
             }
-            $notifications = static::resolveAndGetNotifications($users, $type, $message, $allowDuplicates);
-            if (static::resolveShouldSendEmailIfCritical() && $isCritical)
+            if (static::resolveShouldSendEmailIfCritical() && $rules->isCritical())
             {
                 $sendImmediately = true;
             }
@@ -192,7 +193,7 @@
             }
             foreach ($notifications as $notification)
             {
-                static::sendEmail($notification, $sendImmediately);
+                static::sendEmail($notification, $sendImmediately, $rules);
             }
         }
 
@@ -201,79 +202,57 @@
             return true;
         }
 
-        protected static function sendEmail(Notification $notification, $sendImmediately)
+        protected static function sendEmail(Notification $notification, $sendImmediately, NotificationRules $rules)
         {
-            if ($notification->owner->primaryEmail->emailAddress != null &&
-                !UserConfigurationFormAdapter::resolveAndGetValue($notification->owner, 'turnOffEmailNotifications'))
-            {
-                $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
-                $emailMessage               = new EmailMessage();
-                $emailMessage->owner        = Yii::app()->user->userModel;
-                $emailMessage->subject      = strval($notification);
-                $emailContent               = new EmailMessageContent();
-                $emailContent->textContent  = EmailNotificationUtil::
-                                                resolveNotificationTextTemplate(
-                                                $notification->notificationMessage->textContent);
-                $emailContent->htmlContent  = EmailNotificationUtil::
-                                                resolveNotificationHtmlTemplate(
-                                                $notification->notificationMessage->htmlContent);
-                $emailMessage->content      = $emailContent;
-                $sender                     = new EmailMessageSender();
-                $sender->fromAddress        = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
-                $sender->fromName           = strval($userToSendMessagesFrom);
-                $emailMessage->sender       = $sender;
-                $recipient                  = new EmailMessageRecipient();
-                $recipient->toAddress       = $notification->owner->primaryEmail->emailAddress;
-                $recipient->toName          = strval($notification->owner);
-                $recipient->type            = EmailMessageRecipient::TYPE_TO;
-                $recipient->personsOrAccounts->add($notification->owner);
-                $emailMessage->recipients->add($recipient);
-                $box                        = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
-                $emailMessage->folder       = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
-                if (!$emailMessage->save())
-                {
-                    throw new FailedToSaveModelException();
-                }
-                try
-                {
-                    if ($sendImmediately)
-                    {
-                        Yii::app()->emailHelper->sendImmediately($emailMessage);
+            $notificationSettingName = static::resolveNotificationSettingNameFromType($notification->type);
+            if ($rules->allowSendingEmail() &&
+                UserNotificationUtil::
+                isEnabledByUserAndNotificationNameAndType($notification->owner, $notificationSettingName, 'email')) {
+                if ($notification->owner->primaryEmail->emailAddress != null) {
+                    $emailMessage = static::makeEmailMessage();
+                    $emailMessage->subject = static::getEmailSubject($notification, $rules);
+                    $emailMessage->content = static::makeEmailContent($notification);
+                    $emailMessage->sender = static::makeSender();
+                    $emailMessage->recipients->add(static::makeRecipient($notification));
+                    $box = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
+                    $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
+                    if (!$emailMessage->save()) {
+                        throw new FailedToSaveModelException();
                     }
-                    else
-                    {
-                        Yii::app()->emailHelper->send($emailMessage);
-                    }
+                    try {
+                        if ($sendImmediately) {
+                            Yii::app()->emailHelper->sendImmediately($emailMessage);
+                        } else {
+                            Yii::app()->emailHelper->send($emailMessage);
+                        }
 
-                }
-                catch (CException $e)
-                {
-                    //Not sure what to do yet when catching an exception here. Currently ignoring gracefully.
+                    } catch (CException $e) {
+                        //Not sure what to do yet when catching an exception here. Currently ignoring gracefully.
+                    }
                 }
             }
         }
 
         /**
          * Resolve and get notifications
-         * @param array $users
-         * @param string $type
          * @param NotificationMessage $message
-         * @param bool $allowDuplicates
+         * @param $rules
+         * @throws NotSupportedException
          * @return Notification
          */
-        protected static function resolveAndGetNotifications($users, $type, NotificationMessage $message, $allowDuplicates)
+        protected static function resolveAndGetNotifications(NotificationMessage $message, NotificationRules $rules)
         {
             $notifications = array();
-            foreach ($users as $user)
+            foreach ($rules->getUsers() as $user)
             {
                 //todo: !!!process duplication check
-                if ($allowDuplicates || Notification::getCountByTypeAndUser($type, $user) == 0)
+                if ($rules->allowDuplicates() || Notification::getCountByTypeAndUser($rules->getType(), $user) == 0)
                 {
                     $notification                      = new Notification();
                     $notification->owner               = $user;
-                    $notification->type                = $type;
+                    $notification->type                = $rules->getType();
                     $notification->notificationMessage = $message;
-                    $notificationSettingName = static::resolveNotificationSettingNameFromType($type);
+                    $notificationSettingName = static::resolveNotificationSettingNameFromType($rules->getType());
                     if (static::resolveToSaveNotification() &&
                         UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($user, $notificationSettingName, 'inbox'))
                     {
@@ -307,6 +286,58 @@
         {
             assert('is_string($type) && $type != ""');
             return 'enable'.$type.'Notification';
+        }
+
+        /**
+         * @return EmailMessage
+         */
+        protected static function makeEmailMessage()
+        {
+            $emailMessage               = new EmailMessage();
+            $emailMessage->owner        = Yii::app()->user->userModel;
+            return $emailMessage;
+        }
+
+        /**
+         * @return EmailMessageSender
+         */
+        protected static function makeSender()
+        {
+            $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
+            $sender                     = new EmailMessageSender();
+            $sender->fromAddress        = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
+            $sender->fromName           = strval($userToSendMessagesFrom);
+            return $sender;
+        }
+
+        /**
+         * @param Notification $notification
+         * @return EmailMessageRecipient
+         */
+        protected static function makeRecipient(Notification $notification)
+        {
+            $recipient                  = new EmailMessageRecipient();
+            $recipient->toAddress       = $notification->owner->primaryEmail->emailAddress;
+            $recipient->toName          = strval($notification->owner);
+            $recipient->type            = EmailMessageRecipient::TYPE_TO;
+            $recipient->personsOrAccounts->add($notification->owner);
+            return $recipient;
+        }
+
+        /**
+         * @param Notification $notification
+         * @return EmailMessageContent
+         */
+        protected static function makeEmailContent(Notification $notification)
+        {
+            $emailContent               = new EmailMessageContent();
+            $emailContent->textContent  = EmailNotificationUtil::
+            resolveNotificationTextTemplate(
+                $notification->notificationMessage->textContent, $notification->owner);
+            $emailContent->htmlContent  = EmailNotificationUtil::
+            resolveNotificationHtmlTemplate(
+                $notification->notificationMessage->htmlContent, $notification->owner);
+            return $emailContent;
         }
     }
 ?>
