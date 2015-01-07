@@ -42,11 +42,14 @@
          */
         public static function writeLog($username, $rawData)
         {
-            //$logFile = static::getLogFilePath($username);
-            $logFile = 'http://ushainformatique.info/sendgrid.log';
+            $logFile = static::getLogFilePath($username);
             $fp = fopen($logFile, 'a+');
             if($fp)
             {
+                if(empty($rawData))
+                {
+                    $rawData = CJSON::encode(array('data' => 'empty data'));
+                }
                 fwrite($fp, print_r($rawData, true));
                 fclose($fp);
             }
