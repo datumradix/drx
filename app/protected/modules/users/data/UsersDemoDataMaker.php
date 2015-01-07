@@ -60,7 +60,7 @@
             $super->primaryEmail = $email;
             $saved               = $super->save();
             assert('$saved');
-            UserNotificationUtil::setNotificationSettingsAllDisabledForUser($super);
+            UserNotificationUtil::setEmailNotificationSettingsAllDisabledForUser($super);
 
             $userAvatarForm             = new UserAvatarForm($super);
             $userAvatarForm->avatarType = User::AVATAR_TYPE_PRIMARY_EMAIL;
@@ -80,7 +80,7 @@
             $user->setPassword($user->username);
             $saved                    = $user->save();
             assert('$saved');
-            UserNotificationUtil::setNotificationSettingsAllDisabledForUser($user);
+            UserNotificationUtil::setEmailNotificationSettingsAllDisabledForUser($user);
 
             $userAvatarForm             = new UserAvatarForm($user);
             $userAvatarForm->avatarType = User::AVATAR_TYPE_PRIMARY_EMAIL;
@@ -116,7 +116,7 @@
                 $user->lastLoginDateTime  = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
                 $saved                    = $user->save();
                 assert('$saved');
-                UserNotificationUtil::setNotificationSettingsAllDisabledForUser($user);
+                UserNotificationUtil::setEmailNotificationSettingsAllDisabledForUser($user);
 
                 $userAvatarForm             = new UserAvatarForm($user);
                 $userAvatarForm->avatarType = User::AVATAR_TYPE_PRIMARY_EMAIL;
