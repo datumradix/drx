@@ -62,7 +62,7 @@
         public static function getLogFilePath($username)
         {
             $basePath = Yii::app()->basePath;
-            $logDir   = dirname(dirname($basePath)) . DIRECTORY_SEPARATOR . 'sendgridLogs';
+            $logDir   = dirname($basePath) . DIRECTORY_SEPARATOR . 'sendgridLogs';
 
             //$logDir = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs';
             if(!file_exists($logDir))
