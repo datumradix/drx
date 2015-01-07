@@ -73,6 +73,11 @@
             return $metadata;
         }
 
+        protected function getFormLayoutMetadata()
+        {
+            return self::getDefaultMetadata();
+        }
+
         protected function getNewModelTitleLabel()
         {
             return null;
