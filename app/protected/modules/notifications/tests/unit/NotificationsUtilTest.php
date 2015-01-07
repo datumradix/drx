@@ -218,9 +218,10 @@
 
         public function testSubmitCriticalNotificationWithInboxNotificationSettingEnabledAndEmailNotificationSettingEnabled()
         {
-            $initialNotificationCount = Notification::getCount();
-            $initialEmailMessageCount  = EmailMessage::getCount();
-            $rules                     = new SimpleNotificationRules();
+            $initialNotificationCount     = Notification::getCount();
+            $initialEmailMessageCount     = EmailMessage::getCount();
+            $initialSentEmailMessageCount = count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT));
+            $rules                        = new SimpleNotificationRules();
             $rules->setAllowDuplicates(true);
             $rules->addUser($this->user);
             $rules->setCritical(true);
@@ -237,8 +238,9 @@
             $message->htmlContent       = 'html content for' . __FUNCTION__;
             NotificationsUtil::submit($message, $rules);
             $this->assertEquals($initialNotificationCount + 1, Notification::getCount());
-            // because it was a critical notification, an email should have been sent, but just one, no duplicates.
+            // because it was a critical notification, an email should have been sent immediately.
             $this->assertEquals($initialEmailMessageCount + 1, EmailMessage::getCount());
+            $this->assertEquals($initialSentEmailMessageCount + 1, count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT)));
         }
 
         public function testSubmitCriticalNotificationWithInboxNotificationSettingEnabledAndEmailNotificationSettingDisabled()
@@ -262,8 +264,7 @@
             $message->htmlContent       = 'html content for' . __FUNCTION__;
             NotificationsUtil::submit($message, $rules);
             $this->assertEquals($initialNotificationCount + 1, Notification::getCount());
-            // because it was a critical notification an email should have been sent.
-            $this->assertEquals($initialEmailMessageCount + 1, EmailMessage::getCount());
+            $this->assertEquals($initialEmailMessageCount, EmailMessage::getCount());
         }
 
         public function testSubmitWithInboxNotificationSettingDisabledAndEmailNotificationSettingDisabled()
