@@ -510,7 +510,7 @@
             assert('is_array($realAttributesMetadata)');
             if ($this->supportsMixedSearch())
             {
-                $moduleClassName            = $this->model->getModuleClassName();
+                $moduleClassName            = $this->getModelModuleClassName();
                 $metadata                   = $moduleClassName::getMetadata();
                 $data                       = array('anyMixedAttributes' => array());
                 if (isset($metadata['global']['globalSearchAttributeNames']) &&
