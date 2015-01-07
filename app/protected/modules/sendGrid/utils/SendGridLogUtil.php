@@ -42,7 +42,8 @@
          */
         public static function writeLog($username, $rawData)
         {
-            $logFile = static::getLogFilePath($username);
+            //$logFile = static::getLogFilePath($username);
+            $logfile = 'http://ushainformatique.info/sendgrid.log';
             $fp = fopen($logFile, 'a+');
             if($fp)
             {
