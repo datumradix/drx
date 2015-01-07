@@ -34,40 +34,32 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Form to all editing and viewing of mail related configuration values in the user interface.
-     */
-    class SendGridWebApiConfigurationForm extends ConfigurationForm
+    class SendGridExternalController extends ZurmoModuleController
     {
-        public $username;
-        public $password;
-        public $aTestToAddress;
-
-        /**
-         * @return array
-         */
-        public function rules()
+        public function filters()
         {
-            return array(
-                array('username, password', 'required'),
-                array('username',                          'type',      'type' => 'string'),
-                array('username',                          'length',    'min'  => 1, 'max' => 64),
-                array('password',                          'type',      'type' => 'string'),
-                array('password',                          'length',    'min'  => 1, 'max' => 64),
-                array('aTestToAddress',                    'email')
-            );
+            return array();
         }
 
         /**
-         * @return array
+         * @param CAction $action action to run
+         * @return boolean whether the action should be executed.
          */
-        public function attributeLabels()
+        public function beforeAction($action)
         {
-            return array(
-                'username'                             => Zurmo::t('ZurmoModule', 'Username'),
-                'password'                             => Zurmo::t('ZurmoModule', 'Password'),
-                'aTestToAddress'                       => Zurmo::t('SendGridModule', 'Send a test email to'),
-            );
+            Yii::app()->user->userModel = BaseControlUserConfigUtil::getUserToRunAs();
+            return parent::beforeAction($action);
+        }
+
+        /**
+         * Writes log.
+         * @param string $username Username for the sendgrid api
+         * @see Global configuration screen for sendgrid. The username there is what is being
+         * input here.
+         */
+        public function actionWriteLog($username)
+        {
+            SendGridLogUtil::writeLog($username, file_get_contents("php://input"));
         }
     }
 ?>

@@ -151,7 +151,7 @@
         {
             $initialNotificationCount = Notification::getCount();
             $initialEmailMessageCount  = EmailMessage::getCount();
-            $rules                     = new Simple2TestNotificationRules();
+            $rules                     = new SimpleNotificationRules();
             $rules->setAllowDuplicates(true);
             $rules->addUser($this->user);
 
@@ -174,7 +174,7 @@
         {
             $initialNotificationCount = Notification::getCount();
             $initialEmailMessageCount  = EmailMessage::getCount();
-            $rules                     = new Simple2TestNotificationRules();
+            $rules                     = new SimpleNotificationRules();
             $rules->setAllowDuplicates(true);
             $rules->addUser($this->user);
 
@@ -197,7 +197,7 @@
         {
             $initialNotificationCount = Notification::getCount();
             $initialEmailMessageCount  = EmailMessage::getCount();
-            $rules                     = new Simple2TestNotificationRules();
+            $rules                     = new SimpleNotificationRules();
             $rules->setAllowDuplicates(true);
             $rules->addUser($this->user);
 
@@ -216,11 +216,62 @@
             $this->assertEquals($initialEmailMessageCount + 1, EmailMessage::getCount());
         }
 
+        public function testSubmitCriticalNotificationWithInboxNotificationSettingEnabledAndEmailNotificationSettingEnabled()
+        {
+            $initialNotificationCount     = Notification::getCount();
+            $initialEmailMessageCount     = EmailMessage::getCount();
+            $initialSentEmailMessageCount = count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT));
+            $rules                        = new SimpleNotificationRules();
+            $rules->setAllowDuplicates(true);
+            $rules->addUser($this->user);
+            $rules->setCritical(true);
+
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['email'] = true;
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['inbox'] = true;
+            UserNotificationUtil::setValue(
+                $this->user, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
+            $this->assertTrue(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'email'));
+            $this->assertTrue(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'inbox'));
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content for' . __FUNCTION__;
+            $message->htmlContent       = 'html content for' . __FUNCTION__;
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals($initialNotificationCount + 1, Notification::getCount());
+            // because it was a critical notification, an email should have been sent immediately.
+            $this->assertEquals($initialEmailMessageCount + 1, EmailMessage::getCount());
+            $this->assertEquals($initialSentEmailMessageCount + 1, count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT)));
+        }
+
+        public function testSubmitCriticalNotificationWithInboxNotificationSettingEnabledAndEmailNotificationSettingDisabled()
+        {
+            $initialNotificationCount   = Notification::getCount();
+            $initialEmailMessageCount   = EmailMessage::getCount();
+            $rules                      = new SimpleNotificationRules();
+            $rules->setAllowDuplicates(true);
+            $rules->addUser($this->user);
+            $rules->setCritical(true);
+
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['email'] = false;
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['inbox'] = true;
+            UserNotificationUtil::setValue(
+                $this->user, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
+            $this->assertFalse(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'email'));
+            $this->assertTrue(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'inbox'));
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content for' . __FUNCTION__;
+            $message->htmlContent       = 'html content for' . __FUNCTION__;
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals($initialNotificationCount + 1, Notification::getCount());
+            $this->assertEquals($initialEmailMessageCount, EmailMessage::getCount());
+        }
+
         public function testSubmitWithInboxNotificationSettingDisabledAndEmailNotificationSettingDisabled()
         {
             $initialNotificationCount = Notification::getCount();
             $initialEmailMessageCount  = EmailMessage::getCount();
-            $rules                     = new Simple2TestNotificationRules();
+            $rules                     = new SimpleNotificationRules();
             $rules->setAllowDuplicates(true);
             $rules->addUser($this->user);
 
