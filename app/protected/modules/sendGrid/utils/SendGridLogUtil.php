@@ -57,8 +57,7 @@
          */
         public static function getLogFilePath($username)
         {
-            //$logDir = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs';
-            $logDir = '/public_html/ushainformatique.info/sendgridLogs';
+            $logDir = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs';
             if(!file_exists($logDir))
             {
                 mkdir($logDir);
