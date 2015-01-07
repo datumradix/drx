@@ -54,7 +54,7 @@
             return $this->title;
         }
 
-        public static function getDefaultMetadata()
+        public static function getMetadata()
         {
             $metadata = array(
                 'global' => array(
@@ -75,7 +75,7 @@
 
         protected function getFormLayoutMetadata()
         {
-            return self::getDefaultMetadata();
+            return self::getMetadata();
         }
 
         protected function getNewModelTitleLabel()
