@@ -42,16 +42,19 @@
          */
         public static function writeLog($apiUsername, $rawData)
         {
-            $logFile = static::getLogFilePath($apiUsername);
-            $fp = fopen($logFile, 'a+');
-            if($fp)
+            if(self::validateRawData($rawData))
             {
-                if(empty($rawData))
+                $logFile = static::getLogFilePath($apiUsername);
+                $fp = fopen($logFile, 'a+');
+                if($fp)
                 {
-                    $rawData = CJSON::encode(array('data' => 'empty data'));
+                    if(empty($rawData))
+                    {
+                        $rawData = CJSON::encode(array('data' => 'empty data'));
+                    }
+                    fwrite($fp, print_r($rawData, true));
+                    fclose($fp);
                 }
-                fwrite($fp, print_r($rawData, true));
-                fclose($fp);
             }
         }
 
@@ -68,6 +71,24 @@
                 mkdir($logDir);
             }
             return $logDir . DIRECTORY_SEPARATOR . $apiUsername . '-sendgrid.log';
+        }
+
+        /**
+         * Validates raw data.
+         * @param array $rawData
+         */
+        public static function validateRawData($rawData)
+        {
+            $jsonData = json_decode($rawData);
+            $object   = $jsonData[0];
+            if(property_exists($object, 'zurmoToken'))
+            {
+                if($object->zurmoToken == md5(ZURMO_TOKEN))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 ?>
