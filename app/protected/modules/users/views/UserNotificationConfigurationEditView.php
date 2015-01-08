@@ -54,7 +54,7 @@
             return $this->title;
         }
 
-        public static function getMetadata()
+        public static function getMetadata(User $user = null)
         {
             $metadata = array(
                 'global' => array(
