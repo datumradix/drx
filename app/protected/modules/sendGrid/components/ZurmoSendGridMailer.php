@@ -119,8 +119,10 @@
                    setSubject($emailMessage->subject)->
                    setText($emailMessage->content->textContent)->
                    setHtml($emailMessage->content->htmlContent)->
+                   addUniqueArg("zurmoToken", md5(ZURMO_TOKEN))->
                    addHeader('X-Sent-Using', 'SendGrid-API')->
                    addHeader('X-Transport', 'web');
+                   
             //Check if campaign and if yes, associate to email.
             if($itemData != null)
             {
