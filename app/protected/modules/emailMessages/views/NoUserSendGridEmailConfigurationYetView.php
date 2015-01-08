@@ -35,44 +35,20 @@
      ********************************************************************************/
 
     /**
-     * Filter used by user controller to ascertain whether the user's email settings has been configured or not.
-     * If not, then the user is instructed to set this up first before they can send email from the system.
+     * View for showing in the user interface when the user does not have a valid sendgrid email configuration.  This needs to be
+     * configured first before a user can send email from the application.
      */
-    class UserEmailConfigurationCheckControllerFilter extends CFilter
+    class NoUserSendGridEmailConfigurationYetView extends NoUserEmailConfigurationYetView
     {
-        public $controller;
-
-        protected function preFilter($filterChain)
+        protected function getMessageContent()
         {
-            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
-            try
-            {
-                if($sendGridPluginEnabled)
-                {
-                    SendGridEmailAccount::getByUserAndName(Yii::app()->user->userModel, null);
-                }
-                else
-                {
-                    EmailAccount::getByUserAndName(Yii::app()->user->userModel);
-                }
-            }
-            catch (NotFoundException $e)
-            {
-                $redirectUrl = Yii::app()->request->getParam('redirectUrl');
-                if($sendGridPluginEnabled)
-                {
-                    $messageView = new NoUserSendGridEmailConfigurationYetView($redirectUrl);
-                }
-                else
-                {
-                    $messageView = new NoUserEmailConfigurationYetView($redirectUrl);
-                }
-                $view        = new ModalView($this->controller, $messageView);
-                Yii::app()->getClientScript()->setToAjaxMode();
-                echo $view->render();
-                return false;
-            }
-            return true;
+            return Zurmo::t('EmailMessagesModule', '<h2>Not so fast</h2>' .
+                                     '<div class="large-icon"></div><p>Configure your sendgrid email settings before you can send emails.</p>');
+        }
+
+        protected function resolveUrl()
+        {
+            return '/users/default/sendGridConfiguration';
         }
     }
 ?>

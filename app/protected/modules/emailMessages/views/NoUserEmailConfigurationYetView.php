@@ -51,7 +51,7 @@
         protected function renderContent()
         {
             $params  = array('label' => $this->getCreateLinkDisplayLabel());
-            $url     = Yii::app()->createUrl('/users/default/emailConfiguration',
+            $url     = Yii::app()->createUrl($this->resolveUrl(),
                                              array('id' => Yii::app()->user->userModel->id, 'redirectUrl' => $this->redirectUrl));
             $content = '<div class="' . $this->getIconName() . '">';
             $content .= $this->getMessageContent();
@@ -74,6 +74,11 @@
         {
             return Zurmo::t('EmailMessagesModule', '<h2>Not so fast</h2>' .
                                      '<div class="large-icon"></div><p>Configure your email settings before you can send emails.</p>');
+        }
+
+        protected function resolveUrl()
+        {
+            return '/users/default/emailConfiguration';
         }
     }
 ?>
