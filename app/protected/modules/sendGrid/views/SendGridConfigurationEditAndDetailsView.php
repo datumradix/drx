@@ -100,5 +100,16 @@
             );
             return $metadata;
         }
+
+        protected function beforeRenderingFormLayout()
+        {
+            $baseUrl = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog');
+            $url   = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog', array('username' => $this->model->username));
+            $url   = ZurmoHtml::tag('div', array('id' => 'eventWebhookUrl'), $url);
+            $label = ZurmoHtml::label(Zurmo::t('SendGridModule', 'Event Webhook Url'), 'eventWebhookUrl');
+            $text  = ZurmoHtml::tag('div', array('id' => 'eventWebhookContainer'), $label . ' ' . $url);
+            SendGridUtil::registerEventWebhookUrlScript('SendGridWebApiConfigurationForm_username', $baseUrl);
+            return $text;
+        }
     }
 ?>
