@@ -40,6 +40,9 @@
      */
     class EmailMessageUtil
     {
+        const OUTBOUND_GLOBAL_SETTINGS = 1;
+        const OUTBOUND_PERSONAL_SMTP_SETTINGS = 2;
+        const OUTBOUND_PERSONAL_SENDGRID_SETTINGS = 3;
         /**
          * Given post data and an email message, populate the sender and account on the email message if possible.
          * Also add message recipients and any attachments.

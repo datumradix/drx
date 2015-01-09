@@ -34,74 +34,51 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Use this form when creating or modifying a user's email account information
-     */
-    class UserEmailConfigurationForm extends ModelForm
+    class SendGridUtil
     {
-        public $aTestToAddress;
-
-        public $emailSignatureHtmlContent;
-
-        public $userSendGridConfigurationForm;
-
-        protected static function getRedBeanModelClassName()
-        {
-            return 'EmailAccount';
-        }
-
-        public function __construct(EmailAccount $model)
-        {
-            $this->model = $model;
-        }
-
-        public function rules()
-        {
-            return array(
-                array('aTestToAddress',                    'email'),
-                array('emailSignatureHtmlContent', 'type', 'type' => 'string'),
-                array('userSendGridConfigurationForm', 'validateUserSendGridConfigurationForm')
-            );
-        }
-
-        public function attributeLabels()
-        {
-            return array_merge($this->model->attributeLabels(), array(
-                'aTestToAddress'            => Zurmo::t('EmailMessagesModule', 'Send a test email to'),
-                'emailSignatureHtmlContent' => Zurmo::t('EmailMessagesModule', 'Email Signature')
-            ));
-        }
-
         /**
-         * Save the emailSignatureHtmlContent
+         * Send Test Message
+         * @param SendGridWebApiConfigurationForm $configurationForm
+         * @param string $fromNameToSendMessagesFrom
+         * @param string $fromAddressToSendMessagesFrom
          */
-        public function save($runValidation = true, array $attributeNames = null)
+        public static function sendTestMessage($configurationForm,
+                                               $fromNameToSendMessagesFrom = null,
+                                               $fromAddressToSendMessagesFrom = null)
         {
-            if (parent::save(false))
+            if ($configurationForm->aTestToAddress != null)
             {
-                $emailSignature              = $this->model->user->getEmailSignature();
-                $emailSignature->htmlContent = $this->emailSignatureHtmlContent;
-                $this->model->user->save();
+                $sendGridEmailAccount         = new SendGridEmailAccount();
+                $sendGridEmailAccount->apiUsername     = $configurationForm->username;
+                $sendGridEmailAccount->apiPassword     = ZurmoPasswordSecurityUtil::encrypt($configurationForm->password);
+                $isUser = false;
+                if ($fromNameToSendMessagesFrom != null && $fromAddressToSendMessagesFrom != null)
+                {
+                    $isUser                 = true;
+                    $from = array(
+                        'name'      => $fromNameToSendMessagesFrom,
+                        'address'   => $fromAddressToSendMessagesFrom
+                    );
+                }
+                else
+                {
+                    $user                   = BaseControlUserConfigUtil::getUserToRunAs();
+                    $userToSendMessagesFrom = User::getById((int)$user->id);
+                    $from = array(
+                        'name'      => strval($userToSendMessagesFrom),
+                        'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom)
+                    );
+                }
+                $emailMessage = EmailMessageHelper::processAndCreateEmailMessage($from, $configurationForm->aTestToAddress);
+                $mailer       = new ZurmoSendGridMailer($emailMessage, $sendGridEmailAccount);
+                $emailMessage = $mailer->sendTestEmail($isUser);
+                $messageContent  = EmailHelper::prepareMessageContent($emailMessage);
             }
             else
             {
-                return false;
+                $messageContent = Zurmo::t('EmailMessagesModule', 'A test email address must be entered before you can send a test email.') . "\n";
             }
-            return true;
-        }
-
-        /**
-         * Check the type for UserSendGridConfigurationForm
-         * @param string $attribute
-         * @param array $params
-         */
-        public function validateUserSendGridConfigurationForm($attribute, $params)
-        {
-            if($this->userSendGridConfigurationForm instanceof UserSendGridConfigurationForm)
-            {
-                return true;
-            }
-            return false;
+            return $messageContent;
         }
     }
 ?>

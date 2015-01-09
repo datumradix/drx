@@ -527,30 +527,46 @@
             $userEmailConfigurationForm = new UserEmailConfigurationForm($emailAccount);
             $userEmailConfigurationForm->emailSignatureHtmlContent = $user->getEmailSignature()->htmlContent;
             $postVariableName           = get_class($userEmailConfigurationForm);
-
+            //Set sendfird form
+            $sendGridEmailAccount = SendGridEmailAccount::resolveAndGetByUserAndName($user);
+            $userSendGridConfigurationForm = new UserSendGridConfigurationForm($sendGridEmailAccount);
+            $userEmailConfigurationForm->userSendGridConfigurationForm = $userSendGridConfigurationForm;
             if (isset($_POST[$postVariableName]))
             {
-                $userEmailConfigurationForm->setAttributes($_POST[$postVariableName]);
-                if ($userEmailConfigurationForm->validate())
-                {
-                    $userEmailConfigurationForm->save();
-                    Yii::app()->user->setFlash('notification',
-                        Zurmo::t('UsersModule', 'User email configuration saved successfully.')
-                    );
 
-                    if ($redirectUrl != null)
+                    $userEmailConfigurationForm->setAttributes($_POST[$postVariableName]);
+                    if ($userEmailConfigurationForm->validate())
                     {
-                        $this->redirect($redirectUrl);
+                        $userEmailConfigurationForm->save();
+                        if($userEmailConfigurationForm->useCustomOutboundSettings == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
+                        {
+                            $_POST['UserSendGridConfigurationForm']['fromName'] = $_POST[$postVariableName]['fromName'];
+                            $_POST['UserSendGridConfigurationForm']['fromAddress'] = $_POST[$postVariableName]['fromAddress'];
+                            $_POST['UserSendGridConfigurationForm']['replyToAddress'] = $_POST[$postVariableName]['replyToAddress'];
+                            $userSendGridConfigurationForm = $this->processSendGridPostConfiguration($id, $redirectUrl);
+                            $userEmailConfigurationForm->userSendGridConfigurationForm = $userSendGridConfigurationForm;
+                        }
+                        else
+                        {
+                            Yii::app()->user->setFlash('notification',
+                                Zurmo::t('UsersModule', 'User email configuration saved successfully.')
+                            );
+
+                            if ($redirectUrl != null)
+                            {
+                                $this->redirect($redirectUrl);
+                            }
+                            else
+                            {
+                                $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
+                            }
+                        }
                     }
                     else
                     {
-                        $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
+                        $userEmailConfigurationForm->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($userEmailConfigurationForm->outboundPassword);
                     }
-                }
-                else
-                {
-                    $userEmailConfigurationForm->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($userEmailConfigurationForm->outboundPassword);
-                }
+
             }
             $titleBarAndEditView = new UserActionBarAndEmailConfigurationEditView(
                                     $this->getId(),
@@ -742,12 +758,10 @@
          * @param string $redirectUrl
          * @return void
          */
-        public function actionSendGridConfiguration($id, $redirectUrl = null)
+        protected function processSendGridPostConfiguration($id, $redirectUrl = null)
         {
             SendGridAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
             $user                           = User::getById(intval($id));
-            $title                          = Zurmo::t('SendGridModule', 'SendGrid Configuration');
-            $breadCrumbLinks                = array(strval($user) => array('default/details',  'id' => $id), $title);
             $emailAccount                   = SendGridEmailAccount::resolveAndGetByUserAndName($user);
             $userSendGridConfigurationForm  = new UserSendGridConfigurationForm($emailAccount);
             $userSendGridConfigurationForm->emailSignatureHtmlContent = $user->getEmailSignature()->htmlContent;
@@ -776,15 +790,7 @@
                     $userSendGridConfigurationForm->apiPassword = ZurmoPasswordSecurityUtil::decrypt($userSendGridConfigurationForm->apiPassword);
                 }
             }
-            $titleBarAndEditView = new UserActionBarAndSendGridConfigurationEditView(
-                                    $this->getId(),
-                                    $this->getModule()->getId(),
-                                    $user,
-                                    $userSendGridConfigurationForm
-            );
-            $titleBarAndEditView->setCssClasses(array('AdministrativeArea'));
-            $view = new UsersPageView($this->resolveZurmoDefaultOrAdminView($titleBarAndEditView, $breadCrumbLinks, 'UserBreadCrumbView'));
-            echo $view->render();
+            return $userSendGridConfigurationForm;
         }
 
         /**

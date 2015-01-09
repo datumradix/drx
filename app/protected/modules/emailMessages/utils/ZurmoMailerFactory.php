@@ -163,7 +163,8 @@
             if($itemData != null)
             {
                 $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                if((bool)$this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost != ''
+                if((bool)$this->emailAccount->useCustomOutboundSettings === EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS
+                    && $this->emailAccount->outboundHost != ''
                         && $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != ''
                             && $useAutoresponderOrCampaignOwnerMailSettings === true)
                 {
@@ -172,7 +173,8 @@
                 }
                 return false;
             }
-            elseif((bool)$this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost != ''
+            elseif((bool)$this->emailAccount->useCustomOutboundSettings === EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS
+                    && $this->emailAccount->outboundHost != ''
                         && $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != '')
             {
                 $this->updateMailerDetailsForEmailMessage('smtp', 'personal');
