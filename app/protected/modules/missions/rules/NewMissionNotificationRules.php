@@ -68,5 +68,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when a new mission becomes available.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return MissionsUtil::getEmailSubject($this->model);
+        }
     }
 ?>

@@ -68,11 +68,15 @@
             //Confirm no email notifications are sitting in the queue
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            //Confirm there is no inbox notification
+            $this->assertEquals(0, Notification::getCount());
 
             //No message was sent because Steven and Jack don't have primary email address
             CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $jack));
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            //Two inbox notifications sent
+            $this->assertEquals(2, Notification::getCount());
 
             $super->primaryEmail->emailAddress   = 'super@zurmo.org';
             $steven->primaryEmail->emailAddress  = 'steven@zurmo.org';
@@ -90,18 +94,23 @@
             $emailMessage2  = $emailMessages[1];
             $this->assertCount(1, $emailMessage1->recipients);
             $this->assertCount(1, $emailMessage2->recipients);
+            //Two inbox notifications created
+            $this->assertEquals(4, Notification::getCount());
 
             //One email message was sent to Super but not to Steven
-            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
-            $inboxAndEmailNotificationSettings['enableConversationNewCommentNotification']['email'] = false;
-            UserNotificationUtil::
-                    setValue($steven, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
+            //One inbox notification to Steven but not to Super
+            NotificationTestHelper::setNotificationSettingsForUser($steven, 'ConversationNewComment', true, false);
+            NotificationTestHelper::setNotificationSettingsForUser($steven, 'ConversationNewComment', false, true);
             CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $super));
             $this->assertEquals(3, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $emailMessages = EmailMessage::getAll();
             $emailMessage  = $emailMessages[2];
             $this->assertEquals(1, count($emailMessage->recipients));
+            $this->assertEquals(5, Notification::getCount());
+            $notifications = Notification::getAll();
+            $notification  = $notifications[4];
+            $this->assertEquals(strval($steven), strval($notification->owner));
         }
     }
 ?>

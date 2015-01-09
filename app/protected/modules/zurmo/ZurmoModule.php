@@ -369,6 +369,7 @@
                     {
                         $message                    = new NotificationMessage();
                         $message->textContent       = $zurmoServiceHelper->getMessage();
+                        $message->htmlContent       = $zurmoServiceHelper->getMessage();
                         $rules = new NewZurmoVersionAvailableNotificationRules();
                         NotificationsUtil::submit($message, $rules);
                     }

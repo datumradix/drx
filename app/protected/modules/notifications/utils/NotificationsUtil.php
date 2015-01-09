@@ -282,7 +282,7 @@
          * @param string $type
          * @return string
          */
-        protected static function resolveNotificationSettingNameFromType($type)
+        public static function resolveNotificationSettingNameFromType($type)
         {
             assert('is_string($type) && $type != ""');
             return 'enable'.$type.'Notification';

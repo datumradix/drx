@@ -121,5 +121,27 @@
             $this->assertEquals(1, $jobLogs[0]->isProcessed);
             $this->assertEquals(0, $jobLogs[1]->isProcessed);
         }
+
+        public function testMakeMonitorStuckJobNotification()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $super->primaryEmail->emailAddress = 'super@zurmo.com';
+            $this->assertTrue($super->save());
+
+            $notificationInitalCount  = Notification::getCount();
+            $emailMessageInitialCount = EmailMessage::getCount();
+
+            JobsManagerUtil::makeMonitorStuckJobNotification();
+
+            $notifications = Notification::getAll();
+            $emailMessages = EmailMessage::getAll();
+            $this->assertCount($emailMessageInitialCount + 1, $notifications);
+            $this->assertCount($notificationInitalCount + 1, $emailMessages);
+            $this->assertEquals('The monitor job is stuck.', $notifications[0]->notificationMessage->htmlContent);
+            $this->assertEquals('The monitor job is stuck.', $notifications[0]->notificationMessage->textContent);
+            $this->assertContains('The monitor job is stuck.', $emailMessages[0]->content->htmlContent);
+            $this->assertContains('The monitor job is stuck.', $emailMessages[0]->content->textContent);
+        }
     }
 ?>

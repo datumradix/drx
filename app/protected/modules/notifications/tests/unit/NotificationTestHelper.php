@@ -52,5 +52,18 @@
             $saved = $message->save();
             assert('$saved');
         }
+
+        public static function setNotificationSettingsForUser(User $user, $notificationType, $inbox = true, $email = true)
+        {
+            assert('is_string($notificationType)');
+            assert('is_bool($inbox)');
+            assert('is_bool($email)');
+            $inboxAndEmailNotificationSettings = UserNotificationUtil::getNotificationSettingsByUser($user);
+            $settingName = NotificationsUtil::resolveNotificationSettingNameFromType($notificationType);
+            $inboxAndEmailNotificationSettings[$settingName]['inbox'] = $inbox;
+            $inboxAndEmailNotificationSettings[$settingName]['email'] = $email;
+            UserNotificationUtil::setValue($user, $inboxAndEmailNotificationSettings,
+                'inboxAndEmailNotificationSettings', false);
+        }
     }
 ?>

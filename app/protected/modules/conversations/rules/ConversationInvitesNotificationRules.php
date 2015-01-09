@@ -68,5 +68,10 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when I am invited to a conversation.');
         }
+
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('ConversationsModule', 'You have been invited to participate in a conversation');
+        }
     }
 ?>

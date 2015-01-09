@@ -54,7 +54,7 @@
         {
             $super                     = User::getByUsername('super');
             $fileModel                 = ZurmoTestHelper::createFileModel();
-            $steven                    = UserTestHelper::createBasicUser('steven');
+            $steven                    = UserTestHelper::createBasicUserWithEmailAddress('steven');
             $steven->setRight('MissionsModule', MissionsModule::RIGHT_ACCESS_MISSIONS);
             $steven->save();
             $dueStamp                  = DateTimeUtil::convertTimestampToDbFormatDateTime(time()  + 10000);
@@ -135,27 +135,35 @@
         public function testMissionNotifications()
         {
             $super      = User::getByUsername('super');
+            $super->primaryEmail->emailAddress = 'super@zurmo.com';
+            $this->assertTrue($super->save());
             $steven     = User::getByUsername('steven');
+            //A new mission notification was already created for steven
             $this->assertEquals(0, Notification::getCountByUser($super));
-            $this->assertEquals(0, Notification::getCountByUser($steven));
+            $this->assertEquals(1, Notification::getCountByUser($steven));
+            $this->assertEquals(1, EmailMessage::getCount());
             $missions   = Mission::getAll();
             $mission = $missions[0];
             $mission->status = Mission::STATUS_TAKEN;
             $this->assertTrue($mission->save());
             $this->assertEquals(1, Notification::getCountByUser($super));
-            $this->assertEquals(0, Notification::getCountByUser($steven));
+            $this->assertEquals(1, Notification::getCountByUser($steven));
+            $this->assertEquals(2, EmailMessage::getCount());
             $mission->status = Mission::STATUS_COMPLETED;
             $this->assertTrue($mission->save());
             $this->assertEquals(2, Notification::getCountByUser($super));
-            $this->assertEquals(0, Notification::getCountByUser($steven));
+            $this->assertEquals(1, Notification::getCountByUser($steven));
+            $this->assertEquals(3, EmailMessage::getCount());
             $mission->status = Mission::STATUS_REJECTED;
             $this->assertTrue($mission->save());
             $this->assertEquals(2, Notification::getCountByUser($super));
-            $this->assertEquals(1, Notification::getCountByUser($steven));
+            $this->assertEquals(2, Notification::getCountByUser($steven));
+            $this->assertEquals(4, EmailMessage::getCount());
             $mission->status = Mission::STATUS_ACCEPTED;
             $this->assertTrue($mission->save());
             $this->assertEquals(2, Notification::getCountByUser($super));
-            $this->assertEquals(2, Notification::getCountByUser($steven));
+            $this->assertEquals(3, Notification::getCountByUser($steven));
+            $this->assertEquals(5, EmailMessage::getCount());
         }
 
         /**
