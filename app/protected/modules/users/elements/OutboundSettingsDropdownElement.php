@@ -167,7 +167,8 @@
             $model  = $this->model->userSendGridConfigurationForm;
             $sendTestEmail = new SendATestEmailToElement($model, 'aTestToAddress', $this->form);
             $sendTestEmail->editableTemplate = '{label}{content}{error}';
-            $settings      = $this->renderSendGridEditableTextField($model, $this->form, 'apiUsername');
+            $settings      = $this->renderEventWebhookUrl($model);
+            $settings     .= $this->renderSendGridEditableTextField($model, $this->form, 'apiUsername');
             $settings     .= $this->renderSendGridEditableTextField($model, $this->form, 'apiPassword', true);
             $settings     .= $sendTestEmail->renderEditable();
             $selectedValue = $this->model->{$this->attribute};
@@ -183,6 +184,14 @@
                                          $settings);
         }
 
+        /**
+         * Render sendgrid editable text field
+         * @param CModel $model
+         * @param CFormModel $form
+         * @param string $attribute
+         * @param boolean $isPassword
+         * @return string
+         */
         public function renderSendGridEditableTextField($model, $form, $attribute, $isPassword = false)
         {
             $id         = ZurmoHtml::activeId($model, $attribute);
@@ -202,6 +211,19 @@
             }
             $error       = $form->error    ($model, $attribute);
             return '<div>' . $label . $textField . $error . '</div>';
+        }
+
+        /**
+         * Render event webhook url.
+         * @param CModel $model
+         * @return string
+         */
+        protected function renderEventWebhookUrl($model)
+        {
+            $baseUrl    = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog');
+            $text       = SendGridUtil::renderEventWebHookUrlOnForm($model, 'apiUsername');
+            SendGridUtil::registerEventWebhookUrlScript('UserSendGridConfigurationForm_apiUsername', $baseUrl);
+            return $text;
         }
     }
 ?>
