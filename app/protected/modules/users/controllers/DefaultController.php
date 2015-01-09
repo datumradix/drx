@@ -42,9 +42,6 @@
         const USER_SWITCHER_RIGHTS_FILTER_PATH =
                 'application.modules.zurmo.controllers.filters.UserSwitcherRightsControllerFilter';
 
-        const SENDGRID_EMAIL_CONFIGURATION_FILTER_PATH =
-              'application.modules.sendGrid.controllers.filters.SendGridEmailConfigurationCheckControllerFilter';
-
         /**
          * Override to exclude modalSearchList and autoComplete
          * since these are available to all users regardless
@@ -63,7 +60,7 @@
                     ZurmoBaseController::RIGHTS_FILTER_PATH .
                     ' - modalList, - switchTo, autoComplete, details, profile, edit, auditEventsModalList, changePassword, ' .
                     'configurationEdit, emailConfiguration, securityDetails, notificationConfiguration, ' .
-                    'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard, sendGridConfiguration, clearSendGridConfiguration',
+                    'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard',
                     'moduleClassName' => 'UsersModule',
                     'rightName' => UsersModule::getAccessRight(),
             );
@@ -79,10 +76,6 @@
             );
             $filters[] = array(
                         self::EMAIL_CONFIGURATION_FILTER_PATH . ' + emailConfiguration',
-                         'controller' => $this,
-            );
-            $filters[] = array(
-                        self::SENDGRID_EMAIL_CONFIGURATION_FILTER_PATH . ' + sendGridConfiguration, clearSendGridConfiguration',
                          'controller' => $this,
             );
             return $filters;
@@ -791,20 +784,6 @@
                 }
             }
             return $userSendGridConfigurationForm;
-        }
-
-        /**
-         * Clear sendgrid options.
-         * @param int $id
-         * @return void
-         */
-        public function actionClearSendGridConfiguration($id)
-        {
-            SendGridAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
-            $user                           = User::getById(intval($id));
-            $emailAccount                   = SendGridEmailAccount::resolveAndGetByUserAndName($user);
-            $emailAccount->delete();
-            $this->redirect(Yii::app()->createUrl('users/default/sendGridConfiguration', array('id' => $id)));
         }
     }
 ?>
