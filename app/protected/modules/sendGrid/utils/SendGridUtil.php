@@ -97,5 +97,19 @@
                                         ";
             Yii::app()->clientScript->registerScript('eventWebhookUrlScript', $script);
         }
+
+        /**
+         * Render webhook url on form.
+         * @param CModel $model
+         * @return string
+         */
+        public static function renderEventWebHookUrlOnForm($model)
+        {
+            $url   = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog', array('username' => $model->username));
+            $url   = ZurmoHtml::tag('div', array('id' => 'eventWebhookUrl'), $url);
+            $label = ZurmoHtml::label(Zurmo::t('SendGridModule', 'Event Webhook Url'), 'eventWebhookUrl');
+            return ZurmoHtml::tag('div', array('class' => 'panel'), '<table class="form-fields"><tr><th>' . $label . '</th>'
+                                                                    . '<td colspan="1">' . $url . '</td></tr></table>');
+        }
     }
 ?>
