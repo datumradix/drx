@@ -137,10 +137,6 @@
             $settings      = $this->renderEditableTextField($this->model, $this->form, 'outboundHost');
             $settings     .= $this->renderEditableTextField($this->model, $this->form, 'outboundPort');
             $settings     .= $this->renderEditableTextField($this->model, $this->form, 'outboundUsername');
-            if($this->model->outboundPassword !== null && $this->model->outboundPassword !== '')
-            {
-                $this->model->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($this->model->outboundPassword);
-            }
             $settings     .= $this->renderEditableTextField($this->model, $this->form, 'outboundPassword', true);
             $settings     .= $this->renderEditableTextField($this->model, $this->form, 'outboundSecurity');
             $settings     .= $sendTestEmail->renderEditable();
