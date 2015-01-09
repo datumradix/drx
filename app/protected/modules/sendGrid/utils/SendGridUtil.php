@@ -80,5 +80,22 @@
             }
             return $messageContent;
         }
+
+        /**
+         * Register event webhook url script.
+         * @param string $id
+         * @param string $baseUrl
+         */
+        public static function registerEventWebhookUrlScript($id, $baseUrl)
+        {
+            $script = "$('#{$id}').keyup(function()
+                                         {
+                                            var name = $(this).val();
+                                            var url  = '{$baseUrl}?username=' + name;
+                                            $('#eventWebhookUrl').html(url);
+                                         });
+                                        ";
+            Yii::app()->clientScript->registerScript('eventWebhookUrlScript', $script);
+        }
     }
 ?>
