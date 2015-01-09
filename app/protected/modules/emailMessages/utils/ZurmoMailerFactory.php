@@ -140,7 +140,8 @@
                 }
                 return false;
             }
-            elseif($this->sendGridEmailAccount->apiUsername != ''
+            elseif($this->emailAccount->useCustomOutboundSettings == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS
+                    && $this->sendGridEmailAccount->apiUsername != ''
                         && $this->sendGridEmailAccount->apiPassword != '')
             {
                 $this->updateMailerDetailsForEmailMessage('sendgrid', 'personal');
@@ -163,7 +164,7 @@
             if($itemData != null)
             {
                 $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                if((bool)$this->emailAccount->useCustomOutboundSettings === EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS
+                if($this->emailAccount->useCustomOutboundSettings == EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS
                     && $this->emailAccount->outboundHost != ''
                         && $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != ''
                             && $useAutoresponderOrCampaignOwnerMailSettings === true)
@@ -173,7 +174,7 @@
                 }
                 return false;
             }
-            elseif((bool)$this->emailAccount->useCustomOutboundSettings === EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS
+            elseif($this->emailAccount->useCustomOutboundSettings == EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS
                     && $this->emailAccount->outboundHost != ''
                         && $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != '')
             {

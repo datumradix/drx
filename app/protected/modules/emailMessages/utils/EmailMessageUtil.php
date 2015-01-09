@@ -92,8 +92,16 @@
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             if($sendGridPluginEnabled)
             {
-                $emailAccount                       = SendGridEmailAccount::getByUserAndName($userToSendMessagesFrom);
-                $emailMessageForm->sendGridAccount  = $emailAccount;
+                try
+                {
+                    $emailAccount                       = SendGridEmailAccount::getByUserAndName($userToSendMessagesFrom);
+                    $emailMessageForm->sendGridAccount  = $emailAccount;
+                }
+                catch(NotFoundException $e)
+                {
+                    $emailAccount                       = EmailAccount::getByUserAndName($userToSendMessagesFrom);
+                    $emailMessageForm->account          = $emailAccount;
+                }
             }
             else
             {
