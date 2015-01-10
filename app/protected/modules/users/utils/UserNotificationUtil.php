@@ -101,11 +101,8 @@
                     if (is_subclass_of($ruleClassName, 'NotificationRules') && !$classToEvaluate->isAbstract())
                     {
                         $rule = new $ruleClassName();
-                        if ($rule->canBeConfiguredByUser())
-                        {
-                            $defaultValues = array('inbox' => $rule->getDefaultValue('inbox'), 'email' => $rule->getDefaultValue('email'));
-                            $defaultNotificationSettings[static::getConfigurationAttributeByNotificationType($rule->getType())] = $defaultValues;
-                        }
+                        $defaultValues = array('inbox' => $rule->getDefaultValue('inbox'), 'email' => $rule->getDefaultValue('email'));
+                        $defaultNotificationSettings[static::getConfigurationAttributeByNotificationType($rule->getType())] = $defaultValues;
                     }
                 }
             }
