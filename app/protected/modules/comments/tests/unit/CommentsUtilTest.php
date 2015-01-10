@@ -100,7 +100,7 @@
             //One email message was sent to Super but not to Steven
             //One inbox notification to Steven but not to Super
             NotificationTestHelper::setNotificationSettingsForUser($steven, 'ConversationNewComment', true, false);
-            NotificationTestHelper::setNotificationSettingsForUser($steven, 'ConversationNewComment', false, true);
+            NotificationTestHelper::setNotificationSettingsForUser($super, 'ConversationNewComment', false, true);
             CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $super));
             $this->assertEquals(3, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
