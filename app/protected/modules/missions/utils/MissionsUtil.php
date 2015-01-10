@@ -229,11 +229,14 @@
             $notificationMessage->textContent = static::getTextContentForNotificationMessage($mission);
             $notificationMessage->htmlContent = static::getHtmlContentForNotificationMessage($mission);
             $peopleToSendNotification = static::resolvePeopleToSendNotificationToOnNewMission($mission);
-            foreach ($peopleToSendNotification as $person)
+            if (count($peopleToSendNotification) > 0)
             {
-                $rules->addUser($person);
+                foreach ($peopleToSendNotification as $person)
+                {
+                    $rules->addUser($person);
+                }
+                NotificationsUtil::submit($notificationMessage, $rules);
             }
-            NotificationsUtil::submit($notificationMessage, $rules);
         }
 
         /**
