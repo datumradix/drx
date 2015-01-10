@@ -40,7 +40,7 @@
      */
     class MalformedWorkflowMissingMarketingListNotificationRules extends NotificationRules
     {
-        protected $critical        = false;
+        protected $allowSendingEmail = false;
 
         protected $allowDuplicates = false;
 

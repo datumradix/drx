@@ -331,12 +331,18 @@
         protected static function makeEmailContent(Notification $notification)
         {
             $emailContent               = new EmailMessageContent();
-            $emailContent->textContent  = EmailNotificationUtil::
-            resolveNotificationTextTemplate(
-                $notification->notificationMessage->textContent, $notification->owner);
-            $emailContent->htmlContent  = EmailNotificationUtil::
-            resolveNotificationHtmlTemplate(
-                $notification->notificationMessage->htmlContent, $notification->owner);
+            if (is_string($notification->notificationMessage->textContent))
+            {
+                $emailContent->textContent  = EmailNotificationUtil::
+                resolveNotificationTextTemplate(
+                    $notification->notificationMessage->textContent, $notification->owner);
+            }
+            if (is_string($notification->notificationMessage->htmlContent))
+            {
+                $emailContent->htmlContent  = EmailNotificationUtil::
+                resolveNotificationHtmlTemplate(
+                    $notification->notificationMessage->htmlContent, $notification->owner);
+            }
             return $emailContent;
         }
     }

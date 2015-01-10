@@ -39,7 +39,9 @@
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
-            SecurityTestHelper::createSuperAdmin();
+            $super = SecurityTestHelper::createSuperAdmin();
+            $super->primaryEmail->emailAddress = 'super@zurmo.com';
+            $super->save();
         }
 
         /**
@@ -49,12 +51,12 @@
         {
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
-            $this->assertEquals(0, count(Notification::getAll()));
+            $this->assertEquals(0, Notification::getCount());
             GamificationUtil::logAndNotifyOnDuplicateGameModel('some content');
-            //It should not send an email because it is non-critical
+            //It should not send an email because it is non-allowed to send email notification
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
-            $this->assertEquals(1, count(Notification::getAll()));
+            $this->assertEquals(1, Notification::getCount());
         }
 
         public function testFindGameTableRowsThatAreDuplicatedByTypePersonKey()
