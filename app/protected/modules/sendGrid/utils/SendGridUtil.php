@@ -102,15 +102,35 @@
          * Render webhook url on form.
          * @param CModel $model
          * @param string $attribute
+         * @param string $width
          * @return string
          */
-        public static function renderEventWebHookUrlOnForm($model, $attribute)
+        public static function renderEventWebHookUrlOnForm($model, $attribute, $width = '')
         {
-            $url   = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog', array('username' => $model->$attribute), 'https');
-            $url   = ZurmoHtml::tag('div', array('id' => 'eventWebhookUrl'), $url);
+            $url   = static::resolveUrl($model, $attribute);
+            $url   = ZurmoHtml::tag('div', array('id' => 'eventWebhookUrl', 'style' => 'padding-top:5px;'), $url);
             $label = ZurmoHtml::label(Zurmo::t('SendGridModule', 'Event Webhook Url'), 'eventWebhookUrl');
-            return ZurmoHtml::tag('div', array('class' => 'panel'), '<table class="form-fields"><tr><th>' . $label . '</th>'
-                                                                    . '<td colspan="1">' . $url . '</td></tr></table>');
+            if(!empty($width))
+            {
+                $content = '<table class="form-fields"><tr><th width="' . $width . '">' . $label . '</th>'
+                                                                        . '<td colspan="1">' . $url . '</td></tr></table>';
+            }
+            else
+            {
+                $content = '<table class="form-fields"><tr><th>' . $label . '</th></tr>'
+                            . '<tr><td style="padding-left:0px;padding-bottom:0px;">' . $url . '</td></tr></table>';
+            }
+            return ZurmoHtml::tag('div', array('class' => 'panel'), $content);
+        }
+
+        /**
+         * @param CModel $model
+         * @param string $attribute
+         * @return string
+         */
+        public static function resolveUrl($model, $attribute)
+        {
+            return Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog', array('username' => $model->$attribute), 'https');
         }
     }
 ?>
