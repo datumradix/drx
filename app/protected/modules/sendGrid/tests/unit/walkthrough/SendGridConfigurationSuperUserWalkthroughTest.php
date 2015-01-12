@@ -89,36 +89,5 @@
             $this->assertEquals('myuser',         Yii::app()->sendGridEmailHelper->apiUsername);
             $this->assertEquals('apassword',      Yii::app()->sendGridEmailHelper->apiPassword);
         }
-
-        public function testSuperUserChangeOtherUserSendGridEmailSignature()
-        {
-            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
-            $aUser = User::getByUsername('auser');
-            $this->assertEquals(0, $aUser->emailSignatures->count());
-            $this->assertEquals($aUser, $aUser->getEmailSignature()->user);
-
-            //Change aUser email signature
-            $this->setGetArray(array('id' => $aUser->id));
-            $this->resetPostArray();
-            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/sendGridConfiguration');
-            $this->assertNotContains('abc email signature', $content);
-            $this->setPostArray(array('UserSendGridConfigurationForm' => array(
-                                    'fromName'                          => 'abc',
-                                    'fromAddress'                       => 'abc@zurmo.org',
-                                    'apiUsername'                       => 'abc',
-                                    'apiPassword'                       => 'password',
-                                    'emailSignatureHtmlContent'         => 'abc email signature')));
-            $this->runControllerWithRedirectExceptionAndGetContent('users/default/sendGridConfiguration');
-            $this->assertEquals('User SendGrid API configuration saved successfully.',
-                                Yii::app()->user->getFlash('notification'));
-            $aUser = User::getByUsername('auser');
-            $this->assertEquals(1, $aUser->emailSignatures->count());
-            $this->assertEquals('abc email signature', $aUser->emailSignatures[0]->htmlContent);
-            $this->resetPostArray();
-            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/sendGridConfiguration');
-            $this->assertContains('abc email signature', $content);
-            $this->assertContains('abc@zurmo.org', $content);
-            $this->assertContains('password', $content);
-        }
     }
 ?>
