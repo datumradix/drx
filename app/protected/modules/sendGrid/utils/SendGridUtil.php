@@ -106,7 +106,7 @@
          */
         public static function renderEventWebHookUrlOnForm($model, $attribute)
         {
-            $url   = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog', array('username' => $model->$attribute));
+            $url   = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog', array('username' => $model->$attribute), 'https');
             $url   = ZurmoHtml::tag('div', array('id' => 'eventWebhookUrl'), $url);
             $label = ZurmoHtml::label(Zurmo::t('SendGridModule', 'Event Webhook Url'), 'eventWebhookUrl');
             return ZurmoHtml::tag('div', array('class' => 'panel'), '<table class="form-fields"><tr><th>' . $label . '</th>'
