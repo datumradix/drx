@@ -103,7 +103,7 @@
 
         protected function renderFormLayout($form = null)
         {
-            $baseUrl    = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog');
+            $baseUrl    = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog', array(), 'https');
             $text       = SendGridUtil::renderEventWebHookUrlOnForm($this->model, 'username', '30%');
             SendGridUtil::registerEventWebhookUrlScript('SendGridWebApiConfigurationForm_username', $baseUrl);
             return $text . parent::renderFormLayout($form);
