@@ -71,7 +71,7 @@
             foreach($sendGridEmailAccounts as $sendGridEmailAccount)
             {
                 $eventWebhookFilePath = SendGridLogUtil::getLogFilePath($sendGridEmailAccount->apiUsername);
-                if($eventWebhookFilePath != null)
+                if($eventWebhookFilePath != null && file_exists($eventWebhookFilePath))
                 {
                     $this->processEventData($eventWebhookFilePath);
                     @file_put_contents($eventWebhookFilePath, '');
@@ -81,7 +81,7 @@
             if(Yii::app()->sendGridEmailHelper->apiUsername != '')
             {
                 $globalWebHookFilePath = SendGridLogUtil::getLogFilePath(Yii::app()->sendGridEmailHelper->apiUsername);
-                if($globalWebHookFilePath != null)
+                if($globalWebHookFilePath != null && file_exists($globalWebHookFilePath))
                 {
                     $this->processEventData($globalWebHookFilePath);
                     @file_put_contents($globalWebHookFilePath, '');
