@@ -123,8 +123,11 @@
          */
         protected function shouldSendGridUserSettingsBeUsed()
         {
-            if($this->sendGridEmailAccount == null
-                || ($this->emailAccount->useCustomOutboundSettings != EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS))
+            if($this->sendGridEmailAccount == null)
+            {
+                return false;
+            }
+            if($this->emailAccount->useCustomOutboundSettings != EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
             {
                 return false;
             }
@@ -157,8 +160,7 @@
          */
         protected function shouldCustomUserSettingsBeUsed()
         {
-            if($this->emailAccount == null ||
-                ($this->emailAccount->useCustomOutboundSettings != EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS))
+            if($this->emailAccount == null)
             {
                 return false;
             }
