@@ -130,7 +130,7 @@
          */
         public static function resolveUrl($model, $attribute)
         {
-            $url = Yii::app()->createUrl('sendGrid/external/writeLog', array('username' => $model->$attribute));
+            $url = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog', array('username' => $model->$attribute));
             return self::resolveUrlBySchema($url);
         }
 
