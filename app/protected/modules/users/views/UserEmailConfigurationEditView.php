@@ -96,7 +96,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'useCustomOutboundSettings', 'type' => 'OutboundSettingsCheckBox'),
+                                                array('attributeName' => 'useCustomOutboundSettings', 'type' => 'OutboundSettingsDropdown'),
                                             ),
                                         ),
                                     )
