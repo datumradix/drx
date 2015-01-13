@@ -153,8 +153,6 @@
         public static function resolveUrlBySchema($url)
         {
             $schema     = SendGridUtil::resolveSchemaForUrl();
-            print 'Schema is ' . $schema;
-            exit;
             $urlParts   = explode(':', $url);
             if($urlParts[0] == 'http' && $schema == 'https')
             {
