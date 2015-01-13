@@ -130,7 +130,35 @@
          */
         public static function resolveUrl($model, $attribute)
         {
-            return Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog', array('username' => $model->$attribute), 'https');
+            $url = Yii::app()->createUrl('sendGrid/external/writeLog', array('username' => $model->$attribute));
+            return self::resolveUrlBySchema($url);
+        }
+
+        /**
+         * Resolve schema for url.
+         * @return string
+         */
+        public static function resolveSchemaForUrl()
+        {
+            $hostInfo   = Yii::app()->request->getHostInfo();
+            $infoParts  = explode(':', $hostInfo);
+            return $infoParts[0];
+        }
+
+        /**
+         * Resolve url by schema.
+         * @param string $url
+         * @return string
+         */
+        public static function resolveUrlBySchema($url)
+        {
+            $schema     = SendGridUtil::resolveSchemaForUrl();
+            $urlParts   = explode(':', $url);
+            if($urlParts[0] == 'http' && $schema == 'https')
+            {
+                $urlParts[0] = 'https';
+            }
+            return implode(':', $urlParts);
         }
     }
 ?>
