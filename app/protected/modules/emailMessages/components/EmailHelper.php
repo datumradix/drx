@@ -159,7 +159,7 @@
         public function loadOutboundSettingsFromUserEmailAccount(User $user, $name = null)
         {
             $userEmailAccount = EmailAccount::getByUserAndName($user, $name);
-            if ($userEmailAccount->useCustomOutboundSettings)
+            if ($userEmailAccount->useCustomOutboundSettings == EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS)
             {
                 $settingsToLoad = array_merge(static::$settingsToLoad, array('fromName', 'fromAddress'));
                 foreach ($settingsToLoad as $keyName)

@@ -53,7 +53,7 @@
             $this->assertEquals($super, $emailAccount->user);
             $this->assertEquals($super->getFullName(), $emailAccount->fromName);
             $this->assertEquals($super->primaryEmail->emailAddress, $emailAccount->fromAddress);
-            $this->assertEquals(0, $emailAccount->useCustomOutboundSettings);
+            $this->assertEquals(EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS, $emailAccount->useCustomOutboundSettings);
             $this->assertEquals('smtp', $emailAccount->outboundType);
             $emailAccountId = $emailAccount->id;
             $emailAccount = EmailAccount::resolveAndGetByUserAndName($super);
@@ -69,7 +69,7 @@
             $this->assertEquals($super, $emailAccount->user);
             $this->assertEquals($super->getFullName(), $emailAccount->fromName);
             $this->assertEquals('super@zurmo.org', $emailAccount->fromAddress);
-            $this->assertEquals(0, $emailAccount->useCustomOutboundSettings);
+            $this->assertEquals(EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS, $emailAccount->useCustomOutboundSettings);
             $this->assertEquals('smtp', $emailAccount->outboundType);
         }
 
@@ -85,7 +85,7 @@
             $this->assertEquals($super, $emailAccount->user);
             $this->assertEquals($super->getFullName(), $emailAccount->fromName);
             $this->assertEquals('super@zurmo.org', $emailAccount->fromAddress);
-            $this->assertEquals(0, $emailAccount->useCustomOutboundSettings);
+            $this->assertEquals(EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS, $emailAccount->useCustomOutboundSettings);
             $this->assertEquals('smtp', $emailAccount->outboundType);
         }
 
