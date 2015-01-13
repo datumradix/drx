@@ -44,6 +44,8 @@
 
         protected $allowDuplicates = false;
 
+        protected $canBeConfiguredByUser = false;
+
         public function getDisplayName()
         {
             return Zurmo::t('MarketingListsModule', "Invalid Workflow Rule");

@@ -189,7 +189,10 @@
                         }
                         catch (NotImplementedException $exception)
                         {
-                            $addToArray = false;
+                            if (!$rule->canBeConfiguredByUser())
+                            {
+                                $addToArray = false;
+                            }
                         }
                         if ($addToArray)
                         {
