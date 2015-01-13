@@ -37,7 +37,7 @@
     /**
      * A NotificationRules to manage when a new mission is available
      */
-    class NewMissionNotificationRules extends SimpleNotificationRules
+    class NewMissionNotificationRules extends NotificationRules
     {
         protected $allowDuplicates      = true;
 

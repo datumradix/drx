@@ -37,7 +37,7 @@
     /**
      * A  NotificationRules to manage when there are new unread comments for a user
      */
-    class MissionUnreadCommentNotificationRules extends SimpleNotificationRules
+    class MissionUnreadCommentNotificationRules extends NotificationRules
     {
         protected $canBeConfiguredByUser = false;
 
