@@ -216,7 +216,7 @@
          */
         protected function renderEventWebhookUrl($model)
         {
-            $baseUrl    = Yii::app()->createUrl('sendGrid/external/writeLog');
+            $baseUrl    = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog');
             $baseUrl    = SendGridUtil::resolveUrlBySchema($baseUrl);
             $text       = SendGridUtil::renderEventWebHookUrlOnForm($model, 'apiUsername');
             SendGridUtil::registerEventWebhookUrlScript('UserSendGridConfigurationForm_apiUsername', $baseUrl);
