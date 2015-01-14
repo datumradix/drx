@@ -403,7 +403,7 @@
          */
         public static function resolveGetMoreUrl()
         {
-            $getMoreUrl = "http://www.zurmo.com/needSupport.php?source=menu";
+            $getMoreUrl = "http://www.zurmo.com/needSupport.php?source=menu"; // Not Coding Standard
             if (Yii::app()->edition != 'Community')
             {
                 $getMoreUrl = "https://zurmo.zendesk.com/home";

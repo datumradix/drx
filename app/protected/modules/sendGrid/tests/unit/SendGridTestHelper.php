@@ -42,8 +42,8 @@
 
             if (isset(Yii::app()->params['emailTestAccounts']))
             {
-                if(isset(Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings'])
-                    && isset(Yii::app()->params['emailTestAccounts']['sendGridUserSettings']))
+                if (isset(Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']) &&
+                       isset(Yii::app()->params['emailTestAccounts']['sendGridUserSettings']))
                 {
                     $sendGridGlobalSettings     = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings'];
                     $sendGridUserSettings       = Yii::app()->params['emailTestAccounts']['sendGridUserSettings'];

@@ -113,7 +113,6 @@
                                                 ),
                                             ),
                                         );
-
                 }
                 $userPanels[] = array('title' => $module, 'rows' => array_merge($tableHeadRow, $userRows));
             }

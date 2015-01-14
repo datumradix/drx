@@ -101,7 +101,7 @@
             try
             {
                 $emailAccount = static::getByUserAndName($user, $name);
-                if($decrypt === true)
+                if ($decrypt === true)
                 {
                     $emailAccount->apiPassword = ZurmoPasswordSecurityUtil::decrypt($emailAccount->apiPassword);
                 }

@@ -188,10 +188,10 @@
                     array('mailerSettings',  'type',    'type' => 'string'),
                 ),
                 'elements' => array(
-                    'sentDateTime'  => 'DateTime',
-                    'files'         => 'Files',
-                    'mailerType'    => 'Text',
-                    'mailerSettings'=> 'Text'
+                    'sentDateTime'   => 'DateTime',
+                    'files'          => 'Files',
+                    'mailerType'     => 'Text',
+                    'mailerSettings' => 'Text'
                 )
             );
             return $metadata;

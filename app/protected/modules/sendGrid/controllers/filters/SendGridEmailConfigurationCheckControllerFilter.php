@@ -52,8 +52,8 @@
             {
                 return true;
             }
-            if (Yii::app()->sendGridEmailHelper->apiUsername != null
-                && Yii::app()->sendGridEmailHelper->apiPassword != null)
+            if (Yii::app()->sendGridEmailHelper->apiUsername != null &&
+                   Yii::app()->sendGridEmailHelper->apiPassword != null)
             {
                 return true;
             }

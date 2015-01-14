@@ -55,9 +55,9 @@
             $defaultNotificationSettings = static::getNotificationSettingsDefaultValues();
             static::resolveDefaultNotificationSettingsDefaultValuesByUser($user, $defaultNotificationSettings);
             $notificationSettings = UserNotificationUtil::resolveAndGetValue($user, 'inboxAndEmailNotificationSettings', false);
-            if(is_array($notificationSettings) && !empty($notificationSettings))
+            if (is_array($notificationSettings) && !empty($notificationSettings))
             {
-                foreach($notificationSettings as $notificationName => $notificationSetting)
+                foreach ($notificationSettings as $notificationName => $notificationSetting)
                 {
                     $defaultNotificationSettings[$notificationName] = $notificationSetting;
                 }
@@ -135,7 +135,7 @@
         {
             $notificationSettingsAttributes = UserNotificationUtil::getAllNotificationSettingAttributes();
             $defaultNotificationSettings = array();
-            foreach($notificationSettingsAttributes as $attribute)
+            foreach ($notificationSettingsAttributes as $attribute)
             {
                 list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($attribute);
                 if ($type == 'email')
@@ -180,8 +180,8 @@
                                         doesUserHaveAllowByRightName($moduleClassNameToCheckAccess,
                                             $moduleClassNameToCheckAccess::getCreateRight(),
                                             Yii::app()->user->userModel) ||
-                                    ($rule->isSuperAdministratorNotification() && !Yii::app()->user->userModel->isSuperAdministrator())
-                                    || !$rule->canBeConfiguredByUser())
+                                    ($rule->isSuperAdministratorNotification() && !Yii::app()->user->userModel->isSuperAdministrator()) ||
+                                       !$rule->canBeConfiguredByUser())
                                 {
                                     $addToArray = false;
                                 }

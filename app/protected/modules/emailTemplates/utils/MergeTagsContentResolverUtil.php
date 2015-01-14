@@ -64,21 +64,21 @@
                                               $preview = false, $addGlobalFooterMergeTags = self::ADD_GLOBAL_FOOTER_MERGE_TAGS_IF_MISSING,
                                               $enableTracking = true, $modelId = null, $modelType = null, $personId = null)
         {
-            assert('is_null($textContent) || is_string($textContent)');
-            assert('is_null($htmlContent) || is_string($htmlContent)');
-            assert('is_null($attachedModel) || is_object($attachedModel)');
+            assert('($textContent === null) || is_string($textContent)');
+            assert('($htmlContent === null) || is_string($htmlContent)');
+            assert('($attachedModel === null) || is_object($attachedModel)');
             assert('is_int($emailTemplateType)');
             assert('in_array($emailTemplateType, array_keys(EmailTemplate::getTypeDropDownArray()))');
             assert('is_int($errorOnFirstMissing)');
-            assert('is_null($language) || is_string($language)');
+            assert('($language === null) || is_string($language)');
             assert('is_array($invalidTags)');
-            assert('is_null($marketingListId) || is_int($marketingListId)');
+            assert('($marketingListId === null) || is_int($marketingListId)');
             assert('is_bool($preview)');
             assert('is_int($addGlobalFooterMergeTags)');
             assert('is_bool($enableTracking)');
-            assert('is_null($modelId) || is_int($modelId)');
-            assert('is_null($modelType) || is_string($modelType)');
-            assert('is_null($personId) || is_int($personId)');
+            assert('($modelId === null) || is_int($modelId)');
+            assert('($modelType === null) || is_string($modelType)');
+            assert('($personId === null) || is_int($personId)');
             static::resolveContentsForGlobalFooterMergeTags($textContent, $htmlContent, $addGlobalFooterMergeTags);
             static::resolveContentsForMergeTags($textContent, $htmlContent, $attachedModel, $emailTemplateType,
                                                     $errorOnFirstMissing, $language, $invalidTags, $marketingListId,

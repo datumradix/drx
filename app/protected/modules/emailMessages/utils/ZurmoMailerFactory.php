@@ -67,28 +67,28 @@
             $apiPassword         = Yii::app()->sendGridEmailHelper->apiPassword;
             $user                = $this->emailMessage->owner;
             $defaultMailerClassName = static::resolveDefaultMailerClassName();
-            if($user != null)
+            if ($user != null)
             {
                 $this->sendGridEmailAccount = SendGridEmailAccount::resolveAndGetByUserAndName($user, null, false);
                 $this->emailAccount         = EmailAccount::resolveAndGetByUserAndName($user, null, false);
             }
-            if($this->sendGridPluginEnabled && $user != null)
+            if ($this->sendGridPluginEnabled && $user != null)
             {
                 //Should user settings be used
-                if($this->shouldSendGridUserSettingsBeUsed())
+                if ($this->shouldSendGridUserSettingsBeUsed())
                 {
                     return new ZurmoSendGridMailer($this->emailMessage, $this->sendGridEmailAccount);
                 }
                 else
                 {
                     //Check for personal settings
-                    if($this->shouldCustomUserSettingsBeUsed())
+                    if ($this->shouldCustomUserSettingsBeUsed())
                     {
                         return new $defaultMailerClassName($this->emailMessage, $this->emailAccount);
                     }
                     else
                     {
-                        if($apiUser != null && $apiPassword != null)
+                        if ($apiUser != null && $apiPassword != null)
                         {
                             $this->updateMailerDetailsForEmailMessage('sendgrid', 'global');
                             return new ZurmoSendGridMailer($this->emailMessage, null);
@@ -101,11 +101,11 @@
                     }
                 }
             }
-            elseif($user != null && $this->shouldCustomUserSettingsBeUsed() === true)
+            elseif ($user != null && $this->shouldCustomUserSettingsBeUsed() === true)
             {
                 return new $defaultMailerClassName($this->emailMessage, $this->emailAccount);
             }
-            elseif($this->sendGridPluginEnabled && $apiUser != null && $apiPassword != null)
+            elseif ($this->sendGridPluginEnabled && $apiUser != null && $apiPassword != null)
             {
                 $this->updateMailerDetailsForEmailMessage('sendgrid', 'global');
                 return new ZurmoSendGridMailer($this->emailMessage, null);
@@ -123,25 +123,25 @@
          */
         protected function shouldSendGridUserSettingsBeUsed()
         {
-            if($this->sendGridEmailAccount == null)
+            if ($this->sendGridEmailAccount == null)
             {
                 return false;
             }
             $itemData       = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($this->emailMessage);
-            if($itemData != null)
+            if ($itemData != null)
             {
                 $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                if($this->sendGridEmailAccount->apiUsername != ''
-                    && $this->sendGridEmailAccount->apiPassword != ''
-                        && $useAutoresponderOrCampaignOwnerMailSettings === true)
+                if ($this->sendGridEmailAccount->apiUsername != '' &&
+                       $this->sendGridEmailAccount->apiPassword != '' &&
+                           $useAutoresponderOrCampaignOwnerMailSettings === true)
                 {
                     $this->updateMailerDetailsForEmailMessage('sendgrid', 'personal');
                     return true;
                 }
                 return false;
             }
-            elseif($this->sendGridEmailAccount->apiUsername != ''
-                        && $this->sendGridEmailAccount->apiPassword != '')
+            elseif ($this->sendGridEmailAccount->apiUsername != '' &&
+                        $this->sendGridEmailAccount->apiPassword != '')
             {
                 $this->updateMailerDetailsForEmailMessage('sendgrid', 'personal');
                 return true;
@@ -155,25 +155,25 @@
          */
         protected function shouldCustomUserSettingsBeUsed()
         {
-            if($this->emailAccount == null)
+            if ($this->emailAccount == null)
             {
                 return false;
             }
             $itemData       = EmailMessageUtil::getCampaignOrAutoresponderDataByEmailMessage($this->emailMessage);
-            if($itemData != null)
+            if ($itemData != null)
             {
                 $useAutoresponderOrCampaignOwnerMailSettings = (bool)ZurmoConfigurationUtil::getByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings');
-                if((bool)$this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost != ''
-                        && $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != ''
-                            && $useAutoresponderOrCampaignOwnerMailSettings === true)
+                if ((bool)$this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost != '' &&
+                           $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != '' &&
+                               $useAutoresponderOrCampaignOwnerMailSettings === true)
                 {
                     $this->updateMailerDetailsForEmailMessage('smtp', 'personal');
                     return true;
                 }
                 return false;
             }
-            elseif((bool)$this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost != ''
-                        && $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != '')
+            elseif ((bool)$this->emailAccount->useCustomOutboundSettings === true && $this->emailAccount->outboundHost != '' &&
+                           $this->emailAccount->outboundUsername != '' && $this->emailAccount->outboundPassword != '')
             {
                 $this->updateMailerDetailsForEmailMessage('smtp', 'personal');
                 return true;

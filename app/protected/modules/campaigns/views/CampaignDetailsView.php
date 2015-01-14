@@ -84,8 +84,8 @@
             SendTestEmailModalEditView::registerSendTestEmailScriptsForDetailsView($this->modelId, $this->modelClassName);
             // TODO: @Shoaibi/@Jason: Low: Do security walkthrough
             $actionElementBarContent = $this->renderActionElementBar(false);
-	        $pillbox  = ZurmoHtml::tag('nav', array('class' => 'pillbox clearfix'), $actionElementBarContent);
-	        $switch   = $this->renderRightSideContent();
+            $pillbox  = ZurmoHtml::tag('nav', array('class' => 'pillbox clearfix'), $actionElementBarContent);
+            $switch   = $this->renderRightSideContent();
             $content  = $this->renderTitleContent();
             $content .= ZurmoHtml::tag('div', array('class' => 'view-toolbar-container clearfix'), $pillbox . $switch );
             return $content;

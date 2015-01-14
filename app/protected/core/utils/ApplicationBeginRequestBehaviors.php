@@ -35,6 +35,7 @@
      ********************************************************************************/
 
     Yii::import('application.core.utils.BeginRequestBehaviors');
+
     /**
      * Class containing application/non-api begin request behaviors.
      */

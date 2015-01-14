@@ -42,13 +42,13 @@
          */
         public static function writeLog($apiUsername, $rawData)
         {
-            if(self::validateRawData($rawData))
+            if (self::validateRawData($rawData))
             {
                 $logFile = static::getLogFilePath($apiUsername);
-                $fp = fopen($logFile, 'a+');
-                if($fp)
+                $fp = fopen($logFile, 'a+'); // Not Coding Standard
+                if ($fp)
                 {
-                    if(empty($rawData))
+                    if (empty($rawData))
                     {
                         $rawData = CJSON::encode(array('data' => 'empty data'));
                     }
@@ -66,7 +66,7 @@
         public static function getLogFilePath($apiUsername)
         {
             $logDir = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs';
-            if(!file_exists($logDir))
+            if (!file_exists($logDir))
             {
                 mkdir($logDir);
             }
@@ -81,9 +81,9 @@
         {
             $jsonData = json_decode($rawData);
             $object   = $jsonData[0];
-            if(property_exists($object, 'zurmoToken'))
+            if (property_exists($object, 'zurmoToken'))
             {
-                if($object->zurmoToken == md5(ZURMO_TOKEN))
+                if ($object->zurmoToken == md5(ZURMO_TOKEN))
                 {
                     return true;
                 }

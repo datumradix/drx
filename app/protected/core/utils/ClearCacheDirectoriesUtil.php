@@ -88,6 +88,5 @@
                     'removeDirectoryItself' => false));
             return $cacheDirectories;
         }
-
     }
 ?>

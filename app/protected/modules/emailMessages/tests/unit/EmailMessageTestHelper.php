@@ -95,7 +95,7 @@
             $emailMessage->sender      = $sender;
 
             //Recipient is billy.
-            if($toAddress != null)
+            if ($toAddress != null)
             {
                 $recipient                 = new EmailMessageRecipient();
                 $recipient->toAddress      = $toAddress;
@@ -103,9 +103,9 @@
                 $recipient->type           = EmailMessageRecipient::TYPE_TO;
                 $emailMessage->recipients->add($recipient);
             }
-            if($ccAddress != null)
+            if ($ccAddress != null)
             {
-                if(is_string($ccAddress))
+                if (is_string($ccAddress))
                 {
                     $recipient                 = new EmailMessageRecipient();
                     $recipient->toAddress      = $ccAddress;
@@ -113,9 +113,9 @@
                     $recipient->type           = EmailMessageRecipient::TYPE_CC;
                     $emailMessage->recipients->add($recipient);
                 }
-                if(is_array($ccAddress))
+                if (is_array($ccAddress))
                 {
-                    foreach($ccAddress as $val)
+                    foreach ($ccAddress as $val)
                     {
                         $recipient                 = new EmailMessageRecipient();
                         $recipient->toAddress      = $val;
@@ -125,9 +125,9 @@
                     }
                 }
             }
-            if($bccAddress != null)
+            if ($bccAddress != null)
             {
-                if(is_string($bccAddress))
+                if (is_string($bccAddress))
                 {
                     $recipient                 = new EmailMessageRecipient();
                     $recipient->toAddress      = $bccAddress;
@@ -135,9 +135,9 @@
                     $recipient->type           = EmailMessageRecipient::TYPE_BCC;
                     $emailMessage->recipients->add($recipient);
                 }
-                if(is_array($bccAddress))
+                if (is_array($bccAddress))
                 {
-                    foreach($bccAddress as $val)
+                    foreach ($bccAddress as $val)
                     {
                         $recipient                 = new EmailMessageRecipient();
                         $recipient->toAddress      = $val;

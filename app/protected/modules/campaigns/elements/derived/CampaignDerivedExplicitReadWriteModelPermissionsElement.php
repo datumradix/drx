@@ -45,7 +45,7 @@
             $htmlOptions = array(
                 'id'   => $this->getEditableInputId($attributeName, $relationAttributeName),
             );
-            if(!$this->model->isAttributeEditable('owner'))
+            if (!$this->model->isAttributeEditable('owner'))
             {
                 $htmlOptions['disabled'] = true;
             }

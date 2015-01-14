@@ -209,10 +209,10 @@
          */
         protected function populateSettings()
         {
-            if ($this->emailAccount != null && $this->emailAccount->outboundHost != null
-                && $this->emailAccount->outboundPort != null
-                && $this->emailAccount->outboundUsername != null
-                && $this->emailAccount->outboundPassword != null)
+            if ($this->emailAccount != null && $this->emailAccount->outboundHost != null &&
+                   $this->emailAccount->outboundPort != null &&
+                   $this->emailAccount->outboundUsername != null &&
+                   $this->emailAccount->outboundPassword != null)
             {
                 $this->host     = $this->emailAccount->outboundHost;
                 $this->port     = $this->emailAccount->outboundPort;
@@ -353,7 +353,7 @@
         public function sendTestEmail($isUser = false)
         {
             $this->emailMessage->mailerType = 'smtp';
-            if($isUser)
+            if ($isUser)
             {
                 $this->emailMessage->mailerSettings = 'personal';
             }

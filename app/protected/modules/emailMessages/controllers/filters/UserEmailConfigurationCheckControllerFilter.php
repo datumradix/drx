@@ -47,7 +47,7 @@
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             try
             {
-                if($sendGridPluginEnabled)
+                if ($sendGridPluginEnabled)
                 {
                     SendGridEmailAccount::getByUserAndName(Yii::app()->user->userModel, null);
                 }
@@ -59,7 +59,7 @@
             catch (NotFoundException $e)
             {
                 $redirectUrl = Yii::app()->request->getParam('redirectUrl');
-                if($sendGridPluginEnabled)
+                if ($sendGridPluginEnabled)
                 {
                     $messageView = new NoUserSendGridEmailConfigurationYetView($redirectUrl);
                 }

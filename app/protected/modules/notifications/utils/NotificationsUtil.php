@@ -207,8 +207,10 @@
             $notificationSettingName = static::resolveNotificationSettingNameFromType($notification->type);
             if ($rules->allowSendingEmail() &&
                 UserNotificationUtil::
-                isEnabledByUserAndNotificationNameAndType($notification->owner, $notificationSettingName, 'email')) {
-                if ($notification->owner->primaryEmail->emailAddress != null) {
+                isEnabledByUserAndNotificationNameAndType($notification->owner, $notificationSettingName, 'email'))
+            {
+                if ($notification->owner->primaryEmail->emailAddress != null)
+                {
                     $emailMessage = static::makeEmailMessage();
                     $emailMessage->subject = static::getEmailSubject($notification, $rules);
                     $emailMessage->content = static::makeEmailContent($notification);
@@ -216,17 +218,23 @@
                     $emailMessage->recipients->add(static::makeRecipient($notification));
                     $box = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
                     $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
-                    if (!$emailMessage->save()) {
+                    if (!$emailMessage->save())
+                    {
                         throw new FailedToSaveModelException();
                     }
-                    try {
-                        if ($sendImmediately) {
+                    try
+                    {
+                        if ($sendImmediately)
+                        {
                             Yii::app()->emailHelper->sendImmediately($emailMessage);
-                        } else {
+                        }
+                        else
+                        {
                             Yii::app()->emailHelper->send($emailMessage);
                         }
-
-                    } catch (CException $e) {
+                    }
+                    catch (CException $e)
+                    {
                         //Not sure what to do yet when catching an exception here. Currently ignoring gracefully.
                     }
                 }
@@ -285,7 +293,7 @@
         public static function resolveNotificationSettingNameFromType($type)
         {
             assert('is_string($type) && $type != ""');
-            return 'enable'.$type.'Notification';
+            return 'enable'.$type.'Notification'; // Not Coding Standard
         }
 
         /**

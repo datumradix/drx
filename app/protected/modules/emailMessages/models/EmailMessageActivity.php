@@ -364,7 +364,7 @@
             $tableName      = $modelClassName::getTableName();
             $rows           = ZurmoRedBean::getRow('select emailmessageactivity_id from ' . $tableName .
                                     ' where ' . $type . '_id = ?', array($item->id));
-            if(!empty($rows))
+            if (!empty($rows))
             {
                 return $rows['emailmessageactivity_id'];
             }

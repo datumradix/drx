@@ -38,7 +38,7 @@
     {
         protected function render($view, $data)
         {
-            if(Yii::app()->areAllClassesImported())
+            if (Yii::app()->areAllClassesImported())
             {
                 parent::render($view,$data);
             }

@@ -343,7 +343,7 @@
             //First make sure settings all default values are true
             $notificationSettings = UserNotificationUtil::getNotificationSettingsByUser($aUser);
             $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingAttributes();
-            foreach($notificationSettingsNames as $setting)
+            foreach ($notificationSettingsNames as $setting)
             {
                 list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($setting);
                 $this->assertTrue((bool)$notificationSettings[$settingName][$type]);

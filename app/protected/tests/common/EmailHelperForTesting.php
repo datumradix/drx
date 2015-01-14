@@ -76,13 +76,13 @@
             assert('is_array($parts) || !isset($parts)');
             $toName = null;
             $toAddress = null;
-            if(is_string($to))
+            if (is_string($to))
             {
                 $toAddress = $to;
             }
-            elseif(is_array($to))
+            elseif (is_array($to))
             {
-                foreach($to as $key => $value)
+                foreach ($to as $key => $value)
                 {
                     $toName     = $key;
                     $toAddress  = $value;

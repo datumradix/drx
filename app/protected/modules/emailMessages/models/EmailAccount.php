@@ -98,7 +98,7 @@
             try
             {
                 $emailAccount = static::getByUserAndName($user, $name);
-                if($decrypt === true)
+                if ($decrypt === true)
                 {
                     $emailAccount->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($emailAccount->outboundPassword);
                 }

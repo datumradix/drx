@@ -46,7 +46,6 @@
          * @var boolean
          */
         protected $wrapContentInWrapperDiv = false;
-
 	    protected $disableFloatOnToolbar  = true;
 
         public function __construct($controllerId, $moduleId, $model, $title = null)
@@ -248,6 +247,5 @@
                 // End Not Coding Standard
             }
         }
-
     }
 ?>

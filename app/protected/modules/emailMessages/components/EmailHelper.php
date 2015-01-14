@@ -292,7 +292,7 @@
                 elseif ($keyName == 'outboundType')
                 {
                     $keyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'outboundType');
-                    if($keyValue == null)
+                    if ($keyValue == null)
                     {
                         $keyValue = self::OUTBOUND_TYPE_SMTP;
                     }

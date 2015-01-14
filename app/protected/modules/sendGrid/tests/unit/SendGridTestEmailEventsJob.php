@@ -55,10 +55,10 @@
         public function run()
         {
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
-            if($sendGridPluginEnabled)
+            if ($sendGridPluginEnabled)
             {
                 $logPath = SendGridLogUtil::getLogFilePath('testemailjob');
-                if(file_exists($logPath))
+                if (file_exists($logPath))
                 {
                     @file_put_contents($logPath, '');
                 }
@@ -101,7 +101,7 @@
         protected function processActivityInformation($value)
         {
             $type                       = $this->getActivityTypeByEvent($value);
-            if($type == EmailMessageActivity::TYPE_BOUNCE)
+            if ($type == EmailMessageActivity::TYPE_BOUNCE)
             {
                 $emailMessageActivity       = $this->createBounceEmailMessageActivity();
             }

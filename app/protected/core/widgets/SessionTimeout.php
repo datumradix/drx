@@ -124,7 +124,7 @@
          */
         public $dialogWidth;
 
-	    public $cssFile = null;
+        public $cssFile = null;
 
         public function init()
         {
@@ -135,7 +135,7 @@
             {
                 $this->timeout          = $sessionCookieLifeTime;
             }
-            else if (isset($sessionGcMaxLifeTime))
+            elseif (isset($sessionGcMaxLifeTime))
             {
                 $this->timeout          = $sessionGcMaxLifeTime;
             }

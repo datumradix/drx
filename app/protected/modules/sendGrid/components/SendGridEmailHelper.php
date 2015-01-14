@@ -167,15 +167,15 @@
             $bccAddresses   = array();
             foreach ($emailMessage->recipients as $recipient)
             {
-                if($recipient->type == EmailMessageRecipient::TYPE_TO)
+                if ($recipient->type == EmailMessageRecipient::TYPE_TO)
                 {
                     $toAddresses[$recipient->toAddress] = $recipient->toName;
                 }
-                if($recipient->type == EmailMessageRecipient::TYPE_CC)
+                if ($recipient->type == EmailMessageRecipient::TYPE_CC)
                 {
                     $ccAddresses[$recipient->toAddress] = $recipient->toName;
                 }
-                if($recipient->type == EmailMessageRecipient::TYPE_BCC)
+                if ($recipient->type == EmailMessageRecipient::TYPE_BCC)
                 {
                     $bccAddresses[$recipient->toAddress] = $recipient->toName;
                 }

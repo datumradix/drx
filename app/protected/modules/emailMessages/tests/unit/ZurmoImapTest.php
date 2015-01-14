@@ -447,7 +447,7 @@
 
         protected static function replaceNewLinesCharacters($string, $replaceWith = ' ')
         {
-            return preg_replace('/\s+/', $replaceWith, $string);
+            return preg_replace('/\s+/', $replaceWith, $string); // Not Coding Standard
         }
     }
 ?>

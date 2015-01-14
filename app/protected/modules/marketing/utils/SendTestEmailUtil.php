@@ -268,8 +268,10 @@
         protected function resolveAttachmentsByPostSourceData(array $sourceData)
         {
             $attachments = array();
-            if (isset($sourceData['attachmentIds']) && is_array($sourceData['attachmentIds'])) {
-                foreach ($sourceData['attachmentIds'] as $attachmentId) {
+            if (isset($sourceData['attachmentIds']) && is_array($sourceData['attachmentIds']))
+            {
+                foreach ($sourceData['attachmentIds'] as $attachmentId)
+                {
                     $attachments[] = FileModel::getById(intval($attachmentId));
                 }
             }

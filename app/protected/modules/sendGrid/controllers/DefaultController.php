@@ -82,7 +82,7 @@
                     Yii::app()->user->setFlash('notification',
                                                 Zurmo::t('SendGridModule', 'Sendgrid configuration saved successfully.')
                     );
-                    if($configurationForm->enableSendgrid)
+                    if ($configurationForm->enableSendgrid)
                     {
                         $this->redirect(Yii::app()->createUrl('sendGrid/default/configurationEditOutbound'));
                     }

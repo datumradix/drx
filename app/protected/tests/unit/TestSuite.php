@@ -188,7 +188,7 @@
                 $success = preg_match("/;dbname=([^;]+)/", Yii::app()->db->connectionString, $matches); // Not Coding Standard
                 assert('$success == 1');
                 $databaseName = $matches[1];
-                preg_match("/mysql:host=([^;]+)/", Yii::app()->db->connectionString, $matches);
+                preg_match("/mysql:host=([^;]+)/", Yii::app()->db->connectionString, $matches); // Not Coding Standard
                 $host = $matches[1];
                 $systemOutput = system('mysqldump -u' . Yii::app()->db->username .
                                         ' -p' . Yii::app()->db->password .

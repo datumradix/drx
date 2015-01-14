@@ -86,8 +86,6 @@
             return $content;
         }
 
-
-
         protected function renderControlNonEditable()
         {
             throw new NotImplementedException();

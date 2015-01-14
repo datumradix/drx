@@ -36,7 +36,6 @@
 
     class NotificationsUtilTest extends ZurmoBaseTest
     {
-
         protected $user;
 
         public static function setUpBeforeClass()
@@ -87,7 +86,6 @@
             $notifications              = Notification::getAll();
             $this->assertCount(2, $notifications);
         }
-
 
         public function testSubmitCritical()
         {

@@ -103,21 +103,21 @@
                 }
                 if ($campaignItem->hasAtLeastOneBounceActivity())
                 {
-                    if($emailMessageActivityId != null)
+                    if ($emailMessageActivityId != null)
                     {
                         $count = ExternalApiEmailMessageActivity::resolveAndGetByEmailMessageActivityId($emailMessageActivityId, 'sendgrid', true);
-                        if($count > 0)
+                        if ($count > 0)
                         {
                             $tableRows .= static::getBouncedContentForDrillDown($campaignItem);
                         }
                     }
                 }
-                if($campaignItem->hasAtLeastOneEventActivity(CampaignItemActivity::TYPE_SPAM))
+                if ($campaignItem->hasAtLeastOneEventActivity(CampaignItemActivity::TYPE_SPAM))
                 {
-                    if($emailMessageActivityId != null)
+                    if ($emailMessageActivityId != null)
                     {
                         $count = ExternalApiEmailMessageActivity::resolveAndGetByEmailMessageActivityId($emailMessageActivityId, 'sendgrid', true);
-                        if($count > 0)
+                        if ($count > 0)
                         {
                             $tableRows .= static::getSpamContentForDrillDown($campaignItem);
                         }
@@ -500,7 +500,7 @@
         {
             $content = null;
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
-            if($sendGridPluginEnabled)
+            if ($sendGridPluginEnabled)
             {
                 $content = self::resolveContentForSendGridBounceOrSpamEventActivity($campaignItem, CampaignItemActivity::TYPE_SPAM);
             }
@@ -527,7 +527,7 @@
             foreach ($campaignItemActivities as $campaignItemActivity)
             {
                 $externalMessageActivities = ExternalApiEmailMessageActivity::getByEmailMessageActivity($campaignItemActivity, "sendgrid", false);
-                foreach($externalMessageActivities as $externalMessageActivity)
+                foreach ($externalMessageActivities as $externalMessageActivity)
                 {
                     $content .= '<tr>';
                     $content .= '<td>' . $typesArray[$externalMessageActivity->type] . '</td>';

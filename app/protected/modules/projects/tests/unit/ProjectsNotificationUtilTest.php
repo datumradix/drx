@@ -63,7 +63,6 @@
             Notification::deleteAll();
         }
 
-
         public function testNewNotificationWhenNewProjectTaskIsCreated()
         {
             $project                    = new Project();
@@ -173,7 +172,6 @@
             $this->assertContains("in project, 'project-" . __FUNCTION__ . "'",
                 $notifications[0]->notificationMessage->htmlContent);
             $this->assertContains('updated by sally sallyson', $notifications[0]->notificationMessage->htmlContent);
-
         }
     }
 ?>

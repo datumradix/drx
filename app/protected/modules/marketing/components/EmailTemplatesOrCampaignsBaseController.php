@@ -74,11 +74,14 @@
             }
             $form   = new SendTestEmailForm();
             $ajax   = Yii::app()->request->getPost('ajax');
-            if ($ajax == 'send-test-form') {
+            if ($ajax == 'send-test-form')
+            {
                 $form->setAttributes($_POST[get_class($form)]);
                 $errorData = array();
-                if (!$form->validate()) {
-                    foreach ($form->getErrors() as $attribute => $errors) {
+                if (!$form->validate())
+                {
+                    foreach ($form->getErrors() as $attribute => $errors)
+                    {
                         $errorData[ZurmoHtml::activeId($form, $attribute)] = $errors;
                     }
                 }
