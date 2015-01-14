@@ -498,7 +498,7 @@
             $this->setPostArray(array('UserEmailConfigurationForm' => array(
                                     'fromName'                          => 'abc',
                                     'fromAddress'                       => 'abc@zurmo.org',
-                                    'useCustomOutboundSettings'         => 0,
+                                    'useCustomOutboundSettings'         => EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS,
                                     'emailSignatureHtmlContent'         => 'abc email signature')));
             $this->runControllerWithRedirectExceptionAndGetContent('users/default/emailConfiguration');
             $this->assertEquals('User email configuration saved successfully.',

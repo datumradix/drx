@@ -206,7 +206,7 @@
 
             //Load outbound setting when EmailAccount useCustomOutboundSettings = true
             $emailAccount = EmailAccount::getByUserAndName($billy);
-            $emailAccount->useCustomOutboundSettings = true;
+            $emailAccount->useCustomOutboundSettings = EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS;
             $emailAccount->outboundType = 'xyz';
             $emailAccount->outboundPort = 55;
             $emailAccount->outboundHost = 'zurmo.com';
@@ -333,7 +333,7 @@
             $emailHelper = new EmailHelper;
             EmailMessageTestHelper::createEmailAccount($jane);
             $emailAccount = EmailAccount::getByUserAndName($jane);
-            $emailAccount->useCustomOutboundSettings = true;
+            $emailAccount->useCustomOutboundSettings = EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS;
             $emailAccount->outboundType     = 'abc';
             $emailAccount->outboundPort     = 11;
             $emailAccount->outboundHost     = 'dumb.domain';

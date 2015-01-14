@@ -41,9 +41,9 @@
     {
         protected $allowSendingEmail = false;
 
-        protected $critical          = false;
-
         protected $allowDuplicates   = false;
+
+        protected $canBeConfiguredByUser = false;
 
         public function getDisplayName()
         {

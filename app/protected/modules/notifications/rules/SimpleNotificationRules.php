@@ -39,6 +39,8 @@
      */
     class SimpleNotificationRules extends NotificationRules
     {
+        protected $canBeConfiguredByUser = false;
+
         public function getDisplayName()
         {
             return Zurmo::t('NotificationsModule', 'A simple notification');
