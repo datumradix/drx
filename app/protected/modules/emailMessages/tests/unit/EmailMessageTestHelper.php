@@ -299,7 +299,7 @@
 
         public static function createEmailAccountForMailerFactory(User $user, $useCustomSetting = null)
         {
-            if($useCustomSetting == null)
+            if ($useCustomSetting == null)
             {
                 $useCustomSetting = EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS;
             }

@@ -68,20 +68,20 @@
         public function run()
         {
             $sendGridEmailAccounts = SendGridEmailAccount::getAll();
-            foreach($sendGridEmailAccounts as $sendGridEmailAccount)
+            foreach ($sendGridEmailAccounts as $sendGridEmailAccount)
             {
                 $eventWebhookFilePath = SendGridLogUtil::getLogFilePath($sendGridEmailAccount->apiUsername);
-                if($eventWebhookFilePath != null && file_exists($eventWebhookFilePath))
+                if ($eventWebhookFilePath != null && file_exists($eventWebhookFilePath))
                 {
                     $this->processEventData($eventWebhookFilePath);
                     @file_put_contents($eventWebhookFilePath, '');
                 }
             }
             //Global
-            if(Yii::app()->sendGridEmailHelper->apiUsername != '')
+            if (Yii::app()->sendGridEmailHelper->apiUsername != '')
             {
                 $globalWebHookFilePath = SendGridLogUtil::getLogFilePath(Yii::app()->sendGridEmailHelper->apiUsername);
-                if($globalWebHookFilePath != null && file_exists($globalWebHookFilePath))
+                if ($globalWebHookFilePath != null && file_exists($globalWebHookFilePath))
                 {
                     $this->processEventData($globalWebHookFilePath);
                     @file_put_contents($globalWebHookFilePath, '');
@@ -96,26 +96,26 @@
          */
         protected static function resolveAndUpdateEventInformationByStatus(& $value)
         {
-            if($value['event'] == 'spamreport')
+            if ($value['event'] == 'spamreport')
             {
                 $value['type']      = EmailMessageActivity::TYPE_SPAM;
                 $value['reason']    = Zurmo::t('SendGridModule', 'Marked as spam');
             }
-            if($value['event'] == 'bounce')
+            if ($value['event'] == 'bounce')
             {
-                if(strpos($value['status'], "4") == 0)
+                if (strpos($value['status'], "4") == 0)
                 {
                     $value['type'] = EmailMessageActivity::TYPE_SOFT_BOUNCE;
                 }
-                if(strpos($value['status'], "5") == 0)
+                if (strpos($value['status'], "5") == 0)
                 {
                     $value['type'] = EmailMessageActivity::TYPE_HARD_BOUNCE;
                 }
             }
-            if($value['event'] == 'dropped')
+            if ($value['event'] == 'dropped')
             {
                 $models = ExternalApiEmailMessageActivity::getByEmailAddress($value['email'], "sendgrid", false);
-                if(count($models) == 1)
+                if (count($models) == 1)
                 {
                     $value['type'] = $models[0]->type;
                 }
@@ -133,20 +133,20 @@
          */
         protected function processEventData($eventWebhookFilePath)
         {
-            if($eventWebhookFilePath != null)
+            if ($eventWebhookFilePath != null)
             {
                 $content = $this->resolveFileContent($eventWebhookFilePath);
                 preg_match_all('/\[{(.*?)}\]/i', $content, $matches);
                 $data = array();
-                foreach($matches[1] as $string)
+                foreach ($matches[1] as $string)
                 {
                     $data[] = json_decode('{' . $string . '}', true);
                 }
-                foreach($data as $value)
+                foreach ($data as $value)
                 {
-                    if($value['event'] == 'bounce' || $value['event'] == 'spamreport' || $value['event'] == 'dropped')
+                    if ($value['event'] == 'bounce' || $value['event'] == 'spamreport' || $value['event'] == 'dropped')
                     {
-                        if(ArrayUtil::getArrayValue($value, 'itemClass', false) !== false &&
+                        if (ArrayUtil::getArrayValue($value, 'itemClass', false) !== false &&
                             ArrayUtil::getArrayValue($value, 'itemId', false) !== false)
                         {
                             $this->processActivityInformation($value);
@@ -191,7 +191,7 @@
          */
         protected function getActivityTypeByEvent($value)
         {
-            if($value['event'] == 'bounce' || $value['event'] == 'dropped')
+            if ($value['event'] == 'bounce' || $value['event'] == 'dropped')
             {
                 $type   = EmailMessageActivity::TYPE_BOUNCE;
             }
@@ -216,13 +216,13 @@
                                                                 'personId'  => $value['personId'],
                                                                 'url'       => null,
                                                                 'type'      => $type);
-            if($activityUtilClassName::createOrUpdateActivity($activityData))
+            if ($activityUtilClassName::createOrUpdateActivity($activityData))
             {
-                //$activityClassName=CampaignItemActivity
+                //$activityClassName = CampaignItemActivity
                 $emailMessageActivities     = $activityClassName::getByTypeAndModelIdAndPersonIdAndUrl($type, $value['itemId'], $value['personId'], null);
                 self::resolveAndUpdateEventInformationByStatus($value);
                 $externalMessageActivityCount = ExternalApiEmailMessageActivity::getByTypeAndEmailMessageActivity($value['type'], $emailMessageActivities[0], "sendgrid");
-                if($externalMessageActivityCount == 0)
+                if ($externalMessageActivityCount == 0)
                 {
                     $this->saveExternalApiEmailMessageActivity($emailMessageActivities[0], $value);
                 }
