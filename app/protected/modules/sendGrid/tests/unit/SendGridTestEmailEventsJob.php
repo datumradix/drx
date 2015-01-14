@@ -120,10 +120,10 @@
         public static function writeLog($apiUsername, $rawData)
         {
             $logFile = SendGridLogUtil::getLogFilePath($apiUsername);
-            $fp = fopen($logFile, 'a+');
-            if($fp)
+            $fp = fopen($logFile, 'a+'); // Not Coding Standard
+            if ($fp)
             {
-                if(empty($rawData))
+                if (empty($rawData))
                 {
                     $rawData = CJSON::encode(array('data' => 'empty data'));
                 }

@@ -141,7 +141,7 @@
             $settings     .= $this->renderEditableTextField($this->model, $this->form, 'outboundSecurity');
             $settings     .= $sendTestEmail->renderEditable();
             $selectedValue = $this->model->{$this->attribute};
-            if($selectedValue == EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS)
+            if ($selectedValue == EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS)
             {
                 $style = 'display:block;';
             }
@@ -168,7 +168,7 @@
             $settings     .= $this->renderSendGridEditableTextField($model, $this->form, 'apiPassword', true);
             $settings     .= $sendTestEmail->renderEditable();
             $selectedValue = $this->model->{$this->attribute};
-            if($selectedValue == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
+            if ($selectedValue == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
             {
                 $style = 'display:block;';
             }

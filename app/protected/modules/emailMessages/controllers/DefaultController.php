@@ -212,7 +212,7 @@
                 else
                 {
                     //Check for sendgrid
-                    if($_POST['UserEmailConfigurationForm']['useCustomOutboundSettings'] == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
+                    if ($_POST['UserEmailConfigurationForm']['useCustomOutboundSettings'] == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
                     {
                         $this->processSendTestMessageForSendGrid();
                     }

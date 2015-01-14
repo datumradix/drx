@@ -110,7 +110,7 @@
             $url   = static::resolveUrl($model, $attribute);
             $url   = ZurmoHtml::tag('div', array('id' => 'eventWebhookUrl', 'style' => 'padding-top:5px;'), $url);
             $label = ZurmoHtml::label(Zurmo::t('SendGridModule', 'Event Webhook Url'), 'eventWebhookUrl');
-            if(!empty($width))
+            if (!empty($width))
             {
                 $content = '<table class="form-fields"><tr><th width="' . $width . '">' . $label . '</th>'
                                                                         . '<td colspan="1">' . $url . '</td></tr></table>';

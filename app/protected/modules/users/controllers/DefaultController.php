@@ -526,40 +526,38 @@
             $userEmailConfigurationForm->userSendGridConfigurationForm = $userSendGridConfigurationForm;
             if (isset($_POST[$postVariableName]))
             {
-
-                    $userEmailConfigurationForm->setAttributes($_POST[$postVariableName]);
-                    if ($userEmailConfigurationForm->validate())
+                $userEmailConfigurationForm->setAttributes($_POST[$postVariableName]);
+                if ($userEmailConfigurationForm->validate())
+                {
+                    $userEmailConfigurationForm->save();
+                    if ($userEmailConfigurationForm->useCustomOutboundSettings == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
                     {
-                        $userEmailConfigurationForm->save();
-                        if($userEmailConfigurationForm->useCustomOutboundSettings == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
-                        {
-                            $_POST['UserSendGridConfigurationForm']['fromName'] = $_POST[$postVariableName]['fromName'];
-                            $_POST['UserSendGridConfigurationForm']['fromAddress'] = $_POST[$postVariableName]['fromAddress'];
-                            $_POST['UserSendGridConfigurationForm']['replyToAddress'] = $_POST[$postVariableName]['replyToAddress'];
-                            $userSendGridConfigurationForm = $this->processSendGridPostConfiguration($id, $redirectUrl);
-                            $userEmailConfigurationForm->userSendGridConfigurationForm = $userSendGridConfigurationForm;
-                        }
-                        else
-                        {
-                            Yii::app()->user->setFlash('notification',
-                                Zurmo::t('UsersModule', 'User email configuration saved successfully.')
-                            );
-
-                            if ($redirectUrl != null)
-                            {
-                                $this->redirect($redirectUrl);
-                            }
-                            else
-                            {
-                                $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
-                            }
-                        }
+                        $_POST['UserSendGridConfigurationForm']['fromName'] = $_POST[$postVariableName]['fromName'];
+                        $_POST['UserSendGridConfigurationForm']['fromAddress'] = $_POST[$postVariableName]['fromAddress'];
+                        $_POST['UserSendGridConfigurationForm']['replyToAddress'] = $_POST[$postVariableName]['replyToAddress'];
+                        $userSendGridConfigurationForm = $this->processSendGridPostConfiguration($id, $redirectUrl);
+                        $userEmailConfigurationForm->userSendGridConfigurationForm = $userSendGridConfigurationForm;
                     }
                     else
                     {
-                        $userEmailConfigurationForm->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($userEmailConfigurationForm->outboundPassword);
-                    }
+                        Yii::app()->user->setFlash('notification',
+                            Zurmo::t('UsersModule', 'User email configuration saved successfully.')
+                        );
 
+                        if ($redirectUrl != null)
+                        {
+                            $this->redirect($redirectUrl);
+                        }
+                        else
+                        {
+                            $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
+                        }
+                    }
+                }
+                else
+                {
+                    $userEmailConfigurationForm->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($userEmailConfigurationForm->outboundPassword);
+                }
             }
             $titleBarAndEditView = new UserActionBarAndEmailConfigurationEditView(
                                     $this->getId(),

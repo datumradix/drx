@@ -97,7 +97,7 @@
          */
         public function validateUserSendGridConfigurationForm($attribute, $params)
         {
-            if($this->userSendGridConfigurationForm instanceof UserSendGridConfigurationForm)
+            if ($this->userSendGridConfigurationForm instanceof UserSendGridConfigurationForm)
             {
                 return true;
             }
