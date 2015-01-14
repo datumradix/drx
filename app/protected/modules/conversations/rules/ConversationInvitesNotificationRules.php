@@ -37,7 +37,7 @@
     /**
      * A NotificationRules to manage when user is invited to a conversation.
      */
-    class ConversationInvitesNotificationRules extends SimpleNotificationRules
+    class ConversationInvitesNotificationRules extends NotificationRules
     {
         protected $allowDuplicates      = true;
 

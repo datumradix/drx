@@ -265,7 +265,7 @@
             $emailAccount->name              = EmailAccount::DEFAULT_NAME;
             $emailAccount->fromName          = $user->getFullName();
             $emailAccount->fromAddress       = 'user@zurmo.com';
-            $emailAccount->useCustomOutboundSettings = false;
+            $emailAccount->useCustomOutboundSettings = EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS;
             $emailAccount->outboundType      = 'smtp';
             $emailAccount->save();
         }
@@ -297,8 +297,12 @@
             }
         }
 
-        public static function createEmailAccountForMailerFactory(User $user, $useCustomSetting = true)
+        public static function createEmailAccountForMailerFactory(User $user, $useCustomSetting = null)
         {
+            if($useCustomSetting == null)
+            {
+                $useCustomSetting = EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS;
+            }
             $emailAccount                    = new EmailAccount();
             $emailAccount->user              = $user;
             $emailAccount->name              = EmailAccount::DEFAULT_NAME;

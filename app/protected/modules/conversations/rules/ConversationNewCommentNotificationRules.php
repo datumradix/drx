@@ -37,7 +37,7 @@
     /**
      * A  NotificationRules to manage when a new comment is added to a conversation.
      */
-    class ConversationNewCommentNotificationRules extends SimpleNotificationRules
+    class ConversationNewCommentNotificationRules extends NotificationRules
     {
         protected $allowSendingEmail = true;
         protected $allowDuplicates   = true;

@@ -37,7 +37,7 @@
     /**
      * A  NotificationRules to manage when a new comment is added for mission.
      */
-    class MissionNewCommentNotificationRules extends SimpleNotificationRules
+    class MissionNewCommentNotificationRules extends NotificationRules
     {
         protected $allowSendingEmail    = true;
         protected $allowDuplicates      = true;

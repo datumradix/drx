@@ -63,7 +63,7 @@
                     @file_put_contents($logPath, '');
                 }
                 $rawData = file_get_contents(dirname(__FILE__) . '/files/testsendgridwebhookdump.log');
-                SendGridLogUtil::writeLog('testemailjob', $rawData);
+                self::writeLog('testemailjob', $rawData);
                 $this->processEventData($logPath);
                 @unlink($logPath);
             }
@@ -111,6 +111,25 @@
             }
             static::resolveAndUpdateEventInformationByStatus($value);
             $this->saveExternalApiEmailMessageActivity($emailMessageActivity, $value);
+        }
+
+        /**
+         * Write log for send
+         * @param string $apiUsername
+         */
+        public static function writeLog($apiUsername, $rawData)
+        {
+            $logFile = SendGridLogUtil::getLogFilePath($apiUsername);
+            $fp = fopen($logFile, 'a+');
+            if($fp)
+            {
+                if(empty($rawData))
+                {
+                    $rawData = CJSON::encode(array('data' => 'empty data'));
+                }
+                fwrite($fp, print_r($rawData, true));
+                fclose($fp);
+            }
         }
     }
 ?>

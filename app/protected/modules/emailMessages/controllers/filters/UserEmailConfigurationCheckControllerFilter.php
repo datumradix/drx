@@ -61,16 +61,27 @@
                 $redirectUrl = Yii::app()->request->getParam('redirectUrl');
                 if ($sendGridPluginEnabled)
                 {
-                    $messageView = new NoUserSendGridEmailConfigurationYetView($redirectUrl);
+                    try
+                    {
+                        EmailAccount::getByUserAndName(Yii::app()->user->userModel);
+                    }
+                    catch (NotFoundException $ex)
+                    {
+                        $messageView = new NoUserEmailConfigurationYetView($redirectUrl);
+                        $view        = new ModalView($this->controller, $messageView);
+                        Yii::app()->getClientScript()->setToAjaxMode();
+                        echo $view->render();
+                        return false;
+                    }
                 }
                 else
                 {
                     $messageView = new NoUserEmailConfigurationYetView($redirectUrl);
+                    $view        = new ModalView($this->controller, $messageView);
+                    Yii::app()->getClientScript()->setToAjaxMode();
+                    echo $view->render();
+                    return false;
                 }
-                $view        = new ModalView($this->controller, $messageView);
-                Yii::app()->getClientScript()->setToAjaxMode();
-                echo $view->render();
-                return false;
             }
             return true;
         }
