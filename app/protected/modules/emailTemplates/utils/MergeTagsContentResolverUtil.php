@@ -219,7 +219,7 @@
                                                                                         $modelId, $modelType, !$preview,
                                                                                         $preview, $isHtmlContent);
             $util               = MergeTagsUtilFactory::make($emailTemplateType, $language, $content);
-            $resolvedContent    = $util->resolveMergeTags($attachedModel, $invalidTags, $language,$errorOnFirstMissing, $params);
+            $resolvedContent    = $util->resolveMergeTags($attachedModel, $invalidTags, $language, $errorOnFirstMissing, $params);
             if ($resolvedContent !== false)
             {
                 $content    = $resolvedContent;

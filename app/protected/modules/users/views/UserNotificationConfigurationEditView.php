@@ -94,7 +94,7 @@
                             array(
                                 'elements' => array(
                                     array('attributeName' => 'notificationConfigurationTableHead' . $module,
-                                        'type' => 'NotificationConfigurationTableHead',),
+                                        'type' => 'NotificationConfigurationTableHead'),
                                 ),
                             ),
                         ),

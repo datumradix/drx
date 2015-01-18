@@ -48,7 +48,7 @@
 
         public function testWriteLog()
         {
-            $rawData = '[{"sg_event_id":"8rQZ-LulQcObW_2WyUTLpg","zurmoToken":"' . md5(ZURMO_TOKEN) . '","sg_message_id":"14826db909d.7e66.8eff7e.filter-297.4955.5401C16C1B.0","event":"processed","itemClass":"CampaignItem","email":"abc@yahoo.com","itemId":31,"smtp-id":"<14826db909d.7e66.8eff7e@ismtpd-002.sjc1.sendgrid.net>","timestamp":1409401197,"personId":42}]';
+            $rawData = '[{"sg_event_id":"8rQZ-LulQcObW_2WyUTLpg","zurmoToken":"' . md5(ZURMO_TOKEN) . '","sg_message_id":"14826db909d.7e66.8eff7e.filter-297.4955.5401C16C1B.0","event":"processed","itemClass":"CampaignItem","email":"abc@yahoo.com","itemId":31,"smtp-id":"<14826db909d.7e66.8eff7e@ismtpd-002.sjc1.sendgrid.net>","timestamp":1409401197,"personId":42}]'; // Not Coding Standard
             SendGridLogUtil::writeLog('test', $rawData);
             $logPath = SendGridLogUtil::getLogFilePath('test');
             $this->assertTrue(file_exists($logPath));
@@ -57,7 +57,7 @@
             @unlink($logPath);
 
             //Failure test
-            $rawData = '[{"sg_event_id":"8rQZ-LulQcObW_2WyUTLpg","sg_message_id":"14826db909d.7e66.8eff7e.filter-297.4955.5401C16C1B.0","event":"processed","itemClass":"CampaignItem","email":"abc@yahoo.com","itemId":31,"smtp-id":"<14826db909d.7e66.8eff7e@ismtpd-002.sjc1.sendgrid.net>","timestamp":1409401197,"personId":42}]';
+            $rawData = '[{"sg_event_id":"8rQZ-LulQcObW_2WyUTLpg","sg_message_id":"14826db909d.7e66.8eff7e.filter-297.4955.5401C16C1B.0","event":"processed","itemClass":"CampaignItem","email":"abc@yahoo.com","itemId":31,"smtp-id":"<14826db909d.7e66.8eff7e@ismtpd-002.sjc1.sendgrid.net>","timestamp":1409401197,"personId":42}]'; // Not Coding Standard
             SendGridLogUtil::writeLog('test', $rawData);
             $logPath = SendGridLogUtil::getLogFilePath('test');
             $this->assertFalse(file_exists($logPath));
