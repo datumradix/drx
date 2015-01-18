@@ -40,14 +40,14 @@
         {
             if (Yii::app()->areAllClassesImported())
             {
-                parent::render($view,$data);
+                parent::render($view, $data);
             }
             else
             {
                 $data['version']= $this->getVersionInfo();
                 $data['time']   = time();
                 $data['admin']  = $this->adminInfo;
-                include($this->getViewFile($view,$data['code']));
+                include($this->getViewFile($view, $data['code']));
             }
         }
     }
