@@ -161,7 +161,7 @@
                                                 array('attributeName' => 'databaseAdminUsername', 'type' => 'Text',
                                                       'description' => Zurmo::t('InstallModule', 'Leave this blank unless you ' .
                                                       'would like to create the user and database for Zurmo to run in.',
-                                                                                LabelUtil::getTranslationParamsForAllModules())),
+                                                                                InstallUtil::getZurmoLabelParam())),
                                             ),
                                         ),
                                     )
@@ -173,7 +173,7 @@
                                                 array('attributeName' => 'databaseAdminPassword', 'type' => 'Password',
                                                       'description' => Zurmo::t('InstallModule', 'Leave this blank unless you ' .
                                                       'would like to create the user and database for Zurmo to run in.',
-                                                                                LabelUtil::getTranslationParamsForAllModules()))
+                                                                                InstallUtil::getZurmoLabelParam()))
                                             ),
                                         ),
                                     )
@@ -184,7 +184,7 @@
                                             'elements' => array(
                                                 array('attributeName' => 'databaseName', 'type' => 'Text',
                                                       'description' => Zurmo::t('InstallModule', 'The name of the database you ' .
-                                                      'want to run Zurmo in.', LabelUtil::getTranslationParamsForAllModules())),
+                                                      'want to run Zurmo in.', InstallUtil::getZurmoLabelParam())),
                                             ),
                                         ),
                                     )
@@ -229,7 +229,7 @@
                                                 array('attributeName' => 'superUserPassword', 'type' => 'Text',
                                                       'description' => Zurmo::t('InstallModule', 'Zurmo administrative password. ' .
                                                       'The username is `super`. You can change this later.',
-                                                      LabelUtil::getTranslationParamsForAllModules())),
+                                                      InstallUtil::getZurmoLabelParam())),
                                             ),
                                         ),
                                     )
@@ -272,7 +272,7 @@
                                             'elements' => array(
                                                 array('attributeName' => 'hostInfo', 'type' => 'Text',
                                                       'description' => Zurmo::t('InstallModule', 'Host name where Zurmo will be installed.',
-                                                      LabelUtil::getTranslationParamsForAllModules()))
+                                                      InstallUtil::getZurmoLabelParam()))
                                             ),
                                         ),
                                     )
@@ -284,7 +284,7 @@
                                                 array('attributeName' => 'scriptUrl', 'type' => 'Text',
                                                       'description' => Zurmo::t('InstallModule', 'The relative path where ' .
                                                       'Zurmo will be installed.',
-                                                      LabelUtil::getTranslationParamsForAllModules())),
+                                                      InstallUtil::getZurmoLabelParam())),
                                             ),
                                         ),
                                     )
