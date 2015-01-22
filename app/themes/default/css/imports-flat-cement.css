@@ -4736,11 +4736,16 @@ div.wide.form .errorMessage {
   top: -28000px;
   display: none;
   min-width: 50px;
-  font-size: 10.5px;
+  font-size: 11px;
   line-height: 12px;
   border-width: 1px;
   border-style: solid;
   white-space: nowrap;
+}
+.qtip-has-max-width {
+  max-width: 360px;
+  white-space: normal;
+  line-height: 14px;
 }
 .ui-tooltip-fluid {
   display: block;

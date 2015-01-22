@@ -1251,5 +1251,14 @@
                 return '';
             }
         }
+
+        /**
+         * Get zurmo label param.
+         * @return array
+         */
+        public static function getZurmoLabelParam()
+        {
+            return array('Zurmo' => Yii::app()->label);
+        }
     }
 ?>

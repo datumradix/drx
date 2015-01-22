@@ -34,23 +34,30 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class InstallPageView extends ZurmoPageView
+    /**
+     * Filter used by user controller to ascertain whether user has setup their primary email address.
+     */
+    class UserHasPrimaryEmailAddressControllerFilter extends CFilter
     {
-        public function __construct(View $view)
-        {
-            parent::__construct(new InstallView($view));
-        }
+        public $controller;
 
-            protected function renderContent()
+        protected function preFilter($filterChain)
         {
-            $content    = parent::renderContent();
-            $footerView = new FooterView();
-            return ZurmoHtml::tag('div', array('class' => 'AppContainer'), $content) . $footerView->render();
-        }
+            if (isset($_POST['ajax']))
+            {
+                return true;
+            }
+            if (Yii::app()->user->userModel->primaryEmail->emailAddress != null)
+            {
+                return true;
+            }
 
-        protected function getSubtitle()
-        {
-            return Zurmo::t('InstallModule', 'Zurmo Installation', InstallUtil::getZurmoLabelParam());
+            $messageView                  = new NoPrimaryEmailAddressForLoggedUserYetView();
+            $pageViewClassName            = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
+            $view                         = new $pageViewClassName(ZurmoDefaultViewUtil::
+            makeStandardViewForCurrentUser($this->controller, $messageView));
+            echo $view->render();
+            return false;
         }
     }
 ?>
