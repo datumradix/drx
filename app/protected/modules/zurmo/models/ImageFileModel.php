@@ -180,7 +180,7 @@
         {
             if (!is_dir(Yii::getPathOfAlias('application.runtime.uploads')))
             {
-                mkdir(Yii::getPathOfAlias('application.runtime.uploads'), 0755, true); // set recursive flag and permissions 0755
+                FileUtil::makeDirectory(Yii::getPathOfAlias('application.runtime.uploads'), 0755, true); // set recursive flag and permissions 0755
             }
         }
 

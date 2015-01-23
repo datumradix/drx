@@ -39,6 +39,7 @@
      */
     class JobsManagerUtil
     {
+        protected static $logsPath  = null;
         /**
          * @see JobManagerCommand.  This method is called from the JobManagerCommand which is a commandline
          * tool to run jobs.  Based on the 'type' specified this method will call to run the monitor or a
@@ -70,7 +71,7 @@
                     'class'       => 'application.modules.jobsManager.components.JobManagerFileLogger',
                     'maxFileSize' => '5120',
                     'logFile'     => $type . '.log',
-                    'logPath'     => Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'jobLogs'
+                    'logPath'     => static::resolveJobLogsPath(),
                 )
             );
 
@@ -262,6 +263,19 @@
                 DateTimeUtil::convertTimestampToDbFormatDateTime(time()));
             $content .= ' ' . Yii::app()->user->userModel->timeZone;
             return $content;
+        }
+
+
+        protected static function resolveJobLogsPath()
+        {
+            if (!isset(static::$logsPath)) {
+                $path   = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'jobLogs';
+                if ((!is_dir($path) && !FileUtil::makeDirectory($path)) || !is_writable($path))
+                    throw new CException(Zurmo::t('yii', 'Application jobLogs path "{path}" is not valid.',
+                                                            array('{path}' => $path)));
+                static::$logsPath   = $path;
+            }
+            return static::$logsPath;
         }
     }
 ?>

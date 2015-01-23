@@ -113,7 +113,7 @@
         {
             if (!is_dir(Yii::getPathOfAlias('application.runtime.themes')))
             {
-                mkdir(Yii::getPathOfAlias('application.runtime.themes'), 0755, true); // set recursive flag and permissions 0755
+                FileUtil::makeDirectory(Yii::getPathOfAlias('application.runtime.themes'), 0755, true); // set recursive flag and permissions 0755
             }
             $this->compiledCustomCssPath = Yii::getPathOfAlias('application.runtime.themes');
         }

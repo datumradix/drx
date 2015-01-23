@@ -259,7 +259,7 @@
             $scriptFileName = self::EXTERNAL_SCRIPT_FILE_NAME;
             if (!is_dir(Yii::getPathOfAlias('application.runtime.assets')))
             {
-                mkdir(Yii::getPathOfAlias('application.runtime.assets'), 0755, true);
+                FileUtil::makeDirectory(Yii::getPathOfAlias('application.runtime.assets'), 0755, true);
             }
             $scriptFilePath = Yii::getPathOfAlias('application.runtime.assets') . DIRECTORY_SEPARATOR . $scriptFileName;
             $fp             = fopen($scriptFilePath, 'w');
