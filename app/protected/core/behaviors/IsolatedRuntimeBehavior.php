@@ -58,6 +58,7 @@
             {
                 $this->setPrivateRuntimePath($this->owner->getRuntimePath() . DIRECTORY_SEPARATOR . 'private');
             }
+            assert('isset($this->privateRuntimePath');
             return $this->privateRuntimePath;
         }
 
@@ -67,6 +68,7 @@
          */
         public function setPrivateRuntimePath($path)
         {
+            assert('isset($path)');
             if (!FileUtil::directoryExistsAndIsWritable($path))
                 throw new CException(Zurmo::t('yii', 'Application private runtime path "{path}" is not valid.',
                                                         array('{path}' => $path)));
@@ -83,6 +85,7 @@
             {
                 $this->setSharedRuntimePath($this->owner->getRuntimePath() . DIRECTORY_SEPARATOR . 'shared');
             }
+            assert('isset($this->sharedRuntimePath');
             return $this->sharedRuntimePath;
         }
 
@@ -92,6 +95,7 @@
          */
         public function setSharedRuntimePath($path)
         {
+            assert('isset($path)');
             if (!FileUtil::directoryExistsAndIsWritable($path))
                 throw new CException(Zurmo::t('yii', 'Application shared runtime path "{path}" is not valid.',
                                                         array('{path}' => $path)));
