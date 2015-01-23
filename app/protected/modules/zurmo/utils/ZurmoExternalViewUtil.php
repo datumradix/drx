@@ -260,7 +260,7 @@
             $assetsPath  = Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'assets';
             if (!FileUtil::directoryExistsAndIsWritable($assetsPath))
             {
-                throw new CException(Zurmo::t('yii', 'Application assets shared runtime path "{path}" is not valid.',
+                throw new CException(Zurmo::t('Core', 'Application assets shared runtime path "{path}" is not valid.',
                                                 array('{path}' => $assetsPath)));
             }
             $scriptFilePath = $assetsPath . DIRECTORY_SEPARATOR . $scriptFileName;

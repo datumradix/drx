@@ -114,7 +114,7 @@
             $themesPath     = Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'themes';
             if (!FileUtil::directoryExistsAndIsWritable($themesPath))
             {
-                throw new CException(Zurmo::t('yii', 'Application themes shared runtime path "{path}" is not valid.',
+                throw new CException(Zurmo::t('Core', 'Application themes shared runtime path "{path}" is not valid.',
                                                         array('{path}' => $themesPath)));
             }
             $this->compiledCustomCssPath = $themesPath;

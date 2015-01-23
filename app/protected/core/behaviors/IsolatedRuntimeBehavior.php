@@ -70,7 +70,7 @@
         {
             assert('isset($path)');
             if (!FileUtil::directoryExistsAndIsWritable($path))
-                throw new CException(Zurmo::t('yii', 'Application private runtime path "{path}" is not valid.',
+                throw new CException(Zurmo::t('Core', 'Application private runtime path "{path}" is not valid.',
                                                         array('{path}' => $path)));
             $this->privateRuntimePath      = $path;
         }
@@ -97,7 +97,7 @@
         {
             assert('isset($path)');
             if (!FileUtil::directoryExistsAndIsWritable($path))
-                throw new CException(Zurmo::t('yii', 'Application shared runtime path "{path}" is not valid.',
+                throw new CException(Zurmo::t('Core', 'Application shared runtime path "{path}" is not valid.',
                                                         array('{path}' => $path)));
             $this->sharedRuntimePath   = $path;
         }
