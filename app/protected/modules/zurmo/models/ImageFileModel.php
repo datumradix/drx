@@ -148,7 +148,7 @@
          */
         protected static function getPathToCachedFiles()
         {
-            return Yii::getPathOfAlias('application.runtime.uploads') . DIRECTORY_SEPARATOR;
+            return Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
         }
 
         /**
@@ -178,9 +178,11 @@
          */
         protected function createCacheDirIfNotExists()
         {
-            if (!is_dir(Yii::getPathOfAlias('application.runtime.uploads')))
+            $path   = rtrim(static::getPathToCachedFiles(), '/');
+            if (!FileUtil::directoryExistsAndIsWritable($path))
             {
-                FileUtil::makeDirectory(Yii::getPathOfAlias('application.runtime.uploads'), 0755, true); // set recursive flag and permissions 0755
+                throw new CException(Zurmo::t('yii', 'Application uploads path "{path}" is not valid.',
+                                                        array('{path}' => $path)));
             }
         }
 

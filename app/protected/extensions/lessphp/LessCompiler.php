@@ -111,11 +111,13 @@
          */
         protected function setCompiledCustomCssPath()
         {
-            if (!is_dir(Yii::getPathOfAlias('application.runtime.themes')))
+            $themesPath     = Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'themes';
+            if (!FileUtil::directoryExistsAndIsWritable($themesPath))
             {
-                FileUtil::makeDirectory(Yii::getPathOfAlias('application.runtime.themes'), 0755, true); // set recursive flag and permissions 0755
+                throw new CException(Zurmo::t('yii', 'Application themes shared runtime path "{path}" is not valid.',
+                                                        array('{path}' => $themesPath)));
             }
-            $this->compiledCustomCssPath = Yii::getPathOfAlias('application.runtime.themes');
+            $this->compiledCustomCssPath = $themesPath;
         }
 
         /**

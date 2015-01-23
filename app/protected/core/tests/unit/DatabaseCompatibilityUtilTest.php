@@ -61,7 +61,7 @@
             $this->testDatabaseUsername          = Yii::app()->db->username;
             $this->testDatabasePassword          = Yii::app()->db->password;
             $this->superUserPassword = 'super';
-            $this->databaseBackupTestFile = INSTANCE_ROOT . '/protected/runtime/databaseBackupTest.sql';
+            $this->databaseBackupTestFile = Yii::app()->getPrivateRuntimePath() . DIRECTORY_SEPARATOR . 'databaseBackupTest.sql';
         }
 
         public static function setUpBeforeClass()

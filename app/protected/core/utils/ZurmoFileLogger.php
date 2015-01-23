@@ -72,12 +72,12 @@
         {
             if ($this->getLogPath() === null)
             {
-                $this->setLogPath(Yii::app()->getRuntimePath());
+                $this->setLogPath(Yii::app()->getPrivateRuntimePath());
             }
         }
 
         /**
-         * @return string directory storing log files. Defaults to application runtime path.
+         * @return string directory storing log files. Defaults to application private runtime path.
          */
         public function getLogPath()
         {
@@ -91,7 +91,7 @@
         public function setLogPath($value)
         {
             $this->logPath = realpath($value);
-            if ($this->logPath === false || !is_dir($this->logPath) || !is_writable($this->logPath))
+            if ($this->logPath === false || !FileUtil::directoryExistsAndIsWritable($this->logPath))
             {
                 throw new CException(Zurmo::t('Default', 'CFileLogRoute.logPath "{path}" does not point to a valid directory. Make sure the directory exists and is writable by the Web server process.',
                     array('{path}' => $value)));

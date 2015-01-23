@@ -193,22 +193,25 @@
 
         public static function publishLogo($logoFileName, $logoFilePath)
         {
-            if (!is_dir(Yii::getPathOfAlias('application.runtime.uploads')))
+            $uploadsPath        = Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'uploads';
+            if (!FileUtil::directoryExistsAndIsWritable($uploadsPath))
             {
-                FileUtil::makeDirectory(Yii::getPathOfAlias('application.runtime.uploads'), 0755, true); // set recursive flag and permissions 0755
+                throw new CException(Zurmo::t('yii', 'Application uploads path "{path}" is not valid.',
+                                                        array('{path}' => $uploadsPath)));
             }
-            copy($logoFilePath, Yii::getPathOfAlias('application.runtime.uploads') . DIRECTORY_SEPARATOR . $logoFileName);
-            Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.runtime.uploads') . DIRECTORY_SEPARATOR . $logoFileName);
+            copy($logoFilePath, $uploadsPath . DIRECTORY_SEPARATOR . $logoFileName);
+            Yii::app()->getAssetManager()->publish($uploadsPath . DIRECTORY_SEPARATOR . $logoFileName);
         }
 
         public static function deleteCurrentCustomLogo()
         {
             if ($logoFileModelId = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'logoFileModelId'))
             {
-                //Get path of currently uploaded logo, required to delete/unlink legacy logo from runtime/uploads
+                //Get path of currently uploaded logo, required to delete/unlink legacy logo from runtime/shared/uploads
                 $logoFileModel       = FileModel::getById($logoFileModelId);
                 $currentLogoFileName = $logoFileModel->name;
-                $currentLogoFilePath = Yii::getPathOfAlias('application.runtime.uploads') . DIRECTORY_SEPARATOR . $currentLogoFileName;
+                $uploadsPath         = Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'uploads';
+                $currentLogoFilePath = $uploadsPath . DIRECTORY_SEPARATOR . $currentLogoFileName;
                 if (file_exists($currentLogoFilePath))
                 {
                     unlink($currentLogoFilePath);

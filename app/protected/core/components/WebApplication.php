@@ -79,6 +79,19 @@
         protected $allClassesImported = false;
 
         /**
+         * Path of the directory containing private runtime entities
+         * @var null
+         */
+        private $_privateRuntimePath = null;
+
+        /**
+         * Path of the directory containing shared runtime entities
+         * @var null
+         */
+        private $_sharedRuntimePath = null;
+
+
+        /**
          * Override to handle when debug is turned on and the checksum fails on cached models.
          */
         public function run()
@@ -355,6 +368,40 @@
         public function areAllClassesImported()
         {
             return $this->allClassesImported;
+        }
+
+        public function getPrivateRuntimePath()
+        {
+            if($this->_privateRuntimePath === null)
+            {
+                $this->setPrivateRuntimePath($this->getRuntimePath() . DIRECTORY_SEPARATOR . 'private');
+            }
+            return $this->_privateRuntimePath;
+        }
+
+        public function setPrivateRuntimePath($path)
+        {
+            if (!FileUtil::directoryExistsAndIsWritable($path))
+                throw new CException(Zurmo::t('yii', 'Application private runtime path "{path}" is not valid.',
+                                                            array('{path}' => $path)));
+            $this->_privateRuntimePath      = $path;
+        }
+
+        public function getSharedRuntimePath()
+        {
+            if($this->_sharedRuntimePath === null)
+            {
+                $this->setPrivateRuntimePath($this->getRuntimePath() . DIRECTORY_SEPARATOR . 'shared');
+            }
+            return $this->_sharedRuntimePath;
+        }
+
+        public function setSharedRuntimePath($path)
+        {
+            if (!FileUtil::directoryExistsAndIsWritable($path))
+                throw new CException(Zurmo::t('yii', 'Application shared runtime path "{path}" is not valid.',
+                                                        array('{path}' => $path)));
+            $this->_sharedRuntimePath   = $path;
         }
     }
 ?>

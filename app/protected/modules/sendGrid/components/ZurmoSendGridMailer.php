@@ -145,7 +145,7 @@
             }
             //Attachments
             $attachmentsData = array();
-            $tempAttachmentPath = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'emailAttachments';
+            $tempAttachmentPath = Yii::app()->getPrivateRuntimePath() . DIRECTORY_SEPARATOR . 'emailAttachments';
             if (!file_exists($tempAttachmentPath))
             {
                 FileUtil::makeDirectory($tempAttachmentPath);

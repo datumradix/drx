@@ -104,7 +104,7 @@
         /**
          * Run second and last part of upgrade process, which include:
          * - Update schema
-         * - Clean assets and runtime foders
+         * - Clean assets and runtime folders
          * - Process final tasks
          * - Remove upgrade files
          * - Clear cache
@@ -181,7 +181,7 @@
         */
         public static function getUpgradeFolderPath()
         {
-            return Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'upgrade';
+            return Yii::app()->getPrivateRuntimePath() . DIRECTORY_SEPARATOR . 'upgrade';
         }
 
         /**
@@ -242,7 +242,7 @@
             $upgradePath = self::getUpgradeFolderPath();
             if (!is_dir($upgradePath))
             {
-                $message = Zurmo::t('Core', 'Please upload upgrade zip file to runtime/upgrade folder.');
+                $message = Zurmo::t('Core', 'Please upload upgrade zip file to runtime/private/upgrade folder.');
                 throw new NotFoundException($message);
             }
 
@@ -260,7 +260,7 @@
             if ($numberOfZipFiles != 1)
             {
                 closedir($handle);
-                $message = Zurmo::t('Core', 'More then one zip file exists in runtime/upgrade folder. ' .
+                $message = Zurmo::t('Core', 'More then one zip file exists in runtime/private/upgrade folder. ' .
                                              'Please delete them all except the one that you want to use for the upgrade.');
                 throw new NotSupportedException($message);
             }
@@ -282,7 +282,7 @@
 
             $isExtracted = false;
             $zip = new ZipArchive();
-            $upgradeExtractPath = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . "upgrade";
+            $upgradeExtractPath = Yii::app()->getPrivateRuntimePath() . DIRECTORY_SEPARATOR . "upgrade";
 
             if ($zip->open($upgradeZipFilePath) === true)
             {

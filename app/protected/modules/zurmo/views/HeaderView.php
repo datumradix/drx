@@ -130,8 +130,8 @@
             if ($logoFileModelId = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'logoFileModelId'))
             {
                 $logoFileModel = FileModel::getById($logoFileModelId);
-                $logoFileSrc   = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.runtime.uploads') .
-                    DIRECTORY_SEPARATOR . $logoFileModel->name);
+                $logoFileSrc   = Yii::app()->getAssetManager()->getPublishedUrl(Yii::app()->getSharedRuntimePath() .
+                                    DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $logoFileModel->name);
             }
             else
             {

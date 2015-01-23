@@ -219,5 +219,18 @@
             umask($oldMask);
             return $result;
         }
+
+        /**
+         * Check if a directory exists and is writable.
+         * @param $path
+         * @param bool $tryToCreateDirectoryIfMissing
+         * @param int $mode
+         * @param bool $recursive
+         * @return bool
+         */
+        public static function directoryExistsAndIsWritable($path, $tryToCreateDirectoryIfMissing = true, $mode = 0777, $recursive = false)
+        {
+            return ($path && !(((!is_dir($path) && ($tryToCreateDirectoryIfMissing && !static::makeDirectory($path, $mode, $recursive))) || !is_writable($path))));
+        }
     }
 ?>

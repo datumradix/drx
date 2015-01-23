@@ -50,7 +50,9 @@
             $pathsToTest = array(
                 INSTANCE_ROOT . '/assets',
                 INSTANCE_ROOT . '/protected/data',
-                INSTANCE_ROOT . '/protected/runtime'
+                INSTANCE_ROOT . '/protected/runtime',
+                INSTANCE_ROOT . '/protected/runtime/shared',
+                INSTANCE_ROOT . '/protected/runtime/private',
             );
             foreach ($pathsToTest as $pathToTest)
             {
