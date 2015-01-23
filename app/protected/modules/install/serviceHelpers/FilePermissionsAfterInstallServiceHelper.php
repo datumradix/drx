@@ -42,26 +42,26 @@
         protected function checkService()
         {
             $passed = true;
-            $applicationLogWritable =  InstallUtil::isApplicationLogRuntimeWritable(INSTANCE_ROOT);
+            $applicationLogWritable =  InstallUtil::isApplicationLogPrivateRuntimeWritable(INSTANCE_ROOT);
             if ($applicationLogWritable)
             {
-                $this->message  = Zurmo::t('InstallModule', 'The application.log runtime file is writable.');
+                $this->message  = Zurmo::t('InstallModule', 'The application.log private runtime file is writable.');
             }
             else
             {
-                $this->message  = Zurmo::t('InstallModule', 'The application.log runtime file is not writable.');
+                $this->message  = Zurmo::t('InstallModule', 'The application.log private runtime file is not writable.');
                 $passed = false;
             }
             if (!extension_loaded('apc'))
             {
-                $minScriptCacheDirectoryWritable = InstallUtil::isMinScriptCacheRuntimeDirectoryWritable(INSTANCE_ROOT);
+                $minScriptCacheDirectoryWritable = InstallUtil::isMinScriptCacheSharedRuntimeDirectoryWritable(INSTANCE_ROOT);
                 if ($minScriptCacheDirectoryWritable)
                 {
-                    $this->message  .= "\n" . Zurmo::t('InstallModule', 'The /minScript/cache runtime directory is writable.');
+                    $this->message  .= "\n" . Zurmo::t('InstallModule', 'The /minScript/cache shared runtime directory is writable.');
                 }
                 else
                 {
-                    $this->message  .= "\n" . Zurmo::t('InstallModule', 'The /minScript/cache runtime directory is not writable.');
+                    $this->message  .= "\n" . Zurmo::t('InstallModule', 'The /minScript/cache shared runtime directory is not writable.');
                     $passed = false;
                 }
             }

@@ -97,7 +97,7 @@
             $this->temporaryDatabaseUsername = Yii::app()->tempDb->username;
             $this->temporaryDatabasePassword = Yii::app()->tempDb->password;
             $this->superUserPassword = 'super';
-            $this->databaseBackupTestFile = INSTANCE_ROOT . '/protected/runtime/databaseBackupTest.sql';
+            $this->databaseBackupTestFile = Yii::app()->getPrivbateRuntimePath() . '/databaseBackupTest.sql';
         }
 
         public function testRun()

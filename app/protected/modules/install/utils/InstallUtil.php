@@ -905,34 +905,27 @@
             return $isWritable;
         }
 
-        public static function isApplicationLogRuntimeWritable($instanceRoot)
+        public static function isApplicationLogPrivateRuntimeWritable($instanceRoot)
         {
-            $applicationLogFile     = "$instanceRoot/protected/runtime/application.log";
-            $runtimeDirectory       = "$instanceRoot/protected/runtime";
+            $applicationLogFile         = "$instanceRoot/protected/runtime/private/application.log";
+            $privateRuntimeDirectory    = "$instanceRoot/protected/runtime/private";
 
             if (file_exists($applicationLogFile) && is_writable($applicationLogFile))
             {
                 return true;
             }
-            elseif (is_writable($runtimeDirectory))
-            {
-                //The application.log file may not exist yet.
-                return true;
-            }
-
-            return false;
+            //The application.log file may not exist yet.
+            // TODO: @Shoaibi: Critical: Refactored: (is_dir($privateRuntimeDirectory) && is_writable($privateRuntimeDirectory))
+            // Change to:  FileUtil::directoryExistsAndIsWritable($minScriptCacheRuntimeDirectory, true, 0777, true) if having issues
+            return  FileUtil::directoryExistsAndIsWritable($privateRuntimeDirectory, false);
         }
 
-        public static function isMinScriptCacheRuntimeDirectoryWritable($instanceRoot)
+        public static function isMinScriptCacheSharedRuntimeDirectoryWritable($instanceRoot)
         {
-            $minScriptCacheRuntimeDirectory   = "$instanceRoot/protected/runtime/minScript/cache";
-
-            if (is_dir($minScriptCacheRuntimeDirectory) && is_writable($minScriptCacheRuntimeDirectory))
-            {
-                return true;
-            }
-
-            return false;
+            $minScriptCacheRuntimeDirectory   = "$instanceRoot/protected/runtime/shared/minScript/cache";
+            // TODO: @Shoaibi: Critical: Refactored: (is_dir($minScriptCacheRuntimeDirectory) && is_writable($minScriptCacheRuntimeDirectory))
+            // Change to:  FileUtil::directoryExistsAndIsWritable($minScriptCacheRuntimeDirectory, true, 0777, true) if having issues
+            return FileUtil::directoryExistsAndIsWritable($minScriptCacheRuntimeDirectory, false);
         }
 
         /**

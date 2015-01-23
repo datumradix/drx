@@ -71,7 +71,7 @@
                     'class'       => 'application.modules.jobsManager.components.JobManagerFileLogger',
                     'maxFileSize' => '5120',
                     'logFile'     => $type . '.log',
-                    'logPath'     => static::resolveJobLogsPath(),
+                    'logPath'     => static::getJobLogsPath(),
                 )
             );
 
@@ -83,7 +83,7 @@
             {
                 $streamer->add(Zurmo::t('JobsManagerModule', 'Script will run at most for {seconds} seconds.',
                                         array('{seconds}' => $timeLimit)));
-                $streamer->add(Zurmo::t('JobsManagerModule', 'Sending output to runtime/jobLogs/{type}.log',
+                $streamer->add(Zurmo::t('JobsManagerModule', 'Sending output to runtime/private/jobLogs/{type}.log',
                                         array('{type}' => $type)));
                 $streamer->add(Zurmo::t('JobsManagerModule', '{dateTimeString} Starting job type: {type}',
                                         array('{type}' => $type,
@@ -265,17 +265,21 @@
             return $content;
         }
 
-
-        protected static function resolveJobLogsPath()
+        protected static function getJobLogsPath()
         {
-            if (!isset(static::$logsPath)) {
-                $path   = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'jobLogs';
-                if ((!is_dir($path) && !FileUtil::makeDirectory($path)) || !is_writable($path))
-                    throw new CException(Zurmo::t('yii', 'Application jobLogs path "{path}" is not valid.',
-                                                            array('{path}' => $path)));
-                static::$logsPath   = $path;
+            if(static::$logsPath === null)
+            {
+                static::setJobLogsPath(Yii::app()->getPrivateRuntimePath() . DIRECTORY_SEPARATOR . 'jobLogs');
             }
             return static::$logsPath;
+        }
+
+        protected static function setJobLogsPath($path)
+        {
+            if (!FileUtil::directoryExistsAndIsWritable($path))
+                throw new CException(Zurmo::t('yii', 'Application Job Logs path "{path}" is not valid.',
+                                                        array('{path}' => $path)));
+            static::$logsPath   = $path;
         }
     }
 ?>

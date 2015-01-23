@@ -67,7 +67,7 @@
             $content .= '<table><tr><td>';
             $content .= Zurmo::t('InstallModule', 'This is the Zurmo upgrade process. Please backup all files and the database before you continue.');
             $content .= '<br/>';
-            $content .= Zurmo::t('InstallModule', 'Copy upgrade file to app/protected/runtime/upgrade folder and start upgrade process.');
+            $content .= Zurmo::t('InstallModule', 'Copy upgrade file to app/protected/runtime/private/upgrade folder and start upgrade process.');
             $content .= '<br/><br/>';
             $content .= ZurmoHtml::link(Zurmo::t('InstallModule', 'Click here to start upgrade'), $zurmoUpgradeStepOneUrl);
             $content .= '</td></tr></table>';
