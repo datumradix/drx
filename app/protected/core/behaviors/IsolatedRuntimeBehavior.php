@@ -58,7 +58,7 @@
             {
                 $this->setPrivateRuntimePath($this->owner->getRuntimePath() . DIRECTORY_SEPARATOR . 'private');
             }
-            assert('isset($this->privateRuntimePath');
+            assert('isset($this->privateRuntimePath)');
             return $this->privateRuntimePath;
         }
 
@@ -85,7 +85,7 @@
             {
                 $this->setSharedRuntimePath($this->owner->getRuntimePath() . DIRECTORY_SEPARATOR . 'shared');
             }
-            assert('isset($this->sharedRuntimePath');
+            assert('isset($this->sharedRuntimePath)');
             return $this->sharedRuntimePath;
         }
 
