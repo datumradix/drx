@@ -82,9 +82,9 @@
             $cacheDirectories       = array(
                 array(  'path'                  => Yii::app()->assetManager->getBasePath(),
                     'removeDirectoryItself' => false),
-                array(  'path'                 => Yii::getPathOfAlias('application.runtime.themes'),
+                array(  'path'                 => Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'themes',
                     'removeDirectoryItself' => false),
-                array(  'path'                 => Yii::getPathOfAlias('application.runtime.minscript.cache'),
+                array(  'path'                 => Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'minscript.cache',
                     'removeDirectoryItself' => false));
             return $cacheDirectories;
         }

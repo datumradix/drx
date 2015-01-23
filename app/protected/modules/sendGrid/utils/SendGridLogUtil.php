@@ -37,6 +37,12 @@
     class SendGridLogUtil
     {
         /**
+         * Path to sendGrid logs directory
+         * @var null
+         */
+        protected static $logsPath  = null;
+
+        /**
          * Write log for send
          * @param string $apiUsername
          */
@@ -65,12 +71,24 @@
          */
         public static function getLogFilePath($apiUsername)
         {
-            $logDir = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs';
-            if (!file_exists($logDir))
+            return static::getLogsPath() . DIRECTORY_SEPARATOR . $apiUsername . '-sendgrid.log';
+        }
+
+        protected static function getLogsPath()
+        {
+            if(static::$logsPath === null)
             {
-                mkdir($logDir);
+                static::setLogsPath(Yii::app()->getPrivateRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs');
             }
-            return $logDir . DIRECTORY_SEPARATOR . $apiUsername . '-sendgrid.log';
+            return static::$logsPath;
+        }
+
+        protected static function setLogsPath($path)
+        {
+            if (!FileUtil::directoryExistsAndIsWritable($path))
+                throw new CException(Zurmo::t('yii', 'Application SendGrid logs path "{path}" is not valid.',
+                                                        array('{path}' => $path)));
+            static::$logsPath   = $path;
         }
 
         /**
