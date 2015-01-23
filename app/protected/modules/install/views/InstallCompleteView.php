@@ -77,7 +77,7 @@
             $content .= '<div id="complete-table" style="display:none;">';
             $content .= '<table><tr><td>';
             $content .= Zurmo::t('InstallModule', 'Congratulations! The installation of Zurmo is complete.',
-                                            InstallUtil::getZurmoLabelParam());
+                                            LabelUtil::getZurmoLabelParam());
             $content .= '<br/>';
             $content .= '<br/>';
             $content .= Zurmo::t('InstallModule', 'Click below to go to the login page. The username is <b>super</b>');

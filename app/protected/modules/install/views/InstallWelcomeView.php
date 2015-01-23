@@ -62,7 +62,7 @@
             $content .= '<table><tr><td>';
             $content .= Zurmo::t('InstallModule', 'Welcome to Zurmo. Before getting started, we need some information ' .
                                           'on the database. You will need to know the following items before proceeding:',
-                                            InstallUtil::getZurmoLabelParam());
+                                            LabelUtil::getZurmoLabelParam());
             $content .= '<br/>';
             $content .= '<br/>';
             $content .= '<ul>';
