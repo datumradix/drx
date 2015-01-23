@@ -42,6 +42,7 @@
         'sourceLanguage'    => 'en',
 
         'behaviors' => array(
+            'application.core.behaviors.IsolatedRuntimeBehavior',
             'onBeginRequest' => array(
                 'class' => 'application.modules.zurmo.components.BeginRequestBehavior'
             ),
