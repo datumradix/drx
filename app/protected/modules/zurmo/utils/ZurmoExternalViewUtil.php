@@ -178,7 +178,7 @@
             $dom = new DOMDocument();
             libxml_use_internal_errors(true);
             $dom->loadHTML('<?xml encoding="UTF-8">' . $rawXHtml);
-            $externalScriptFilePath = Yii::getPathOfAlias('application.runtime.uploads') .
+            $externalScriptFilePath = Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'uploads' .
                                       DIRECTORY_SEPARATOR . self::EXTERNAL_SCRIPT_FILE_NAME;
             $publishedUrl = Yii::app()->getAssetManager()->getPublishedUrl($externalScriptFilePath);
             if ($publishedUrl === false || file_exists($publishedUrl) === false)
@@ -257,11 +257,13 @@
                 }
             }
             $scriptFileName = self::EXTERNAL_SCRIPT_FILE_NAME;
-            if (!is_dir(Yii::getPathOfAlias('application.runtime.assets')))
+            $assetsPath  = Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'assets';
+            if (!FileUtil::directoryExistsAndIsWritable($assetsPath))
             {
-                mkdir(Yii::getPathOfAlias('application.runtime.assets'), 0755, true);
+                throw new CException(Zurmo::t('yii', 'Application assets shared runtime path "{path}" is not valid.',
+                                                array('{path}' => $assetsPath)));
             }
-            $scriptFilePath = Yii::getPathOfAlias('application.runtime.assets') . DIRECTORY_SEPARATOR . $scriptFileName;
+            $scriptFilePath = $assetsPath . DIRECTORY_SEPARATOR . $scriptFileName;
             $fp             = fopen($scriptFilePath, 'w');
             fwrite($fp, $fileContents);
             fclose($fp);

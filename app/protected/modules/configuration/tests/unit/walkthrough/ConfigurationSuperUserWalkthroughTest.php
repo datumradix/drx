@@ -74,8 +74,8 @@
             {
                 $this->assertTrue(
                     // this can happen if minScript dir does not exist
-                    strpos($content, "The application.log runtime file is writable.<br />\n" .
-                                            "The /minScript/cache runtime directory is not writable.<br />\n" .
+                    strpos($content, "The application.log private runtime file is writable.<br />\n" .
+                                            "The /minScript/cache shared runtime directory is not writable.<br />\n" .
                                             "The debug.php file is present.") !== false ||
                     // this happens on CI servers
                     strpos($content, "Host Info/Script Url is incorrectly configured.") !== false

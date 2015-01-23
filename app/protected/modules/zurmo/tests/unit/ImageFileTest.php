@@ -95,23 +95,23 @@
 
         public function testGetImageCachePath()
         {
-            $imageFile = ImageFileModel::getById($this->imageFile1Id);
-            $expectedPath = Yii::getPathOfAlias('application.runtime.uploads') . DIRECTORY_SEPARATOR .
-                                    $imageFile->getImageCacheFileName();
+            $imageFile      = ImageFileModel::getById($this->imageFile1Id);
+            $uploadsPath    = Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'uploads';
+            $expectedPath   = $uploadsPath. DIRECTORY_SEPARATOR . $imageFile->getImageCacheFileName();
             $this->assertEquals($expectedPath, $imageFile->getImageCachePath());
-            $expectedPath = Yii::getPathOfAlias('application.runtime.uploads') . DIRECTORY_SEPARATOR .
-                                    ImageFileModel::THUMB_FILE_NAME_PREFIX . $imageFile->getImageCacheFileName();
+            $expectedPath = $uploadsPath . DIRECTORY_SEPARATOR . ImageFileModel::THUMB_FILE_NAME_PREFIX .
+                                $imageFile->getImageCacheFileName();
             $this->assertEquals($expectedPath, $imageFile->getImageCachePath(true));
         }
 
         public function tesGetImageCachePathByFileName()
         {
-            $imageFile = ImageFileModel::getById($this->imageFile1Id);
-            $expectedPath = Yii::getPathOfAlias('application.runtime.uploads') . DIRECTORY_SEPARATOR .
-                $imageFile->getImageCacheFileName();
+            $imageFile      = ImageFileModel::getById($this->imageFile1Id);
+            $uploadsPath    = Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'uploads';
+            $expectedPath   = $uploadsPath . DIRECTORY_SEPARATOR . $imageFile->getImageCacheFileName();
             $this->assertEquals($expectedPath,
                                 ImageFileModel::getImageCachePathByFileName($imageFile->getImageCacheFileName(), false));
-            $expectedPath = Yii::getPathOfAlias('application.runtime.uploads') . DIRECTORY_SEPARATOR .
+            $expectedPath   = $uploadsPath . DIRECTORY_SEPARATOR .
                 ImageFileModel::THUMB_FILE_NAME_PREFIX . $imageFile->getImageCacheFileName();
             $this->assertEquals($expectedPath,
                                 ImageFileModel::getImageCachePathByFileName($imageFile->getImageCacheFileName(), true));

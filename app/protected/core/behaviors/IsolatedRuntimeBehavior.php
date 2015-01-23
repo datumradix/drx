@@ -34,48 +34,72 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * Checks if the file permissions after installation are correct.
-     */
-    class FilePermissionsAfterInstallServiceHelper extends ServiceHelper
+    class IsolatedRuntimeBehavior extends CBehavior
     {
-        protected function checkService()
+        /**
+         * Path of the directory containing private runtime entities
+         * @var string
+         */
+        protected $privateRuntimePath;
+
+        /**
+         * Path of the directory containing shared runtime entities
+         * @var string
+         */
+        protected $sharedRuntimePath;
+
+        /**
+         * @return mixed|null
+         * @throws CException
+         */
+        public function getPrivateRuntimePath()
         {
-            $passed = true;
-            $applicationLogWritable =  InstallUtil::isApplicationLogPrivateRuntimeWritable(INSTANCE_ROOT);
-            if ($applicationLogWritable)
+            if($this->privateRuntimePath === null)
             {
-                $this->message  = Zurmo::t('InstallModule', 'The application.log private runtime file is writable.');
+                $this->setPrivateRuntimePath($this->owner->getRuntimePath() . DIRECTORY_SEPARATOR . 'private');
             }
-            else
+            assert('isset($this->privateRuntimePath');
+            return $this->privateRuntimePath;
+        }
+
+        /**
+         * @param $path
+         * @throws CException
+         */
+        public function setPrivateRuntimePath($path)
+        {
+            assert('isset($path)');
+            if (!FileUtil::directoryExistsAndIsWritable($path))
+                throw new CException(Zurmo::t('yii', 'Application private runtime path "{path}" is not valid.',
+                                                        array('{path}' => $path)));
+            $this->privateRuntimePath      = $path;
+        }
+
+        /**
+         * @return null
+         * @throws CException
+         */
+        public function getSharedRuntimePath()
+        {
+            if($this->sharedRuntimePath === null)
             {
-                $this->message  = Zurmo::t('InstallModule', 'The application.log private runtime file is not writable.');
-                $passed = false;
+                $this->setSharedRuntimePath($this->owner->getRuntimePath() . DIRECTORY_SEPARATOR . 'shared');
             }
-            if (!extension_loaded('apc'))
-            {
-                $minScriptCacheDirectoryWritable = InstallUtil::isMinScriptCacheSharedRuntimeDirectoryWritable(INSTANCE_ROOT);
-                if ($minScriptCacheDirectoryWritable)
-                {
-                    $this->message  .= "\n" . Zurmo::t('InstallModule', 'The /minScript/cache shared runtime directory is writable.');
-                }
-                else
-                {
-                    $this->message  .= "\n" . Zurmo::t('InstallModule', 'The /minScript/cache shared runtime directory is not writable.');
-                    $passed = false;
-                }
-            }
-            $debugExists =  InstallUtil::doesDebugConfigExist(INSTANCE_ROOT);
-            if ($debugExists)
-            {
-                $this->message  .= "\n" . Zurmo::t('InstallModule', 'The debug.php file is present.');
-            }
-            else
-            {
-                $this->message  .= "\n" . Zurmo::t('InstallModule', 'The debug.php file is not present.');
-                $passed = false;
-            }
-            return $passed;
+            assert('isset($this->sharedRuntimePath');
+            return $this->sharedRuntimePath;
+        }
+
+        /**
+         * @param $path
+         * @throws CException
+         */
+        public function setSharedRuntimePath($path)
+        {
+            assert('isset($path)');
+            if (!FileUtil::directoryExistsAndIsWritable($path))
+                throw new CException(Zurmo::t('yii', 'Application shared runtime path "{path}" is not valid.',
+                                                        array('{path}' => $path)));
+            $this->sharedRuntimePath   = $path;
         }
     }
 ?>
