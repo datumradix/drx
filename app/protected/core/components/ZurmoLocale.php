@@ -125,7 +125,7 @@
             }
             else
             {
-                throw new CException(Zurmo::t('yii', 'Unrecognized locale "{locale}".', array('{locale}' => $id)));
+                throw new CException(Zurmo::t('Core', 'Unrecognized locale "{locale}".', array('{locale}' => $id)));
             }
          }
 

@@ -86,7 +86,7 @@
         protected static function setLogsPath($path)
         {
             if (!FileUtil::directoryExistsAndIsWritable($path))
-                throw new CException(Zurmo::t('yii', 'Application SendGrid logs path "{path}" is not valid.',
+                throw new CException(Zurmo::t('Core', 'Application SendGrid logs path "{path}" is not valid.',
                                                         array('{path}' => $path)));
             static::$logsPath   = $path;
         }

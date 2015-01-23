@@ -181,7 +181,7 @@
             $path   = rtrim(static::getPathToCachedFiles(), '/');
             if (!FileUtil::directoryExistsAndIsWritable($path))
             {
-                throw new CException(Zurmo::t('yii', 'Application uploads path "{path}" is not valid.',
+                throw new CException(Zurmo::t('Core', 'Application uploads path "{path}" is not valid.',
                                                         array('{path}' => $path)));
             }
         }

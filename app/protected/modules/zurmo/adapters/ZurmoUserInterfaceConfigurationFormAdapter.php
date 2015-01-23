@@ -196,7 +196,7 @@
             $uploadsPath        = Yii::app()->getSharedRuntimePath() . DIRECTORY_SEPARATOR . 'uploads';
             if (!FileUtil::directoryExistsAndIsWritable($uploadsPath))
             {
-                throw new CException(Zurmo::t('yii', 'Application uploads path "{path}" is not valid.',
+                throw new CException(Zurmo::t('Core', 'Application uploads path "{path}" is not valid.',
                                                         array('{path}' => $uploadsPath)));
             }
             copy($logoFilePath, $uploadsPath . DIRECTORY_SEPARATOR . $logoFileName);
