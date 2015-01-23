@@ -204,5 +204,20 @@
                 rmdir($directory);
             }
         }
+
+        /**
+         * Create a directory and ensure absolute mode regardless of umask
+         * @param $path
+         * @param int $mode
+         * @param bool $recursive
+         * @return bool
+         */
+        public static function makeDirectory($path, $mode = 0777, $recursive = false)
+        {
+            $oldMask = umask(0);
+            $result = @mkdir($path, $mode, $recursive);
+            umask($oldMask);
+            return $result;
+        }
     }
 ?>

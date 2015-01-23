@@ -68,7 +68,7 @@
             $logDir = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'sendgridLogs';
             if (!file_exists($logDir))
             {
-                mkdir($logDir);
+                FileUtil::makeDirectory($logDir);
             }
             return $logDir . DIRECTORY_SEPARATOR . $apiUsername . '-sendgrid.log';
         }

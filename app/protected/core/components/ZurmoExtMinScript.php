@@ -59,17 +59,17 @@
             $this -> _minifyDir = $minifyDir;
             if (!extension_loaded('apc'))
             {
-              $cachePath = Yii::app() -> runtimePath . '/minScript/cache';
+              $cachePath = Yii::app()->getRuntimePath() . '/minScript/cache';
               if (!is_dir($cachePath))
               {
-                  mkdir($cachePath, 0777, true);
+                  FileUtil::makeDirectory($cachePath, 0777, true);
               }
               elseif (!is_writable($cachePath))
               {
                   throw new CException('ext.minScript: ' . $cachePath . ' is not writable.');
               }
-              chmod(Yii::app() -> runtimePath . '/minScript' , 0777);
-              chmod(Yii::app() -> runtimePath . '/minScript/cache' , 0777);
+              chmod(Yii::app()->getRuntimePath() . '/minScript' , 0777);
+              chmod(Yii::app()->getRuntimePath(). '/minScript/cache' , 0777);
             }
             $this -> _processGroupMap();
             $this -> _readOnlyGroupMap = true;
