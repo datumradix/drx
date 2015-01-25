@@ -228,7 +228,7 @@
                 'class' => 'CLogRouter',
                 'routes' => array(
                     array(
-                        'class'  => 'CFileLogRoute',
+                        'class'  => 'application.core.components.ZurmoFileLogRoute',
                         'levels' => 'error, warning',
                     ),
                 ),
