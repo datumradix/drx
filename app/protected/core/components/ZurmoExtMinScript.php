@@ -65,8 +65,8 @@
                   throw new CException('ext.minScript: ' . $cachePath . ' is not writable.');
               }
                 // TODO: @Shoaibi: Critical: We should not need the following
-              chmod(Yii::app()->getSharedRuntimePath() . '/minScript' , 0777);
-              chmod(Yii::app()->getSharedRuntimePath(). '/minScript/cache' , 0777);
+                @chmod($cachePath . '../' , 0777);
+                @chmod($cachePath , 0777);
             }
             $this -> _processGroupMap();
             $this -> _readOnlyGroupMap = true;
