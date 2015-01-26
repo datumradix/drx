@@ -36,18 +36,36 @@
 
     /**
      * Filter used by user controller to ascertain whether user has setup their primary email address.
+     * controller and userId parameters must be set when this filter is added to chain.
      */
     class UserHasPrimaryEmailAddressControllerFilter extends CFilter
     {
         public $controller;
+        public $userId;
 
+        /**
+         * Check if user set their primary email address.
+         * @param CFilterChain $filterChain
+         * @return bool
+         * @throws NotFoundException
+         * @throws NotSupportedException
+         */
         protected function preFilter($filterChain)
         {
+            if ($this->userId != null)
+            {
+                $user  = User::getById($this->userId);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+
             if (isset($_POST['ajax']))
             {
                 return true;
             }
-            if (Yii::app()->user->userModel->primaryEmail->emailAddress != null)
+            if ($user->primaryEmail->emailAddress != null)
             {
                 return true;
             }

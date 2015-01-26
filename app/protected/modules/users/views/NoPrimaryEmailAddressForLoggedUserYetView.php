@@ -35,7 +35,7 @@
      ********************************************************************************/
 
     /**
-     * View  for showing in the user interface when logged user has not primary email address.
+     * View  for showing in the user interface when user has not primary email address.
      */
     class NoPrimaryEmailAddressForLoggedUserYetView extends View
     {
@@ -43,7 +43,7 @@
 
         protected function renderContent()
         {
-            $url     = Yii::app()->createUrl('/users/default/edit', array('id' => Yii::app()->user->userModel->id));
+            $url     = Yii::app()->createUrl('/users/default/edit', array('id' => Yii::app()->request->getParam('id')));
             $content  = '<div class="' . $this->getIconName() . '">';
             $content .= $this->getMessageContent();
             $content .= ZurmoHtml::link(ZurmoHtml::wrapLabel($this->getCreateLinkDisplayLabel()), $url, array('class' => 'z-button green-button'));
