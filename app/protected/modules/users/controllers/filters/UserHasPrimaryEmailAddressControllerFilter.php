@@ -70,7 +70,7 @@
                 return true;
             }
 
-            $messageView                  = new NoPrimaryEmailAddressForLoggedUserYetView();
+            $messageView                  = new NoPrimaryEmailAddressForLoggedUserYetView($this->userId);
             $pageViewClassName            = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
             $view                         = new $pageViewClassName(ZurmoDefaultViewUtil::
             makeStandardViewForCurrentUser($this->controller, $messageView));

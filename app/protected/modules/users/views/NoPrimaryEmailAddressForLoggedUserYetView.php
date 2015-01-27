@@ -41,9 +41,15 @@
     {
         public $cssClasses = array('splash-view');
 
+        protected $userId;
+
+        public function __construct($userId)
+        {
+            $this->userId = $userId;
+        }
         protected function renderContent()
         {
-            $url     = Yii::app()->createUrl('/users/default/edit', array('id' => Yii::app()->request->getParam('id')));
+            $url     = Yii::app()->createUrl('/users/default/edit', array('id' => $this->userId));
             $content  = '<div class="' . $this->getIconName() . '">';
             $content .= $this->getMessageContent();
             $content .= ZurmoHtml::link(ZurmoHtml::wrapLabel($this->getCreateLinkDisplayLabel()), $url, array('class' => 'z-button green-button'));
