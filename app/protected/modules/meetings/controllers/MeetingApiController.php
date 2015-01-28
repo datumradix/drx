@@ -83,5 +83,72 @@
             $result    =  $this->processGetManyManyRelationshipModels($params['data']);
             Yii::app()->apiHelper->sendResponse($result);
         }
+        
+        /**
+         * Get all contact attendees for specified meeting
+         */
+        public function actionGetContactAttendees()
+        {
+            $params     = Yii::app()->apiRequest->getParams();
+            $result     =  $this->processGetManyManyRelationshipModelsForOneModelClassNameWhenMultipleArePossible(
+                                                                                        $params['data'], 'Contact');
+            Yii::app()->apiHelper->sendResponse($result);
+        }
+        
+        public function processGetManyManyRelationshipModelsForOneModelClassNameWhenMultipleArePossible($params, 
+                                                                                        $relationModelClassName)
+        {
+            try
+            {
+                $modelId        = $params['id'];
+                $relationName   = $params['relationName'];
+                $modelClassName = $params['modelClassName'];
+
+                if (!class_exists($modelClassName, false))
+                {
+                    $message = Zurmo::t('ZurmoModule', 'The specified class name was invalid.');
+                    throw new ApiException($message);
+                }
+                try
+                {
+                    $model = $modelClassName::getById(intval($modelId));
+                }
+                catch (NotFoundException $e)
+                {
+                    $message = Zurmo::t('ZurmoModule', 'The ID specified was invalid.');
+                    throw new ApiException($message);
+                }
+
+                if ($model->isRelation($relationName) &&
+                    $model->getRelationType($relationName) == RedBeanModel::MANY_MANY)
+                {
+                    $data = array();
+                    foreach ($model->{$relationName} as $item)
+                    {
+                        try
+                        {
+                            $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem($relationModelClassName);
+                            $castedDownModel           = $item->castDown(array($modelDerivationPathToItem));
+                            $data[$relationName][] = array('class' => $relationModelClassName, 'id' => $castedDownModel->id);
+                        }
+                        catch (NotFoundException $e)
+                        {
+                        }
+                    }
+                    $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+                }
+                else
+                {
+                    $message = Zurmo::t('ZurmoModule', 'The specified relationship name does not exist or is not MANY_MANY type.');
+                    throw new ApiException($message);
+                }
+            }
+            catch (Exception $e)
+            {
+                $message = $e->getMessage();
+                throw new ApiException($message);
+            }
+            return $result;
+        }
     }
 ?>
