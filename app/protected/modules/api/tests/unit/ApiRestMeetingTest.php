@@ -1370,6 +1370,68 @@
             $this->assertEquals('The specified relationship name does not exist or is not MANY_MANY type.', $response['message']);
         }
 
+        public function testGetManyManyRelationshipModelIdsForOneModelClassNameWhenMultipleArePossible()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $contact1 = ContactTestHelper::createContactByNameForOwner('TestContact1', $super);
+            $contact2 = ContactTestHelper::createContactByNameForOwner('TestContact2', $super);
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $meeting = MeetingTestHelper::createMeetingByNameForOwner('Meeting With User Attendees', $super);
+            $data = array(
+                'id' => $meeting->id,
+                'modelClassName' => 'Meeting',
+                'relationName' => 'activityItems',
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getContactAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEmpty($response['data']);
+
+            $meeting->activityItems->add($contact1);
+            $meeting->activityItems->add($contact2);
+            $this->assertTrue($meeting->save());
+            $response = $this->createApiCallWithRelativeUrl('getContactAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals(2, count($response['data']['activityItems']));
+            $this->assertEquals('Contact', $response['data']['activityItems'][0]['class']);
+            $this->assertEquals($contact1->id, $response['data']['activityItems'][0]['id']);
+            $this->assertEquals('Contact', $response['data']['activityItems'][1]['class']);
+            $this->assertEquals($contact2->id, $response['data']['activityItems'][1]['id']);
+
+            $data = array(
+                'id' => $meeting->id,
+                'modelClassName' => 'NonExistingModel',
+                'relationName' => 'activityItems',
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getContactAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
+            $this->assertEquals('The specified class name was invalid.', $response['message']);
+
+            $data = array(
+                'id' => $meeting->id,
+                'modelClassName' => 'Meeting',
+                'relationName' => 'owner', // This is not MANY_MANY relationship
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('getContactAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
+            $this->assertEquals('The specified relationship name does not exist or is not MANY_MANY type.', $response['message']);
+        }
+        
         protected function getApiControllerClassName()
         {
             Yii::import('application.modules.meetings.controllers.MeetingApiController', true);
