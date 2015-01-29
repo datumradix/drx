@@ -73,75 +73,34 @@
             $result    =  $this->processGetModifiedItems($params['data']);
             Yii::app()->apiHelper->sendResponse($result);
         }
-
-        /**
-         * Get all user attendees for specified meeting
-         */
-        public function actionGetUserAttendees()
-        {
-            $params = Yii::app()->apiRequest->getParams();
-            $result    =  $this->processGetManyManyRelationshipModels($params['data']);
-            Yii::app()->apiHelper->sendResponse($result);
-        }
         
         /**
-         * Get all contact attendees for specified meeting
+         * Get all meetings attendees including users, contacts, opportunities and accounts
          */
-        public function actionGetContactAttendees()
+        public function actionGetAttendees()
         {
             $params     = Yii::app()->apiRequest->getParams();
-            $result     =  $this->processGetManyManyRelationshipModelsForOneModelClassNameWhenMultipleArePossible(
-                                                                                        $params['data'], 'Contact');
+            $result     =  $this->processAttendees($params['data']);
             Yii::app()->apiHelper->sendResponse($result);
         }
-        
-        public function processGetManyManyRelationshipModelsForOneModelClassNameWhenMultipleArePossible($params, 
-                                                                                        $relationModelClassName)
+
+        /**
+         * Get all attendees
+         * Function get user attendees and attendees from activity items and merge them into one array
+         * @param $params
+         * @return ApiResult
+         * @throws ApiException
+         */
+        protected function processAttendees($params)
         {
             try
             {
-                $modelId        = $params['id'];
-                $relationName   = $params['relationName'];
-                $modelClassName = $params['modelClassName'];
-
-                if (!class_exists($modelClassName, false))
-                {
-                    $message = Zurmo::t('ZurmoModule', 'The specified class name was invalid.');
-                    throw new ApiException($message);
-                }
-                try
-                {
-                    $model = $modelClassName::getById(intval($modelId));
-                }
-                catch (NotFoundException $e)
-                {
-                    $message = Zurmo::t('ZurmoModule', 'The ID specified was invalid.');
-                    throw new ApiException($message);
-                }
-
-                if ($model->isRelation($relationName) &&
-                    $model->getRelationType($relationName) == RedBeanModel::MANY_MANY)
-                {
-                    $data = array();
-                    foreach ($model->{$relationName} as $item)
-                    {
-                        try
-                        {
-                            $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem($relationModelClassName);
-                            $castedDownModel           = $item->castDown(array($modelDerivationPathToItem));
-                            $data[$relationName][] = array('class' => $relationModelClassName, 'id' => $castedDownModel->id);
-                        }
-                        catch (NotFoundException $e)
-                        {
-                        }
-                    }
-                    $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
-                }
-                else
-                {
-                    $message = Zurmo::t('ZurmoModule', 'The specified relationship name does not exist or is not MANY_MANY type.');
-                    throw new ApiException($message);
-                }
+                $meetingId            = $params['id'];
+                $meeting               = Meeting::getById(intval($meetingId));
+                $activityItemAttendees = $this->getAttendeesFromActivityItems($meeting);
+                $userAttendees         = $this->getUserAttendees($meeting);
+                $data                  = array_merge($activityItemAttendees, $userAttendees);
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
             }
             catch (Exception $e)
             {
@@ -149,6 +108,58 @@
                 throw new ApiException($message);
             }
             return $result;
+
+        }
+
+        /**
+         * Get user attendees
+         * @param $meeting
+         * @return array
+         */
+        protected function getUserAttendees($meeting)
+        {
+            $data         = array();
+            foreach ($meeting->userAttendees as $item)
+            {
+                $data['User'][] = array('id' => $item->id);
+            }
+            return $data;
+        }
+
+        /**
+         * Get meeting attendees from activity items. It returns Contact, Opportunity or Account ids
+         * @param $meeting
+         * @return array
+         * @throws Exception
+         */
+        public function getAttendeesFromActivityItems($meeting)
+        {
+            $data         = array();
+            $activityClassNames = ActivitiesUtil::getActivityItemsModelClassNames();
+            try
+            {
+                foreach ($activityClassNames as $activityClassName)
+                {
+                    foreach ($meeting->activityItems as $activityItem)
+                    {
+                        try
+                        {
+                            $modelDerivationPathToItem  = RuntimeUtil::getModelDerivationPathToItem($activityClassName);
+                            $castedDownModel            = $activityItem->castDown(array($modelDerivationPathToItem));
+                            $data[$activityClassName][] = array('id' => $castedDownModel->id);
+                        }
+                        catch (NotFoundException $e)
+                        {
+                        }
+                    }
+                }
+            }
+            catch (Exception $e)
+            {
+                $message = $e->getMessage();
+                throw new Exception($message);
+            }
+            return $data;
         }
     }
 ?>
