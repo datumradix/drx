@@ -190,7 +190,10 @@
                         }
                     }
                 }
-                $model->sentDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+                if (!isset($data['sentDateTime']))
+                {
+                    $model->sentDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+                }
                 
                 $this->setModelScenarioFromData($model, $data);
                 $model = $this->attemptToSaveModelFromData($model, $data, null, false);
@@ -214,6 +217,17 @@
                 throw new ApiException($message);
             }
             return $result;
+        }
+        
+        /**
+         * Returns data array for provided model, only id currently
+         * @param RedBeanModel $model
+         * @return array
+         */
+        protected static function getModelToApiDataUtilData(RedBeanModel $model)
+        {
+            $data = array('id' => $model->id);
+            return $data;
         }
         
         /**

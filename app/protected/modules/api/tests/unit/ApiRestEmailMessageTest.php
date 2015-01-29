@@ -232,6 +232,65 @@
             $this->assertEquals(2, count($emailMessage->recipients));
         }
         
+        public function testCreateEmailMessageWithSpecificSentDateTime()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $data['subject']                = 'Test 1 Subject';
+            $data['textContent']            = 'Test 1 Text Content';
+            $data['htmlContent']            = 'Test 1 Html Content';
+            $data['sentDateTime']           = '1970-01-01 00:00:01';
+            $data['sentFrom']['email']      = 'senderTest@zurmo.com';
+            $data['recipients']             = array(
+                'to' => array(
+                    array('name'=>'TO1','email'=>'to1@zurmo.com'),
+                    array('name'=>'TO2','email'=>'to2@zurmo.com')
+                ),
+            );
+            
+            $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertArrayHasKey('id', $response['data']);
+            $emailMessageId     = $response['data']['id'];
+            $emailMessage = EmailMessage::getById($emailMessageId);
+            
+            $this->assertEquals('Test 1 Subject', $emailMessage->subject);
+            $this->assertEquals('Test 1 Text Content', $emailMessage->content->textContent);
+            $this->assertEquals('Test 1 Html Content', $emailMessage->content->htmlContent);
+            $this->assertEquals('1970-01-01 00:00:01', $emailMessage->sentDateTime);
+            $this->assertEquals('senderTest@zurmo.com', $emailMessage->sender->fromAddress);
+            
+            //Test with invalid sentDateTime
+            $data['subject']                = 'Test 1 Subject';
+            $data['textContent']            = 'Test 1 Text Content';
+            $data['htmlContent']            = 'Test 1 Html Content';
+            $data['sentDateTime']           = '1970-01-01 00:0';//invalid DateTime
+            $data['sentFrom']['email']      = 'senderTest@zurmo.com';
+            $data['recipients']             = array(
+                'to' => array(
+                    array('name'=>'TO1','email'=>'to1@zurmo.com'),
+                    array('name'=>'TO2','email'=>'to2@zurmo.com')
+                ),
+            );
+            
+            $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
+            $this->assertEquals('Model was not created.', $response['message']);
+            $this->assertArrayHasKey('sentDateTime', $response['errors']);
+            $this->assertEquals('Sent Date Time must be datetime.', $response['errors']['sentDateTime'][0]);
+        }
+        
         public function testCreateEmailMessageWithAttachments()
         {
             $super = User::getByUsername('super');
@@ -273,6 +332,55 @@
             $this->assertEquals('Test 1 Html Content', $emailMessage->content->htmlContent);
             $this->assertEquals('senderTest@zurmo.com', $emailMessage->sender->fromAddress);
             $this->assertEquals(3, count($emailMessage->files));
+        }
+        
+        public function testCreateEmailMessageWithBinaryAttachments()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $data['subject']                = 'Test 1 Subject';
+            $data['textContent']            = 'Test 1 Text Content';
+            $data['htmlContent']            = 'Test 1 Html Content';
+            $data['sentFrom']['email']      = 'senderTest@zurmo.com';
+            $data['recipients']             = array(
+                'to' => array(
+                    array('name'=>'TO1','email'=>'to1@zurmo.com'),
+                    array('name'=>'TO2','email'=>'to2@zurmo.com')
+                ),
+            );
+            $pathToFiles = Yii::getPathOfAlias('application.modules.api.tests.unit.files');
+            $filePath_1    = $pathToFiles . DIRECTORY_SEPARATOR . 'table.csv';
+            $filePath_2    = $pathToFiles . DIRECTORY_SEPARATOR . 'image.png';
+            $filePath_3    = $pathToFiles . DIRECTORY_SEPARATOR . 'text.txt';
+            $filePath_4    = $pathToFiles . DIRECTORY_SEPARATOR . 'text.abc';
+            $data['attachments']             = array(
+                array('fileName'=>'table.csv','fileData'=>file_get_contents($filePath_1)),//extension not allowed
+                array('fileName'=>'image.png','fileData'=>file_get_contents($filePath_2)),
+                array('fileName'=>'text.txt','fileData'=>file_get_contents($filePath_3)),
+                array('fileName'=>'text.abc','fileData'=>file_get_contents($filePath_4)),//extension not allowed
+            );
+            
+            $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertArrayHasKey('id', $response['data']);
+            $emailMessageId     = $response['data']['id'];
+            $emailMessage = EmailMessage::getById($emailMessageId);
+            
+            $this->assertEquals('Test 1 Subject', $emailMessage->subject);
+            $this->assertEquals('Test 1 Text Content', $emailMessage->content->textContent);
+            $this->assertEquals('Test 1 Html Content', $emailMessage->content->htmlContent);
+            $this->assertEquals('senderTest@zurmo.com', $emailMessage->sender->fromAddress);
+            $this->assertEquals(2, count($emailMessage->files));
         }
         
         public function testCreateEmailMessageWithNotAllowedAttachmentExtensions()
