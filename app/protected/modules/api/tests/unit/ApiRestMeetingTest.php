@@ -1308,72 +1308,12 @@
             $this->assertContains($meetingId3, $response['data']['items']);
         }
 
-        public function testGetManyManyRelationshipModelIds()
+        public function testGetAttendees()
         {
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $alisa  = UserTestHelper::createBasicUser('Alisa');
-            $alicia = UserTestHelper::createBasicUser('Alicia');
-
-            $authenticationData = $this->login();
-            $headers = array(
-                'Accept: application/json',
-                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
-                'ZURMO_TOKEN: ' . $authenticationData['token'],
-                'ZURMO_API_REQUEST_TYPE: REST',
-            );
-
-            $meeting = MeetingTestHelper::createMeetingByNameForOwner('Meeting With User Attendees', $super);
-            $data = array(
-                'id' => $meeting->id,
-                'modelClassName' => 'Meeting',
-                'relationName' => 'userAttendees',
-            );
-
-            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
-            $response = json_decode($response, true);
-            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
-            $this->assertEmpty($response['data']);
-
-            $meeting->userAttendees->add($alisa);
-            $meeting->userAttendees->add($alicia);
-            $this->assertTrue($meeting->save());
-            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
-            $response = json_decode($response, true);
-            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
-            $this->assertEquals(2, count($response['data']['userAttendees']));
-            $this->assertEquals('User', $response['data']['userAttendees'][0]['class']);
-            $this->assertEquals($alisa->id, $response['data']['userAttendees'][0]['id']);
-            $this->assertEquals('User', $response['data']['userAttendees'][1]['class']);
-            $this->assertEquals($alicia->id, $response['data']['userAttendees'][1]['id']);
-
-            $data = array(
-                'id' => $meeting->id,
-                'modelClassName' => 'NonExistingModel',
-                'relationName' => 'userAttendees',
-            );
-
-            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
-            $response = json_decode($response, true);
-            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
-            $this->assertEquals('The specified class name was invalid.', $response['message']);
-
-            $data = array(
-                'id' => $meeting->id,
-                'modelClassName' => 'Meeting',
-                'relationName' => 'owner', // This is not MANY_MANY relationship
-            );
-
-            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
-            $response = json_decode($response, true);
-            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
-            $this->assertEquals('The specified relationship name does not exist or is not MANY_MANY type.', $response['message']);
-        }
-
-        public function testGetManyManyRelationshipModelIdsForOneModelClassNameWhenMultipleArePossible()
-        {
-            $super = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
+            $evelina  = UserTestHelper::createBasicUser('Evelina');
+            $amelia  = UserTestHelper::createBasicUser('Amelia');
             $contact1 = ContactTestHelper::createContactByNameForOwner('TestContact1', $super);
             $contact2 = ContactTestHelper::createContactByNameForOwner('TestContact2', $super);
 
@@ -1388,11 +1328,9 @@
             $meeting = MeetingTestHelper::createMeetingByNameForOwner('Meeting With User Attendees', $super);
             $data = array(
                 'id' => $meeting->id,
-                'modelClassName' => 'Meeting',
-                'relationName' => 'activityItems',
             );
 
-            $response = $this->createApiCallWithRelativeUrl('getContactAttendees/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getAttendees/', 'POST', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertEmpty($response['data']);
@@ -1400,36 +1338,26 @@
             $meeting->activityItems->add($contact1);
             $meeting->activityItems->add($contact2);
             $this->assertTrue($meeting->save());
-            $response = $this->createApiCallWithRelativeUrl('getContactAttendees/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getAttendees/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals(2, count($response['data']['Contact']));
+            $this->assertEquals($contact1->id, $response['data']['Contact'][0]['id']);
+            $this->assertEquals($contact2->id, $response['data']['Contact'][1]['id']);
+
+            $meeting->userAttendees->add($evelina);
+            $meeting->userAttendees->add($amelia);
+            $this->assertTrue($meeting->save());
+            $response = $this->createApiCallWithRelativeUrl('getAttendees/', 'POST', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
-            $this->assertEquals(2, count($response['data']['activityItems']));
-            $this->assertEquals('Contact', $response['data']['activityItems'][0]['class']);
-            $this->assertEquals($contact1->id, $response['data']['activityItems'][0]['id']);
-            $this->assertEquals('Contact', $response['data']['activityItems'][1]['class']);
-            $this->assertEquals($contact2->id, $response['data']['activityItems'][1]['id']);
-
-            $data = array(
-                'id' => $meeting->id,
-                'modelClassName' => 'NonExistingModel',
-                'relationName' => 'activityItems',
-            );
-
-            $response = $this->createApiCallWithRelativeUrl('getContactAttendees/', 'POST', $headers, array('data' => $data));
-            $response = json_decode($response, true);
-            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
-            $this->assertEquals('The specified class name was invalid.', $response['message']);
-
-            $data = array(
-                'id' => $meeting->id,
-                'modelClassName' => 'Meeting',
-                'relationName' => 'owner', // This is not MANY_MANY relationship
-            );
-
-            $response = $this->createApiCallWithRelativeUrl('getContactAttendees/', 'POST', $headers, array('data' => $data));
-            $response = json_decode($response, true);
-            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
-            $this->assertEquals('The specified relationship name does not exist or is not MANY_MANY type.', $response['message']);
+            $this->assertEquals(2, count($response['data']['Contact']));
+            $this->assertEquals($contact1->id, $response['data']['Contact'][0]['id']);
+            $this->assertEquals($contact2->id, $response['data']['Contact'][1]['id']);
+            $this->assertEquals(2, count($response['data']['User']));
+            $this->assertEquals($evelina->id, $response['data']['User'][0]['id']);
+            $this->assertEquals($amelia->id, $response['data']['User'][1]['id']);
         }
         
         protected function getApiControllerClassName()
