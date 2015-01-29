@@ -52,16 +52,9 @@
          */
         protected function processCreate($data)
         {
-            $modelClassName = $this->getModelName();
             try
             {
-                if (isset($data['modelRelations']))
-                {
-                    $modelRelations = $data['modelRelations'];
-                    unset($data['modelRelations']);
-                }
-                $model = new $modelClassName();
-                
+                $model = new EmailMessage();
                 $emailMessage = $this->getImapMessageFromEmailData($data);
                 if (isset($data['sentFrom']))
                 {
@@ -205,22 +198,7 @@
                 $model->forget();
                 if (!count($model->getErrors()))
                 {
-                    if (isset($modelRelations) && count($modelRelations))
-                    {
-                        try
-                        {
-                            $this->manageModelRelations($model, $modelRelations);
-                            $model->save();
-                        }
-                        catch (Exception $e)
-                        {
-                            $model->delete();
-                            $message = $e->getMessage();
-                            throw new ApiException($message);
-                        }
-                    }
-                    $model  = $modelClassName::getById($id);
-                    $data   = static::getModelToApiDataUtilData($model);
+                    $data = array('id' => $id);
                     $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
                 }
                 else
@@ -236,18 +214,6 @@
                 throw new ApiException($message);
             }
             return $result;
-        }
-        
-        /**
-         * Returns data array for provided model, only id currenlty
-         * @param RedBeanModel $model
-         * @return array
-         */
-        protected static function getModelToApiDataUtilData(RedBeanModel $model)
-        {
-            $data = array();
-            $data['id'] = $model->id;
-            return $data;
         }
         
         /**
@@ -398,7 +364,7 @@
         protected function createEmailAttachment($attachment)
         {
             // Save attachments
-            if ($attachment['fileName'] != null && $this->attachmentExtensionIsAllowed($attachment['fileName']))
+            if ($attachment['fileName'] != null && $this->isAttachmentExtensionAllowed($attachment['fileName']))
             {
                 $fileContent          = new FileContent();
                 $fileContent->content = $attachment['fileData'];
@@ -417,7 +383,7 @@
             }
         }
         
-        protected function attachmentExtensionIsAllowed($attachmentFileName)
+        protected function isAttachmentExtensionAllowed($attachmentFileName)
         {
             $allowed = array('doc','docx','xsl','xsls','pdf','gif','png','jpg','jpeg','txt');
             $filenameArray = explode('.', $attachmentFileName);
