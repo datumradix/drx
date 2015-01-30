@@ -58,7 +58,7 @@
          */
         public function resolveDefaultSerializerPath()
         {
-            return Yii::app()->getSharedRuntimePath();
+            return Yii::app()->getPrivateRuntimePath();
         }
 
         protected function getPurifierInstance()
@@ -70,7 +70,7 @@
         protected function resolveDefaultOptions()
         {
             return array('Cache.SerializerPermissions' => $this->resolveDefaultSerializerPermissions(),
-                        'Cache.SerializerPath', $this->resolveDefaultSerializerPath());
+                        'Cache.SerializerPath' => $this->resolveDefaultSerializerPath());
         }
 
         protected function resolveOptions()

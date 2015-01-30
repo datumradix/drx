@@ -35,6 +35,7 @@
      ********************************************************************************/
 
     Yii::import('application.extensions.esanitizer.ESanitizer');
+    Yii::import('application.core.components.ZurmoHtmlPurifier');
     class ZurmoSanitizer extends ESanitizer
     {
         /**
@@ -53,10 +54,6 @@
 
         protected function resolvePurifier()
         {
-            if (isset($this->purifier))
-            {
-                return;
-            }
             if (is_string($this->purifierClass) && @class_exists($this->purifierClass))
             {
                 $class              = $this->purifierClass;

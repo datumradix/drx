@@ -34,11 +34,41 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
+    Yii::import('application.core.components.ZurmoHtmlPurifier');
     /**
      * Loaded by application as Yii::app()->format
      */
     class Formatter extends CFormatter
     {
+        /**
+         * @var string
+         */
+        public $purifierClass;
+
+        /**
+         * @var object
+         */
+        protected $purifier;
+
+        /**
+         * @inheritdoc
+         */
+        public function getHtmlPurifier()
+        {
+            if (is_string($this->purifierClass) && @class_exists($this->purifierClass))
+            {
+                $class              = $this->purifierClass;
+                $this->purifier     = new $class();
+            }
+            else
+            {
+                $this->purifier     = new CHtmlPurifier();
+            }
+            $this->purifier->options    = $this->htmlPurifierOptions;
+            return $this->purifier;
+        }
+
+
         public function resolveForUrl($url)
         {
             if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0)

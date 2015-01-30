@@ -287,7 +287,7 @@
         {
            if ($htmlContent != null && $textContent == null)
            {
-               $purifier = new CHtmlPurifier;
+               $purifier = new ZurmoHtmlPurifier();
                $purifier->options = array('HTML.Allowed' => 'p,br'); // Not Coding Standard
                $textContent = $purifier->purify($htmlContent);
                $textContent = preg_replace('#<br\s*?/?>#i', "\n"  , $textContent);

@@ -173,7 +173,7 @@
                                             '%' => '%25',
                                             '<' => '&lt;',
                                             '>' => '&gt;');
-                $purifier           = new CHtmlPurifier();
+                $purifier           = new ZurmoHtmlPurifier();
                 $purifier->options  = array('Cache.SerializerPermissions' => 0777);
                 $purifiedText       = $purifier->purify($text);
                 foreach ($safeCharacters as $specialCharacter => $purifiedCode)
