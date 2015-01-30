@@ -58,7 +58,7 @@
          */
         public function resolveDefaultSerializerPath()
         {
-            return Yii::app()->getPrivateRuntimePath();
+            return Yii::app()->getSharedRuntimePath();
         }
 
         protected function getPurifierInstance()
