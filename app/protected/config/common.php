@@ -269,7 +269,8 @@
                 ),
             ),
             'sanitizer' => array(
-                'class'          => 'application.extensions.esanitizer.ESanitizer',
+                'class'          => 'application.core.components.ZurmoSanitizer',
+                'purifierClass'  => 'ZurmoHtmlPurifier',
                 'sanitizeGet'    => false, //off for now
                 'sanitizePost'   => false, //off for now
                 'sanitizeCookie' => false, //off for now
