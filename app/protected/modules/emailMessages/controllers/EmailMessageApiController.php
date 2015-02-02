@@ -35,13 +35,44 @@
      ********************************************************************************/
 
     /**
-    * EmailMessage API Controller
-    */
+     * EmailMessage API Controller
+     * Allow only Email Message creation via API
+     */
     class EmailMessagesEmailMessageApiController extends ZurmoSecurableItemApiController
     {
-        protected static function getSearchFormClassName()
+        public function actionRead()
         {
-            return 'EmailMessagesSearchForm';
+            throw new ApiUnsupportedException();
+        }
+
+        public function actionUpdate()
+        {
+            throw new ApiUnsupportedException();
+        }
+
+        public function actionDelete()
+        {
+            throw new ApiUnsupportedException();
+        }
+
+        public function actionList()
+        {
+            throw new ApiUnsupportedException();
+        }
+
+        public function actionSearch()
+        {
+            throw new ApiUnsupportedException();
+        }
+
+        public function actionAddRelation()
+        {
+            throw new ApiUnsupportedException();
+        }
+
+        public function actionRemoveRelation()
+        {
+            throw new ApiUnsupportedException();
         }
         
         /**
@@ -73,7 +104,7 @@
                     }
                     catch (CException $e)
                     {
-                        $message = Zurmo::t('ZurmoModule', 'User owner not found.');
+                        $message = Zurmo::t('ZurmoModule', 'Owner not found.');
                         throw new ApiException($message);
                     }
                 }
@@ -101,7 +132,7 @@
                 }
                 else
                 {
-                    $message = Zurmo::t('ZurmoModule', 'User sender not found.');
+                    $message = Zurmo::t('ZurmoModule', 'Sender not found.');
                     throw new ApiException($message);
                 }
                 
@@ -217,17 +248,6 @@
                 throw new ApiException($message);
             }
             return $result;
-        }
-        
-        /**
-         * Returns data array for provided model, only id currently
-         * @param RedBeanModel $model
-         * @return array
-         */
-        protected static function getModelToApiDataUtilData(RedBeanModel $model)
-        {
-            $data = array('id' => $model->id);
-            return $data;
         }
         
         /**
@@ -399,7 +419,7 @@
         
         protected function isAttachmentExtensionAllowed($attachmentFileName)
         {
-            $allowed = array('doc','docx','xsl','xsls','pdf','gif','png','jpg','jpeg','txt');
+            $allowed = array('doc', 'docx', 'xls', 'xlsx', 'pdf', 'gif', 'png', 'jpg', 'jpeg', 'txt', 'csv');
             $filenameArray = explode('.', $attachmentFileName);
             $ext = end($filenameArray);
             if ($ext !== '')
