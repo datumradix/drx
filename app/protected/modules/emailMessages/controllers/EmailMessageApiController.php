@@ -122,7 +122,7 @@
                 {
                     $senderInfo['email'] = $emailMessage->fromEmail;
                     $senderInfo['name'] = $emailMessage->fromName;
-                    $sender = $this->createEmailMessageSender($senderInfo, $userCanAccessContacts,
+                    $sender = EmailArchivingUtil::createEmailMessageSender($senderInfo, $userCanAccessContacts,
                                   $userCanAccessLeads, $userCanAccessAccounts);
 
                     if ($sender->personsOrAccounts->count() > 0)
@@ -148,7 +148,7 @@
                 $emailRecipientFoundInSystem = false;
                 foreach ($recipientsInfo as $recipientInfo)
                 {
-                    $recipient = $this->createEmailMessageRecipient($recipientInfo, $userCanAccessContacts,
+                    $recipient = EmailArchivingUtil::createEmailMessageRecipient($recipientInfo, $userCanAccessContacts,
                         $userCanAccessLeads, $userCanAccessAccounts);
                     $model->recipients->add($recipient);
                     // Check if at least one recipient email can't be found in Contacts, Leads, Account and User emails
@@ -175,7 +175,7 @@
                 if (!$emailSenderOrRecipientEmailFoundInSystem)
                 {
                     $model->folder  = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_ARCHIVED_UNMATCHED);
-                    $this->sendEmailOwnerNotification($emailOwner);
+                    $this->sendArchivedUnmatchedNotificationToEmailOwner($emailOwner);
                 }
                 else
                 {
@@ -214,10 +214,13 @@
                 {
                     foreach ($emailMessage->attachments as $attachment)
                     {
-                        $file = $this->createEmailAttachment($attachment);
-                        if ($file instanceof FileModel)
+                        if (isset($attachment['filename']) && isset($attachment['attachment']))
                         {
-                            $model->files->add($file);
+                            $file = EmailArchivingUtil::createEmailAttachment($attachment);
+                            if ($file instanceof FileModel)
+                            {
+                                $model->files->add($file);
+                            }
                         }
                     }
                 }
@@ -295,11 +298,11 @@
         }
         
         /**
-         * Send notification to email owner
+         * Send notification about unmatched email messages to email owner
          * @param mixed $emailOwner
          * @return void
          */
-        protected function sendEmailOwnerNotification($emailOwner)
+        protected function sendArchivedUnmatchedNotificationToEmailOwner($emailOwner)
         {
             $notificationMessage                    = new NotificationMessage();
             $notificationMessage->textContent       = Zurmo::t('EmailMessagesModule', 'At least one archived email message does ' .
@@ -324,113 +327,6 @@
             }
         }
         
-        /**
-         * Create EmailMessageSender
-         * @param array $senderInfo
-         * @param boolean $userCanAccessContacts
-         * @param boolean $userCanAccessLeads
-         * @param boolean $userCanAccessAccounts
-         * @return EmailMessageSender
-         */
-        protected function createEmailMessageSender($senderInfo, $userCanAccessContacts, $userCanAccessLeads,
-                                                     $userCanAccessAccounts)
-        {
-            $sender                    = new EmailMessageSender();
-            $sender->fromAddress       = $senderInfo['email'];
-            if (isset($senderInfo['name']))
-            {
-                $sender->fromName          = $senderInfo['name'];
-            }
-            $personsOrAccounts = EmailArchivingUtil::getPersonsAndAccountsByEmailAddress(
-                    $senderInfo['email'],
-                    $userCanAccessContacts,
-                    $userCanAccessLeads,
-                    $userCanAccessAccounts);
-            if (!empty($personsOrAccounts))
-            {
-                foreach ($personsOrAccounts as $personOrAccount)
-                {
-                    $sender->personsOrAccounts->add($personOrAccount);
-                }
-            }
-            return $sender;
-        }
-        
-        /**
-         * Create EmailMessageRecipient
-         * @param array $recipientInfo
-         * @param boolean $userCanAccessContacts
-         * @param boolean $userCanAccessLeads
-         * @param boolean $userCanAccessAccounts
-         * @return EmailMessageRecipient
-         */
-        protected function createEmailMessageRecipient($recipientInfo, $userCanAccessContacts, $userCanAccessLeads,
-                                                     $userCanAccessAccounts)
-        {
-            $recipient                 = new EmailMessageRecipient();
-            $recipient->toAddress      = $recipientInfo['email'];
-            if (isset($recipientInfo['name']))
-            {
-                $recipient->toName = $recipientInfo['name'];
-            }
-            $recipient->type           = $recipientInfo['type'];
 
-            $personsOrAccounts = EmailArchivingUtil::getPersonsAndAccountsByEmailAddress(
-                    $recipientInfo['email'],
-                    $userCanAccessContacts,
-                    $userCanAccessLeads,
-                    $userCanAccessAccounts);
-            if (!empty($personsOrAccounts))
-            {
-                foreach ($personsOrAccounts as $personOrAccount)
-                {
-                    $recipient->personsOrAccounts->add($personOrAccount);
-                }
-            }
-            return $recipient;
-        }
-        
-        /**
-         * Create FileModel
-         * @param array $attachment
-         * @return FileModel
-         */
-        protected function createEmailAttachment($attachment)
-        {
-            // Save attachments
-            if ($attachment['fileName'] != null && $this->isAttachmentExtensionAllowed($attachment['fileName']))
-            {
-                $fileContent          = new FileContent();
-                $fileContent->content = $attachment['fileData'];
-                $file                 = new FileModel();
-                $file->fileContent    = $fileContent;
-                $file->name           = $attachment['fileName'];
-                $file->type           = ZurmoFileHelper::getMimeType($attachment['fileName']);
-                $file->size           = strlen($attachment['fileData']);
-                $saved                = $file->save();
-                assert('$saved'); // Not Coding Standard
-                return $file;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        
-        protected function isAttachmentExtensionAllowed($attachmentFileName)
-        {
-            $allowed = array('doc', 'docx', 'xls', 'xlsx', 'pdf', 'gif', 'png', 'jpg', 'jpeg', 'txt', 'csv');
-            $filenameArray = explode('.', $attachmentFileName);
-            $ext = end($filenameArray);
-            if ($ext !== '')
-            {
-                $ext = strtolower($ext);
-                if (in_array($ext, $allowed))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 ?>
