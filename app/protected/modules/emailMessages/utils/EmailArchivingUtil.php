@@ -352,5 +352,114 @@
         {
             $message->subject = imap_utf8($message->subject);
         }
+
+        /**
+         * Create EmailMessageSender
+         * @param array $senderInfo
+         * @param boolean $userCanAccessContacts
+         * @param boolean $userCanAccessLeads
+         * @param boolean $userCanAccessAccounts
+         * @return EmailMessageSender
+         */
+        public static function createEmailMessageSender($senderInfo, $userCanAccessContacts, $userCanAccessLeads,
+                                                    $userCanAccessAccounts)
+        {
+            $sender                    = new EmailMessageSender();
+            $sender->fromAddress       = $senderInfo['email'];
+            if (isset($senderInfo['name']))
+            {
+                $sender->fromName          = $senderInfo['name'];
+            }
+            $personsOrAccounts = EmailArchivingUtil::getPersonsAndAccountsByEmailAddress(
+                $senderInfo['email'],
+                $userCanAccessContacts,
+                $userCanAccessLeads,
+                $userCanAccessAccounts);
+            if (!empty($personsOrAccounts))
+            {
+                foreach ($personsOrAccounts as $personOrAccount)
+                {
+                    $sender->personsOrAccounts->add($personOrAccount);
+                }
+            }
+            return $sender;
+        }
+
+        /**
+         * Create EmailMessageRecipient
+         * @param array $recipientInfo
+         * @param boolean $userCanAccessContacts
+         * @param boolean $userCanAccessLeads
+         * @param boolean $userCanAccessAccounts
+         * @return EmailMessageRecipient
+         */
+        public static function createEmailMessageRecipient($recipientInfo, $userCanAccessContacts, $userCanAccessLeads,
+                                                       $userCanAccessAccounts)
+        {
+            $recipient                 = new EmailMessageRecipient();
+            $recipient->toAddress      = $recipientInfo['email'];
+            if (isset($recipientInfo['name']))
+            {
+                $recipient->toName = $recipientInfo['name'];
+            }
+            $recipient->type           = $recipientInfo['type'];
+
+            $personsOrAccounts = EmailArchivingUtil::getPersonsAndAccountsByEmailAddress(
+                $recipientInfo['email'],
+                $userCanAccessContacts,
+                $userCanAccessLeads,
+                $userCanAccessAccounts);
+            if (!empty($personsOrAccounts))
+            {
+                foreach ($personsOrAccounts as $personOrAccount)
+                {
+                    $recipient->personsOrAccounts->add($personOrAccount);
+                }
+            }
+            return $recipient;
+        }
+
+        /**
+         * Create FileModel
+         * @param array $attachment
+         * @return FileModel
+         */
+        public static function createEmailAttachment($attachment)
+        {
+            // Save attachments
+            if ($attachment['filename'] != null && static::isAttachmentExtensionAllowed($attachment['filename']))
+            {
+                $fileContent          = new FileContent();
+                $fileContent->content = $attachment['attachment'];
+                $file                 = new FileModel();
+                $file->fileContent    = $fileContent;
+                $file->name           = $attachment['filename'];
+                $file->type           = ZurmoFileHelper::getMimeType($attachment['filename']);
+                $file->size           = strlen($attachment['attachment']);
+                $saved                = $file->save();
+                assert('$saved'); // Not Coding Standard
+                return $file;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        protected static function isAttachmentExtensionAllowed($attachmentFileName)
+        {
+            $allowed = array('doc', 'docx', 'xls', 'xlsx', 'pdf', 'gif', 'png', 'jpg', 'jpeg', 'txt', 'csv');
+            $filenameArray = explode('.', $attachmentFileName);
+            $ext = end($filenameArray);
+            if ($ext !== '')
+            {
+                $ext = strtolower($ext);
+                if (in_array($ext, $allowed))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 ?>

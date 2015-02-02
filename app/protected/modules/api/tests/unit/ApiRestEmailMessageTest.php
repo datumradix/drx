@@ -337,10 +337,11 @@
             $filePath_3    = $pathToFiles . DIRECTORY_SEPARATOR . 'text.txt';
             $filePath_4    = $pathToFiles . DIRECTORY_SEPARATOR . 'text.abc';
             $data['attachments']             = array(
-                array('fileName'=>'table.csv','fileData'=>file_get_contents($filePath_1)),
-                array('fileName'=>'image.png','fileData'=>file_get_contents($filePath_2)),
-                array('fileName'=>'text.txt','fileData'=>file_get_contents($filePath_3)),
-                array('fileName'=>'text.abc','fileData'=>file_get_contents($filePath_4)), //extension not allowed
+                array('filename'=>'table.csv','attachment'=>file_get_contents($filePath_1)),
+                array('filename'=>'image.png','attachment'=>file_get_contents($filePath_2)),
+                array('filename'=>'text.txt','attachment'=>file_get_contents($filePath_3)),
+                array('filename'=>'text.abc','attachment'=>file_get_contents($filePath_4)), //extension not allowed
+                array('name'=>'text.abc','file'=>file_get_contents($filePath_4)), //invalid data format
             );
             
             $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));
@@ -355,13 +356,13 @@
             $this->assertEquals('Test 1 Html Content', $emailMessage->content->htmlContent);
             $this->assertEquals('senderTest@example.com', $emailMessage->sender->fromAddress);
             $this->assertEquals(3, count($emailMessage->files));
-            $this->assertEquals($data['attachments'][0]['fileName'], $emailMessage->files[0]->name);
+            $this->assertEquals($data['attachments'][0]['filename'], $emailMessage->files[0]->name);
             $this->assertEquals(filesize($filePath_1), $emailMessage->files[0]->size);
             $this->assertEquals(md5_file($filePath_1), md5($emailMessage->files[0]->fileContent->content));
-            $this->assertEquals($data['attachments'][1]['fileName'], $emailMessage->files[1]->name);
+            $this->assertEquals($data['attachments'][1]['filename'], $emailMessage->files[1]->name);
             $this->assertEquals(filesize($filePath_2), $emailMessage->files[1]->size);
             $this->assertEquals(md5_file($filePath_2), md5($emailMessage->files[1]->fileContent->content));
-            $this->assertEquals($data['attachments'][2]['fileName'], $emailMessage->files[2]->name);
+            $this->assertEquals($data['attachments'][2]['filename'], $emailMessage->files[2]->name);
             $this->assertEquals(filesize($filePath_3), $emailMessage->files[2]->size);
             $this->assertEquals(md5_file($filePath_3), md5($emailMessage->files[2]->fileContent->content));
         }

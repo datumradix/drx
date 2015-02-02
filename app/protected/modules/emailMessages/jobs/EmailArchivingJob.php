@@ -140,99 +140,6 @@
         }
 
         /**
-         * Create EmailMessageSender
-         * @param array $senderInfo
-         * @param boolean $userCanAccessContacts
-         * @param boolean $userCanAccessLeads
-         * @param boolean $userCanAccessAccounts
-         * @return EmailMessageSender
-         */
-        protected function createEmailMessageSender($senderInfo, $userCanAccessContacts, $userCanAccessLeads,
-                                                     $userCanAccessAccounts)
-        {
-            $sender                    = new EmailMessageSender();
-            $sender->fromAddress       = $senderInfo['email'];
-            if (isset($senderInfo['name']))
-            {
-                $sender->fromName          = $senderInfo['name'];
-            }
-            $personsOrAccounts = EmailArchivingUtil::getPersonsAndAccountsByEmailAddress(
-                    $senderInfo['email'],
-                    $userCanAccessContacts,
-                    $userCanAccessLeads,
-                    $userCanAccessAccounts);
-            if (!empty($personsOrAccounts))
-            {
-                foreach ($personsOrAccounts as $personOrAccount)
-                {
-                    $sender->personsOrAccounts->add($personOrAccount);
-                }
-            }
-            return $sender;
-        }
-
-        /**
-         * Create EmailMessageRecipient
-         * @param array $recipientInfo
-         * @param boolean $userCanAccessContacts
-         * @param boolean $userCanAccessLeads
-         * @param boolean $userCanAccessAccounts
-         * @return EmailMessageRecipient
-         */
-        protected function createEmailMessageRecipient($recipientInfo, $userCanAccessContacts, $userCanAccessLeads,
-                                                     $userCanAccessAccounts)
-        {
-            $recipient                 = new EmailMessageRecipient();
-            $recipient->toAddress      = $recipientInfo['email'];
-            if (isset($recipientInfo['name']))
-            {
-                $recipient->toName = $recipientInfo['name'];
-            }
-            $recipient->type           = $recipientInfo['type'];
-
-            $personsOrAccounts = EmailArchivingUtil::getPersonsAndAccountsByEmailAddress(
-                    $recipientInfo['email'],
-                    $userCanAccessContacts,
-                    $userCanAccessLeads,
-                    $userCanAccessAccounts);
-            if (!empty($personsOrAccounts))
-            {
-                foreach ($personsOrAccounts as $personOrAccount)
-                {
-                    $recipient->personsOrAccounts->add($personOrAccount);
-                }
-            }
-            return $recipient;
-        }
-
-        /**
-         * Create FileModel
-         * @param array $attachment
-         * @return FileModel
-         */
-        protected function createEmailAttachment($attachment)
-        {
-            // Save attachments
-            if ($attachment['filename'] != null)
-            {
-                $fileContent          = new FileContent();
-                $fileContent->content = $attachment['attachment'];
-                $file                 = new FileModel();
-                $file->fileContent    = $fileContent;
-                $file->name           = $attachment['filename'];
-                $file->type           = ZurmoFileHelper::getMimeType($attachment['filename']);
-                $file->size           = strlen($attachment['attachment']);
-                $saved                = $file->save();
-                assert('$saved'); // Not Coding Standard
-                return $file;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /**
          * Save email message
          * This method should be protected, but we made it public for unit testing, so don't call it outside this class.
          * @param ImapMessage $message
@@ -265,7 +172,7 @@
             }
             else
             {
-                $sender = $this->createEmailMessageSender($senderInfo, $userCanAccessContacts,
+                $sender = EmailArchivingUtil::createEmailMessageSender($senderInfo, $userCanAccessContacts,
                               $userCanAccessLeads, $userCanAccessAccounts);
 
                 if ($sender->personsOrAccounts->count() > 0)
@@ -297,7 +204,7 @@
             $emailRecipientFoundInSystem = false;
             foreach ($recipientsInfo as $recipientInfo)
             {
-                $recipient = $this->createEmailMessageRecipient($recipientInfo, $userCanAccessContacts,
+                $recipient = EmailArchivingUtil::createEmailMessageRecipient($recipientInfo, $userCanAccessContacts,
                     $userCanAccessLeads, $userCanAccessAccounts);
                 $emailMessage->recipients->add($recipient);
                 // Check if at least one recipient email can't be found in Contacts, Leads, Account and User emails
@@ -360,7 +267,7 @@
                     {
                         continue;
                     }
-                    $file = $this->createEmailAttachment($attachment);
+                    $file = EmailArchivingUtil::createEmailAttachment($attachment);
                     if ($file instanceof FileModel)
                     {
                         $emailMessage->files->add($file);
