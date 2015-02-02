@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="selenium.base" href="http://localhost/"/>
+    <title>CheckDefaultNotificationSettings</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr>
+    <td rowspan="1" colspan="3">Check Default Notification Settings</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>setTimeout</td>
+    <td>45000</td>
+    <td></td>
+</tr>
+<!--go to user profile-->
+<tr>
+    <td>open</td>
+    <td>index.php/users/default/profile</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--check for menu-->
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Configuration</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>link=Notifications</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--check for page load and default settings-->
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='UserNotificationConfigurationEditView']/div/h1/span/span</td>
+    <td>Super User: Notifications Configuration</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Invited to a Conversation</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Conversation new comment</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Match archived emails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Owner Of The Message Does Not Exist</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Export process is completed.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>A game reward was redeemed</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>A job was completed with errors.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>New stable Zurmo release available</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Scheduled jobs are stuck</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>The monitor job is stuck.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Mission new comment</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>A mission status has changed</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>New Mission</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Maximum depth reached for workflow processing.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Workflows require attention.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Accepted Tasks</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Delivered Tasks</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>New Tasks</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Rejected Tasks</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>New Task Comments</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Task Owner Change</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Project Archived</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>New Project</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Project Task Added</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Project Task Comment Added</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Project Task Status Changed</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableConversationInvitesNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableConversationInvitesNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableConversationNewCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableConversationNewCommentNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableEmailMessageArchivingEmailAddressNotMatchingNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableEmailMessageArchivingEmailAddressNotMatchingNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableEmailMessageOwnerNotExistNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableEmailMessageOwnerNotExistNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableExportProcessCompletedNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableExportProcessCompletedNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableGameRewardRedeemedNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableGameRewardRedeemedNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableJobCompletedWithErrorsNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableJobCompletedWithErrorsNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableNewZurmoVersionAvailableNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableNewZurmoVersionAvailableNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableStuckJobsNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableStuckJobsNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableStuckMonitorJobNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableStuckMonitorJobNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableMissionNewCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableMissionNewCommentNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableMissionStatusChangeNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableMissionStatusChangeNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableNewMissionNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableNewMissionNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableWorkflowMaximumDepthNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableWorkflowMaximumDepthNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableWorkflowValidityCheckNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableWorkflowValidityCheckNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableAcceptedTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableAcceptedTaskNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableDeliveredTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableDeliveredTaskNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableNewTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableNewTaskNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableRejectedTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableRejectedTaskNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskNewCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskNewCommentNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskOwnerChangeNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskOwnerChangeNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableArchivedProjectNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableArchivedProjectNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableNewProjectNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableNewProjectNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableProjectTaskAddedNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableProjectTaskAddedNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableProjectTaskNewCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableProjectTaskNewCommentNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableProjectTaskStatusChangeNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableProjectTaskStatusChangeNotificationEmail</td>
+    <td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
