@@ -92,7 +92,7 @@
                         'label' => "eval:Zurmo::t('EmailMessagesModule', 'Data Cleanup')",
                         'url' => array('/emailMessages/default/matchingList'),
                         'right' => self::RIGHT_ACCESS_EMAIL_MESSAGES,
-                        'order' => 3,
+                        'order' => 30,
                     ),
                 ),
                 'configureSubMenuItems' => array(
