@@ -176,12 +176,12 @@
                         array(
                             'label' => "eval:Zurmo::t('UsersModule', 'My Profile')",
                             'url' => array('/users/default/profile'),
-                            'order' => 1,
+                            'order' => 10,
                         ),
                         array(
                             'label' => "eval:Zurmo::t('UsersModule', 'Sign out')",
                             'url' => array('/zurmo/default/logout'),
-                            'order' => 4,
+                            'order' => 40,
                         ),
                 ),
                 'designerMenuItems' => array(
