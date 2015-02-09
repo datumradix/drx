@@ -80,22 +80,21 @@
         public function actionGetAttendees()
         {
             $params     = Yii::app()->apiRequest->getParams();
-            $result     =  $this->processAttendees($params['data']);
+            $result     =  $this->processAttendees($params['id']);
             Yii::app()->apiHelper->sendResponse($result);
         }
 
         /**
          * Get all attendees
          * Function get user attendees and attendees from activity items and merge them into one array
-         * @param $params
+         * @param $meetingId
          * @return ApiResult
          * @throws ApiException
          */
-        protected function processAttendees($params)
+        protected function processAttendees($meetingId)
         {
             try
             {
-                $meetingId            = $params['id'];
                 $meeting               = Meeting::getById(intval($meetingId));
                 $activityItemAttendees = $this->getAttendeesFromActivityItems($meeting);
                 $userAttendees         = $this->getUserAttendees($meeting);
