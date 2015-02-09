@@ -1326,19 +1326,17 @@
             );
 
             $meeting = MeetingTestHelper::createMeetingByNameForOwner('Meeting With User Attendees', $super);
-            $data = array(
-                'id' => $meeting->id,
-            );
 
-            $response = $this->createApiCallWithRelativeUrl('getAttendees/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getAttendees/?id=' . $meeting->id, 'GET', $headers);
             $response = json_decode($response, true);
+
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertEmpty($response['data']);
 
             $meeting->activityItems->add($contact1);
             $meeting->activityItems->add($contact2);
             $this->assertTrue($meeting->save());
-            $response = $this->createApiCallWithRelativeUrl('getAttendees/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getAttendees/?id=' . $meeting->id, 'GET', $headers);
             $response = json_decode($response, true);
 
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
@@ -1349,7 +1347,7 @@
             $meeting->userAttendees->add($evelina);
             $meeting->userAttendees->add($amelia);
             $this->assertTrue($meeting->save());
-            $response = $this->createApiCallWithRelativeUrl('getAttendees/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getAttendees/?id=' . $meeting->id, 'GET', $headers);
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertEquals(2, count($response['data']['Contact']));
