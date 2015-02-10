@@ -1094,7 +1094,7 @@
         public function testGetModifiedTasks()
         {
             $timestamp = time();
-            sleep(1);
+            sleep(2);
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
             $this->deleteAllModelsAndRecordsFromReadPermissionTable('Task');
@@ -1104,7 +1104,7 @@
             $task3 = TaskTestHelper::createTaskByNameForOwner('Task3', $super);
             $task4 = TaskTestHelper::createTaskByNameForOwner('Task4', $super);
             $this->assertTrue($job->run());
-            sleep(1);
+            sleep(2);
 
             $authenticationData = $this->login();
             $headers = array(
@@ -1129,7 +1129,7 @@
             $this->assertEquals(1, $response['data']['currentPage']);
 
             $timestamp = time();
-            sleep(1);
+            sleep(2);
             $task1->name = "Task1 Modified";
             $this->assertTrue($task1->save());
             sleep(1);
@@ -1138,7 +1138,7 @@
             sleep(1);
             $task4->name = "Task1 Modified";
             $this->assertTrue($task4->save());
-            sleep(1);
+            sleep(2);
 
             $data = array(
                 'sinceTimestamp' => $timestamp,

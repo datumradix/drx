@@ -95,6 +95,10 @@
                 {
                     unset($data['recipients']);
                 }
+                if (isset($data['attachments']))
+                {
+                    unset($data['attachments']);
+                }
                 
                 if (isset($data['owner']['id']))
                 {
