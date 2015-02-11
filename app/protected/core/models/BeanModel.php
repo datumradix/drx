@@ -580,10 +580,10 @@
         }
 
         /**
-         * This function only exists because there is a strange bug in GameBadge metadata where the metadata
+         * This function only exists because there is a strange bug in GameBadge and GameScore metadata where the metadata
          * is getting cached, but then it is missing everything except empty arrays. Since we don't know why
          * this happens, this hack is the only way to ensure the cache returned is treated as non existant.
-         * @see override in GameBagde.
+         * @see override in GameBagde and GameScore.
          * @param $cachedData
          */
         protected static function resolveCachedMetadataForIntegrity($cachedData)
