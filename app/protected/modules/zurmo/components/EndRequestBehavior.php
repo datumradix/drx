@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2015. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -40,20 +40,93 @@
      * unit tests this behavior can be switched for a behavior that raises an
      * exception instead of exiting.
      */
-
-    Yii::import('application.modules.zurmo.components.RequestBehavior');
-    Yii::import('application.core.utils.EndRequestEventsBinder');
-
-    class EndRequestBehavior extends RequestBehavior
+    class EndRequestBehavior extends CBehavior
     {
-        protected function resolveEventsBinderClassName()
+        public function attach($owner)
         {
-            return 'EndRequestEventsBinder';
+            if (Yii::app()->isApplicationInstalled())
+            {
+                $owner->attachEventHandler('onEndRequest', array($this, 'handleGamification'));
+                $owner->attachEventHandler('onEndRequest', array($this, 'handleJobQueue'));
+            }
+            $owner->attachEventHandler('onEndRequest', array($this, 'handleSaveGlobalStateCheck'));
+            $owner->attachEventHandler('onEndRequest', array($this, 'handleEndLogRouteEvents'));
+            $owner->attachEventHandler('onEndRequest', array($this, 'handleResolveRedBeanQueriesToFile'));
+            $owner->attachEventHandler('onEndRequest', array($this, 'handleEndRequest'));
         }
 
-        protected function resolveDefaultRequestType($className)
+        // Save global state into ZurmoConfig, before handleEndRequest event handler is called.
+        // This is needed because handleEndRequest is attached to component before saveGlobalState handler
+        // and therefore will be execute before, so we need to change order.
+        public function handleSaveGlobalStateCheck($event)
         {
-            return $className::APPLICATION_REQUEST;
+            $allEventHandlers = Yii::app()->getEventHandlers('onEndRequest');
+
+            if (count($allEventHandlers))
+            {
+                foreach ($allEventHandlers as $eventHandler)
+                {
+                    if ($eventHandler[0] instanceof CApplication && $eventHandler[1] == 'saveGlobalState')
+                    {
+                        Yii::app()->saveGlobalState();
+                    }
+                }
+            }
         }
-   }
+
+        public function handleEndLogRouteEvents($event)
+        {
+            $allEventHandlers = Yii::app()->getEventHandlers('onEndRequest');
+
+            if (count($allEventHandlers))
+            {
+                foreach ($allEventHandlers as $eventHandler)
+                {
+                    if ($eventHandler[0] instanceof CLogRouter && $eventHandler[1] == 'processLogs')
+                    {
+                        Yii::app()->log->processLogs($event);
+                    }
+                }
+            }
+        }
+
+        public function handleResolveRedBeanQueriesToFile($event)
+        {
+            if (defined('REDBEAN_DEBUG_TO_FILE') && REDBEAN_DEBUG_TO_FILE)
+            {
+                if (isset(Yii::app()->queryFileLogger))
+                {
+                    Yii::app()->queryFileLogger->processLogs();
+                }
+            }
+        }
+
+        public function handleEndRequest($event)
+        {
+            RedBeanDatabase::close();
+            exit;
+        }
+
+        /**
+         * Process any points that need to be tabulated based on scoring that occurred during the request.
+         * @param CEvent $event
+         */
+        public function handleGamification($event)
+        {
+            if (Yii::app()->user->userModel != null && Yii::app()->gameHelper instanceof GameHelper)
+            {
+                Yii::app()->gameHelper->processDeferredPoints();
+                Yii::app()->gameHelper->resolveNewBadges();
+                Yii::app()->gameHelper->resolveLevelChange();
+            }
+        }
+
+        public function handleJobQueue($event)
+        {
+            if (Yii::app()->user->userModel != null)
+            {
+                Yii::app()->jobQueue->processAll();
+            }
+        }
+    }
 ?>
