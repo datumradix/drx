@@ -118,9 +118,14 @@
         protected function getUserAttendees($meeting)
         {
             $data         = array();
-            foreach ($meeting->userAttendees as $item)
+            foreach ($meeting->userAttendees as $attendee)
             {
-                $data['User'][] = array('id' => $item->id);
+                $item = array('id' => $attendee->id);
+                if ($attendee->primaryEmail->emailAddress != null)
+                {
+                    $item['email'] = $attendee->primaryEmail->emailAddress;
+                }
+                $data['User'][] = $item;
             }
             return $data;
         }
@@ -145,7 +150,12 @@
                         {
                             $modelDerivationPathToItem  = RuntimeUtil::getModelDerivationPathToItem($activityClassName);
                             $castedDownModel            = $activityItem->castDown(array($modelDerivationPathToItem));
-                            $data[$activityClassName][] = array('id' => $castedDownModel->id);
+                            $item = array('id' => $castedDownModel->id);
+                            if ($castedDownModel instanceof Contact && $castedDownModel->primaryEmail->emailAddress != null)
+                            {
+                                $item['email'] = $castedDownModel->primaryEmail->emailAddress;
+                            }
+                            $data[$activityClassName][] = $item;
                         }
                         catch (NotFoundException $e)
                         {
