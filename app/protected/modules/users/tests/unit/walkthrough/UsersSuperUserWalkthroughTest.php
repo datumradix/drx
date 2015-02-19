@@ -343,7 +343,7 @@
             //First make sure settings all default values are true
             $notificationSettings = UserNotificationUtil::getNotificationSettingsByUser($aUser);
             $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingAttributes();
-            foreach($notificationSettingsNames as $setting)
+            foreach ($notificationSettingsNames as $setting)
             {
                 list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($setting);
                 $this->assertTrue((bool)$notificationSettings[$settingName][$type]);
@@ -498,7 +498,7 @@
             $this->setPostArray(array('UserEmailConfigurationForm' => array(
                                     'fromName'                          => 'abc',
                                     'fromAddress'                       => 'abc@zurmo.org',
-                                    'useCustomOutboundSettings'         => 0,
+                                    'useCustomOutboundSettings'         => EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS,
                                     'emailSignatureHtmlContent'         => 'abc email signature')));
             $this->runControllerWithRedirectExceptionAndGetContent('users/default/emailConfiguration');
             $this->assertEquals('User email configuration saved successfully.',

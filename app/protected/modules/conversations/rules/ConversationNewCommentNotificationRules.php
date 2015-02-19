@@ -37,7 +37,7 @@
     /**
      * A  NotificationRules to manage when a new comment is added to a conversation.
      */
-    class ConversationNewCommentNotificationRules extends SimpleNotificationRules
+    class ConversationNewCommentNotificationRules extends NotificationRules
     {
         protected $allowSendingEmail = true;
         protected $allowDuplicates   = true;
@@ -68,6 +68,19 @@
         public function getTooltipTitle()
         {
             return Zurmo::t('UsersModule', 'Notify me when a comment is added to a conversation I am participating in.');
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            if ($this->model instanceof Conversation)
+            {
+                return Zurmo::t('CommentsModule', 'New comment on {modelName}: {subject}',
+                    array('{subject}'   => strval($this->model),
+                          '{modelName}' => $this->model->getModelLabelByTypeAndLanguage('SingularLowerCase')));
+            }
         }
     }
 ?>

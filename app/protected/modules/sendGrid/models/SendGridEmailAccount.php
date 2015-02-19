@@ -101,7 +101,7 @@
             try
             {
                 $emailAccount = static::getByUserAndName($user, $name);
-                if($decrypt === true)
+                if ($decrypt === true)
                 {
                     $emailAccount->apiPassword = ZurmoPasswordSecurityUtil::decrypt($emailAccount->apiPassword);
                 }
@@ -133,9 +133,7 @@
                     'fromName',
                     'replyToAddress',
                     'apiUsername',
-                    'apiPassword',
-                    'eventWebhookUrl',
-                    'eventWebhookFilePath'
+                    'apiPassword'
                 ),
                 'relations' => array(
                     'messages' => array(static::HAS_MANY, 'EmailMessage', static::NOT_OWNED,
@@ -147,8 +145,6 @@
                                   array('apiPassword',               'required'),
                                   array('fromName',                  'required'),
                                   array('fromAddress',               'required'),
-                                  array('eventWebhookUrl',           'required'),
-                                  array('eventWebhookFilePath',      'required'),
                                   array('name',                      'type',      'type' => 'string'),
                                   array('fromName',                  'type',      'type' => 'string'),
                                   array('apiUsername',               'type',      'type' => 'string'),
@@ -157,9 +153,7 @@
                                   array('apiUsername',               'length',    'max' => 64),
                                   array('apiPassword',               'length',    'max' => 128),
                                   array('fromAddress',               'email'),
-                                  array('replyToAddress',            'email'),
-                                  array('eventWebhookUrl',           'url'),
-                                  array('eventWebhookFilePath',      'url'),
+                                  array('replyToAddress',            'email')
                 )
             );
             return $metadata;
@@ -208,8 +202,6 @@
                     'apiUsername'               => Zurmo::t('SendGridModule', 'Api Username',             array(), null, $language),
                     'replyToAddress'            => Zurmo::t('SendGridModule', 'Reply To Address',              array(), null, $language),
                     'user'                      => Zurmo::t('UsersModule',         'User',                          array(), null, $language),
-                    'eventWebhookUrl'           => Zurmo::t('SendGridModule', 'Event data log file url<br/><small>(e.g. http://xyz.com/dump.log. <br/>Name of the log file should be what is given in webhook file below.)</small>',             array(), null, $language),
-                    'eventWebhookFilePath'      => Zurmo::t('SendGridModule', 'Event webhook file path<br/><small>(e.g. http://xyz.com/testwebhook.php)</small>',       array(), null, $language),
                 )
             );
         }

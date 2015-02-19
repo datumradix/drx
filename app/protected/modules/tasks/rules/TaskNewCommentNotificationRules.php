@@ -67,5 +67,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me of new comments on Tasks I am following.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('TasksModule', 'NEW COMMENT {relatedModel}: {task}', $this->getParamsForEmailSubject());
+        }
     }
 ?>

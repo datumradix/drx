@@ -55,9 +55,17 @@
         public function run()
         {
             $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
-            if($sendGridPluginEnabled)
+            if ($sendGridPluginEnabled)
             {
-                $this->processEventData(dirname(__FILE__) . '/files/testsendgridwebhookdump.log', null);
+                $logPath = SendGridLogUtil::getLogFilePath('testemailjob');
+                if (file_exists($logPath))
+                {
+                    @file_put_contents($logPath, '');
+                }
+                $rawData = file_get_contents(dirname(__FILE__) . '/files/testsendgridwebhookdump.log');
+                self::writeLog('testemailjob', $rawData);
+                $this->processEventData($logPath);
+                @unlink($logPath);
             }
             return true;
         }
@@ -87,23 +95,13 @@
         }
 
         /**
-         * Deletes file content.
-         * @param string $eventWebhookFilePath
-         * @return void
-         */
-        protected function deleteFileContent($eventWebhookFilePath)
-        {
-
-        }
-
-        /**
          * Process actiity information.
          * @param int $type
          */
         protected function processActivityInformation($value)
         {
             $type                       = $this->getActivityTypeByEvent($value);
-            if($type == EmailMessageActivity::TYPE_BOUNCE)
+            if ($type == EmailMessageActivity::TYPE_BOUNCE)
             {
                 $emailMessageActivity       = $this->createBounceEmailMessageActivity();
             }
@@ -113,6 +111,25 @@
             }
             static::resolveAndUpdateEventInformationByStatus($value);
             $this->saveExternalApiEmailMessageActivity($emailMessageActivity, $value);
+        }
+
+        /**
+         * Write log for send
+         * @param string $apiUsername
+         */
+        public static function writeLog($apiUsername, $rawData)
+        {
+            $logFile = SendGridLogUtil::getLogFilePath($apiUsername);
+            $fp = fopen($logFile, 'a+'); // Not Coding Standard
+            if ($fp)
+            {
+                if (empty($rawData))
+                {
+                    $rawData = CJSON::encode(array('data' => 'empty data'));
+                }
+                fwrite($fp, print_r($rawData, true));
+                fclose($fp);
+            }
         }
     }
 ?>

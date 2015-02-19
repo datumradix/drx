@@ -164,7 +164,7 @@
             $searchAttributeData['structure'] = "({$structure})";
             $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
             $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
-            if($isCount)
+            if ($isCount)
             {
                 return self::getCount($joinTablesAdapter, $where, get_called_class(), false);
             }
@@ -196,7 +196,7 @@
             $searchAttributeData['structure'] = "({$structure})";
             $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
             $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
-            if($isCount)
+            if ($isCount)
             {
                 return self::getCount($joinTablesAdapter, $where, get_called_class(), false);
             }
@@ -245,7 +245,7 @@
             $searchAttributeData['structure'] = "({$structure})";
             $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
             $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
-            if($isCount)
+            if ($isCount)
             {
                 return self::getCount($joinTablesAdapter, $where, get_called_class(), false);
             }

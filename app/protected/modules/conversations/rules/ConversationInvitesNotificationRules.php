@@ -37,7 +37,7 @@
     /**
      * A NotificationRules to manage when user is invited to a conversation.
      */
-    class ConversationInvitesNotificationRules extends SimpleNotificationRules
+    class ConversationInvitesNotificationRules extends NotificationRules
     {
         protected $allowDuplicates      = true;
 
@@ -67,6 +67,11 @@
         public function getTooltipTitle()
         {
             return Zurmo::t('UsersModule', 'Notify me when I am invited to a conversation.');
+        }
+
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('ConversationsModule', 'You have been invited to participate in a conversation');
         }
     }
 ?>

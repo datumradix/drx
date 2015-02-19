@@ -82,7 +82,7 @@
         public function sendTestEmail($isUser = true)
         {
             $this->emailMessage->mailerType = 'sendgrid';
-            if($isUser)
+            if ($isUser)
             {
                 $this->emailMessage->mailerSettings = 'personal';
             }
@@ -101,7 +101,7 @@
         public function sendEmail()
         {
             $emailMessage   = $this->emailMessage;
-            if($this->emailAccount == null)
+            if ($this->emailAccount == null)
             {
                 $apiUser        = Yii::app()->sendGridEmailHelper->apiUsername;
                 $apiPassword    = Yii::app()->sendGridEmailHelper->apiPassword;
@@ -119,32 +119,34 @@
                    setSubject($emailMessage->subject)->
                    setText($emailMessage->content->textContent)->
                    setHtml($emailMessage->content->htmlContent)->
+                   addUniqueArg("zurmoToken", md5(ZURMO_TOKEN))->
                    addHeader('X-Sent-Using', 'SendGrid-API')->
                    addHeader('X-Transport', 'web');
+
             //Check if campaign and if yes, associate to email.
-            if($itemData != null)
+            if ($itemData != null)
             {
                 list($itemId, $itemClass, $personId) = $itemData;
                 $email->addUniqueArg("itemId", $itemId);
                 $email->addUniqueArg("itemClass", $itemClass);
                 $email->addUniqueArg("personId", $personId);
             }
-            foreach($this->toAddresses as $emailAddress => $name)
+            foreach ($this->toAddresses as $emailAddress => $name)
             {
                 $email->addTo($emailAddress, $name);
             }
-            foreach($this->ccAddresses as $emailAddress => $name)
+            foreach ($this->ccAddresses as $emailAddress => $name)
             {
                 $email->addCc($emailAddress);
             }
-            foreach($this->bccAddresses as $emailAddress => $name)
+            foreach ($this->bccAddresses as $emailAddress => $name)
             {
                 $email->addBcc($emailAddress);
             }
             //Attachments
             $attachmentsData = array();
             $tempAttachmentPath = Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'emailAttachments';
-            if(!file_exists($tempAttachmentPath))
+            if (!file_exists($tempAttachmentPath))
             {
                 mkdir($tempAttachmentPath);
             }
@@ -162,7 +164,7 @@
             }
             $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
             $response = $sendgrid->send($email);
-            if($response->message == 'success')
+            if ($response->message == 'success')
             {
                 //Here we need to check if
                 $emailMessage->error        = null;
@@ -170,10 +172,10 @@
                 $emailMessage->sentDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
             }
             //In case message is not delivered but there is no api related error than also flow would not enter here.
-            elseif($response->message == 'error')
+            elseif ($response->message == 'error')
             {
                 $content = Zurmo::t('EmailMessagesModule', 'Response from Server') . "\n";
-                foreach($response->errors as $error)
+                foreach ($response->errors as $error)
                 {
                     $content .= $error;
                 }
@@ -185,9 +187,9 @@
                                                                                       EmailFolder::TYPE_OUTBOX_ERROR);
                 $emailMessage->error                   = $emailMessageSendError;
             }
-            if(count($attachmentsData) > 0)
+            if (count($attachmentsData) > 0)
             {
-                foreach($attachmentsData as $path)
+                foreach ($attachmentsData as $path)
                 {
                     unlink($path);
                 }
@@ -217,11 +219,11 @@
          */
         public function setFromUser($userToSendMessagesFrom)
         {
-            if(is_array($userToSendMessagesFrom))
+            if (is_array($userToSendMessagesFrom))
             {
                 $this->fromUserEmailData = $userToSendMessagesFrom;
             }
-            elseif(is_object($userToSendMessagesFrom) && $userToSendMessagesFrom instanceof User)
+            elseif (is_object($userToSendMessagesFrom) && $userToSendMessagesFrom instanceof User)
             {
                 $this->fromUser    = $userToSendMessagesFrom;
             }

@@ -53,17 +53,27 @@
         public static function getNotificationSettingsByUser(User $user)
         {
             $defaultNotificationSettings = static::getNotificationSettingsDefaultValues();
+            static::resolveDefaultNotificationSettingsDefaultValuesByUser($user, $defaultNotificationSettings);
             $notificationSettings = UserNotificationUtil::resolveAndGetValue($user, 'inboxAndEmailNotificationSettings', false);
-
-            if(is_array($notificationSettings) && !empty($notificationSettings))
+            if (is_array($notificationSettings) && !empty($notificationSettings))
             {
-                foreach($notificationSettings as $notificationName => $notificationSetting)
+                foreach ($notificationSettings as $notificationName => $notificationSetting)
                 {
                     $defaultNotificationSettings[$notificationName] = $notificationSetting;
                 }
             }
-
             return $defaultNotificationSettings;
+        }
+
+        public static function resolveDefaultNotificationSettingsDefaultValuesByUser(User $user, & $defaultNotificationSettings)
+        {
+            if (UserConfigurationFormAdapter::resolveAndGetValue($user, 'turnOffEmailNotifications'))
+            {
+                foreach ($defaultNotificationSettings as $notificationName => $notificationSetting)
+                {
+                    $defaultNotificationSettings[$notificationName]['email'] = false;
+                }
+            }
         }
 
         public static function getAllNotificationSettingAttributes()
@@ -91,11 +101,8 @@
                     if (is_subclass_of($ruleClassName, 'NotificationRules') && !$classToEvaluate->isAbstract())
                     {
                         $rule = new $ruleClassName();
-                        if ($rule->canBeConfiguredByUser())
-                        {
-                            $defaultValues = array('inbox' => $rule->getDefaultValue('inbox'), 'email' => $rule->getDefaultValue('email'));
-                            $defaultNotificationSettings[static::getConfigurationAttributeByNotificationType($rule->getType())] = $defaultValues;
-                        }
+                        $defaultValues = array('inbox' => $rule->getDefaultValue('inbox'), 'email' => $rule->getDefaultValue('email'));
+                        $defaultNotificationSettings[static::getConfigurationAttributeByNotificationType($rule->getType())] = $defaultValues;
                     }
                 }
             }
@@ -120,18 +127,25 @@
         }
 
         /**
-         * Set notifications settings to be all disabled
+         * Set email notifications settings to be all disabled
          *
          * @param User $user
          */
-        public static function setNotificationSettingsAllDisabledForUser($user)
+        public static function setEmailNotificationSettingsAllDisabledForUser($user)
         {
             $notificationSettingsAttributes = UserNotificationUtil::getAllNotificationSettingAttributes();
             $defaultNotificationSettings = array();
-            foreach($notificationSettingsAttributes as $attribute)
+            foreach ($notificationSettingsAttributes as $attribute)
             {
                 list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($attribute);
-                $defaultNotificationSettings[$settingName][$type] = false;
+                if ($type == 'email')
+                {
+                    $defaultNotificationSettings[$settingName][$type] = false;
+                }
+                else
+                {
+                    $defaultNotificationSettings[$settingName][$type] = true;
+                }
             }
             static::setValue($user, $defaultNotificationSettings, 'inboxAndEmailNotificationSettings', false);
         }
@@ -166,8 +180,8 @@
                                         doesUserHaveAllowByRightName($moduleClassNameToCheckAccess,
                                             $moduleClassNameToCheckAccess::getCreateRight(),
                                             Yii::app()->user->userModel) ||
-                                    ($rule->isSuperAdministratorNotification() && !Yii::app()->user->userModel->isSuperAdministrator())
-                                    || !$rule->canBeConfiguredByUser())
+                                    ($rule->isSuperAdministratorNotification() && !Yii::app()->user->userModel->isSuperAdministrator()) ||
+                                       !$rule->canBeConfiguredByUser())
                                 {
                                     $addToArray = false;
                                 }
@@ -175,7 +189,10 @@
                         }
                         catch (NotImplementedException $exception)
                         {
-                            $addToArray = false;
+                            if (!$rule->canBeConfiguredByUser())
+                            {
+                                $addToArray = false;
+                            }
                         }
                         if ($addToArray)
                         {

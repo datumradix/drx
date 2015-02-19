@@ -42,9 +42,6 @@
         const USER_SWITCHER_RIGHTS_FILTER_PATH =
                 'application.modules.zurmo.controllers.filters.UserSwitcherRightsControllerFilter';
 
-        const SENDGRID_EMAIL_CONFIGURATION_FILTER_PATH =
-              'application.modules.sendGrid.controllers.filters.SendGridEmailConfigurationCheckControllerFilter';
-
         /**
          * Override to exclude modalSearchList and autoComplete
          * since these are available to all users regardless
@@ -63,7 +60,7 @@
                     ZurmoBaseController::RIGHTS_FILTER_PATH .
                     ' - modalList, - switchTo, autoComplete, details, profile, edit, auditEventsModalList, changePassword, ' .
                     'configurationEdit, emailConfiguration, securityDetails, notificationConfiguration, ' .
-                    'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard, sendGridConfiguration, clearSendGridConfiguration',
+                    'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard',
                     'moduleClassName' => 'UsersModule',
                     'rightName' => UsersModule::getAccessRight(),
             );
@@ -79,10 +76,6 @@
             );
             $filters[] = array(
                         self::EMAIL_CONFIGURATION_FILTER_PATH . ' + emailConfiguration',
-                         'controller' => $this,
-            );
-            $filters[] = array(
-                        self::SENDGRID_EMAIL_CONFIGURATION_FILTER_PATH . ' + sendGridConfiguration, clearSendGridConfiguration',
                          'controller' => $this,
             );
             return $filters;
@@ -527,24 +520,38 @@
             $userEmailConfigurationForm = new UserEmailConfigurationForm($emailAccount);
             $userEmailConfigurationForm->emailSignatureHtmlContent = $user->getEmailSignature()->htmlContent;
             $postVariableName           = get_class($userEmailConfigurationForm);
-
+            //Set sendfird form
+            $sendGridEmailAccount = SendGridEmailAccount::resolveAndGetByUserAndName($user);
+            $userSendGridConfigurationForm = new UserSendGridConfigurationForm($sendGridEmailAccount);
+            $userEmailConfigurationForm->userSendGridConfigurationForm = $userSendGridConfigurationForm;
             if (isset($_POST[$postVariableName]))
             {
                 $userEmailConfigurationForm->setAttributes($_POST[$postVariableName]);
                 if ($userEmailConfigurationForm->validate())
                 {
                     $userEmailConfigurationForm->save();
-                    Yii::app()->user->setFlash('notification',
-                        Zurmo::t('UsersModule', 'User email configuration saved successfully.')
-                    );
-
-                    if ($redirectUrl != null)
+                    if ($userEmailConfigurationForm->useCustomOutboundSettings == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
                     {
-                        $this->redirect($redirectUrl);
+                        $_POST['UserSendGridConfigurationForm']['fromName'] = $_POST[$postVariableName]['fromName'];
+                        $_POST['UserSendGridConfigurationForm']['fromAddress'] = $_POST[$postVariableName]['fromAddress'];
+                        $_POST['UserSendGridConfigurationForm']['replyToAddress'] = $_POST[$postVariableName]['replyToAddress'];
+                        $userSendGridConfigurationForm = $this->processSendGridPostConfiguration($id, $redirectUrl);
+                        $userEmailConfigurationForm->userSendGridConfigurationForm = $userSendGridConfigurationForm;
                     }
                     else
                     {
-                        $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
+                        Yii::app()->user->setFlash('notification',
+                            Zurmo::t('UsersModule', 'User email configuration saved successfully.')
+                        );
+
+                        if ($redirectUrl != null)
+                        {
+                            $this->redirect($redirectUrl);
+                        }
+                        else
+                        {
+                            $this->redirect(array($this->getId() . '/details', 'id' => $user->id));
+                        }
                     }
                 }
                 else
@@ -742,12 +749,10 @@
          * @param string $redirectUrl
          * @return void
          */
-        public function actionSendGridConfiguration($id, $redirectUrl = null)
+        protected function processSendGridPostConfiguration($id, $redirectUrl = null)
         {
             SendGridAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
             $user                           = User::getById(intval($id));
-            $title                          = Zurmo::t('SendGridModule', 'SendGrid Configuration');
-            $breadCrumbLinks                = array(strval($user) => array('default/details',  'id' => $id), $title);
             $emailAccount                   = SendGridEmailAccount::resolveAndGetByUserAndName($user);
             $userSendGridConfigurationForm  = new UserSendGridConfigurationForm($emailAccount);
             $userSendGridConfigurationForm->emailSignatureHtmlContent = $user->getEmailSignature()->htmlContent;
@@ -776,29 +781,7 @@
                     $userSendGridConfigurationForm->apiPassword = ZurmoPasswordSecurityUtil::decrypt($userSendGridConfigurationForm->apiPassword);
                 }
             }
-            $titleBarAndEditView = new UserActionBarAndSendGridConfigurationEditView(
-                                    $this->getId(),
-                                    $this->getModule()->getId(),
-                                    $user,
-                                    $userSendGridConfigurationForm
-            );
-            $titleBarAndEditView->setCssClasses(array('AdministrativeArea'));
-            $view = new UsersPageView($this->resolveZurmoDefaultOrAdminView($titleBarAndEditView, $breadCrumbLinks, 'UserBreadCrumbView'));
-            echo $view->render();
-        }
-
-        /**
-         * Clear sendgrid options.
-         * @param int $id
-         * @return void
-         */
-        public function actionClearSendGridConfiguration($id)
-        {
-            SendGridAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
-            $user                           = User::getById(intval($id));
-            $emailAccount                   = SendGridEmailAccount::resolveAndGetByUserAndName($user);
-            $emailAccount->delete();
-            $this->redirect(Yii::app()->createUrl('users/default/sendGridConfiguration', array('id' => $id)));
+            return $userSendGridConfigurationForm;
         }
     }
 ?>

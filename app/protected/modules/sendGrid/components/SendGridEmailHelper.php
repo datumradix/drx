@@ -64,26 +64,13 @@
         public $fromAddress;
 
         /**
-         * Event webhook url.
-         * @var string
-         */
-        public $eventWebhookUrl;
-        /**
-         * Event webhook url.
-         * @var string
-         */
-        public $eventWebhookFilePath;
-
-        /**
          * Contains array of settings to load during initialization from the configuration table.
          * @see loadApiSettings
          * @var array
          */
         protected $settingsToLoad = array(
             'apiUsername',
-            'apiPassword',
-            'eventWebhookUrl',
-            'eventWebhookFilePath'
+            'apiPassword'
         );
 
         /**
@@ -180,15 +167,15 @@
             $bccAddresses   = array();
             foreach ($emailMessage->recipients as $recipient)
             {
-                if($recipient->type == EmailMessageRecipient::TYPE_TO)
+                if ($recipient->type == EmailMessageRecipient::TYPE_TO)
                 {
                     $toAddresses[$recipient->toAddress] = $recipient->toName;
                 }
-                if($recipient->type == EmailMessageRecipient::TYPE_CC)
+                if ($recipient->type == EmailMessageRecipient::TYPE_CC)
                 {
                     $ccAddresses[$recipient->toAddress] = $recipient->toName;
                 }
-                if($recipient->type == EmailMessageRecipient::TYPE_BCC)
+                if ($recipient->type == EmailMessageRecipient::TYPE_BCC)
                 {
                     $bccAddresses[$recipient->toAddress] = $recipient->toName;
                 }

@@ -349,7 +349,8 @@
             {
                 $this->deleteUnprocessedCampaignItems();
                 $unsetEmailMessagesForCurrentCampaign = EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_OUTBOX, $this->id);
-                foreach ($unsetEmailMessagesForCurrentCampaign as $emailMessage) {
+                foreach ($unsetEmailMessagesForCurrentCampaign as $emailMessage)
+                {
                     // deleting campaign item should automatically delete any associated data.
                     $emailMessage->campaignItem->delete();
                 }

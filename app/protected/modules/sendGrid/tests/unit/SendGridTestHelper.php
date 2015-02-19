@@ -42,8 +42,8 @@
 
             if (isset(Yii::app()->params['emailTestAccounts']))
             {
-                if(isset(Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings'])
-                    && isset(Yii::app()->params['emailTestAccounts']['sendGridUserSettings']))
+                if (isset(Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings']) &&
+                       isset(Yii::app()->params['emailTestAccounts']['sendGridUserSettings']))
                 {
                     $sendGridGlobalSettings     = Yii::app()->params['emailTestAccounts']['sendGridGlobalSettings'];
                     $sendGridUserSettings       = Yii::app()->params['emailTestAccounts']['sendGridUserSettings'];
@@ -107,8 +107,6 @@
             $emailAccount->fromAddress       = 'user@zurmo.com';
             $emailAccount->apiUsername        = Yii::app()->params['emailTestAccounts']['sendGridUserSettings']['apiUsername'];
             $emailAccount->apiPassword        = Yii::app()->params['emailTestAccounts']['sendGridUserSettings']['apiPassword'];
-            $emailAccount->eventWebhookUrl    = 'http://yahoo.com';
-            $emailAccount->eventWebhookFilePath    = 'http://yahoo.com/a.php';
             $emailAccount->save();
             return $emailAccount;
         }

@@ -99,7 +99,7 @@
             ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', true);
             $emailMessage = EmailMessageHelper::processAndCreateEmailMessage(array('name' => 'Test User', 'address' => 'test@yahoo.com'), 'abc@yahoo.com');
             $emailMessage->owner = static::$userpsg;
-            assert($emailMessage->save());
+            assert($emailMessage->save()); // Not Coding Standard
             //user sendgrid
             $mailerFactory = new ZurmoMailerFactory($emailMessage);
             $mailer        = $mailerFactory->resolveMailer();
@@ -114,7 +114,7 @@
             //user custom
             ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
             $emailMessage->owner = static::$usercstmsmtp;
-            assert($emailMessage->save());
+            assert($emailMessage->save()); // Not Coding Standard
             $mailerFactory = new ZurmoMailerFactory($emailMessage);
             $mailer        = $mailerFactory->resolveMailer();
             $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
@@ -128,7 +128,7 @@
             //Global sendgrid
             ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
             $emailMessage->owner = static::$basicuser;
-            assert($emailMessage->save());
+            assert($emailMessage->save()); // Not Coding Standard
             $mailerFactory = new ZurmoMailerFactory($emailMessage);
             $mailer        = $mailerFactory->resolveMailer();
             $this->assertTrue($mailer instanceof ZurmoSendGridMailer);
@@ -161,7 +161,7 @@
             $emailMessage = EmailMessageHelper::processAndCreateEmailMessage(array('name' => 'Test User WO sendgrid', 'address' => 'testwosendgrid@yahoo.com'), 'abc@yahoo.com');
             //user custom
             $emailMessage->owner = static::$usercstmsmtp;
-            assert($emailMessage->save());
+            assert($emailMessage->save()); // Not Coding Standard
             $mailerFactory = new ZurmoMailerFactory($emailMessage);
             $mailer        = $mailerFactory->resolveMailer();
             $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
@@ -175,7 +175,7 @@
             //Global custom
             ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
             $emailMessage->owner = static::$basicuser;
-            assert($emailMessage->save());
+            assert($emailMessage->save()); // Not Coding Standard
             $mailerFactory = new ZurmoMailerFactory($emailMessage);
             $mailer        = $mailerFactory->resolveMailer();
             $this->assertTrue($mailer instanceof ZurmoSwiftMailer);
@@ -216,7 +216,7 @@
 
             ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
             $emailMessage->owner = static::$usercstmsmtp;
-            assert($emailMessage->save());
+            assert($emailMessage->save()); // Not Coding Standard
             $mailerFactory = new ZurmoMailerFactory($emailMessage);
             $mailer        = $mailerFactory->resolveMailer();
             $this->assertTrue($mailer instanceof ZurmoSwiftMailer);

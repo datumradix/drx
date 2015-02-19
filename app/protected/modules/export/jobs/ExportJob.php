@@ -380,6 +380,13 @@
                     '{dateTime}' => DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay($exportItem->createdDateTime, 'long'),
                 )
             );
+            $message->textContent       = Zurmo::t('ExportModule', 'Export of {fileName} requested on {dateTime} is completed. Use this {url} to download file!',
+                array(
+                    '{fileName}' => $exportItem->exportFileName,
+                    '{url}'      => ShortUrlUtil::createShortUrl(Yii::app()->createAbsoluteUrl('export/default/download', array('id' => $exportItem->id))),
+                    '{dateTime}' => DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay($exportItem->createdDateTime, 'long'),
+                )
+            );
             $rules                      = $this->getExportProcessCompletedNotificationRulesForExportItem($exportItem);
             NotificationsUtil::submit($message, $rules);
         }
@@ -402,6 +409,7 @@
                     '{dateTime}' => DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay($exportItem->createdDateTime, 'long'),
                 )
             );
+            $message->textContent       = $message->htmlContent;
             $rules                      = $this->getExportProcessCompletedNotificationRulesForExportItem($exportItem);
             NotificationsUtil::submit($message, $rules);
         }

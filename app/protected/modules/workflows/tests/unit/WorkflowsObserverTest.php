@@ -36,6 +36,12 @@
 
     class WorkflowsObserverTest extends WorkflowBaseTest
     {
+        public function setUp()
+        {
+            parent::setUp();
+            Yii::app()->user->userModel->primaryEmail->emailAddress = 'super@zurmo.com';
+        }
+
         public function testProcessWorkflowAfterSave()
         {
             $model    = new WorkflowModelTestItem();
@@ -43,8 +49,10 @@
             $observer = new WorkflowsObserver();
             $observer->setDepth(25);
             $this->assertEquals(0, Notification::getCount());
+            $this->assertEquals(0, EmailMessage::getCount());
             $observer->processWorkflowAfterSave($event);
             $this->assertEquals(1, Notification::getCount());
+            $this->assertEquals(1, EmailMessage::getCount());
         }
     }
 ?>

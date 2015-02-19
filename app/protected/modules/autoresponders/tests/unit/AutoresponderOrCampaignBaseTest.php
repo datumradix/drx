@@ -51,7 +51,8 @@
             $item   = $class::getById($id);
             return $processed;
         }
-       protected function getClassName()
+
+        protected function getClassName()
         {
             $className  = get_class($this);
             $className  = substr($className, 0, strpos($className, 'Item'));

@@ -65,19 +65,19 @@
         {
             $htmlOptions                = array();
             $htmlOptions['id']          = $this->getEditableInputId().'Inbox';
-            $htmlOptions['name']        = $this->getEditableInputName($this->attribute.'Inbox');
+            $htmlOptions['name']        = $this->getEditableInputName($this->attribute.'Inbox'); // Not Coding Standard
             $htmlOptions['disabled']    = $this->getDisabledValue();
             $htmlOptions                = array_merge($this->getHtmlOptions(), $htmlOptions);
-            $checkbox                   = $this->form->checkBox($this->model, $this->attribute.'Inbox', $htmlOptions);
-            $content                    = ZurmoHtml::tag('span', array('class'=>'inboxNotificationsCheckbox'), $checkbox);
+            $checkbox                   = $this->form->checkBox($this->model, $this->attribute.'Inbox', $htmlOptions); // Not Coding Standard
+            $content                    = ZurmoHtml::tag('span', array('class' => 'inboxNotificationsCheckbox'), $checkbox);
 
             $htmlOptions                = array();
             $htmlOptions['id']          = $this->getEditableInputId().'Email';
-            $htmlOptions['name']        = $this->getEditableInputName($this->attribute.'Email');
+            $htmlOptions['name']        = $this->getEditableInputName($this->attribute.'Email'); // Not Coding Standard
             $htmlOptions['disabled']    = $this->getDisabledValue();
             $htmlOptions                = array_merge($this->getHtmlOptions(), $htmlOptions);
-            $checkbox                   = $this->form->checkBox($this->model, $this->attribute.'Email', $htmlOptions);
-            $content                   .= ZurmoHtml::tag('span', array('class'=>'emailNotificationsCheckbox'), $checkbox);
+            $checkbox                   = $this->form->checkBox($this->model, $this->attribute.'Email', $htmlOptions); // Not Coding Standard
+            $content                   .= ZurmoHtml::tag('span', array('class' => 'emailNotificationsCheckbox'), $checkbox);
             return $content;
         }
 

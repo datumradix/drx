@@ -42,7 +42,6 @@
             if (isset($model->fromName, $model->fromAddress))
             {
                 return $this->resolveSenderByNameAndEmailAddress($model->fromName, $model->fromAddress);
-
             }
             // else check if we have marketingList set and related marketingList's fromName and fromAddress is set
             if (isset($model->marketingList, $model->marketingList->fromName, $model->marketingList->fromAddress))

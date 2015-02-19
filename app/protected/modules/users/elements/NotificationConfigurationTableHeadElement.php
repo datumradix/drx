@@ -63,17 +63,17 @@
 
             $htmlOptions             = array();
             $htmlOptions['id']       = $this->getEditableInputId().'Inbox';
-            $htmlOptions['name']     = $this->getEditableInputName($this->attribute.'Inbox');
+            $htmlOptions['name']     = $this->getEditableInputName($this->attribute.'Inbox'); // Not Coding Standard
             $htmlOptions['disabled'] = $this->getDisabledValue();
             $htmlOptions             = array_merge($this->getHtmlOptions(), $htmlOptions);
-            $content                 = $this->form->checkBox($this->model, $this->attribute.'Inbox', $htmlOptions);
+            $content                 = $this->form->checkBox($this->model, $this->attribute.'Inbox', $htmlOptions); // Not Coding Standard
 
             $htmlOptions             = array();
             $htmlOptions['id']       = $this->getEditableInputId().'Email';
-            $htmlOptions['name']     = $this->getEditableInputName($this->attribute.'Email');
+            $htmlOptions['name']     = $this->getEditableInputName($this->attribute.'Email'); // Not Coding Standard
             $htmlOptions['disabled'] = $this->getDisabledValue();
             $htmlOptions             = array_merge($this->getHtmlOptions(), $htmlOptions);
-            $content                 .= $this->form->checkBox($this->model, $this->attribute.'Email', $htmlOptions);
+            $content                 .= $this->form->checkBox($this->model, $this->attribute.'Email', $htmlOptions); // Not Coding Standard
             return ZurmoHtml::tag('span', array(), $content);
         }
     }

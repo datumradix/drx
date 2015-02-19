@@ -98,7 +98,7 @@
             try
             {
                 $emailAccount = static::getByUserAndName($user, $name);
-                if($decrypt === true)
+                if ($decrypt === true)
                 {
                     $emailAccount->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($emailAccount->outboundPassword);
                 }
@@ -113,7 +113,7 @@
                 {
                     $emailAccount->fromAddress       = $user->primaryEmail->emailAddress;
                 }
-                $emailAccount->useCustomOutboundSettings = false;
+                $emailAccount->useCustomOutboundSettings = EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS;
                 $emailAccount->outboundPort              = '25';
                 $emailAccount->outboundType              = EmailHelper::OUTBOUND_TYPE_SMTP;
             }
@@ -155,7 +155,7 @@
                                   array('outboundSecurity',          'type',      'type' => 'string'),
                                   array('outboundType',              'type',      'type' => 'string'),
                                   array('outboundPort',              'type',      'type' => 'integer'),
-                                  array('useCustomOutboundSettings', 'boolean'),
+                                  array('useCustomOutboundSettings', 'type',      'type' => 'integer'),
                                   array('fromName',                  'length',    'max' => 64),
                                   array('replyToName',               'length',    'max' => 64),
                                   array('outboundType',              'length',    'max' => 4),
@@ -216,20 +216,20 @@
                     'outboundUsername'          => Zurmo::t('EmailMessagesModule', 'Outbound Username',             array(), null, $language),
                     'replyToAddress'            => Zurmo::t('EmailMessagesModule', 'Reply To Address',              array(), null, $language),
                     'replyToName'               => Zurmo::t('EmailMessagesModule', 'Reply To Name',                 array(), null, $language),
-                    'useCustomOutboundSettings' => Zurmo::t('EmailMessagesModule', 'Use Custom Outbound Settings',  array(), null, $language),
+                    'useCustomOutboundSettings' => Zurmo::t('EmailMessagesModule', 'Use the following outbound settings',  array(), null, $language),
                     'user'                      => Zurmo::t('UsersModule',         'User',                          array(), null, $language),
                 )
             );
         }
 
         /**
-         * When the useCustomOutboundSettings is checked, then other attributes become required
+         * When the useCustomOutboundSettings is selected, then other attributes become required
          * @param string $attribute
          * @param array $params
          */
         public function validateCustomOutboundSettings($attribute, $params)
         {
-            if ($this->$attribute)
+            if ($this->$attribute == EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS)
             {
                 $haveError = false;
                 foreach ($params['requiredAttributes'] as $attribute)

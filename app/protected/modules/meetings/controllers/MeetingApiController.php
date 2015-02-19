@@ -73,15 +73,102 @@
             $result    =  $this->processGetModifiedItems($params['data']);
             Yii::app()->apiHelper->sendResponse($result);
         }
+        
+        /**
+         * Get all meetings attendees including users, contacts, opportunities and accounts
+         */
+        public function actionGetAttendees()
+        {
+            $params     = Yii::app()->apiRequest->getParams();
+            $result     =  $this->processAttendees($params['id']);
+            Yii::app()->apiHelper->sendResponse($result);
+        }
 
         /**
-         * Get all user attendees for specified meeting
+         * Get all attendees
+         * Function get user attendees and attendees from activity items and merge them into one array
+         * @param $meetingId
+         * @return ApiResult
+         * @throws ApiException
          */
-        public function actionGetUserAttendees()
+        protected function processAttendees($meetingId)
         {
-            $params = Yii::app()->apiRequest->getParams();
-            $result    =  $this->processGetManyManyRelationshipModels($params['data']);
-            Yii::app()->apiHelper->sendResponse($result);
+            try
+            {
+                $meeting               = Meeting::getById(intval($meetingId));
+                $activityItemAttendees = $this->getAttendeesFromActivityItems($meeting);
+                $userAttendees         = $this->getUserAttendees($meeting);
+                $data                  = array_merge($activityItemAttendees, $userAttendees);
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            catch (Exception $e)
+            {
+                $message = $e->getMessage();
+                throw new ApiException($message);
+            }
+            return $result;
+
+        }
+
+        /**
+         * Get user attendees
+         * @param $meeting
+         * @return array
+         */
+        protected function getUserAttendees($meeting)
+        {
+            $data         = array();
+            foreach ($meeting->userAttendees as $attendee)
+            {
+                $item = array('id' => $attendee->id);
+                if ($attendee->primaryEmail->emailAddress != null)
+                {
+                    $item['email'] = $attendee->primaryEmail->emailAddress;
+                }
+                $data['User'][] = $item;
+            }
+            return $data;
+        }
+
+        /**
+         * Get meeting attendees from activity items. It returns Contact, Opportunity or Account ids
+         * @param $meeting
+         * @return array
+         * @throws Exception
+         */
+        public function getAttendeesFromActivityItems($meeting)
+        {
+            $data         = array();
+            $activityClassNames = ActivitiesUtil::getActivityItemsModelClassNames();
+            try
+            {
+                foreach ($activityClassNames as $activityClassName)
+                {
+                    foreach ($meeting->activityItems as $activityItem)
+                    {
+                        try
+                        {
+                            $modelDerivationPathToItem  = RuntimeUtil::getModelDerivationPathToItem($activityClassName);
+                            $castedDownModel            = $activityItem->castDown(array($modelDerivationPathToItem));
+                            $item = array('id' => $castedDownModel->id);
+                            if ($castedDownModel instanceof Contact && $castedDownModel->primaryEmail->emailAddress != null)
+                            {
+                                $item['email'] = $castedDownModel->primaryEmail->emailAddress;
+                            }
+                            $data[$activityClassName][] = $item;
+                        }
+                        catch (NotFoundException $e)
+                        {
+                        }
+                    }
+                }
+            }
+            catch (Exception $e)
+            {
+                $message = $e->getMessage();
+                throw new Exception($message);
+            }
+            return $data;
         }
     }
 ?>

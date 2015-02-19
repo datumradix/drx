@@ -103,7 +103,7 @@
                 $content .= '</span>';
             }
             $qtip = new ZurmoTip();
-            $qtip->addQTip("#formula-tooltip");
+            $qtip->addQTip("#formula-tooltip", array('style' => array('classes' => "qtip-has-max-width")));
             return ZurmoHtml::tag('div', array('class' => 'field-instructions'), $content);
         }
     }

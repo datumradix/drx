@@ -114,10 +114,14 @@
             foreach ($jobLogs as $jobLog)
             {
                 $message                      = new NotificationMessage();
-                $message->htmlContent         = Zurmo::t('JobsManagerModule', 'Job completed with errors.');
+                $commonMessage                = Zurmo::t('JobsManagerModule', 'Job completed with errors.');
+                $message->htmlContent         = $commonMessage;
                 $url                          = Yii::app()->createAbsoluteUrl('jobsManager/default/jobLogDetails/',
                                                                     array('id' => $jobLog->id));
                 $message->htmlContent        .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
+                $message->textContent         = $commonMessage;
+                $message->textContent        .= "\n". Zurmo::t('JobsManagerModule', 'See the job log details in this link: {url}',
+                                                                array('{url}' => ShortUrlUtil::createShortUrl($url)));
                 $rules                        = new JobCompletedWithErrorsNotificationRules();
                 NotificationsUtil::submit($message, $rules);
                 $jobLog->isProcessed         = true;
@@ -205,7 +209,7 @@
             }
             $message->textContent .= ': ' . $textContent;
             $message->htmlContent .= ': ' . $htmlContent;
-            $message->textContent .= "\n" . ZurmoHtml::link(Zurmo::t('Core', 'View Job Manager'), $url);
+            $message->textContent .= "\n" . Zurmo::t('Core', 'View Job Manager') . ': ' . ShortUrlUtil::createShortUrl($url);
             $message->htmlContent .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'View Job Manager'), $url);
             $rules = new StuckJobsNotificationRules();
             NotificationsUtil::submit($message, $rules);

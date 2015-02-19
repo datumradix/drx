@@ -64,5 +64,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when the Status of a task changes for projects I own.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('ProjectsModule', 'TASK STATUS CHANGE for TASK: {task}, PROJECT: {project}', $this->getParamsForEmailSubject());
+        }
     }
 ?>

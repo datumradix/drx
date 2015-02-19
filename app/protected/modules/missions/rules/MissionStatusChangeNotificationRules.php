@@ -37,7 +37,7 @@
     /**
      * A  NotificationRules to manage when a mission status changes.
      */
-    class MissionStatusChangeNotificationRules extends SimpleNotificationRules
+    class MissionStatusChangeNotificationRules extends NotificationRules
     {
         public function getDisplayName()
         {

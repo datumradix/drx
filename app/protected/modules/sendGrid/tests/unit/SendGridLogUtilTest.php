@@ -33,36 +33,34 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
-
-    /**
-     * Filter used by user controller to ascertain whether the user's sendgrid email settings has been configured or not.
-     * If not, then the user is instructed to set this up first before they can send email from the system.
-     */
-    class SendGridEmailConfigurationCheckControllerFilter extends CFilter
+    class SendGridLogUtilTest extends ZurmoBaseTest
     {
-        public $controller;
-
-        /**
-         * @param FilterChain $filterChain
-         * @return boolean
-         */
-        protected function preFilter($filterChain)
+        public static function setUpBeforeClass()
         {
-            if (isset($_POST['ajax']))
-            {
-                return true;
-            }
-            if (Yii::app()->sendGridEmailHelper->apiUsername != null
-                && Yii::app()->sendGridEmailHelper->apiPassword != null)
-            {
-                return true;
-            }
-            $messageView                  = new NoGlobalSendGridEmailConfigurationYetView();
-            $pageViewClassName            = $this->controller->getModule()->getPluralCamelCasedName() . 'PageView';
-            $view                         = new $pageViewClassName(ZurmoDefaultViewUtil::
-                                                 makeStandardViewForCurrentUser($this->controller, $messageView));
-            echo $view->render();
-            return false;
+            parent::setUpBeforeClass();
+            SecurityTestHelper::createSuperAdmin();
+        }
+
+        public function setUp()
+        {
+            parent::setUp();
+        }
+
+        public function testWriteLog()
+        {
+            $rawData = '[{"sg_event_id":"8rQZ-LulQcObW_2WyUTLpg","zurmoToken":"' . md5(ZURMO_TOKEN) . '","sg_message_id":"14826db909d.7e66.8eff7e.filter-297.4955.5401C16C1B.0","event":"processed","itemClass":"CampaignItem","email":"abc@yahoo.com","itemId":31,"smtp-id":"<14826db909d.7e66.8eff7e@ismtpd-002.sjc1.sendgrid.net>","timestamp":1409401197,"personId":42}]'; // Not Coding Standard
+            SendGridLogUtil::writeLog('test', $rawData);
+            $logPath = SendGridLogUtil::getLogFilePath('test');
+            $this->assertTrue(file_exists($logPath));
+            $testContent = file_get_contents($logPath);
+            $this->assertEquals($rawData, $testContent);
+            @unlink($logPath);
+
+            //Failure test
+            $rawData = '[{"sg_event_id":"8rQZ-LulQcObW_2WyUTLpg","sg_message_id":"14826db909d.7e66.8eff7e.filter-297.4955.5401C16C1B.0","event":"processed","itemClass":"CampaignItem","email":"abc@yahoo.com","itemId":31,"smtp-id":"<14826db909d.7e66.8eff7e@ismtpd-002.sjc1.sendgrid.net>","timestamp":1409401197,"personId":42}]'; // Not Coding Standard
+            SendGridLogUtil::writeLog('test', $rawData);
+            $logPath = SendGridLogUtil::getLogFilePath('test');
+            $this->assertFalse(file_exists($logPath));
         }
     }
 ?>

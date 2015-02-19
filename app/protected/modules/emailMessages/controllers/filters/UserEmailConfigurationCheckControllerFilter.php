@@ -44,18 +44,44 @@
 
         protected function preFilter($filterChain)
         {
+            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
             try
             {
-                EmailAccount::getByUserAndName(Yii::app()->user->userModel);
+                if ($sendGridPluginEnabled)
+                {
+                    SendGridEmailAccount::getByUserAndName(Yii::app()->user->userModel, null);
+                }
+                else
+                {
+                    EmailAccount::getByUserAndName(Yii::app()->user->userModel);
+                }
             }
             catch (NotFoundException $e)
             {
                 $redirectUrl = Yii::app()->request->getParam('redirectUrl');
-                $messageView = new NoUserEmailConfigurationYetView($redirectUrl);
-                $view        = new ModalView($this->controller, $messageView);
-                Yii::app()->getClientScript()->setToAjaxMode();
-                echo $view->render();
-                return false;
+                if ($sendGridPluginEnabled)
+                {
+                    try
+                    {
+                        EmailAccount::getByUserAndName(Yii::app()->user->userModel);
+                    }
+                    catch (NotFoundException $ex)
+                    {
+                        $messageView = new NoUserEmailConfigurationYetView($redirectUrl);
+                        $view        = new ModalView($this->controller, $messageView);
+                        Yii::app()->getClientScript()->setToAjaxMode();
+                        echo $view->render();
+                        return false;
+                    }
+                }
+                else
+                {
+                    $messageView = new NoUserEmailConfigurationYetView($redirectUrl);
+                    $view        = new ModalView($this->controller, $messageView);
+                    Yii::app()->getClientScript()->setToAjaxMode();
+                    echo $view->render();
+                    return false;
+                }
             }
             return true;
         }

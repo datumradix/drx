@@ -33,28 +33,33 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
-     /**
-      * User action bar for sendgrid configuration edit view.
-      */
-    class UserActionBarAndSendGridConfigurationEditView extends GridView
+
+    class SendGridExternalController extends ZurmoModuleController
     {
-        /**
-         * @param string $controllerId
-         * @param string $moduleId
-         * @param User $user
-         * @param UserSendGridConfigurationForm $emailAccountForm
-         */
-        public function __construct(
-            $controllerId,
-            $moduleId,
-            User $user,
-            UserSendGridConfigurationForm $emailAccountForm
-            )
+        public function filters()
         {
-            parent::__construct(2, 1);
-            $this->setView(new ActionBarForUserEditAndDetailsView ($controllerId, $moduleId, $user, 'UserConfigurationMenu'), 0, 0);
-            $title = strval($user) . ': ' . Zurmo::t('SendGridModule', 'SendGrid Configuration');
-            $this->setView(new UserSendGridConfigurationEditView($controllerId, $moduleId, $emailAccountForm, $title), 1, 0);
+            return array();
+        }
+
+        /**
+         * @param CAction $action action to run
+         * @return boolean whether the action should be executed.
+         */
+        public function beforeAction($action)
+        {
+            Yii::app()->user->userModel = BaseControlUserConfigUtil::getUserToRunAs();
+            return parent::beforeAction($action);
+        }
+
+        /**
+         * Writes log.
+         * @param string $username Username for the sendgrid api
+         * @see Global configuration screen for sendgrid. The username there is what is being
+         * input here.
+         */
+        public function actionWriteLog($username)
+        {
+            SendGridLogUtil::writeLog($username, file_get_contents("php://input"));
         }
     }
 ?>

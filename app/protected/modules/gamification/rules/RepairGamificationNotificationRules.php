@@ -39,9 +39,11 @@
      */
     class RepairGamificationNotificationRules extends NotificationRules
     {
-        protected $critical        = false;
+        protected $allowSendingEmail = false;
 
-        protected $allowDuplicates = false;
+        protected $allowDuplicates   = false;
+
+        protected $canBeConfiguredByUser = false;
 
         public function getDisplayName()
         {
@@ -65,6 +67,14 @@
             {
                 $this->addUser($user);
             }
+        }
+
+        /**
+         * @return inheritdoc
+         */
+        public function isSuperAdministratorNotification()
+        {
+            return true;
         }
     }
 ?>

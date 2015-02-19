@@ -144,7 +144,7 @@
 
         protected function loadOutboundSettings()
         {
-            $settings = self::getOutboundSettings();
+            $settings = $this->getOutboundSettings();
             foreach ($settings as $keyName => $keyValue)
             {
                 $this->$keyName = $keyValue;
@@ -159,7 +159,7 @@
         public function loadOutboundSettingsFromUserEmailAccount(User $user, $name = null)
         {
             $userEmailAccount = EmailAccount::getByUserAndName($user, $name);
-            if ($userEmailAccount->useCustomOutboundSettings)
+            if ($userEmailAccount->useCustomOutboundSettings == EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS)
             {
                 $settingsToLoad = array_merge(static::$settingsToLoad, array('fromName', 'fromAddress'));
                 foreach ($settingsToLoad as $keyName)
@@ -272,7 +272,7 @@
          * Get outbound settings.
          * @return array
          */
-        public static function getOutboundSettings()
+        public function getOutboundSettings()
         {
             $settings = array();
             foreach (static::$settingsToLoad as $keyName)
@@ -292,7 +292,7 @@
                 elseif ($keyName == 'outboundType')
                 {
                     $keyValue = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'outboundType');
-                    if($keyValue == null)
+                    if ($keyValue == null)
                     {
                         $keyValue = self::OUTBOUND_TYPE_SMTP;
                     }

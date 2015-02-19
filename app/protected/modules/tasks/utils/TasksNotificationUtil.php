@@ -93,7 +93,7 @@
             {
                 return;
             }
-            $notifications = static::resolveAndGetNotifications($users, $rule->getType(), $message, $rule->allowDuplicates());
+            $notifications = static::resolveAndGetNotifications($message, $rule);
             if (static::resolveShouldSendEmailIfCritical())
             {
                 foreach ($notifications as $notification)
@@ -185,48 +185,6 @@
         }
 
         /**
-         * Gets email subject for the notification
-         * @param Task $task
-         * @param $action
-         * @return string
-         */
-        public static function getTaskEmailSubject(Task $task, $action)
-        {
-            assert('$task instanceof Task');
-            $relatedModelStringValue = TasksUtil::resolveFirstRelatedModelStringValue($task);
-            if ($relatedModelStringValue != null)
-            {
-                $relatedModelStringValue = '(' . $relatedModelStringValue . ')';
-            }
-            $params = array('{task}'         => strval($task),
-                            '{relatedModel}' => $relatedModelStringValue);
-            if ($action == self::TASK_NEW)
-            {
-                return Zurmo::t('TasksModule', 'ASSIGNMENT {relatedModel}: {task}', $params);
-            }
-            elseif ($action == self::TASK_STATUS_BECOMES_AWAITING_ACCEPTANCE)
-            {
-                return Zurmo::t('TasksModule', 'DELIVERED {relatedModel}: {task}', $params);
-            }
-            elseif ($action == self::TASK_STATUS_BECOMES_COMPLETED)
-            {
-                return Zurmo::t('TasksModule', 'ACCEPTED {relatedModel}: {task}', $params);
-            }
-            elseif ($action == self::TASK_STATUS_BECOMES_REJECTED)
-            {
-                return Zurmo::t('TasksModule', 'REJECTED {relatedModel}: {task}', $params);
-            }
-            elseif ($action == self::TASK_OWNER_CHANGE)
-            {
-                return Zurmo::t('TasksModule', 'ASSIGNMENT {relatedModel}: {task}', $params);
-            }
-            elseif ($action == self::TASK_NEW_COMMENT)
-            {
-                return Zurmo::t('TasksModule', 'NEW COMMENT {relatedModel}: {task}', $params);
-            }
-        }
-
-        /**
          * Gets email message for the notification
          * @param Task $task
          * @param $action
@@ -300,7 +258,8 @@
                 UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($notification->owner,
                                                                                 $notificationSettingName, 'email'))
             {
-                $emailMessage               = static::makeEmailMessage($notification, $rule, $action);
+                $emailMessage               = static::makeEmailMessage();
+                $emailMessage->subject      = static::getEmailSubject($notification, $rule);
                 $emailMessage->content      = static::makeEmailContent($notification);
                 $emailMessage->sender       = static::makeSender();
                 $emailMessage->recipients->add(static::makeRecipient($notification));
@@ -315,73 +274,6 @@
                     //Not sure what to do yet when catching an exception here. Currently ignoring gracefully.
                 }
             }
-        }
-
-        /**
-         * @param Notification $notification
-         * @param TaskNotificationRules $rule
-         * @param string $action
-         * @return EmailMessage
-         */
-        protected static function makeEmailMessage(Notification $notification, TaskNotificationRules $rule, $action)
-        {
-            assert('is_string($action)');
-            $emailMessage               = new EmailMessage();
-            $emailMessage->owner        = Yii::app()->user->userModel;
-            $task                       = $rule->getModel();
-            $emailMessage->subject      = static::getTaskEmailSubject($task, $action);
-            return $emailMessage;
-        }
-
-        /**
-         * @param Notification $notification
-         * @return EmailMessageContent
-         */
-        protected static function makeEmailContent(Notification $notification)
-        {
-            $emailContent               = new EmailMessageContent();
-            $emailContent->textContent  = EmailNotificationUtil::
-                                            resolveNotificationTextTemplate(
-                                            $notification->notificationMessage->textContent, $notification->owner);
-            $emailContent->htmlContent  = EmailNotificationUtil::
-                                            resolveNotificationHtmlTemplate(
-                                            $notification->notificationMessage->htmlContent, $notification->owner);
-            return $emailContent;
-        }
-
-        /**
-         * @return EmailMessageSender
-         */
-        protected static function makeSender()
-        {
-            $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
-            $sender                     = new EmailMessageSender();
-            $sender->fromAddress        = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
-            $sender->fromName           = strval($userToSendMessagesFrom);
-            return $sender;
-        }
-
-        /**
-         * @param Notification $notification
-         * @return EmailMessageRecipient
-         */
-        protected static function makeRecipient(Notification $notification)
-        {
-            $recipient                  = new EmailMessageRecipient();
-            $recipient->toAddress       = $notification->owner->primaryEmail->emailAddress;
-            $recipient->toName          = strval($notification->owner);
-            $recipient->type            = EmailMessageRecipient::TYPE_TO;
-            $recipient->personsOrAccounts->add($notification->owner);
-            return $recipient;
-        }
-
-        /**
-         * Resolve to save notification
-         * @return bool
-         */
-        protected static function resolveToSaveNotification()
-        {
-            return true;
         }
 
         /**
