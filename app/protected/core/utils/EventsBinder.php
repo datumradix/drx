@@ -35,6 +35,7 @@
      ********************************************************************************/
 
     Yii::import('application.core.utils.StringUtil');
+
     /**
      * Class responsible for attaching appropriate events
      */
@@ -108,6 +109,5 @@
             $defaultHandlerClassName    = $this->resolveDefaultHandlerClassName();
             $this->defaultHandler       = new $defaultHandlerClassName();
         }
-
     }
 ?>

@@ -101,7 +101,8 @@
          * @param User $userToSendMessagesFrom
          * @param string $toAddress
          */
-        /*public static function sendTestEmailFromUser(EmailHelper $emailHelper, User $userToSendMessagesFrom, $toAddress)
+        /*
+        public static function sendTestEmailFromUser(EmailHelper $emailHelper, User $userToSendMessagesFrom, $toAddress)
         {
             $from = array(
                 'address'   => $emailHelper->resolveFromAddressByUser($userToSendMessagesFrom),
@@ -109,7 +110,8 @@
             );
             $emailMessage = static::sendTestEmail($emailHelper, $from, $toAddress);
             return $emailMessage;
-        }*/
+        }
+        */
 
         /**
          * Send a test email.
@@ -118,7 +120,8 @@
          * @param Array $from
          * @param string $toAddress
          */
-        /*public static function sendTestEmail(EmailHelper $emailHelper, Array $from, $toAddress)
+        /*
+        public static function sendTestEmail(EmailHelper $emailHelper, Array $from, $toAddress)
         {
             $emailMessage              = self::processAndCreateEmailMessage($from, $toAddress);
             $validated                 = $emailMessage->validate();
@@ -128,7 +131,8 @@
                 $emailHelper->sendImmediately($emailMessage);
             }
             return $emailMessage;
-        }*/
+        }
+        */
 
         /**
          * Process and create email message.

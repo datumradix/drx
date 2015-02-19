@@ -35,6 +35,7 @@
      ********************************************************************************/
 
     Yii::import('application.core.utils.ApplicationBeginRequestBehaviors');
+
     /**
      * Class containing command begin request behaviors.
      */

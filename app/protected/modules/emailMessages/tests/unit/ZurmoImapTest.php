@@ -55,7 +55,6 @@
                 Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundSecurity'];
                 Yii::app()->emailHelper->sendEmailThroughTransport = true;
                 Yii::app()->emailHelper->setOutboundSettings();
-                Yii::app()->emailHelper->init();
             }
         }
 
@@ -448,7 +447,7 @@
 
         protected static function replaceNewLinesCharacters($string, $replaceWith = ' ')
         {
-            return preg_replace('/\s+/', $replaceWith, $string);
+            return preg_replace('/\s+/', $replaceWith, $string); // Not Coding Standard
         }
     }
 ?>

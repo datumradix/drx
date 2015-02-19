@@ -46,7 +46,6 @@
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
 
-
             //Setup test data owned by the super user.
             $account = AccountTestHelper::createAccountByNameForOwner('superAccount', $super);
             AccountTestHelper::createAccountByNameForOwner('superAccount2', $super);

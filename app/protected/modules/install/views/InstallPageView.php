@@ -50,7 +50,7 @@
 
         protected function getSubtitle()
         {
-            return Zurmo::t('InstallModule', 'Zurmo Installation');
+            return Zurmo::t('InstallModule', 'Zurmo Installation', LabelUtil::getZurmoLabelParam());
         }
     }
 ?>

@@ -64,5 +64,13 @@
         {
             return Zurmo::t('UsersModule', 'Notify me when a new task is added to a Project I own.');
         }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('ProjectsModule', 'NEW TASK: {task} for PROJECT: {project}', $this->getParamsForEmailSubject());
+        }
     }
 ?>

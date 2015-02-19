@@ -35,6 +35,7 @@
      ********************************************************************************/
 
     Yii::import('application.core.utils.EndRequestBehaviors');
+
     /**
      * Class containing test begin request behaviors.
      */

@@ -54,7 +54,7 @@
             return $this->title;
         }
 
-        public static function getDefaultMetadata()
+        public static function getMetadata(User $user = null)
         {
             $metadata = array(
                 'global' => array(
@@ -73,6 +73,11 @@
             return $metadata;
         }
 
+        protected function getFormLayoutMetadata()
+        {
+            return self::getMetadata();
+        }
+
         protected function getNewModelTitleLabel()
         {
             return null;
@@ -89,7 +94,7 @@
                             array(
                                 'elements' => array(
                                     array('attributeName' => 'notificationConfigurationTableHead' . $module,
-                                        'type' => 'NotificationConfigurationTableHead',),
+                                        'type' => 'NotificationConfigurationTableHead'),
                                 ),
                             ),
                         ),
@@ -108,7 +113,6 @@
                                                 ),
                                             ),
                                         );
-
                 }
                 $userPanels[] = array('title' => $module, 'rows' => array_merge($tableHeadRow, $userRows));
             }

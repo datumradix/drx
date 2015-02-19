@@ -131,11 +131,15 @@
             elseif ($this->depth > 10)
             {
                 $message                      = new NotificationMessage();
-                $message->htmlContent         = Zurmo::t('WorkflowsModule', 'The combination of workflow rules setup caused ' .
+                $commonContent                = Zurmo::t('WorkflowsModule', 'The combination of workflow rules setup caused ' .
                                                 'an infinite loop and processing was stopped prematurely while saving the ' .
                                                 'following record: {modelName}', array('{modelName}' => strval($model)));
+
+                $message->htmlContent         = $commonContent;
                 $url                          = Yii::app()->createAbsoluteUrl('workflows/default/list');
                 $message->htmlContent        .= "<br/>" . ZurmoHtml::link(Zurmo::t('WorkflowsModule', 'Manage Workflows'), $url);
+                $message->textContent         = $commonContent;
+                $message->textContent        .= "\n" . Zurmo::t('WorkflowsModule', 'Manage Workflows') . ': ' . ShortUrlUtil::createShortUrl($url);
                 $rules                        = new WorkflowMaximumDepthNotificationRules();
                 NotificationsUtil::submit($message, $rules);
             }

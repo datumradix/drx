@@ -156,12 +156,10 @@
 
         protected function renderPreInputContent($renderPrimaryInput = true)
         {
-
         }
 
         protected function renderPostInputContent($renderPrimaryInput = true)
         {
-
         }
 
         protected function resolveInputWrapperHtmlOptions($primaryHtmlOptions = true, $addMagnifierToInput = true)
@@ -209,17 +207,14 @@
 
         protected function resolvePrimaryInputElementEditableTemplate()
         {
-
         }
 
         protected function resolveSecondaryInputElementEditableTemplate()
         {
-
         }
 
         protected function resolveRadioElementEditableTemplate()
         {
-
         }
     }
 ?>

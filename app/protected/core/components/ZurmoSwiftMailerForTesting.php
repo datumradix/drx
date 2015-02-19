@@ -48,7 +48,7 @@
         {
             $emailMessage = $this->emailMessage;
             $sendEmailThroughTransport = Yii::app()->emailHelper->sendEmailThroughTransport;
-            if(!$sendEmailThroughTransport)
+            if (!$sendEmailThroughTransport)
             {
                 $emailMessage->error        = null;
                 $emailMessage->folder       = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);

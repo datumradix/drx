@@ -125,7 +125,7 @@
         {
             $notificationSettingsAttributes = UserNotificationUtil::getAllNotificationSettingAttributes();
             $defaultNotificationSettings = array();
-            foreach($notificationSettingsAttributes as $attribute)
+            foreach ($notificationSettingsAttributes as $attribute)
             {
                 list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($attribute);
                 $defaultNotificationSettings[$settingName][$type] = true;

@@ -194,7 +194,7 @@
                                                                 array('id' => $missionId));
             $message->htmlContent        .= '-' . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
             $message->textContent         = $messageContent;
-            $message->textContent        .= Zurmo::t('MissionsModule', 'Click Here: ') . $url;
+            $message->textContent        .= Zurmo::t('MissionsModule', 'Check mission details in this link: ') . ShortUrlUtil::createShortUrl($url);
             $rules                        = new MissionStatusChangeNotificationRules();
             $rules->addUser($userToReceiveMessage);
             $rules->setAllowDuplicates(true);
@@ -223,49 +223,57 @@
          */
         public static function makeAndSubmitNewMissionNotificationMessage(Mission $mission)
         {
+            $rules = new NewMissionNotificationRules();
+            $rules->setModel($mission);
+            $notificationMessage = new NotificationMessage();
+            $notificationMessage->textContent = static::getTextContentForNotificationMessage($mission);
+            $notificationMessage->htmlContent = static::getHtmlContentForNotificationMessage($mission);
             $peopleToSendNotification = static::resolvePeopleToSendNotificationToOnNewMission($mission);
-            foreach ($peopleToSendNotification as $person)
+            if (count($peopleToSendNotification) > 0)
             {
-                if ($person->primaryEmail->emailAddress != null &&
-                UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($person, 'enableNewMissionNotification', 'email'))
+                foreach ($peopleToSendNotification as $person)
                 {
-                    EmailNotificationUtil::resolveAndSendEmail($mission->owner,
-                                                               array($person),
-                                                               static::getEmailSubject($mission),
-                                                               static::getEmailContent($mission, $person));
+                    $rules->addUser($person);
                 }
+                NotificationsUtil::submit($notificationMessage, $rules);
             }
         }
 
         /**
          * @param Mission $mission
-         * @param User $user
-         * @return EmailMessageContent
+         * @return string
          */
-        public static function getEmailContent(Mission $mission, User $user)
+        protected static function getTextContentForNotificationMessage(Mission $mission)
         {
-            $emailContent  = new EmailMessageContent();
             $url           = CommentsUtil::getUrlToEmail($mission);
             $shortUrl      = ShortUrlUtil::createShortUrl($url);
             $textContent   = Zurmo::t('MissionsModule', 'Hello, {lineBreak}There is a new mission. ' .
-                                    'Be the first one to start it and get this great reward: {reward}.' .
-                                    '{lineBreak}{lineBreak} {url}',
-                                    array('{lineBreak}' => "\n",
-                                          '{reward}'    => $mission->reward,
-                                          '{url}'       => $shortUrl
-                                        ));
-            $emailContent->textContent  = EmailNotificationUtil::resolveNotificationTextTemplate($textContent, $user);
+                'Be the first one to start it and get this great reward: {reward}.' .
+                '{lineBreak}{lineBreak} {url}',
+                array('{lineBreak}' => "\n",
+                    '{reward}'    => $mission->reward,
+                    '{url}'       => $shortUrl
+                ));
+            return $textContent;
+        }
+
+        /**
+         * @param Mission $mission
+         * @return string
+         */
+        protected static function getHtmlContentForNotificationMessage(Mission $mission)
+        {
+            $url         = CommentsUtil::getUrlToEmail($mission);
             $htmlContent = Zurmo::t('MissionsModule', 'Hello, {lineBreak}There is a new {url}. ' .
-                                    'Be the first one to start it and get this great reward: {reward}.',
-                                    array('{lineBreak}'      => "<br/>",
-                                          '{strongStartTag}' => '<strong>',
-                                          '{strongEndTag}'   => '</strong>',
-                                          '{reward}'         => $mission->reward,
-                                          '{url}'            => ZurmoHtml::link($mission->getModelLabelByTypeAndLanguage(
-                                                                    'SingularLowerCase'), $url)
-                                    ));
-            $emailContent->htmlContent  = EmailNotificationUtil::resolveNotificationHtmlTemplate($htmlContent, $user);
-            return $emailContent;
+                'Be the first one to start it and get this great reward: {reward}.',
+                array('{lineBreak}'      => "<br/>",
+                    '{strongStartTag}' => '<strong>',
+                    '{strongEndTag}'   => '</strong>',
+                    '{reward}'         => $mission->reward,
+                    '{url}'            => ZurmoHtml::link($mission->getModelLabelByTypeAndLanguage(
+                                                'SingularLowerCase'), $url)
+                ));
+            return $htmlContent;
         }
 
         /**

@@ -39,11 +39,9 @@
      */
     class ClearAssetsFolderNotificationRules extends JobsManagerAccessNotificationRules
     {
-        protected $critical    = false;
+        protected $allowSendingEmail = false;
 
         protected $canBeConfiguredByUser = false;
-
-        protected $defaultValueForEmailSetting = false;
 
         public function getDisplayName()
         {
@@ -63,6 +61,28 @@
         public function getTooltipTitle()
         {
             return Zurmo::t('UsersModule', 'Notify me when assets folder need to be cleaned.');
+        }
+
+        /**
+         * Any user who is a super administrator added to receive a
+         * notification.
+         */
+        protected function loadUsers()
+        {
+            $superAdministratorGroup = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
+            $users                   = User::getByCriteria(true, $superAdministratorGroup->id);
+            foreach ($users as $user)
+            {
+                $this->addUser($user);
+            }
+        }
+
+        /**
+         * @return inheritdoc
+         */
+        public function isSuperAdministratorNotification()
+        {
+            return true;
         }
     }
 ?>

@@ -160,7 +160,8 @@
                                             'elements' => array(
                                                 array('attributeName' => 'databaseAdminUsername', 'type' => 'Text',
                                                       'description' => Zurmo::t('InstallModule', 'Leave this blank unless you ' .
-                                                      'would like to create the user and database for Zurmo to run in.')),
+                                                      'would like to create the user and database for Zurmo to run in.',
+                                                                                LabelUtil::getZurmoLabelParam())),
                                             ),
                                         ),
                                     )
@@ -171,7 +172,8 @@
                                             'elements' => array(
                                                 array('attributeName' => 'databaseAdminPassword', 'type' => 'Password',
                                                       'description' => Zurmo::t('InstallModule', 'Leave this blank unless you ' .
-                                                      'would like to create the user and database for Zurmo to run in.'))
+                                                      'would like to create the user and database for Zurmo to run in.',
+                                                                                LabelUtil::getZurmoLabelParam()))
                                             ),
                                         ),
                                     )
@@ -182,7 +184,7 @@
                                             'elements' => array(
                                                 array('attributeName' => 'databaseName', 'type' => 'Text',
                                                       'description' => Zurmo::t('InstallModule', 'The name of the database you ' .
-                                                      'want to run Zurmo in.')),
+                                                      'want to run Zurmo in.', LabelUtil::getZurmoLabelParam())),
                                             ),
                                         ),
                                     )
@@ -226,7 +228,8 @@
                                             'elements' => array(
                                                 array('attributeName' => 'superUserPassword', 'type' => 'Text',
                                                       'description' => Zurmo::t('InstallModule', 'Zurmo administrative password. ' .
-                                                      'The username is `super`. You can change this later.')),
+                                                      'The username is `super`. You can change this later.',
+                                                      LabelUtil::getZurmoLabelParam())),
                                             ),
                                         ),
                                     )
@@ -268,7 +271,8 @@
                                         array(
                                             'elements' => array(
                                                 array('attributeName' => 'hostInfo', 'type' => 'Text',
-                                                      'description' => Zurmo::t('InstallModule', 'Host name where Zurmo will be installed.'))
+                                                      'description' => Zurmo::t('InstallModule', 'Host name where Zurmo will be installed.',
+                                                      LabelUtil::getZurmoLabelParam()))
                                             ),
                                         ),
                                     )
@@ -279,7 +283,8 @@
                                             'elements' => array(
                                                 array('attributeName' => 'scriptUrl', 'type' => 'Text',
                                                       'description' => Zurmo::t('InstallModule', 'The relative path where ' .
-                                                      'Zurmo will be installed.')),
+                                                      'Zurmo will be installed.',
+                                                      LabelUtil::getZurmoLabelParam())),
                                             ),
                                         ),
                                     )

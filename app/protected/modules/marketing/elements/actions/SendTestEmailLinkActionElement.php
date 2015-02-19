@@ -41,14 +41,14 @@
             return false;
         }
 
-	    public function render()
-	    {
-		    $content = ZurmoHtml::tag('span', array('class' => 'z-label'), $this->getLabel());
-		    return ZurmoHtml::ajaxLink($content, $this->getDefaultRoute(),
-			    $this->getAjaxLinkOptions(),
-			    $this->resolveHtmlOptionsForRendering()
-		    );
-	    }
+        public function render()
+        {
+            $content = ZurmoHtml::tag('span', array('class' => 'z-label'), $this->getLabel());
+            return ZurmoHtml::ajaxLink($content, $this->getDefaultRoute(),
+                $this->getAjaxLinkOptions(),
+                $this->resolveHtmlOptionsForRendering()
+            );
+        }
 
         protected function getAjaxLinkTitle()
         {

@@ -209,10 +209,10 @@
          */
         protected function populateSettings()
         {
-            if ($this->emailAccount != null && $this->emailAccount->outboundHost != null
-                && $this->emailAccount->outboundPort != null
-                && $this->emailAccount->outboundUsername != null
-                && $this->emailAccount->outboundPassword != null)
+            if ($this->emailAccount != null && $this->emailAccount->outboundHost != null &&
+                   $this->emailAccount->outboundPort != null &&
+                   $this->emailAccount->outboundUsername != null &&
+                   $this->emailAccount->outboundPassword != null)
             {
                 $this->host     = $this->emailAccount->outboundHost;
                 $this->port     = $this->emailAccount->outboundPort;
@@ -222,13 +222,12 @@
             }
             else
             {
-                $outboundSettings = EmailHelper::getOutboundSettings();
-                $this->mailer   = $outboundSettings['outboundType'];
-                $this->host     = $outboundSettings['outboundHost'];
-                $this->port     = $outboundSettings['outboundPort'];
-                $this->username = $outboundSettings['outboundUsername'];
-                $this->password = $outboundSettings['outboundPassword'];
-                $this->security = $outboundSettings['outboundSecurity'];
+                $this->mailer   = Yii::app()->emailHelper->outboundType;
+                $this->host     = Yii::app()->emailHelper->outboundHost;
+                $this->port     = Yii::app()->emailHelper->outboundPort;
+                $this->username = Yii::app()->emailHelper->outboundUsername;
+                $this->password = Yii::app()->emailHelper->outboundPassword;
+                $this->security = Yii::app()->emailHelper->outboundSecurity;
             }
         }
 
@@ -354,7 +353,7 @@
         public function sendTestEmail($isUser = false)
         {
             $this->emailMessage->mailerType = 'smtp';
-            if($isUser)
+            if ($isUser)
             {
                 $this->emailMessage->mailerSettings = 'personal';
             }

@@ -37,7 +37,7 @@
     /**
      * A NotificationRules to manage when a new mission is available
      */
-    class NewMissionNotificationRules extends SimpleNotificationRules
+    class NewMissionNotificationRules extends NotificationRules
     {
         protected $allowDuplicates      = true;
 
@@ -67,6 +67,14 @@
         public function getTooltipTitle()
         {
             return Zurmo::t('UsersModule', 'Notify me when a new mission becomes available.');
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return MissionsUtil::getEmailSubject($this->model);
         }
     }
 ?>

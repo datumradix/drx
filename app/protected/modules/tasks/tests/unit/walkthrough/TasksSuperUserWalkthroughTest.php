@@ -92,7 +92,7 @@
             $this->resetPostArray();
             $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalDetails');
 
-            //test submitting the task on chage
+            //test submitting the task on change
             $this->setGetArray(array('id' => $tasks[0]->id));
             $this->setPostArray(array('Task' => array('name' => 'myTask', 'status' => Task::STATUS_IN_PROGRESS)));
             $this->runControllerWithNoExceptionsAndGetContent('tasks/default/modalDetails');

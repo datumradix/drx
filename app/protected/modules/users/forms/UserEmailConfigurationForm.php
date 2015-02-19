@@ -43,6 +43,8 @@
 
         public $emailSignatureHtmlContent;
 
+        public $userSendGridConfigurationForm;
+
         protected static function getRedBeanModelClassName()
         {
             return 'EmailAccount';
@@ -58,6 +60,7 @@
             return array(
                 array('aTestToAddress',                    'email'),
                 array('emailSignatureHtmlContent', 'type', 'type' => 'string'),
+                array('userSendGridConfigurationForm', 'validateUserSendGridConfigurationForm')
             );
         }
 
@@ -85,6 +88,20 @@
                 return false;
             }
             return true;
+        }
+
+        /**
+         * Check the type for UserSendGridConfigurationForm
+         * @param string $attribute
+         * @param array $params
+         */
+        public function validateUserSendGridConfigurationForm($attribute, $params)
+        {
+            if ($this->userSendGridConfigurationForm instanceof UserSendGridConfigurationForm)
+            {
+                return true;
+            }
+            return false;
         }
     }
 ?>

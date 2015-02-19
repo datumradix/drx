@@ -417,12 +417,16 @@
             }
             //Notify the owner of the game reward
             $message                      = new NotificationMessage();
-            $message->htmlContent         = Zurmo::t('JobsManagerModule', '{name} was redeemed by {personFullName}.',
+            $commonMessage                = Zurmo::t('JobsManagerModule', '{name} was redeemed by {personFullName}.',
                                                      array('{name}'           => strval($gameReward),
                                                            '{personFullName}' => strval(Yii::app()->user->userModel)));
+            $message->htmlContent         = $commonMessage;
             $url                          = Yii::app()->createAbsoluteUrl('gameRewards/default/details/',
                                             array('id' => $gameReward->id));
             $message->htmlContent        .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
+            $message->textContent         = $commonMessage . "\n";
+            $message->textContent        .= Zurmo::t('GameRewardsModule', 'Use this link to get more details: {url}',
+                                                array('{url}' => ShortUrlUtil::createShortUrl($url)));
             $rules                        = new GameRewardRedeemedNotificationRules();
             $rules->addUser($gameReward->owner);
             NotificationsUtil::submit($message, $rules);

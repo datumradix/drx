@@ -90,7 +90,6 @@
                 }
                 catch (NotFoundException $e)
                 {
-
                 }
             }
             $this->addError($attribute, Zurmo::t('MarketingModule', 'Please select a valid contact.'));

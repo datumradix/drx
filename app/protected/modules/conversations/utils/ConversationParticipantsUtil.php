@@ -154,21 +154,22 @@
             {
                 return;
             }
+            $rules = new ConversationInvitesNotificationRules();
+            $message = new NotificationMessage();
+            $message->textContent = static::getParticipantInviteEmailTextContent($conversation);
+            $message->htmlContent = static::getParticipantInviteEmailHtmlContent($conversation);
             foreach ($people as $personOrUserModel)
             {
                 if ($personOrUserModel instanceof User)
                 {
-                    if (UserNotificationUtil::
-                    isEnabledByUserAndNotificationNameAndType($personOrUserModel, 'enableConversationInvitesNotification', 'email'))
-                    {
-                        static::sendEmailInviteToParticipant($conversation, $personOrUserModel);
-                    }
+                    $rules->addUser($personOrUserModel);
                 }
                 else
                 {
                     static::sendEmailInviteToParticipant($conversation, $personOrUserModel);
                 }
             }
+            NotificationsUtil::submit($message, $rules);
         }
 
         protected static function castDownItem(Item $item)

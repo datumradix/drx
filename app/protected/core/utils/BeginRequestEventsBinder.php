@@ -35,6 +35,7 @@
      ********************************************************************************/
 
     Yii::import('application.core.utils.RequestEventsBinder');
+
     /**
      * Class responsible for attaching appropriate events to request
      */

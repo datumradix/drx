@@ -95,7 +95,7 @@
         {
             if ($error = Yii::app()->errorHandler->error)
             {
-                if($error['type'] == 'RedBean_Exception_SQL')
+                if ($error['type'] == 'RedBean_Exception_SQL')
                 {
                     $error['message'] = null;
                     $content = 'Exception class: ' . $error['type'];
@@ -105,7 +105,6 @@
                     }
                     $content .= "\n" . $error['trace'];
                     Yii::log($content, CLogger::LEVEL_WARNING);
-
                 }
                 if (Yii::app()->request->isAjaxRequest)
                 {

@@ -480,6 +480,8 @@
         public function testRedeemReward()
         {
             $super                      = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $super->primaryEmail->emailAddress = 'super@zurmo.com';
+            $super->save();
             Yii::app()->user->userModel = $super;
             $gameRewards                = GameReward::getByName('myNewGameReward');
 
@@ -496,20 +498,25 @@
             $notifications      = Notification::getAll();
 
             //check for no notification
+            $this->assertEquals(0, EmailMessage::getCount());
             $this->assertEquals(0, count($notifications));
             $this->setGetArray(array('id' => $gameRewards[0]->id));
             $content = $this->runControllerWithExitExceptionAndGetContent('gameRewards/default/redeemReward');
             $this->assertContains('myNewGameReward has been redeemed.', $content);
 
             //check for notification
-            $notifications              = Notification::getAll();
+            $notifications      = Notification::getAll();
             $this->assertEquals(1, count($notifications));
-
             //email content
             $this->assertContains('myNewGameReward was redeemed by Clark Kent.', $notifications[0]->notificationMessage->htmlContent);
-
             //check url
             $this->assertContains('/gameRewards/default/details?id=13', $notifications[0]->notificationMessage->htmlContent); // Not Coding Standard
+
+            //check for email notification
+            $emailMessages      = EmailMessage::getAll();
+            $this->assertCount(1, $emailMessages);
+            $this->assertContains('myNewGameReward was redeemed by Clark Kent.', $emailMessages[0]->content->htmlContent);
+            $this->assertContains('myNewGameReward was redeemed by Clark Kent.', $emailMessages[0]->content->textContent);
         }
     }
 ?>

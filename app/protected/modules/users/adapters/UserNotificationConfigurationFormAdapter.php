@@ -50,7 +50,7 @@
 
             $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingAttributes();
             $notificationSettings = UserNotificationUtil::getNotificationSettingsByUser($user);
-            foreach($notificationSettingsNames as $setting)
+            foreach ($notificationSettingsNames as $setting)
             {
                 list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($setting);
                 $form->{$setting} = (bool)$notificationSettings[$settingName][$type];
@@ -67,7 +67,7 @@
             assert('$user instanceOf User && $user->id > 0');
 
             $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingAttributes();
-            foreach($notificationSettingsNames as $setting)
+            foreach ($notificationSettingsNames as $setting)
             {
                 $form->{$setting} = (bool)$form->{$setting};
                 $form->{$setting} = (bool)$form->{$setting};

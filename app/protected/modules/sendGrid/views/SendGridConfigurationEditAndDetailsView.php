@@ -87,24 +87,6 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'eventWebhookUrl', 'type' => 'Text'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'eventWebhookFilePath', 'type' => 'Text'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
                                                 array('attributeName' => 'aTestToAddress',
                                                       'type' => 'SendGridSendATestEmailTo'),
                                             ),
@@ -117,6 +99,14 @@
                 ),
             );
             return $metadata;
+        }
+
+        protected function renderFormLayout($form = null)
+        {
+            $baseUrl    = Yii::app()->createAbsoluteUrl('sendGrid/external/writeLog');
+            $text       = SendGridUtil::renderEventWebHookUrlOnForm($this->model, 'username', '30%');
+            SendGridUtil::registerEventWebhookUrlScript('SendGridWebApiConfigurationForm_username', $baseUrl);
+            return $text . parent::renderFormLayout($form);
         }
     }
 ?>

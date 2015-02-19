@@ -65,7 +65,8 @@
             $content .= '<table><tr><td>';
             $content .= '<div id="upgrade-step-two">';
             $content .= '<table><tr><td>';
-            $content .= Zurmo::t('InstallModule', 'This is the Zurmo upgrade process. Please backup all files and the database before you continue.');
+            $content .= Zurmo::t('InstallModule', 'This is the Zurmo upgrade process. Please backup all files and the database before you continue.',
+                                                    LabelUtil::getZurmoLabelParam());
             $content .= '<br/>';
             $content .= Zurmo::t('InstallModule', 'Copy upgrade file to app/protected/runtime/upgrade folder and start upgrade process.');
             $content .= '<br/><br/>';

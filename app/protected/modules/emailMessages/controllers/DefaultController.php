@@ -211,14 +211,22 @@
                 }
                 else
                 {
-                    $configurationForm->host            = $_POST['UserEmailConfigurationForm']['outboundHost'];
-                    $configurationForm->port            = $_POST['UserEmailConfigurationForm']['outboundPort'];
-                    $configurationForm->username        = $_POST['UserEmailConfigurationForm']['outboundUsername'];
-                    $configurationForm->password        = $_POST['UserEmailConfigurationForm']['outboundPassword'];
-                    $configurationForm->security        = $_POST['UserEmailConfigurationForm']['outboundSecurity'];
-                    $configurationForm->aTestToAddress  = $_POST['UserEmailConfigurationForm']['aTestToAddress'];
-                    $fromNameToSendMessagesFrom         = $_POST['UserEmailConfigurationForm']['fromName'];
-                    $fromAddressToSendMessagesFrom      = $_POST['UserEmailConfigurationForm']['fromAddress'];
+                    //Check for sendgrid
+                    if ($_POST['UserEmailConfigurationForm']['useCustomOutboundSettings'] == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
+                    {
+                        $this->processSendTestMessageForSendGrid();
+                    }
+                    else
+                    {
+                        $configurationForm->host            = $_POST['UserEmailConfigurationForm']['outboundHost'];
+                        $configurationForm->port            = $_POST['UserEmailConfigurationForm']['outboundPort'];
+                        $configurationForm->username        = $_POST['UserEmailConfigurationForm']['outboundUsername'];
+                        $configurationForm->password        = $_POST['UserEmailConfigurationForm']['outboundPassword'];
+                        $configurationForm->security        = $_POST['UserEmailConfigurationForm']['outboundSecurity'];
+                        $configurationForm->aTestToAddress  = $_POST['UserEmailConfigurationForm']['aTestToAddress'];
+                        $fromNameToSendMessagesFrom         = $_POST['UserEmailConfigurationForm']['fromName'];
+                        $fromAddressToSendMessagesFrom      = $_POST['UserEmailConfigurationForm']['fromAddress'];
+                    }
                 }
                 if ($configurationForm->aTestToAddress != null)
                 {
@@ -236,8 +244,6 @@
                             'name'      => $fromNameToSendMessagesFrom,
                             'address'   => $fromAddressToSendMessagesFrom
                         );
-                        $emailMessage = EmailMessageHelper::sendTestEmail($emailHelper, $from,
-                                                                      $configurationForm->aTestToAddress);
                     }
                     else
                     {
@@ -666,6 +672,34 @@
         protected static function getZurmoControllerUtil()
         {
             return new EmailTemplateZurmoControllerUtil();
+        }
+
+        /**
+         * Assumes before calling this, the sendgrid settings have been validated in the form.
+         */
+        protected function processSendTestMessageForSendGrid()
+        {
+            $configurationForm  = SendGridWebApiConfigurationFormAdapter::makeFormFromGlobalConfiguration();
+            if (isset($_POST['UserSendGridConfigurationForm']))
+            {
+                $configurationForm->username        = $_POST['UserSendGridConfigurationForm']['apiUsername'];
+                $configurationForm->password        = $_POST['UserSendGridConfigurationForm']['apiPassword'];
+                $configurationForm->aTestToAddress  = $_POST['UserSendGridConfigurationForm']['aTestToAddress'];
+                $fromNameToSendMessagesFrom         = $_POST['UserEmailConfigurationForm']['fromName'];
+                $fromAddressToSendMessagesFrom      = $_POST['UserEmailConfigurationForm']['fromAddress'];
+                $messageContent = SendGridUtil::sendTestMessage($configurationForm,
+                                                                $fromNameToSendMessagesFrom,
+                                                                $fromAddressToSendMessagesFrom);
+                Yii::app()->getClientScript()->setToAjaxMode();
+                $messageView    = new TestConnectionView($messageContent);
+                $view           = new ModalView($this, $messageView);
+                echo $view->render();
+                Yii::app()->end();
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
         }
     }
 ?>

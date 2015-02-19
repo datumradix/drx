@@ -39,11 +39,9 @@
      */
     class RemoveApiTestEntryScriptFileNotificationRules extends JobsManagerAccessNotificationRules
     {
-        protected $critical    = false;
+        protected $allowSendingEmail = false;
 
         protected $canBeConfiguredByUser = false;
-
-        protected $defaultValueForEmailSetting = false;
 
         public function getDisplayName()
         {

@@ -74,9 +74,11 @@
             if (count($workflows) > 0)
             {
                 $message                      = new NotificationMessage();
-                $message->htmlContent         = Zurmo::t('WorkflowsModule', 'As a result of a field or fields recently ' .
+                $commonMessage                = Zurmo::t('WorkflowsModule', 'As a result of a field or fields recently ' .
                                                 'becoming required, at least 1 workflow rule will no longer work properly.');
+                $message->htmlContent         = $commonMessage;
                 $message->htmlContent        .= "<div><ul>";
+                $message->textContent         = $commonMessage;
                 foreach ($workflows as $workflow)
                 {
                     $message->htmlContent      .= "<li>";
@@ -84,6 +86,7 @@
                                                   array('id' => $workflow->getId()));
                     $message->htmlContent      .= ZurmoHtml::link(strval($workflow) , $url);
                     $message->htmlContent      .= "</li>";
+                    $message->textContent      .= "\n" . strval($workflow) .': ' . ShortUrlUtil::createShortUrl($url);
                 }
                 $message->htmlContent      .= "</ul></div>";
                 $rules                        = new WorkflowValidityCheckNotificationRules();

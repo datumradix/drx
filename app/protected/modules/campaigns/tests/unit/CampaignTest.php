@@ -450,8 +450,6 @@
             $campaignItem2->emailMessage    = $emailMessage2;
             $this->assertTrue($campaignItem2->unrestrictedSave());
             CampaignItemTestHelper::createCampaignItem(0, $campaign);
-
-
             $this->assertCount(2, CampaignItem::getByProcessedAndCampaignId(1, $campaign->id));
             $this->assertCount(1, CampaignItem::getByProcessedAndCampaignId(0, $campaign->id));
             $this->assertCount(1, EmailMessage::getByFolderTypeAndCampaignId(EmailFolder::TYPE_OUTBOX, $campaign->id));

@@ -82,7 +82,7 @@
                     Yii::app()->user->setFlash('notification',
                                                 Zurmo::t('SendGridModule', 'Sendgrid configuration saved successfully.')
                     );
-                    if($configurationForm->enableSendgrid)
+                    if ($configurationForm->enableSendgrid)
                     {
                         $this->redirect(Yii::app()->createUrl('sendGrid/default/configurationEditOutbound'));
                     }
@@ -146,52 +146,13 @@
         {
             $configurationForm  = SendGridWebApiConfigurationFormAdapter::makeFormFromGlobalConfiguration();
             $postVariableName   = get_class($configurationForm);
-            if (isset($_POST[$postVariableName]) || (isset($_POST['UserSendGridConfigurationForm'])))
+            if (isset($_POST[$postVariableName]))
             {
                 if (isset($_POST[$postVariableName]))
                 {
                     $configurationForm->setAttributes($_POST[$postVariableName]);
                 }
-                else
-                {
-                    $configurationForm->username        = $_POST['UserSendGridConfigurationForm']['apiUsername'];
-                    $configurationForm->password        = $_POST['UserSendGridConfigurationForm']['apiPassword'];
-                    $configurationForm->aTestToAddress  = $_POST['UserSendGridConfigurationForm']['aTestToAddress'];
-                    $fromNameToSendMessagesFrom         = $_POST['UserSendGridConfigurationForm']['fromName'];
-                    $fromAddressToSendMessagesFrom      = $_POST['UserSendGridConfigurationForm']['fromAddress'];
-                }
-                if ($configurationForm->aTestToAddress != null)
-                {
-                    $sendGridEmailAccount         = new SendGridEmailAccount();
-                    $sendGridEmailAccount->apiUsername     = $configurationForm->username;
-                    $sendGridEmailAccount->apiPassword     = ZurmoPasswordSecurityUtil::encrypt($configurationForm->password);
-                    $isUser = false;
-                    if (isset($fromNameToSendMessagesFrom) && isset($fromAddressToSendMessagesFrom))
-                    {
-                        $isUser                 = true;
-                        $from = array(
-                            'name'      => $fromNameToSendMessagesFrom,
-                            'address'   => $fromAddressToSendMessagesFrom
-                        );
-                    }
-                    else
-                    {
-                        $user                   = BaseControlUserConfigUtil::getUserToRunAs();
-                        $userToSendMessagesFrom = User::getById((int)$user->id);
-                        $from = array(
-                            'name'      => strval($userToSendMessagesFrom),
-                            'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom)
-                        );
-                    }
-                    $emailMessage = EmailMessageHelper::processAndCreateEmailMessage($from, $configurationForm->aTestToAddress);
-                    $mailer       = new ZurmoSendGridMailer($emailMessage, $sendGridEmailAccount);
-                    $emailMessage = $mailer->sendTestEmail($isUser);
-                    $messageContent  = EmailHelper::prepareMessageContent($emailMessage);
-                }
-                else
-                {
-                    $messageContent = Zurmo::t('EmailMessagesModule', 'A test email address must be entered before you can send a test email.') . "\n";
-                }
+                $messageContent = SendGridUtil::sendTestMessage($configurationForm);
                 Yii::app()->getClientScript()->setToAjaxMode();
                 $messageView    = new TestConnectionView($messageContent);
                 $view           = new ModalView($this, $messageView);

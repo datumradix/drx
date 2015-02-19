@@ -35,6 +35,7 @@
      ********************************************************************************/
 
     Yii::import('application.core.utils.BeginRequestBehaviors');
+
     /**
      * Class containing application/non-api begin request behaviors.
      */
@@ -48,7 +49,8 @@
                                                         'contacts/external/',
                                                         'zurmo/imageModel/getImage/',
                                                         'zurmo/imageModel/getThumb/',
-                                                        'min/serve');
+                                                        'min/serve',
+                                                        'sendGrid/external/writeLog');
 
         public function handleLoadActivitiesObserver()
         {

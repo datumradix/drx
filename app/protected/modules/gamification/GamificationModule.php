@@ -58,7 +58,7 @@
                         array(
                             'label' => "eval:Zurmo::t('GamificationModule', 'Leaderboard')",
                             'url' => array('/gamification/default/leaderboard'),
-                            'order' => 2,
+                            'order' => 20,
                         ),
                 ),
             );

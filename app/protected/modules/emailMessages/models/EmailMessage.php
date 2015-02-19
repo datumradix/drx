@@ -169,6 +169,8 @@
                                                 static::LINK_TYPE_SPECIFIC, 'error'),
                     'account'       => array(static::HAS_ONE,  'EmailAccount', static::NOT_OWNED,
                                                 static::LINK_TYPE_SPECIFIC, 'account'),
+                    'sendGridAccount'   => array(static::HAS_ONE,  'SendGridEmailAccount', static::NOT_OWNED,
+                                                static::LINK_TYPE_SPECIFIC, 'sendGridAccount'),
                     'campaignItem'  => array(static::HAS_ONE_BELONGS_TO, 'CampaignItem', static::NOT_OWNED),
                 ),
                 'rules' => array(
@@ -186,10 +188,10 @@
                     array('mailerSettings',  'type',    'type' => 'string'),
                 ),
                 'elements' => array(
-                    'sentDateTime'  => 'DateTime',
-                    'files'         => 'Files',
-                    'mailerType'    => 'Text',
-                    'mailerSettings'=> 'Text'
+                    'sentDateTime'   => 'DateTime',
+                    'files'          => 'Files',
+                    'mailerType'     => 'Text',
+                    'mailerSettings' => 'Text'
                 )
             );
             return $metadata;
@@ -224,6 +226,7 @@
                     'sendAttempts' => Zurmo::t('EmailMessagesModule', 'Send Attempts',  array(), null, $language),
                     'sentDateTime' => Zurmo::t('EmailMessagesModule', 'Sent Date Time',  array(), null, $language),
                     'subject'      => Zurmo::t('Core', 'Subject',  array(), null, $language),
+                    'sendGridAccount' => Zurmo::t('EmailMessagesModule', 'SendGrid Email Account',  array(), null, $language),
                     //'type'         => Zurmo::t('Core',                'Type',  array(), null, $language),
                 )
             );

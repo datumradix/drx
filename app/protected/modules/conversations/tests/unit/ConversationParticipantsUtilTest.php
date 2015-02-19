@@ -176,5 +176,50 @@
                                                         getConversationParticipants($conversation);
             $this->assertEquals(2, count($participants));
         }
+
+        /**
+         * @depends testResolveConversationParticipants
+         */
+        public function testResolveEmailInvitesByPeople()
+        {
+            $this->assertEquals(0, Notification::getCount());
+            $this->assertEquals(0, EmailMessage::getCount());
+            $super                                  = Yii::app()->user->userModel;
+            $super->primaryEmail->emailAddress      = 'super@zurmo.com';
+            NotificationTestHelper::setNotificationSettingsForUser($super, 'ConversationInvites');
+            $jack                                   = User::getByUsername('jack');
+            $jack->primaryEmail->emailAddress       = 'jack@zurmo.com';
+            NotificationTestHelper::setNotificationSettingsForUser($jack, 'ConversationInvites', true, false);
+            $steven                                 = User::getByUsername('steven');
+            $steven->primaryEmail->emailAddress     = 'steven@zurmo.com';
+            NotificationTestHelper::setNotificationSettingsForUser($steven, 'ConversationInvites', false, true);
+            $mary                                   = User::getByUsername('mary');
+            $mary->primaryEmail->emailAddress       = 'mary@zurmo.com';
+            NotificationTestHelper::setNotificationSettingsForUser($mary, 'ConversationInvites', false, false);
+            $conversation                           = new Conversation();
+            $conversation->owner                    = $super;
+            $conversation->subject                  = 'Test Resolve Conversation Participants';
+            $conversation->description              = 'This is for testing conversation participants.';
+            $this->assertTrue($conversation->save());
+            ConversationParticipantsUtil::resolveEmailInvitesByPeople(
+                $conversation,
+                array($super, $jack, $steven, $mary));
+            $this->assertEquals(2, Notification::getCount());
+            $notifications = Notification::getAll();
+            $this->assertContains('<h2 class="h2">Join the Conversation</h2>Clark Kent would like you to join a conversation <strong>"Test Resolve Conversation Participants"</strong><br/>',
+                                  $notifications[0]->notificationMessage->htmlContent);
+            $this->assertContains('Clark Kent would like you to join a conversation "Test Resolve Conversation Participants"',
+                                  $notifications[0]->notificationMessage->textContent);
+            $this->assertEquals(2, EmailMessage::getCount());
+            $emailMessages = EmailMessage::getAll();
+            $this->assertContains('<h2 class="h2">Join the Conversation</h2>Clark Kent would like you to join a conversation <strong>"Test Resolve Conversation Participants"</strong><br/>',
+                                  $emailMessages[0]->content->htmlContent);
+            $this->assertContains('Powered By <a href="http://www.zurmo.com">Zurmo</a>', $emailMessages[0]->content->htmlContent);
+            $this->assertContains('Clark Kent would like you to join a conversation "Test Resolve Conversation Participants"',
+                                  $emailMessages[0]->content->textContent);
+            $this->assertContains('Manage your email preferences', $emailMessages[0]->content->textContent);
+            $this->assertEquals('You have been invited to participate in a conversation',
+                                $emailMessages[0]->subject);
+        }
     }
 ?>

@@ -111,8 +111,6 @@ EOD;
         {
             $this->usageError('The specified username does not exist.');
         }
-        //Store the original settings in DB
-        $originalSettings = Yii::app()->emailHelper->getOutboundSettings();
         $this->setEmailHelperSettings($host, $port, $outboundUsername, $outboundPassword, $outboundSecurity);
         echo "\n";
         echo 'Using type:' . Yii::app()->emailHelper->outboundType . "\n";
@@ -155,12 +153,6 @@ EOD;
             $this->addErrorsAsUsageErrors($emailMessage->getErrors());
         }
         Yii::app()->emailHelper->sendImmediately($emailMessage);
-        //Restore the original settings in DB
-        foreach($originalSettings as $key => $setting)
-        {
-            Yii::app()->emailHelper->$key = $setting;
-        }
-        Yii::app()->emailHelper->setOutboundSettings();
         if (!$emailMessage->hasSendError())
         {
             echo Zurmo::t('EmailMessagesModule', 'Message successfully sent') . "\n";
@@ -245,7 +237,6 @@ EOD;
         {
             Yii::app()->emailHelper->outboundSecurity = null;
         }
-        Yii::app()->emailHelper->setOutboundSettings();
     }
 }
 ?>
