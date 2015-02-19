@@ -1314,8 +1314,13 @@
             Yii::app()->user->userModel = $super;
             $evelina  = UserTestHelper::createBasicUser('Evelina');
             $amelia  = UserTestHelper::createBasicUser('Amelia');
+            $amelia->primaryEmail->emailAddress = 'super@example.com';
+            $this->assertTrue($amelia->save());
             $contact1 = ContactTestHelper::createContactByNameForOwner('TestContact1', $super);
             $contact2 = ContactTestHelper::createContactByNameForOwner('TestContact2', $super);
+
+            $contact2->primaryEmail->emailAddress = 'aaa@example.com';
+            $this->assertTrue($contact2->save());
 
             $authenticationData = $this->login();
             $headers = array(
@@ -1338,11 +1343,11 @@
             $this->assertTrue($meeting->save());
             $response = $this->createApiCallWithRelativeUrl('getAttendees/?id=' . $meeting->id, 'GET', $headers);
             $response = json_decode($response, true);
-
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertEquals(2, count($response['data']['Contact']));
             $this->assertEquals($contact1->id, $response['data']['Contact'][0]['id']);
             $this->assertEquals($contact2->id, $response['data']['Contact'][1]['id']);
+            $this->assertEquals($contact2->primaryEmail->emailAddress, $response['data']['Contact'][1]['email']);
 
             $meeting->userAttendees->add($evelina);
             $meeting->userAttendees->add($amelia);
@@ -1356,6 +1361,7 @@
             $this->assertEquals(2, count($response['data']['User']));
             $this->assertEquals($evelina->id, $response['data']['User'][0]['id']);
             $this->assertEquals($amelia->id, $response['data']['User'][1]['id']);
+            $this->assertEquals($amelia->primaryEmail->emailAddress, $response['data']['User'][1]['email']);
         }
         
         protected function getApiControllerClassName()
