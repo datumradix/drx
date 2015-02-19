@@ -572,5 +572,109 @@ Cc: 'John Wein' <john@example.com>, Peter Smith <peter@example.com>
             $this->assertEquals($subjectUTF8, $emailMessage->subject);
             //$this->assertTrue($emailMessage->save(false));
         }
+
+        public function testCreateEmailMessageSender() 
+        {
+
+            $user    = UserTestHelper::createBasicUser('rstackSender');
+            Yii::app()->user->userModel = $user;
+            
+            $account = AccountTestHelper::createAccountByNameForOwner('rstackAccount', $user);
+            $contact = ContactTestHelper::createContactWithAccountByNameForOwner('rstackContact', $user, $account);
+
+            $contact->primaryEmail->emailAddress   = 'rstackContactEmail@zurmoland.com';
+
+            
+            $this->assertTrue($contact->save());
+
+            $senderInfo = "";
+            $senderInfo['name'] = 'rstack contact';
+            $senderInfo['email'] = 'rstackContactEmail@zurmoland.com';
+        
+            $userCanAccessContacts = true;
+            $userCanAccessLeads = true;
+            $userCanAccessAccounts = true;
+            $emailMessageSender = EmailArchivingUtil::createEmailMessageSender($senderInfo, $userCanAccessContacts,
+                              $userCanAccessLeads, $userCanAccessAccounts);
+            $this->assertTrue($emailMessageSender instanceof EmailMessageSender);
+            $this->assertEquals($emailMessageSender->fromAddress, $senderInfo['email']);
+            $this->assertEquals($emailMessageSender->fromName, $senderInfo['name']);
+            $this->assertEquals($emailMessageSender->personsOrAccounts->count(), 1);
+
+            $userCanAccessContacts = false;
+            $emailMessageSender = EmailArchivingUtil::createEmailMessageSender($senderInfo, $userCanAccessContacts,
+                              $userCanAccessLeads, $userCanAccessAccounts);
+            $this->assertEquals($emailMessageSender->personsOrAccounts->count(), 0);
+
+        }
+        public function testCreateEmailMessageRecipient() 
+        {
+            $user    = UserTestHelper::createBasicUser('rstackRecipient');
+            Yii::app()->user->userModel = $user;
+            
+            $account = AccountTestHelper::createAccountByNameForOwner('rstackAccount2', $user);
+            $contact = ContactTestHelper::createContactWithAccountByNameForOwner('rstackContact2', $user, $account);
+
+            $contact->primaryEmail->emailAddress   = 'rstackContactEmail2@zurmoland.com';
+
+            $this->assertTrue($contact->save());
+
+            $recipientInfo = "";
+            $recipientInfo['name'] = 'rstack2 contact';
+            $recipientInfo['email'] = 'rstackContactEmail2@zurmoland.com';
+            $recipientInfo['type'] = EmailMessageRecipient::TYPE_CC;
+        
+            $userCanAccessContacts = true;
+            $userCanAccessLeads = true;
+            $userCanAccessAccounts = true;
+            $emailMessageRecipient = EmailArchivingUtil::createEmailMessageRecipient($recipientInfo, $userCanAccessContacts,
+                              $userCanAccessLeads, $userCanAccessAccounts);
+            $this->assertTrue($emailMessageRecipient instanceof EmailMessageRecipient);
+            $this->assertEquals($emailMessageRecipient->toAddress, $recipientInfo['email']);
+            $this->assertEquals($emailMessageRecipient->toName, $recipientInfo['name']);
+            $this->assertEquals($emailMessageRecipient->type, $recipientInfo['type']);
+            $this->assertEquals($emailMessageRecipient->personsOrAccounts->count(), 1);
+
+            $recipientInfo['type'] = EmailMessageRecipient::TYPE_TO;
+            $emailMessageRecipient = EmailArchivingUtil::createEmailMessageRecipient($recipientInfo, $userCanAccessContacts,
+                              $userCanAccessLeads, $userCanAccessAccounts);
+            $this->assertTrue($emailMessageRecipient instanceof EmailMessageRecipient);
+
+            $recipientInfo['type'] = EmailMessageRecipient::TYPE_BCC;
+            $emailMessageRecipient = EmailArchivingUtil::createEmailMessageRecipient($recipientInfo, $userCanAccessContacts,
+                              $userCanAccessLeads, $userCanAccessAccounts);
+            $this->assertTrue($emailMessageRecipient instanceof EmailMessageRecipient);
+
+            $userCanAccessContacts = false;
+            $emailMessageRecipient = EmailArchivingUtil::createEmailMessageRecipient($recipientInfo, $userCanAccessContacts,
+                              $userCanAccessLeads, $userCanAccessAccounts);
+            $this->assertEquals($emailMessageRecipient->personsOrAccounts->count(), 0);
+
+        }
+        public function testCreateEmailAttachment() 
+        {
+            $user    = UserTestHelper::createBasicUser('rstack');
+            Yii::app()->user->userModel = $user;
+
+
+            $imapMessage = new ImapMessage();
+
+
+            $pathToFiles = Yii::getPathOfAlias('application.modules.api.tests.unit.files');
+            $filePath_1    = $pathToFiles . DIRECTORY_SEPARATOR . 'table.csv';
+            $data['attachments']             = array(
+                array('filename'=>'table.csv','attachment'=>file_get_contents($filePath_1)));
+
+            $imapMessage->attachments = $data['attachments'];
+            $file = EmailArchivingUtil::createEmailAttachment($imapMessage->attachments[0]);
+            $this->assertTrue($file instanceof FileModel);
+            $this->assertEquals($file->name, $imapMessage->attachments[0]['filename']);
+            $this->assertTrue($file->fileContent instanceof FileContent);
+            $this->assertEquals($file->fileContent->content, $imapMessage->attachments[0]['attachment']);
+            $this->assertEquals($file->type, 'text/csv');
+            $this->assertEquals($file->size, strlen($imapMessage->attachments[0]['attachment']));
+            
+
+        }
     }
 ?>
