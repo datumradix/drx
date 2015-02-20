@@ -184,16 +184,17 @@
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Notification::getCount());
             //Now change status
+            $taskId = $task->id;
+            $task->forget();
+            $task = Task::getById($taskId);
+            //$task->originalAttributeValues = array('status'=>2);
             $task->status               = Task::STATUS_COMPLETED;
             $this->assertTrue($task->save());
-            $this->assertEquals(2, Yii::app()->emailHelper->getQueuedCount());
-            $this->assertEquals(2, Notification::getCount());
+            $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(1, Notification::getCount());
             $emailMessages = EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX);
-            $this->assertCount(2, $emailMessages);
-            $this->assertTrue('katie@zurmo.com' == $emailMessages[0]->recipients[0]->toAddress ||
-                              'katie@zurmo.com' == $emailMessages[1]->recipients[0]->toAddress);
-            $this->assertTrue('sally@zurmo.com' == $emailMessages[0]->recipients[0]->toAddress ||
-                              'sally@zurmo.com' == $emailMessages[1]->recipients[0]->toAddress);
+            $this->assertCount(1, $emailMessages);
+            $this->assertTrue('sally@zurmo.com' == $emailMessages[0]->recipients[0]->toAddress);
         }
 
         public function testTaskStatusBecomesAcceptedWithExtraSubscribers()
@@ -220,19 +221,11 @@
             //Now change status
             $task->status               = Task::STATUS_COMPLETED;
             $this->assertTrue($task->save());
-            $this->assertEquals(3, Yii::app()->emailHelper->getQueuedCount());
-            $this->assertEquals(3, Notification::getCount());
+            $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(1, Notification::getCount());
             $emailMessages = EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX);
-            $this->assertCount(3, $emailMessages);
-            $this->assertTrue('katie@zurmo.com' == $emailMessages[0]->recipients[0]->toAddress ||
-                              'katie@zurmo.com' == $emailMessages[1]->recipients[0]->toAddress ||
-                              'katie@zurmo.com' == $emailMessages[2]->recipients[0]->toAddress);
-            $this->assertTrue('sally@zurmo.com' == $emailMessages[0]->recipients[0]->toAddress ||
-                              'sally@zurmo.com' == $emailMessages[1]->recipients[0]->toAddress ||
-                              'sally@zurmo.com' == $emailMessages[2]->recipients[0]->toAddress);
-            $this->assertTrue('steve@zurmo.com' == $emailMessages[0]->recipients[0]->toAddress ||
-                              'steve@zurmo.com' == $emailMessages[1]->recipients[0]->toAddress ||
-                              'steve@zurmo.com' == $emailMessages[2]->recipients[0]->toAddress);
+            $this->assertCount(1, $emailMessages);
+            $this->assertTrue('sally@zurmo.com' == $emailMessages[0]->recipients[0]->toAddress);
         }
 
         public function testTaskStatusBecomesAcceptedWhenOwnerIsCurrentUser()
@@ -258,13 +251,10 @@
             //Now change status
             $task->status               = Task::STATUS_COMPLETED;
             $this->assertTrue($task->save());
-            $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
-            $this->assertEquals(1, Notification::getCount());
+            $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Notification::getCount());
             $emailMessages = EmailMessage::getAllByFolderType(EmailFolder::TYPE_OUTBOX);
-            $this->assertCount(1, $emailMessages);
-            $this->assertTrue('katie@zurmo.com' == $emailMessages[0]->recipients[0]->toAddress ||
-                              'katie@zurmo.com' == $emailMessages[1]->recipients[0]->toAddress ||
-                              'katie@zurmo.com' == $emailMessages[2]->recipients[0]->toAddress);
+            $this->assertCount(0, $emailMessages);
         }
 
         public function testTaskAddCommentWithExtraSubscribers()

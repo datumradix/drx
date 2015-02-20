@@ -146,35 +146,33 @@
         {
             assert('is_string($action)');
             $peopleToSendNotification = array();
-            if ($action == self::TASK_NEW || $action == self::TASK_OWNER_CHANGE ||
-               $action == self::TASK_STATUS_BECOMES_REJECTED)
+            if ($action == self::TASK_NEW)
             {
                 $peopleToSendNotification[] = $task->owner;
             }
-            elseif ($action == self::TASK_STATUS_BECOMES_AWAITING_ACCEPTANCE)
+            elseif (($action == self::TASK_STATUS_BECOMES_REJECTED) &&
+                    (Yii::app()->user->userModel->id != $task->owner->id))
+            {
+                $peopleToSendNotification[] = $task->owner;
+            }
+            elseif (($action == self::TASK_STATUS_BECOMES_COMPLETED) &&
+                    (Yii::app()->user->userModel->id != $task->owner->id))
+            {
+                $peopleToSendNotification[] = $task->owner;
+            }
+            elseif ($action == self::TASK_STATUS_BECOMES_AWAITING_ACCEPTANCE || 
+                    $action == self::TASK_OWNER_CHANGE)
             {
                 $peopleToSendNotification[] = $task->requestedByUser;
             }
-            elseif ($action == self::TASK_STATUS_BECOMES_COMPLETED ||
-                   $action == self::TASK_NEW_COMMENT)
+            elseif ($action == self::TASK_NEW_COMMENT)
             {
                 $peopleToSendNotification = TasksUtil::getTaskSubscribers($task);
-                if ($action == self::TASK_NEW_COMMENT && $relatedUser != null)
+                if ($relatedUser != null)
                 {
                     foreach ($peopleToSendNotification as $key => $person)
                     {
                         if ($person->getClassId('Item') == $relatedUser->getClassId('Item'))
-                        {
-                            unset($peopleToSendNotification[$key]);
-                        }
-                    }
-                }
-                if (($action == self::TASK_STATUS_BECOMES_COMPLETED) &&
-                                    (Yii::app()->user->userModel->id == $task->owner->id))
-                {
-                    foreach ($peopleToSendNotification as $key => $person)
-                    {
-                        if ($person->getClassId('Item') == $task->owner->getClassId('Item'))
                         {
                             unset($peopleToSendNotification[$key]);
                         }
@@ -219,7 +217,7 @@
             }
             elseif ($action == self::TASK_OWNER_CHANGE)
             {
-                return Zurmo::t('TasksModule', "The task, '{task}', is now owned by you.",
+                return Zurmo::t('TasksModule', "The task you requested, '{task}', has a new owner.",
                                                array('{task}'   => strval($task)));
             }
             elseif ($action == self::TASK_NEW_COMMENT)

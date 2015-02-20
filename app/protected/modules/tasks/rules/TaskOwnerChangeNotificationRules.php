@@ -70,7 +70,7 @@
          */
         public function getSubjectForEmailNotification()
         {
-            return Zurmo::t('TasksModule', 'ASSIGNMENT {relatedModel}: {task}', $this->getParamsForEmailSubject());
+            return Zurmo::t('TasksModule', 'TASK OWNER CHANGE {relatedModel}: {task}', $this->getParamsForEmailSubject());
         }
     }
 ?>
