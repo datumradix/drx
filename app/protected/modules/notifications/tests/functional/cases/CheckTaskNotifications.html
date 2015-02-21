@@ -1,0 +1,3485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="selenium.base" href="http://localhost/"/>
+    <title>CheckTaskNotifications</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr>
+    <td rowspan="1" colspan="3">Check Task Notifications</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>setTimeout</td>
+    <td>45000</td>
+    <td></td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>
+<!--create project for testing tasks notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/create</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Project</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Project_name</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Project_description</td>
+    <td>Test Project description</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Task</td>
+    <td></td>
+</tr>
+<!--create task and add Sam Smith as owner-->
+<tr>
+    <td>click</td>
+    <td>//nav[contains(@class, 'pillbox clearfix')]/div[3]/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Task_name</td>
+    <td>creating task for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Task_description</td>
+    <td>test description</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=More Details</td>
+    <td>More Details</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=More Details</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//a[@id='Task_owner_SelectLink']/span[2]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>Sam Smith</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-viewmodal']/div[2]/table/tbody/tr[1]/td/a</td>
+    <td>Sam Smith</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sam Smith</td>
+    <td>Sam Smith</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sam Smith</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForValue</td>
+    <td>Task_owner_name</td>
+    <td>Sam Smith</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as Sam and change project owner to Jill Smith-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>sam</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>sam</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>sam</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Collaborate On This Task</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Check List</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Comments</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//a[@id='Task_owner_SelectLink']/span[2]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-viewmodal']/div[2]/table/tbody/tr[1]/td/a</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Jill Smith</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Jill Smith</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForValue</td>
+    <td>Task_owner_name</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as Super User and check notification for owner change-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>   
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>Comment_description</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Comment_description</td>
+    <td>comment added by Super User</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Comment</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>comment added by Super User</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>comment added by Super User</td>
+    <td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as Jill and deliver task-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>jill</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>   
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>id=Task_status_value</td>
+    <td></td>
+</tr>
+<tr>
+    <td>select</td>
+    <td>id=Task_status_value</td>
+    <td>label=Awaiting Acceptance</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as Super User and Reject task-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>   
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>id=Task_status_value</td>
+    <td></td>
+</tr>
+<tr>
+    <td>select</td>
+    <td>id=Task_status_value</td>
+    <td>label=Rejected</td>
+</tr>
+<!--login as Jill and deliver task-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>   
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Collaborate On This Task</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Check List</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Comments</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>id=Task_status_value</td>
+    <td></td>
+</tr>
+<tr>
+    <td>select</td>
+    <td>id=Task_status_value</td>
+    <td>label=Awaiting Acceptance</td>
+</tr>
+<!--login as Super and accept task-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>   
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Collaborate On This Task</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Check List</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Comments</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>id=Task_status_value</td>
+    <td></td>
+</tr>
+<tr>
+    <td>select</td>
+    <td>id=Task_status_value</td>
+    <td>label=Completed</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--tr>
+    <td>waitForTextPresent</td>
+    <td>New ProjectThe project, 'creating project for testing task notifications ${randomSuffix}', is now owned by you.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Project Task AddedNew task, creating task for testing task notifications ${randomSuffix}, was created for project, 'creating project for testing task notifications ${randomSuffix}'. Created by Super User</td>
+    <td></td>
+</tr-->
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Delivered TasksThe task you requested, 'creating task for testing task notifications ${randomSuffix}', has been finished. You can now choose to accept or reject the task.</td>
+    <td></td>
+</tr>
+<!--tr>
+    <td>waitForTextPresent</td>
+    <td>Project Task Status ChangedThe status has changed for task, creating task for testing task notifications ${randomSuffix}, in project, 'creating project for testing task notifications ${randomSuffix}', updated by Jill Smith.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Project Task Status ChangedThe status has changed for task, creating task for testing task notifications ${randomSuffix}, in project, 'creating project for testing task notifications ${randomSuffix}', updated by Super User.</td>
+    <td></td>
+</tr-->
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Accepted TasksThe task, 'creating task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
+    <td></td>
+</tr>
+<!--disable notification settings for task module-->
+<tr>
+    <td>open</td>
+    <td>index.php/users/default/profile</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Configuration</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>link=Notifications</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableAcceptedTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableDeliveredTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableNewTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableRejectedTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskNewCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskOwnerChangeNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as Sam and check notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>sam</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>sam</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>sam</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>New TasksThe task, 'creating task for testing task notifications ${randomSuffix}', is now owned by you.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>New Task CommentsSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>comment added by Super User</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Accepted TasksThe task, 'creating task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
+    <td></td>
+</tr>
+<!--disable notification settings for task module-->
+<tr>
+    <td>open</td>
+    <td>index.php/users/default/profile</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Configuration</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>link=Notifications</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableAcceptedTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableDeliveredTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableNewTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableRejectedTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskNewCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskOwnerChangeNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as jill and check notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Task Owner ChangeThe task, 'creating task for testing task notifications ${randomSuffix}', is now owned by you.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>New Task CommentsSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>comment added by Super User</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Rejected TasksThe task, 'creating task for testing task notifications ${randomSuffix}', has been rejected by Super User.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Accepted TasksThe task, 'creating task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
+    <td></td>
+</tr>
+<!--disable notification settings for task module-->
+<tr>
+    <td>open</td>
+    <td>index.php/users/default/profile</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Configuration</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>link=Notifications</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableAcceptedTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableDeliveredTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableNewTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableRejectedTaskNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskNewCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskOwnerChangeNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as super user for next test case-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<!--after disabling notifications setting-->
+<!--create project for testing tasks notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/create</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Project</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Project_name</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Project_description</td>
+    <td>Test Project description</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Task</td>
+    <td></td>
+</tr>
+<!--create task and add Sam Smith as owner-->
+<tr>
+    <td>click</td>
+    <td>//nav[contains(@class, 'pillbox clearfix')]/div[3]/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Task_name</td>
+    <td>creating another task for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Task_description</td>
+    <td>test description</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=More Details</td>
+    <td>More Details</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=More Details</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//a[@id='Task_owner_SelectLink']/span[2]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>Sam Smith</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-viewmodal']/div[2]/table/tbody/tr[1]/td/a</td>
+    <td>Sam Smith</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sam Smith</td>
+    <td>Sam Smith</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sam Smith</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForValue</td>
+    <td>Task_owner_name</td>
+    <td>Sam Smith</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as Sam and change project owner to Jill Smith-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>sam</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>sam</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>sam</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Collaborate On This Task</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Check List</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Comments</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//a[@id='Task_owner_SelectLink']/span[2]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-viewmodal']/div[2]/table/tbody/tr[1]/td/a</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Jill Smith</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Jill Smith</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForValue</td>
+    <td>Task_owner_name</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as Super User and check notification for owner change-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>   
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>Comment_description</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Comment_description</td>
+    <td>another comment added by Super User</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Comment</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>another comment added by Super User</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>another comment added by Super User</td>
+    <td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as Jill and deliver task-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>jill</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>   
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>id=Task_status_value</td>
+    <td></td>
+</tr>
+<tr>
+    <td>select</td>
+    <td>id=Task_status_value</td>
+    <td>label=Awaiting Acceptance</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-closethick</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as Super User and Reject task-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>   
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>id=Task_status_value</td>
+    <td></td>
+</tr>
+<tr>
+    <td>select</td>
+    <td>id=Task_status_value</td>
+    <td>label=Rejected</td>
+</tr>
+<!--login as Jill and deliver task-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>   
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Collaborate On This Task</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Check List</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Comments</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>id=Task_status_value</td>
+    <td></td>
+</tr>
+<tr>
+    <td>select</td>
+    <td>id=Task_status_value</td>
+    <td>label=Awaiting Acceptance</td>
+</tr>
+<!--login as Super and accept task-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<!--go to project list view-->
+<tr>
+    <td>open</td>
+    <td>index.php/projects/default/dashboardDetails</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Dashboard</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>Projects</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//div[@id='SecuredActionBarForProjectsDashboardView']/div[1]/nav[1]/div[2]/a/span</td>
+    <td></td>
+</tr>
+<!--select project created in functional test-->
+<tr>
+    <td>type</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ProjectsSearchForm_anyMixedAttributes</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[2]/a</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>   
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Collaborate On This Task</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Check List</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Comments</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>id=Task_status_value</td>
+    <td></td>
+</tr>
+<tr>
+    <td>select</td>
+    <td>id=Task_status_value</td>
+    <td>label=Completed</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--tr>
+    <td>waitForTextNotPresent</td>
+    <td>New ProjectThe project, 'creating another project for testing task notifications ${randomSuffix}', is now owned by you.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Project Task AddedNew task, creating another task for testing task notifications ${randomSuffix}, was created for project, 'creating another project for testing task notifications ${randomSuffix}'. Created by Super User</td>
+    <td></td>
+</tr-->
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Delivered TasksThe task you requested, 'creating another task for testing task notifications ${randomSuffix}', has been finished. You can now choose to accept or reject the task.</td>
+    <td></td>
+</tr>
+<!--tr>
+    <td>waitForTextNotPresent</td>
+    <td>Project Task Status ChangedThe status has changed for task, creating another task for testing task notifications ${randomSuffix}, in project, 'creating another project for testing task notifications ${randomSuffix}', updated by Jill Smith.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Project Task Status ChangedThe status has changed for task, creating another task for testing task notifications ${randomSuffix}, in project, 'creating another project for testing task notifications ${randomSuffix}', updated by Super User.</td>
+    <td></td>
+</tr-->
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Accepted TasksThe task, 'creating another task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as Sam and check notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>sam</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>sam</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>sam</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>New TasksThe task, 'creating another task for testing task notifications ${randomSuffix}', is now owned by you.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>New Task CommentsSuper User has commented on the task 'creating another task for testing task notifications ${randomSuffix}':</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>another comment added by Super User</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Accepted TasksThe task, 'creating another task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as jill and check notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Task Owner ChangeThe task, 'creating another task for testing task notifications ${randomSuffix}', is now owned by you.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>New Task CommentsSuper User has commented on the task 'creating another task for testing task notifications ${randomSuffix}':</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>another comment added by Super User</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Rejected TasksThe task, 'creating another task for testing task notifications ${randomSuffix}', has been rejected by Super User.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Accepted TasksThe task, 'creating another task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>link=Sign out</td>
+    <td>Sign out</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--login as super user for next test case-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
