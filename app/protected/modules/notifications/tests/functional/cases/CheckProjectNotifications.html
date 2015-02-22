@@ -395,11 +395,6 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>Project Task Status ChangedThe status has changed for task, creating task for testing notifications ${randomSuffix}, in project, 'creating project for testing notifications ${randomSuffix}', updated by Super User.</td>
-    <td></td>
-</tr>
-<tr>
-    <td>waitForTextPresent</td>
     <td>Project Task AddedNew task, creating task for testing notifications ${randomSuffix}, was created for project, 'creating project for testing notifications ${randomSuffix}'. Created by Super User</td>
     <td></td>
 </tr>
@@ -463,24 +458,61 @@
     <td>click</td>
     <td>id=UserNotificationConfigurationForm_enableProjectTaskAddedNotificationInbox</td>
     <td></td>
-</tr>
-<tr>
-    <td>click</td>
-    <td>id=UserNotificationConfigurationForm_enableProjectTaskNewCommentNotificationInbox</td>
-    <td></td>
-</tr>
-<tr>
-    <td>click</td>
-    <td>id=UserNotificationConfigurationForm_enableProjectTaskStatusChangeNotificationInbox</td>
-    <td></td>
 </tr>    
 <tr>
     <td>click</td>
     <td>save</td>
     <td></td>
 </tr>
+<!--sign in as Super User-->
 <!--checking notifications when settings are disabled-->
 <!--create project and assign Jill as owner-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+
 <tr>
     <td>open</td>
     <td>index.php/projects/default/create</td>
@@ -841,32 +873,7 @@
 </tr>
 <tr>
     <td>waitForTextNotPresent</td>
-    <td>New TasksThe task, 'creating another task for testing notifications ${randomSuffix}', is now owned by you.</td>
-    <td></td>
-</tr>
-<tr>
-    <td>waitForTextNotPresent</td>
     <td>Project Task AddedNew task, creating another task for testing notifications ${randomSuffix}, was created for project, 'creating new project for testing notifications ${randomSuffix}'. Created by Super User</td>
-    <td></td>
-</tr>
-<tr>
-    <td>waitForTextNotPresent</td>
-    <td>Project Task Status ChangedThe status has changed for task, creating another task for testing notifications ${randomSuffix}, in project, 'creating new project for testing notifications ${randomSuffix}', updated by Super User.</td>
-    <td></td>
-</tr>
-<tr>
-    <td>waitForTextNotPresent</td>
-    <td>Project Task AddedNew task, creating another task for testing notifications ${randomSuffix}, was created for project, 'creating new project for testing notifications ${randomSuffix}'. Created by Super User</td>
-    <td></td>
-</tr>
-<tr>
-    <td>waitForTextNotPresent</td>
-    <td>New Task CommentsSuper User has commented on the task 'creating another task for testing notifications ${randomSuffix}':</td>
-    <td></td>
-</tr>
-<tr>
-    <td>waitForTextNotPresent</td>
-    <td>another comment added by Super User</td>
     <td></td>
 </tr>
 <tr>
