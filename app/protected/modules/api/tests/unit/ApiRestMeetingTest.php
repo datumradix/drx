@@ -1387,7 +1387,9 @@
             $response = $this->createApiCallWithRelativeUrl('getAttendees/?id=' . $meeting2->id, 'GET', $headers);
             $response = json_decode($response, true);
             $this->assertEquals($account->id, $response['data']['Account'][0]['id']);
+            $this->assertEquals($account->name, $response['data']['Account'][0]['name']);
             $this->assertEquals($opportunity->id, $response['data']['Opportunity'][0]['id']);
+            $this->assertEquals($opportunity->name, $response['data']['Opportunity'][0]['name']);
         }
         
         protected function getApiControllerClassName()
