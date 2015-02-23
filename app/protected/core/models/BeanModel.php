@@ -206,7 +206,7 @@
          */
         public static function getAttributeModelClassName($attributeName)
         {
-            assert('self::isAnAttribute($attributeName, get_called_class())');
+            assert('self::isAnAttribute($attributeName)');
             $attributeNamesToClassNames = self::getAttributeNamesToClassNamesForModel();
             return $attributeNamesToClassNames[$attributeName];
         }
@@ -218,7 +218,7 @@
          */
         public static function isRelation($attributeName)
         {
-            assert('self::isAnAttribute($attributeName, get_called_class())');
+            assert('is_string($attributeName)');
             return array_key_exists($attributeName, static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel());
         }
 
@@ -229,7 +229,7 @@
          */
         public static function isOwnedRelation($attributeName)
         {
-            assert('self::isAnAttribute($attributeName, get_called_class())');
+            assert('is_string($attributeName)');
             $relationAndOwns = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
             return array_key_exists($attributeName, $relationAndOwns) &&
                 $relationAndOwns[$attributeName][2];
@@ -241,7 +241,7 @@
          */
         public static function getRelationType($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             $relationAndOwns = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
             return $relationAndOwns[$relationName][0];
         }
@@ -254,7 +254,7 @@
          */
         public static function getRelationModelClassName($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             $relationAndOwns = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
             return $relationAndOwns[$relationName][1];
         }
@@ -265,7 +265,7 @@
          */
         public static function getRelationLinkType($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             $relationAndOwns = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
             return $relationAndOwns[$relationName][3];
         }
@@ -277,7 +277,7 @@
          */
         public static function getRelationLinkName($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             $relationAndOwns = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
             return $relationAndOwns[$relationName][4];
         }
@@ -288,7 +288,7 @@
          */
         public static function isRelationTypeAHasManyVariant($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             if (static::getRelationType($relationName) == RedBeanModel::HAS_MANY  ||
                 static::getRelationType($relationName) == RedBeanModel::HAS_ONE_BELONGS_TO)
             {
@@ -303,7 +303,7 @@
          */
         public static function isRelationTypeAHasOneVariant($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             if (static::getRelationType($relationName) == RedBeanModel::HAS_MANY_BELONGS_TO ||
                 static::getRelationType($relationName) == RedBeanModel::HAS_ONE)
             {
@@ -726,7 +726,7 @@
          */
         public static function isRelationTypeAManyManyVariant($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             if (static::getRelationType($relationName) == RedBeanModel::MANY_MANY)
             {
                 return true;
