@@ -165,6 +165,11 @@
                                 $item['firstName'] = $castedDownModel->firstName;
                                 $item['lastName']  = $castedDownModel->lastName;
                             }
+                            elseif ($castedDownModel instanceof Account || $castedDownModel instanceof Opportunity)
+                            {
+                                $item['name'] = $castedDownModel->name;
+                            }
+
                             $data[$activityClassName][] = $item;
                         }
                         catch (NotFoundException $e)
