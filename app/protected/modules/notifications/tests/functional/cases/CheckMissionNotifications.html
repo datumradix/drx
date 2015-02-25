@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="selenium.base" href="http://localhost/"/>
+    <title>CheckConversationNotifications</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr>
+    <td rowspan="1" colspan="3">Check Conversation Notifications</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>setTimeout</td>
+    <td>45000</td>
+    <td></td>
+</tr>
+<!--create mission as super user-->
+<tr>
+    <td>open</td>
+    <td>index.php/missions/default/create</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Mission</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>id=Mission_description</td>
+    <td>creating mission for testing notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating mission for testing notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<!--login as Jill and check notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>New MissionHello,</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>There is a new mission. Be the first one to start it and get this great reward: .</td>
+    <td></td>
+</tr>
+<!--start mission as Jill-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=mission</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating mission for testing notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='ModelDetailsSummaryView']/div/div/div/a/span[3]</td>
+	<td></td>
+</tr>
+<!--go to user profile and disable notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/users/default/profile</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Configuration</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>link=Notifications</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableMissionNewCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableMissionStatusChangeNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableNewMissionNotificationInbox</td>
+    <td></td>
+</tr>    
+<tr>
+    <td>click</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<!--sign in as Super User and check notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Conversation new commentHello,</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>A mission status has changedA mission you created has been taken on by Jill Smith-Click Here</td>
+    <td></td>
+</tr>
+<!--go to user profile and disable notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/users/default/profile</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Configuration</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>link=Notifications</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableMissionNewCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableMissionStatusChangeNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableNewMissionNotificationInbox</td>
+    <td></td>
+</tr>    
+<tr>
+    <td>click</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<!--create mission as super user-->
+<tr>
+    <td>open</td>
+    <td>index.php/missions/default/create</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Mission</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>id=Mission_description</td>
+    <td>creating mission for testing notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>creating mission for testing notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<!--login as Jill and check notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>New MissionHello,</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>There is a new mission. Be the first one to start it and get this great reward: .</td>
+    <td></td>
+</tr>
+<!--start mission as Jill-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=mission</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>creating mission for testing notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='ModelDetailsSummaryView']/div/div/div/a/span[3]</td>
+	<td></td>
+</tr>
+<!--sign in as Super User and check notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Conversation new commentHello,</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>A mission status has changedA mission you created has been taken on by Jill Smith-Click Here</td>
+    <td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
