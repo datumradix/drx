@@ -114,16 +114,15 @@
                 $emailMessages[0]->subject);
             $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now owned by you.",
                                   $emailMessages[0]->content->textContent);
-            
+
             $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now owned by you.",
                                   $emailMessages[0]->content->htmlContent);
-            
+
             $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now owned by you.",
                                  $notifications[0]->notificationMessage->textContent);
-            
+
             $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now owned by you.",
                                   $notifications[0]->notificationMessage->htmlContent);
-            
         }
 
         public function testNewNotificationWhenProjectIsArchived()
@@ -147,13 +146,13 @@
                 $emailMessages[0]->subject);
             $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now archived.",
                                   $emailMessages[0]->content->textContent);
-            
+
             $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now archived.",
                                   $emailMessages[0]->content->htmlContent);
-            
+
             $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now archived.",
                                  $notifications[0]->notificationMessage->textContent);
-            
+
             $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now archived.",
                                   $notifications[0]->notificationMessage->htmlContent);
         }
