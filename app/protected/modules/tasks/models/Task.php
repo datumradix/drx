@@ -333,11 +333,6 @@
                         TasksNotificationUtil::TASK_STATUS_BECOMES_COMPLETED,
                         Yii::app()->user->userModel);
                 }
-                if (!$this->isNewModel && $this->project->id > 0)
-                {
-                    ProjectsNotificationUtil::submitProjectNotificationMessage($this->project, ProjectAuditEvent::TASK_STATUS_CHANGED,
-                                                                               $this, Yii::app()->user->userModel);
-                }
             }
             if ($this->isNewModel)
             {
@@ -347,11 +342,18 @@
                         TasksNotificationUtil::TASK_NEW);
                 }
             }
-            elseif (array_key_exists('owner', $this->originalAttributeValues) &&
-               $this->owner->id != Yii::app()->user->userModel->id)
+            elseif (array_key_exists('owner', $this->originalAttributeValues))
             {
-                TasksNotificationUtil::submitTaskNotificationMessage($this,
+                if ($this->requestedByUser->id != Yii::app()->user->userModel->id)
+                {
+                    TasksNotificationUtil::submitTaskNotificationMessage($this,
                                                          TasksNotificationUtil::TASK_OWNER_CHANGE);
+                }
+                if ($this->owner->id != Yii::app()->user->userModel->id)
+                {
+                    TasksNotificationUtil::submitTaskNotificationMessage($this,
+                                                         TasksNotificationUtil::TASK_NEW);
+                }
             }
         }
 

@@ -44,15 +44,13 @@
          * @param Project $project
          * @param string $action
          * @param Task $task
-         * @param null|User $relatedUser, the user associated with the project notification. In case of
-         * @param null|Comment $comment
-         * comment, it would be the user making the comment
+         * @param null|User $relatedUser, the user associated with the project notification.
          */
         public static function submitProjectNotificationMessage(Project $project, $action, Task $task = null,
-                                                                User $relatedUser = null, Comment $comment = null)
+                                                                User $relatedUser = null)
         {
             assert('is_string($action)');
-            $message = static::getNotificationMessageByAction($project, $action, $task, $relatedUser, $comment);
+            $message = static::getNotificationMessageByAction($project, $action, $task, $relatedUser);
             $notificationRulesClassName = static::resolveNotificationRulesClassByAction($action);
             $rule = new $notificationRulesClassName();
             $peopleToSendNotification = static::resolvePeopleToSendNotification($project, $action);
@@ -98,29 +96,19 @@
          * @param $action
          * @param Task $task
          * @param User $relatedUser
-         * @param Comment $comment
          * @return NotificationMessage
          */
         protected static function getNotificationMessageByAction(Project $project, $action, Task $task = null,
-                                                                 User $relatedUser = null, Comment $comment = null)
+                                                                 User $relatedUser = null)
         {
             assert('is_string($action)');
             $message                     = new NotificationMessage();
             $messageContent              = static::getEmailMessageContent($project, $action, $task, $relatedUser);
-            $messageContentSecondPart    = static::getEmailMessageContentSecondPart($action, $comment);
             $url                         = Yii::app()->createAbsoluteUrl('projects/default/details/',
                                            array('id' => $project->id));
             $message->textContent        = $messageContent;
-            if ($messageContentSecondPart != null)
-            {
-                $message->textContent .= "\n" . $messageContentSecondPart;
-            }
             $message->textContent       .= "\n" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
             $message->htmlContent        = $messageContent;
-            if ($messageContentSecondPart != null)
-            {
-                $message->htmlContent .= "<br/>" . $messageContentSecondPart;
-            }
             $message->htmlContent       .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
             return $message;
         }
@@ -135,23 +123,9 @@
         {
             assert('is_string($action)');
             $peopleToSendNotification = array();
-            if ($action == ProjectAuditEvent::PROJECT_CREATED)
-            {
-                $peopleToSendNotification[] = $project->owner;
-            }
-            elseif ($action == ProjectAuditEvent::TASK_ADDED)
-            {
-                $peopleToSendNotification[] = $project->owner;
-            }
-            elseif ($action == ProjectAuditEvent::COMMENT_ADDED)
-            {
-                $peopleToSendNotification[] = $project->owner;
-            }
-            elseif ($action == ProjectAuditEvent::TASK_STATUS_CHANGED)
-            {
-                $peopleToSendNotification[] = $project->owner;
-            }
-            elseif ($action == ProjectAuditEvent::PROJECT_ARCHIVED)
+            if ($action == ProjectAuditEvent::PROJECT_CREATED ||
+                    $action == ProjectAuditEvent::TASK_ADDED ||
+                    $action == ProjectAuditEvent::PROJECT_ARCHIVED)
             {
                 $peopleToSendNotification[] = $project->owner;
             }
@@ -181,37 +155,10 @@
                                                      '{project}' => strval($project),
                                                      '{user}' => strval($relatedUser)));
             }
-            elseif ($action == ProjectAuditEvent::COMMENT_ADDED)
-            {
-                return Zurmo::t('ProjectsModule', "{user} has commented on the project '{project}':",
-                                               array('{project}'         => strval($project),
-                                                     '{user}' => strval($relatedUser)));
-            }
-            elseif ($action == ProjectAuditEvent::TASK_STATUS_CHANGED)
-            {
-                return Zurmo::t('ProjectsModule', "The status has changed for task, {task}, in project, '{project}', updated by {user}.",
-                    array('{task}' => strval($task),
-                          '{project}'         => strval($project),
-                          '{user}' => strval($relatedUser)));
-            }
             elseif ($action == ProjectAuditEvent::PROJECT_ARCHIVED)
             {
                 return Zurmo::t('ProjectsModule', "The project, '{project}', is now archived.",
                                                array('{project}'   => strval($project)));
-            }
-        }
-
-        /**
-         * @param $action
-         * @param Comment $comment
-         * @return string
-         */
-        public static function getEmailMessageContentSecondPart($action, Comment $comment = null)
-        {
-            assert('is_string($action)');
-            if ($action == ProjectAuditEvent::COMMENT_ADDED)
-            {
-                return strval($comment);
             }
         }
 
@@ -262,12 +209,6 @@
                     break;
                 case ProjectAuditEvent::TASK_ADDED:
                     return 'ProjectTaskAddedNotificationRules';
-                    break;
-                case ProjectAuditEvent::COMMENT_ADDED:
-                    return 'ProjectTaskNewCommentNotificationRules';
-                    break;
-                case ProjectAuditEvent::TASK_STATUS_CHANGED:
-                    return 'ProjectTaskStatusChangeNotificationRules';
                     break;
                 case ProjectAuditEvent::PROJECT_ARCHIVED:
                     return 'ArchivedProjectNotificationRules';

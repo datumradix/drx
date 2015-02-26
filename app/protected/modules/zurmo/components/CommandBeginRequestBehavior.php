@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2015. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -40,14 +40,40 @@
      */
     class CommandBeginRequestBehavior extends BeginRequestBehavior
     {
-        protected function resolveDefaultRequestType($className)
+        public function attach($owner)
         {
-            return $className::COMMAND_REQUEST;
+            $this->attachNonApiRequestBehaviors($owner);
+            if (Yii::app()->isApplicationInstalled())
+            {
+                $this->attachNonApiRequestBehaviorsForInstalledApplication($owner);
+            }
         }
 
-        protected function resolveIsApiRequest()
+        /**
+         * @param CComponent $owner
+         */
+        protected function attachNonApiRequestBehaviors(CComponent $owner)
         {
-            return false;
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleApplicationCache'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleImports'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLibraryCompatibilityCheck'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleStartPerformanceClock'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadLanguage'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadTimeZone'));
+        }
+
+        /**
+         * @param CComponent $owner
+         */
+        protected function attachNonApiRequestBehaviorsForInstalledApplication(CComponent $owner)
+        {
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleSetupDatabaseConnection'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadActivitiesObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadConversationsObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadEmailMessagesObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadReadPermissionSubscriptionObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadAccountContactAffiliationObserver'));
         }
     }
 ?>

@@ -94,84 +94,68 @@
                                   $notifications[0]->notificationMessage->htmlContent);
         }
 
-        public function testNewNotificationWhenNewProjectCommentIsAddedIsCreated()
+        public function testNewNotificationWhenNewProjectIsCreated()
         {
             $project                    = new Project();
             $project->name              = 'project-' . __FUNCTION__;
             $project->owner             = self::$steve;
-            $task                       = new Task();
-            $task->name                 = 'task-' . __FUNCTION__;
-            $task->owner                = self::$steve;
-            $comment                    = new Comment();
-            $comment->description       = 'comment: ' . __FUNCTION__;
 
             $this->assertEquals(0, EmailMessage::getCount());
             $this->assertEquals(0, Notification::getCount());
 
             ProjectsNotificationUtil::submitProjectNotificationMessage(
-                $project, ProjectAuditEvent::COMMENT_ADDED, $task, self::$sally, $comment);
+                $project, ProjectAuditEvent::PROJECT_CREATED);
 
             $emailMessages = EmailMessage::getAll();
             $notifications = Notification::getAll();
             $this->assertCount(1, $emailMessages);
             $this->assertCount(1, $notifications);
-            $this->assertEquals('NEW COMMENT for TASK: task-'. __FUNCTION__ . ', PROJECT: project-' . __FUNCTION__,
+            $this->assertEquals('PROJECT: project-'. __FUNCTION__,
                 $emailMessages[0]->subject);
-            $this->assertContains("sally sallyson has commented on the project 'project-" . __FUNCTION__,
+            $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now owned by you.",
                                   $emailMessages[0]->content->textContent);
-            $this->assertContains('comment: ' . __FUNCTION__, $emailMessages[0]->content->textContent);
-            $this->assertContains("sally sallyson has commented on the project 'project-" . __FUNCTION__,
+            
+            $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now owned by you.",
                                   $emailMessages[0]->content->htmlContent);
-            $this->assertContains('comment: ' . __FUNCTION__, $emailMessages[0]->content->htmlContent);
-            $this->assertContains("sally sallyson has commented on the project 'project-" . __FUNCTION__,
+            
+            $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now owned by you.",
                                  $notifications[0]->notificationMessage->textContent);
-            $this->assertContains('comment: ' . __FUNCTION__, $notifications[0]->notificationMessage->textContent);
-            $this->assertContains("sally sallyson has commented on the project 'project-" . __FUNCTION__,
+            
+            $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now owned by you.",
                                   $notifications[0]->notificationMessage->htmlContent);
-            $this->assertContains('comment: ' . __FUNCTION__, $notifications[0]->notificationMessage->htmlContent);
+            
         }
 
-        public function testNewNotificationWhenProjectTaskStatusChange()
+        public function testNewNotificationWhenProjectIsArchived()
         {
             $project                    = new Project();
             $project->name              = 'project-' . __FUNCTION__;
             $project->owner             = self::$steve;
-            $task                       = new Task();
-            $task->name                 = 'task-' . __FUNCTION__;
-            $task->owner                = self::$sally;
+            $project->status            = Project::STATUS_ARCHIVED;
 
             $this->assertEquals(0, EmailMessage::getCount());
             $this->assertEquals(0, Notification::getCount());
 
             ProjectsNotificationUtil::submitProjectNotificationMessage(
-                $project, ProjectAuditEvent::TASK_STATUS_CHANGED, $task, self::$sally);
+                $project, ProjectAuditEvent::PROJECT_ARCHIVED);
 
             $emailMessages = EmailMessage::getAll();
             $notifications = Notification::getAll();
             $this->assertCount(1, $emailMessages);
             $this->assertCount(1, $notifications);
-            $this->assertEquals('TASK STATUS CHANGE for TASK: task-' . __FUNCTION__ . ', PROJECT: project-' . __FUNCTION__,
+            $this->assertEquals('PROJECT: project-'. __FUNCTION__,
                 $emailMessages[0]->subject);
-            $this->assertContains('The status has changed for task, task-' . __FUNCTION__,
-                $emailMessages[0]->content->textContent);
-            $this->assertContains("in project, 'project-" . __FUNCTION__ . "'",
-                $emailMessages[0]->content->textContent);
-            $this->assertContains('updated by sally sallyson', $emailMessages[0]->content->textContent);
-            $this->assertContains('The status has changed for task, task-' . __FUNCTION__,
-                $emailMessages[0]->content->htmlContent);
-            $this->assertContains("in project, 'project-" . __FUNCTION__ . "'",
-                $emailMessages[0]->content->htmlContent);
-            $this->assertContains('updated by sally sallyson', $emailMessages[0]->content->htmlContent);
-            $this->assertContains('The status has changed for task, task-' . __FUNCTION__,
-                $notifications[0]->notificationMessage->textContent);
-            $this->assertContains("in project, 'project-" . __FUNCTION__ . "'",
-                $notifications[0]->notificationMessage->textContent);
-            $this->assertContains('updated by sally sallyson', $notifications[0]->notificationMessage->textContent);
-            $this->assertContains('The status has changed for task, task-' . __FUNCTION__,
-                $notifications[0]->notificationMessage->htmlContent);
-            $this->assertContains("in project, 'project-" . __FUNCTION__ . "'",
-                $notifications[0]->notificationMessage->htmlContent);
-            $this->assertContains('updated by sally sallyson', $notifications[0]->notificationMessage->htmlContent);
+            $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now archived.",
+                                  $emailMessages[0]->content->textContent);
+            
+            $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now archived.",
+                                  $emailMessages[0]->content->htmlContent);
+            
+            $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now archived.",
+                                 $notifications[0]->notificationMessage->textContent);
+            
+            $this->assertContains("The project, 'project-" . __FUNCTION__ . "', is now archived.",
+                                  $notifications[0]->notificationMessage->htmlContent);
         }
     }
 ?>

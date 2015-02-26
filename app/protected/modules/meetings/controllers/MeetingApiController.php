@@ -118,9 +118,18 @@
         protected function getUserAttendees($meeting)
         {
             $data         = array();
-            foreach ($meeting->userAttendees as $item)
+            foreach ($meeting->userAttendees as $attendee)
             {
-                $data['User'][] = array('id' => $item->id);
+                $item = array();
+                $item['id']        = $attendee->id;
+                $item['firstName'] = $attendee->firstName;
+                $item['lastName']  = $attendee->lastName;
+                $item['username']  = $attendee->username;
+                if ($attendee->primaryEmail->emailAddress != null)
+                {
+                    $item['email']     = $attendee->primaryEmail->emailAddress;
+                }
+                $data['User'][] = $item;
             }
             return $data;
         }
@@ -145,7 +154,23 @@
                         {
                             $modelDerivationPathToItem  = RuntimeUtil::getModelDerivationPathToItem($activityClassName);
                             $castedDownModel            = $activityItem->castDown(array($modelDerivationPathToItem));
-                            $data[$activityClassName][] = array('id' => $castedDownModel->id);
+                            $item = array();
+                            $item['id'] = $castedDownModel->id;
+                            if ($castedDownModel instanceof Contact)
+                            {
+                                if ($castedDownModel->primaryEmail->emailAddress != null)
+                                {
+                                    $item['email']     = $castedDownModel->primaryEmail->emailAddress;
+                                }
+                                $item['firstName'] = $castedDownModel->firstName;
+                                $item['lastName']  = $castedDownModel->lastName;
+                            }
+                            elseif ($castedDownModel instanceof Account || $castedDownModel instanceof Opportunity)
+                            {
+                                $item['name'] = $castedDownModel->name;
+                            }
+
+                            $data[$activityClassName][] = $item;
                         }
                         catch (NotFoundException $e)
                         {

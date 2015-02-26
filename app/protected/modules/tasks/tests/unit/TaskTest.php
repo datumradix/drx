@@ -479,16 +479,12 @@
             $task->save();
             $notifications = Notification::getAll();
             $emailMessages = EmailMessage::getAll();
-            $this->assertCount(5, $notifications);
-            $this->assertCount(5, $emailMessages);
+            $this->assertCount(4, $notifications);
+            $this->assertCount(4, $emailMessages);
             $this->assertContains("The task, 'Task for Notifications Test', was accepted by Clark Kent.",
                 $notifications[3]->notificationMessage->textContent);
             $this->assertContains("The task, 'Task for Notifications Test', was accepted by Clark Kent.",
                 $emailMessages[3]->content->textContent);
-            $this->assertContains("The task, 'Task for Notifications Test', was accepted by Clark Kent.",
-                $notifications[4]->notificationMessage->textContent);
-            $this->assertContains("The task, 'Task for Notifications Test', was accepted by Clark Kent.",
-                $emailMessages[4]->content->textContent);
         }
     }
 ?>
