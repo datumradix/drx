@@ -331,14 +331,16 @@
                                                                                  (int)$relationModelId,
                                                                                  $relationModuleId);
                 }
+                $isNewModel = true;
             }
             else
             {
                 $task   = Task::getById(intval($id));
+                $isNewModel = false;
             }
             $task       = $this->attemptToSaveModelFromPost($task, null, false);
             //Log event for project audit
-            if ($relationAttributeName == 'project')
+            if ($relationAttributeName == 'project' && $isNewModel === true)
             {
                 ProjectsUtil::logAddTaskEvent($task);
                 ProjectsNotificationUtil::submitProjectNotificationMessage($task->project, ProjectAuditEvent::TASK_ADDED,
@@ -430,17 +432,12 @@
          */
         protected function processTaskEdit(Task $task)
         {
-            $isNewModel = $task->isNewModel;
             if (RightsUtil::canUserAccessModule('TasksModule', Yii::app()->user->userModel))
             {
                 if (isset($_POST['ajax']) && $_POST['ajax'] == 'task-modal-edit-form')
                 {
                     $controllerUtil   = static::getZurmoControllerUtil();
                     $controllerUtil->validateAjaxFromPost($task, 'Task');
-                    if ($isNewModel)
-                    {
-                        TasksNotificationUtil::makeAndSubmitNewTaskNotificationMessage($task);
-                    }
                     Yii::app()->getClientScript()->setToAjaxMode();
                     Yii::app()->end(0, false);
                 }

@@ -212,7 +212,7 @@
                 ProjectAuditEvent::logAuditEvent(ProjectAuditEvent::PROJECT_CREATED, $this, $this->name);
                 ProjectsNotificationUtil::submitProjectNotificationMessage($this, ProjectAuditEvent::PROJECT_CREATED);
             }
-            elseif ($this->status == Project::STATUS_ARCHIVED)
+            elseif ($this->status == Project::STATUS_ARCHIVED && isset($this->originalAttributeValues['status']))
             {
                 ProjectAuditEvent::logAuditEvent(ProjectAuditEvent::PROJECT_ARCHIVED, $this, $this->name);
                 ProjectsNotificationUtil::submitProjectNotificationMessage($this, ProjectAuditEvent::PROJECT_ARCHIVED);
