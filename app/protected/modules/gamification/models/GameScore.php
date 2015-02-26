@@ -198,7 +198,7 @@
         {
             $this->value = $this->value + 1;
         }
-        
+
         /**
          * @see BeanModel::resolveCachedMetadataForIntegrity for a fun explanation of why this function exists.
          * Hopefully at some point in the future we can ascertain why this is actually happening and fix this bug

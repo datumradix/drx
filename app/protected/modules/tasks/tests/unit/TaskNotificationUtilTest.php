@@ -187,7 +187,7 @@
             $taskId = $task->id;
             $task->forget();
             $task = Task::getById($taskId);
-            //$task->originalAttributeValues = array('status'=>2);
+            //$task->originalAttributeValues = array('status' => 2);
             $task->status               = Task::STATUS_COMPLETED;
             $this->assertTrue($task->save());
             $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());

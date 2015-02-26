@@ -73,7 +73,7 @@
             $result    =  $this->processGetModifiedItems($params['data']);
             Yii::app()->apiHelper->sendResponse($result);
         }
-        
+
         /**
          * Get all meetings attendees including users, contacts, opportunities and accounts
          */
@@ -107,7 +107,6 @@
                 throw new ApiException($message);
             }
             return $result;
-
         }
 
         /**

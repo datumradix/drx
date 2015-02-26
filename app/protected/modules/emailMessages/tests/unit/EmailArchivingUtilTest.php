@@ -573,7 +573,7 @@ Cc: 'John Wein' <john@example.com>, Peter Smith <peter@example.com>
             //$this->assertTrue($emailMessage->save(false));
         }
 
-        public function testCreateEmailMessageSender() 
+        public function testCreateEmailMessageSender()
         {
             $user    = UserTestHelper::createBasicUser('senderTestUser');
             Yii::app()->user->userModel = $user;

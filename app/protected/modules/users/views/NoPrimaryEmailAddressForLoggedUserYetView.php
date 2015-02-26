@@ -47,6 +47,7 @@
         {
             $this->userId = $userId;
         }
+
         protected function renderContent()
         {
             $url     = Yii::app()->createUrl('/users/default/edit', array('id' => $this->userId));

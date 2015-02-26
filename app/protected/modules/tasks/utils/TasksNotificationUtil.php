@@ -160,7 +160,7 @@
             {
                 $peopleToSendNotification[] = $task->owner;
             }
-            elseif ($action == self::TASK_STATUS_BECOMES_AWAITING_ACCEPTANCE || 
+            elseif ($action == self::TASK_STATUS_BECOMES_AWAITING_ACCEPTANCE ||
                     $action == self::TASK_OWNER_CHANGE)
             {
                 $peopleToSendNotification[] = $task->requestedByUser;

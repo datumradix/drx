@@ -74,7 +74,7 @@
         {
             throw new ApiUnsupportedException();
         }
-        
+
         /**
          * Create new model
          * @param $data
@@ -99,7 +99,7 @@
                 {
                     unset($data['attachments']);
                 }
-                
+
                 if (isset($data['owner']['id']))
                 {
                     try
@@ -116,12 +116,12 @@
                 {
                     $emailOwner = Yii::app()->user->userModel;
                 }
-                
+
                 $emailSenderOrRecipientEmailFoundInSystem = false;
                 $userCanAccessContacts = RightsUtil::canUserAccessModule('ContactsModule', $emailOwner);
                 $userCanAccessLeads    = RightsUtil::canUserAccessModule('LeadsModule',    $emailOwner);
                 $userCanAccessAccounts = RightsUtil::canUserAccessModule('AccountsModule', $emailOwner);
-                
+
                 if (!empty($emailMessage->fromEmail))
                 {
                     $senderInfo['email'] = $emailMessage->fromEmail;
@@ -139,7 +139,7 @@
                     $message = Zurmo::t('ZurmoModule', 'Sender not found.');
                     throw new ApiException($message);
                 }
-                
+
                 try
                 {
                     $recipientsInfo = EmailArchivingUtil::resolveEmailRecipientsFromEmailMessage($emailMessage);
@@ -167,7 +167,7 @@
                 {
                     $emailSenderOrRecipientEmailFoundInSystem = $emailRecipientFoundInSystem;
                 }
-                
+
                 if ($emailOwner instanceof User)
                 {
                     $box = EmailBoxUtil::getDefaultEmailBoxByUser($emailOwner);
@@ -232,7 +232,7 @@
                 {
                     $model->sentDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
                 }
-                
+
                 $this->setModelScenarioFromData($model, $data);
                 $model = $this->attemptToSaveModelFromData($model, $data, null, false);
                 $id = $model->id;
@@ -256,7 +256,7 @@
             }
             return $result;
         }
-        
+
         /**
          * EmailArchivingUtil works with ImapMessage model so we need one
          * @param array $data
@@ -275,22 +275,22 @@
             }
             if (isset($data['recipients']['to']) && is_array($data['recipients']['to']) && !empty($data['recipients']['to']))
             {
-                foreach($data['recipients']['to'] as $to)
+                foreach ($data['recipients']['to'] as $to)
                 {
-                    $emailMessage->to[] = array('name'=>$to['name'], 
-                        'email'=>$to['email'], 
-                        'type'=>EmailMessageRecipient::TYPE_TO
+                    $emailMessage->to[] = array('name' => $to['name'],
+                        'email' => $to['email'],
+                        'type' => EmailMessageRecipient::TYPE_TO
                     );
                 }
             }
-            
+
             if (isset($data['recipients']['cc']) && is_array($data['recipients']['cc']) && !empty($data['recipients']['cc']))
             {
-                foreach($data['recipients']['cc'] as $cc)
+                foreach ($data['recipients']['cc'] as $cc)
                 {
-                    $emailMessage->cc[] = array('name'=>$cc['name'], 
-                        'email'=>$cc['email'], 
-                        'type'=>EmailMessageRecipient::TYPE_CC
+                    $emailMessage->cc[] = array('name' => $cc['name'],
+                        'email' => $cc['email'],
+                        'type' => EmailMessageRecipient::TYPE_CC
                     );
                 }
             }
@@ -300,7 +300,7 @@
             }
             return $emailMessage;
         }
-        
+
         /**
          * Send notification about unmatched email messages to email owner
          * @param mixed $emailOwner
@@ -330,7 +330,5 @@
                 NotificationsUtil::submit($notificationMessage, $rules);
             }
         }
-        
-
     }
 ?>

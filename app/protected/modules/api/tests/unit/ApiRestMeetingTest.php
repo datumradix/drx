@@ -1391,7 +1391,7 @@
             $this->assertEquals($opportunity->id, $response['data']['Opportunity'][0]['id']);
             $this->assertEquals($opportunity->name, $response['data']['Opportunity'][0]['name']);
         }
-        
+
         protected function getApiControllerClassName()
         {
             Yii::import('application.modules.meetings.controllers.MeetingApiController', true);
