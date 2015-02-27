@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,12 +31,14 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class EmailHelperTest extends ZurmoBaseTest
     {
         public static $emailHelperSendEmailThroughTransport;
+
+        protected $user = null;
 
         public static function setUpBeforeClass()
         {
@@ -68,24 +70,26 @@
                 Yii::app()->imap->setInboundSettings();
                 Yii::app()->imap->init();
 
-                Yii::app()->emailHelper->outboundHost     = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundHost'];
-                Yii::app()->emailHelper->outboundPort     = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundPort'];
-                Yii::app()->emailHelper->outboundUsername = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundUsername'];
-                Yii::app()->emailHelper->outboundPassword = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundPassword'];
-                Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundSecurity'];
-                Yii::app()->emailHelper->sendEmailThroughTransport = true;
-                Yii::app()->emailHelper->setOutboundSettings();
-                Yii::app()->emailHelper->init();
+                self::loadEmailHelperWithTestCredentials();
             }
             // Delete item from jobQueue, that is created when new user is created
             Yii::app()->jobQueue->deleteAll();
         }
 
+        public function setUp()
+        {
+            parent::setUp();
+            $this->user                 = User::getByUsername('super');
+            Yii::app()->user->userModel = $this->user;
+            if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
+            {
+                $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Email test settings are missing.'));
+            }
+        }
+
         public function testSend()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
-            $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email', $super);
+            $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email', $this->user);
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $this->assertEquals(0, count(Yii::app()->jobQueue->getAll()));
@@ -106,7 +110,7 @@
             Yii::app()->user->userModel = $super;
 
             //add a message in the outbox_error folder.
-            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $super);
+            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $this->user);
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX_ERROR);
             $emailMessage->save();
@@ -118,17 +122,17 @@
             $this->assertEquals(2, Yii::app()->emailHelper->getSentCount());
 
             //add a message in the outbox folder.
-            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 3', $super);
+            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 3', $this->user);
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX);
             $emailMessage->save();
             //add a message in the outbox_error folder.
-            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 4', $super);
+            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 4', $this->user);
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX_ERROR);
             $emailMessage->save();
             //add a message in the outbox_error folder.
-            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 5', $super);
+            $emailMessage         = EmailMessageTestHelper::createDraftSystemEmail('a test email 5', $this->user);
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX_ERROR);
             $emailMessage->save();
@@ -148,9 +152,7 @@
          */
         public function testSendImmediately()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
-            $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $super);
+            $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $this->user);
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(5, Yii::app()->emailHelper->getSentCount());
             Yii::app()->emailHelper->sendImmediately($emailMessage);
@@ -204,7 +206,7 @@
 
             //Load outbound setting when EmailAccount useCustomOutboundSettings = true
             $emailAccount = EmailAccount::getByUserAndName($billy);
-            $emailAccount->useCustomOutboundSettings = true;
+            $emailAccount->useCustomOutboundSettings = EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS;
             $emailAccount->outboundType = 'xyz';
             $emailAccount->outboundPort = 55;
             $emailAccount->outboundHost = 'zurmo.com';
@@ -228,8 +230,7 @@
          */
         public function testSendRealEmail()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
+            self::loadEmailHelperWithTestCredentials();
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             if (EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
             {
@@ -242,7 +243,7 @@
                 $imapStats = Yii::app()->imap->getMessageBoxStatsDetailed();
                 $this->assertEquals(0, $imapStats->Nmsgs);
 
-                $emailMessage = EmailMessageTestHelper::createOutboxEmail($super, 'Test email',
+                $emailMessage = EmailMessageTestHelper::createOutboxEmail($this->user, 'Test email',
                     'Raw content', ',b>html content</b>end.', // Not Coding Standard
                     'Zurmo', Yii::app()->emailHelper->outboundUsername,
                     'Ivica', Yii::app()->params['emailTestAccounts']['userImapSettings']['imapUsername']);
@@ -306,7 +307,7 @@
             if (EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
             {
                 //add a message in the outbox_error folder.
-                $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $super);
+                $emailMessage = EmailMessageTestHelper::createDraftSystemEmail('a test email 2', $this->user);
                 $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
                 $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX_ERROR);
                 $emailMessage->sendAttempts = 5;
@@ -332,7 +333,7 @@
             $emailHelper = new EmailHelper;
             EmailMessageTestHelper::createEmailAccount($jane);
             $emailAccount = EmailAccount::getByUserAndName($jane);
-            $emailAccount->useCustomOutboundSettings = true;
+            $emailAccount->useCustomOutboundSettings = EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS;
             $emailAccount->outboundType     = 'abc';
             $emailAccount->outboundPort     = 11;
             $emailAccount->outboundHost     = 'dumb.domain';
@@ -367,40 +368,87 @@
 
         public function testResolveAndGetDefaultFromAddress()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $content = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
             $this->assertEquals('notification@zurmoalerts.com', $content);
         }
 
         public function testSetDefaultFromAddress()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $content = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
             $this->assertEquals('notification@zurmoalerts.com', $content);
-            Yii::app()->emailHelper->setDefaultFromAddress($content);
+            EmailHelper::setDefaultFromAddress($content);
             $metadata = ZurmoModule::getMetadata();
             $this->assertEquals('notification@zurmoalerts.com', $metadata['global']['defaultFromAddress']);
         }
 
         public function testResolveAndGetDefaultTestToAddress()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $content = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $content);
         }
 
         public function testSetDefaultTestToAddress()
         {
-            $super                      = User::getByUsername('super');
-            Yii::app()->user->userModel = $super;
             $content = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $content);
-            Yii::app()->emailHelper->setDefaultTestToAddress($content);
+            EmailHelper::setDefaultTestToAddress($content);
             $metadata = ZurmoModule::getMetadata();
             $this->assertEquals('testJobEmail@zurmoalerts.com', $metadata['global']['defaultTestToAddress']);
+        }
+
+        /**
+         * @depends testSendQueued
+         */
+        public function testSendQueuedSkipsPausedCampaignMessages()
+        {
+            EmailMessage::deleteAll();
+            $job                        = new CampaignQueueMessagesInOutboxJob();
+            $email                      = new Email();
+            $email->emailAddress        = 'demo@zurmo.com';
+            $contact                    = ContactTestHelper::createContactByNameForOwner('contact', $this->user);
+            $contact->primaryEmail      = $email;
+            $this->assertTrue($contact->save());
+            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList');
+            $campaign                   = CampaignTestHelper::createCampaign('campaign',
+                                                                                'subject',
+                                                                                'text Content',
+                                                                                'Html Content',
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                Campaign::STATUS_PROCESSING,
+                                                                                null,
+                                                                                0,
+                                                                                $marketingList);
+
+            $processed              = 0;
+            CampaignItemTestHelper::createCampaignItem($processed, $campaign, $contact);
+            $this->assertTrue($job->run());
+            $campaignItems          = CampaignItem::getAll();
+            $this->assertCount(1, $campaignItems);
+            $campaignItemsProcessed = CampaignItem::getByProcessedAndCampaignId(1, $campaign->id);
+            $this->assertCount(1, $campaignItemsProcessed);
+            $campaign->status       = Campaign::STATUS_PAUSED;
+            $this->assertTrue($campaign->save());
+            $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            Yii::app()->emailHelper->sendQueued();
+            $this->assertEquals(1, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+        }
+
+        /**
+         * Loads email helper with test credentials
+         */
+        protected static function loadEmailHelperWithTestCredentials()
+        {
+            Yii::app()->emailHelper->outboundHost     = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundHost'];
+            Yii::app()->emailHelper->outboundPort     = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundPort'];
+            Yii::app()->emailHelper->outboundUsername = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundUsername'];
+            Yii::app()->emailHelper->outboundPassword = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundPassword'];
+            Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundSecurity'];
+            Yii::app()->emailHelper->sendEmailThroughTransport = true;
+            Yii::app()->emailHelper->setOutboundSettings();
         }
     }
 ?>

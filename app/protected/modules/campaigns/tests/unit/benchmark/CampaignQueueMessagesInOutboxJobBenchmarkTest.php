@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
     class CampaignQueueMessagesInOutboxJobBenchmarkTest extends AutoresponderOrCampaignBaseTest
     {
@@ -267,8 +267,6 @@ MTG;
                 $this->assertEquals(strval($contact), $recipients[0]->toName);
                 $this->assertEquals($email->emailAddress, $recipients[0]->toAddress);
                 $this->assertEquals(EmailMessageRecipient::TYPE_TO, $recipients[0]->type);
-                // TODO: @Shoaibi/@Sergio: Critical0: come back and fix it.
-                //$this->assertEquals($contact, $recipients[0]->personsOrAccounts[0]);
                 $this->assertNotEmpty($emailMessage->files);
                 $this->assertCount(count($files), $emailMessage->files);
                 foreach ($campaign->files as $index => $file)

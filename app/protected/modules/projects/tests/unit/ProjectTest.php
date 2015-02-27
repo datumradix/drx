@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class ProjectTest extends ZurmoBaseTest
@@ -43,14 +43,6 @@
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
         }
-
-//        public function testDemoDataMaker()
-//        {
-//            $demoDataHelper = new DemoDataHelper();
-//            $demoDataHelper->setRangeByModelName('User', 1, 10);
-//            $projectDemoDataMaker = new ProjectsDemoDataMaker();
-//            $projectDemoDataMaker->makeAll($demoDataHelper);
-//        }
 
         public function testCreateAndGetProjectById()
         {
@@ -222,6 +214,43 @@
             {
             }
             $this->assertEquals('ProjectPermissionTest', $model->name);
+        }
+
+        public function testProjectNotifications()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $super->primaryEmail->emailAddress = 'super@zurmo.com';
+            $super->save();
+            Yii::app()->user->userModel = $super;
+            $user = UserTestHelper::createBasicUser('ProjectUser');
+            Notification::deleteAll();
+            EmailMessage::deleteAll();
+            $project                  = new Project();
+            $project->name            = 'Project For Notifications Test';
+            $project->owner           = $super;
+            $project->description     = 'Description';
+            $this->assertTrue($project->save());
+            //New project notification
+            $notifications = Notification::getAll();
+            $emailMessages = EmailMessage::getAll();
+            $this->assertCount(1, $notifications);
+            $this->assertCount(1, $emailMessages);
+            $this->assertContains("The project, 'Project For Notifications Test', is now owned by you.",
+                                    $notifications[0]->notificationMessage->textContent);
+            $this->assertContains("The project, 'Project For Notifications Test', is now owned by you.",
+                                    $emailMessages[0]->content->textContent);
+            //Project archived notification
+            $project->status = Project::STATUS_ARCHIVED;
+            $this->assertTrue($project->save());
+            $notifications = Notification::getAll();
+            $emailMessages = EmailMessage::getAll();
+            $this->assertCount(2, $notifications);
+            $this->assertCount(2, $emailMessages);
+            $this->assertContains("The project, 'Project For Notifications Test', is now archived.",
+                                    $notifications[1]->notificationMessage->textContent);
+            $this->assertContains("The project, 'Project For Notifications Test', is now archived.",
+                                    $emailMessages[1]->content->textContent);
         }
     }
 ?>

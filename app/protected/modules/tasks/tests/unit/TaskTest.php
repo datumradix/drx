@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class TaskTest extends ZurmoBaseTest
@@ -422,6 +422,69 @@
             $this->assertTrue($task->save());
             $this->assertEquals(2, count($task->notificationSubscribers));
             $this->assertCount(1, EmailMessage::getAll());
+        }
+
+        public function testTaskNotifications()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $userOwner = UserTestHelper::createBasicUserWithEmailAddress('TaskUserOwner');
+            $userRequester = UserTestHelper::createBasicUserWithEmailAddress('TaskUserRequester');
+            Notification::deleteAll();
+            EmailMessage::deleteAll();
+            $dueStamp       = DateTimeUtil::convertTimestampToDbFormatDateTime(time() + 10000);
+            $completedStamp = DateTimeUtil::convertTimestampToDbFormatDateTime(time() + 9000);
+            $task = new Task();
+            $task->name             = 'Task for Notifications Test';
+            $task->owner            = $userOwner;
+            $task->requestedByUser  = $userRequester;
+            $task->dueDateTime       = $dueStamp;
+            $task->completedDateTime = $completedStamp;
+            $task->description      = 'my test description';
+            $task->status = Task::STATUS_NEW;
+            $this->assertTrue($task->save());
+            //New task notification owned by other
+            $notifications = Notification::getAll();
+            $emailMessages = EmailMessage::getAll();
+            $this->assertCount(1, $notifications);
+            $this->assertCount(1, $emailMessages);
+            $this->assertContains("The task, 'Task for Notifications Test', is now owned by you.",
+                                    $notifications[0]->notificationMessage->textContent);
+            $this->assertContains("The task, 'Task for Notifications Test', is now owned by you.",
+                                    $emailMessages[0]->content->textContent);
+            //Deliver task notification
+            $task->status = TASK::STATUS_AWAITING_ACCEPTANCE;
+            $task->save();
+            $notifications = Notification::getAll();
+            $emailMessages = EmailMessage::getAll();
+            $this->assertCount(2, $notifications);
+            $this->assertCount(2, $emailMessages);
+            $this->assertContains("The task you requested, 'Task for Notifications Test', has been finished. You can now choose to accept or reject the task.",
+                                    $notifications[1]->notificationMessage->textContent);
+            $this->assertContains("The task you requested, 'Task for Notifications Test', has been finished. You can now choose to accept or reject the task.",
+                                    $emailMessages[1]->content->textContent);
+            //Reject task notification
+            $task->status = TASK::STATUS_REJECTED;
+            $task->save();
+            $notifications = Notification::getAll();
+            $emailMessages = EmailMessage::getAll();
+            $this->assertCount(3, $notifications);
+            $this->assertCount(3, $emailMessages);
+            $this->assertContains("The task, 'Task for Notifications Test', has been rejected by Clark Kent.",
+                $notifications[2]->notificationMessage->textContent);
+            $this->assertContains("The task, 'Task for Notifications Test', has been rejected by Clark Kent.",
+                $emailMessages[2]->content->textContent);
+            //Accept task notification
+            $task->status = TASK::STATUS_COMPLETED;
+            $task->save();
+            $notifications = Notification::getAll();
+            $emailMessages = EmailMessage::getAll();
+            $this->assertCount(4, $notifications);
+            $this->assertCount(4, $emailMessages);
+            $this->assertContains("The task, 'Task for Notifications Test', was accepted by Clark Kent.",
+                $notifications[3]->notificationMessage->textContent);
+            $this->assertContains("The task, 'Task for Notifications Test', was accepted by Clark Kent.",
+                $emailMessages[3]->content->textContent);
         }
     }
 ?>

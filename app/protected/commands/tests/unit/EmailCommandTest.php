@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class EmailCommandTest extends ZurmoBaseTest
@@ -93,8 +93,8 @@
                 $this->assertEquals(0, $imapStats->Nmsgs);
 
                 // Begin Not Coding Standard
-                $command = "php zurmocTest.php email send --username=super --toAddress=$toAddress --subject='$subject' --textContent='$textContent' " .
-                           "--htmlContent='$htmlContent' --host=$outboundHost --port=$outboundPort --outboundUsername=$outboundUsername " .
+                $command = "php zurmocTest.php email send --username=super --toAddress=$toAddress --subject=\"$subject\" --textContent=\"$textContent\" " .
+                           "--htmlContent=\"$htmlContent\" --host=$outboundHost --port=$outboundPort --outboundUsername=$outboundUsername " .
                            "--outboundPassword=$outboundPassword";
                 // End Not Coding Standard
                 if (isset($outboundSecurity) && $outboundSecurity != false)
@@ -107,7 +107,6 @@
                 }
 
                 exec($command, $output);
-
                 // Check if user got email
                 sleep(30);
                 self::$userImap->connect();

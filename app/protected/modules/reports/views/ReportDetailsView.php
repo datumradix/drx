@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -96,16 +96,28 @@
             if ($this->model->id > 0)
             {
                 $moduleClassName = $this->model->moduleClassName;
+                $moduleLabel = $this->getPuralModuleLabelForReportTitle($moduleClassName);
                 $typesAndLabels  = Report::getTypeDropDownArray();
                 return strval($this->model) . ' - ' .
                        Zurmo::t('ReportsModule', '{moduleLabel} {typeLabel} Report',
-                              array('{moduleLabel}' => $moduleClassName::getModuleLabelByTypeAndLanguage('Singular'),
+                              array('{moduleLabel}' => $moduleLabel,
                                     '{typeLabel}'   => $typesAndLabels[$this->model->type]));
             }
             else
             {
                 throw new NotSupportedException();
             }
+        }
+
+        public function getPuralModuleLabelForReportTitle($moduleClassName)
+        {
+            $moduleLabels = Report::getReportableModulesAndLabelsForCurrentUser();
+            $moduleLabel = $moduleClassName::getModuleLabelByTypeAndLanguage('Plural');
+            if (isset($moduleLabels[$moduleClassName]))
+            {
+                $moduleLabel = $moduleLabels[$moduleClassName];
+            }
+            return $moduleLabel;
         }
 
         public function registerScripts()

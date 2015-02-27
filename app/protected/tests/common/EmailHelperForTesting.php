@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -41,25 +41,6 @@
     class EmailHelperForTesting extends EmailHelper
     {
         public $sendEmailThroughTransport = false;
-
-        /**
-         * Override to avoid actually sending emails out through transport.
-         * (non-PHPdoc)
-         * @see EmailHelper::sendEmail()
-         */
-        protected function sendEmail(Mailer $mailer, EmailMessage $emailMessage)
-        {
-            if (!$this->sendEmailThroughTransport)
-            {
-                $emailMessage->error        = null;
-                $emailMessage->folder       = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
-                $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
-            }
-            else
-            {
-                parent::sendEmail($mailer, $emailMessage);
-            }
-        }
 
         //For testing only
         public function getSentCount()
@@ -93,45 +74,25 @@
             assert('isset($to) || isset($cc) || isset($bcc)');
             assert('is_array($attachments) || !isset($attachments)');
             assert('is_array($parts) || !isset($parts)');
-            $mailer           = $this->getOutboundMailer();
-            if (!$settings)
+            $toName = null;
+            $toAddress = null;
+            if (is_string($to))
             {
-                $mailer->mailer   = $this->outboundType;
-                $mailer->host     = $this->outboundHost;
-                $mailer->port     = $this->outboundPort;
-                $mailer->username = $this->outboundUsername;
-                $mailer->password = $this->outboundPassword;
-                $mailer->security = $this->outboundSecurity;
+                $toAddress = $to;
             }
-            else
+            elseif (is_array($to))
             {
-                //$mailer->mailer   = $settings['outboundType'];
-                $mailer->host     = $settings['outboundHost'];
-                $mailer->port     = $settings['outboundPort'];
-                $mailer->username = $settings['outboundUsername'];
-                $mailer->password = $settings['outboundPassword'];
-                $mailer->security = $settings['outboundSecurity'];
-            }
-
-            $mailer->Subject  = $subject;
-            if (empty($parts))
-            {
-                if ($htmlContent == null && $textContent != null)
+                foreach ($to as $key => $value)
                 {
-                    $mailer->body     = $textContent;
-                    $mailer->altBody  = $textContent;
-                }
-                elseif ($htmlContent != null && $textContent == null)
-                {
-                    $mailer->body     = $htmlContent;
-                }
-                elseif ($htmlContent != null && $textContent != null)
-                {
-                    $mailer->body     = $htmlContent;
-                    $mailer->altBody  = $textContent;
+                    $toName     = $key;
+                    $toAddress  = $value;
                 }
             }
-            else
+            $emailMessage = EmailMessageTestHelper::createOutboxEmail(Yii::app()->user->userModel,
+                                                      $subject, $htmlContent, $textContent, null, $from, $toName, $toAddress,
+                                                      $cc, $bcc);
+            $mailer = new ZurmoSwiftMailer($emailMessage, null);
+            if (!empty($parts))
             {
                 $mailer->parts = $parts;
             }
@@ -193,6 +154,15 @@
                 // To-Do: make exception or something else
                 echo "There was error while sending email";
             }
+        }
+
+        /**
+         * Resolve mailer factory class.
+         * @return string
+         */
+        protected static function resolveMailerFactoryClass()
+        {
+            return 'ZurmoMailerFactoryForTesting';
         }
     }
 ?>

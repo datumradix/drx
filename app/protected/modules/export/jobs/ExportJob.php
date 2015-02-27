@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -376,7 +376,14 @@
             $message->htmlContent       = Zurmo::t('ExportModule', 'Export of {fileName} requested on {dateTime} is completed. <a href="{url}">Click here</a> to download file!',
                 array(
                     '{fileName}' => $exportItem->exportFileName,
-                    '{url}'      => Yii::app()->createUrl('export/default/download', array('id' => $exportItem->id)),
+                    '{url}'      => Yii::app()->createAbsoluteUrl('export/default/download', array('id' => $exportItem->id)),
+                    '{dateTime}' => DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay($exportItem->createdDateTime, 'long'),
+                )
+            );
+            $message->textContent       = Zurmo::t('ExportModule', 'Export of {fileName} requested on {dateTime} is completed. Use this {url} to download file!',
+                array(
+                    '{fileName}' => $exportItem->exportFileName,
+                    '{url}'      => ShortUrlUtil::createShortUrl(Yii::app()->createAbsoluteUrl('export/default/download', array('id' => $exportItem->id))),
                     '{dateTime}' => DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay($exportItem->createdDateTime, 'long'),
                 )
             );
@@ -402,6 +409,7 @@
                     '{dateTime}' => DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay($exportItem->createdDateTime, 'long'),
                 )
             );
+            $message->textContent       = $message->htmlContent;
             $rules                      = $this->getExportProcessCompletedNotificationRulesForExportItem($exportItem);
             NotificationsUtil::submit($message, $rules);
         }

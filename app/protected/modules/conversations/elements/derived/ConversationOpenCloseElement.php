@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,94 +31,45 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
      * Display the conversation status with buttons to change it.
      */
-    class ConversationOpenCloseElement extends Element implements DerivedElementInterface
+    class ConversationOpenCloseElement extends StateToggleElement
     {
-        protected function renderEditable()
-        {
-            throw new NotSupportedException();
-        }
-
-        protected function renderControlEditable()
-        {
-            throw new NotSupportedException();
-        }
-
-        protected function renderControlNonEditable()
+        protected function assertAttributeName()
         {
             assert('$this->attribute == "isClosed"');
+        }
+
+        protected function assertModelClass()
+        {
             assert('$this->model instanceof Conversation');
-            self::renderAjaxStatusChange($this->model->id);
-            return self::renderStatusChangeArea($this->model);
         }
 
-        public static function renderStatusChangeArea(Conversation $conversation)
+        protected static function resolveSelectedRadioButtonListOption(RedBeanModel $model)
         {
-            $content  = ZurmoHtml::tag('span', array(), Zurmo::t('ZurmoModule', 'Status'));
-            $content .= self::renderStatusButtonsContent($conversation);
-            return ZurmoHtml::tag('div', array('id' => self::getStatusChangeDivId($conversation->id),
-                                               'class' => 'conversationStatusChangeArea clearfix'),
-                                                $content);
+            return $model->resolveIsClosedForNull();
         }
 
-        public static function getStatusChangeDivId($conversationId)
+        protected static function resolveStatusChangeUrl(RedBeanModel $model)
         {
-            return  'ConversationStatusChangeArea-' . $conversationId;
+            $url    = Yii::app()->createUrl('conversations/default/changeIsClosed', array('id' => $model->id));
+            return $url;
         }
 
-        private static function getRadioButtonListName($conversationId)
+        protected static function resolveSuccessMessage()
         {
-            return 'statusChange-' . $conversationId;
+            return CJavaScript::quote(Zurmo::t('ConversationsModule', 'Conversation status was changed.'));
         }
 
-        public static function renderStatusButtonsContent(Conversation $conversation)
+        protected static function resolvePostNotificationSuccessScript()
         {
-            $content = ZurmoHTML::radioButtonList(
-                            self::getRadioButtonListName($conversation->id),
-                            $conversation->resolveIsClosedForNull(),
-                            self::getDropDownArray(),
-                            array('separator' => '',
-                                  'template'  => '<div class="switch-state clearfix">{input}{label}</div>'));
-            return ZurmoHtml::tag('div', array('class' => 'switch'), $content);
+            return "$('#CommentInlineEditForModelView').toggle();";
         }
 
-        protected static function renderAjaxStatusChange($conversationId)
-        {
-            $url    = Yii::app()->createUrl('conversations/default/changeIsClosed', array('id' => $conversationId));
-            $script = "
-                    $('input[name=" . self::getRadioButtonListName($conversationId) . "]').change(function()
-                    {
-                        $.ajax(
-                        {
-                            url: '{$url}',
-                            type: 'GET',
-                            success: " . self::resolveOnSuccessScript() . ",
-                        });
-                    });
-                ";
-            Yii::app()->clientScript->registerScript('ConversationStatusChange', $script);
-        }
-
-        protected function renderLabel()
-        {
-            return null;
-        }
-
-        public static function getDisplayName()
-        {
-            return Zurmo::t('ZurmoModule', 'Status');
-        }
-
-        /**
-         * Get the attributeNames of attributes used in
-         * the derived element.
-         * @return array of model attributeNames used.
-         */
         public static function getModelAttributeNames()
         {
             return array(
@@ -126,30 +77,10 @@
             );
         }
 
-        protected static function resolveOnSuccessScript()
-        {
-            // Begin Not Coding Standard
-            $script = "
-                function(data)
-                {
-                    $('#FlashMessageBar').jnotifyAddMessage(
-                        {
-                            text: '" . CJavaScript::quote(Zurmo::t('ConversationsModule', 'Conversation status was changed.')) . "',
-                            permanent: false,
-                            showIcon: true,
-                            type: 'ConversationsChangeStatusMessage'
-                        }
-                    );
-                    $('#CommentInlineEditForModelView').toggle();
-                }";
-            // End Not Coding Standard
-            return $script;
-        }
-
         public static function getDropDownArray()
         {
             return array('0' => Zurmo::t('Core', 'Open'),
-                         '1' => Zurmo::t('ConversationsModule', 'Closed'));
+                '1' => Zurmo::t('ConversationsModule', 'Closed'));
         }
     }
 ?>

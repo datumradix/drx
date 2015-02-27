@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -211,76 +211,53 @@
                 }
                 else
                 {
-                    $configurationForm->host            = $_POST['UserEmailConfigurationForm']['outboundHost'];
-                    $configurationForm->port            = $_POST['UserEmailConfigurationForm']['outboundPort'];
-                    $configurationForm->username        = $_POST['UserEmailConfigurationForm']['outboundUsername'];
-                    $configurationForm->password        = $_POST['UserEmailConfigurationForm']['outboundPassword'];
-                    $configurationForm->security        = $_POST['UserEmailConfigurationForm']['outboundSecurity'];
-                    $configurationForm->aTestToAddress  = $_POST['UserEmailConfigurationForm']['aTestToAddress'];
-                    $fromNameToSendMessagesFrom         = $_POST['UserEmailConfigurationForm']['fromName'];
-                    $fromAddressToSendMessagesFrom      = $_POST['UserEmailConfigurationForm']['fromAddress'];
+                    //Check for sendgrid
+                    if ($_POST['UserEmailConfigurationForm']['useCustomOutboundSettings'] == EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS)
+                    {
+                        $this->processSendTestMessageForSendGrid();
+                    }
+                    else
+                    {
+                        $configurationForm->host            = $_POST['UserEmailConfigurationForm']['outboundHost'];
+                        $configurationForm->port            = $_POST['UserEmailConfigurationForm']['outboundPort'];
+                        $configurationForm->username        = $_POST['UserEmailConfigurationForm']['outboundUsername'];
+                        $configurationForm->password        = $_POST['UserEmailConfigurationForm']['outboundPassword'];
+                        $configurationForm->security        = $_POST['UserEmailConfigurationForm']['outboundSecurity'];
+                        $configurationForm->aTestToAddress  = $_POST['UserEmailConfigurationForm']['aTestToAddress'];
+                        $fromNameToSendMessagesFrom         = $_POST['UserEmailConfigurationForm']['fromName'];
+                        $fromAddressToSendMessagesFrom      = $_POST['UserEmailConfigurationForm']['fromAddress'];
+                    }
                 }
                 if ($configurationForm->aTestToAddress != null)
                 {
-                    $emailHelper = new EmailHelper();
-                    $emailHelper->loadDefaultFromAndToAddresses();
-                    $emailHelper->outboundHost     = $configurationForm->host;
-                    $emailHelper->outboundPort     = $configurationForm->port;
-                    $emailHelper->outboundUsername = $configurationForm->username;
-                    $emailHelper->outboundPassword = $configurationForm->password;
-                    $emailHelper->outboundSecurity = $configurationForm->security;
+                    $emailAccount       = new EmailAccount();
+                    $emailAccount->outboundHost     = $configurationForm->host;
+                    $emailAccount->outboundPort     = $configurationForm->port;
+                    $emailAccount->outboundUsername = $configurationForm->username;
+                    $emailAccount->outboundPassword = ZurmoPasswordSecurityUtil::encrypt($configurationForm->password);
+                    $emailAccount->outboundSecurity = $configurationForm->security;
+                    $isUser = false;
                     if (isset($fromNameToSendMessagesFrom) && isset($fromAddressToSendMessagesFrom))
                     {
+                        $isUser = true;
                         $from = array(
                             'name'      => $fromNameToSendMessagesFrom,
                             'address'   => $fromAddressToSendMessagesFrom
                         );
-                        $emailMessage = EmailMessageHelper::sendTestEmail($emailHelper, $from,
-                                                                      $configurationForm->aTestToAddress);
                     }
                     else
                     {
                         $user                   = BaseControlUserConfigUtil::getUserToRunAs();
                         $userToSendMessagesFrom = User::getById((int)$user->id);
-                        $emailMessage = EmailMessageHelper::sendTestEmailFromUser($emailHelper, $userToSendMessagesFrom,
-                                                                      $configurationForm->aTestToAddress);
+                        $from = array(
+                            'name'      => strval($userToSendMessagesFrom),
+                            'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom)
+                        );
                     }
-                    $messageContent  = null;
-                    if (!($emailMessage->hasErrors() || $emailMessage->hasSendError()))
-                    {
-                        $messageContent .= Zurmo::t('EmailMessagesModule', 'Message successfully sent') . "\n";
-                    }
-                    else
-                    {
-                        $messageContent .= Zurmo::t('EmailMessagesModule', 'Message failed to send') . "\n";
-                        if ($emailMessage->hasSendError())
-                        {
-                            $messageContent .= $emailMessage->error     . "\n";
-                        }
-                        else
-                        {
-                            //todo: refactor to use ZurmoHtml::errorSummary after this supports that method
-                            //todo: supports nested messages better.
-                            $errors = $emailMessage->getErrors();
-                            foreach ($errors as $attributeNameWithErrors)
-                            {
-                                foreach ($attributeNameWithErrors as $attributeError)
-                                {
-                                    if (is_array($attributeError))
-                                    {
-                                        foreach ($attributeError as $nestedAttributeError)
-                                        {
-                                            $messageContent .= reset($nestedAttributeError) . "\n";
-                                        }
-                                    }
-                                    else
-                                    {
-                                        $messageContent .= reset($attributeError) . "\n";
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    $emailMessage = EmailMessageHelper::processAndCreateEmailMessage($from, $configurationForm->aTestToAddress);
+                    $mailer       = new ZurmoSwiftMailer($emailMessage, $emailAccount);
+                    $emailMessage = $mailer->sendTestEmail($isUser);
+                    $messageContent  = EmailHelper::prepareMessageContent($emailMessage);
                 }
                 else
                 {
@@ -695,6 +672,34 @@
         protected static function getZurmoControllerUtil()
         {
             return new EmailTemplateZurmoControllerUtil();
+        }
+
+        /**
+         * Assumes before calling this, the sendgrid settings have been validated in the form.
+         */
+        protected function processSendTestMessageForSendGrid()
+        {
+            $configurationForm  = SendGridWebApiConfigurationFormAdapter::makeFormFromGlobalConfiguration();
+            if (isset($_POST['UserSendGridConfigurationForm']))
+            {
+                $configurationForm->username        = $_POST['UserSendGridConfigurationForm']['apiUsername'];
+                $configurationForm->password        = $_POST['UserSendGridConfigurationForm']['apiPassword'];
+                $configurationForm->aTestToAddress  = $_POST['UserSendGridConfigurationForm']['aTestToAddress'];
+                $fromNameToSendMessagesFrom         = $_POST['UserEmailConfigurationForm']['fromName'];
+                $fromAddressToSendMessagesFrom      = $_POST['UserEmailConfigurationForm']['fromAddress'];
+                $messageContent = SendGridUtil::sendTestMessage($configurationForm,
+                                                                $fromNameToSendMessagesFrom,
+                                                                $fromAddressToSendMessagesFrom);
+                Yii::app()->getClientScript()->setToAjaxMode();
+                $messageView    = new TestConnectionView($messageContent);
+                $view           = new ModalView($this, $messageView);
+                echo $view->render();
+                Yii::app()->end();
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
         }
     }
 ?>

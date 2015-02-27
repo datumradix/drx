@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -78,12 +78,23 @@
             $content .= '<span class="ui-icon ui-icon-document" style="display:inline-block;"></span>';
             $content .= ZurmoHtml::link(
                     Yii::app()->format->text($fileModel->name),
-                    Yii::app()->createUrl('zurmo/fileModel/download/',
-                        array('modelId' => $model->id,
-                              'modelClassName' => get_class($model),
-                              'id' => $fileModel->id))
-            );
+                    static::resolveDownloadUrlByRelationModelIdAndRelationModelClassNameAndFileIdAndFileName($model->id,
+                                                                                                        get_class($model),
+                                                                                                        $fileModel->id));
             return $content;
+        }
+
+        /**
+         * @param $modelId
+         * @param $modelClass
+         * @param $fileId
+         * @return mixed
+         */
+        public static function resolveDownloadUrlByRelationModelIdAndRelationModelClassNameAndFileIdAndFileName($modelId, $modelClass, $fileId)
+        {
+            return Yii::app()->createUrl('zurmo/fileModel/download/', array('modelId' => $modelId,
+                                                                            'modelClassName' => $modelClass,
+                                                                            'id' => $fileId));
         }
 
         /**

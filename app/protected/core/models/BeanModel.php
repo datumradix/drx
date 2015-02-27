@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -206,7 +206,7 @@
          */
         public static function getAttributeModelClassName($attributeName)
         {
-            assert('self::isAnAttribute($attributeName, get_called_class())');
+            assert('self::isAnAttribute($attributeName)');
             $attributeNamesToClassNames = self::getAttributeNamesToClassNamesForModel();
             return $attributeNamesToClassNames[$attributeName];
         }
@@ -218,7 +218,7 @@
          */
         public static function isRelation($attributeName)
         {
-            assert('self::isAnAttribute($attributeName, get_called_class())');
+            assert('is_string($attributeName)');
             return array_key_exists($attributeName, static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel());
         }
 
@@ -229,7 +229,7 @@
          */
         public static function isOwnedRelation($attributeName)
         {
-            assert('self::isAnAttribute($attributeName, get_called_class())');
+            assert('is_string($attributeName)');
             $relationAndOwns = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
             return array_key_exists($attributeName, $relationAndOwns) &&
                 $relationAndOwns[$attributeName][2];
@@ -241,7 +241,7 @@
          */
         public static function getRelationType($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             $relationAndOwns = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
             return $relationAndOwns[$relationName][0];
         }
@@ -254,7 +254,7 @@
          */
         public static function getRelationModelClassName($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             $relationAndOwns = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
             return $relationAndOwns[$relationName][1];
         }
@@ -265,7 +265,7 @@
          */
         public static function getRelationLinkType($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             $relationAndOwns = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
             return $relationAndOwns[$relationName][3];
         }
@@ -277,7 +277,7 @@
          */
         public static function getRelationLinkName($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             $relationAndOwns = static::getRelationNameToRelationTypeModelClassNameAndOwnsForModel();
             return $relationAndOwns[$relationName][4];
         }
@@ -288,7 +288,7 @@
          */
         public static function isRelationTypeAHasManyVariant($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             if (static::getRelationType($relationName) == RedBeanModel::HAS_MANY  ||
                 static::getRelationType($relationName) == RedBeanModel::HAS_ONE_BELONGS_TO)
             {
@@ -303,7 +303,7 @@
          */
         public static function isRelationTypeAHasOneVariant($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             if (static::getRelationType($relationName) == RedBeanModel::HAS_MANY_BELONGS_TO ||
                 static::getRelationType($relationName) == RedBeanModel::HAS_ONE)
             {
@@ -580,10 +580,10 @@
         }
 
         /**
-         * This function only exists because there is a strange bug in GameBadge metadata where the metadata
+         * This function only exists because there is a strange bug in GameBadge and GameScore metadata where the metadata
          * is getting cached, but then it is missing everything except empty arrays. Since we don't know why
          * this happens, this hack is the only way to ensure the cache returned is treated as non existant.
-         * @see override in GameBagde.
+         * @see override in GameBagde and GameScore.
          * @param $cachedData
          */
         protected static function resolveCachedMetadataForIntegrity($cachedData)
@@ -726,7 +726,7 @@
          */
         public static function isRelationTypeAManyManyVariant($relationName)
         {
-            assert('self::isRelation($relationName, get_called_class())');
+            assert('self::isRelation($relationName)');
             if (static::getRelationType($relationName) == RedBeanModel::MANY_MANY)
             {
                 return true;

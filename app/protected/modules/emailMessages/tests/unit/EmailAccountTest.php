@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class EmailAccountTest extends ZurmoBaseTest
@@ -53,7 +53,7 @@
             $this->assertEquals($super, $emailAccount->user);
             $this->assertEquals($super->getFullName(), $emailAccount->fromName);
             $this->assertEquals($super->primaryEmail->emailAddress, $emailAccount->fromAddress);
-            $this->assertEquals(0, $emailAccount->useCustomOutboundSettings);
+            $this->assertEquals(EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS, $emailAccount->useCustomOutboundSettings);
             $this->assertEquals('smtp', $emailAccount->outboundType);
             $emailAccountId = $emailAccount->id;
             $emailAccount = EmailAccount::resolveAndGetByUserAndName($super);
@@ -69,7 +69,7 @@
             $this->assertEquals($super, $emailAccount->user);
             $this->assertEquals($super->getFullName(), $emailAccount->fromName);
             $this->assertEquals('super@zurmo.org', $emailAccount->fromAddress);
-            $this->assertEquals(0, $emailAccount->useCustomOutboundSettings);
+            $this->assertEquals(EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS, $emailAccount->useCustomOutboundSettings);
             $this->assertEquals('smtp', $emailAccount->outboundType);
         }
 
@@ -85,7 +85,7 @@
             $this->assertEquals($super, $emailAccount->user);
             $this->assertEquals($super->getFullName(), $emailAccount->fromName);
             $this->assertEquals('super@zurmo.org', $emailAccount->fromAddress);
-            $this->assertEquals(0, $emailAccount->useCustomOutboundSettings);
+            $this->assertEquals(EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS, $emailAccount->useCustomOutboundSettings);
             $this->assertEquals('smtp', $emailAccount->outboundType);
         }
 

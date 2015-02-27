@@ -1,5 +1,5 @@
 // Zurmo is a customer relationship management program developed by
-// Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+// Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
 //
 // Zurmo is free software; you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License version 3 as published by the
@@ -29,24 +29,23 @@
 // these Appropriate Legal Notices must retain the display of the Zurmo
 // logo and Zurmo copyright notice. If the display of the logo is not reasonably
 // feasible for technical reasons, the Appropriate Legal Notices must display the words
-// "Copyright Zurmo Inc. 2014. All rights reserved".
+// "Copyright Zurmo Inc. 2015. All rights reserved".
 
 .tooltip{
-    width:10px;
-    height:10px !important;
-    line-height:10px !important;
+    line-height: 11px !important;
+    width: 12px !important;
+    height: 12px !important;
     display:inline-block;
-    //position:absolute;
     background:#fff;
-    .radius(10px);
+    .radius(50%);
     border:1px solid #ccc;
     color:#333;
-    font-weight:500;
-    font-size: 8px;
+    font-weight:400 !important;
+    font-size: 8px !important;
     text-align:center;
     cursor:pointer;
-    vertical-align:super;
     margin: 0 4px;
+    //vertical-align:super;
 }
 .qtip{
 	color: @themeColor;
@@ -75,17 +74,18 @@
     left: -28000px;
     top: -28000px;
     display: none;
-
-    //max-width: 280px;
     min-width: 50px;
-
-    font-size: 10.5px;
+    font-size: 11px;
     line-height: 12px;
-
     border-width: 1px;
     border-style: solid;
-
 	white-space: nowrap;
+}
+
+.qtip-has-max-width{
+    max-width: 360px;
+    white-space: normal;
+    line-height: 14px;
 }
 
     /* Fluid class for determining actual width in IE */

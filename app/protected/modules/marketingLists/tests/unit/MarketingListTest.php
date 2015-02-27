@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
     class MarketingListTest extends ZurmoBaseTest
     {
@@ -118,11 +118,35 @@
          */
         public function testDeleteMarketingList()
         {
-            $marketingLists = MarketingList::getAll();
-            $this->assertEquals(2, count($marketingLists));
+            $marketingLists         = MarketingList::getAll();
+            $this->assertCount(2, $marketingLists);
+            $marketingListId        = $marketingLists[0]->id;
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingLists[0]);
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingLists[0]);
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingLists[1]);
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingLists[1]);
+            AutoresponderTestHelper::createAutoresponder('subject 01', 'text content', 'html content', 1,
+                                                            Autoresponder::OPERATION_SUBSCRIBE, true, $marketingLists[0]);
+            AutoresponderTestHelper::createAutoresponder('subject 02', 'text content', 'html content', 1,
+                                                            Autoresponder::OPERATION_SUBSCRIBE, true, $marketingLists[1]);
+            $autoresponders = Autoresponder::getByOperationTypeAndMarketingListId(Autoresponder::OPERATION_SUBSCRIBE,
+                                                                                    $marketingListId);
+            $this->assertCount(1, $autoresponders);
+            $this->assertEquals(2, Autoresponder::getCount());
+            $marketingListMembersCount  = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingListId, 0);
+            $this->assertEquals(2, $marketingListMembersCount);
+            $marketingLists[0]->forgetAll();
+            $marketingLists         = MarketingList::getAll();
             $marketingLists[0]->delete();
             $marketingLists = MarketingList::getAll();
-            $this->assertEquals(1, count($marketingLists));
+            $this->assertCount(1, $marketingLists);
+            $autoresponders = Autoresponder::getByOperationTypeAndMarketingListId(Autoresponder::OPERATION_SUBSCRIBE,
+                                                                                    $marketingListId);
+            $this->assertCount(0, $autoresponders);
+            $this->assertEquals(1, Autoresponder::getCount());
+            $marketingListMembersCount  = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingListId, 0);
+            $this->assertEquals(0, $marketingListMembersCount);
+            $this->assertEquals(2, MarketingListMember::getCount());
         }
     }
 ?>

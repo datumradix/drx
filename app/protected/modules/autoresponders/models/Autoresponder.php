@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class Autoresponder extends Item
@@ -212,13 +212,11 @@
 
         protected function afterDelete()
         {
-            parent::afterDelete();
-            $autoresponderitems = AutoresponderItem::getByProcessedAndAutoresponderId(0, $this->id);
-            foreach ($autoresponderitems as $autoresponderitem)
+            foreach ($this->autoresponderItems as $item)
             {
-                ZurmoRedBean::exec("DELETE FROM autoresponderitemactivity WHERE autoresponderitem_id = " . $autoresponderitem->id);
+                $item->delete();
             }
-            ZurmoRedBean::exec("DELETE FROM autoresponderitem WHERE processed = 0 and autoresponder_id = " . $this->id);
+            return parent::afterDelete();
         }
     }
 ?>

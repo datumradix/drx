@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class ExecutionTimeListener implements PHPUnit_Framework_TestListener
@@ -47,14 +47,14 @@
 
         public function startTest(PHPUnit_Framework_Test $test)
         {
-            echo PHP_EOL . "Starting: " . $test->getName();
+            echo PHP_EOL . "Starting: " . $this->getTestName($test);
         }
 
         public function endTest(PHPUnit_Framework_Test $test, $length)
         {
             if ($length > $this->__timeLimit)
             {
-                echo PHP_EOL . "Name: " . $test->getName() . " took " . round($length, $this->__precision) . " second(s)" . PHP_EOL;
+                echo PHP_EOL . $this->getTestName($test) . " took " . round($length, $this->__precision) . " second(s)" . PHP_EOL;
             }
         }
 
@@ -80,6 +80,15 @@
 
         public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
         {
+        }
+
+        public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+        {
+        }
+
+        protected function getTestName(PHPUnit_Framework_Test $test, $separator = ':')
+        {
+            return get_class($test) . $separator . $test->getName();
         }
     }
 ?>

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -43,14 +43,32 @@
 
         protected $allowDuplicates = true;
 
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('ExportModule', 'Export process is completed.');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'ExportProcessCompleted';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('ExportModule');
+        }
+
+        public function getTooltipId()
+        {
+            return 'export-ready-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when my Exported data is ready.');
         }
     }
 ?>

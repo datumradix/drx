@@ -94,12 +94,12 @@
             if ($this->relatedModel instanceof Conversation)
             {
                 $participants = ConversationsUtil::resolvePeopleToSendNotificationToOnNewComment($this->relatedModel, $user);
-                CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $user, $participants);
+                CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
             }
             elseif ($this->relatedModel instanceof Mission)
             {
                 $participants = MissionsUtil::resolvePeopleToSendNotificationToOnNewComment($this->relatedModel, $user);
-                CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $user, $participants);
+                CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
             }
             elseif ($this->relatedModel instanceof Task)
             {

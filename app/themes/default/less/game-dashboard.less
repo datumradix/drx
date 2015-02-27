@@ -1,5 +1,5 @@
 // Zurmo is a customer relationship management program developed by
-// Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+// Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
 //
 // Zurmo is free software; you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License version 3 as published by the
@@ -29,7 +29,7 @@
 // these Appropriate Legal Notices must retain the display of the Zurmo
 // logo and Zurmo copyright notice. If the display of the logo is not reasonably
 // feasible for technical reasons, the Appropriate Legal Notices must display the words
-// "Copyright Zurmo Inc. 2014. All rights reserved".
+// "Copyright Zurmo Inc. 2015. All rights reserved".
 
 .gd-dashboard-active{}
 
@@ -75,7 +75,7 @@
 	overflow:hidden;
 	.radius(5px);
 	color:#f1f1f1;
-	background: url("@{path}game-dashboard/blue-chalkboard-blurred.jpg") left top repeat;
+    background: url("@{path}game-dashboard/blue-chalkboard-blurred.jpg") left top repeat;
 	> div{
 		padding:10px 15px 15px 15px;
 		display: block;
@@ -470,10 +470,9 @@
 	display: block;
 	.t-shadow(0 -1px 0 #fff);
 	position: relative;
-	z-index: 10;
 	overflow: hidden;
 	background:url("@{path}game-dashboard/blue-chalkboard-blurred.jpg") left top repeat;
-	z-index: 100;
+    z-index: 100;
 	.symbly(42px);
 }
 
@@ -504,11 +503,6 @@
 		background-size: 100% auto;
 	}
 	> div{
-		-webkit-transform:translate(0);
-		-moz-transform:translate(0);
-		-o-transform:translate(0);
-		-ms-transform:translate(0);
-		transform:translate(0);
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -517,7 +511,7 @@
 		padding:15px 15px;
 		.b-shadow(~"inset 0 30px 30px 0 rgba(0, 0, 0, 0.1)");
 		background:url("@{path}game-dashboard/blue-chalkboard-blurred.jpg") center top repeat;
-		&.open-panel,
+        &.open-panel,
 		&:hover{
 			.div-hover();
 		}
@@ -543,7 +537,6 @@
 		top: -3px;
 		font-size: 14px;
 		font-weight: bold;
-		position: relative;
 		text-align: center;
 		line-height: 34px;
 	}
@@ -598,10 +591,12 @@
 }
 
 .gd-collection-item-redeemed{
-	margin-top: -10px;
-	display: inline-block;
+	margin-top: -8px;
+	display: block;
 	float: right;
 	text-align: center;
+    position: absolute;
+    right: 0;
 	img{
 		max-width: 70px;
 		height: auto;

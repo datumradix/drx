@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     $common_config = array(
@@ -113,6 +113,7 @@
                 'class'       => 'application.modules.zurmo.components.ZurmoAuthenticationHelper',
             ),
             'errorHandler' => array(
+                'class'       => 'application.core.components.ZurmoErrorHandler',
                 'errorAction' => 'zurmo/default/error',
             ),
             'format' => array(
@@ -263,6 +264,7 @@
                 'enableCookieValidation' => false, //keep off until we can fix it on linux/windows servers.
                 'excludeCsrfValidationRoutes' => array(
                     array('route' => 'contacts/external/', 'tokenEnabled' => true),
+                    array('route' => 'sendGrid/external/writeLog', 'tokenEnabled' => false),
                 ),
             ),
             'sanitizer' => array(
@@ -372,17 +374,19 @@
                     'builder-iframe-tools.less'
                 ),
             ),
+            'sendGridEmailHelper' => array('class' => 'application.modules.sendGrid.components.SendGridEmailHelper'),
         ),
         'controllerMap' => array(
             'min' => 'application.extensions.minscript.controllers.ExtMinScriptController',
         ),
         'import' => array(
-            'application.modules.zurmo.components.BeginRequestBehavior',
+            'application.core.exceptions.NotFoundException',
+            'application.core.exceptions.NotSupportedException',
+            'application.core.models.RedBeanDatabase',
             'application.core.utils.ArrayUtil',
             'application.core.utils.FileUtil',
             'application.core.utils.ZurmoCache',
             'application.core.utils.GeneralCache',
-            'application.core.exceptions.NotFoundException',
             'application.core.components.ZurmoLocale',
             'application.core.utils.Zurmo',
             'application.modules.api.tests.unit.models.*',
@@ -395,6 +399,7 @@
             'application.extensions.wideImage.WideImage',
             'application.extensions.phaActiveColumn.*',
             'application.extensions.userinterface.UserInterface',
+            'application.modules.zurmo.components.BeginRequestBehavior',
         ),
         'modules' => array(
             'accountAccountAffiliations',
@@ -445,7 +450,8 @@
             'maps',
             'contactWebForms',
             'projects',
-            'calendars'
+            'calendars',
+            'sendGrid'
         ),
 
         'params' => array(

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class ProductsListView extends SecuredListView
@@ -77,6 +77,28 @@
 
             );
             return $metadata;
+        }
+
+        /**
+         * Process input column information to fetch column data
+         */
+        protected function processColumnInfoToFetchColumnData($columnInformation)
+        {
+            $columnClassName = Yii::app()->custom->resolveColumnAdapterClassNameForView(get_class($this), $columnInformation);
+            if (@class_exists($columnClassName))
+            {
+                $columnAdapter      = new $columnClassName($columnInformation['attributeName'], $this, array_slice($columnInformation, 1));
+                $column = $columnAdapter->renderGridViewData();
+                if (!isset($column['class']))
+                {
+                    $column['class'] = 'DataColumn';
+                }
+            }
+            else
+            {
+                $column =  parent::processColumnInfoToFetchColumnData($columnInformation);
+            }
+            return $column;
         }
     }
 ?>

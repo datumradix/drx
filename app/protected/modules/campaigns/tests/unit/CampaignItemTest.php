@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
     class CampaignItemTest extends AutoresponderOrCampaignBaseTest
     {
@@ -402,10 +402,37 @@
             $campaignItems   = CampaignItem::getAll();
             $this->assertNotEmpty($campaignItems);
             $this->assertCount(10, $campaignItems);
+
+            $campaignItemActivity                           = new CampaignItemActivity();
+            $campaignItemActivity->type                     = CampaignItemActivity::TYPE_CLICK;
+            $campaignItemActivity->quantity                 = 1;
+            $campaignItemActivity->campaignItem             = $campaignItems[0];
+            $campaignItemActivity->latestSourceIP           = '121.212.122.112';
+            $this->assertTrue($campaignItemActivity->save());
+
+            $campaignItems[0]->emailMessage = $this->resolveEmailMessage();
+            $this->assertTrue($campaignItems[0]->unrestrictedSave());
+
+            $this->assertEquals(1, EmailMessage::getCount());
+            $this->assertEquals(1, EmailMessageContent::getCount());
+            $this->assertEquals(1, EmailMessageSender::getCount());
+            $this->assertEquals(1, EmailMessageRecipient::getCount());
+
+            $campaignItemActivities = CampaignItemActivity::getAll();
+            $this->assertCount(1, $campaignItemActivities);
+
             $campaignItems[0]->delete();
             $campaignItems   = CampaignItem::getAll();
             $this->assertNotEmpty($campaignItems);
             $this->assertCount(9, $campaignItems);
+
+            $campaignItemActivities = CampaignItemActivity::getAll();
+            $this->assertCount(0, $campaignItemActivities);
+
+            $this->assertEquals(0, EmailMessage::getCount());
+            $this->assertEquals(0, EmailMessageContent::getCount());
+            $this->assertEquals(0, EmailMessageSender::getCount());
+            $this->assertEquals(0, EmailMessageRecipient::getCount());
         }
 
         /**

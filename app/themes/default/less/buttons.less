@@ -1,5 +1,5 @@
 // Zurmo is a customer relationship management program developed by
-// Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+// Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
 //
 // Zurmo is free software; you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License version 3 as published by the
@@ -29,7 +29,7 @@
 // these Appropriate Legal Notices must retain the display of the Zurmo
 // logo and Zurmo copyright notice. If the display of the logo is not reasonably
 // feasible for technical reasons, the Appropriate Legal Notices must display the words
-// "Copyright Zurmo Inc. 2014. All rights reserved".
+// "Copyright Zurmo Inc. 2015. All rights reserved".
 
 .z-label{
 	display: inline-block;
@@ -38,7 +38,7 @@
 	padding:0 25px;
 	line-height:24px;
 	white-space: nowrap;
-	.radius(2px);
+	.radius(1px);
 	.t-shadow( 0px -1px 0 rgba(0, 0, 0, 0.2) ) !important;
 	#gradient > .vertical( @themeColorBtnDefault, @themeColorBtn2Default );
 }
@@ -121,6 +121,27 @@ a:active{
 			.t-shadow( 0px -1px 0 rgba(255, 255, 255, 0.75) ) !important;
 		}
 	}
+}
+
+.wizard-secondary-action-button{
+    .button-layout();
+    border-top:   1px solid rgba(200, 200, 200, 0.4);
+    border-left:  1px solid rgba(185, 185, 185, 0.4);
+    border-right: 1px solid rgba(185, 185, 185, 0.4);
+    border-bottom:1px solid rgba(170, 170, 170, 0.4);
+    .z-label{
+        color:#666;
+        .t-shadow( 0px -1px 0 rgba(255, 255, 255, 0.75) ) !important;
+        #gradient > .vertical( #fefefe, #f5f5f5 );
+    }
+    &:hover{
+        .z-label{
+            color: @themeColor2 !important;
+            background-image: none;
+            #gradient > .vertical( #f5f5f5, #fefefe ) !important;
+            .t-shadow( 0px -1px 0 rgba(255, 255, 255, 0.75) ) !important;
+        }
+    }
 }
 
 button[type="button"]{

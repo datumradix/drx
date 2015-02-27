@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -45,9 +45,9 @@
         }
 
         /**
-        * Import all files that need to be included(for lazy loading)
-        * @param $event
-        */
+         * Import all files that need to be included(for lazy loading)
+         * @param $event
+         */
         public function handleImports($event)
         {
             try

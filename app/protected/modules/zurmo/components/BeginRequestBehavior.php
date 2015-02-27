@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -44,7 +44,8 @@
             'contacts/external/',
             'zurmo/imageModel/getImage/',
             'zurmo/imageModel/getThumb/',
-            'min/serve');
+            'min/serve',
+            'sendGrid/external/writeLog');
 
         public function attach($owner)
         {
@@ -99,10 +100,10 @@
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleClearCache'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadLanguage'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadTimeZone'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadReadPermissionSubscriptionObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadContactLatestActivityDateTimeObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadAccountLatestActivityDateTimeObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadReadPermissionSubscriptionObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleCheckAndUpdateCurrencyRates'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleResolveCustomData'));
         }
@@ -138,10 +139,10 @@
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadActivitiesObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadConversationsObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadEmailMessagesObserver'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
-            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadReadPermissionSubscriptionObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadContactLatestActivityDateTimeObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadAccountLatestActivityDateTimeObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadWorkflowsObserver'));
+            $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadReadPermissionSubscriptionObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadAccountContactAffiliationObserver'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleLoadGamification'));
             $owner->attachEventHandler('onBeginRequest', array($this, 'handleCheckAndUpdateCurrencyRates'));
@@ -167,10 +168,10 @@
         }
 
         /**
-        * Load memcache extension if memcache extension is
-        * loaded and if memcache server is avalable
-        * @param $event
-        */
+         * Load memcache extension if memcache extension is
+         * loaded and if memcache server is avalable
+         * @param $event
+         */
         public function handleApplicationCache($event)
         {
             if (MEMCACHE_ON)
@@ -195,9 +196,9 @@
         }
 
         /**
-        * Import all files that need to be included(for lazy loading)
-        * @param $event
-        */
+         * Import all files that need to be included(for lazy loading)
+         * @param $event
+         */
         public function handleImports($event)
         {
             //Clears file cache so that everything is clean.
@@ -226,13 +227,14 @@
                 }
                 GeneralCache::cacheEntry('filesClassMap', Yii::$classMap);
             }
+            Yii::app()->setAllClassesAreImported();
         }
 
         /**
-        * This check is required during installation since if runtime, assets and data folders are missing
-        * yii web application can not be started correctly.
-        * @param $event
-        */
+         * This check is required during installation since if runtime, assets and data folders are missing
+         * yii web application can not be started correctly.
+         * @param $event
+         */
         public function handleInstanceFolderCheck($event)
         {
             $instanceFoldersServiceHelper = new InstanceFoldersServiceHelper();
@@ -410,15 +412,15 @@
             if ( $redBeanVersion != Yii::app()->params['redBeanVersion'])
             {
                 echo Zurmo::t('ZurmoModule', 'Your RedBean version is currentVersion and it should be acceptableVersion.',
-                                array(  'currentVersion' => $redBeanVersion,
-                                        'acceptableVersion' => Yii::app()->params['redBeanVersion']));
+                    array(  'currentVersion' => $redBeanVersion,
+                        'acceptableVersion' => Yii::app()->params['redBeanVersion']));
                 Yii::app()->end(0, false);
             }
             if ( $yiiVersion != Yii::app()->params['yiiVersion'])
             {
                 echo Zurmo::t('ZurmoModule', 'Your Yii version is currentVersion and it should be acceptableVersion.',
-                                array(  'currentVersion' => $yiiVersion,
-                                        'acceptableVersion' => Yii::app()->params['yiiVersion']));
+                    array(  'currentVersion' => $yiiVersion,
+                        'acceptableVersion' => Yii::app()->params['yiiVersion']));
                 Yii::app()->end(0, false);
             }
         }
@@ -429,10 +431,9 @@
          */
         public function handleClearCache($event)
         {
-            if (isset($_GET['clearCache']) && $_GET['clearCache'] == 1)
+            if (intval(ArrayUtil::getArrayValue($_GET, 'clearCache')) == 1)
             {
-                ForgetAllCacheUtil::forgetAllCaches();
-                $this->clearCacheDirectories();
+                ClearCacheDirectoriesUtil::clearCacheDirectories();
             }
         }
 
@@ -444,8 +445,8 @@
         public function handleSetupDatabaseConnection($event)
         {
             RedBeanDatabase::setup(Yii::app()->db->connectionString,
-                                   Yii::app()->db->username,
-                                   Yii::app()->db->password);
+                Yii::app()->db->username,
+                Yii::app()->db->password);
             if (!Yii::app()->isApplicationInstalled())
             {
                 throw new NotSupportedException();
@@ -552,14 +553,14 @@
                 $logoFileModelId        = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'logoFileModelId');
                 $logoFileModel          = FileModel::getById($logoFileModelId);
                 $logoFileSrc            = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.runtime.uploads') .
-                                                                                         DIRECTORY_SEPARATOR . $logoFileModel->name);
+                    DIRECTORY_SEPARATOR . $logoFileModel->name);
                 //logoFile is either not published or we have dangling url for asset
                 if ($logoFileSrc === false || file_exists($logoFileSrc) === false)
                 {
                     //Logo file is not published in assets
                     //Check if it exists in runtime/uploads
                     if (file_exists(Yii::getPathOfAlias('application.runtime.uploads') .
-                                                        DIRECTORY_SEPARATOR . $logoFileModel->name) === false)
+                            DIRECTORY_SEPARATOR . $logoFileModel->name) === false)
                     {
                         $logoFilePath    = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $logoFileModel->name;
                         file_put_contents($logoFilePath, $logoFileModel->fileContent->content, LOCK_EX);
@@ -569,7 +570,7 @@
                     {
                         //Logo File exist in runtime/uploads but not published
                         Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.runtime.uploads') .
-                                                               DIRECTORY_SEPARATOR . $logoFileModel->name);
+                            DIRECTORY_SEPARATOR . $logoFileModel->name);
                     }
                 }
             }
@@ -583,38 +584,5 @@
         {
             return self::$allowedGuestUserRoutes;
         }
-
-        protected function clearCacheDirectories()
-        {
-            $cacheDirectories   = $this->resolveCacheDirectoryPaths();
-            foreach ($cacheDirectories as $cacheDirectory)
-            {
-                $this->clearCacheDirectory($cacheDirectory);
-            }
-        }
-
-        protected function clearCacheDirectory(array $cacheDirectory)
-        {
-            $excludedFiles          = array('index.html');
-            $path                   = null;
-            $removeDirectoryItself  = false;
-            extract($cacheDirectory);
-            if (is_dir($path))
-            {
-                FileUtil::deleteDirectoryRecursive($path, $removeDirectoryItself, $excludedFiles);
-            }
-        }
-
-        protected function resolveCacheDirectoryPaths()
-        {
-            $cacheDirectories       = array(
-                array(  'path'                  => Yii::app()->assetManager->getBasePath(),
-                        'removeDirectoryItself' => false),
-                array(  'path'                 => Yii::getPathOfAlias('application.runtime.themes'),
-                        'removeDirectoryItself' => false),
-                array(  'path'                 => Yii::getPathOfAlias('application.runtime.minscript.cache'),
-                        'removeDirectoryItself' => false));
-            return $cacheDirectories;
-        }
-     }
+    }
 ?>

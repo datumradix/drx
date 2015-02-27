@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -39,16 +39,50 @@
      */
     class ClearAssetsFolderNotificationRules extends JobsManagerAccessNotificationRules
     {
-        protected $critical    = false;
+        protected $allowSendingEmail = false;
 
-        public static function getDisplayName()
+        protected $canBeConfiguredByUser = false;
+
+        public function getDisplayName()
         {
             return Zurmo::t('JobsManagerModule', 'Clear the assets folder on server(optional).');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'ClearAssetsFolder';
+        }
+
+        public function getTooltipId()
+        {
+            return 'clear-assets-folder-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when assets folder need to be cleaned.');
+        }
+
+        /**
+         * Any user who is a super administrator added to receive a
+         * notification.
+         */
+        protected function loadUsers()
+        {
+            $superAdministratorGroup = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
+            $users                   = User::getByCriteria(true, $superAdministratorGroup->id);
+            foreach ($users as $user)
+            {
+                $this->addUser($user);
+            }
+        }
+
+        /**
+         * @return inheritdoc
+         */
+        public function isSuperAdministratorNotification()
+        {
+            return true;
         }
     }
 ?>

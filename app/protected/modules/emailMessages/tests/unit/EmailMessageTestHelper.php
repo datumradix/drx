@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class EmailMessageTestHelper
@@ -76,7 +76,7 @@
         public static function createOutboxEmail(User $owner, $subject,
                                                        $htmlContent, $textContent,
                                                        $fromName, $fromAddress,
-                                                       $toName, $toAddress)
+                                                       $toName, $toAddress, $ccAddress = null, $bccAddress = null)
         {
             $emailMessage              = new EmailMessage();
             $emailMessage->owner       = $owner;
@@ -95,12 +95,58 @@
             $emailMessage->sender      = $sender;
 
             //Recipient is billy.
-            $recipient                 = new EmailMessageRecipient();
-            $recipient->toAddress      = $toAddress;
-            $recipient->toName         = $toName;
-            $recipient->type           = EmailMessageRecipient::TYPE_TO;
-            $emailMessage->recipients->add($recipient);
-
+            if ($toAddress != null)
+            {
+                $recipient                 = new EmailMessageRecipient();
+                $recipient->toAddress      = $toAddress;
+                $recipient->toName         = $toName;
+                $recipient->type           = EmailMessageRecipient::TYPE_TO;
+                $emailMessage->recipients->add($recipient);
+            }
+            if ($ccAddress != null)
+            {
+                if (is_string($ccAddress))
+                {
+                    $recipient                 = new EmailMessageRecipient();
+                    $recipient->toAddress      = $ccAddress;
+                    $recipient->toName         = null;
+                    $recipient->type           = EmailMessageRecipient::TYPE_CC;
+                    $emailMessage->recipients->add($recipient);
+                }
+                if (is_array($ccAddress))
+                {
+                    foreach ($ccAddress as $val)
+                    {
+                        $recipient                 = new EmailMessageRecipient();
+                        $recipient->toAddress      = $val;
+                        $recipient->toName         = null;
+                        $recipient->type           = EmailMessageRecipient::TYPE_CC;
+                        $emailMessage->recipients->add($recipient);
+                    }
+                }
+            }
+            if ($bccAddress != null)
+            {
+                if (is_string($bccAddress))
+                {
+                    $recipient                 = new EmailMessageRecipient();
+                    $recipient->toAddress      = $bccAddress;
+                    $recipient->toName         = null;
+                    $recipient->type           = EmailMessageRecipient::TYPE_BCC;
+                    $emailMessage->recipients->add($recipient);
+                }
+                if (is_array($bccAddress))
+                {
+                    foreach ($bccAddress as $val)
+                    {
+                        $recipient                 = new EmailMessageRecipient();
+                        $recipient->toAddress      = $val;
+                        $recipient->toName         = null;
+                        $recipient->type           = EmailMessageRecipient::TYPE_BCC;
+                        $emailMessage->recipients->add($recipient);
+                    }
+                }
+            }
             $box                  = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX);
 
@@ -219,7 +265,7 @@
             $emailAccount->name              = EmailAccount::DEFAULT_NAME;
             $emailAccount->fromName          = $user->getFullName();
             $emailAccount->fromAddress       = 'user@zurmo.com';
-            $emailAccount->useCustomOutboundSettings = false;
+            $emailAccount->useCustomOutboundSettings = EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS;
             $emailAccount->outboundType      = 'smtp';
             $emailAccount->save();
         }
@@ -249,6 +295,27 @@
                 $imap->connect();
                 $imap->deleteMessages(true);
             }
+        }
+
+        public static function createEmailAccountForMailerFactory(User $user, $useCustomSetting = null)
+        {
+            if ($useCustomSetting == null)
+            {
+                $useCustomSetting = EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS;
+            }
+            $emailAccount                    = new EmailAccount();
+            $emailAccount->user              = $user;
+            $emailAccount->name              = EmailAccount::DEFAULT_NAME;
+            $emailAccount->fromName          = $user->getFullName();
+            $emailAccount->fromAddress       = 'user@zurmo.com';
+            $emailAccount->useCustomOutboundSettings = $useCustomSetting;
+            $emailAccount->outboundType      = 'smtp';
+            $emailAccount->outboundHost     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundHost'];
+            $emailAccount->outboundPort     = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPort'];
+            $emailAccount->outboundUsername = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundUsername'];
+            $emailAccount->outboundPassword = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundPassword'];
+            $emailAccount->outboundSecurity = Yii::app()->params['emailTestAccounts']['userSmtpSettings']['outboundSecurity'];
+            $emailAccount->save();
         }
     }
 ?>

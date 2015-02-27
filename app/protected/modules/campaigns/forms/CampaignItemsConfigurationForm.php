@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -49,6 +49,10 @@
         const  CLICKED_STAGE            = 'Clicked';
 
         const  BOUNCED_STAGE            = 'Bounced';
+
+        const UNSUBSCRIBED_STAGE        = 'Unsubscribed';
+
+        const SKIPPED_STAGE             = 'Skipped';
 
         /**
          * All option when filtering by stage which includes all the campaign email recipients
@@ -70,10 +74,36 @@
         public static function getFilterStages()
         {
             return array(
-                self::OPENED_STAGE  => Zurmo::t('CampaignsModule', self::OPENED_STAGE),
-                self::CLICKED_STAGE => Zurmo::t('CampaignsModule', self::CLICKED_STAGE),
-                self::BOUNCED_STAGE => Zurmo::t('CampaignsModule', self::BOUNCED_STAGE),
+                self::OPENED_STAGE          => Zurmo::t('CampaignsModule', self::OPENED_STAGE),
+                self::CLICKED_STAGE         => Zurmo::t('CampaignsModule', self::CLICKED_STAGE),
+                self::BOUNCED_STAGE         => Zurmo::t('CampaignsModule', self::BOUNCED_STAGE),
+                self::SKIPPED_STAGE         => Zurmo::t('CampaignsModule', self::SKIPPED_STAGE),
+                self::UNSUBSCRIBED_STAGE    => Zurmo::t('CampaignsModule', self::UNSUBSCRIBED_STAGE),
             );
+        }
+
+        public static function resolveCampaignItemActivityType($stage)
+        {
+            $type   = null;
+            switch($stage)
+            {
+                case CampaignItemsConfigurationForm::OPENED_STAGE:
+                    $type   = CampaignItemActivity::TYPE_OPEN;
+                    break;
+                case CampaignItemsConfigurationForm::CLICKED_STAGE:
+                    $type   = CampaignItemActivity::TYPE_CLICK;
+                    break;
+                case CampaignItemsConfigurationForm::BOUNCED_STAGE:
+                    $type   = CampaignItemActivity::TYPE_BOUNCE;
+                    break;
+                case CampaignItemsConfigurationForm::SKIPPED_STAGE:
+                    $type   = CampaignItemActivity::TYPE_SKIP;
+                    break;
+                case CampaignItemsConfigurationForm::UNSUBSCRIBED_STAGE:
+                    $type   = CampaignItemActivity::TYPE_UNSUBSCRIBE;
+                    break;
+            }
+            return $type;
         }
     }
 ?>

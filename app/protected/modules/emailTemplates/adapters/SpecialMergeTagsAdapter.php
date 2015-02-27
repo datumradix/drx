@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /*
@@ -65,14 +65,16 @@
             return (empty($timeQualifier) && array_key_exists($attributeName, static::$specialAttributesResolver));
         }
 
-        public static function resolve($attributeName, $model = null, $params = array())
+        public static function resolve($attributeName, $model = null,
+                                       $errorOnFirstMissing = MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG,
+                                       $params = array())
         {
             $methodName                         = static::$specialAttributesResolver[$attributeName];
             // we send $model to all, those which need it use it, other get it as optional param.
             $resolvedSpecialMergeTagContent     = static::$methodName($model, $params);
             if (in_array($attributeName, static::$containsNestedMergeTags))
             {
-                static::resolveContentForNestedMergeTags($resolvedSpecialMergeTagContent, $model, $params);
+                static::resolveContentForNestedMergeTags($resolvedSpecialMergeTagContent, $model, $errorOnFirstMissing, $params);
             }
             return $resolvedSpecialMergeTagContent;
         }
@@ -202,13 +204,14 @@
             }
         }
 
-        protected static function resolveContentForNestedMergeTags(& $resolvedSpecialMergeTagContent, $model = null, $params = array())
+        protected static function resolveContentForNestedMergeTags(& $resolvedSpecialMergeTagContent, $model = null,
+                                                                   $errorOnFirstMissing = MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG,
+                                                                   $params = array())
         {
             $language               = null;
             $type                   = EmailTemplate::TYPE_WORKFLOW;
             $invalidTags            = array();
             $language               = null;
-            $errorOnFirstMissing    = false;
             if ($model instanceof Contact)
             {
                 $type   = EmailTemplate::TYPE_CONTACT;

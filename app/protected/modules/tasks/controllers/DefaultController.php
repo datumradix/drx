@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class TasksDefaultController extends ActivityModelsDefaultController
@@ -331,16 +331,20 @@
                                                                                  (int)$relationModelId,
                                                                                  $relationModuleId);
                 }
+                $isNewModel = true;
             }
             else
             {
                 $task   = Task::getById(intval($id));
+                $isNewModel = false;
             }
             $task       = $this->attemptToSaveModelFromPost($task, null, false);
             //Log event for project audit
-            if ($relationAttributeName == 'project')
+            if ($relationAttributeName == 'project' && $isNewModel === true)
             {
                 ProjectsUtil::logAddTaskEvent($task);
+                ProjectsNotificationUtil::submitProjectNotificationMessage($task->project, ProjectAuditEvent::TASK_ADDED,
+                                                                           $task, Yii::app()->user->userModel);
             }
             $this->actionModalDetails($task->id);
         }
@@ -384,6 +388,8 @@
             if ($copyToTask->project->id > 0)
             {
                 ProjectsUtil::logAddTaskEvent($copyToTask);
+                ProjectsNotificationUtil::submitProjectNotificationMessage($copyToTask->project, ProjectAuditEvent::TASK_ADDED,
+                                                                           $copyToTask, Yii::app()->user->userModel);
             }
             $this->actionModalDetails($copyToTask->id);
         }
@@ -426,17 +432,12 @@
          */
         protected function processTaskEdit(Task $task)
         {
-            $isNewModel = $task->isNewModel;
             if (RightsUtil::canUserAccessModule('TasksModule', Yii::app()->user->userModel))
             {
                 if (isset($_POST['ajax']) && $_POST['ajax'] == 'task-modal-edit-form')
                 {
                     $controllerUtil   = static::getZurmoControllerUtil();
                     $controllerUtil->validateAjaxFromPost($task, 'Task');
-                    if ($isNewModel)
-                    {
-                        TasksNotificationUtil::makeAndSubmitNewTaskNotificationMessage($task);
-                    }
                     Yii::app()->getClientScript()->setToAjaxMode();
                     Yii::app()->end(0, false);
                 }

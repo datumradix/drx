@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class JobsManagerUtilTest extends ZurmoBaseTest
@@ -120,6 +120,28 @@
             $this->assertEquals($jobLogId, $jobLogs[0]->id);
             $this->assertEquals(1, $jobLogs[0]->isProcessed);
             $this->assertEquals(0, $jobLogs[1]->isProcessed);
+        }
+
+        public function testMakeMonitorStuckJobNotification()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+            $super->primaryEmail->emailAddress = 'super@zurmo.com';
+            $this->assertTrue($super->save());
+
+            $notificationInitalCount  = Notification::getCount();
+            $emailMessageInitialCount = EmailMessage::getCount();
+
+            JobsManagerUtil::makeMonitorStuckJobNotification();
+
+            $notifications = Notification::getAll();
+            $emailMessages = EmailMessage::getAll();
+            $this->assertCount($emailMessageInitialCount + 1, $notifications);
+            $this->assertCount($notificationInitalCount + 1, $emailMessages);
+            $this->assertEquals('The monitor job is stuck.', $notifications[0]->notificationMessage->htmlContent);
+            $this->assertEquals('The monitor job is stuck.', $notifications[0]->notificationMessage->textContent);
+            $this->assertContains('The monitor job is stuck.', $emailMessages[0]->content->htmlContent);
+            $this->assertContains('The monitor job is stuck.', $emailMessages[0]->content->textContent);
         }
     }
 ?>

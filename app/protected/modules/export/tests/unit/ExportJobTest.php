@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class ExportJobTest extends ZurmoBaseTest
@@ -67,6 +67,7 @@
             Yii::app()->user->userModel = $super;
 
             $numberOfUserNotifications = Notification::getCountByTypeAndUser('ExportProcessCompleted', Yii::app()->user->userModel);
+            $numberOfEmailMessages     = EmailMessage::getCount();
 
             $idsToExport = array();
 
@@ -139,6 +140,8 @@
             // Check if user got notification message, and if its type is ExportProcessCompleted
             $this->assertEquals($numberOfUserNotifications + 1,
                                 Notification::getCountByTypeAndUser('ExportProcessCompleted', Yii::app()->user->userModel));
+            //Check no email notification was sent to super because super has no email address
+            $this->assertEquals($numberOfEmailMessages, EmailMessage::getCount());
         }
 
         /**
@@ -147,9 +150,12 @@
         public function testExportRedBeanDataProviderWithSinglePageOfData()
         {
             $super = User::getByUsername('super');
+            $super->primaryEmail->emailAddress = 'super@zurmo.com';
+            $this->assertTrue($super->save());
             Yii::app()->user->userModel = $super;
 
             $numberOfUserNotifications = Notification::getCountByTypeAndUser('ExportProcessCompleted', Yii::app()->user->userModel);
+            $numberOfEmailMessages     = EmailMessage::getCount();
 
             $account      = new Account(false);
             $searchForm   = new AccountsSearchForm($account);
@@ -181,7 +187,8 @@
             $job = new ExportJob();
             $this->assertEquals(0, count(Yii::app()->jobQueue->getAll()));
             $this->assertTrue($job->run());
-            $this->assertEquals(0, count(Yii::app()->jobQueue->getAll()));
+            //A new ProcessOutboundEmail was created to send the notification email
+            $this->assertEquals(1, count(Yii::app()->jobQueue->getAll()));
 
             $exportItem = ExportItem::getById($id);
             $fileModel = $exportItem->exportFileModel;
@@ -209,6 +216,8 @@
             // Check if user got notification message, and if its type is ExportProcessCompleted
             $this->assertEquals($numberOfUserNotifications + 1,
                                 Notification::getCountByTypeAndUser('ExportProcessCompleted', Yii::app()->user->userModel));
+            //Check one email notification was sent to super
+            $this->assertEquals($numberOfEmailMessages + 1, EmailMessage::getCount());
         }
 
         /**
@@ -219,7 +228,11 @@
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
 
+            //Disabling email notification
+            NotificationTestHelper::setNotificationSettingsForUser($super, 'ExportProcessCompleted', true, false);
+
             $numberOfUserNotifications = Notification::getCountByTypeAndUser('ExportProcessCompleted', Yii::app()->user->userModel);
+            $numberOfEmailMessages     = EmailMessage::getCount();
 
             $account      = new Account(false);
             $searchForm   = new AccountsSearchForm($account);
@@ -281,6 +294,8 @@
             // Check if user got notification message, and if its type is ExportProcessCompleted
             $this->assertEquals($numberOfUserNotifications + 1,
                                 Notification::getCountByTypeAndUser('ExportProcessCompleted', Yii::app()->user->userModel));
+            //Check no email notification was sent to super because he has disabled it
+            $this->assertEquals($numberOfEmailMessages, EmailMessage::getCount());
         }
 
         /**

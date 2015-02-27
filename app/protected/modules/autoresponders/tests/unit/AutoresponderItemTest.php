@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
     class AutoresponderItemTest extends AutoresponderOrCampaignBaseTest
     {
@@ -371,9 +371,23 @@
         {
             $autoresponderItems = AutoresponderItem::getAll();
             $this->assertCount(37, $autoresponderItems);
+
+            $autoresponderItemActivity                  = new AutoresponderItemActivity();
+            $autoresponderItemActivity->type            = AutoresponderItemActivity::TYPE_OPEN;
+            $autoresponderItemActivity->quantity        = 10;
+            $autoresponderItemActivity->latestSourceIP  = '10.11.12.13';
+            $autoresponderItemActivity->autoresponderItem = $autoresponderItems[0];
+            $this->assertTrue($autoresponderItemActivity->save());
+
+            $autoresponderItemActivities = AutoresponderItemActivity::getAll();
+            $this->assertCount(1, $autoresponderItemActivities);
+
             $autoresponderItems[0]->delete();
             $autoresponderItems = AutoresponderItem::getAll();
             $this->assertEquals(36, count($autoresponderItems));
+
+            $autoresponderItemActivities = AutoresponderItemActivity::getAll();
+            $this->assertCount(0, $autoresponderItemActivities);
         }
 
         /**

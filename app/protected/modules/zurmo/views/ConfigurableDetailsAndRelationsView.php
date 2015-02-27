@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -110,6 +110,7 @@
                 {
                     $content = $kanbanToggleLink. $this->resolveAndRenderLockingLink($renderedInForm);
                 }
+                $content .= $this->resolveExtraToolbarContent();
                 $toolbarContent = ZurmoHtml::tag('nav', array('class' => 'pillbox clearfix'), $content);
             }
             $toolbarContent = ZurmoHtml::tag('div', array('class' => 'view-toolbar-container widgets-lock clearfix '), $toolbarContent);
@@ -231,6 +232,15 @@
         public static function getDefaultLayoutType()
         {
             return '75,25'; // Not Coding Standard
+        }
+
+        /**
+         * Resolve extra toolbar content.
+         * @return string
+         */
+        protected function resolveExtraToolbarContent()
+        {
+            return Yii::app()->custom->resolveExtraToolbarContentForView(get_class($this), $this->controllerId, $this->moduleId, $this->modelId);
         }
     }
 ?>

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class EnsureUnsubscribeStateIsRegardedWalkthroughTest extends ZurmoWalkthroughBaseTest
@@ -55,8 +55,6 @@
         protected $externalManageSubscriptionsUrl   = '/marketingLists/external/manageSubscriptions';
 
         protected $contactsMassSubscribeUrl         = 'contacts/default/massSubscribe';
-
-        protected $marketingMassSubscribeUrl        = 'marketingLists/member/massSubscribe';
 
         protected $marketingMassUnsubscribeUrl      = 'marketingLists/member/massUnsubscribe';
 
@@ -198,35 +196,6 @@
                                   static::$marketingList->id . '_1" checked="checked" type="radio" name="marketingListsManage' .
                                   'SubscriptionListView-toggleUnsubscribed_' . static::$marketingList->id, $content);
             $this->assertEquals(1, MarketingListMember::getCount());
-        }
-
-        public function testMassSubscribeAllSelectedFromMemberController()
-        {
-            $subscribedCount    = MarketingListMember::getCountByMarketingListIdAndUnsubscribed(
-                                                                                            static::$marketingList->id,
-                                                                                            0);
-            $this->assertEquals(0, $subscribedCount);
-
-            $this->setGetArray(
-                array(
-                    'selectAll'                                 => '1',           // Not Coding Standard
-                    'MarketingListMembersPortletView_page'      => 1,
-                    'id'                                        => static::$marketingList->id,
-                )
-            );
-            $this->setPostArray(
-                array(
-                    'selectedRecordCount'                       => MarketingListMember::getCount()
-                )
-            );
-            $pageSize       = Yii::app()->pagination->getForCurrentUserByType('massEditProgressPageSize');
-            $this->assertEquals(5, $pageSize);
-            $this->runControllerWithRedirectExceptionAndGetUrl($this->marketingMassSubscribeUrl);
-            $expectedSubscribedCountAfterFirstRequest   = 0;
-            $actualSubscribedCountAfterFirstRequest     = MarketingListMember::getCountByMarketingListIdAndUnsubscribed(
-                                                                                            static::$marketingList->id,
-                                                                                            0);
-            $this->assertEquals($expectedSubscribedCountAfterFirstRequest, $actualSubscribedCountAfterFirstRequest);
         }
 
         public function testMassUnsubscribeAllSelectedFromMemberController()

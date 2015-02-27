@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class ContentTrackingUtil
@@ -41,24 +41,24 @@
         public static function resolveContentsForTracking(& $textContent, & $htmlContent, $enableTracking, $modelId,
                                                             $modelType, $personId)
         {
-            if (!empty($textContent))
-            {
-                static::resolveContentForTracking($enableTracking, $textContent, $modelId, $modelType, $personId, false);
-            }
-            if (!empty($htmlContent))
-            {
-                static::resolveContentForTracking($enableTracking, $htmlContent, $modelId, $modelType, $personId, true);
-            }
-        }
-
-        public static function resolveContentForTracking($tracking, & $content, $modelId, $modelType, $personId,
-                                                         $isHtmlContent)
-        {
-            assert('is_int($modelId)');
-            if (!$tracking)
+            if (!$enableTracking)
             {
                 return true;
             }
+            if (!empty($textContent))
+            {
+                static::resolveContentForTracking($textContent, $modelId, $modelType, $personId, false);
+            }
+            if (!empty($htmlContent))
+            {
+                static::resolveContentForTracking($htmlContent, $modelId, $modelType, $personId, true);
+            }
+        }
+
+        public static function resolveContentForTracking(& $content, $modelId, $modelType, $personId,
+                                                         $isHtmlContent)
+        {
+            assert('is_int($modelId)');
             if (strpos($content, static::resolveBaseTrackingUrl()) !== false) // it already contains few tracking  urls in the content
             {
                 return false;

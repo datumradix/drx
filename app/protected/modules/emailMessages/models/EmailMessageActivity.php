@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -49,6 +49,12 @@
 
         const TYPE_SKIP                       = 5;
 
+        const TYPE_SPAM                       = 6;
+
+        const TYPE_SOFT_BOUNCE                = 7;
+
+        const TYPE_HARD_BOUNCE                = 8;
+
         public static function getTypesArray()
         {
             return array(
@@ -57,6 +63,9 @@
                 static::TYPE_UNSUBSCRIBE        => Zurmo::t('Core',                'Unsubscribe'),
                 static::TYPE_BOUNCE             => Zurmo::t('EmailMessagesModule', 'Bounce'),
                 static::TYPE_SKIP               => Zurmo::t('Core', 'Skipped'),
+                static::TYPE_SPAM               => Zurmo::t('Core', 'Spammed'),
+                static::TYPE_SOFT_BOUNCE        => Zurmo::t('EmailMessagesModule', 'Soft Bounce'),
+                static::TYPE_HARD_BOUNCE        => Zurmo::t('EmailMessagesModule', 'Hard Bounce'),
             );
         }
 
@@ -334,6 +343,32 @@
                                 'members' => array($relatedColumnName),
                                 'unique' => false)
                         );
+        }
+
+        protected function afterDelete()
+        {
+            $this->emailMessageUrl->delete();
+            return parent::afterDelete();
+        }
+
+        /**
+         * Get by campaign or autoresponder item.
+         * @param OwnedModel $item
+         * @return int
+         */
+        public static function getIdByCampaignOrAutoresponderItem($item)
+        {
+            $itemClassName  = get_class($item);
+            $type           = strtolower($itemClassName);
+            $modelClassName = $itemClassName . 'Activity';
+            $tableName      = $modelClassName::getTableName();
+            $rows           = ZurmoRedBean::getRow('select emailmessageactivity_id from ' . $tableName .
+                                    ' where ' . $type . '_id = ?', array($item->id));
+            if (!empty($rows))
+            {
+                return $rows['emailmessageactivity_id'];
+            }
+            return null;
         }
     }
 ?>

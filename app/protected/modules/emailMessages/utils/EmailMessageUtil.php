@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -40,6 +40,10 @@
      */
     class EmailMessageUtil
     {
+        const OUTBOUND_GLOBAL_SETTINGS = 1;
+        const OUTBOUND_PERSONAL_SMTP_SETTINGS = 2;
+        const OUTBOUND_PERSONAL_SENDGRID_SETTINGS = 3;
+
         /**
          * Given post data and an email message, populate the sender and account on the email message if possible.
          * Also add message recipients and any attachments.
@@ -84,13 +88,31 @@
             {
                 static::attachFilesToMessage($postData['filesIds'], $emailMessageForm->getModel());
             }
-            $emailAccount                           = EmailAccount::getByUserAndName($userToSendMessagesFrom);
             $sender                                 = new EmailMessageSender();
+
+            $sendGridPluginEnabled = (bool)ZurmoConfigurationUtil::getByModuleName('SendGridModule', 'enableSendgrid');
+            if ($sendGridPluginEnabled)
+            {
+                try
+                {
+                    $emailAccount                       = SendGridEmailAccount::getByUserAndName($userToSendMessagesFrom);
+                    $emailMessageForm->sendGridAccount  = $emailAccount;
+                }
+                catch (NotFoundException $e)
+                {
+                    $emailAccount                       = EmailAccount::getByUserAndName($userToSendMessagesFrom);
+                    $emailMessageForm->account          = $emailAccount;
+                }
+            }
+            else
+            {
+                $emailAccount                       = EmailAccount::getByUserAndName($userToSendMessagesFrom);
+                $emailMessageForm->account          = $emailAccount;
+            }
             $sender->fromName                       = $emailAccount->fromName;
             $sender->fromAddress                    = $emailAccount->fromAddress;
             $sender->personsOrAccounts->add($userToSendMessagesFrom);
             $emailMessageForm->sender               = $sender;
-            $emailMessageForm->account              = $emailAccount;
             $box                                    = EmailBoxUtil::getDefaultEmailBoxByUser($userToSendMessagesFrom);
             $emailMessageForm->folder               = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_OUTBOX);
             return $emailMessageForm;
@@ -273,6 +295,138 @@
                $textContent = preg_replace('#</p\s*?/?>#i', ""    , $textContent);
            }
            return $textContent;
+        }
+
+        /**
+         * Resolve and check campaign email message.
+         * @param EmailMessage $emailMessage
+         */
+        public static function getCampaignOrAutoresponderDataByEmailMessage(EmailMessage $emailMessage)
+        {
+            $campaignItems = EmailMessageActivityUtil::getByEmailMessageId("CampaignItem", $emailMessage->id);
+            if (!empty($campaignItems))
+            {
+                return array($campaignItems[0]->id, 'CampaignItem', $campaignItems[0]->contact->getClassId('Person'));
+            }
+            else
+            {
+                $autoResponderItems = EmailMessageActivityUtil::getByEmailMessageId("AutoresponderItem", $emailMessage->id);
+                if (!empty($autoResponderItems))
+                {
+                    return array($autoResponderItems[0]->id, 'AutoresponderItem', $campaignItems[0]->contact->getClassId('Person'));
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Get outbound queued messages.
+         * @param null $count
+         * @param bool $excludePausedCampaignMessages
+         * @return array
+         */
+        public static function getOutboundQueuedMessages($count = null, $excludePausedCampaignMessages = true)
+        {
+            return EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX, $count, $excludePausedCampaignMessages);
+        }
+
+        /**
+         * Get outbound error queued messages.
+         * @param int $count
+         * @param int $queuedEmailMessagesCount Count of messages in outbox already queued.
+         */
+        public static function getOutboundErrorQueuedMessages($count = null, $queuedEmailMessagesCount)
+        {
+            if ($count == null)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, null);
+            }
+            elseif ($queuedEmailMessagesCount < $count)
+            {
+                $queuedEmailMessages = EmailMessage::getByFolderType(EmailFolder::TYPE_OUTBOX_ERROR, $count - $queuedEmailMessagesCount);
+            }
+            else
+            {
+                $queuedEmailMessages = array();
+            }
+            return $queuedEmailMessages;
+        }
+
+        /**
+         * Send Queued email messages.
+         * @param EmailHelper $emailHelper
+         * @param null $count
+         * @param bool $excludePausedCampaignMessages
+         * @return bool
+         * @throws NotSupportedException
+         */
+        public static function sendQueued(EmailHelper $emailHelper, $count = null, $excludePausedCampaignMessages = true)
+        {
+            assert('is_int($count) || $count == null');
+            $outboxQueuedMessages = EmailMessageUtil::getOutboundQueuedMessages($count, $excludePausedCampaignMessages);
+            foreach ($outboxQueuedMessages as $emailMessage)
+            {
+                $emailHelper->sendImmediately($emailMessage);
+            }
+            $outboxErrorQueuedMessages = EmailMessageUtil::getOutboundErrorQueuedMessages($count, count($outboxQueuedMessages));
+            foreach ($outboxErrorQueuedMessages as $emailMessage)
+            {
+                if ($emailMessage->sendAttempts < 3)
+                {
+                    $emailHelper->sendImmediately($emailMessage);
+                }
+                else
+                {
+                    $emailHelper->processMessageAsFailure($emailMessage);
+                }
+            }
+            return true;
+        }
+
+        /**
+         * Renders email address stage based on last email activity
+         * @param String $emailAddress
+         * @param RedBeanModel $model
+         * @return string $content
+         */
+        public static function renderEmailAddressState($emailAddress, RedBeanModel $model)
+        {
+            assert('is_string($emailAddress) || $emailAddress == null');
+            if ($emailAddress == null)
+            {
+                return;
+            }
+            $records = ExternalApiEmailMessageActivity::resolveAndGetByEmailAddress($emailAddress, 'sendgrid');
+            if (!empty($records))
+            {
+                $record = $records[0];
+                if ($record->type == EmailMessageActivity::TYPE_BOUNCE ||
+                      $record->type == EmailMessageActivity::TYPE_HARD_BOUNCE ||
+                      $record->type == EmailMessageActivity::TYPE_SOFT_BOUNCE)
+                {
+                    $tooltipTitle = $record->reason;
+                    $tooltip = '<span id="last-email-activity-status-tooltip" class="tooltip" title="' . $tooltipTitle . '">?</span>';
+                    $content = '<i>&#9679;</i><span>' . Zurmo::t('MarketingModule', 'Bounced') . '</span>' . $tooltip;
+                    $content = ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status stage-false'), $content);
+                    $content = ZurmoHtml::tag('div', array('class' => 'clearfix'), $content);
+                    $content = ZurmoHtml::tag('div', array('class' => 'continuum', 'id' => 'bouncedcontact'), $content);
+                }
+                if ($record->type == EmailMessageActivity::TYPE_SPAM)
+                {
+                    $tooltipTitle = $record->reason;
+                    $tooltip = '<span id="last-email-activity-status-tooltip" class="tooltip" title="' . $tooltipTitle . '">?</span>';
+                    $content = '<i>&#9679;</i><span>' . Zurmo::t('MarketingModule', 'Spam') . '</span>' . $tooltip;
+                    $content = ZurmoHtml::tag('div', array('class' => 'email-recipient-stage-status queued'), $content);
+                    $content = ZurmoHtml::tag('div', array('class' => 'clearfix'), $content);
+                    $content = ZurmoHtml::tag('div', array('class' => 'continuum', 'id' => 'spammedcontact'), $content);
+                }
+
+                $qtip = new ZurmoTip();
+                $qtip->addQTip("#last-email-activity-status-tooltip");
+                $content = ZurmoHtml::tag('div', array('class' => 'last-email-activity-status'), $content);
+                return $content;
+            }
+            return null;
         }
     }
 ?>

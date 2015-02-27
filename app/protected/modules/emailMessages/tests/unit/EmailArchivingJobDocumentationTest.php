@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class EmailArchivingJobDocumentationTest extends ZurmoBaseTest
@@ -204,9 +204,17 @@
             $this->assertTrue($result);
 
             $emailMessages = EmailMessage::getAll();
-            $this->assertEquals(1, count($emailMessages));
-            $emailMessage = $emailMessages[0];
+            $this->assertEquals(2, count($emailMessages));
 
+            //Message with unmatched notification
+            $emailMessage = $emailMessages[0];
+            $this->assertEquals('Match archived emails', $emailMessage->subject);
+            $this->assertContains('At least one archived email message does not match any records in the system', trim($emailMessage->content->textContent));
+            $this->assertContains('At least one archived email message does not match any records in the system', trim($emailMessage->content->htmlContent));
+            $this->assertEquals('steve@example.com', $emailMessage->recipients[0]->toAddress);
+
+            //Message archived unmatched
+            $emailMessage = $emailMessages[1];
             $this->assertEquals($imapMessage->subject, $emailMessage->subject);
             $this->assertEquals($imapMessage->textBody, trim($emailMessage->content->textContent));
             $this->assertEquals($imapMessage->htmlBody, trim($emailMessage->content->htmlContent));

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -65,14 +65,14 @@
         {
             assert('is_string($action)');
             $message = static::getNotificationMessageByAction($task, $action, $relatedUser, $comment);
-            $rule = new TaskNotificationRules();
+            $notificationRulesClassName = static::resolveNotificationRulesClassByAction($action);
+            $rule = new $notificationRulesClassName();
             $peopleToSendNotification = static::resolvePeopleToSendNotification($task, $action, $relatedUser);
             foreach ($peopleToSendNotification as $person)
             {
                 $rule->addUser($person);
             }
             $rule->setModel($task);
-            $rule->setCritical(true);
             $rule->setAllowDuplicates(true);
             static::processTaskNotification($message, $rule, $action);
         }
@@ -93,8 +93,8 @@
             {
                 return;
             }
-            $notifications = static::resolveAndGetNotifications($users, $rule->getType(), $message, $rule->allowDuplicates());
-            if (static::resolveShouldSendEmailIfCritical() && $rule->isCritical())
+            $notifications = static::resolveAndGetNotifications($message, $rule);
+            if (static::resolveShouldSendEmailIfCritical())
             {
                 foreach ($notifications as $notification)
                 {
@@ -146,20 +146,29 @@
         {
             assert('is_string($action)');
             $peopleToSendNotification = array();
-            if ($action == self::TASK_NEW || $action == self::TASK_OWNER_CHANGE ||
-               $action == self::TASK_STATUS_BECOMES_REJECTED)
+            if ($action == self::TASK_NEW)
             {
                 $peopleToSendNotification[] = $task->owner;
             }
-            elseif ($action == self::TASK_STATUS_BECOMES_AWAITING_ACCEPTANCE)
+            elseif (($action == self::TASK_STATUS_BECOMES_REJECTED) &&
+                    (Yii::app()->user->userModel->id != $task->owner->id))
+            {
+                $peopleToSendNotification[] = $task->owner;
+            }
+            elseif (($action == self::TASK_STATUS_BECOMES_COMPLETED) &&
+                    (Yii::app()->user->userModel->id != $task->owner->id))
+            {
+                $peopleToSendNotification[] = $task->owner;
+            }
+            elseif ($action == self::TASK_STATUS_BECOMES_AWAITING_ACCEPTANCE ||
+                    $action == self::TASK_OWNER_CHANGE)
             {
                 $peopleToSendNotification[] = $task->requestedByUser;
             }
-            elseif ($action == self::TASK_STATUS_BECOMES_COMPLETED ||
-                   $action == self::TASK_NEW_COMMENT)
+            elseif ($action == self::TASK_NEW_COMMENT)
             {
                 $peopleToSendNotification = TasksUtil::getTaskSubscribers($task);
-                if ($action == self::TASK_NEW_COMMENT && $relatedUser != null)
+                if ($relatedUser != null)
                 {
                     foreach ($peopleToSendNotification as $key => $person)
                     {
@@ -169,61 +178,8 @@
                         }
                     }
                 }
-                if (($action == self::TASK_STATUS_BECOMES_COMPLETED) &&
-                                    (Yii::app()->user->userModel->id == $task->owner->id))
-                {
-                    foreach ($peopleToSendNotification as $key => $person)
-                    {
-                        if ($person->getClassId('Item') == $task->owner->getClassId('Item'))
-                        {
-                            unset($peopleToSendNotification[$key]);
-                        }
-                    }
-                }
             }
             return $peopleToSendNotification;
-        }
-
-        /**
-         * Gets email subject for the notification
-         * @param Task $task
-         * @param $action
-         * @return string
-         */
-        public static function getTaskEmailSubject(Task $task, $action)
-        {
-            assert('$task instanceof Task');
-            $relatedModelStringValue = TasksUtil::resolveFirstRelatedModelStringValue($task);
-            if ($relatedModelStringValue != null)
-            {
-                $relatedModelStringValue = '(' . $relatedModelStringValue . ')';
-            }
-            $params = array('{task}'         => strval($task),
-                            '{relatedModel}' => $relatedModelStringValue);
-            if ($action == self::TASK_NEW)
-            {
-                return Zurmo::t('TasksModule', 'ASSIGNMENT {relatedModel}: {task}', $params);
-            }
-            elseif ($action == self::TASK_STATUS_BECOMES_AWAITING_ACCEPTANCE)
-            {
-                return Zurmo::t('TasksModule', 'DELIVERED {relatedModel}: {task}', $params);
-            }
-            elseif ($action == self::TASK_STATUS_BECOMES_COMPLETED)
-            {
-                return Zurmo::t('TasksModule', 'ACCEPTED {relatedModel}: {task}', $params);
-            }
-            elseif ($action == self::TASK_STATUS_BECOMES_REJECTED)
-            {
-                return Zurmo::t('TasksModule', 'REJECTED {relatedModel}: {task}', $params);
-            }
-            elseif ($action == self::TASK_OWNER_CHANGE)
-            {
-                return Zurmo::t('TasksModule', 'ASSIGNMENT {relatedModel}: {task}', $params);
-            }
-            elseif ($action == self::TASK_NEW_COMMENT)
-            {
-                return Zurmo::t('TasksModule', 'NEW COMMENT {relatedModel}: {task}', $params);
-            }
         }
 
         /**
@@ -261,7 +217,7 @@
             }
             elseif ($action == self::TASK_OWNER_CHANGE)
             {
-                return Zurmo::t('TasksModule', "The task, '{task}', is now owned by you.",
+                return Zurmo::t('TasksModule', "The task you requested, '{task}', has a new owner.",
                                                array('{task}'   => strval($task)));
             }
             elseif ($action == self::TASK_NEW_COMMENT)
@@ -295,10 +251,13 @@
         protected static function sendTaskEmail(Notification $notification, TaskNotificationRules $rule, $action)
         {
             assert('is_string($action)');
+            $notificationSettingName = static::resolveNotificationSettingNameFromType($rule->getType());
             if ($notification->owner->primaryEmail->emailAddress !== null &&
-                !UserConfigurationFormAdapter::resolveAndGetValue($notification->owner, 'turnOffEmailNotifications'))
+                UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($notification->owner,
+                                                                                $notificationSettingName, 'email'))
             {
-                $emailMessage               = static::makeEmailMessage($notification, $rule, $action);
+                $emailMessage               = static::makeEmailMessage();
+                $emailMessage->subject      = static::getEmailSubject($notification, $rule);
                 $emailMessage->content      = static::makeEmailContent($notification);
                 $emailMessage->sender       = static::makeSender();
                 $emailMessage->recipients->add(static::makeRecipient($notification));
@@ -316,70 +275,34 @@
         }
 
         /**
-         * @param Notification $notification
-         * @param TaskNotificationRules $rule
-         * @param string $action
-         * @return EmailMessage
+         * Resolve the notification rules class name by action name
+         * @return string
          */
-        protected static function makeEmailMessage(Notification $notification, TaskNotificationRules $rule, $action)
+        protected static function resolveNotificationRulesClassByAction($action)
         {
-            assert('is_string($action)');
-            $emailMessage               = new EmailMessage();
-            $emailMessage->owner        = Yii::app()->user->userModel;
-            $task                       = $rule->getModel();
-            $emailMessage->subject      = static::getTaskEmailSubject($task, $action);
-            return $emailMessage;
-        }
-
-        /**
-         * @param Notification $notification
-         * @return EmailMessageContent
-         */
-        protected static function makeEmailContent(Notification $notification)
-        {
-            $emailContent               = new EmailMessageContent();
-            $emailContent->textContent  = EmailNotificationUtil::
-                                            resolveNotificationTextTemplate(
-                                            $notification->notificationMessage->textContent, $notification->owner);
-            $emailContent->htmlContent  = EmailNotificationUtil::
-                                            resolveNotificationHtmlTemplate(
-                                            $notification->notificationMessage->htmlContent, $notification->owner);
-            return $emailContent;
-        }
-
-        /**
-         * @return EmailMessageSender
-         */
-        protected static function makeSender()
-        {
-            $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
-            $sender                     = new EmailMessageSender();
-            $sender->fromAddress        = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
-            $sender->fromName           = strval($userToSendMessagesFrom);
-            return $sender;
-        }
-
-        /**
-         * @param Notification $notification
-         * @return EmailMessageRecipient
-         */
-        protected static function makeRecipient(Notification $notification)
-        {
-            $recipient                  = new EmailMessageRecipient();
-            $recipient->toAddress       = $notification->owner->primaryEmail->emailAddress;
-            $recipient->toName          = strval($notification->owner);
-            $recipient->type            = EmailMessageRecipient::TYPE_TO;
-            $recipient->personsOrAccounts->add($notification->owner);
-            return $recipient;
-        }
-
-        /**
-         * Resolve to save notification
-         * @return bool
-         */
-        protected static function resolveToSaveNotification()
-        {
-            return false;
+            switch ($action)
+            {
+                case TasksNotificationUtil::TASK_NEW:
+                    return 'NewTaskNotificationRules';
+                    break;
+                case TasksNotificationUtil::TASK_STATUS_BECOMES_AWAITING_ACCEPTANCE:
+                    return 'DeliveredTaskNotificationRules';
+                    break;
+                case TasksNotificationUtil::TASK_STATUS_BECOMES_COMPLETED:
+                    return 'AcceptedTaskNotificationRules';
+                    break;
+                case TasksNotificationUtil::TASK_STATUS_BECOMES_REJECTED:
+                    return 'RejectedTaskNotificationRules';
+                    break;
+                case TasksNotificationUtil::TASK_OWNER_CHANGE:
+                    return 'TaskOwnerChangeNotificationRules';
+                    break;
+                case TasksNotificationUtil::TASK_NEW_COMMENT:
+                    return 'TaskNewCommentNotificationRules';
+                    break;
+                default:
+                    throw new NotFoundException();
+            }
         }
     }
 ?>

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class CampaignDefaultControllerSuperUserWalkthroughTest extends ZurmoWalkthroughBaseTest
@@ -148,7 +148,7 @@
             $this->assertContains('anyMixedAttributes', $content);
             $this->assertContains('campaign01', $content);
             $this->assertContains('campaign02', $content);
-            $this->assertContains('Active', $content);
+            $this->assertContains('Scheduled', $content);
             //Test the search or paging of the listview.
             Yii::app()->clientScript->reset(); //to make sure old js doesn't make it to the UI
             $this->setGetArray(array('ajax' => 'list-view'));
@@ -180,10 +180,10 @@
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
             $this->assertContains('2 result(s)', $content);
-            $this->assertContains('<th id="list-view_c2">Status</th>', $content);
+            $this->assertContains('Status</a></th>', $content);
             $this->assertEquals(1, substr_count($content, 'campaign01'));
             $this->assertEquals(1, substr_count($content, 'campaign02'));
-            $this->assertEquals(2, substr_count($content, 'Active'));
+            $this->assertEquals(2, substr_count($content, 'Scheduled'));
 
             StickyReportUtil::clearDataByKey('CampaignsSearchForm');
             $this->setGetArray(array(
@@ -195,10 +195,10 @@
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
             $this->assertContains('2 result(s)', $content);
-            $this->assertContains('<th id="list-view_c2">Status</th>', $content);
+            $this->assertContains('Status</a></th>', $content);
             $this->assertEquals(1, substr_count($content, 'campaign01'));
             $this->assertEquals(1, substr_count($content, 'campaign02'));
-            $this->assertEquals(2, substr_count($content, 'Active'));
+            $this->assertEquals(2, substr_count($content, 'Scheduled'));
             $this->assertEquals(3, substr_count($content, 'Clark Kent'));
             $this->assertEquals(4, substr_count($content, '@zurmo.com'));
             $this->assertEquals(6, substr_count($content, 'fromCampaign'));
@@ -223,12 +223,12 @@
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
             $this->assertContains('1 result(s)', $content);
-            $this->assertContains('<th id="list-view_c2">Status</th>', $content);
+            $this->assertContains('Status</a></th>', $content);
             $this->assertEquals(1, substr_count($content, 'campaign02'));
-            $this->assertEquals(1, substr_count($content, 'Active'));
+            $this->assertEquals(1, substr_count($content, 'Scheduled'));
             $this->assertEquals(2, substr_count($content, 'Clark Kent'));
             $this->assertEquals(2, substr_count($content, '@zurmo.com'));
-            $this->assertEquals(7, substr_count($content, 'fromCampaign2'));
+            $this->assertEquals(8, substr_count($content, 'fromCampaign2'));
             $this->assertEquals(2, substr_count($content, 'fromCampaign2@zurmo.com'));
 
             StickyReportUtil::clearDataByKey('CampaignsSearchForm');
@@ -248,12 +248,12 @@
             ));
             $content    = $this->runControllerWithNoExceptionsAndGetContent('campaigns/default/list');
             $this->assertContains('1 result(s)', $content);
-            $this->assertContains('<th id="list-view_c2">Status</th>', $content);
+            $this->assertContains('Status</a></th>', $content);
             $this->assertEquals(1, substr_count($content, 'campaign02'));
-            $this->assertEquals(1, substr_count($content, 'Active'));
+            $this->assertEquals(1, substr_count($content, 'Scheduled'));
             $this->assertEquals(2, substr_count($content, 'Clark Kent'));
             $this->assertEquals(2, substr_count($content, '@zurmo.com'));
-            $this->assertEquals(7, substr_count($content, 'fromCampaign2'));
+            $this->assertEquals(8, substr_count($content, 'fromCampaign2'));
             $this->assertEquals(2, substr_count($content, 'fromCampaign2@zurmo.com'));
         }
 

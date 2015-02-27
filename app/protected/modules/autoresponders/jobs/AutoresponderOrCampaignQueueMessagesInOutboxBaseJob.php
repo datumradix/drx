@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,83 +31,11 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     abstract class AutoresponderOrCampaignQueueMessagesInOutboxBaseJob extends AutoresponderOrCampaignBaseJob
     {
-        protected function getClassName()
-        {
-            $className  = get_class($this);
-            $className  = str_replace('QueueMessagesInOutboxJob', '', $className);
-            return $className;
-        }
-
-        protected function getItemClassName()
-        {
-            $className  = $this->getClassName() . 'Item';
-            return $className;
-        }
-
-        protected function getItemUtil()
-        {
-            $utilClassName  = $this->getItemClassName() . 'sUtil';
-            return $utilClassName;
-        }
-
-        protected function resolveEmailBoxName()
-        {
-            $itemClassName  = $this->getClassName();
-            $box            = EmailBox::CAMPAIGNS_NAME;
-            if ($itemClassName == "Autoresponder")
-            {
-                $box = EmailBox::AUTORESPONDERS_NAME;
-            }
-            return $box;
-        }
-
-        protected function getEmailMessageForeignKeyName()
-        {
-            $itemClassName  = $this->getItemClassName();
-            return RedBeanModel::getForeignKeyName($itemClassName, 'emailMessage');
-        }
-
-        protected function getItemTableName()
-        {
-            $itemClassName  = $this->getItemClassName();
-            return $itemClassName::getTableName();
-        }
-
-        protected function resolveItemOwnerModelRelationName()
-        {
-            $className      = $this->getClassName();
-            $relationName   = strtolower($className);
-            return $relationName;
-        }
-
-        protected function resolveReturnPathHeaderValue()
-        {
-            $returnPath = ZurmoConfigurationUtil::getByModuleName('EmailMessagesModule', 'bounceReturnPath');
-            return $returnPath;
-        }
-
-        protected function resolveEmailFolder()
-        {
-            $boxName            = $this->resolveEmailBoxName();
-            $box                = EmailBox::resolveAndGetByName($boxName);
-            $folder             = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
-            return $folder;
-        }
-
-        protected function processRun()
-        {
-            $util                          = $this->getItemUtil();
-            $util::$folder                 = $this->resolveEmailFolder();
-            $util::$returnPath             = $this->resolveReturnPathHeaderValue();
-            $util::$ownerModelRelationName = $this->resolveItemOwnerModelRelationName();
-            $util::$itemTableName          = $this->getItemTableName();
-            $util::$emailMessageForeignKey = $this->getEmailMessageForeignKeyName();
-            $util::$itemClass               = $this->getItemClassName();
-        }
+       // place any common code specific to AutoresponderOrCampaign Queue here.
     }
 ?>

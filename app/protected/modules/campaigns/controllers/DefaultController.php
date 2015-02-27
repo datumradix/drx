@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,10 +31,10 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class CampaignsDefaultController extends ZurmoModuleController
+    class CampaignsDefaultController extends EmailTemplatesOrCampaignsBaseController
     {
         const USER_REQUIRED_MODULES_ACCESS_FILTER_PATH =
             'application.modules.campaigns.controllers.filters.UserCanAccessRequiredModulesForCampaignCheckControllerFilter';
@@ -233,6 +233,20 @@
             echo CampaignItemSummaryListViewColumnAdapter::resolveDrillDownMetricsSummaryContent($campaignItem);
         }
 
+        public function actionTogglePaused($id)
+        {
+            $campaign               = Campaign::GetById(intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($campaign);
+            $campaign->status       = ($campaign->status == Campaign::STATUS_PAUSED)?
+                                            Campaign::STATUS_ACTIVE : Campaign::STATUS_PAUSED;
+            $saved                  = $campaign->save();
+            if (!$saved)
+            {
+                throw new FailedToSaveModelException("Unable to toggle status");
+            }
+            echo true;
+        }
+
         protected static function getSearchFormClassName()
         {
             return 'CampaignsSearchForm';
@@ -241,6 +255,11 @@
         protected static function getZurmoControllerUtil()
         {
             return new CampaignZurmoControllerUtil();
+        }
+
+        protected function getSendTestEmailUtil()
+        {
+            return 'CampaignSendTestEmailUtil';
         }
     }
 ?>

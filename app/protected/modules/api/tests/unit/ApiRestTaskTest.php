@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -1094,7 +1094,7 @@
         public function testGetModifiedTasks()
         {
             $timestamp = time();
-            sleep(1);
+            sleep(2);
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
             $this->deleteAllModelsAndRecordsFromReadPermissionTable('Task');
@@ -1104,7 +1104,7 @@
             $task3 = TaskTestHelper::createTaskByNameForOwner('Task3', $super);
             $task4 = TaskTestHelper::createTaskByNameForOwner('Task4', $super);
             $this->assertTrue($job->run());
-            sleep(1);
+            sleep(2);
 
             $authenticationData = $this->login();
             $headers = array(
@@ -1129,7 +1129,7 @@
             $this->assertEquals(1, $response['data']['currentPage']);
 
             $timestamp = time();
-            sleep(1);
+            sleep(2);
             $task1->name = "Task1 Modified";
             $this->assertTrue($task1->save());
             sleep(1);
@@ -1138,7 +1138,7 @@
             sleep(1);
             $task4->name = "Task1 Modified";
             $this->assertTrue($task4->save());
-            sleep(1);
+            sleep(2);
 
             $data = array(
                 'sinceTimestamp' => $timestamp,

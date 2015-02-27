@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     Yii::import('ext.cssIn.src.CSSIN');
@@ -151,31 +151,31 @@
                 $cloneNodesArray[] = clone $node;
             }
 
-            $css_urls = array();
+            $cssUrls = array();
 
             // Find all stylesheets and determine their absolute URLs to retrieve them
             foreach ($html->find('link[rel="stylesheet"]') as $style)
             {
-                $css_urls[] = self::absolutify($url, $style->href);
+                $cssUrls[] = self::absolutify($url, $style->href);
                 $style->outertext = '';
             }
 
-            $css_blocks = $this->processStylesCleanup($html);
+            $cssBlocks = $this->processStylesCleanup($html);
 
-            $raw_css = '';
-            if (!empty($css_urls))
+            $rawCss = '';
+            if (!empty($cssUrls))
             {
-                $raw_css .= $this->getCSSFromFiles($css_urls);
+                $rawCss .= $this->getCSSFromFiles($cssUrls);
             }
-            if (!empty($css_blocks))
+            if (!empty($cssBlocks))
             {
-                $raw_css .= $css_blocks;
+                $rawCss .= $cssBlocks;
             }
 
             // Get the CSS rules by decreasing order of specificity.
             // This is an array with, amongst other things, the keys 'properties', which hold the CSS properties
             // and the 'selector', which holds the CSS selector
-            $rules = $this->parseCSS($raw_css);
+            $rules = $this->parseCSS($rawCss);
 
             // We loop over each rule by increasing order of specificity, find the nodes matching the selector
             // and apply the CSS properties
@@ -251,14 +251,14 @@
 
         protected function processStylesCleanup($html)
         {
-            $css_blocks = '';
+            $cssBlocks = '';
             // Find all <style> blocks and cut styles from them (leaving media queries)
             foreach ($html->find('style') as $style)
             {
-                list($_css_to_parse, $_css_to_keep) = self::splitMediaQueries($style->innertext());
-                $css_blocks .= $_css_to_parse;
+                list($cssToParse, $cssToKeep) = self::splitMediaQueries($style->innertext());
+                $cssBlocks .= $cssToParse;
             }
-            return $css_blocks;
+            return $cssBlocks;
         }
 
         public static function calculateCSSSpecifity($selector)
@@ -345,6 +345,51 @@
             // Remove CSS-Comments
             $css = preg_replace('/\/\*.*?\*\//ms', '', $css);
             return parent::splitMediaQueries(' ' . $css . ' ');
+        }
+
+        public static function absolutify($pageUrl, $relativeUrl)
+        {
+            // if relative url starts with // then its schema-less url
+            if (preg_match('/^\/\//', $relativeUrl))
+            {
+                $absoluteUrl    = 'http:' . $relativeUrl;
+            }
+            else
+            {
+                $parsedUrl          = parse_url($pageUrl);
+                $parsedRelativeUrl  = parse_url($relativeUrl);
+                if (isset($parsedUrl['scheme']))
+                {
+                    $parsedUrl['scheme']    .= '://';
+                }
+                $qualifiedHost      = @$parsedUrl['scheme'] . @$parsedUrl['host'];
+
+                // If $relativeUrl has a host it is actually absolute, return it.
+                if (isset($parsedRelativeUrl['host']))
+                {
+                    $absoluteUrl    = $relativeUrl;
+                }
+                // If $relativeUrl begins with / then it is a path relative to the $pageUrl's host
+                elseif (preg_match('/^\//', $parsedRelativeUrl['path']))
+                {
+                    $absoluteUrl    = $qualifiedHost . $parsedRelativeUrl['path'];
+                }
+                // No leading slash: append the path of $relativeUrl to the 'folder' path of $pageUrl
+                else
+                {
+                    $absoluteUrl    = $qualifiedHost . dirname($parsedUrl['path']) . '/' . $parsedRelativeUrl['path'];
+                }
+            }
+            return $absoluteUrl;
+        }
+
+        public function getCSS($url)
+        {
+            if (!isset($cssFiles[$url]))
+            {
+                $cssFiles[$url] = @file_get_contents($url);
+            }
+            return $cssFiles[$url];
         }
     }
 ?>

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class ZurmoImapTest extends ZurmoBaseTest
@@ -55,7 +55,6 @@
                 Yii::app()->emailHelper->outboundSecurity = Yii::app()->params['emailTestAccounts']['smtpSettings']['outboundSecurity'];
                 Yii::app()->emailHelper->sendEmailThroughTransport = true;
                 Yii::app()->emailHelper->setOutboundSettings();
-                Yii::app()->emailHelper->init();
             }
         }
 
@@ -190,7 +189,7 @@
             $this->assertTrue($imap->connect());
             $imap->deleteMessages(false);
 
-            Yii::app()->emailHelper->sendRawEmail("Test Email",
+            Yii::app()->emailHelper->sendRawEmail("Test Email " . __FUNCTION__,
                                                   Yii::app()->emailHelper->outboundUsername,
                                                   $imap->imapUsername,
                                                   'Test email body',
@@ -217,7 +216,7 @@
             $imapStats = $imap->getMessageBoxStatsDetailed();
             $this->assertEquals(0, $imapStats->Nmsgs);
 
-            Yii::app()->emailHelper->sendRawEmail("Test Email",
+            Yii::app()->emailHelper->sendRawEmail("Test Email " . __FUNCTION__,
                                                   Yii::app()->emailHelper->outboundUsername,
                                                   $imap->imapUsername,
                                                   'Test email body',
@@ -245,7 +244,7 @@
             $this->assertTrue($imap->connect());
 
             $imap->deleteMessages(true);
-            Yii::app()->emailHelper->sendRawEmail("Test Email",
+            Yii::app()->emailHelper->sendRawEmail("Test Email " . __FUNCTION__,
                                                   Yii::app()->emailHelper->outboundUsername,
                                                   $imap->imapUsername,
                                                   'Test email body',
@@ -257,9 +256,9 @@
             sleep(20);
             $messages = $imap->getMessages();
             $this->assertEquals(1, count($messages));
-            $this->assertEquals("Test Email", $messages[0]->subject);
+            $this->assertEquals("Test Email " . __FUNCTION__, $messages[0]->subject);
             $this->assertEquals("Test email body", trim($messages[0]->textBody));
-            $this->assertEquals("<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
+            $this->assertEquals('<!-- zurmo css inline --> <strong>Test</strong> email html body', trim(static::replaceNewLinesCharacters($messages[0]->htmlBody)));
             $this->assertEquals($imap->imapUsername, $messages[0]->to[0]['email']);
             $this->assertEquals(Yii::app()->emailHelper->outboundUsername, $messages[0]->fromEmail);
         }
@@ -277,7 +276,7 @@
             $filePath_2    = $pathToFiles . DIRECTORY_SEPARATOR . 'image.png';
             $filePath_3    = $pathToFiles . DIRECTORY_SEPARATOR . 'text.txt';
 
-            Yii::app()->emailHelper->sendRawEmail("Test Email",
+            Yii::app()->emailHelper->sendRawEmail("Test Email " . __FUNCTION__,
                                                   Yii::app()->emailHelper->outboundUsername,
                                                   $imap->imapUsername,
                                                   'Test email body',
@@ -289,9 +288,9 @@
             sleep(40);
             $messages = $imap->getMessages();
             $this->assertEquals(1, count($messages));
-            $this->assertEquals("Test Email", $messages[0]->subject);
+            $this->assertEquals("Test Email " . __FUNCTION__, $messages[0]->subject);
             $this->assertEquals("Test email body", trim($messages[0]->textBody));
-            $this->assertEquals("<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
+            $this->assertEquals('<!-- zurmo css inline --> <strong>Test</strong> email html body', trim(static::replaceNewLinesCharacters($messages[0]->htmlBody)));
             $this->assertEquals($imap->imapUsername, $messages[0]->to[0]['email']);
             $this->assertEquals(Yii::app()->params['emailTestAccounts']['userImapSettings']['imapUsername'], $messages[0]->cc[0]['email']);
             $this->assertEquals(Yii::app()->emailHelper->outboundUsername, $messages[0]->fromEmail);
@@ -320,7 +319,7 @@
                 'zurmoPersonId'  => 20,
                 'Return-Path'   => $returnPath,
             );
-            Yii::app()->emailHelper->sendRawEmail("Test Email",
+            Yii::app()->emailHelper->sendRawEmail("Test Email " . __FUNCTION__,
                 Yii::app()->emailHelper->outboundUsername,
                 $imap->imapUsername,
                 'Test email body',
@@ -334,9 +333,9 @@
             sleep(20);
             $messages = $imap->getMessages();
             $this->assertEquals(1, count($messages));
-            $this->assertEquals("Test Email", $messages[0]->subject);
+            $this->assertEquals("Test Email " . __FUNCTION__, $messages[0]->subject);
             $this->assertEquals("Test email body", trim($messages[0]->textBody));
-            $this->assertEquals("<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
+            $this->assertEquals('<!-- zurmo css inline --> <strong>Test</strong> email html body', trim(static::replaceNewLinesCharacters($messages[0]->htmlBody)));
             $this->assertEquals($imap->imapUsername, $messages[0]->to[0]['email']);
             $this->assertEquals(Yii::app()->emailHelper->outboundUsername, $messages[0]->fromEmail);
             $this->assertNotEmpty($messages[0]->headers);
@@ -360,7 +359,7 @@
             $this->assertTrue($imap->connect());
 
             $imap->deleteMessages(true);
-            Yii::app()->emailHelper->sendRawEmail("Test Email",
+            Yii::app()->emailHelper->sendRawEmail("Test Email " . __FUNCTION__,
                                                   Yii::app()->emailHelper->outboundUsername,
                                                   null,
                                                   'Test email body',
@@ -372,9 +371,9 @@
             sleep(20);
             $messages = $imap->getMessages();
             $this->assertEquals(1, count($messages));
-            $this->assertEquals("Test Email", $messages[0]->subject);
+            $this->assertEquals("Test Email " . __FUNCTION__, $messages[0]->subject);
             $this->assertEquals("Test email body", trim($messages[0]->textBody));
-            $this->assertEquals("<strong>Test</strong> email html body", trim($messages[0]->htmlBody));
+            $this->assertEquals('<!-- zurmo css inline --> <strong>Test</strong> email html body', trim(static::replaceNewLinesCharacters($messages[0]->htmlBody)));
             $this->assertEquals($imap->imapUsername, $messages[0]->cc[0]['email']);
             $this->assertEquals(Yii::app()->emailHelper->outboundUsername, $messages[0]->fromEmail);
         }
@@ -444,6 +443,11 @@
             {
                 $this->markTestSkipped(Zurmo::t('EmailMessagesModule', 'Test bounce settings are not configured in perInstanceTest.php file.'));
             }
+        }
+
+        protected static function replaceNewLinesCharacters($string, $replaceWith = ' ')
+        {
+            return preg_replace('/\s+/', $replaceWith, $string); // Not Coding Standard
         }
     }
 ?>

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -338,6 +338,30 @@
             //Check getState data. since it should be updated for current user.
             $this->assertEquals(7, Yii::app()->user->getState('listPageSize'));
             $this->assertEquals(4, Yii::app()->user->getState('subListPageSize'));
+
+            //User Notification Configuration UI. Change aUser notification configuration values.
+            //First make sure settings all default values are true
+            $notificationSettings = UserNotificationUtil::getNotificationSettingsByUser($aUser);
+            $notificationSettingsNames = UserNotificationUtil::getAllNotificationSettingAttributes();
+            foreach ($notificationSettingsNames as $setting)
+            {
+                list($settingName, $type) = UserNotificationUtil::getSettingNameAndTypeBySuffixedConfigurationAttribute($setting);
+                $this->assertTrue((bool)$notificationSettings[$settingName][$type]);
+            }
+            //Load up notification configuration page.
+            $this->setGetArray(array('id' => $aUser->id));
+            $this->runControllerWithNoExceptionsAndGetContent('users/default/notificationConfiguration');
+            //Post fake save that will pass validation.
+            $this->setGetArray(array('id' => $aUser->id));
+            $this->setPostArray(array('UserNotificationConfigurationForm' =>
+                array(
+                    'enableConversationInvitesNotificationInbox' => 0,
+                )));
+
+            $this->runControllerWithRedirectExceptionAndGetContent('users/default/notificationConfiguration');
+            $this->assertEquals('User notifications configuration saved successfully.', Yii::app()->user->getFlash('notification'));
+            //Check to make sure user notification configuration is actually changed.
+            $this->assertFalse((bool) UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($aUser, 'enableConversationInvitesNotification', 'inbox'));
         }
 
         /**
@@ -474,7 +498,7 @@
             $this->setPostArray(array('UserEmailConfigurationForm' => array(
                                     'fromName'                          => 'abc',
                                     'fromAddress'                       => 'abc@zurmo.org',
-                                    'useCustomOutboundSettings'         => 0,
+                                    'useCustomOutboundSettings'         => EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS,
                                     'emailSignatureHtmlContent'         => 'abc email signature')));
             $this->runControllerWithRedirectExceptionAndGetContent('users/default/emailConfiguration');
             $this->assertEquals('User email configuration saved successfully.',

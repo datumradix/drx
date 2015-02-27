@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -131,11 +131,15 @@
             elseif ($this->depth > 10)
             {
                 $message                      = new NotificationMessage();
-                $message->htmlContent         = Zurmo::t('WorkflowsModule', 'The combination of workflow rules setup caused ' .
+                $commonContent                = Zurmo::t('WorkflowsModule', 'The combination of workflow rules setup caused ' .
                                                 'an infinite loop and processing was stopped prematurely while saving the ' .
                                                 'following record: {modelName}', array('{modelName}' => strval($model)));
+
+                $message->htmlContent         = $commonContent;
                 $url                          = Yii::app()->createAbsoluteUrl('workflows/default/list');
                 $message->htmlContent        .= "<br/>" . ZurmoHtml::link(Zurmo::t('WorkflowsModule', 'Manage Workflows'), $url);
+                $message->textContent         = $commonContent;
+                $message->textContent        .= "\n" . Zurmo::t('WorkflowsModule', 'Manage Workflows') . ': ' . ShortUrlUtil::createShortUrl($url);
                 $rules                        = new WorkflowMaximumDepthNotificationRules();
                 NotificationsUtil::submit($message, $rules);
             }

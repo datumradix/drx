@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -45,21 +45,21 @@
          */
         protected function renderIntroContent()
         {
-            $content  = '<h1>' . Zurmo::t('ProjectsModule', 'How do Projects work in Zurmo?', LabelUtil::getTranslationParamsForAllModules()). '</h1>';
+            $content  = '<h1>' . Zurmo::t('ProjectsModule', 'How do ProjectsModulePluralLabel work in Zurmo?', LabelUtil::getTranslationParamsForAllModules()). '</h1>';
             $content .= '<div id="projects-intro-steps" class="module-intro-steps clearfix">';
             $content .= '<div class="third project-create"><span class="icon"></span>';
             $content .= '<p><strong>' . Zurmo::t('Core', 'Create') . '</strong>';
-            $content .= Zurmo::t('ProjectsModule', 'Create projects, add tasks and work using an agile methodology');
+            $content .= Zurmo::t('ProjectsModule', 'Create ProjectsModulePluralLowerCaseLabel, add TasksModulePluralLowerCaseLabel and work using an agile methodology', LabelUtil::getTranslationParamsForAllModules());
             $content .= '</p>';
             $content .= '</div>';
             $content .= '<div class="third project-collaborate"><span class="icon"></span>';
             $content .= '<p><strong>' . Zurmo::t('Core', 'Collaborate') . '</strong>';
-            $content .= Zurmo::t('ProjectsModule', 'Collaborate with users on tasks to get things done');
+            $content .= Zurmo::t('ProjectsModule', 'Collaborate with UsersModulePluralLowerCaseLabel on TasksModulePluralLowerCaseLabel to get things done', LabelUtil::getTranslationParamsForAllModules());
             $content .= '</p>';
             $content .= '</div>';
             $content .= '<div class="third project-track"><span class="icon"></span>';
             $content .= '<p><strong>' . Zurmo::t('Core', 'Track') . '</strong>';
-            $content .= Zurmo::t('ProjectsModule', 'Subscribe to notifications and track progress against milestones');
+            $content .= Zurmo::t('ProjectsModule', 'Subscribe to NotificationsModulePluralLowerCaseLabel and track progress against milestones', LabelUtil::getTranslationParamsForAllModules());
             $content .= '</p>';
             $content .= '</div>';
             $content .= '</div>';

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
     class ContactMergeTagsUtilTest extends ZurmoBaseTest
     {
@@ -304,16 +304,71 @@
             $mergeTagsUtil = MergeTagsUtilFactory::make(EmailTemplate::TYPE_CONTACT, null, $content);
             $this->assertTrue($mergeTagsUtil instanceof MergeTagsUtil);
             $this->assertTrue($mergeTagsUtil instanceof ContactMergeTagsUtil);
-            $resolvedContent = $mergeTagsUtil->resolveMergeTags(self::$emailTemplate, $this->invalidTags, null, true);
+            $resolvedContent = $mergeTagsUtil->resolveMergeTags(self::$emailTemplate, $this->invalidTags, null,
+                                                        MergeTagsToModelAttributesAdapter::ERROR_ON_FIRST_INVALID_TAG);
             $this->assertFalse($resolvedContent);
             $this->assertNotEquals($resolvedContent, $content);
             $this->assertEmpty($this->invalidTags);
         }
 
+        /**
+         * @depends testFailsOnFirstInvalidMergeTag
+         */
+        public function testReturnsFalseButDoesNotFailOnFirstInvalidMergeTag()
+        {
+            $content = "This is some text that has [[INVALID]] [[IN^VALID]] [[PHONE__NO]] merge tags";
+            $mergeTagsUtil = MergeTagsUtilFactory::make(EmailTemplate::TYPE_CONTACT, null, $content);
+            $this->assertTrue($mergeTagsUtil instanceof MergeTagsUtil);
+            $this->assertTrue($mergeTagsUtil instanceof ContactMergeTagsUtil);
+            $resolvedContent = $mergeTagsUtil->resolveMergeTags(self::$emailTemplate, $this->invalidTags, null,
+                                                MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG);
+            $this->assertFalse($resolvedContent);
+            $this->assertNotEquals($resolvedContent, $content);
+            $this->assertNotEmpty($this->invalidTags);
+        }
+
+        /**
+         * @depends testReturnsFalseButDoesNotFailOnFirstInvalidMergeTag
+         */
+        public function testReturnsTrueResolvingAsManyAsPossibleWhileReplacingInvalidWithEmpty()
+        {
+            $content = "This is some text that has [[INVALID]] [[IN^VALID]] [[STRING]] merge tags";
+            $compareContent = "This is some text that has We will add a $100 discount to this deal   merge tags";
+            $mergeTagsUtil = MergeTagsUtilFactory::make(EmailTemplate::TYPE_CONTACT, null, $content);
+            $this->assertTrue($mergeTagsUtil instanceof MergeTagsUtil);
+            $this->assertTrue($mergeTagsUtil instanceof ContactMergeTagsUtil);
+            $resolvedContent = $mergeTagsUtil->resolveMergeTags(self::$emailTemplate, $this->invalidTags, null,
+                                                        MergeTagsToModelAttributesAdapter::SUPPRESS_INVALID_TAG_ERRORS_REPLACE_WITH_EMPTY);
+            $this->assertTrue($resolvedContent !== false);
+            $this->assertNotEquals($resolvedContent, $content);
+            $this->assertEquals($compareContent, $resolvedContent);
+            $this->assertNotEmpty($this->invalidTags);
+            $this->assertEquals(array("INVALID", "IN^VALID"), $this->invalidTags);
+        }
+
+        /**
+         * @depends testReturnsTrueResolvingAsManyAsPossibleWhileReplacingInvalidWithEmpty
+         */
+        public function testReturnsTrueResolvingAsManyAsPossibleWhileKeepingInvalidMergeTags()
+        {
+            $content = "This is some text that has [[INVALID]] [[IN^VALID]] [[STRING]] merge tags";
+            $compareContent = "This is some text that has [[INVALID]] [[IN^VALID]] We will add a $100 discount to this deal merge tags";
+            $mergeTagsUtil = MergeTagsUtilFactory::make(EmailTemplate::TYPE_CONTACT, null, $content);
+            $this->assertTrue($mergeTagsUtil instanceof MergeTagsUtil);
+            $this->assertTrue($mergeTagsUtil instanceof ContactMergeTagsUtil);
+            $resolvedContent = $mergeTagsUtil->resolveMergeTags(self::$emailTemplate, $this->invalidTags, null,
+                                                MergeTagsToModelAttributesAdapter::SUPPRESS_INVALID_TAG_ERRORS_KEEP_TAG);
+            $this->assertTrue($resolvedContent !== false);
+            $this->assertNotEquals($resolvedContent, $content);
+            $this->assertEquals($compareContent, $resolvedContent);
+            $this->assertNotEmpty($this->invalidTags);
+            $this->assertEquals(array("INVALID", "IN^VALID"), $this->invalidTags);
+        }
+
         // TODO: @Shoaibi/@Jason: Low: All of the tests below would have to be duplicated for different languages.
 
         /**
-         * @depends testFailsOnInvalidMergeTags
+         * @depends testReturnsTrueResolvingAsManyAsPossibleWhileKeepingInvalidMergeTags
          */
         public function testStringMergeTag()
         {

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -55,7 +55,12 @@
          */
         public function authenticate()
         {
-            if (!static::hasPrimaryUser() && !Yii::app()->user->userModel->isSuperAdministrator())
+            if (Yii::app()->user->userModel->username == $this->username)
+            {
+                // user is trying to switch to himself again.
+                $this->redirectForInvalidSwitchRequest();
+            }
+            if ((!static::hasPrimaryUser() && !Yii::app()->user->userModel->isSuperAdministrator()))
             {
                 // we have an adventurous user here. He isn't admin and he hasn't got the primaryUser state
                 // set yet he wants to try.
@@ -70,7 +75,7 @@
                     if ($switchToUser->isRootUser)
                     {
                         // an adventurous user who is trying to switch to another Root User
-                        return $this->noRightToSwitchUser();
+                        $this->redirectForInvalidSwitchRequest();
                     }
                 }
                 if (Yii::app()->user->userModel->isSuperAdministrator() && !isset($primaryUser))
@@ -108,6 +113,11 @@
         {
             $this->errorCode    = static::ERROR_NO_RIGHT_SWITCH_USER;
             return false;
+        }
+
+        protected function redirectForInvalidSwitchRequest()
+        {
+            Yii::app()->request->redirect(Yii::app()->homeUrl);
         }
 
         protected static function hasPrimaryUser()

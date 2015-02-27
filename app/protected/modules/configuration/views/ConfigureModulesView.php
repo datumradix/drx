@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class ConfigureModulesView extends GridView
@@ -47,6 +47,36 @@
         public function isUniqueToAPage()
         {
             return true;
+        }
+
+        protected function renderContent()
+        {
+            $content  = $this->renderBannerContent();
+            $content .= parent::renderContent();
+            return $content;
+        }
+
+        protected function renderBannerContent()
+        {
+            if (Yii::app()->edition != 'Community')
+            {
+                return;
+            }
+            $content  = ZurmoHtml::openTag('div', array('class' => 'get-pro-message'));
+            $content .= ZurmoHtml::openTag('div');
+            $content .= ZurmoHtml::openTag('h2');
+            $content .= Zurmo::t('ZurmoModule', 'Achieve more with a Zurmo subscription');
+            $content .= ZurmoHtml::closeTag('h2');
+            $content .= ZurmoHtml::openTag('p');
+            $content .= Zurmo::t('HomeModule', 'Get more features, proactive support, access ' .
+                'to training and consulting, blazing fast hosting, ' .
+                'and in-depth documentation with a Zurmo subscription.');
+            $content .= ZurmoHtml::closeTag('p');
+            $content .= '<a href="http://www.zurmo.com/needSupport.php?source=amenu" class="z-button"><span class="z-label">' . // Not Coding Standard
+                        Zurmo::t('ZurmoModule', 'Learn More' . '</span></a>');
+            $content .= ZurmoHtml::closeTag('div');
+            $content .= ZurmoHtml::closeTag('div');
+            return $content;
         }
     }
 ?>

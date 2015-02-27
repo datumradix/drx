@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class AboutView extends View
@@ -57,10 +57,6 @@
                                 <div id="ZurmoLogo" class="zurmo-logo"></div>
                                 <div><p>';
             $content .= Zurmo::t('ZurmoModule', '<strong>Zurmo</strong> is a <strong>Customer Relationship Management</strong> system by <strong>Zurmo Inc.</strong>');
-            $content .= '</p><p>';
-            $content .= Zurmo::t('ZurmoModule', 'Visit the <strong>Zurmo Open Source Project</strong> at {url}.',
-                           array('{url}' => '<a href="http://www.zurmo.org">http://www.zurmo.org</a>'));
-            $content .= '<br/>';
             $content .= '</p>';
             $content .= '<p>';
             $content .= Zurmo::t('ZurmoModule', 'Visit <strong>Zurmo Inc.</strong> at {url}.',
@@ -68,8 +64,11 @@
             $content .= '<br/>';
             $content .= '</p>';
             $content .= '<p>';
-            $content .= Zurmo::t('ZurmoModule', '<strong>Zurmo</strong> is licensed under the AGPLv3.  You can read the license <a href="http://www.zurmo.org/license">here</a>.');
-            $content .= '</p></div>
+            $content .= Zurmo::t('ZurmoModule', '<strong>Achieve more with a Zurmo subscription</strong> {url}.',
+                array('{url}' => '<a href="http://www.zurmo.com/needSupport.php?source=about">Learn More</a>'));
+            $content .= '<br/>';
+            $content .= '</p>';
+            $content .= '</div>
                             <div>
                                 <h3>Core Team</h3>
                                 <ul>
@@ -99,8 +98,20 @@
                                     <li>Sacha Telgenhof  - Language Infrastructure</li>
                                     <li>Subtle Patterns  - Background Textures</li>
                                 </ul>
-                            </div>
-                        </div>';
+                            </div>';
+
+
+            $content .= '<div>';
+            $content .= '<p>';
+            $content .= Zurmo::t('ZurmoModule', 'Visit the <strong>Zurmo Open Source Project</strong> at {url}.',
+                           array('{url}' => '<a href="http://www.zurmo.org">http://www.zurmo.org</a>'));
+            $content .= '<br/>';
+            $content .= '</p>';
+            $content .= '<p>';
+            $content .= Zurmo::t('ZurmoModule', '<strong>Zurmo</strong> is licensed under the AGPLv3.  You can read the license <a href="http://www.zurmo.org/license">here</a>.');
+            $content .= '</p></div>';
+
+            $content .= '</div>';
             $content .= '<div id="rightCol">';
             $content .= static::renderSocialLinksContent();
             $content .= '<div><h3>Application Info</h3><p>';

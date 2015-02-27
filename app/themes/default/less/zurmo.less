@@ -1,6 +1,6 @@
 /*********************************************************************************
  * Zurmo is a customer relationship management program developed by
- * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+ * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
  *
  * Zurmo is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License version 3 as published by the
@@ -30,7 +30,7 @@
  * these Appropriate Legal Notices must retain the display of the Zurmo
  * logo and Zurmo copyright notice. If the display of the logo is not reasonably
  * feasible for technical reasons, the Appropriate Legal Notices must display the words
- * Copyright Zurmo Inc. 2014. All rights reserved.
+ * Copyright Zurmo Inc. 2015. All rights reserved.
  ********************************************************************************/
 
 @import 'mixins.less';
@@ -663,7 +663,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 		.t-shadow(none);
 		font-size: 14px;
 		margin-bottom: 15px;
-	} 
+	}
 	.notification-wrapper{
 		float: left;
 	}
@@ -1581,12 +1581,11 @@ body.sandbox-mode{
 	.view-toolbar-container{
 		z-index:222222;
 		position:fixed !important;
-		-webkit-transform: translateZ(0);
 		width: auto;
 		padding-bottom:10px;
-		margin-left: -20px;
 		left: 50%;
 		bottom: 0;
+        transform: translateX(-50%);
 		//float: left;
 		border: 1px solid #ccc;
 		.b-shadow(~"inset 0 0 0 1px #ffffff,  0 0 5px 2px rgba(153, 153, 153, 0.3)");
@@ -1594,11 +1593,17 @@ body.sandbox-mode{
 		&.dock{
 			background:none;
 			position:static !important; //was relative
+            transform: translateX(0);
 			//bottom:0;
-			//left:0;
+			left:0;
 			width: 100%;
 			.unstyle-panel();
 			border-top:1px solid #CCC;
+            .wizard-secondary-action-button{
+                float: right;
+                margin-right: 0;
+                margin-left: 30px;
+            }
 		}
 	}
 }
@@ -2265,7 +2270,6 @@ input[type="button"]:hover:after{
 	color: @themeColor2;
 }
 
-
 .form{
 	input[type="checkbox"]{
 		margin:0 0 10px 0 !important;
@@ -2276,7 +2280,6 @@ input[type="button"]:hover:after{
 		.b-shadow(0 0 20px 5px rgba(153, 153, 153, 0.12)); /*999*/
 		background: #ffffff;
 		#gradient > .vertical(#ffffff, #F5F5F5);
-
 		thead tr th:first-child,
 		tbody tr td:first-child{
 			padding-left:15px;
@@ -2322,6 +2325,9 @@ input[type="button"]:hover:after{
 	.simple-link{
 		display: inline;
 	}
+    .wizard-secondary-action-button{
+        margin-left: 45px;
+    }
 }
 
 .portlet-toolbar{
@@ -2332,11 +2338,9 @@ input[type="button"]:hover:after{
 		padding:0 10px 0 10px;
 		.smaller();
 	}
-
 	.icon-create:hover{
 		color: @themeColor2 !important;
 	}
-
 	/*
 	.icon-create:before{
 		content: "";
@@ -5635,6 +5639,47 @@ div.radio-input{
 			cursor: pointer;
 		}
 	}
+}
+
+/*Timeout and inactivity*/
+#timeout-dialog{
+    float: left;
+    width: 100% !important;
+    #gradient > .vertical(#f6f6f6, #ededed);
+    .b-shadow(inset 0 1px 0 0 #ffffff);
+    &:before{
+        content:'\006A'; //j
+        .symbly(80px);
+        float: left;
+        margin-right: 25px;
+        line-height: 0.5;
+    }
+    p{
+        line-height: 1.5;
+    }
+    .float-bar{
+        margin-top: 20px;
+        margin-bottom: 0;
+        padding: 0;
+    }
+    .form-toolbar{
+        text-align: right;
+        a:last-child{
+            margin-right: 0;
+        }
+    }
+}
+
+#timeout-countdown{
+    font-weight: bold;
+    color:#fff;
+    background: #a82d31;
+    padding: 0 2px 0 4px;
+    .radius(2px);
+}
+
+#timeout-message{
+    margin-bottom: 5px;
 }
 
 @import 'mixins.less';

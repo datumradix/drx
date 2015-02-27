@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,11 +31,13 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class NotificationsUtilTest extends ZurmoBaseTest
     {
+        protected $user;
+
         public static function setUpBeforeClass()
         {
             parent::setUpBeforeClass();
@@ -46,6 +48,7 @@
         public function setup()
         {
             parent::setup();
+            $this->user = User::getByUsername('super');
         }
 
         public function teardown()
@@ -55,11 +58,11 @@
 
         public function testSubmitNonCritical()
         {
-            $super                                    = User::getByUsername('super');
+            $user                                     = $this->user;
             $emailAddress                             = new Email();
             $emailAddress->emailAddress               = 'sometest@zurmoalerts.com';
-            $super->primaryEmail                      = $emailAddress;
-            $saved                                    = $super->save();
+            $user->primaryEmail                       = $emailAddress;
+            $saved                                    = $user->save();
             $this->assertTrue($saved);
             $billy                                    = User::getByUsername('billy');
             $emailAddress                             = new Email();
@@ -73,27 +76,216 @@
             $message->textContent       = 'text content';
             $message->htmlContent       = 'html content';
             $rules                      = new SimpleNotificationRules();
-            $rules->addUser($super);
+            $rules->addUser($user);
             $rules->addUser($billy);
             NotificationsUtil::submit($message, $rules);
 
-            //It should not send an email because it is non-critical
-            $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
+            //non critical notification emails are queued.
+            $this->assertEquals(2, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $notifications              = Notification::getAll();
-            $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
-            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            $this->assertCount(2, $notifications);
         }
 
         public function testSubmitCritical()
         {
-            //todo:
-            //setCritical($critical);
+            Notification::deleteAll();
+            EmailMessage::deleteAll();
+            $user                                    = $this->user;
+            $emailAddress                             = new Email();
+            $emailAddress->emailAddress               = 'sometest@zurmoalerts.com';
+            $user->primaryEmail                      = $emailAddress;
+            $saved                                    = $user->save();
+            $this->assertTrue($saved);
+            $billy                                    = User::getByUsername('billy');
+            $emailAddress                             = new Email();
+            $emailAddress->emailAddress               = 'sometest2@zurmoalerts.com';
+            $billy->primaryEmail                      = $emailAddress;
+            $saved                                    = $billy->save();
+            $this->assertTrue($saved);
+            $notifications              = Notification::getAll();
+            $this->assertEquals(0, count($notifications));
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content';
+            $message->htmlContent       = 'html content';
+            $rules                      = new SimpleNotificationRules();
+            $rules->addUser($user);
+            $rules->addUser($billy);
+            $rules->setCritical(true);
+            NotificationsUtil::submit($message, $rules);
+
+            //critical notification emails are sent directly
+            $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(2, Yii::app()->emailHelper->getSentCount());
+            $notifications              = Notification::getAll();
+            $this->assertCount(2, $notifications);
         }
 
         public function testSubmittingDuplicateNotifications()
         {
-            //todo:
+            $user                       = $this->user;
+            Notification::deleteAll();
+            EmailMessage::deleteAll();
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content';
+            $message->htmlContent       = 'html content';
+            $rules                      = new SimpleNotificationRules();
+            $rules->setCritical(true);
+            $rules->setAllowDuplicates(false);
+            $rules->addUser($user);
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals(1, Yii::app()->emailHelper->getSentCount());
+            $this->assertCount (1, Notification::getAll());
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals(1, Yii::app()->emailHelper->getSentCount());
+            $this->assertCount (1, Notification::getAll());
+            $rules->setAllowDuplicates(true);
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals(2, Yii::app()->emailHelper->getSentCount());
+            $this->assertCount (2, Notification::getAll());
+        }
+
+        public function testSubmitWithInboxNotificationSettingEnabledAndEmailNotificationSettingDisabled()
+        {
+            $initialNotificationCount = Notification::getCount();
+            $initialEmailMessageCount  = EmailMessage::getCount();
+            $rules                     = new SimpleNotificationRules();
+            $rules->setAllowDuplicates(true);
+            $rules->addUser($this->user);
+
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['email'] = false;
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['inbox'] = true;
+            UserNotificationUtil::setValue(
+                $this->user, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
+            $this->assertFalse(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'email'));
+            $this->assertTrue(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'inbox'));
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content for' . __FUNCTION__;
+            $message->htmlContent       = 'html content for' . __FUNCTION__;
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals($initialNotificationCount + 1, Notification::getCount());
+            $this->assertEquals($initialEmailMessageCount, EmailMessage::getCount());
+        }
+
+        public function testSubmitWithInboxNotificationSettingDisabledAndEmailNotificationSettingEnabled()
+        {
+            $initialNotificationCount = Notification::getCount();
+            $initialEmailMessageCount  = EmailMessage::getCount();
+            $rules                     = new SimpleNotificationRules();
+            $rules->setAllowDuplicates(true);
+            $rules->addUser($this->user);
+
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['email'] = true;
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['inbox'] = false;
+            UserNotificationUtil::setValue(
+                $this->user, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
+            $this->assertTrue(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'email'));
+            $this->assertFalse(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'inbox'));
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content for' . __FUNCTION__;
+            $message->htmlContent       = 'html content for' . __FUNCTION__;
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals($initialNotificationCount, Notification::getCount());
+            $this->assertEquals($initialEmailMessageCount + 1, EmailMessage::getCount());
+        }
+
+        public function testSubmitWithInboxNotificationSettingEnabledAndEmailNotificationSettingEnabled()
+        {
+            $initialNotificationCount = Notification::getCount();
+            $initialEmailMessageCount  = EmailMessage::getCount();
+            $rules                     = new SimpleNotificationRules();
+            $rules->setAllowDuplicates(true);
+            $rules->addUser($this->user);
+
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['email'] = true;
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['inbox'] = true;
+            UserNotificationUtil::setValue(
+                $this->user, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
+            $this->assertTrue(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'email'));
+            $this->assertTrue(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'inbox'));
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content for' . __FUNCTION__;
+            $message->htmlContent       = 'html content for' . __FUNCTION__;
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals($initialNotificationCount + 1, Notification::getCount());
+            $this->assertEquals($initialEmailMessageCount + 1, EmailMessage::getCount());
+        }
+
+        public function testSubmitCriticalNotificationWithInboxNotificationSettingEnabledAndEmailNotificationSettingEnabled()
+        {
+            $initialNotificationCount     = Notification::getCount();
+            $initialEmailMessageCount     = EmailMessage::getCount();
+            $initialSentEmailMessageCount = count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT));
+            $rules                        = new SimpleNotificationRules();
+            $rules->setAllowDuplicates(true);
+            $rules->addUser($this->user);
+            $rules->setCritical(true);
+
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['email'] = true;
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['inbox'] = true;
+            UserNotificationUtil::setValue(
+                $this->user, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
+            $this->assertTrue(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'email'));
+            $this->assertTrue(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'inbox'));
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content for' . __FUNCTION__;
+            $message->htmlContent       = 'html content for' . __FUNCTION__;
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals($initialNotificationCount + 1, Notification::getCount());
+            // because it was a critical notification, an email should have been sent immediately.
+            $this->assertEquals($initialEmailMessageCount + 1, EmailMessage::getCount());
+            $this->assertEquals($initialSentEmailMessageCount + 1, count(EmailMessage::getAllByFolderType(EmailFolder::TYPE_SENT)));
+        }
+
+        public function testSubmitCriticalNotificationWithInboxNotificationSettingEnabledAndEmailNotificationSettingDisabled()
+        {
+            $initialNotificationCount   = Notification::getCount();
+            $initialEmailMessageCount   = EmailMessage::getCount();
+            $rules                      = new SimpleNotificationRules();
+            $rules->setAllowDuplicates(true);
+            $rules->addUser($this->user);
+            $rules->setCritical(true);
+
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['email'] = false;
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['inbox'] = true;
+            UserNotificationUtil::setValue(
+                $this->user, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
+            $this->assertFalse(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'email'));
+            $this->assertTrue(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'inbox'));
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content for' . __FUNCTION__;
+            $message->htmlContent       = 'html content for' . __FUNCTION__;
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals($initialNotificationCount + 1, Notification::getCount());
+            $this->assertEquals($initialEmailMessageCount, EmailMessage::getCount());
+        }
+
+        public function testSubmitWithInboxNotificationSettingDisabledAndEmailNotificationSettingDisabled()
+        {
+            $initialNotificationCount = Notification::getCount();
+            $initialEmailMessageCount  = EmailMessage::getCount();
+            $rules                     = new SimpleNotificationRules();
+            $rules->setAllowDuplicates(true);
+            $rules->addUser($this->user);
+
+            $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['email'] = false;
+            $inboxAndEmailNotificationSettings['enableSimpleNotification']['inbox'] = false;
+            UserNotificationUtil::setValue(
+                $this->user, $inboxAndEmailNotificationSettings, 'inboxAndEmailNotificationSettings', false);
+            $this->assertFalse(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'email'));
+            $this->assertFalse(UserNotificationUtil::isEnabledByUserAndNotificationNameAndType($this->user, 'enableSimpleNotification', 'inbox'));
+            $message                    = new NotificationMessage();
+            $message->textContent       = 'text content for' . __FUNCTION__;
+            $message->htmlContent       = 'html content for' . __FUNCTION__;
+            NotificationsUtil::submit($message, $rules);
+            $this->assertEquals($initialNotificationCount, Notification::getCount());
+            $this->assertEquals($initialEmailMessageCount, EmailMessage::getCount());
         }
     }
 ?>

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     Yii::import('ext.swiftmailer.SwiftMailer');
@@ -58,6 +58,10 @@
          * @var array
          */
         protected $sendResponseLog          = array();
+
+        protected $emailAccount;
+
+        protected $emailMessage;
 
         /**
          * (non-PHPdoc)
@@ -182,6 +186,193 @@
             }
             $this->clearAddresses();
             return $result;
+        }
+
+        /**
+         * Class constructor.
+         * @param EmailMessage $emailMessage
+         * @param EmailAccount $emailAccount
+         */
+        public function __construct(EmailMessage $emailMessage, $emailAccount)
+        {
+            parent::init();
+            $this->emailAccount = $emailAccount;
+            $this->emailMessage = $emailMessage;
+            $this->populateSettings();
+            $this->populateMessage();
+        }
+
+        /**
+         * Populate settings.
+         * @param EmailAccount $this->emailAccount
+         * @return void
+         */
+        protected function populateSettings()
+        {
+            if ($this->emailAccount != null && $this->emailAccount->outboundHost != null &&
+                   $this->emailAccount->outboundPort != null &&
+                   $this->emailAccount->outboundUsername != null &&
+                   $this->emailAccount->outboundPassword != null)
+            {
+                $this->host     = $this->emailAccount->outboundHost;
+                $this->port     = $this->emailAccount->outboundPort;
+                $this->username = $this->emailAccount->outboundUsername;
+                $this->password = ZurmoPasswordSecurityUtil::decrypt($this->emailAccount->outboundPassword);
+                $this->security = $this->emailAccount->outboundSecurity;
+            }
+            else
+            {
+                $this->mailer   = Yii::app()->emailHelper->outboundType;
+                $this->host     = Yii::app()->emailHelper->outboundHost;
+                $this->port     = Yii::app()->emailHelper->outboundPort;
+                $this->username = Yii::app()->emailHelper->outboundUsername;
+                $this->password = Yii::app()->emailHelper->outboundPassword;
+                $this->security = Yii::app()->emailHelper->outboundSecurity;
+            }
+        }
+
+        /**
+         * Populate message.
+         * @return void
+         */
+        public function populateMessage()
+        {
+            $emailMessage   = $this->emailMessage;
+            $this->Subject  = $emailMessage->subject;
+            $this->headers  = unserialize($emailMessage->headers);
+            if (!empty($emailMessage->content->textContent))
+            {
+                $this->altBody  = $emailMessage->content->textContent;
+            }
+            if (!empty($emailMessage->content->htmlContent))
+            {
+                $this->body       = ZurmoCssInlineConverterUtil::convertAndPrettifyEmailByHtmlContent(
+                                                $emailMessage->content->htmlContent,
+                                                Yii::app()->emailHelper->htmlConverter);
+            }
+            $this->From = array($emailMessage->sender->fromAddress => $emailMessage->sender->fromName);
+            foreach ($emailMessage->recipients as $recipient)
+            {
+                $this->addAddressByType($recipient->toAddress, $recipient->toName, $recipient->type);
+            }
+
+            if (isset($emailMessage->files) && !empty($emailMessage->files))
+            {
+                foreach ($emailMessage->files as $file)
+                {
+                    $this->attachDynamicContent($file->fileContent->content, $file->name, $file->type);
+                    //$emailMessage->attach($attachment);
+                }
+            }
+        }
+
+        /**
+         * Sends email.
+         * @param EmailMessage $emailMessage
+         * @return void
+         */
+        public function sendEmail()
+        {
+            $emailMessage = $this->emailMessage;
+            try
+            {
+                $emailMessage->sendAttempts = $emailMessage->sendAttempts + 1;
+                $acceptedRecipients         = $this->send();
+                // Code below is quick fix, we need to think about better solution
+                // Here is related PT story: https://www.pivotaltracker.com/projects/380027#!/stories/45841753
+                if ($acceptedRecipients != $emailMessage->recipients->count() && $acceptedRecipients <= 0)
+                {
+                    $content = Zurmo::t('EmailMessagesModule', 'Response from Server') . "\n";
+                    foreach ($this->getSendResponseLog() as $logMessage)
+                    {
+                        $content .= $logMessage . "\n";
+                    }
+                    $emailMessageSendError = new EmailMessageSendError();
+                    $data                  = array();
+                    $data['message']                       = $content;
+                    $emailMessageSendError->serializedData = serialize($data);
+                    $emailMessage->folder                  = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox,
+                                                                                          EmailFolder::TYPE_OUTBOX_ERROR);
+                    $emailMessage->error                   = $emailMessageSendError;
+                }
+                else
+                {
+                    $emailMessage->error        = null;
+                    $emailMessage->folder       = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_SENT);
+                    $emailMessage->sentDateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+                }
+            }
+            catch (OutboundEmailSendException $e)
+            {
+                $emailMessageSendError = new EmailMessageSendError();
+                $data = array();
+                $data['code']                          = $e->getCode();
+                $data['message']                       = $e->getMessage();
+                //$data['trace']                         = $e->getPrevious();
+                $emailMessageSendError->serializedData = serialize($data);
+                $emailMessage->folder   = EmailFolder::getByBoxAndType($emailMessage->folder->emailBox, EmailFolder::TYPE_OUTBOX_ERROR);
+                $emailMessage->error    = $emailMessageSendError;
+            }
+            $this->updateEmailMessageForSending($emailMessage, false);
+        }
+
+        /**
+         * Updates the email message using stored procedure
+         * @param EmailMessage $emailMessage
+         */
+        protected function updateEmailMessageForSending(EmailMessage $emailMessage, $useSQL = false)
+        {
+            if (!$useSQL)
+            {
+                Yii::log("EmailMessage should have been saved by this point. Anyways, saving now", CLogger::LEVEL_INFO);
+                // we save it and return. No need to call SP as the message is saved already;
+                $emailMessage->save(false);
+                return;
+            }
+            $nowTimestamp       = "'" . DateTimeUtil::convertTimestampToDbFormatDateTime(time()) . "'";
+            $sendAttempts       = ($emailMessage->sendAttempts)? $emailMessage->sendAttempts : 1;
+            $sentDateTime       = ($emailMessage->sentDateTime)? "'" . $emailMessage->sentDateTime . "'" : 'null';
+            $serializedData     = ($emailMessage->error->serializedData)?
+                                                            "'" . $emailMessage->error->serializedData . "'" : 'null';
+            $sql                    = '`update_email_message_for_sending`(
+                                                                        ' . $emailMessage->id . ',
+                                                                        ' . $sendAttempts . ',
+                                                                        ' . $sentDateTime . ',
+                                                                        ' . $emailMessage->folder->id . ',
+                                                                        ' . $serializedData . ',
+                                                                        ' . $nowTimestamp .')';
+            ZurmoDatabaseCompatibilityUtil::callProcedureWithoutOuts($sql);
+            $emailMessage->forget();
+        }
+
+        /**
+         * Send a test email.
+         * @param bool $isUser
+         * @return EmailMessage
+         */
+        public function sendTestEmail($isUser = false)
+        {
+            $this->emailMessage->mailerType = 'smtp';
+            if ($isUser)
+            {
+                $this->emailMessage->mailerSettings = 'personal';
+            }
+            if ($this->emailMessage->validate())
+            {
+                $this->emailMessage->save();
+                $this->sendEmail();
+            }
+            return $this->emailMessage;
+        }
+
+        public function getEmailAccount()
+        {
+            return $this->emailAccount;
+        }
+
+        public function getEmailMessage()
+        {
+            return $this->emailMessage;
         }
     }
 ?>

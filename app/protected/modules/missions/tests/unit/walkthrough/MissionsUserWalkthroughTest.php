@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -56,7 +56,9 @@
             $steven                             = UserTestHelper::createBasicUser('steven');
             $steven->primaryEmail->emailAddress = 'steven@testzurmo.com';
             //Steven has turned off notifications
-            UserConfigurationFormAdapter::setValue($steven, true, 'turnOffEmailNotifications');
+            NotificationTestHelper::setNotificationSettingsForUser($steven, 'NewMission', false, false);
+            NotificationTestHelper::setNotificationSettingsForUser($steven, 'MissionStatusChange', false, false);
+            NotificationTestHelper::setNotificationSettingsForUser($steven, 'MissionNewComment', false, false);
             $sally                              = UserTestHelper::createBasicUser('sally');
             $sally->primaryEmail->emailAddress  = 'sally@testzurmo.com';
             $mary                               = UserTestHelper::createBasicUser('mary');
@@ -111,6 +113,10 @@
             $sally          = User::getByUsername('sally');
             $mary           = User::getByUsername('mary');
 
+            $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            $this->assertEquals(0, Notification::getCount());
+
             $missions = Mission::getAll();
             $this->assertEquals(0, count($missions));
             $this->setPostArray(array('Mission'                 => array('description' => 'TestDescription',
@@ -145,7 +151,8 @@
             $this->assertNotContains(strval($steven->primaryEmail),   $recipents);
             $this->assertContains   (strval($mary->primaryEmail),     $recipents);
             $this->assertContains   (strval($sally->primaryEmail),    $recipents);
-            $this->assertEquals     (4,         User::getCount());
+            //Confirm notifications where created
+            $this->assertEquals(2, Notification::getCount());
         }
 
         /**
@@ -157,15 +164,14 @@
             {
                 return;
             }
-            $super          = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
-            $steven         = User::getByUsername('steven');
-            $sally          = User::getByUsername('sally');
-            $mary           = User::getByUsername('mary');
+            $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
             $missions  = Mission::getAll();
             $this->assertEquals(1, count($missions));
             $this->assertEquals(0, $missions[0]->comments->count());
             $this->assertEquals(2, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
+            $this->assertEquals(2, Notification::getCount());
             $oldStamp        = $missions[0]->latestDateTime;
 
             //Validate comment
@@ -386,18 +392,15 @@
         /**
          * @depends testAjaxChangeStatus
          */
-        public function testSendEmailInNewComment()
+        public function testSendNotificationInNewComment()
         {
-            $super          = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
-            $mary           = User::getByUsername('mary');
+            $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $missions       = Mission::getAll();
             $this->assertEquals(1, count($missions));
             $mission        = $missions[0];
             $this->assertEquals(0, $mission->comments->count());
-            foreach (EmailMessage::getAll() as $emailMessage)
-            {
-                $emailMessage->delete();
-            }
+            EmailMessage::deleteAll();
+            Notification::deleteAll();
             $messageCount   = 0;
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
 
@@ -407,7 +410,7 @@
                                      'relatedModelRelationName'   => 'comments',
                                      'redirectUrl'                => 'someRedirect'));
             $this->setPostArray(array('Comment'          => array('description' => 'a ValidComment Name')));
-            $content = $this->runControllerWithRedirectExceptionAndGetContent('comments/default/inlineCreateSave');
+            $this->runControllerWithRedirectExceptionAndGetContent('comments/default/inlineCreateSave');
             $this->assertEquals(1, $mission->comments->count());
             $this->assertEquals($messageCount + 1, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
@@ -418,6 +421,12 @@
             $this->assertContains(strval($mission), $emailMessage->subject);
             $this->assertContains(strval($mission->comments[0]), $emailMessage->content->htmlContent);
             $this->assertContains(strval($mission->comments[0]), $emailMessage->content->textContent);
+            $notifications  = Notification::getAll();
+            $notification   = $notifications[$messageCount];
+            $this->assertCount(1, $notifications);
+            $this->assertEquals('Mission new comment', strval($notification));
+            $this->assertContains(strval($mission->comments[0]), $notification->notificationMessage->htmlContent);
+            $this->assertContains(strval($mission->comments[0]), $notification->notificationMessage->textContent);
         }
 
         public function testMissionReadUnreadStatus()

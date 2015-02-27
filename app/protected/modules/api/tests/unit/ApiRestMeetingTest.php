@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -1308,12 +1308,19 @@
             $this->assertContains($meetingId3, $response['data']['items']);
         }
 
-        public function testGetManyManyRelationshipModelIds()
+        public function testGetAttendees()
         {
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $alisa  = UserTestHelper::createBasicUser('Alisa');
-            $alicia = UserTestHelper::createBasicUser('Alicia');
+            $evelina  = UserTestHelper::createBasicUser('Evelina');
+            $amelia  = UserTestHelper::createBasicUser('Amelia');
+            $amelia->primaryEmail->emailAddress = 'super@example.com';
+            $this->assertTrue($amelia->save());
+            $contact1 = ContactTestHelper::createContactByNameForOwner('TestContact1', $super);
+            $contact2 = ContactTestHelper::createContactByNameForOwner('TestContact2', $super);
+
+            $contact2->primaryEmail->emailAddress = 'aaa@example.com';
+            $this->assertTrue($contact2->save());
 
             $authenticationData = $this->login();
             $headers = array(
@@ -1324,50 +1331,65 @@
             );
 
             $meeting = MeetingTestHelper::createMeetingByNameForOwner('Meeting With User Attendees', $super);
-            $data = array(
-                'id' => $meeting->id,
-                'modelClassName' => 'Meeting',
-                'relationName' => 'userAttendees',
-            );
 
-            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getAttendees/?id=' . $meeting->id, 'GET', $headers);
             $response = json_decode($response, true);
+
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertEmpty($response['data']);
 
-            $meeting->userAttendees->add($alisa);
-            $meeting->userAttendees->add($alicia);
+            $meeting->activityItems->add($contact1);
+            $meeting->activityItems->add($contact2);
             $this->assertTrue($meeting->save());
-            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $response = $this->createApiCallWithRelativeUrl('getAttendees/?id=' . $meeting->id, 'GET', $headers);
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
-            $this->assertEquals(2, count($response['data']['userAttendees']));
-            $this->assertEquals('User', $response['data']['userAttendees'][0]['class']);
-            $this->assertEquals($alisa->id, $response['data']['userAttendees'][0]['id']);
-            $this->assertEquals('User', $response['data']['userAttendees'][1]['class']);
-            $this->assertEquals($alicia->id, $response['data']['userAttendees'][1]['id']);
+            $this->assertEquals(2, count($response['data']['Contact']));
+            $this->assertEquals($contact1->id, $response['data']['Contact'][0]['id']);
+            $this->assertEquals($contact1->firstName, $response['data']['Contact'][0]['firstName']);
+            $this->assertEquals($contact1->lastName, $response['data']['Contact'][0]['lastName']);
+            $this->assertEquals($contact2->id, $response['data']['Contact'][1]['id']);
+            $this->assertEquals($contact2->firstName, $response['data']['Contact'][1]['firstName']);
+            $this->assertEquals($contact2->lastName, $response['data']['Contact'][1]['lastName']);
+            $this->assertEquals($contact2->primaryEmail->emailAddress, $response['data']['Contact'][1]['email']);
 
-            $data = array(
-                'id' => $meeting->id,
-                'modelClassName' => 'NonExistingModel',
-                'relationName' => 'userAttendees',
-            );
-
-            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            $meeting->userAttendees->add($evelina);
+            $meeting->userAttendees->add($amelia);
+            $this->assertTrue($meeting->save());
+            $response = $this->createApiCallWithRelativeUrl('getAttendees/?id=' . $meeting->id, 'GET', $headers);
             $response = json_decode($response, true);
-            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
-            $this->assertEquals('The specified class name was invalid.', $response['message']);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals(2, count($response['data']['Contact']));
+            $this->assertEquals($contact1->id, $response['data']['Contact'][0]['id']);
+            $this->assertEquals($contact1->firstName, $response['data']['Contact'][0]['firstName']);
+            $this->assertEquals($contact1->lastName, $response['data']['Contact'][0]['lastName']);
+            $this->assertEquals($contact2->id, $response['data']['Contact'][1]['id']);
+            $this->assertEquals($contact2->firstName, $response['data']['Contact'][1]['firstName']);
+            $this->assertEquals($contact2->lastName, $response['data']['Contact'][1]['lastName']);
+            $this->assertEquals(2, count($response['data']['User']));
+            $this->assertEquals($evelina->id, $response['data']['User'][0]['id']);
+            $this->assertEquals($evelina->firstName, $response['data']['User'][0]['firstName']);
+            $this->assertEquals($evelina->lastName, $response['data']['User'][0]['lastName']);
+            $this->assertEquals($evelina->username, $response['data']['User'][0]['username']);
+            $this->assertEquals($amelia->id, $response['data']['User'][1]['id']);
+            $this->assertEquals($amelia->primaryEmail->emailAddress, $response['data']['User'][1]['email']);
+            $this->assertEquals($amelia->firstName, $response['data']['User'][1]['firstName']);
+            $this->assertEquals($amelia->lastName, $response['data']['User'][1]['lastName']);
+            $this->assertEquals($amelia->username, $response['data']['User'][1]['username']);
 
-            $data = array(
-                'id' => $meeting->id,
-                'modelClassName' => 'Meeting',
-                'relationName' => 'owner', // This is not MANY_MANY relationship
-            );
-
-            $response = $this->createApiCallWithRelativeUrl('getUserAttendees/', 'POST', $headers, array('data' => $data));
+            // Test with opportunity and account activity items
+            $account = AccountTestHelper::createAccountByNameForOwner('FirstAccount', $super);
+            $opportunity = OpportunityTestHelper::createOpportunityByNameForOwner('TestOpportunity', $super);
+            $meeting2 = MeetingTestHelper::createMeetingByNameForOwner('Meeting With Account and Opportunity', $super);
+            $meeting2->activityItems->add($account);
+            $meeting2->activityItems->add($opportunity);
+            $this->assertTrue($meeting2->save());
+            $response = $this->createApiCallWithRelativeUrl('getAttendees/?id=' . $meeting2->id, 'GET', $headers);
             $response = json_decode($response, true);
-            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
-            $this->assertEquals('The specified relationship name does not exist or is not MANY_MANY type.', $response['message']);
+            $this->assertEquals($account->id, $response['data']['Account'][0]['id']);
+            $this->assertEquals($account->name, $response['data']['Account'][0]['name']);
+            $this->assertEquals($opportunity->id, $response['data']['Opportunity'][0]['id']);
+            $this->assertEquals($opportunity->name, $response['data']['Opportunity'][0]['name']);
         }
 
         protected function getApiControllerClassName()

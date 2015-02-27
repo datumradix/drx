@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class MissionTest extends ZurmoBaseTest
@@ -54,7 +54,7 @@
         {
             $super                     = User::getByUsername('super');
             $fileModel                 = ZurmoTestHelper::createFileModel();
-            $steven                    = UserTestHelper::createBasicUser('steven');
+            $steven                    = UserTestHelper::createBasicUserWithEmailAddress('steven');
             $steven->setRight('MissionsModule', MissionsModule::RIGHT_ACCESS_MISSIONS);
             $steven->save();
             $dueStamp                  = DateTimeUtil::convertTimestampToDbFormatDateTime(time()  + 10000);
@@ -135,27 +135,35 @@
         public function testMissionNotifications()
         {
             $super      = User::getByUsername('super');
+            $super->primaryEmail->emailAddress = 'super@zurmo.com';
+            $this->assertTrue($super->save());
             $steven     = User::getByUsername('steven');
+            //A new mission notification was already created for steven
             $this->assertEquals(0, Notification::getCountByUser($super));
-            $this->assertEquals(0, Notification::getCountByUser($steven));
+            $this->assertEquals(1, Notification::getCountByUser($steven));
+            $this->assertEquals(1, EmailMessage::getCount());
             $missions   = Mission::getAll();
             $mission = $missions[0];
             $mission->status = Mission::STATUS_TAKEN;
             $this->assertTrue($mission->save());
             $this->assertEquals(1, Notification::getCountByUser($super));
-            $this->assertEquals(0, Notification::getCountByUser($steven));
+            $this->assertEquals(1, Notification::getCountByUser($steven));
+            $this->assertEquals(2, EmailMessage::getCount());
             $mission->status = Mission::STATUS_COMPLETED;
             $this->assertTrue($mission->save());
             $this->assertEquals(2, Notification::getCountByUser($super));
-            $this->assertEquals(0, Notification::getCountByUser($steven));
+            $this->assertEquals(1, Notification::getCountByUser($steven));
+            $this->assertEquals(3, EmailMessage::getCount());
             $mission->status = Mission::STATUS_REJECTED;
             $this->assertTrue($mission->save());
             $this->assertEquals(2, Notification::getCountByUser($super));
-            $this->assertEquals(1, Notification::getCountByUser($steven));
+            $this->assertEquals(2, Notification::getCountByUser($steven));
+            $this->assertEquals(4, EmailMessage::getCount());
             $mission->status = Mission::STATUS_ACCEPTED;
             $this->assertTrue($mission->save());
             $this->assertEquals(2, Notification::getCountByUser($super));
-            $this->assertEquals(2, Notification::getCountByUser($steven));
+            $this->assertEquals(3, Notification::getCountByUser($steven));
+            $this->assertEquals(5, EmailMessage::getCount());
         }
 
         /**

@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,40 +31,41 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
      * A  NotificationRules to manage when a new task is created
      */
-    class TaskNotificationRules extends NotificationRules
+    abstract class TaskNotificationRules extends NotificationRules
     {
-        protected $model;
-
-        public function getModel()
-        {
-            return $this->model;
-        }
-
-        public function setModel($model)
-        {
-            $this->model = $model;
-        }
-
-        /**
-         * @returns Translated label that describes this rule type.
-         */
-        public static function getDisplayName()
-        {
-            return 'task';
-        }
-
         /**
          * @return The type of the NotificationRules
          */
-        public static function getType()
+        public function getType()
         {
             return 'Task';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('TasksModule');
+        }
+
+        protected function getParamsForEmailSubject()
+        {
+            assert('$this->model instanceof Task');
+            $relatedModelStringValue = TasksUtil::resolveFirstRelatedModelStringValue($this->model);
+            if ($relatedModelStringValue != null)
+            {
+                $relatedModelStringValue = '(' . $relatedModelStringValue . ')';
+            }
+            $params = array('{task}'         => strval($this->model),
+                            '{relatedModel}' => $relatedModelStringValue);
+            return $params;
         }
     }
 ?>

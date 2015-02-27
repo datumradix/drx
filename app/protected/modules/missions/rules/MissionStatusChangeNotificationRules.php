@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,22 +31,40 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
      * A  NotificationRules to manage when a mission status changes.
      */
-    class MissionStatusChangeNotificationRules extends SimpleNotificationRules
+    class MissionStatusChangeNotificationRules extends NotificationRules
     {
-        public static function getDisplayName()
+        public function getDisplayName()
         {
             return Zurmo::t('MissionsModule', 'A mission status has changed');
         }
 
-        public static function getType()
+        public function getType()
         {
             return 'MissionStatusChange';
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('MissionsModule');
+        }
+
+        public function getTooltipId()
+        {
+            return 'mission-status-change-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me when the status changes on one of my missions.');
         }
     }
 ?>

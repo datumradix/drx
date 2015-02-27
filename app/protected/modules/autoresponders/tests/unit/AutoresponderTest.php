@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
     class AutoresponderTest extends AutoresponderOrCampaignBaseTest
     {
@@ -234,22 +234,26 @@
             $contact            = ContactTestHelper::createContactByNameForOwner('autoresponderContact', Yii::app()->user->userModel);
             $saved              = AutoresponderItem::addNewItem(0, $processDateTime, $contact, $autoresponders[0]);
             $this->assertTrue($saved);
-            $autoresponderItems = AutoresponderItem::getByProcessedAndAutoresponderId(0,
-                                                                                        $autoresponderId);
-            //print_r($autoresponderItems[0]->id);
+            $autoresponderItems = AutoresponderItem::getByProcessedAndAutoresponderId(0, $autoresponderId);
             $this->assertNotEmpty($autoresponderItems);
             $this->assertCount(1, $autoresponderItems);
 
-            $autoresponderItemActivity                  = new AutoresponderItemActivity();
-            $autoresponderItemActivity->type            = AutoresponderItemActivity::TYPE_OPEN;
-            $autoresponderItemActivity->quantity        = 10;
-            $autoresponderItemActivity->latestSourceIP  = '10.11.12.13';
-            $autoresponderItemActivity->autoresponderItem = $autoresponderItems[0];
-            $this->assertTrue($autoresponderItemActivity->save());
-            //print_r($autoresponderItemActivity->id);
-
-            $autoresponderItemActivities = AutoresponderItemActivity::getAll();
-            $this->assertCount(1, $autoresponderItemActivities);
+            $fileNames                  = array('testImage.png', 'testZip.zip', 'testPDF.pdf');
+            $files                      = array();
+            foreach ($fileNames as $index => $fileName)
+            {
+                $file                       = ZurmoTestHelper::createFileModel($fileName);
+                $files[$index]['name']      = $fileName;
+                $files[$index]['type']      = $file->type;
+                $files[$index]['size']      = $file->size;
+                $files[$index]['contents']  = $file->fileContent->content;
+                $autoresponders[0]->files->add($file);
+            }
+            $this->assertTrue($autoresponders[0]->save());
+            $autoresponders = Autoresponder::getAll();
+            $this->assertNotEmpty($autoresponders[0]->files);
+            $this->assertCount(count($files), $autoresponders[0]->files);
+            $this->assertEquals(count($files), FileModel::getCount());
 
             $autoresponders[0]->delete();
 
@@ -259,8 +263,7 @@
             $autoresponderitems = AutoresponderItem::getByProcessedAndAutoresponderId(0, $autoresponderId);
             $this->assertEquals(0, count($autoresponderitems));
 
-            $autoresponderItemActivities = AutoresponderItemActivity::getAll();
-            $this->assertCount(0, $autoresponderItemActivities);
+            $this->assertEquals(0, FileModel::getCount());
         }
 
         public function testResolveNewTimeStampForDuration()

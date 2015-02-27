@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,25 +31,34 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
      * Class for working the campaign status
      */
-    class CampaignStatusListViewColumnAdapter extends ListViewColumnAdapter
+    class CampaignStatusListViewColumnAdapter extends TextListViewColumnAdapter
     {
-        /**
-         * @return array
-         */
         public function renderGridViewData()
         {
+            $className  = get_class($this);
+            $value      = $className . '::resolveStatusPill($data->status)';
             return array(
-                'name'   => 'moduleClassName',
+                'name'   => 'status',
                 'header' => Campaign::getAnAttributeLabel('status'),
-                'type'   => 'raw',
-                'value'  => 'CampaignStatusElement::renderNonEditableStringContent((int)$data->status)'
+                'value' => $value,
+                'type'  => 'raw',
             );
+        }
+
+        public static function resolveStatusPill($status)
+        {
+            $label      = CampaignStatusElement::renderNonEditableStringContent((int)$status);
+            $span       = ZurmoHtml::tag('span', array(), $label);
+            $content    = '<i>&#9679;</i>' . $span;
+            $class      = 'campaign-status ' . strtolower($label);
+            $content    = ZurmoHtml::tag('div', compact('class'), $content);
+            return $content;
         }
     }
 ?>

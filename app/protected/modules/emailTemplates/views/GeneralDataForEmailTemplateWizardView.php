@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2013 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2013. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class GeneralDataForEmailTemplateWizardView extends ComponentForEmailTemplateWizardView
@@ -198,6 +198,7 @@
         protected function registerScripts()
         {
             parent::registerScripts();
+            $this->registerSendTestEmailScriptsForWizardView();
             $this->registerSetIsDraftToZeroScript();
             $this->registerTrashSomeDataOnModuleChangeScript();
             if ($this->model->isWorkflowTemplate())
@@ -208,7 +209,7 @@
 
         protected function registerOnChangeModelClassNameChangeScript()
         {
-            $jquerySelector = $this->resolveModuleClassNameJQuerySelector();
+            $jquerySelector             = $this->resolveModuleClassNameJQuerySelector();
             $moduleClassNameSelector    = static::resolveModelClassNameHiddenInputJQuerySelector();
             Yii::app()->clientScript->registerScript('setIsDraftToZero', "
                 $('{$jquerySelector}').on('change', function() {
@@ -301,6 +302,46 @@
                                                                                                 $stepCount, $model);
             $script                     = $script . PHP_EOL . $parentScript;
             return $script;
+        }
+
+        protected function registerSendTestEmailScriptsForWizardView()
+        {
+            $scriptName = 'compile-send-test-email-data-for-email-template-wizard-view';
+            if (Yii::app()->clientScript->isScriptRegistered($scriptName))
+            {
+                return;
+            }
+            else
+            {
+                $functionName   = SendTestEmailModalEditView::COMPILE_SEND_TEST_EMAIL_DATA_JS_FUNCTION_NAME;
+                // Begin Not Coding Standard
+                Yii::app()->clientScript->registerScript($scriptName, "
+                window.{$functionName} = function ()
+                    {
+                        var testData    = {
+                                subject         : $('#" . ZurmoHtml::activeId($this->model, 'subject') . "').val(),
+                                textContent     : $('#" . ZurmoHtml::activeId($this->model, 'textContent') . "').val(),
+                                language        : $('#" . ZurmoHtml::activeId($this->model, 'language') . "').val(),
+                                type            : $('#" . ZurmoHtml::activeId($this->model, 'type') . "').val(),
+                                attachmentIds   : new Array()
+                        };
+                        $(':input[name*=filesIds]').each(function()
+                        {
+                            testData.attachmentIds.push($(this).val());
+                        });
+                        if (" . intval($this->model->isPastedHtmlTemplate()) . ")
+                        {
+                            testData.htmlContent        = $('#" . ZurmoHtml::activeId($this->model, 'htmlContent') . "').val();
+                        }
+                        else if (" . intval($this->model->isBuilderTemplate()) . ")
+                        {
+                            testData.serializedData = JSON.stringify({dom: $.parseJSON(emailTemplateEditor.compileSerializedData())});
+                        }
+                        return testData;
+                    }
+                    ");
+                // End Not Coding Standard
+            }
         }
     }
 ?>

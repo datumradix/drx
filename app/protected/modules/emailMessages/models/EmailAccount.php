@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -90,14 +90,18 @@
          * and return it.
          * @param User $user
          * @param mixed $name null or String representing the email account name
+         * @param boolean $decrypt
          * @return EmailAccount
          */
-        public static function resolveAndGetByUserAndName(User $user, $name = null)
+        public static function resolveAndGetByUserAndName(User $user, $name = null, $decrypt = true)
         {
             try
             {
                 $emailAccount = static::getByUserAndName($user, $name);
-                $emailAccount->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($emailAccount->outboundPassword);
+                if ($decrypt === true)
+                {
+                    $emailAccount->outboundPassword = ZurmoPasswordSecurityUtil::decrypt($emailAccount->outboundPassword);
+                }
             }
             catch (NotFoundException $e)
             {
@@ -109,7 +113,7 @@
                 {
                     $emailAccount->fromAddress       = $user->primaryEmail->emailAddress;
                 }
-                $emailAccount->useCustomOutboundSettings = false;
+                $emailAccount->useCustomOutboundSettings = EmailMessageUtil::OUTBOUND_GLOBAL_SETTINGS;
                 $emailAccount->outboundPort              = '25';
                 $emailAccount->outboundType              = EmailHelper::OUTBOUND_TYPE_SMTP;
             }
@@ -151,7 +155,7 @@
                                   array('outboundSecurity',          'type',      'type' => 'string'),
                                   array('outboundType',              'type',      'type' => 'string'),
                                   array('outboundPort',              'type',      'type' => 'integer'),
-                                  array('useCustomOutboundSettings', 'boolean'),
+                                  array('useCustomOutboundSettings', 'type',      'type' => 'integer'),
                                   array('fromName',                  'length',    'max' => 64),
                                   array('replyToName',               'length',    'max' => 64),
                                   array('outboundType',              'length',    'max' => 4),
@@ -212,20 +216,20 @@
                     'outboundUsername'          => Zurmo::t('EmailMessagesModule', 'Outbound Username',             array(), null, $language),
                     'replyToAddress'            => Zurmo::t('EmailMessagesModule', 'Reply To Address',              array(), null, $language),
                     'replyToName'               => Zurmo::t('EmailMessagesModule', 'Reply To Name',                 array(), null, $language),
-                    'useCustomOutboundSettings' => Zurmo::t('EmailMessagesModule', 'Use Custom Outbound Settings',  array(), null, $language),
+                    'useCustomOutboundSettings' => Zurmo::t('EmailMessagesModule', 'Use the following outbound settings',  array(), null, $language),
                     'user'                      => Zurmo::t('UsersModule',         'User',                          array(), null, $language),
                 )
             );
         }
 
         /**
-         * When the useCustomOutboundSettings is checked, then other attributes become required
+         * When the useCustomOutboundSettings is selected, then other attributes become required
          * @param string $attribute
          * @param array $params
          */
         public function validateCustomOutboundSettings($attribute, $params)
         {
-            if ($this->$attribute)
+            if ($this->$attribute == EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS)
             {
                 $haveError = false;
                 foreach ($params['requiredAttributes'] as $attribute)

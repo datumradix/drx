@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     abstract class MergeTagsValidator extends CValidator
@@ -62,7 +62,8 @@
                 $invalidTags        = array();
                 $mergeTagCount      = $mergeTagsUtil->extractMergeTagsPlaceHolders();
                 $params             = $this->resolveMergeTagParams();
-                if ($mergeTagCount && !$mergeTagsUtil->resolveMergeTagsArrayToAttributes($model, $invalidTags, null, false, $params))
+                if ($mergeTagCount && !$mergeTagsUtil->resolveMergeTagsArrayToAttributes($model, $invalidTags, null,
+                                        MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG, $params))
                 {
                     $passedValidation = false;
                     if (!empty($invalidTags))

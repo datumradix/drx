@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -52,8 +52,8 @@
             $form->subListPageSize                        = Yii::app()->pagination->getGlobalValueByType('subListPageSize');
             $form->modalListPageSize                      = Yii::app()->pagination->getGlobalValueByType('modalListPageSize');
             $form->dashboardListPageSize                  = Yii::app()->pagination->getGlobalValueByType('dashboardListPageSize');
-            $form->defaultFromEmailAddress                = Yii::app()->emailHelper->resolveAndGetDefaultFromAddress();
-            $form->defaultTestToEmailAddress              = Yii::app()->emailHelper->resolveAndGetDefaultTestToAddress();
+            $form->defaultFromEmailAddress                = EmailHelper::resolveAndGetDefaultFromAddress();
+            $form->defaultTestToEmailAddress              = EmailHelper::resolveAndGetDefaultTestToAddress();
             $form->gamificationModalNotificationsEnabled  = Yii::app()->gameHelper->modalNotificationsEnabled;
             $form->gamificationModalCollectionsEnabled    = Yii::app()->gameHelper->modalCollectionsEnabled;
             $form->gamificationModalCoinsEnabled          = Yii::app()->gameHelper->modalCoinsEnabled;
@@ -69,13 +69,13 @@
         public static function setConfigurationFromForm(ZurmoConfigurationForm $form)
         {
             ZurmoConfigurationUtil::setByModuleName('ZurmoModule', 'applicationName', $form->applicationName);
-            Yii::app()->timeZoneHelper  ->setGlobalValue(                         (string)$form->timeZone);
+            Yii::app()->timeZoneHelper->setGlobalValue((string)$form->timeZone);
             Yii::app()->pagination->setGlobalValueByType('listPageSize',          (int)   $form->listPageSize);
             Yii::app()->pagination->setGlobalValueByType('subListPageSize',       (int)   $form->subListPageSize);
             Yii::app()->pagination->setGlobalValueByType('modalListPageSize',     (int)   $form->modalListPageSize);
             Yii::app()->pagination->setGlobalValueByType('dashboardListPageSize', (int)   $form->dashboardListPageSize);
-            Yii::app()->emailHelper->setDefaultFromAddress($form->defaultFromEmailAddress);
-            Yii::app()->emailHelper->setDefaultTestToAddress($form->defaultTestToEmailAddress);
+            EmailHelper::setDefaultFromAddress($form->defaultFromEmailAddress);
+            EmailHelper::setDefaultTestToAddress($form->defaultTestToEmailAddress);
             ZurmoConfigurationUtil::setByModuleName('ZurmoModule',
                                                     'gamificationModalNotificationsEnabled',
                                                     (boolean) $form->gamificationModalNotificationsEnabled);

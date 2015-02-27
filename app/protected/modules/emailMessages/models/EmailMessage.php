@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -44,12 +44,12 @@
             return 'EmailMessage';
         }
 
-        public static function getAllByFolderType($type)
+        public static function getAllByFolderType($type, $excludePausedCampaignMessages = false)
         {
-            return static::getByFolderType($type, null);
+            return static::getByFolderType($type, null, $excludePausedCampaignMessages);
         }
 
-        public static function getByFolderType($type, $count)
+        public static function getByFolderType($type, $count = null, $excludePausedCampaignMessages = false)
         {
             assert('is_string($type)');
             $searchAttributeData = array();
@@ -62,6 +62,52 @@
                 ),
             );
             $searchAttributeData['structure'] = '1';
+            if ($excludePausedCampaignMessages)
+            {
+                $searchAttributeData['clauses'][2] = array(
+                    'attributeName'             => 'campaignItem',
+                    'relatedModelData'          => array(
+                        'attributeName'                 => 'campaign',
+                        'relatedAttributeName'          => 'status',
+                        'operatorType'                  => 'doesNotEqual',
+                        'value'                         => Campaign::STATUS_PAUSED
+                    ),
+                );
+                $searchAttributeData['clauses'][3] = array(
+                    'attributeName'             => 'campaignItem',
+                    'relatedAttributeName'      => 'id',
+                    'operatorType'              => 'isNull',
+                    'value'                     => null,
+                );
+                $searchAttributeData['structure'] = '1 and (2 or 3)';
+            }
+            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('EmailMessage');
+            $where = RedBeanModelDataProvider::makeWhere('EmailMessage', $searchAttributeData, $joinTablesAdapter);
+            return self::getSubset($joinTablesAdapter, null, $count, $where, null);
+        }
+
+        public static function getByFolderTypeAndCampaignId($type, $campaignId, $count = null)
+        {
+            assert('is_string($type)');
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'folder',
+                    'relatedAttributeName' => 'type',
+                    'operatorType'         => 'equals',
+                    'value'                => $type,
+                ),
+                2 => array(
+                    'attributeName'             => 'campaignItem',
+                    'relatedModelData'          => array(
+                        'attributeName'                 => 'campaign',
+                        'relatedAttributeName'          => 'id',
+                        'operatorType'                  => 'equals',
+                        'value'                         => intval($campaignId)
+                    ),
+                ),
+            );
+            $searchAttributeData['structure'] = '1 and 2';
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('EmailMessage');
             $where = RedBeanModelDataProvider::makeWhere('EmailMessage', $searchAttributeData, $joinTablesAdapter);
             return self::getSubset($joinTablesAdapter, null, $count, $where, null);
@@ -106,6 +152,8 @@
                     'sentDateTime',
                     'sendOnDateTime',
                     'headers',
+                    'mailerType',
+                    'mailerSettings'
                 ),
                 'relations' => array(
                     'folder'        => array(static::HAS_ONE,  'EmailFolder', static::NOT_OWNED,
@@ -121,6 +169,9 @@
                                                 static::LINK_TYPE_SPECIFIC, 'error'),
                     'account'       => array(static::HAS_ONE,  'EmailAccount', static::NOT_OWNED,
                                                 static::LINK_TYPE_SPECIFIC, 'account'),
+                    'sendGridAccount'   => array(static::HAS_ONE,  'SendGridEmailAccount', static::NOT_OWNED,
+                                                static::LINK_TYPE_SPECIFIC, 'sendGridAccount'),
+                    'campaignItem'  => array(static::HAS_ONE_BELONGS_TO, 'CampaignItem', static::NOT_OWNED),
                 ),
                 'rules' => array(
                     array('subject',         'required'),
@@ -133,10 +184,14 @@
                     array('sentDateTime',    'type', 'type' => 'datetime'),
                     array('sendOnDateTime',  'type', 'type' => 'datetime'),
                     array('headers',         'type', 'type' => 'string'),
+                    array('mailerType',      'type',    'type' => 'string'),
+                    array('mailerSettings',  'type',    'type' => 'string'),
                 ),
                 'elements' => array(
-                    'sentDateTime'  => 'DateTime',
-                    'files'         => 'Files',
+                    'sentDateTime'   => 'DateTime',
+                    'files'          => 'Files',
+                    'mailerType'     => 'Text',
+                    'mailerSettings' => 'Text'
                 )
             );
             return $metadata;
@@ -171,6 +226,7 @@
                     'sendAttempts' => Zurmo::t('EmailMessagesModule', 'Send Attempts',  array(), null, $language),
                     'sentDateTime' => Zurmo::t('EmailMessagesModule', 'Sent Date Time',  array(), null, $language),
                     'subject'      => Zurmo::t('Core', 'Subject',  array(), null, $language),
+                    'sendGridAccount' => Zurmo::t('EmailMessagesModule', 'SendGrid Email Account',  array(), null, $language),
                     //'type'         => Zurmo::t('Core',                'Type',  array(), null, $language),
                 )
             );

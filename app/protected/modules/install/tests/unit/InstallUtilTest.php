@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class InstallUtilTest extends ZurmoBaseTest
@@ -721,11 +721,19 @@
         public function testRunAutoBuildFromUpdateSchemaCommand()
         {
             $this->runInstallation(true);
+            $super = User::getByUsername('super');
+            $super->primaryEmail->emailAddress = 'super@zurmo.com';
+            $this->assertTrue($super->save());
+            $this->assertEquals(0, EmailMessage::getCount());
+            $this->assertEquals(1, Notification::getCount());
             $messageLogger = new MessageLogger();
             $messageLogger->addInfoMessage(Zurmo::t('InstallModule', 'Starting schema update process.'));
             $result = InstallUtil::runAutoBuildFromUpdateSchemaCommand($messageLogger);
             $messageLogger->addInfoMessage(Zurmo::t('InstallModule', 'Schema update complete.'));
             $this->assertTrue($result);
+            //No email notification is sent since allowSendingEmail is false
+            $this->assertEquals(0, EmailMessage::getCount());
+            $this->assertEquals(2, Notification::getCount());
         }
 
         public function testRunInstallationWithoutMemCacheOn()
@@ -770,6 +778,12 @@
             $this->assertTrue(!is_file($debugConfigFile));
 
             InstallUtil::runInstallation($form, $messageStreamer);
+
+            $notifications = Notification::getAll();
+            $this->assertCount(1, $notifications);
+            $this->assertEquals('If this website is in production mode, please remove the app/test.php file.',
+                $notifications[0]->notificationMessage->textContent);
+
             $perInstanceConfiguration = file_get_contents($perInstanceConfigFile);
             $debugConfiguration = file_get_contents($debugConfigFile);
             //Check if super user is created.

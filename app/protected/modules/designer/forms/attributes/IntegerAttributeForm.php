@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,14 +31,20 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     class IntegerAttributeForm extends MinMaxValueAttributeForm
     {
+        /**
+         * Setting maxLength to null so the auto-schema generator does not get confused and add a length rule which
+         * is unnecessary.  That extra rule confuses the column to think it is a varchar.
+         * @param RedBeanModel $model
+         * @param null $attributeName
+         */
         public function __construct(RedBeanModel $model = null, $attributeName = null)
         {
-            $this->maxLength = 11;
+            $this->maxLength = null;
             parent::__construct($model, $attributeName);
         }
 

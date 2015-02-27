@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -75,13 +75,114 @@
         }
 
         /**
-         * Get all user attendees for specified meeting
+         * Get all meetings attendees including users, contacts, opportunities and accounts
          */
-        public function actionGetUserAttendees()
+        public function actionGetAttendees()
         {
-            $params = Yii::app()->apiRequest->getParams();
-            $result    =  $this->processGetManyManyRelationshipModels($params['data']);
+            $params     = Yii::app()->apiRequest->getParams();
+            $result     =  $this->processAttendees($params['id']);
             Yii::app()->apiHelper->sendResponse($result);
+        }
+
+        /**
+         * Get all attendees
+         * Function get user attendees and attendees from activity items and merge them into one array
+         * @param $meetingId
+         * @return ApiResult
+         * @throws ApiException
+         */
+        protected function processAttendees($meetingId)
+        {
+            try
+            {
+                $meeting               = Meeting::getById(intval($meetingId));
+                $activityItemAttendees = $this->getAttendeesFromActivityItems($meeting);
+                $userAttendees         = $this->getUserAttendees($meeting);
+                $data                  = array_merge($activityItemAttendees, $userAttendees);
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            catch (Exception $e)
+            {
+                $message = $e->getMessage();
+                throw new ApiException($message);
+            }
+            return $result;
+        }
+
+        /**
+         * Get user attendees
+         * @param $meeting
+         * @return array
+         */
+        protected function getUserAttendees($meeting)
+        {
+            $data         = array();
+            foreach ($meeting->userAttendees as $attendee)
+            {
+                $item = array();
+                $item['id']        = $attendee->id;
+                $item['firstName'] = $attendee->firstName;
+                $item['lastName']  = $attendee->lastName;
+                $item['username']  = $attendee->username;
+                if ($attendee->primaryEmail->emailAddress != null)
+                {
+                    $item['email']     = $attendee->primaryEmail->emailAddress;
+                }
+                $data['User'][] = $item;
+            }
+            return $data;
+        }
+
+        /**
+         * Get meeting attendees from activity items. It returns Contact, Opportunity or Account ids
+         * @param $meeting
+         * @return array
+         * @throws Exception
+         */
+        public function getAttendeesFromActivityItems($meeting)
+        {
+            $data         = array();
+            $activityClassNames = ActivitiesUtil::getActivityItemsModelClassNames();
+            try
+            {
+                foreach ($activityClassNames as $activityClassName)
+                {
+                    foreach ($meeting->activityItems as $activityItem)
+                    {
+                        try
+                        {
+                            $modelDerivationPathToItem  = RuntimeUtil::getModelDerivationPathToItem($activityClassName);
+                            $castedDownModel            = $activityItem->castDown(array($modelDerivationPathToItem));
+                            $item = array();
+                            $item['id'] = $castedDownModel->id;
+                            if ($castedDownModel instanceof Contact)
+                            {
+                                if ($castedDownModel->primaryEmail->emailAddress != null)
+                                {
+                                    $item['email']     = $castedDownModel->primaryEmail->emailAddress;
+                                }
+                                $item['firstName'] = $castedDownModel->firstName;
+                                $item['lastName']  = $castedDownModel->lastName;
+                            }
+                            elseif ($castedDownModel instanceof Account || $castedDownModel instanceof Opportunity)
+                            {
+                                $item['name'] = $castedDownModel->name;
+                            }
+
+                            $data[$activityClassName][] = $item;
+                        }
+                        catch (NotFoundException $e)
+                        {
+                        }
+                    }
+                }
+            }
+            catch (Exception $e)
+            {
+                $message = $e->getMessage();
+                throw new Exception($message);
+            }
+            return $data;
         }
     }
 ?>
