@@ -34,9 +34,9 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    define('MAJOR_VERSION', 2);                          // Update for marketing purposes.
-    define('MINOR_VERSION', 8);                          // Update when functionality changes.
-    define('PATCH_VERSION', 6);                          // Update when fixes are made that does not change functionality.
+    define('MAJOR_VERSION', 3);                          // Update for marketing purposes.
+    define('MINOR_VERSION', 0);                          // Update when functionality changes.
+    define('PATCH_VERSION', 0);                          // Update when fixes are made that does not change functionality.
     define('REPO_ID',       '$Revision$'); // Updated by Mercurial. Numbers like 3650 have no meaning across
                                                           // clones. This tells us the actual changeset that is universally
                                                           // meaningful.
