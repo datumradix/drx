@@ -20,9 +20,9 @@
     <td></td>
 </tr>
 <tr>
-    <td>setSpeed</td>
-    <td>3000</td>
-    <td></td>
+    <td>storeGlobal</td>
+    <td>javascript{Math.floor(Math.random()*11000)}</td>
+    <td>randomSuffix</td>
 </tr>
 <!--create project for testing tasks notifications-->
 <tr>
@@ -70,12 +70,12 @@
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
 </tr>
+<!--create task and assign to Sam Smith-->
 <tr>
     <td>waitForTextPresent</td>
     <td>Create Task</td>
     <td></td>
 </tr>
-<!--create task and add Sam Smith as owner-->
 <tr>
     <td>click</td>
     <td>//nav[contains(@class, 'pillbox clearfix')]/div[3]/a/span</td>
@@ -340,6 +340,11 @@
     <td></td>
 </tr>
 <tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>
+<tr>
     <td>waitForElementPresent</td>
     <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
     <td></td>
@@ -445,6 +450,11 @@
     <td>30000</td>
 </tr>
 <tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
+</tr>
+<tr>
     <td>assertText</td>
     <td>link=Sign out</td>
     <td>Sign out</td>
@@ -459,7 +469,7 @@
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
 </tr>
-<!--login as Super User and check notification for owner change-->
+<!--login as Super User and add comment-->
 <tr>
     <td>open</td>
     <td>index.php/zurmo/default/login</td>
@@ -588,6 +598,11 @@
     <td></td>
 </tr>
 <tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>
+<tr>
     <td>waitForElementPresent</td>
     <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
     <td></td>
@@ -606,6 +621,11 @@
     <td>waitForCondition</td>
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <tr>
     <td>waitForElementPresent</td>
@@ -784,7 +804,12 @@
     <td>waitForTextPresent</td>
     <td>creating project for testing task notifications ${randomSuffix}</td>
     <td></td>
-</tr>   
+</tr>  
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr> 
 <tr>
     <td>waitForElementPresent</td>
     <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
@@ -824,6 +849,11 @@
     <td>waitForCondition</td>
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <tr>
     <td>assertText</td>
@@ -967,7 +997,12 @@
     <td>waitForTextPresent</td>
     <td>creating project for testing task notifications ${randomSuffix}</td>
     <td></td>
-</tr>   
+</tr>  
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr> 
 <tr>
     <td>waitForElementPresent</td>
     <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
@@ -1007,6 +1042,11 @@
     <td>waitForCondition</td>
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <tr>
     <td>assertText</td>
@@ -1137,6 +1177,11 @@
     <td>30000</td>
 </tr>   
 <tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>
+<tr>
     <td>waitForElementPresent</td>
     <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
     <td></td>
@@ -1190,6 +1235,11 @@
     <td>waitForCondition</td>
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <tr>
     <td>assertText</td>
@@ -1323,6 +1373,11 @@
     <td>waitForTextPresent</td>
     <td>creating project for testing task notifications ${randomSuffix}</td>
     <td></td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
 </tr>   
 <tr>
     <td>waitForElementPresent</td>
@@ -1380,6 +1435,11 @@
     <td>30000</td>
 </tr>
 <tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
+</tr>
+<tr>
     <td>open</td>
     <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
     <td></td>
@@ -1394,9 +1454,15 @@
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
 </tr>
+
 <tr>
     <td>waitForTextPresent</td>
-    <td>Delivered TasksThe task you requested, 'creating task for testing task notifications ${randomSuffix}', has been finished. You can now choose to accept or reject the task.</td>
+    <td>New ProjectThe project, 'creating project for testing task notifications ${randomSuffix}', is now owned by you.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Project Task AddedNew task, creating task for testing task notifications ${randomSuffix}, was created for project, 'creating project for testing task notifications ${randomSuffix}'. Created by Super User</td>
     <td></td>
 </tr>
 <tr>
@@ -1406,9 +1472,46 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>Accepted TasksThe task, 'creating task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
+    <td>Delivered TasksThe task you requested, 'creating task for testing task notifications ${randomSuffix}', has been finished. You can now choose to accept or reject the task.</td>
     <td></td>
 </tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Delivered TasksThe task you requested, 'creating task for testing task notifications ${randomSuffix}', has been finished. You can now choose to accept or reject the task.</td>
+    <td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[2]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[3]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[4]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete selected</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+
+
 <!--disable notification settings for task module-->
 <tr>
     <td>open</td>
@@ -1572,9 +1675,24 @@
     <td></td>
 </tr>
 <tr>
-    <td>waitForTextPresent</td>
-    <td>Accepted TasksThe task, 'creating task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
-    <td></td>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[2]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete selected</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <!--disable notification settings for task module-->
 <tr>
@@ -1748,6 +1866,36 @@
     <td>Accepted TasksThe task, 'creating task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
     <td></td>
 </tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[2]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[3]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[4]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete selected</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
 <!--disable notification settings for task module-->
 <tr>
     <td>open</td>
@@ -1834,7 +1982,8 @@
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
 </tr>
-<!--login as super user for next test case-->
+<!--check notifications when settings are disabled-->
+<!--login as super user and create project-->
 <tr>
     <td>open</td>
     <td>index.php/zurmo/default/login</td>
@@ -1905,7 +2054,7 @@
 <tr>
     <td>type</td>
     <td>Project_name</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>type</td>
@@ -1951,7 +2100,7 @@
 <tr>
     <td>type</td>
     <td>Task_name</td>
-    <td>creating another task for testing task notifications ${randomSuffix}</td>
+    <td>creating task for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>type</td>
@@ -2149,7 +2298,7 @@
 <tr>
     <td>type</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>keyUp</td>
@@ -2164,17 +2313,17 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>verifyTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
     <td></td>
 </tr>
 <tr>
     <td>verifyValue</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>click</td>
@@ -2193,7 +2342,12 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
     <td></td>
 </tr>
 <tr>
@@ -2302,6 +2456,11 @@
     <td>30000</td>
 </tr>
 <tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
+</tr>
+<tr>
     <td>assertText</td>
     <td>link=Sign out</td>
     <td>Sign out</td>
@@ -2397,7 +2556,7 @@
 <tr>
     <td>type</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>keyUp</td>
@@ -2412,17 +2571,17 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>verifyTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
     <td></td>
 </tr>
 <tr>
     <td>verifyValue</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>click</td>
@@ -2441,7 +2600,12 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
     <td></td>
 </tr>
 <tr>
@@ -2465,6 +2629,11 @@
     <td>30000</td>
 </tr>
 <tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
+</tr>
+<tr>
     <td>waitForElementPresent</td>
     <td>Comment_description</td>
     <td></td>
@@ -2472,7 +2641,7 @@
 <tr>
     <td>type</td>
     <td>Comment_description</td>
-    <td>another comment added by Super User</td>
+    <td>comment added by Super User</td>
 </tr>
 <tr>
     <td>click</td>
@@ -2481,12 +2650,12 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>another comment added by Super User</td>
+    <td>comment added by Super User</td>
     <td></td>
 </tr>
 <tr>
     <td>assertTextPresent</td>
-    <td>another comment added by Super User</td>
+    <td>comment added by Super User</td>
     <td></td>
 </tr>
 <tr>
@@ -2595,7 +2764,7 @@
 <tr>
     <td>type</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>keyUp</td>
@@ -2610,17 +2779,17 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>verifyTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
     <td></td>
 </tr>
 <tr>
     <td>verifyValue</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>click</td>
@@ -2639,9 +2808,14 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
     <td></td>
-</tr>   
+</tr>  
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr> 
 <tr>
     <td>waitForElementPresent</td>
     <td>//ul[@id='task-sortable-rows-1']/li/div/div[2]/h4/a/span</td>
@@ -2681,6 +2855,11 @@
     <td>waitForCondition</td>
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <tr>
     <td>assertText</td>
@@ -2778,7 +2957,7 @@
 <tr>
     <td>type</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>keyUp</td>
@@ -2793,17 +2972,17 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>verifyTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
     <td></td>
 </tr>
 <tr>
     <td>verifyValue</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>click</td>
@@ -2822,9 +3001,14 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
     <td></td>
-</tr>   
+</tr> 
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>  
 <tr>
     <td>waitForElementPresent</td>
     <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
@@ -2864,6 +3048,11 @@
     <td>waitForCondition</td>
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <tr>
     <td>assertText</td>
@@ -2951,7 +3140,7 @@
 <tr>
     <td>type</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>keyUp</td>
@@ -2966,17 +3155,17 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>verifyTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
     <td></td>
 </tr>
 <tr>
     <td>verifyValue</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>click</td>
@@ -2993,6 +3182,11 @@
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
 </tr>   
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>
 <tr>
     <td>waitForElementPresent</td>
     <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
@@ -3047,6 +3241,11 @@
     <td>waitForCondition</td>
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <tr>
     <td>assertText</td>
@@ -3134,7 +3333,7 @@
 <tr>
     <td>type</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>keyUp</td>
@@ -3149,17 +3348,17 @@
 <tr>
     <td>waitForText</td>
     <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>verifyTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
     <td></td>
 </tr>
 <tr>
     <td>verifyValue</td>
     <td>ProjectsSearchForm_anyMixedAttributes</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
 </tr>
 <tr>
     <td>click</td>
@@ -3178,9 +3377,14 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>creating another project for testing task notifications ${randomSuffix}</td>
+    <td>creating new project for testing task notifications ${randomSuffix}</td>
     <td></td>
 </tr>   
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>
 <tr>
     <td>waitForElementPresent</td>
     <td>//ul[@id='task-sortable-rows-3']/li/div/div[2]/h4/a/span</td>
@@ -3237,6 +3441,11 @@
     <td>30000</td>
 </tr>
 <tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
+</tr>
+<tr>
     <td>open</td>
     <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
     <td></td>
@@ -3253,17 +3462,17 @@
 </tr>
 <tr>
     <td>waitForTextNotPresent</td>
-    <td>Delivered TasksThe task you requested, 'creating task for testing task notifications ${randomSuffix}', has been finished. You can now choose to accept or reject the task.</td>
-    <td></td>
-</tr>
-<tr>
-    <td>waitForTextNotPresent</td>
     <td>Task Owner ChangeThe task you requested, 'creating task for testing task notifications ${randomSuffix}', has a new owner.</td>
     <td></td>
 </tr>
 <tr>
     <td>waitForTextNotPresent</td>
-    <td>Accepted TasksThe task, 'creating task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
+    <td>Delivered TasksThe task you requested, 'creating task for testing task notifications ${randomSuffix}', has been finished. You can now choose to accept or reject the task.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Delivered TasksThe task you requested, 'creating task for testing task notifications ${randomSuffix}', has been finished. You can now choose to accept or reject the task.</td>
     <td></td>
 </tr>
 <tr>
@@ -3344,22 +3553,17 @@
 </tr>
 <tr>
     <td>waitForTextNotPresent</td>
-    <td>New TasksThe task, 'creating another task for testing task notifications ${randomSuffix}', is now owned by you.</td>
+    <td>New TasksThe task, 'creating task for testing task notifications ${randomSuffix}', is now owned by you.</td>
     <td></td>
 </tr>
 <tr>
     <td>waitForTextNotPresent</td>
-    <td>New Task CommentsSuper User has commented on the task 'creating another task for testing task notifications ${randomSuffix}':</td>
+    <td>New Task CommentsSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
     <td></td>
 </tr>
 <tr>
     <td>waitForTextNotPresent</td>
-    <td>another comment added by Super User</td>
-    <td></td>
-</tr>
-<tr>
-    <td>waitForTextNotPresent</td>
-    <td>Accepted TasksThe task, 'creating another task for testing task notifications ${randomSuffix}', was accepted by Super User.</td>
+    <td>comment added by Super User</td>
     <td></td>
 </tr>
 <tr>
@@ -3464,11 +3668,6 @@
     <td></td>
 </tr>
 <tr>
-    <td>setSpeed</td>
-    <td>0</td>
-    <td></td>
-</tr>
-<tr>
     <td>assertText</td>
     <td>link=Sign out</td>
     <td>Sign out</td>
@@ -3482,6 +3681,11 @@
     <td>waitForCondition</td>
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <!--login as super user for next test case-->
 <tr>
