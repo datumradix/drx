@@ -204,7 +204,7 @@
             }
             catch (NotFoundException $e)
             {
-                $message = Zurmo::t('ZurmoModule', 'The ID specified was invalid.');
+                $message = Zurmo::t('ZurmoModule', ' ""');
                 throw new ApiException($message);
             }
 
@@ -852,7 +852,7 @@
             }
             catch (SecurityException $e)
             {
-                $message = Zurmo::t('ZurmoModule', 'Deletion denied.');
+                $message = Zurmo::t('ZurmoModule', 'Access denied.');
                 throw new ApiException($message);
             }
 
