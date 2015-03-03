@@ -214,7 +214,7 @@
             }
             catch (SecurityException $e)
             {
-                $message = Zurmo::t('ZurmoModule', 'Access denied.');
+                $message = $e->getMessage();
                 throw new ApiException($message);
             }
 
@@ -687,7 +687,7 @@
             }
             catch (SecurityException $e)
             {
-                $message = Zurmo::t('ZurmoModule', 'Access denied.');
+                $message = $e->getMessage();
                 throw new ApiException($message);
             }
 
@@ -852,7 +852,7 @@
             }
             catch (SecurityException $e)
             {
-                $message = Zurmo::t('ZurmoModule', 'Access denied.');
+                $message = $e->getMessage();
                 throw new ApiException($message);
             }
 
