@@ -214,7 +214,7 @@
             }
             catch (SecurityException $e)
             {
-                $message = $e->getMessage();
+                $message = Zurmo::t('ZurmoModule', 'Access denied.');
                 throw new ApiException($message);
             }
 
@@ -687,7 +687,7 @@
             }
             catch (SecurityException $e)
             {
-                $message = $e->getMessage();
+                $message = Zurmo::t('ZurmoModule', 'Access denied.');
                 throw new ApiException($message);
             }
 
@@ -852,7 +852,7 @@
             }
             catch (SecurityException $e)
             {
-                $message = $e->getMessage();
+                $message = Zurmo::t('ZurmoModule', 'Deletion denied.');
                 throw new ApiException($message);
             }
 
