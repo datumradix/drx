@@ -204,7 +204,7 @@
             }
             catch (NotFoundException $e)
             {
-                $message = Zurmo::t('ZurmoModule', ' ""');
+                $message = Zurmo::t('ZurmoModule', 'The ID specified was invalid.');
                 throw new ApiException($message);
             }
 
