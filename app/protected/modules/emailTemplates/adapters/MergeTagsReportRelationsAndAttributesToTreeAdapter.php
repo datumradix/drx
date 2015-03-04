@@ -119,7 +119,11 @@
          */
         protected function resolveChildNodeDataValueForAttributeNode(& $attributeNode, $attribute, $nodeIdPrefix)
         {
-            $attributeNode['dataValue'] = MergeTagsUtil::resolveAttributeStringToMergeTagString($nodeIdPrefix . $attribute);
+            $dataValue = MergeTagsUtil::resolveAttributeStringToMergeTagString($nodeIdPrefix . $attribute);
+            $dataValue = str_replace('OWNER__USER]]', 'OWNER__USERNAME]]', $dataValue);
+            $dataValue = str_replace('CREATED^BY^USER__USER]]', 'CREATED^BY^USER__USERNAME]]', $dataValue);
+            $dataValue = str_replace('MODIFIED^BY^USER__USER]]', 'MODIFIED^BY^USER__USERNAME]]', $dataValue);
+            $attributeNode['dataValue'] = $dataValue;
         }
 
         /**
