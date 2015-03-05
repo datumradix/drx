@@ -1579,7 +1579,7 @@
          * part of read permission subscription tests
          * @throws NotFoundException
          */
-        public function atestGetDeletedAccounts()
+        public function testGetDeletedAccounts()
         {
             $timestamp = time();
             sleep(1);
