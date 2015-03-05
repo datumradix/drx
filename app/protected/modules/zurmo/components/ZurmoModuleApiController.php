@@ -922,9 +922,19 @@
             $dataUtil                   = static::getModelToApiDataUtil();
             $redBeanModelToApiDataUtil  = new $dataUtil($model);
             $data                       = $redBeanModelToApiDataUtil->getData();
+            static::resolveIncludingAdditionalData($data);
             return $data;
         }
 
+        /**
+         * Override if you need to include additional data in API response
+         * @param array $data
+         * @return array
+         */
+        protected static function resolveIncludingAdditionalData(Array & $data)
+        {
+        }
+        
         /**
          * Resolve StateMetadataAdapterClassName
          * @return mixed
