@@ -796,7 +796,7 @@
             {
                 foreach ($modelIdsRows as $modelIdRow)
                 {
-                    $modelIds[] = $modelIdRow['modelid'];
+                    $modelIds[] = (int)$modelIdRow['modelid'];
                 }
             }
             return $modelIds;
