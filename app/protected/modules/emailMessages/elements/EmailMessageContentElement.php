@@ -51,7 +51,7 @@
             }
             elseif ($emailMessageContent->textContent != null)
             {
-                return Yii::app()->format->text($emailMessageContent->textContent);
+                return nl2br(Yii::app()->format->text($emailMessageContent->textContent));
             }
         }
 
