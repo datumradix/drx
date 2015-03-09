@@ -80,7 +80,7 @@
         public function actionGetAttendees()
         {
             $params     = Yii::app()->apiRequest->getParams();
-            $result     =  $this->processAttendees($params['id']);
+            $result     = static::processAttendees($params['id']);
             Yii::app()->apiHelper->sendResponse($result);
         }
 
@@ -91,13 +91,13 @@
          * @return ApiResult
          * @throws ApiException
          */
-        protected function processAttendees($meetingId)
+        protected static function processAttendees($meetingId)
         {
             try
             {
                 $meeting               = Meeting::getById(intval($meetingId));
-                $activityItemAttendees = $this->getAttendeesFromActivityItems($meeting);
-                $userAttendees         = $this->getUserAttendees($meeting);
+                $activityItemAttendees = static::getAttendeesFromActivityItems($meeting);
+                $userAttendees         = static::getUserAttendees($meeting);
                 $data                  = array_merge($activityItemAttendees, $userAttendees);
                 $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
             }
@@ -114,7 +114,7 @@
          * @param $meeting
          * @return array
          */
-        protected function getUserAttendees($meeting)
+        protected static function getUserAttendees($meeting)
         {
             $data         = array();
             foreach ($meeting->userAttendees as $attendee)
@@ -139,7 +139,7 @@
          * @return array
          * @throws Exception
          */
-        public function getAttendeesFromActivityItems($meeting)
+        protected static function getAttendeesFromActivityItems($meeting)
         {
             $data         = array();
             $activityClassNames = ActivitiesUtil::getActivityItemsModelClassNames();
@@ -183,6 +183,12 @@
                 throw new Exception($message);
             }
             return $data;
+        }
+        
+        protected static function resolveIncludingAdditionalData(Array & $data)
+        {
+            $attendeesData      = static::processAttendees($data['id']);
+            $data['attendees']  = $attendeesData->data;
         }
     }
 ?>
