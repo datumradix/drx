@@ -75,13 +75,18 @@
         }
 
         /**
-         * Get all meetings attendees including users, contacts, opportunities and accounts
+         * Add attendees to meeting
+         * @param array $data
+         * @return array|void
+         * @throws ApiException
          */
-        public function actionGetAttendees()
+        protected static function resolveIncludingAdditionalData(Array & $data)
         {
-            $params     = Yii::app()->apiRequest->getParams();
-            $result     = static::processAttendees($params['id']);
-            Yii::app()->apiHelper->sendResponse($result);
+            $attendees      = static::getMeetingAttendees($data['id']);
+            if (!empty($attendees))
+            {
+                $data['attendees']  = $attendees;
+            }
         }
 
         /**
@@ -91,7 +96,7 @@
          * @return ApiResult
          * @throws ApiException
          */
-        protected static function processAttendees($meetingId)
+        protected static function getMeetingAttendees($meetingId)
         {
             try
             {
@@ -99,14 +104,13 @@
                 $activityItemAttendees = static::getAttendeesFromActivityItems($meeting);
                 $userAttendees         = static::getUserAttendees($meeting);
                 $data                  = array_merge($activityItemAttendees, $userAttendees);
-                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
             }
             catch (Exception $e)
             {
                 $message = $e->getMessage();
                 throw new ApiException($message);
             }
-            return $result;
+            return $data;
         }
 
         /**
@@ -183,12 +187,6 @@
                 throw new Exception($message);
             }
             return $data;
-        }
-        
-        protected static function resolveIncludingAdditionalData(Array & $data)
-        {
-            $attendeesData      = static::processAttendees($data['id']);
-            $data['attendees']  = $attendeesData->data;
         }
     }
 ?>
