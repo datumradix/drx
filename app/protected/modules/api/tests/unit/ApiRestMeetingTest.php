@@ -1311,7 +1311,7 @@
             $this->assertContains($meetingId3, $response['data']['items']);
         }
 
-        public function testGetAttendees()
+        public function stestGetAttendees()
         {
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
@@ -1394,16 +1394,15 @@
             $this->assertEquals($opportunity->id, $response['data']['Opportunity'][0]['id']);
             $this->assertEquals($opportunity->name, $response['data']['Opportunity'][0]['name']);
         }
-        
-        /**
-         * @depends testGetAttendees
-         */
+
         public function testCreateMeetingWithAttendees()
         {
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
-            $evelina  = User::getByUsername('Evelina');
-            $amelia  = User::getByUsername('Amelia');
+            $evelina  = UserTestHelper::createBasicUser('Evelina');
+            $amelia  = UserTestHelper::createBasicUser('Amelia');
+            $amelia->primaryEmail->emailAddress = 'super@example.com';
+            $this->assertTrue($amelia->save());
             $contact1 = ContactTestHelper::createContactByNameForOwner('TestContact3', $super);
             $contact2 = ContactTestHelper::createContactByNameForOwner('TestContact4', $super);
             $contact2->primaryEmail->emailAddress = 'aaa@example.com';
@@ -1423,7 +1422,7 @@
             $response = json_decode($response, true);
 
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
-            $this->assertEmpty($response['data']['attendees']);
+            $this->assertFalse(isset($response['data']['attendees']));
 
             $meeting->activityItems->add($contact1);
             $meeting->activityItems->add($contact2);
