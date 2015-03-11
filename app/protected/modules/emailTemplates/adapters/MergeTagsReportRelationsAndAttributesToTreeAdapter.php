@@ -103,7 +103,7 @@
         {
             assert('is_string($moduleClassName)');
             assert('is_string($modelClassName)');
-            $rules   = ReportRules::makeByModuleClassName($moduleClassName);
+            $rules   = $this->resolveMergeTagsRulesByModuleClassName($moduleClassName);
             $model   = new $modelClassName(false);
             return new MergeTagsModelRelationsAndAttributesToRowsAndColumnsReportAdapter($model,
                         $rules,
@@ -118,12 +118,8 @@
          * @param $nodeIdPrefix
          */
         protected function resolveChildNodeDataValueForAttributeNode(& $attributeNode, $attribute, $nodeIdPrefix)
-        {
-            $dataValue = MergeTagsUtil::resolveAttributeStringToMergeTagString($nodeIdPrefix . $attribute);
-            $dataValue = str_replace('OWNER__USER]]', 'OWNER__USERNAME]]', $dataValue);
-            $dataValue = str_replace('CREATED^BY^USER__USER]]', 'CREATED^BY^USER__USERNAME]]', $dataValue);
-            $dataValue = str_replace('MODIFIED^BY^USER__USER]]', 'MODIFIED^BY^USER__USERNAME]]', $dataValue);
-            $attributeNode['dataValue'] = $dataValue;
+        {   
+            $attributeNode['dataValue'] = MergeTagsUtil::resolveAttributeStringToMergeTagString($nodeIdPrefix . $attribute);
         }
 
         /**
@@ -186,6 +182,22 @@
                       'label'     => Zurmo::t('EmailTemplatesModule', 'Manage Subscriptions URL'),
                       'dataValue' => GlobalMarketingFooterUtil::resolveManageSubscriptionsMergeTag()),
             );
+        }
+        
+        /**
+         * @param $moduleClassName
+         * @return Rules based object
+         */
+        protected function resolveMergeTagsRulesByModuleClassName($moduleClassName)
+        {
+            if ($moduleClassName == 'UsersModule')
+            {
+                return new UsersMergeTagsRules();
+            }
+            else
+            {
+                return ReportRules::makeByModuleClassName($moduleClassName);
+            }
         }
     }
 ?>
