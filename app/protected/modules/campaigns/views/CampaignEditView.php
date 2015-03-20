@@ -155,6 +155,7 @@
         {
             $this->registerCopyInfoFromMarketingListScript();
             $this->registerRedactorHeightScript();
+            $this->registerSendTestEmailScriptsForEditView();
             return parent::renderContent();
         }
 
