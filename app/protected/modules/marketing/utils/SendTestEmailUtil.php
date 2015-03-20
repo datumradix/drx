@@ -400,13 +400,17 @@
             }
             $emailMessage->content              = $emailContent;
             $emailMessage->recipients->add($emailData['recipient']);
-            if ($emailData['permissions'])
-            {
-                ExplicitReadWriteModelPermissionsUtil::resolveExplicitReadWriteModelPermissions($emailMessage, $emailData['permissions']);
-            }
             $this->resolveAttachmentsForEmailMessage($emailMessage, $emailData['attachments']);
             Yii::app()->emailHelper->sendImmediately($emailMessage);
-            if (!$emailMessage->save())
+            if ($emailMessage->save())
+            {
+                if ($emailData['permissions'])
+                {
+                    ExplicitReadWriteModelPermissionsUtil::
+                            resolveExplicitReadWriteModelPermissions($emailMessage, $emailData['permissions']);
+                }
+            }
+            else
             {
                 throw new FailedToSaveModelException("Unable to save EmailMessage");
             }
@@ -424,7 +428,7 @@
 
         protected function resolveFolder()
         {
-            $box            = EmailBox::resolveAndGetByName(EmailBox::USER_DEFAULT_NAME);
+            $box            = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $folder         = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
             return $folder;
         }
