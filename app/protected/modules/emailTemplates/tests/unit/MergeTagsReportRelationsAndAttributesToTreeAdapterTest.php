@@ -78,7 +78,6 @@
                     $emailTemplate->htmlContent .= ' ' . $child['dataValue'];
                 }
             }
-            file_put_contents('/var/www/zurmo/app/protected/runtime/boban.log', print_r($emailTemplate->textContent,true)."\n", FILE_APPEND);
             $validated                      = $emailTemplate->validate(null, false, true);
             $this->assertTrue($validated);
             $this->assertEmpty($emailTemplate->getErrors());
