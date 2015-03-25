@@ -54,8 +54,10 @@
             );
 
             $user = UserTestHelper::createBasicUser('PeterSmith');
-            $compareData  =  $this->getModelToApiDataUtilData($user);
+            $user->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API);
+            $this->assertTrue($user->save());
 
+            $compareData  =  $this->getModelToApiDataUtilData($user);
             $response = $this->createApiCallWithRelativeUrl('read/' . $user->id, 'GET', $headers);
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
@@ -68,6 +70,7 @@
         public function testGetAuthenticatedUser()
         {
             $super = User::getByUsername('super');
+
             Yii::app()->user->userModel = $super;
             $super->primaryEmail->emailAddress   = 'super@zurmo.org';
             $this->assertTrue($super->save());
@@ -80,6 +83,20 @@
                 'ZURMO_API_REQUEST_TYPE: REST',
             );
             $compareData  =  $this->getModelToApiDataUtilData($super);
+            $response = $this->createApiCallWithRelativeUrl('getAuthenticatedUser', 'GET', $headers);
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals($compareData, $response['data']);
+
+            $user = User::getByUsername('petersmith');
+            $authenticationData = $this->login('petersmith', 'petersmith');
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $compareData  =  $this->getModelToApiDataUtilData($user);
             $response = $this->createApiCallWithRelativeUrl('getAuthenticatedUser', 'GET', $headers);
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);

@@ -39,6 +39,23 @@
     */
     class UsersUserApiController extends ZurmoModuleApiController
     {
+        // Alter parent filters to allow access to Users module when auser is trying to access getAuthenticatedUser via API
+        public function filters()
+        {
+            $filters = parent::filters();
+            foreach ($filters as $key => $filter)
+            {
+                if (is_array($filter) &&
+                    isset($filter[0]) && $filter[0] == self::getRightsFilterPath() &&
+                    isset($filter['moduleClassName']) && $filter['moduleClassName'] == 'UsersModule' &&
+                    isset($filter['rightName']) && $filter['rightName'] == UsersModule::getAccessRight())
+                {
+                    $filters[$key][0] = $filters[$key][0] . ' - getAuthenticatedUser';
+                }
+            }
+            return $filters;
+        }
+
         protected static function getSearchFormClassName()
         {
             return 'UsersSearchForm';
@@ -85,7 +102,17 @@
                 $message = Zurmo::t('ZurmoModule', 'You must be logged to use this method.');
                 throw new ApiException($message);
             }
-            $result    =  $this->processRead(Yii::app()->user->userModel->id);
+            try
+            {
+                $data           = static::getModelToApiDataUtilData(Yii::app()->user->userModel);
+                $resultClassName = Yii::app()->apiRequest->getResultClassName();
+                $result                    = new $resultClassName(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            catch (Exception $e)
+            {
+                $message = $e->getMessage();
+                throw new ApiException($message);
+            }
             Yii::app()->apiHelper->sendResponse($result);
         }
 
