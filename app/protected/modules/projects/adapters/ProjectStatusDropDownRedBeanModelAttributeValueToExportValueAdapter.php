@@ -34,27 +34,11 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class StaticDropDownRedBeanModelAttributeValueToExportValueAdapter extends RedBeanModelAttributeValueToExportValueAdapter
+    class ProjectStatusDropDownRedBeanModelAttributeValueToExportValueAdapter extends StaticDropDownRedBeanModelAttributeValueToExportValueAdapter
     {
-        /**
-         * @param array $data
-         */
-        public function resolveData(& $data)
-        {
-            $dropDownArray = $this->getDropDownArray();
-            if (isset($dropDownArray[$this->model->{$this->attribute}]))
-            {
-                $data[] = $dropDownArray[$this->model->{$this->attribute}];
-            }
-            else
-            {
-                $data[] = null;
-            }
-        }
-        
         protected function getDropDownArray()
         {
-            return array();
+            return Project::getStatusDropDownArray();
         }
     }
 ?>

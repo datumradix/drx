@@ -34,27 +34,41 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class StaticDropDownRedBeanModelAttributeValueToExportValueAdapter extends RedBeanModelAttributeValueToExportValueAdapter
+    class TaskStatusDropDownRedBeanModelAttributeValueToExportValueAdapterTest extends ZurmoBaseTest
     {
-        /**
-         * @param array $data
-         */
-        public function resolveData(& $data)
+        public static function setUpBeforeClass()
         {
-            $dropDownArray = $this->getDropDownArray();
-            if (isset($dropDownArray[$this->model->{$this->attribute}]))
-            {
-                $data[] = $dropDownArray[$this->model->{$this->attribute}];
-            }
-            else
-            {
-                $data[] = null;
-            }
+            parent::setUpBeforeClass();
+            $super = SecurityTestHelper::createSuperAdmin();
+            Yii::app()->user->userModel = $super;
+            AccountTestHelper::createAccountByNameForOwner('anAccount', $super);
         }
-        
-        protected function getDropDownArray()
+
+        public function testGetExportValue()
         {
-            return array();
+            $data = array();
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $accounts = Account::getByName('anAccount');
+
+            $user                   = UserTestHelper::createBasicUser('Billy');
+            $dueStamp               = DateTimeUtil::convertTimestampToDbFormatDateTime(time()  + 10000);
+            $task                   = new Task();
+            $task->name             = 'MyTask';
+            $task->owner            = $user;
+            $task->requestedByUser  = $user;
+            $task->dueDateTime      = $dueStamp;
+            $task->status           = Task::STATUS_COMPLETED;
+            $task->description      = 'my test description';
+            $this->assertTrue($task->save());
+
+            $adapter = new TaskStatusDropDownRedBeanModelAttributeValueToExportValueAdapter($task, 'status');
+            $adapter->resolveData($data);
+            $compareData = array('Completed');
+            $this->assertEquals($compareData, $data);
+            $data = array();
+            $adapter->resolveHeaderData($data);
+            $compareData = array($task->getAttributeLabel('status'));
+            $this->assertEquals($compareData, $data);
         }
     }
 ?>

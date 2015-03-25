@@ -34,27 +34,44 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class StaticDropDownRedBeanModelAttributeValueToExportValueAdapter extends RedBeanModelAttributeValueToExportValueAdapter
+    /**
+    * Test model for Export: ExportTestModelItem6
+    */
+    class ExportTestModelItem6 extends OwnedSecurableItem
     {
-        /**
-         * @param array $data
-         */
-        public function resolveData(& $data)
+        public static function getByName($name)
         {
-            $dropDownArray = $this->getDropDownArray();
-            if (isset($dropDownArray[$this->model->{$this->attribute}]))
-            {
-                $data[] = $dropDownArray[$this->model->{$this->attribute}];
-            }
-            else
-            {
-                $data[] = null;
-            }
+            return self::getByNameOrEquivalent('name', $name);
         }
-        
-        protected function getDropDownArray()
+
+        public static function getDefaultMetadata()
         {
-            return array();
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'name',
+                    'status',
+                ),
+                'rules' => array(
+                    array('name',  'type',   'type' => 'string'),
+                    array('name',  'length', 'max' => 32),
+                    array('status','type', 'type' => 'integer'),
+                ),
+                'elements' => array(
+                    'status'            => 'TaskStatusDropDown'
+                ),
+            );
+            return $metadata;
+        }
+
+        public static function isTypeDeletable()
+        {
+            return true;
+        }
+
+        public static function getModuleClassName()
+        {
+            return 'ExportModule';
         }
     }
 ?>

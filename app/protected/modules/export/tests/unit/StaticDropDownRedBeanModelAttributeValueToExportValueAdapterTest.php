@@ -34,27 +34,35 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class StaticDropDownRedBeanModelAttributeValueToExportValueAdapter extends RedBeanModelAttributeValueToExportValueAdapter
+    class StaticDropDownRedBeanModelAttributeValueToExportValueAdapterTest extends ZurmoBaseTest
     {
-        /**
-         * @param array $data
-         */
-        public function resolveData(& $data)
+        public static function setUpBeforeClass()
         {
-            $dropDownArray = $this->getDropDownArray();
-            if (isset($dropDownArray[$this->model->{$this->attribute}]))
-            {
-                $data[] = $dropDownArray[$this->model->{$this->attribute}];
-            }
-            else
-            {
-                $data[] = null;
-            }
+            parent::setUpBeforeClass();
+            $super = SecurityTestHelper::createSuperAdmin();
+        }
+
+        public static function getDependentTestModelClassNames()
+        {
+            return array('ExportTestModelItem6');
         }
         
-        protected function getDropDownArray()
+        public function testGetExportValue()
         {
-            return array();
+            $data = array();
+            $model = new ExportTestModelItem6();   
+            $model->name = "Smith";
+            $model->status = 1;
+            $this->assertTrue($model->save());
+
+            $adapter = new StaticDropDownRedBeanModelAttributeValueToExportValueAdapter($model, 'status');
+            $adapter->resolveData($data);
+            $compareData = array(null);
+            $this->assertEquals($compareData, $data);
+            $data = array();
+            $adapter->resolveHeaderData($data);
+            $compareData = array($model->getAttributeLabel('status'));
+            $this->assertEquals($compareData, $data);
         }
     }
 ?>
