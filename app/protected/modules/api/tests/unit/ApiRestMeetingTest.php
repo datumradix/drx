@@ -493,14 +493,6 @@
             $notAllowedUser->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API);
             $saved = $notAllowedUser->save();
 
-            $authenticationData = $this->login('steven', 'steven');
-            $headers = array(
-                'Accept: application/json',
-                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
-                'ZURMO_TOKEN: ' . $authenticationData['token'],
-                'ZURMO_API_REQUEST_TYPE: REST',
-            );
-
             $everyoneGroup = Group::getByName(Group::EVERYONE_GROUP_NAME);
             $this->assertTrue($everyoneGroup->save());
 
@@ -954,6 +946,125 @@
             $this->assertEquals('Second Meeting', $response['data']['items'][0]['name']);
         }
 
+        public function testCreateWithRelations()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel = $super;
+
+            $everyoneGroup = Group::getByName(Group::EVERYONE_GROUP_NAME);
+            $this->assertTrue($everyoneGroup->save());
+
+            $john = UserTestHelper::createBasicUser('John');
+            $john->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API);
+            $john->setRight('MeetingsModule', MeetingsModule::getAccessRight());
+            $john->setRight('MeetingsModule', MeetingsModule::getCreateRight());
+            $saved = $john->save();
+            $this->assertTrue($saved);
+
+            $contact  = ContactTestHelper::createContactByNameForOwner('Simon', $super);
+            $contact2  = ContactTestHelper::createContactByNameForOwner('Simona', $john);
+            $contactItemId = $contact->getClassId('Item');
+            $contact2ItemId = $contact2->getClassId('Item');
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $categories = array(
+                'Meeting',
+                'Call',
+            );
+            $categoryFieldData = CustomFieldData::getByName('MeetingCategories');
+            $categoryFieldData->serializedData = serialize($categories);
+            $this->assertTrue($categoryFieldData->save());
+
+            $startStamp             = DateTimeUtil::convertTimestampToDbFormatDateTime(time()  + 10000);
+            $endStamp               = DateTimeUtil::convertTimestampToDbFormatDateTime(time() + 11000);
+
+            $data['name']           = "Meeting with relations for super user";
+            $data['startDateTime']  = $startStamp;
+            $data['endDateTime']    = $endStamp;
+            $data['category']['value'] = $categories[1];
+
+            $data['modelRelations'] = array(
+                'activityItems' => array(
+                    array(
+                        'action' => 'add',
+                        'modelId' => $contact->id,
+                        'modelClassName' => 'Contact'
+                    ),
+                ),
+                'userAttendees' => array(
+                    array(
+                        'action' => 'add',
+                        'modelId' => $john->id,
+                        'modelClassName' => 'User'
+                    ),
+                )
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals($data['name'], $response['data']['name']);
+            $this->assertEquals($data['startDateTime'], $response['data']['startDateTime']);
+            $this->assertEquals($data['endDateTime'], $response['data']['endDateTime']);
+
+            RedBeanModel::forgetAll();
+            $meeting = Meeting::getById($response['data']['id']);
+            $this->assertEquals(1, count($meeting->activityItems));
+            $this->assertEquals($contactItemId, $meeting->activityItems[0]->id);
+            $this->assertEquals(1, count($meeting->userAttendees));
+            $this->assertEquals($john->id, $meeting->userAttendees[0]->id);
+
+            // Now test with regular user
+            $authenticationData = $this->login('john', 'john');
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+            $data = array();
+            $data['name']           = "Meeting with relations for regular user";
+            $data['startDateTime']  = $startStamp;
+            $data['endDateTime']    = $endStamp;
+            $data['category']['value'] = $categories[1];
+            $data['modelRelations'] = array(
+                'activityItems' => array(
+                    array(
+                        'action' => 'add',
+                        'modelId' => $contact2->id,
+                        'modelClassName' => 'Contact'
+                    ),
+                ),
+                'userAttendees' => array(
+                    array(
+                        'action' => 'add',
+                        'modelId' => $super->id,
+                        'modelClassName' => 'User'
+                    ),
+                )
+            );
+            $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEquals($data['name'], $response['data']['name']);
+            $this->assertEquals($data['startDateTime'], $response['data']['startDateTime']);
+            $this->assertEquals($data['endDateTime'], $response['data']['endDateTime']);
+
+            RedBeanModel::forgetAll();
+            $meeting = Meeting::getById($response['data']['id']);
+            $this->assertEquals(1, count($meeting->activityItems));
+            $this->assertEquals($contact2ItemId, $meeting->activityItems[0]->id);
+            $this->assertEquals(1, count($meeting->userAttendees));
+            $this->assertEquals($super->id, $meeting->userAttendees[0]->id);
+        }
+
         public function testEditMeetingWithIncompleteData()
         {
             $super = User::getByUsername('super');
@@ -1311,7 +1422,7 @@
             $this->assertContains($meetingId3, $response['data']['items']);
         }
 
-        public function testCreateMeetingWithAttendees()
+        public function testGetMeetingWithAttendees()
         {
             $super = User::getByUsername('super');
             Yii::app()->user->userModel = $super;
