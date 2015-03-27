@@ -103,7 +103,8 @@
                 $meeting               = Meeting::getById(intval($meetingId));
                 $activityItemAttendees = static::getAttendeesFromActivityItems($meeting);
                 $userAttendees         = static::getUserAttendees($meeting);
-                $data                  = array_merge($activityItemAttendees, $userAttendees);
+                $organizerAttendee     = static::getMeetingOrganizerDetails($meeting);
+                $data                  = array_merge($activityItemAttendees, $userAttendees, $organizerAttendee);
             }
             catch (Exception $e)
             {
@@ -130,7 +131,7 @@
                 $item['username']  = $attendee->username;
                 if ($attendee->primaryEmail->emailAddress != null)
                 {
-                    $item['email']     = $attendee->primaryEmail->emailAddress;
+                    $item['email'] = $attendee->primaryEmail->emailAddress;
                 }
                 $data['User'][] = $item;
             }
@@ -186,6 +187,26 @@
                 $message = $e->getMessage();
                 throw new Exception($message);
             }
+            return $data;
+        }
+
+        /**
+         * Get user attendees
+         * @param $meeting
+         * @return array
+         */
+        protected static function getMeetingOrganizerDetails($meeting)
+        {
+            $item = array();
+            $item['id']        = $meeting->owner->id;
+            $item['firstName'] = $meeting->owner->firstName;
+            $item['lastName']  = $meeting->owner->lastName;
+            $item['username']  = $meeting->owner->username;
+            if ($meeting->owner->primaryEmail->emailAddress != null)
+            {
+                $item['email'] = $meeting->owner->primaryEmail->emailAddress;
+            }
+            $data['Organizer'][] = $item;
             return $data;
         }
     }
