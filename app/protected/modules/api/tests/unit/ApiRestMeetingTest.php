@@ -1428,7 +1428,7 @@
             Yii::app()->user->userModel = $super;
             $evelina  = UserTestHelper::createBasicUser('Evelina');
             $amelia  = UserTestHelper::createBasicUser('Amelia');
-            $amelia->primaryEmail->emailAddress = 'super@example.com';
+            $amelia->primaryEmail->emailAddress = 'amelia@example.com';
             $this->assertTrue($amelia->save());
             $contact1 = ContactTestHelper::createContactByNameForOwner('TestContact3', $super);
             $contact2 = ContactTestHelper::createContactByNameForOwner('TestContact4', $super);
@@ -1449,7 +1449,13 @@
             $response = json_decode($response, true);
 
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
-            $this->assertFalse(isset($response['data']['attendees']));
+            $this->assertTrue(isset($response['data']['attendees']));
+            $this->assertEquals(1, count($response['data']['attendees']['Organizer']));
+            $this->assertEquals($super->id, $response['data']['attendees']['Organizer'][0]['id']);
+            $this->assertEquals($super->firstName, $response['data']['attendees']['Organizer'][0]['firstName']);
+            $this->assertEquals($super->lastName, $response['data']['attendees']['Organizer'][0]['lastName']);
+            $this->assertEquals($super->username, $response['data']['attendees']['Organizer'][0]['username']);
+            $this->assertFalse(isset($response['data']['attendees']['Organizer'][0]['email']));
 
             $meeting->activityItems->add($contact1);
             $meeting->activityItems->add($contact2);
@@ -1489,6 +1495,11 @@
             $this->assertEquals($amelia->firstName, $response['data']['attendees']['User'][1]['firstName']);
             $this->assertEquals($amelia->lastName, $response['data']['attendees']['User'][1]['lastName']);
             $this->assertEquals($amelia->username, $response['data']['attendees']['User'][1]['username']);
+            $this->assertEquals(1, count($response['data']['attendees']['Organizer']));
+            $this->assertEquals($super->id, $response['data']['attendees']['Organizer'][0]['id']);
+            $this->assertEquals($super->firstName, $response['data']['attendees']['Organizer'][0]['firstName']);
+            $this->assertEquals($super->lastName, $response['data']['attendees']['Organizer'][0]['lastName']);
+            $this->assertEquals($super->username, $response['data']['attendees']['Organizer'][0]['username']);
 
             // Test with opportunity and account activity items
             $account = AccountTestHelper::createAccountByNameForOwner('Account 2', $super);
@@ -1518,6 +1529,8 @@
 
             // Test with regular user if he can get user attendees
             $michael = UserTestHelper::createBasicUser('Michael');
+            $michael->primaryEmail->emailAddress = 'michael@example.com';
+            $this->assertTrue($michael->save());
             $michael->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API);
             $michael->setRight('MeetingsModule', MeetingsModule::getAccessRight());
             $michael->setRight('MeetingsModule', MeetingsModule::getCreateRight());
@@ -1544,6 +1557,12 @@
             $this->assertEquals($evelina->firstName, $response['data']['attendees']['User'][0]['firstName']);
             $this->assertEquals($evelina->lastName, $response['data']['attendees']['User'][0]['lastName']);
             $this->assertEquals($evelina->username, $response['data']['attendees']['User'][0]['username']);
+            $this->assertEquals(1, count($response['data']['attendees']['Organizer']));
+            $this->assertEquals($michael->id, $response['data']['attendees']['Organizer'][0]['id']);
+            $this->assertEquals($michael->firstName, $response['data']['attendees']['Organizer'][0]['firstName']);
+            $this->assertEquals($michael->lastName, $response['data']['attendees']['Organizer'][0]['lastName']);
+            $this->assertEquals($michael->username, $response['data']['attendees']['Organizer'][0]['username']);
+            $this->assertEquals($michael->primaryEmail->emailAddress, $response['data']['attendees']['Organizer'][0]['email']);
         }
 
         protected function getApiControllerClassName()
