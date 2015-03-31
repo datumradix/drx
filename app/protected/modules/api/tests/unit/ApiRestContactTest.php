@@ -1402,7 +1402,7 @@
                 'ZURMO_API_REQUEST_TYPE: REST',
             );
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1428,7 +1428,7 @@
             $this->assertEquals($contact2->primaryEmail->emailAddress, $response['data']['items'][1]['primaryEmail']['emailAddress']);
 
             $data = array(
-                'sinceTimestamp' => 0,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime(0),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 2
@@ -1453,7 +1453,7 @@
             $this->assertTrue($job->run());
 
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1487,7 +1487,7 @@
             );
 
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1538,7 +1538,7 @@
             );
 
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1564,7 +1564,7 @@
             sleep(1);
 
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1592,7 +1592,7 @@
             $this->assertEquals($contact3->primaryEmail->emailAddress, $response['data']['items'][1]['primaryEmail']['emailAddress']);
 
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 2
@@ -1649,7 +1649,7 @@
                 'ZURMO_API_REQUEST_TYPE: REST',
             );
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1665,7 +1665,7 @@
             $this->assertContains($contactId2, $response['data']['items']);
 
             $data = array(
-                'sinceTimestamp' => 0,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime(0),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 2

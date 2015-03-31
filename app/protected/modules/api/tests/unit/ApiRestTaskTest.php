@@ -992,7 +992,7 @@
                 'ZURMO_API_REQUEST_TYPE: REST',
             );
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1014,7 +1014,7 @@
             $this->assertEquals($task2->name, $response['data']['items'][1]['name']);
 
             $data = array(
-                'sinceTimestamp' => 0,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime(0),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 2
@@ -1037,7 +1037,7 @@
             $this->assertTrue($job->run());
 
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1067,7 +1067,7 @@
             );
 
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1115,7 +1115,7 @@
             );
 
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1141,7 +1141,7 @@
             sleep(2);
 
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1163,7 +1163,7 @@
             $this->assertEquals($task3->name, $response['data']['items'][1]['name']);
 
             $data = array(
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 2
@@ -1218,7 +1218,7 @@
             );
             $data = array(
                 'userId' => $super->id,
-                'sinceTimestamp' => $timestamp,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime($timestamp),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 1
@@ -1235,7 +1235,7 @@
 
             $data = array(
                 'userId' => $super->id,
-                'sinceTimestamp' => 0,
+                'sinceDateTime' => DateTimeUtil::convertTimestampToDbFormatDateTime(0),
                 'pagination' => array(
                     'pageSize' => 2,
                     'page'     => 2
