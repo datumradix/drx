@@ -784,6 +784,7 @@
             $this->assertNotEmpty($response['data']['users']);
             $this->assertEquals(1, count($response['data']['users']));
             $this->assertEquals($amelia->id, $response['data']['users'][0]['id']);
+            $this->assertEquals($amelia->username, $response['data']['users'][0]['username']);
             $this->assertEquals($amelia->firstName, $response['data']['users'][0]['firstName']);
             $this->assertEquals($amelia->lastName, $response['data']['users'][0]['lastName']);
             $this->assertEquals($amelia->primaryEmail->emailAddress, $response['data']['users'][0]['email']);
@@ -812,10 +813,12 @@
             $this->assertNotEmpty($response['data']['users']);
             $this->assertEquals(2, count($response['data']['users']));
             $this->assertEquals($amelia->id, $response['data']['users'][0]['id']);
+            $this->assertEquals($amelia->username, $response['data']['users'][0]['username']);
             $this->assertEquals($amelia->firstName, $response['data']['users'][0]['firstName']);
             $this->assertEquals($amelia->lastName, $response['data']['users'][0]['lastName']);
             $this->assertEquals($amelia->primaryEmail->emailAddress, $response['data']['users'][0]['email']);
             $this->assertEquals($evelina->id, $response['data']['users'][1]['id']);
+            $this->assertEquals($evelina->username, $response['data']['users'][1]['username']);
             $this->assertEquals($evelina->firstName, $response['data']['users'][1]['firstName']);
             $this->assertEquals($evelina->lastName, $response['data']['users'][1]['lastName']);
             $this->assertEquals($evelina->primaryEmail->emailAddress, $response['data']['users'][1]['email']);
