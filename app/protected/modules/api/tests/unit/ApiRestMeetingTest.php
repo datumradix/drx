@@ -1450,12 +1450,12 @@
 
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertTrue(isset($response['data']['attendees']));
-            $this->assertEquals(1, count($response['data']['attendees']['Organizer']));
-            $this->assertEquals($super->id, $response['data']['attendees']['Organizer'][0]['id']);
-            $this->assertEquals($super->firstName, $response['data']['attendees']['Organizer'][0]['firstName']);
-            $this->assertEquals($super->lastName, $response['data']['attendees']['Organizer'][0]['lastName']);
-            $this->assertEquals($super->username, $response['data']['attendees']['Organizer'][0]['username']);
-            $this->assertFalse(isset($response['data']['attendees']['Organizer'][0]['email']));
+            $this->assertTrue(isset($response['data']['attendees']['Organizer']));
+            $this->assertEquals($super->id, $response['data']['attendees']['Organizer']['id']);
+            $this->assertEquals($super->firstName, $response['data']['attendees']['Organizer']['firstName']);
+            $this->assertEquals($super->lastName, $response['data']['attendees']['Organizer']['lastName']);
+            $this->assertEquals($super->username, $response['data']['attendees']['Organizer']['username']);
+            $this->assertFalse(isset($response['data']['attendees']['Organizer']['email']));
 
             $meeting->activityItems->add($contact1);
             $meeting->activityItems->add($contact2);
@@ -1495,11 +1495,11 @@
             $this->assertEquals($amelia->firstName, $response['data']['attendees']['User'][1]['firstName']);
             $this->assertEquals($amelia->lastName, $response['data']['attendees']['User'][1]['lastName']);
             $this->assertEquals($amelia->username, $response['data']['attendees']['User'][1]['username']);
-            $this->assertEquals(1, count($response['data']['attendees']['Organizer']));
-            $this->assertEquals($super->id, $response['data']['attendees']['Organizer'][0]['id']);
-            $this->assertEquals($super->firstName, $response['data']['attendees']['Organizer'][0]['firstName']);
-            $this->assertEquals($super->lastName, $response['data']['attendees']['Organizer'][0]['lastName']);
-            $this->assertEquals($super->username, $response['data']['attendees']['Organizer'][0]['username']);
+            $this->assertTrue(isset($response['data']['attendees']['Organizer']));
+            $this->assertEquals($super->id, $response['data']['attendees']['Organizer']['id']);
+            $this->assertEquals($super->firstName, $response['data']['attendees']['Organizer']['firstName']);
+            $this->assertEquals($super->lastName, $response['data']['attendees']['Organizer']['lastName']);
+            $this->assertEquals($super->username, $response['data']['attendees']['Organizer']['username']);
 
             // Test with opportunity and account activity items
             $account = AccountTestHelper::createAccountByNameForOwner('Account 2', $super);
@@ -1557,12 +1557,12 @@
             $this->assertEquals($evelina->firstName, $response['data']['attendees']['User'][0]['firstName']);
             $this->assertEquals($evelina->lastName, $response['data']['attendees']['User'][0]['lastName']);
             $this->assertEquals($evelina->username, $response['data']['attendees']['User'][0]['username']);
-            $this->assertEquals(1, count($response['data']['attendees']['Organizer']));
-            $this->assertEquals($michael->id, $response['data']['attendees']['Organizer'][0]['id']);
-            $this->assertEquals($michael->firstName, $response['data']['attendees']['Organizer'][0]['firstName']);
-            $this->assertEquals($michael->lastName, $response['data']['attendees']['Organizer'][0]['lastName']);
-            $this->assertEquals($michael->username, $response['data']['attendees']['Organizer'][0]['username']);
-            $this->assertEquals($michael->primaryEmail->emailAddress, $response['data']['attendees']['Organizer'][0]['email']);
+            $this->assertTrue(isset($response['data']['attendees']['Organizer']));
+            $this->assertEquals($michael->id, $response['data']['attendees']['Organizer']['id']);
+            $this->assertEquals($michael->firstName, $response['data']['attendees']['Organizer']['firstName']);
+            $this->assertEquals($michael->lastName, $response['data']['attendees']['Organizer']['lastName']);
+            $this->assertEquals($michael->username, $response['data']['attendees']['Organizer']['username']);
+            $this->assertEquals($michael->primaryEmail->emailAddress, $response['data']['attendees']['Organizer']['email']);
         }
 
         protected function getApiControllerClassName()
