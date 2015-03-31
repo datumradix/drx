@@ -736,6 +736,91 @@
             $this->assertEquals(1, count($response['errors']));
         }
 
+        public function testSearchUsersByEmails()
+        {
+            $super = User::getByUsername('super');
+            Yii::app()->user->userModel        = $super;
+
+            $evelina  = UserTestHelper::createBasicUser('Evelina');
+            $evelina->primaryEmail->emailAddress = 'evelina@example.com';
+            $this->assertTrue($evelina->save());
+            $amelia  = UserTestHelper::createBasicUser('Amelia');
+            $amelia->primaryEmail->emailAddress = 'amelia@example.com';
+            $this->assertTrue($amelia->save());
+            $samantha  = UserTestHelper::createBasicUser('Samantha');
+            $samantha->primaryEmail->emailAddress = 'samantha@example.com';
+            $this->assertTrue($samantha->save());
+
+            $authenticationData = $this->login();
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $response = $this->createApiCallWithRelativeUrl('searchUsersByEmails/', 'POST', $headers, array());
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
+            $this->assertEquals('Please provide data.', $response['message']);
+
+            $data['email'] = array('someone@example.org');
+            $response = $this->createApiCallWithRelativeUrl('searchUsersByEmails/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_FAILURE, $response['status']);
+            $this->assertEquals('Emails parameters must exist, must be an array and must contain at least one email address.', $response['message']);
+
+            $data['emails'] = array('someone@example.org');
+            $response = $this->createApiCallWithRelativeUrl('searchUsersByEmails/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertEmpty($response['data']);
+
+            $data['emails'] = array('amelia@example.com');
+            $response = $this->createApiCallWithRelativeUrl('searchUsersByEmails/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertNotEmpty($response['data']);
+            $this->assertNotEmpty($response['data']['users']);
+            $this->assertEquals(1, count($response['data']['users']));
+            $this->assertEquals($amelia->id, $response['data']['users'][0]['id']);
+            $this->assertEquals($amelia->firstName, $response['data']['users'][0]['firstName']);
+            $this->assertEquals($amelia->lastName, $response['data']['users'][0]['lastName']);
+            $this->assertEquals($amelia->primaryEmail->emailAddress, $response['data']['users'][0]['email']);
+
+            // Now test with regular user
+            $michael = UserTestHelper::createBasicUser('Michael');
+            $michael->setRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API);
+            $michael->setRight('MeetingsModule', MeetingsModule::getAccessRight());
+            $michael->setRight('MeetingsModule', MeetingsModule::getCreateRight());
+            $saved = $michael->save();
+            $this->assertTrue($saved);
+
+            $authenticationData = $this->login('michael', 'michael');
+            $headers = array(
+                'Accept: application/json',
+                'ZURMO_SESSION_ID: ' . $authenticationData['sessionId'],
+                'ZURMO_TOKEN: ' . $authenticationData['token'],
+                'ZURMO_API_REQUEST_TYPE: REST',
+            );
+
+            $data['emails'] = array('amelia@example.com', 'evelina@example.com');
+            $response = $this->createApiCallWithRelativeUrl('searchUsersByEmails/', 'POST', $headers, array('data' => $data));
+            $response = json_decode($response, true);
+            $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
+            $this->assertNotEmpty($response['data']);
+            $this->assertNotEmpty($response['data']['users']);
+            $this->assertEquals(2, count($response['data']['users']));
+            $this->assertEquals($amelia->id, $response['data']['users'][0]['id']);
+            $this->assertEquals($amelia->firstName, $response['data']['users'][0]['firstName']);
+            $this->assertEquals($amelia->lastName, $response['data']['users'][0]['lastName']);
+            $this->assertEquals($amelia->primaryEmail->emailAddress, $response['data']['users'][0]['email']);
+            $this->assertEquals($evelina->id, $response['data']['users'][1]['id']);
+            $this->assertEquals($evelina->firstName, $response['data']['users'][1]['firstName']);
+            $this->assertEquals($evelina->lastName, $response['data']['users'][1]['lastName']);
+            $this->assertEquals($evelina->primaryEmail->emailAddress, $response['data']['users'][1]['email']);
+        }
+
         protected function getApiControllerClassName()
         {
             Yii::import('application.modules.users.controllers.UserApiController', true);
