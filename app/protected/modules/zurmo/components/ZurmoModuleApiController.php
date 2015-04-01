@@ -934,7 +934,7 @@
         protected static function resolveIncludingAdditionalData(Array & $data)
         {
         }
-        
+
         /**
          * Resolve StateMetadataAdapterClassName
          * @return mixed

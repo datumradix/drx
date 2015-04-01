@@ -68,7 +68,7 @@
             $sortedAttributes = ArrayUtil::subValueSort($attributes, 'label', 'asort');
             return $sortedAttributes;
         }
-        
+
         /**
          * @return array
          */

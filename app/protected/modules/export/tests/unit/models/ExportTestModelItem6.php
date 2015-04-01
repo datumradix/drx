@@ -53,9 +53,9 @@
                     'status',
                 ),
                 'rules' => array(
-                    array('name',  'type',   'type' => 'string'),
-                    array('name',  'length', 'max' => 32),
-                    array('status','type', 'type' => 'integer'),
+                    array('name',   'type',   'type' => 'string'),
+                    array('name',   'length', 'max'  => 32),
+                    array('status', 'type',   'type' => 'integer'),
                 ),
                 'elements' => array(
                     'status'            => 'TaskStatusDropDown'

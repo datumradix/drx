@@ -57,7 +57,7 @@
             $report->setModuleClassName($moduleClassName);
             $report->setType($type);
             $reportToTreeAdapter = new MergeTagsReportRelationsAndAttributesToTreeAdapter($report, $treeType, 'EmailTemplate');
-            
+
             $emailTemplate                  = new EmailTemplate();
             $emailTemplate->type            = EmailTemplate::TYPE_CONTACT;
             $emailTemplate->subject         = 'Another Test subject';
@@ -66,11 +66,11 @@
             $emailTemplate->htmlContent     = 'Html Content ';
             $emailTemplate->builtType       = EmailTemplate::BUILT_TYPE_PASTED_HTML;
             $emailTemplate->modelClassName  = 'Contact';
-            
+
             // By testing the getData method we're actually testing that all Merge Tags are valid
             // and that we can save the EmailTemplate with each Merge Tag without having the error 'Invalid Merge Tag'.
             $data = $reportToTreeAdapter->getData('source');
-            foreach($data[1]['children'] as $child)
+            foreach ($data[1]['children'] as $child)
             {
                 if (isset($child['dataValue']) && $child['dataValue'])
                 {
@@ -82,11 +82,11 @@
             $this->assertTrue($validated);
             $this->assertEmpty($emailTemplate->getErrors());
             $this->assertTrue($emailTemplate->save());
-            
+
             $data = $reportToTreeAdapter->getData('EmailTemplate_createdByUser');
             $emailTemplate->textContent = '';
             $emailTemplate->htmlContent = '';
-            foreach($data as $child)
+            foreach ($data as $child)
             {
                 if (isset($child['dataValue']) && $child['dataValue'])
                 {
@@ -98,11 +98,11 @@
             $this->assertTrue($validated);
             $this->assertEmpty($emailTemplate->getErrors());
             $this->assertTrue($emailTemplate->save());
-            
+
             $data = $reportToTreeAdapter->getData('EmailTemplate_owner');
             $emailTemplate->textContent = '';
             $emailTemplate->htmlContent = '';
-            foreach($data as $child)
+            foreach ($data as $child)
             {
                 if (isset($child['dataValue']) && $child['dataValue'])
                 {
@@ -114,11 +114,11 @@
             $this->assertTrue($validated);
             $this->assertEmpty($emailTemplate->getErrors());
             $this->assertTrue($emailTemplate->save());
-            
+
             $data = $reportToTreeAdapter->getData('EmailTemplate_owner___primaryEmail');
             $emailTemplate->textContent = '';
             $emailTemplate->htmlContent = '';
-            foreach($data as $child)
+            foreach ($data as $child)
             {
                 if (isset($child['dataValue']) && $child['dataValue'])
                 {
@@ -130,11 +130,11 @@
             $this->assertTrue($validated);
             $this->assertEmpty($emailTemplate->getErrors());
             $this->assertTrue($emailTemplate->save());
-            
+
             $data = $reportToTreeAdapter->getData('EmailTemplate_primaryAddress');
             $emailTemplate->textContent = '';
             $emailTemplate->htmlContent = '';
-            foreach($data as $child)
+            foreach ($data as $child)
             {
                 if (isset($child['dataValue']) && $child['dataValue'])
                 {
@@ -146,7 +146,7 @@
             $this->assertTrue($validated);
             $this->assertEmpty($emailTemplate->getErrors());
             $this->assertTrue($emailTemplate->save());
-            
+
             // Test against invalid Merge Tags
             $emailTemplate->textContent     = 'Text Content [[TEXT__INVALID^MERGE^TAG]]';
             $emailTemplate->htmlContent     = 'Html Content [[HTMLINVALIDMERGETAG]]';
@@ -160,6 +160,6 @@
             $this->assertEquals(1, count($errorMessages['htmlContent']));
             $this->assertContains('TEXT__INVALID^MERGE^TAG', $errorMessages['textContent'][0]);
             $this->assertContains('HTMLINVALIDMERGETAG', $errorMessages['htmlContent'][0]);
-        }   
+        }
     }
 ?>
