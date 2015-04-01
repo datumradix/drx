@@ -118,7 +118,7 @@
          * @param $nodeIdPrefix
          */
         protected function resolveChildNodeDataValueForAttributeNode(& $attributeNode, $attribute, $nodeIdPrefix)
-        {   
+        {
             $attributeNode['dataValue'] = MergeTagsUtil::resolveAttributeStringToMergeTagString($nodeIdPrefix . $attribute);
         }
 
@@ -138,43 +138,43 @@
          */
         protected function getSpecialTagsData()
         {
-            return  array(
+            return array(
                 array('id'        => 'modelUrl',
                       'label'     => Zurmo::t('EmailTemplatesModule', 'Model URL'),
                       'dataValue' => MergeTagsUtil::TAG_PREFIX . 'MODEL' . MergeTagsUtil::CAPITAL_DELIMITER . 'URL' .
-                                     MergeTagsUtil::TAG_SUFFIX),
+                          MergeTagsUtil::TAG_SUFFIX),
                 array('id'        => 'baseUrl',
                       'label'     => Zurmo::t('EmailTemplatesModule', 'Base URL'),
                       'dataValue' => MergeTagsUtil::TAG_PREFIX . 'BASE' . MergeTagsUtil::CAPITAL_DELIMITER . 'URL' .
-                                   MergeTagsUtil::TAG_SUFFIX),
+                          MergeTagsUtil::TAG_SUFFIX),
                 array('id'        => 'applicationName',
                       'label'     => Zurmo::t('ZurmoModule', 'Application Name'),
                       'dataValue' => MergeTagsUtil::TAG_PREFIX . 'APPLICATION' . MergeTagsUtil::CAPITAL_DELIMITER . 'NAME' .
-                                   MergeTagsUtil::TAG_SUFFIX),
+                          MergeTagsUtil::TAG_SUFFIX),
                 array('id'        => 'currentYear',
                       'label'     => Zurmo::t('EmailTemplatesModule', 'Current Year'),
                       'dataValue' => MergeTagsUtil::TAG_PREFIX . 'CURRENT' . MergeTagsUtil::CAPITAL_DELIMITER . 'YEAR' .
-                                   MergeTagsUtil::TAG_SUFFIX),
+                          MergeTagsUtil::TAG_SUFFIX),
                 array('id'        => 'lastYear',
                       'label'     => Zurmo::t('EmailTemplatesModule', 'Last Year'),
                       'dataValue' => MergeTagsUtil::TAG_PREFIX . 'LAST' . MergeTagsUtil::CAPITAL_DELIMITER . 'YEAR' .
-                                   MergeTagsUtil::TAG_SUFFIX),
+                          MergeTagsUtil::TAG_SUFFIX),
                 array('id'        => 'ownersAvatarSmall',
                       'label'     => Zurmo::t('EmailTemplatesModule', 'Owner\'s Avatar Small'),
                       'dataValue' => MergeTagsUtil::TAG_PREFIX . 'OWNERS' . MergeTagsUtil::CAPITAL_DELIMITER . 'AVATAR' .
-                                   MergeTagsUtil::CAPITAL_DELIMITER . 'SMALL' . MergeTagsUtil::TAG_SUFFIX),
+                          MergeTagsUtil::CAPITAL_DELIMITER . 'SMALL' . MergeTagsUtil::TAG_SUFFIX),
                 array('id'        => 'ownersAvatarMedium',
                       'label'     => Zurmo::t('EmailTemplatesModule', 'Owner\'s Avatar Medium'),
                       'dataValue' => MergeTagsUtil::TAG_PREFIX . 'OWNERS' . MergeTagsUtil::CAPITAL_DELIMITER . 'AVATAR' .
-                                     MergeTagsUtil::CAPITAL_DELIMITER . 'MEDIUM' . MergeTagsUtil::TAG_SUFFIX),
+                          MergeTagsUtil::CAPITAL_DELIMITER . 'MEDIUM' . MergeTagsUtil::TAG_SUFFIX),
                 array('id'        => 'ownersAvatarLarge',
                       'label'     => Zurmo::t('EmailTemplatesModule', 'Owner\'s Avatar Large'),
                       'dataValue' => MergeTagsUtil::TAG_PREFIX . 'OWNERS' . MergeTagsUtil::CAPITAL_DELIMITER . 'AVATAR' .
-                                     MergeTagsUtil::CAPITAL_DELIMITER . 'LARGE' . MergeTagsUtil::TAG_SUFFIX),
+                          MergeTagsUtil::CAPITAL_DELIMITER . 'LARGE' . MergeTagsUtil::TAG_SUFFIX),
                 array('id'        => 'ownersEmailSignature',
-                    'label'     => Zurmo::t('EmailTemplatesModule', 'Owner\'s Email Signature'),
-                    'dataValue' => MergeTagsUtil::TAG_PREFIX . 'OWNERS' . MergeTagsUtil::CAPITAL_DELIMITER . 'EMAIL' .
-                        MergeTagsUtil::CAPITAL_DELIMITER . 'SIGNATURE' . MergeTagsUtil::TAG_SUFFIX),
+                      'label'     => Zurmo::t('EmailTemplatesModule', 'Owner\'s Email Signature'),
+                      'dataValue' => MergeTagsUtil::TAG_PREFIX . 'OWNERS' . MergeTagsUtil::CAPITAL_DELIMITER . 'EMAIL' .
+                          MergeTagsUtil::CAPITAL_DELIMITER . 'SIGNATURE' . MergeTagsUtil::TAG_SUFFIX),
                 array('id'        => 'unsubscribeUrl',
                       'label'     => Zurmo::t('EmailTemplatesModule', 'Unsubscribe URL'),
                       'dataValue' => GlobalMarketingFooterUtil::resolveUnsubscribeUrlMergeTag()),
@@ -183,7 +183,7 @@
                       'dataValue' => GlobalMarketingFooterUtil::resolveManageSubscriptionsMergeTag()),
             );
         }
-        
+
         /**
          * @param $moduleClassName
          * @return Rules based object

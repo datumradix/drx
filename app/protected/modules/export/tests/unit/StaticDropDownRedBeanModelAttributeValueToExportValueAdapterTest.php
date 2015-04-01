@@ -46,11 +46,11 @@
         {
             return array('ExportTestModelItem6');
         }
-        
+
         public function testGetExportValue()
         {
             $data = array();
-            $model = new ExportTestModelItem6();   
+            $model = new ExportTestModelItem6();
             $model->name = "Smith";
             $model->status = 1;
             $this->assertTrue($model->save());
