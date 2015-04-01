@@ -174,7 +174,8 @@
                                             '<' => '&lt;',
                                             '>' => '&gt;');
                 $purifier           = new CHtmlPurifier();
-                $purifier->options  = array('Cache.SerializerPermissions' => 0777);
+                $purifier->options  = array('Cache.SerializerPermissions' => 0777, 
+                                            'Attr.AllowedFrameTargets' => '_blank');
                 $purifiedText       = $purifier->purify($text);
                 foreach ($safeCharacters as $specialCharacter => $purifiedCode)
                 {
