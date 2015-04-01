@@ -138,6 +138,7 @@
                 throw new ApiException($message);
             }
             $data = array();
+            $data['users'] = array();
             try
             {
                 foreach ($params['data']['emails'] as $email)
