@@ -96,5 +96,10 @@
             $modelClassName = $this->modelClassName;
             return new ProjectsSearchForm(new $modelClassName(false));
         }
+        
+        public static function getDesignerRulesType()
+        {
+            return 'NonModifiableListView';
+        }
     }
 ?>
