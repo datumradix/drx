@@ -206,7 +206,7 @@
             {
                 $item['email'] = $meeting->owner->primaryEmail->emailAddress;
             }
-            $data['Organizer'][] = $item;
+            $data['Organizer'] = $item;
             return $data;
         }
     }
