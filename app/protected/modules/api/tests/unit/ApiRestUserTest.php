@@ -774,7 +774,8 @@
             $response = $this->createApiCallWithRelativeUrl('searchUsersByEmails/', 'POST', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
-            $this->assertEmpty($response['data']);
+            $this->assertNotEmpty($response['data']);
+            $this->assertEmpty($response['data']['users']);
 
             $data['emails'] = array('amelia@example.com');
             $response = $this->createApiCallWithRelativeUrl('searchUsersByEmails/', 'POST', $headers, array('data' => $data));
