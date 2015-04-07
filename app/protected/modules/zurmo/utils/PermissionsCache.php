@@ -84,10 +84,9 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($securableItemModelIdentifer);
-                $serializedData = Yii::app()->cache->get($prefix . $securableItemModelIdentifer);
-                if ($serializedData !== false)
+                $permitablesCombinedPermissions = static::getCachedValueAndValidateChecksum($prefix . $securableItemModelIdentifer);
+                if ($permitablesCombinedPermissions !== false)
                 {
-                    $permitablesCombinedPermissions = unserialize($serializedData);
                     assert('is_array($permitablesCombinedPermissions)');
                     if (isset($permitablesCombinedPermissions[$permitableModelIdentifier]))
                     {
@@ -95,8 +94,8 @@
                         if (static::supportsAndAllowsPhpCaching())
                         {
                             static::$securableItemToPermitableToCombinedPermissions
-                                            [$securableItemModelIdentifer]
-                                            [$permitableModelIdentifier] = $combinedPermissions;
+                            [$securableItemModelIdentifer]
+                            [$permitableModelIdentifier] = $combinedPermissions;
                         }
                         return $combinedPermissions;
                     }
@@ -140,20 +139,17 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($securableItemModelIdentifer);
-                $permitablesCombinedPermissions = Yii::app()->cache->get($prefix . $securableItemModelIdentifer);
+                $permitablesCombinedPermissions = static::getCachedValueAndValidateChecksum($prefix . $securableItemModelIdentifer);
                 if ($permitablesCombinedPermissions === false)
                 {
                     $permitablesCombinedPermissions = array($permitableModelIdentifier => $combinedPermissions);
-                    Yii::app()->cache->set($prefix . $securableItemModelIdentifer,
-                                           serialize($permitablesCombinedPermissions));
+                    static::cacheValueAndChecksum($prefix . $securableItemModelIdentifer, $permitablesCombinedPermissions);
                 }
                 else
                 {
-                    $permitablesCombinedPermissions = unserialize($permitablesCombinedPermissions);
                     assert('is_array($permitablesCombinedPermissions)');
                     $permitablesCombinedPermissions[$permitableModelIdentifier] = $combinedPermissions;
-                    Yii::app()->cache->set($prefix . $securableItemModelIdentifer,
-                                           serialize($permitablesCombinedPermissions));
+                    static::cacheValueAndChecksum($prefix . $securableItemModelIdentifer, $permitablesCombinedPermissions);
                 }
             }
 
@@ -184,7 +180,7 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($cacheKeyName);
-                Yii::app()->cache->set($prefix . $cacheKeyName, serialize($actualPermissions));
+                static::cacheValueAndChecksum($prefix . $cacheKeyName, $actualPermissions);
             }
             if (static::supportsAndAllowsDatabaseCaching() && $cacheToDatabase)
             {
@@ -222,10 +218,9 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($cacheKeyName);
-                $serializedData = Yii::app()->cache->get($prefix . $cacheKeyName);
-                if ($serializedData !== false)
+                $actualPermissions = static::getCachedValueAndValidateChecksum($prefix . $cacheKeyName);
+                if ($actualPermissions !== false)
                 {
-                    $actualPermissions = unserialize($serializedData);
                     assert('is_array($actualPermissions)');
                     return $actualPermissions;
                 }
@@ -265,10 +260,10 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($permitableModelIdentifier) . static::$modulePermissionsDataCachePrefix;
-                $serializedData = Yii::app()->cache->get($prefix . $permitableModelIdentifier);
-                if ($serializedData !== false)
+                $data = static::getCachedValueAndValidateChecksum($prefix . $permitableModelIdentifier);
+                if ($data !== false)
                 {
-                    return unserialize($serializedData);
+                    return $data;
                 }
             }
             throw new NotFoundException();
@@ -289,8 +284,7 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($permitableModelIdentifier) . static::$modulePermissionsDataCachePrefix;
-
-                Yii::app()->cache->set($prefix . $permitableModelIdentifier, serialize($data));
+                static::cacheValueAndChecksum($prefix . $permitableModelIdentifier, $data);
             }
         }
 

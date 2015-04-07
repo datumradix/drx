@@ -57,17 +57,15 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($identifier);
-
-                @$serializedData = Yii::app()->cache->get($prefix . $identifier);
-                //echo "GET:" . $prefix . $identifier . "\n";
-                if ($serializedData !== false)
+                // Why we ignore errors in line below? Maybe because it is possible that memcache servers are not reachable
+                @$data = static::getCachedValueAndValidateChecksum($prefix . $identifier);
+                if ($data !== false)
                 {
-                    $unserializedData = unserialize($serializedData);
                     if (static::supportsAndAllowsPhpCaching())
                     {
-                        static::$cachedEntries[$identifier] = $unserializedData;
+                        static::$cachedEntries[$identifier] = $data;
                     }
-                    return $unserializedData;
+                    return $data;
                 }
             }
             if ($default === 'NOT_FOUND_EXCEPTION')
@@ -95,7 +93,8 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($identifier);
-                @Yii::app()->cache->set($prefix . $identifier, serialize($entry));
+                // Why we ignore errors in line below? Maybe because it is possible that memcache servers are not reachable
+                @static::cacheValueAndChecksum($prefix . $identifier, $entry);
             }
         }
 
