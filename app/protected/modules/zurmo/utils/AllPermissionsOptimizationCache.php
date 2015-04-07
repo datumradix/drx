@@ -113,10 +113,9 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($securableItemModelIdentifer) . self::READ;
-                $serializedData = Yii::app()->cache->get($prefix . $securableItemModelIdentifer);
-                if ($serializedData !== false)
+                $permitablesHasReadPermission = static::getCachedValueAndValidateChecksum($prefix . $securableItemModelIdentifer);
+                if ($permitablesHasReadPermission !== false)
                 {
-                    $permitablesHasReadPermission = unserialize($serializedData);
                     assert('is_array($permitablesHasReadPermission)');
                     if (isset($permitablesHasReadPermission[$permitableModelIdentifier]))
                     {
@@ -163,20 +162,17 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($securableItemModelIdentifer). self::READ;
-                $permitablesHasReadPermission = Yii::app()->cache->get($prefix . $securableItemModelIdentifer);
+                $permitablesHasReadPermission = static::getCachedValueAndValidateChecksum($prefix . $securableItemModelIdentifer);
                 if ($permitablesHasReadPermission === false)
                 {
                     $permitablesHasReadPermission = array($permitableModelIdentifier => $hasReadPermission);
-                    Yii::app()->cache->set($prefix . $securableItemModelIdentifer,
-                                           serialize($permitablesHasReadPermission));
+                    static::cacheValueAndChecksum($prefix . $securableItemModelIdentifer, $permitablesHasReadPermission);
                 }
                 else
                 {
-                    $permitablesHasReadPermission = unserialize($permitablesHasReadPermission);
                     assert('is_array($permitablesHasReadPermission)');
                     $permitablesHasReadPermission[$permitableModelIdentifier] = $hasReadPermission;
-                    Yii::app()->cache->set($prefix . $securableItemModelIdentifer,
-                                           serialize($permitablesHasReadPermission));
+                    static::cacheValueAndChecksum($prefix . $securableItemModelIdentifer, $permitablesHasReadPermission);
                 }
             }
         }
@@ -203,10 +199,10 @@
             if (static::supportsAndAllowsMemcache())
             {
                 $prefix = static::getCachePrefix($userModelIdentifier) . static::$mungeIdsCachePrefix;
-                $serializedData = Yii::app()->cache->get($prefix . $userModelIdentifier);
-                if ($serializedData !== false)
+                $data = static::getCachedValueAndValidateChecksum($prefix . $userModelIdentifier);
+                if ($data !== false)
                 {
-                    return unserialize($serializedData);
+                    return $data;
                 }
             }
             throw new NotFoundException();
@@ -231,7 +227,7 @@
             {
                 $prefix = static::getCachePrefix($userModelIdentifier) . static::$mungeIdsCachePrefix;
 
-                Yii::app()->cache->set($prefix . $userModelIdentifier, serialize($mungeIds));
+                static::cacheValueAndChecksum($prefix . $userModelIdentifier, $mungeIds);
             }
         }
 

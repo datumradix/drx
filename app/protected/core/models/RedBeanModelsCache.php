@@ -63,32 +63,12 @@
             if (static::supportsAndAllowsMemcacheByModelIdentifier($modelIdentifier))
             {
                 $prefix = static::getCachePrefix($modelIdentifier);
-                $cachedData = Yii::app()->cache->get($prefix . $modelIdentifier);
-                if ($cachedData === false)
+                $model = static::getCachedValueAndValidateChecksum($prefix . $modelIdentifier);
+                if ($model !== false && $model instanceof RedBeanModel)
                 {
-                    throw new NotFoundException();
+                    static::$modelIdentifiersToModels[$modelIdentifier] = $model;
+                    return $model;
                 }
-                if (!is_array($cachedData) || !isset($cachedData['model']) || !isset($cachedData['checksum']))
-                {
-                    throw new NotFoundException();
-                }
-                $model = $cachedData['model'];
-                $checksum = $cachedData['checksum'];
-                assert('$checksum == crc32(serialize($model))');
-                if (YII_DEBUG)
-                {
-                    if (crc32(serialize($model)) != $checksum)
-                    {
-                        throw new ChecksumMismatchException();
-                    }
-                }
-                if ($checksum != crc32(serialize($model)))
-                {
-                    throw new NotFoundException();
-                }
-                assert('$model instanceof RedBeanModel');
-                static::$modelIdentifiersToModels[$modelIdentifier] = $model;
-                return $model;
             }
             throw new NotFoundException();
         }
@@ -113,9 +93,7 @@
             if (static::supportsAndAllowsMemcacheByModel($model))
             {
                 $prefix = static::getCachePrefix($modelIdentifier);
-                $checksum = crc32(serialize($model));
-                $cachedData = array('model' => $model, 'checksum' => $checksum);
-                Yii::app()->cache->set($prefix . $modelIdentifier, $cachedData);
+                static::cacheValueAndChecksum($prefix . $modelIdentifier, $model);
             }
         }
 
