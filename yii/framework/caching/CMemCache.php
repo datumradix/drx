@@ -174,8 +174,21 @@ class CMemCache extends CCache
 			$expire+=time();
 		else
 			$expire=0;
-
-		return $this->useMemcached ? $this->_cache->set($key,$value,$expire) : $this->_cache->set($key,$value,0,$expire);
+        if ($this->useMemcached)
+        {
+            return $this->_cache->set($key,$value,$expire);
+        }
+        else
+        {
+            if(extension_loaded('zlib'))
+            {
+                return $this->_cache->set($key,$value,MEMCACHE_COMPRESSED,$expire);
+            }
+            else
+            {
+                return $this->_cache->set($key,$value,0,$expire);
+            }
+        }
 	}
 
 	/**
