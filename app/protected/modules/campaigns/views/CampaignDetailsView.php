@@ -73,7 +73,7 @@
         {
             if ($this->isCampaignCompleted())
             {
-                $label  = Zurmo::t('CampaignsModule', 'Completed');
+                $label  = Zurmo::t('Core', 'Completed');
                 return ZurmoHtml::tag('span', array('class' => 'campaign-status-badge status-true'), $label);
             }
             return parent::getPostTruncatedTitleContent();

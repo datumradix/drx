@@ -66,7 +66,7 @@
             return array(
                 'username'                             => Zurmo::t('ZurmoModule', 'Username'),
                 'password'                             => Zurmo::t('ZurmoModule', 'Password'),
-                'aTestToAddress'                       => Zurmo::t('SendGridModule', 'Send a test email to'),
+                'aTestToAddress'                       => Zurmo::t('EmailMessagesModule', 'Send a test email to'),
             );
         }
     }
