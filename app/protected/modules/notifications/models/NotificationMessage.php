@@ -78,7 +78,7 @@
             return array_merge(parent::translatedAttributeLabels($language),
                 array(
                     'htmlContent'   => Zurmo::t('EmailMessagesModule', 'Html Content',  array(), null, $language),
-                    'notifications' => Zurmo::t('NotificationsModule', 'Notifications',  array(), null, $language),
+                    'notifications' => Zurmo::t('Core', 'Notifications',  array(), null, $language),
                     'textContent'   => Zurmo::t('EmailMessagesModule', 'Text Content',  array(), null, $language),
                 )
             );
@@ -91,7 +91,7 @@
          */
         protected static function getLabel($language = null)
         {
-            return Zurmo::t('NotificationsModule', 'Notification Message', array(), null, $language);
+            return Zurmo::t('Core', 'Notification Message', array(), null, $language);
         }
 
         /**
@@ -101,7 +101,7 @@
          */
         protected static function getPluralLabel($language = null)
         {
-            return Zurmo::t('NotificationsModule', 'Notification Messages', array(), null, $language);
+            return Zurmo::t('Core', 'Notification Messages', array(), null, $language);
         }
     }
 ?>

@@ -194,13 +194,13 @@
         {
             return array_merge(parent::translatedAttributeLabels($language),
                 array(
-                    'fromAddress'               => Zurmo::t('SendGridModule', 'From Address',                  array(), null, $language),
-                    'fromName'                  => Zurmo::t('SendGridModule', 'From Name',                     array(), null, $language),
+                    'fromAddress'               => Zurmo::t('EmailMessagesModule', 'From Address',                  array(), null, $language),
+                    'fromName'                  => Zurmo::t('EmailMessagesModule', 'From Name',                     array(), null, $language),
                     'messages'                  => Zurmo::t('Core',                'Messages',                      array(), null, $language),
                     'name'                      => Zurmo::t('Core',                'Name',                          array(), null, $language),
                     'apiPassword'               => Zurmo::t('SendGridModule', 'Api Password',             array(), null, $language),
                     'apiUsername'               => Zurmo::t('SendGridModule', 'Api Username',             array(), null, $language),
-                    'replyToAddress'            => Zurmo::t('SendGridModule', 'Reply To Address',              array(), null, $language),
+                    'replyToAddress'            => Zurmo::t('EmailMessagesModule', 'Reply To Address',              array(), null, $language),
                     'user'                      => Zurmo::t('UsersModule',         'User',                          array(), null, $language),
                 )
             );

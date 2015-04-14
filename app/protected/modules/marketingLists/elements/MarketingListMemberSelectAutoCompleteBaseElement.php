@@ -189,7 +189,7 @@
                                                 {
                                                     var data = {' . // Not Coding Standard
                                                                 '   "message" : "' .
-                                                                        Zurmo::t('MarketingListsModule',
+                                                                        Zurmo::t('Core',
                                                                             'There was an error processing your request'). '",
                                                                     "type"    : "error"
                                                                 };
