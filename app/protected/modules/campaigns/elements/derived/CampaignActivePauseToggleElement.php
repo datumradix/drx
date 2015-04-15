@@ -71,7 +71,7 @@
 
         public static function getDropDownArray()
         {
-            return array('0' => Zurmo::t('CampaignsModule', 'Running'),
+            return array('0' => Zurmo::t('Core', 'Running'),
                          '1' => Zurmo::t('CampaignsModule', 'Paused'));
         }
 

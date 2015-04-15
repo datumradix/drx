@@ -40,7 +40,7 @@
         {
             return array(
                 'name'   => 'type',
-                'header' => Zurmo::t('NotificationsModule', 'Notification'),
+                'header' => Zurmo::t('Core', 'Notification'),
                 'type'   => 'raw',
                 'value'  => 'NotificationsUtil::renderListViewContent($data)'
             );

@@ -700,7 +700,7 @@
             $user  = User::getById(intval($id));
             UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
             UserAccessUtil::resolveAccessingASystemUser($user);
-            $title = Zurmo::t('UsersModule', 'Notifications Configuration');
+            $title = Zurmo::t('Core', 'Notifications Configuration');
             $breadCrumbLinks = array(strval($user) => array('default/details',  'id' => $id), $title);
             $userNotificationConfigurationForm = UserNotificationConfigurationFormAdapter::makeFormFromUserConfigurationByUser($user);
             $postVariableName           = get_class($userNotificationConfigurationForm);
