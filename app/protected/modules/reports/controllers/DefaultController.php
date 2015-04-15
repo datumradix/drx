@@ -498,7 +498,7 @@
             else
             {
                 $notificationContent = Zurmo::t(
-                    'ReportsModule',
+                    'ZurmoModule',
                     'You no longer have permissions to access {modelName}.',
                     array('{modelName}' => $modelToStringValue)
                 );
