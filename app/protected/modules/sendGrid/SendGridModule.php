@@ -77,8 +77,8 @@
                 'configureMenuItems' => array(
                     array(
                         'category'         => ZurmoModule::ADMINISTRATION_CATEGORY_GENERAL,
-                        'titleLabel'       => "eval:Zurmo::t('EmailMessagesModule', 'Sendgrid Configuration')",
-                        'descriptionLabel' => "eval:Zurmo::t('EmailMessagesModule', 'Manage Sendgrid Configuration')",
+                        'titleLabel'       => "eval:Zurmo::t('SendGridModule', 'Sendgrid Configuration')",
+                        'descriptionLabel' => "eval:Zurmo::t('SendGridModule', 'Manage Sendgrid Configuration')",
                         'route'            => '/sendGrid/default/configurationEditOutbound',
                         'right'            => self::RIGHT_ACCESS_SENDGRID_ADMINISTRATION,
                     )

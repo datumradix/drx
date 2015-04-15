@@ -423,7 +423,7 @@
             $message->htmlContent         = $commonMessage;
             $url                          = Yii::app()->createAbsoluteUrl('gameRewards/default/details/',
                                             array('id' => $gameReward->id));
-            $message->htmlContent        .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url, 
+            $message->htmlContent        .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url,
                                                                                 array('target' => '_blank'));
             $message->textContent         = $commonMessage . "\n";
             $message->textContent        .= Zurmo::t('GameRewardsModule', 'Use this link to get more details: {url}',

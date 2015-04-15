@@ -226,7 +226,7 @@
                     'sendAttempts' => Zurmo::t('EmailMessagesModule', 'Send Attempts',  array(), null, $language),
                     'sentDateTime' => Zurmo::t('EmailMessagesModule', 'Sent Date Time',  array(), null, $language),
                     'subject'      => Zurmo::t('Core', 'Subject',  array(), null, $language),
-                    'sendGridAccount' => Zurmo::t('EmailMessagesModule', 'SendGrid Email Account',  array(), null, $language),
+                    'sendGridAccount' => Zurmo::t('SendGridModule', 'SendGrid Email Account',  array(), null, $language),
                     //'type'         => Zurmo::t('Core',                'Type',  array(), null, $language),
                 )
             );

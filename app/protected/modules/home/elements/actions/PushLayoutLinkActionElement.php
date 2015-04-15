@@ -43,7 +43,7 @@
 
         protected function getDefaultLabel()
         {
-            return Zurmo::t('HomeModule', 'Push Layout');
+            return Zurmo::t('ZurmoModule', 'Push Layout');
         }
 
         protected function getDefaultRoute()
