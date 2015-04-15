@@ -313,7 +313,7 @@
                 $autoResponderItems = EmailMessageActivityUtil::getByEmailMessageId("AutoresponderItem", $emailMessage->id);
                 if (!empty($autoResponderItems))
                 {
-                    return array($autoResponderItems[0]->id, 'AutoresponderItem', $campaignItems[0]->contact->getClassId('Person'));
+                    return array($autoResponderItems[0]->id, 'AutoresponderItem', $autoResponderItems[0]->contact->getClassId('Person'));
                 }
             }
             return null;

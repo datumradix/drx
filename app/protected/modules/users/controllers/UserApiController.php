@@ -39,6 +39,23 @@
     */
     class UsersUserApiController extends ZurmoModuleApiController
     {
+        // Alter parent filters to allow access to Users module when auser is trying to access getAuthenticatedUser via API
+        public function filters()
+        {
+            $filters = parent::filters();
+            foreach ($filters as $key => $filter)
+            {
+                if (is_array($filter) &&
+                    isset($filter[0]) && $filter[0] == self::getRightsFilterPath() &&
+                    isset($filter['moduleClassName']) && $filter['moduleClassName'] == 'UsersModule' &&
+                    isset($filter['rightName']) && $filter['rightName'] == UsersModule::getAccessRight())
+                {
+                    $filters[$key][0] = $filters[$key][0] . ' - getAuthenticatedUser, searchUsersByEmails';
+                }
+            }
+            return $filters;
+        }
+
         protected static function getSearchFormClassName()
         {
             return 'UsersSearchForm';
@@ -78,6 +95,10 @@
             Yii::app()->apiHelper->sendResponse($result);
         }
 
+        /**
+         * Get current authenticated user details
+         * @throws ApiException
+         */
         public function actionGetAuthenticatedUser()
         {
             if (Yii::app()->user->isGuest)
@@ -85,7 +106,65 @@
                 $message = Zurmo::t('ZurmoModule', 'You must be logged to use this method.');
                 throw new ApiException($message);
             }
-            $result    =  $this->processRead(Yii::app()->user->userModel->id);
+            try
+            {
+                $data           = static::getModelToApiDataUtilData(Yii::app()->user->userModel);
+                $resultClassName = Yii::app()->apiRequest->getResultClassName();
+                $result                    = new $resultClassName(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            catch (Exception $e)
+            {
+                $message = $e->getMessage();
+                throw new ApiException($message);
+            }
+            Yii::app()->apiHelper->sendResponse($result);
+        }
+
+        /**
+         * Get users by emails
+         * @throws ApiException
+         */
+        public function actionSearchUsersByEmails()
+        {
+            $params = Yii::app()->apiRequest->getParams();
+            if (!isset($params['data']))
+            {
+                $message = Zurmo::t('ZurmoModule', 'Please provide data.');
+                throw new ApiException($message);
+            }
+            if (!isset($params['data']['emails']) || !is_array($params['data']['emails']) || empty($params['data']['emails']))
+            {
+                $message = Zurmo::t('ZurmoModule', 'Emails parameters must exist, must be an array and must contain at least one email address.');
+                throw new ApiException($message);
+            }
+            $data = array();
+            $data['users'] = array();
+            try
+            {
+                foreach ($params['data']['emails'] as $email)
+                {
+                    $usersByEmail = UserSearch::getUsersByEmailAddress($email);
+                    if (!empty($usersByEmail) && count($usersByEmail) == 1)
+                    {
+                        $user = array();
+                        $user['id']        = $usersByEmail[0]->id;
+                        $user['firstName'] = $usersByEmail[0]->firstName;
+                        $user['lastName']  = $usersByEmail[0]->lastName;
+                        $user['username']  = $usersByEmail[0]->username;
+                        if ($usersByEmail[0]->primaryEmail->emailAddress != null)
+                        {
+                            $user['email'] = $usersByEmail[0]->primaryEmail->emailAddress;
+                        }
+                        $data['users'][] = $user;
+                    }
+                }
+                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+            }
+            catch (Exception $e)
+            {
+                $message = $e->getMessage();
+                throw new ApiException($message);
+            }
             Yii::app()->apiHelper->sendResponse($result);
         }
 

@@ -34,50 +34,44 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class CampaignActivePauseToggleElement extends StateToggleElement
+    /**
+    * Test model for Export: ExportTestModelItem6
+    */
+    class ExportTestModelItem6 extends OwnedSecurableItem
     {
-        protected function assertAttributeName()
+        public static function getByName($name)
         {
-            assert('$this->attribute == "status"');
+            return self::getByNameOrEquivalent('name', $name);
         }
 
-        protected function assertModelClass()
+        public static function getDefaultMetadata()
         {
-            assert('$this->model instanceof Campaign');
-        }
-
-        protected static function resolveSelectedRadioButtonListOption(RedBeanModel $model)
-        {
-            return intval($model->status == Campaign::STATUS_PAUSED);
-        }
-
-        protected static function resolveStatusChangeUrl(RedBeanModel $model)
-        {
-            $url    = Yii::app()->createUrl('campaigns/default/togglePaused', array('id' => $model->id));
-            return $url;
-        }
-
-        protected static function resolveSuccessMessage()
-        {
-            return CJavaScript::quote(Zurmo::t('CampaignsModule', 'Campaign status was changed.'));
-        }
-
-        public static function getModelAttributeNames()
-        {
-            return array(
-                'status',
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'members' => array(
+                    'name',
+                    'status',
+                ),
+                'rules' => array(
+                    array('name',   'type',   'type' => 'string'),
+                    array('name',   'length', 'max'  => 32),
+                    array('status', 'type',   'type' => 'integer'),
+                ),
+                'elements' => array(
+                    'status'            => 'TaskStatusDropDown'
+                ),
             );
+            return $metadata;
         }
 
-        public static function getDropDownArray()
+        public static function isTypeDeletable()
         {
-            return array('0' => Zurmo::t('Core', 'Running'),
-                         '1' => Zurmo::t('CampaignsModule', 'Paused'));
+            return true;
         }
 
-        protected static function renderStatusAreaLabel()
+        public static function getModuleClassName()
         {
-            return null;
+            return 'ExportModule';
         }
     }
 ?>

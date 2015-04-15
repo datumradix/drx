@@ -68,5 +68,24 @@
             $sortedAttributes = ArrayUtil::subValueSort($attributes, 'label', 'asort');
             return $sortedAttributes;
         }
+
+        /**
+         * @return array
+         */
+        protected function getDynamicallyDerivedAttributesData()
+        {
+            $attributes = array();
+            foreach ($this->model->getAttributes() as $attribute => $notUsed)
+            {
+                if (!$this->model instanceof User &&
+                     $this->model->isRelation($attribute) &&
+                     $this->model->getRelationModelClassName($attribute) == 'User')
+                {
+                    $attributes[$attribute] =
+                        array('label' => $this->model->getAttributeLabel($attribute));
+                }
+            }
+            return $attributes;
+        }
     }
 ?>

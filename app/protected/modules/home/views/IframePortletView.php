@@ -67,7 +67,7 @@
         {
             return '<iframe src=' . Yii::app()->format->resolveForUrl($this->resolveViewAndMetadataValueByName('iframeUrl')) .
                    ' width="100%" height='. $this->resolveViewAndMetadataValueByName('iframeHeight') .
-                   ' frameborder="0" seamless></iframe>';
+                   ' frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" seamless></iframe>';
         }
 
         public function renderPortletHeadContent()

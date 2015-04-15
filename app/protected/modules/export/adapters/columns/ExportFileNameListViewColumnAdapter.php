@@ -82,7 +82,7 @@
             }
             elseif ($isCompleted == 0 && $jobStatus == 1)
             {
-                $status .= '<div class="export-item-stage-status stage-running"><i>●</i><span>' . Zurmo::t('ExportModule', 'Running') .
+                $status .= '<div class="export-item-stage-status stage-running"><i>●</i><span>' . Zurmo::t('Core', 'Running') .
                     ' ' .  $data->processOffset . '/' . $dataProvider->getPagination()->getPageSize() . '</span></div>';
             }
             elseif ($isCompleted == 0 && $jobStatus == 0)

@@ -125,13 +125,15 @@
             {
                 $message->textContent .= "\n" . $messageContentSecondPart;
             }
-            $message->textContent       .= "\n" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
+            $message->textContent       .= "\n" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url,
+                                                                    array('target' => '_blank'));
             $message->htmlContent        = $messageContent;
             if ($messageContentSecondPart != null)
             {
                 $message->htmlContent .= "<br/>" . $messageContentSecondPart;
             }
-            $message->htmlContent       .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
+            $message->htmlContent       .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url,
+                                                                        array('target' => '_blank'));
             return $message;
         }
 

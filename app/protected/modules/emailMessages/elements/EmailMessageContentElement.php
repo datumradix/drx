@@ -45,13 +45,18 @@
             $emailMessageContent = $this->model->{$this->attribute};
             if ($emailMessageContent->htmlContent != null)
             {
+                // Begin Not Coding Standard
+                //remove tracking since it's not contact who opens the email.
+                $emailMessageContent->htmlContent = 
+                    preg_replace('|<img width="1" height="1" src="[^"]*" alt="[^"]*" />|i', '', $emailMessageContent->htmlContent);
+                // End Not Coding Standard
                 // we don't use Yii::app()->format->html because we know its good in terms of
                 // purification. Plus using that messes up html.
                 return $emailMessageContent->htmlContent;
             }
             elseif ($emailMessageContent->textContent != null)
             {
-                return Yii::app()->format->text($emailMessageContent->textContent);
+                return nl2br(Yii::app()->format->text($emailMessageContent->textContent));
             }
         }
 
@@ -68,6 +73,11 @@
             $emailMessageContent     = $this->model->{$this->attribute};
             $inputNameIdPrefix       = $this->attribute;
             $attribute               = 'htmlContent';
+            // Begin Not Coding Standard
+            //remove tracking since it's not contact who opens the email.
+            $emailMessageContent->$attribute = 
+                preg_replace('|<img width="1" height="1" src="[^"]*" alt="[^"]*" />|i', '', $emailMessageContent->$attribute);
+            // End Not Coding Standard
             $id                      = $this->getEditableInputId  ($inputNameIdPrefix, $attribute);
             $htmlOptions             = array();
             $htmlOptions['id']       = $id;

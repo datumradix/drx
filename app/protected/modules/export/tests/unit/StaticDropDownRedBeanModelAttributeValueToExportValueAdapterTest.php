@@ -34,50 +34,35 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class CampaignActivePauseToggleElement extends StateToggleElement
+    class StaticDropDownRedBeanModelAttributeValueToExportValueAdapterTest extends ZurmoBaseTest
     {
-        protected function assertAttributeName()
+        public static function setUpBeforeClass()
         {
-            assert('$this->attribute == "status"');
+            parent::setUpBeforeClass();
+            $super = SecurityTestHelper::createSuperAdmin();
         }
 
-        protected function assertModelClass()
+        public static function getDependentTestModelClassNames()
         {
-            assert('$this->model instanceof Campaign');
+            return array('ExportTestModelItem6');
         }
 
-        protected static function resolveSelectedRadioButtonListOption(RedBeanModel $model)
+        public function testGetExportValue()
         {
-            return intval($model->status == Campaign::STATUS_PAUSED);
-        }
+            $data = array();
+            $model = new ExportTestModelItem6();
+            $model->name = "Smith";
+            $model->status = 1;
+            $this->assertTrue($model->save());
 
-        protected static function resolveStatusChangeUrl(RedBeanModel $model)
-        {
-            $url    = Yii::app()->createUrl('campaigns/default/togglePaused', array('id' => $model->id));
-            return $url;
-        }
-
-        protected static function resolveSuccessMessage()
-        {
-            return CJavaScript::quote(Zurmo::t('CampaignsModule', 'Campaign status was changed.'));
-        }
-
-        public static function getModelAttributeNames()
-        {
-            return array(
-                'status',
-            );
-        }
-
-        public static function getDropDownArray()
-        {
-            return array('0' => Zurmo::t('Core', 'Running'),
-                         '1' => Zurmo::t('CampaignsModule', 'Paused'));
-        }
-
-        protected static function renderStatusAreaLabel()
-        {
-            return null;
+            $adapter = new StaticDropDownRedBeanModelAttributeValueToExportValueAdapter($model, 'status');
+            $adapter->resolveData($data);
+            $compareData = array(null);
+            $this->assertEquals($compareData, $data);
+            $data = array();
+            $adapter->resolveHeaderData($data);
+            $compareData = array($model->getAttributeLabel('status'));
+            $this->assertEquals($compareData, $data);
         }
     }
 ?>

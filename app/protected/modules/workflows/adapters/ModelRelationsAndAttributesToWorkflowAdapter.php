@@ -822,7 +822,9 @@
             }
             if (!$onlyIncludeOwnedRelations)
             {
-                $attributes = array_merge($attributes, $this->getDerivedRelationsViaCastedUpModelData($precedingModel, $precedingRelation));
+                //Currently this is not handled correctly in WorkflowTriggersUtil::isTriggerTrueByModel so we disable it.
+                //TODO: Refactor WorkflowTriggersUtil to handle this kind of triggers properly.
+                //$attributes = array_merge($attributes, $this->getDerivedRelationsViaCastedUpModelData($precedingModel, $precedingRelation));
                 $attributes = array_merge($attributes, $this->getInferredRelationsData($precedingModel, $precedingRelation));
             }
             $sortedAttributes = ArrayUtil::subValueSort($attributes, 'label', 'asort');

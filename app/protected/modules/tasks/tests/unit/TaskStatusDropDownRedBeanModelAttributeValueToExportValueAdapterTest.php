@@ -34,50 +34,41 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class CampaignActivePauseToggleElement extends StateToggleElement
+    class TaskStatusDropDownRedBeanModelAttributeValueToExportValueAdapterTest extends ZurmoBaseTest
     {
-        protected function assertAttributeName()
+        public static function setUpBeforeClass()
         {
-            assert('$this->attribute == "status"');
+            parent::setUpBeforeClass();
+            $super = SecurityTestHelper::createSuperAdmin();
+            Yii::app()->user->userModel = $super;
+            AccountTestHelper::createAccountByNameForOwner('anAccount', $super);
         }
 
-        protected function assertModelClass()
+        public function testGetExportValue()
         {
-            assert('$this->model instanceof Campaign');
-        }
+            $data = array();
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $accounts = Account::getByName('anAccount');
 
-        protected static function resolveSelectedRadioButtonListOption(RedBeanModel $model)
-        {
-            return intval($model->status == Campaign::STATUS_PAUSED);
-        }
+            $user                   = UserTestHelper::createBasicUser('Billy');
+            $dueStamp               = DateTimeUtil::convertTimestampToDbFormatDateTime(time()  + 10000);
+            $task                   = new Task();
+            $task->name             = 'MyTask';
+            $task->owner            = $user;
+            $task->requestedByUser  = $user;
+            $task->dueDateTime      = $dueStamp;
+            $task->status           = Task::STATUS_COMPLETED;
+            $task->description      = 'my test description';
+            $this->assertTrue($task->save());
 
-        protected static function resolveStatusChangeUrl(RedBeanModel $model)
-        {
-            $url    = Yii::app()->createUrl('campaigns/default/togglePaused', array('id' => $model->id));
-            return $url;
-        }
-
-        protected static function resolveSuccessMessage()
-        {
-            return CJavaScript::quote(Zurmo::t('CampaignsModule', 'Campaign status was changed.'));
-        }
-
-        public static function getModelAttributeNames()
-        {
-            return array(
-                'status',
-            );
-        }
-
-        public static function getDropDownArray()
-        {
-            return array('0' => Zurmo::t('Core', 'Running'),
-                         '1' => Zurmo::t('CampaignsModule', 'Paused'));
-        }
-
-        protected static function renderStatusAreaLabel()
-        {
-            return null;
+            $adapter = new TaskStatusDropDownRedBeanModelAttributeValueToExportValueAdapter($task, 'status');
+            $adapter->resolveData($data);
+            $compareData = array('Completed');
+            $this->assertEquals($compareData, $data);
+            $data = array();
+            $adapter->resolveHeaderData($data);
+            $compareData = array($task->getAttributeLabel('status'));
+            $this->assertEquals($compareData, $data);
         }
     }
 ?>

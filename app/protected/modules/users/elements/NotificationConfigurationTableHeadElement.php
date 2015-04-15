@@ -52,7 +52,7 @@
 
         protected function renderLabel()
         {
-            return Zurmo::t('UsersModule', 'Notification');
+            return Zurmo::t('Core', 'Notification');
         }
 
         protected function renderEnableInboxAndEmailNotificationsCheckBoxes()
