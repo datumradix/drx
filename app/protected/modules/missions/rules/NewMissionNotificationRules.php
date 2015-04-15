@@ -43,7 +43,7 @@
 
         public function getDisplayName()
         {
-            return Zurmo::t('ConversationsModule', 'New Mission');
+            return Zurmo::t('MissionsModule', 'New Mission');
         }
 
         public function getType()

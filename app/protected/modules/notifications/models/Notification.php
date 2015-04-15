@@ -236,7 +236,7 @@
             return array_merge(parent::translatedAttributeLabels($language),
                 array(
                     'ownerHasReadLatest'  => Zurmo::t('NotificationsModule', 'Owner Has Read Latest',  array(), null, $language),
-                    'notificationMessage' => Zurmo::t('NotificationsModule', 'Notification Message',  array(), null, $language),
+                    'notificationMessage' => Zurmo::t('Core', 'Notification Message',  array(), null, $language),
                     'owner'               => Zurmo::t('ZurmoModule', 'Owner',  array(), null, $language),
                     'type'                => Zurmo::t('Core', 'Type',  array(), null, $language),
                 )
