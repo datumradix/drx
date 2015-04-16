@@ -118,7 +118,8 @@
                 $message->htmlContent         = $commonMessage;
                 $url                          = Yii::app()->createAbsoluteUrl('jobsManager/default/jobLogDetails/',
                                                                     array('id' => $jobLog->id));
-                $message->htmlContent        .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
+                $message->htmlContent        .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url,
+                                                                                    array('target' => '_blank'));
                 $message->textContent         = $commonMessage;
                 $message->textContent        .= "\n". Zurmo::t('JobsManagerModule', 'See the job log details in this link: {url}',
                                                                 array('{url}' => ShortUrlUtil::createShortUrl($url)));
@@ -210,7 +211,8 @@
             $message->textContent .= ': ' . $textContent;
             $message->htmlContent .= ': ' . $htmlContent;
             $message->textContent .= "\n" . Zurmo::t('Core', 'View Job Manager') . ': ' . ShortUrlUtil::createShortUrl($url);
-            $message->htmlContent .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'View Job Manager'), $url);
+            $message->htmlContent .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'View Job Manager'), $url,
+                                                                                array('target' => '_blank'));
             $rules = new StuckJobsNotificationRules();
             NotificationsUtil::submit($message, $rules);
         }

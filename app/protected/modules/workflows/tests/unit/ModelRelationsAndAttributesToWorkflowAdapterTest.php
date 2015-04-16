@@ -417,7 +417,7 @@
             $workflow->setModuleClassName('WorkflowsTestModule');
             $adapter            = new ModelRelationsAndAttributesToOnSaveWorkflowAdapter($model, $rules, $workflow->getType());
             $relations          = $adapter->getSelectableRelationsData();
-            $this->assertEquals(13, count($relations));
+            $this->assertEquals(12, count($relations));
             $compareData        = array('label' => 'Has One');
             $this->assertEquals($compareData, $relations['hasOne']);
             $compareData        = array('label' => 'Has One Again');
@@ -426,8 +426,8 @@
             $this->assertEquals($compareData, $relations['hasMany']);
             $compareData        = array('label' => 'Has One Also');
             $this->assertEquals($compareData, $relations['hasOneAlso']);
-            $compareData        = array('label' => 'Model 5 Via Item');
-            $this->assertEquals($compareData, $relations['model5ViaItem']);
+            //$compareData        = array('label' => 'Model 5 Via Item');
+            //$this->assertEquals($compareData, $relations['model5ViaItem']);
             $compareData        = array('label' => 'Primary Email');
             $this->assertEquals($compareData, $relations['primaryEmail']);
             $compareData        = array('label' => 'Primary Address');
@@ -748,7 +748,7 @@
             $workflow->setModuleClassName('WorkflowsTestModule');
             $adapter            = new ModelRelationsAndAttributesToByTimeWorkflowAdapter($model, $rules, $workflow->getType());
             $relations          = $adapter->getSelectableRelationsData();
-            $this->assertEquals(13, count($relations));
+            $this->assertEquals(12, count($relations));
             $compareData        = array('label' => 'Has One');
             $this->assertEquals($compareData, $relations['hasOne']);
             $compareData        = array('label' => 'Has One Again');
@@ -757,8 +757,8 @@
             $this->assertEquals($compareData, $relations['hasMany']);
             $compareData        = array('label' => 'Has One Also');
             $this->assertEquals($compareData, $relations['hasOneAlso']);
-            $compareData        = array('label' => 'Model 5 Via Item');
-            $this->assertEquals($compareData, $relations['model5ViaItem']);
+            //$compareData        = array('label' => 'Model 5 Via Item');
+            //$this->assertEquals($compareData, $relations['model5ViaItem']);
             $compareData        = array('label' => 'Primary Email');
             $this->assertEquals($compareData, $relations['primaryEmail']);
             $compareData        = array('label' => 'Primary Address');
@@ -1194,7 +1194,7 @@
             $this->assertFalse($adapter->isUsedAsARelation('firstname'));
             $this->assertFalse($adapter->isUsedAsARelation('createdByUser__User'));
             $this->assertTrue($adapter->isUsedAsARelation('modifiedByUser'));
-            $this->assertTrue($adapter->isUsedAsARelation('model5ViaItem'));
+            //$this->assertTrue($adapter->isUsedAsARelation('model5ViaItem'));
             $this->assertTrue($adapter->isUsedAsARelation('primaryEmail'));
             $this->assertFalse($adapter->isUsedAsARelation('dropDown'));
 

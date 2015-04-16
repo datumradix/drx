@@ -38,7 +38,7 @@
     {
         protected function getSubtitle()
         {
-            return Zurmo::t('NotificationsModule', 'Notifications', LabelUtil::getTranslationParamsForAllModules());
+            return Zurmo::t('Core', 'Notifications', LabelUtil::getTranslationParamsForAllModules());
         }
     }
 ?>

@@ -117,7 +117,7 @@
                     '{updaterName}'         => strval($comment->createdByUser),
                     '{commentDescription}'  => strval($comment),
                     '{url}'                 => ZurmoHtml::link($model->getModelLabelByTypeAndLanguage(
-                        'SingularLowerCase'), $url)
+                                                                'SingularLowerCase'), $url, array('target' => '_blank'))
                 ));
             $notificationMessage->htmlContent  = DataUtil::purifyHtml($htmlContent);
             return $notificationMessage;

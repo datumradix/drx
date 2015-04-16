@@ -137,7 +137,8 @@
 
                 $message->htmlContent         = $commonContent;
                 $url                          = Yii::app()->createAbsoluteUrl('workflows/default/list');
-                $message->htmlContent        .= "<br/>" . ZurmoHtml::link(Zurmo::t('WorkflowsModule', 'Manage Workflows'), $url);
+                $message->htmlContent        .= "<br/>" . ZurmoHtml::link(Zurmo::t('WorkflowsModule', 'Manage Workflows'), $url,
+                                                                                                    array('target' => '_blank'));
                 $message->textContent         = $commonContent;
                 $message->textContent        .= "\n" . Zurmo::t('WorkflowsModule', 'Manage Workflows') . ': ' . ShortUrlUtil::createShortUrl($url);
                 $rules                        = new WorkflowMaximumDepthNotificationRules();

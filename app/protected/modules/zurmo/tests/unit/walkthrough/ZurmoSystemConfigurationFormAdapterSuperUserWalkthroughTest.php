@@ -66,16 +66,19 @@
             $this->assertContains('List page size maximum limit cannot be blank.', $content);
 
             //checking with proper values for required fields
-            $this->setPostArray(array('save'                    => 'Save',
-                    'ZurmoSystemConfigurationForm'  => array(
-                        'autoresponderOrCampaignBatchSize' => '10',
-                        'outboundEmailBatchSize'           => '30',
-                        'listPageSizeMaxLimit'             => '10',
+            if (Yii::app()->edition == 'Community')
+            {
+                $this->setPostArray(array('save'                         => 'Save',
+                                          'ZurmoSystemConfigurationForm' => array(
+                                              'autoresponderOrCampaignBatchSize' => '10',
+                                              'outboundEmailBatchSize'           => '30',
+                                              'listPageSizeMaxLimit'             => '10',
+                                          )
                     )
-                )
-            );
-            $this->runControllerWithRedirectExceptionAndGetContent('zurmo/default/systemConfigurationEdit');
-            $this->assertEquals('System configuration saved successfully.', Yii::app()->user->getFlash('notification'));
+                );
+                $this->runControllerWithRedirectExceptionAndGetContent('zurmo/default/systemConfigurationEdit');
+                $this->assertEquals('System configuration saved successfully.', Yii::app()->user->getFlash('notification'));
+            }
         }
     }
 ?>

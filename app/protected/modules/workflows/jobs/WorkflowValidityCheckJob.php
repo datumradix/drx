@@ -84,7 +84,7 @@
                     $message->htmlContent      .= "<li>";
                     $url                        = Yii::app()->createUrl('workflows/default/details',
                                                   array('id' => $workflow->getId()));
-                    $message->htmlContent      .= ZurmoHtml::link(strval($workflow) , $url);
+                    $message->htmlContent      .= ZurmoHtml::link(strval($workflow) , $url, array('target' => '_blank'));
                     $message->htmlContent      .= "</li>";
                     $message->textContent      .= "\n" . strval($workflow) .': ' . ShortUrlUtil::createShortUrl($url);
                 }

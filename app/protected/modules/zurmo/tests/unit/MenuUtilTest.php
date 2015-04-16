@@ -133,10 +133,24 @@
         {
             Yii::app()->user->userModel = User::getByUsername('super');
             $menu = MenuUtil::getAccessibleOrderedUserHeaderMenuForCurrentUser();
-            $this->assertEquals(4, count($menu));
+            if (Yii::app()->edition == 'Community')
+            {
+                $this->assertEquals(4, count($menu));
+            }
+            else
+            {
+                $this->assertEquals(5, count($menu));
+            }
             Yii::app()->user->userModel = User::getByUsername('billy');
             $menu = MenuUtil::getAccessibleOrderedUserHeaderMenuForCurrentUser();
-            $this->assertEquals(3, count($menu));
+            if (Yii::app()->edition == 'Community')
+            {
+                $this->assertEquals(3, count($menu));
+            }
+            else
+            {
+                $this->assertEquals(4, count($menu));
+            }
         }
 
         public function testResolveMenuItemsForLanguageLocalizationIsRecursive()

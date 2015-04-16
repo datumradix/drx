@@ -422,20 +422,28 @@
         /**
          * Create FileModel
          * @param array $attachment
+         * @param bool $base64encoded
          * @return FileModel
          */
-        public static function createEmailAttachment($attachment)
+        public static function createEmailAttachment($attachment, $base64encoded = false)
         {
             // Save attachments
             if ($attachment['filename'] != null && static::isAttachmentExtensionAllowed($attachment['filename']))
             {
                 $fileContent          = new FileContent();
-                $fileContent->content = $attachment['attachment'];
+                if ($base64encoded)
+                {
+                    $fileContent->content = base64_decode($attachment['attachment']);
+                }
+                else
+                {
+                    $fileContent->content = $attachment['attachment'];
+                }
                 $file                 = new FileModel();
                 $file->fileContent    = $fileContent;
                 $file->name           = $attachment['filename'];
                 $file->type           = ZurmoFileHelper::getMimeType($attachment['filename']);
-                $file->size           = strlen($attachment['attachment']);
+                $file->size           = strlen($fileContent->content);
                 $saved                = $file->save();
                 assert('$saved'); // Not Coding Standard
                 return $file;
