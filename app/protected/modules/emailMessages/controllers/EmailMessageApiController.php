@@ -220,7 +220,7 @@
                     {
                         if (isset($attachment['filename']) && isset($attachment['attachment']))
                         {
-                            $file = EmailArchivingUtil::createEmailAttachment($attachment);
+                            $file = EmailArchivingUtil::createEmailAttachment($attachment, true);
                             if ($file instanceof FileModel)
                             {
                                 $model->files->add($file);

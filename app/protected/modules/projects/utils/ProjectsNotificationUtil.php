@@ -106,10 +106,10 @@
             $messageContent              = static::getEmailMessageContent($project, $action, $task, $relatedUser);
             $url                         = Yii::app()->createAbsoluteUrl('projects/default/details/',
                                            array('id' => $project->id));
-            $message->textContent        = $messageContent;
-            $message->textContent       .= "\n" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
-            $message->htmlContent        = $messageContent;
-            $message->htmlContent       .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
+            $message->textContent        = $messageContent . "\n";
+            $message->textContent       .= ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url, array('target' => '_blank'));
+            $message->htmlContent        = $messageContent . "<br/>";
+            $message->htmlContent       .= ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url, array('target' => '_blank'));
             return $message;
         }
 

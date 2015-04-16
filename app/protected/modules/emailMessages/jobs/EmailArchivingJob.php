@@ -242,7 +242,7 @@
                 );
                 $notificationMessage->htmlContent       = Zurmo::t('EmailMessagesModule', 'At least one archived email message does ' .
                                                                  'not match any records in the system. ' .
-                                                                 '<a href="{url}">Click here</a> to manually match them.',
+                                                                 '<a href="{url}" target="_blank">Click here</a> to manually match them.',
                     array(
                         '{url}'      => Yii::app()->createUrl('emailMessages/default/matchingList'),
                     )

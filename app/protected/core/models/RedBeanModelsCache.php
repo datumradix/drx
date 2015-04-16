@@ -63,34 +63,12 @@
             if (static::supportsAndAllowsMemcacheByModelIdentifier($modelIdentifier))
             {
                 $prefix = static::getCachePrefix($modelIdentifier);
-                $cachedData = Yii::app()->cache->get($prefix . $modelIdentifier);
-                if ($cachedData === false)
+                $model = static::getCachedValueAndValidateChecksum($prefix . $modelIdentifier);
+                if ($model !== false && $model instanceof RedBeanModel)
                 {
-                    throw new NotFoundException();
+                    static::$modelIdentifiersToModels[$modelIdentifier] = $model;
+                    return $model;
                 }
-                $serializedModelAndChecksum = unserialize($cachedData);
-                if (!is_array($serializedModelAndChecksum) || count($serializedModelAndChecksum) != 2)
-                {
-                    throw new NotFoundException();
-                }
-                list($serializedModel, $checksum) = $serializedModelAndChecksum;
-                assert('$checksum == 0 || $checksum == crc32($serializedModel)');
-                $model = unserialize($serializedModel);
-                if ($model === null) // RedBeanModel objected to what was being unserialized.
-                {
-                    throw new NotFoundException();
-                }
-                assert('serialize($model) == $serializedModel');
-                if (YII_DEBUG)
-                {
-                    if (crc32(serialize($model)) != $checksum)
-                    {
-                        throw new ChecksumMismatchException();
-                    }
-                }
-                assert('$model instanceof RedBeanModel');
-                static::$modelIdentifiersToModels[$modelIdentifier] = $model;
-                return $model;
             }
             throw new NotFoundException();
         }
@@ -115,11 +93,7 @@
             if (static::supportsAndAllowsMemcacheByModel($model))
             {
                 $prefix = static::getCachePrefix($modelIdentifier);
-
-                $serializedModel = serialize($model);
-                $checksum  = YII_DEBUG ? crc32($serializedModel) : 0;
-                $cachedData = serialize(array($serializedModel, $checksum));
-                Yii::app()->cache->set($prefix . $modelIdentifier, $cachedData);
+                static::cacheValueAndChecksum($prefix . $modelIdentifier, $model);
             }
         }
 

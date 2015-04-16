@@ -45,7 +45,7 @@
         {
             parent::__construct(2, 1);
             $this->setView(new ActionBarForUserEditAndDetailsView ($controllerId, $moduleId, $user, 'UserConfigurationEditLink'), 0, 0);
-            $title = strval($user) . ': ' . Zurmo::t('UsersModule', 'Notifications Configuration');
+            $title = strval($user) . ': ' . Zurmo::t('Core', 'Notifications Configuration');
             $this->setView(new UserNotificationConfigurationEditView('Edit', $controllerId, $moduleId, $notificationConfigurationForm, $title), 1, 0);
         }
     }

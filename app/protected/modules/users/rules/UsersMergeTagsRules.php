@@ -34,50 +34,47 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class CampaignActivePauseToggleElement extends StateToggleElement
+    /**
+     * Merge tags rules to be used with the Users module.
+     */
+    class UsersMergeTagsRules extends PermitableReportRules
     {
-        protected function assertAttributeName()
+        /**
+         * @return array
+         */
+        public static function getDefaultMetadata()
         {
-            assert('$this->attribute == "status"');
-        }
-
-        protected function assertModelClass()
-        {
-            assert('$this->model instanceof Campaign');
-        }
-
-        protected static function resolveSelectedRadioButtonListOption(RedBeanModel $model)
-        {
-            return intval($model->status == Campaign::STATUS_PAUSED);
-        }
-
-        protected static function resolveStatusChangeUrl(RedBeanModel $model)
-        {
-            $url    = Yii::app()->createUrl('campaigns/default/togglePaused', array('id' => $model->id));
-            return $url;
-        }
-
-        protected static function resolveSuccessMessage()
-        {
-            return CJavaScript::quote(Zurmo::t('CampaignsModule', 'Campaign status was changed.'));
-        }
-
-        public static function getModelAttributeNames()
-        {
-            return array(
-                'status',
+            $metadata = array(
+                'Item' => array(
+                    'nonReportable' =>
+                        array(  'createdByUser',
+                                'createdDateTime',
+                                'modifiedByUser',
+                                'modifiedDateTime'),
+                ),
+                'Person' => array(
+                    'nonReportable' =>
+                    array(      'primaryAddress'),
+                ),
+                'User' => array(
+                    'nonReportable' =>
+                        array(  'currency',
+                                'emailAccounts',
+                                'emailBoxes',
+                                'emailSignatures',
+                                'hash',
+                                'groups',
+                                'language',
+                                'locale',
+                                'manager',
+                                'role',
+                                'serializedAvatarData',
+                                'timeZone'),
+                    'derivedAttributeTypes' =>
+                        array('FullName')
+                ),
             );
-        }
-
-        public static function getDropDownArray()
-        {
-            return array('0' => Zurmo::t('Core', 'Running'),
-                         '1' => Zurmo::t('CampaignsModule', 'Paused'));
-        }
-
-        protected static function renderStatusAreaLabel()
-        {
-            return null;
+            return array_merge(parent::getDefaultMetadata(), $metadata);
         }
     }
 ?>

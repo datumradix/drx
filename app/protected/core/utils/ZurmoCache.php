@@ -49,6 +49,10 @@
 
         const ALLOW_DB_CACHING          = true;
 
+        const CACHE_VALUE_KEY           = 'value';
+
+        const CACHE_CHECKSUM_KEY        = 'checksum';
+
         public static $cacheType = 'Z:';
 
         protected static $cacheIncrementValueVariableName = 'CacheIncrementValue';
@@ -203,6 +207,41 @@
                     static::incrementCacheIncrementValue(static::$cacheType);
                 }
             }
+        }
+
+        protected static function cacheValueAndChecksum($key, $value)
+        {
+            $checksum = crc32(serialize($value));
+            $cachedData = array(static::CACHE_VALUE_KEY => $value, static::CACHE_CHECKSUM_KEY => $checksum);
+            return Yii::app()->cache->set($key, $cachedData);
+        }
+
+        protected static function getCachedValueAndValidateChecksum($key)
+        {
+            $cachedData = Yii::app()->cache->get($key);
+            if ($cachedData === false)
+            {
+                return false;
+            }
+            if (!is_array($cachedData) || !array_key_exists(static::CACHE_VALUE_KEY, $cachedData) || !array_key_exists(static::CACHE_CHECKSUM_KEY, $cachedData))
+            {
+                return false;
+            }
+            $data = $cachedData[static::CACHE_VALUE_KEY];
+            $checksum = $cachedData[static::CACHE_CHECKSUM_KEY];
+            assert('$checksum == crc32(serialize($data))');
+            if (YII_DEBUG)
+            {
+                if (crc32(serialize($data)) != $checksum)
+                {
+                    throw new ChecksumMismatchException();
+                }
+            }
+            if ($checksum != crc32(serialize($data)))
+            {
+                return false;
+            }
+            return $data;
         }
     }
 ?>

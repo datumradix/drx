@@ -19,6 +19,11 @@
     <td>45000</td>
     <td></td>
 </tr>
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>
 <!--create mission as super user-->
 <tr>
     <td>open</td>
@@ -153,9 +158,54 @@
 </tr>
 <!--start mission as Jill-->
 <tr>
-	<td>clickAndWait</td>
-	<td>link=mission</td>
-	<td></td>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Mission</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>MashableInboxForm_searchTerm</td>
+    <td>creating mission for testing notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>MashableInboxForm_searchTerm</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>creating mission for testing notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>creating mission for testing notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>MashableInboxForm_searchTerm</td>
+    <td>creating mission for testing notifications ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td></td>
 </tr>
 <tr>
     <td>waitForPageToLoad</td>
@@ -650,6 +700,11 @@
 	<td>30000</td>
 </tr>
 <tr>
+    <td>waitForTextPresent</td>
+    <td>creating new mission for testing notifications ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>//div[@id='ModelDetailsSummaryView']/div/div/div/a/span[3]</td>
 	<td></td>
@@ -693,6 +748,11 @@
     <td>waitForCondition</td>
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <!--sign in as Super User and check notifications-->
 <tr>

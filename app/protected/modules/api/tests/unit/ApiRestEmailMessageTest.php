@@ -337,11 +337,11 @@
             $filePath_3    = $pathToFiles . DIRECTORY_SEPARATOR . 'text.txt';
             $filePath_4    = $pathToFiles . DIRECTORY_SEPARATOR . 'text.abc';
             $data['attachments']             = array(
-                array('filename' => 'table.csv', 'attachment' => file_get_contents($filePath_1)),
-                array('filename' => 'image.png', 'attachment' => file_get_contents($filePath_2)),
-                array('filename' => 'text.txt', 'attachment' => file_get_contents($filePath_3)),
-                array('filename' => 'text.abc', 'attachment' => file_get_contents($filePath_4)), //extension not allowed
-                array('name' => 'text.abc', 'file' => file_get_contents($filePath_4)), //invalid data format
+                array('filename' => 'table.csv', 'attachment' => base64_encode(file_get_contents($filePath_1))),
+                array('filename' => 'image.png', 'attachment' => base64_encode(file_get_contents($filePath_2))),
+                array('filename' => 'text.txt', 'attachment' => base64_encode(file_get_contents($filePath_3))),
+                array('filename' => 'text.abc', 'attachment' => base64_encode(file_get_contents($filePath_4))), //extension not allowed
+                array('name' => 'text.abc', 'file' => base64_encode(file_get_contents($filePath_4))), //invalid data format
             );
 
             $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));

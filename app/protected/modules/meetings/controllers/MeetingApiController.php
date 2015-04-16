@@ -75,13 +75,18 @@
         }
 
         /**
-         * Get all meetings attendees including users, contacts, opportunities and accounts
+         * Add attendees to meeting
+         * @param array $data
+         * @return array|void
+         * @throws ApiException
          */
-        public function actionGetAttendees()
+        protected static function resolveIncludingAdditionalData(Array & $data)
         {
-            $params     = Yii::app()->apiRequest->getParams();
-            $result     =  $this->processAttendees($params['id']);
-            Yii::app()->apiHelper->sendResponse($result);
+            $attendees      = static::getMeetingAttendees($data['id']);
+            if (!empty($attendees))
+            {
+                $data['attendees']  = $attendees;
+            }
         }
 
         /**
@@ -91,22 +96,22 @@
          * @return ApiResult
          * @throws ApiException
          */
-        protected function processAttendees($meetingId)
+        protected static function getMeetingAttendees($meetingId)
         {
             try
             {
                 $meeting               = Meeting::getById(intval($meetingId));
-                $activityItemAttendees = $this->getAttendeesFromActivityItems($meeting);
-                $userAttendees         = $this->getUserAttendees($meeting);
-                $data                  = array_merge($activityItemAttendees, $userAttendees);
-                $result = new ApiResult(ApiResponse::STATUS_SUCCESS, $data, null, null);
+                $activityItemAttendees = static::getAttendeesFromActivityItems($meeting);
+                $userAttendees         = static::getUserAttendees($meeting);
+                $organizerAttendee     = static::getMeetingOrganizerDetails($meeting);
+                $data                  = array_merge($activityItemAttendees, $userAttendees, $organizerAttendee);
             }
             catch (Exception $e)
             {
                 $message = $e->getMessage();
                 throw new ApiException($message);
             }
-            return $result;
+            return $data;
         }
 
         /**
@@ -114,7 +119,7 @@
          * @param $meeting
          * @return array
          */
-        protected function getUserAttendees($meeting)
+        protected static function getUserAttendees($meeting)
         {
             $data         = array();
             foreach ($meeting->userAttendees as $attendee)
@@ -126,7 +131,7 @@
                 $item['username']  = $attendee->username;
                 if ($attendee->primaryEmail->emailAddress != null)
                 {
-                    $item['email']     = $attendee->primaryEmail->emailAddress;
+                    $item['email'] = $attendee->primaryEmail->emailAddress;
                 }
                 $data['User'][] = $item;
             }
@@ -139,7 +144,7 @@
          * @return array
          * @throws Exception
          */
-        public function getAttendeesFromActivityItems($meeting)
+        protected static function getAttendeesFromActivityItems($meeting)
         {
             $data         = array();
             $activityClassNames = ActivitiesUtil::getActivityItemsModelClassNames();
@@ -182,6 +187,26 @@
                 $message = $e->getMessage();
                 throw new Exception($message);
             }
+            return $data;
+        }
+
+        /**
+         * Get user attendees
+         * @param $meeting
+         * @return array
+         */
+        protected static function getMeetingOrganizerDetails($meeting)
+        {
+            $item = array();
+            $item['id']        = $meeting->owner->id;
+            $item['firstName'] = $meeting->owner->firstName;
+            $item['lastName']  = $meeting->owner->lastName;
+            $item['username']  = $meeting->owner->username;
+            if ($meeting->owner->primaryEmail->emailAddress != null)
+            {
+                $item['email'] = $meeting->owner->primaryEmail->emailAddress;
+            }
+            $data['Organizer'] = $item;
             return $data;
         }
     }

@@ -192,7 +192,8 @@
             $message->htmlContent         = $messageContent;
             $url                          = Yii::app()->createAbsoluteUrl('missions/default/details/',
                                                                 array('id' => $missionId));
-            $message->htmlContent        .= '-' . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
+            $message->htmlContent        .= '-' . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url,
+                                                                    array('target' => '_blank'));
             $message->textContent         = $messageContent;
             $message->textContent        .= Zurmo::t('MissionsModule', 'Check mission details in this link: ') . ShortUrlUtil::createShortUrl($url);
             $rules                        = new MissionStatusChangeNotificationRules();
@@ -212,7 +213,8 @@
             assert('$userToReceiveMessage->id > 0');
             $message                      = new NotificationMessage();
             $url                          = Yii::app()->createAbsoluteUrl('missions/default/list/');
-            $message->htmlContent         = ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url);
+            $message->htmlContent         = ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url,
+                                                            array('target' => '_blank'));
             $rules                        = new MissionUnreadCommentNotificationRules();
             $rules->addUser($userToReceiveMessage);
             NotificationsUtil::submit($message, $rules);
@@ -271,7 +273,7 @@
                     '{strongEndTag}'   => '</strong>',
                     '{reward}'         => $mission->reward,
                     '{url}'            => ZurmoHtml::link($mission->getModelLabelByTypeAndLanguage(
-                                                'SingularLowerCase'), $url)
+                                                'SingularLowerCase'), $url, array('target' => '_blank'))
                 ));
             return $htmlContent;
         }

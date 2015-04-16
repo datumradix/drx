@@ -57,7 +57,7 @@
 
         protected function getDefaultLabel()
         {
-            return Zurmo::t('MarketingModule', 'Send Test Email');
+            return Zurmo::t('EmailMessagesModule', 'Send Test Email');
         }
 
         protected function getRouteAction()
