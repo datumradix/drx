@@ -199,7 +199,7 @@
             parent::afterSave();
             if ($this->isAudited)
             {
-                $this->logAuditEventsListForCreatedAndModifed($this->isNewModel);
+                $this->logAuditEventsListForCreatedAndModified($this->isNewModel);
                 AuditUtil::clearRelatedModelsOriginalAttributeValues($this);
             }
             $this->originalAttributeValues      = array();
@@ -207,7 +207,7 @@
             $this->isNewModel = false; //reset.
         }
 
-        protected function logAuditEventsListForCreatedAndModifed($newModel)
+        protected function logAuditEventsListForCreatedAndModified($newModel)
         {
             if ($newModel)
             {
