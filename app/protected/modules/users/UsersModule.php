@@ -215,17 +215,6 @@
             $s = null;
             switch ($auditEvent->eventName)
             {
-                case self::AUDIT_EVENT_USER_LOGGED_IN:
-                case self::AUDIT_EVENT_USER_LOGGED_OUT:
-                    if ($format == 'short')
-                    {
-                        return $auditEvent->eventName;
-                    }
-                    else
-                    {
-                        $s .= strval($auditEvent);
-                    }
-                    break;
                 case self::AUDIT_EVENT_USER_PASSWORD_CHANGED:
                     if ($format == 'short')
                     {

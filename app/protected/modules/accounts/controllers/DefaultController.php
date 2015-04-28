@@ -96,7 +96,6 @@
         {
             $account = static::getModelAndCatchNotFoundAndDisplayError('Account', intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($account);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($account), 'AccountsModule'), $account);
             if (KanbanUtil::isKanbanRequest() === false)
             {
                 $breadCrumbView          = StickySearchUtil::resolveBreadCrumbViewForDetailsControllerAction($this, 'AccountsSearchView', $account);

@@ -71,19 +71,6 @@
             return self::makeModels($beans, __CLASS__);
         }
 
-        public static function getTailDistinctEventsByEventName($eventName, User $user, $count)
-        {
-            assert('is_string($eventName)');
-            assert('is_int($count)');
-            $sql = "select id
-                    from ( select id, modelclassname, modelid, datetime from auditevent where _user_id = {$user->id}
-                    AND eventname = '{$eventName}' order by id desc ) auditevent
-                    group by concat(modelclassname, modelid) order by datetime desc limit $count";
-            $ids   = ZurmoRedBean::getCol($sql);
-            $beans = ZurmoRedBean::batch ('auditevent', $ids);
-            return self::makeModels($beans, __CLASS__);
-        }
-
         public static function logAuditEvent($moduleName, $eventName, $data = null, RedBeanModel $model = null, User $user = null)
         {
             assert('is_string($moduleName) && $moduleName != ""');
@@ -198,7 +185,12 @@
                     array('modelId',        'type', 'type' => 'integer'),
                     array('serializedData', 'required'),
                     array('serializedData', 'type', 'type' => 'string'),
-                )
+                ),
+                'indexes' => array(
+                    'modelclass_modelid_index' => array(
+                        'members' => array('modelClassName', 'modelId'),
+                        'unique' => false),
+                ),
             );
             return $metadata;
         }

@@ -151,8 +151,6 @@
         {
             $campaign = static::getModelAndCatchNotFoundAndDisplayError('Campaign', intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($campaign);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED,
-                                            array(strval($campaign), 'CampaignsModule'), $campaign);
             $breadCrumbView             = CampaignsStickySearchUtil::
                                           resolveBreadCrumbViewForDetailsControllerAction($this,
                                           'CampaignsSearchView', $campaign);

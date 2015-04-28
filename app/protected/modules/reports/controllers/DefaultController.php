@@ -108,7 +108,6 @@
             $savedReport = static::getModelAndCatchNotFoundAndDisplayError('SavedReport', intval($id));
             ControllerSecurityUtil::resolveCanCurrentUserAccessModule($savedReport->moduleClassName);
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($savedReport);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($savedReport), 'ReportsModule'), $savedReport);
             $breadCrumbLinks         = array(strval($savedReport));
             $breadCrumbView          = new ReportBreadCrumbView($this->getId(), $this->getModule()->getId(), $breadCrumbLinks);
             $detailsAndRelationsView = $this->makeReportDetailsAndRelationsView($savedReport, Yii::app()->request->getRequestUri(),

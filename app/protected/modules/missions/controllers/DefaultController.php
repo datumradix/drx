@@ -64,8 +64,6 @@
         {
             $mission = static::getModelAndCatchNotFoundAndDisplayError('Mission', intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($mission);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED,
-                                      array(strval($mission), 'MissionsModule'), $mission);
             MissionsUtil::markUserHasReadLatest($mission, Yii::app()->user->userModel);
             $detailsView              = new MissionDetailsView($this->getId(), $this->getModule()->getId(), $mission);
             $missionsMashableInboxUrl = Yii::app()->createUrl('mashableInbox/default/list',

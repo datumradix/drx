@@ -131,7 +131,6 @@
             $breadCrumbLinks    = static::getDetailsAndEditBreadcrumbLinks();
             $breadCrumbLinks[]  = StringUtil::getChoppedStringContent(strval($productTemplate), 25);
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($productTemplate);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($productTemplate), 'ProductTemplatesModule'), $productTemplate);
             $editAndDetailsView = $this->makeEditAndDetailsView($productTemplate, 'Details');
             $view               = new ProductTemplatesPageView(ProductDefaultViewUtil::
                                                                 makeViewWithBreadcrumbsForCurrentUser(

@@ -103,7 +103,6 @@
         {
             $gameReward = static::getModelAndCatchNotFoundAndDisplayError('GameReward', intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($gameReward);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($gameReward), 'GameRewardsModule'), $gameReward);
             $breadCrumbView          = GameRewardsStickySearchUtil::resolveBreadCrumbViewForDetailsControllerAction($this, 'GameRewardsSearchView', $gameReward);
             $detailsAndRelationsView = $this->makeDetailsAndRelationsView($gameReward, 'GameRewardsModule',
                                                                           'GameRewardDetailsAndRelationsView',

@@ -99,7 +99,6 @@
             $modelClassName    = $this->getModule()->getPrimaryModelName();
             $activity = static::getModelAndCatchNotFoundAndDisplayError($modelClassName, intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($activity);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($activity), get_class($this->getModule())), $activity);
             $pageViewClassName = $this->getPageViewClassName();
             $view              = new $pageViewClassName(ZurmoDefaultViewUtil::
                                          makeStandardViewForCurrentUser($this,

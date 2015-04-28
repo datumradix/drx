@@ -751,13 +751,11 @@
         public function testAuditEventsModalList()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
-            AuditEvent::logAuditEvent('UsersModule', UsersModule::AUDIT_EVENT_USER_LOGGED_IN);
-            AuditEvent::logAuditEvent('UsersModule', UsersModule::AUDIT_EVENT_USER_LOGGED_OUT);
+            AuditEvent::logAuditEvent('UsersModule', UsersModule::AUDIT_EVENT_USER_PASSWORD_CHANGED, $super->username, $super);
             $this->setGetArray(array('id' => $super->id));
             $this->resetPostArray();
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/auditEventsModalList');
-            $this->assertContains('User Logged In', $content);
-            $this->assertContains('User Logged Out', $content);
+            $this->assertContains('User Password Changed', $content);
         }
     }
 ?>
