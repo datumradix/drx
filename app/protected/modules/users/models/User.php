@@ -325,7 +325,7 @@
             ReadPermissionsSubscriptionUtil::deleteUserItemsFromAllReadSubscriptionTables($this->id);
         }
 
-        protected function logAuditEventsListForCreatedAndModifed($newModel)
+        protected function logAuditEventsListForCreatedAndModified($newModel)
         {
             if ($newModel)
             {
