@@ -346,15 +346,5 @@
         {
             return self::getByNameOrEquivalent('name', $name);
         }
-
-        /**
-         * Can model save AuditEvent data,
-         * Override this function in child classes to return false if you do not want to save AuditEvent for some models
-         * @return bool
-         */
-        protected function canSaveAuditEventData()
-        {
-            return true;
-        }
     }
 ?>
