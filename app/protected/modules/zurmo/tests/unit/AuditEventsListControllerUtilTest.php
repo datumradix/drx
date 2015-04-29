@@ -117,6 +117,8 @@
             $account->name  = 'aNewDawn Inc 2';
             $account->owner = $user;
             $this->assertTrue($account->save());
+            $account->name  = 'aNewDawn Inc 3';
+            $this->assertTrue($account->save());
 
             $searchAttributeData = AuditEventsListControllerUtil::makeModalSearchAttributeDataByAuditedModel($account);
 
@@ -126,8 +128,11 @@
             $data = $dataProvider->getData();
             $this->assertEquals(1, count($data));
             $firstAuditEvent = current($data);
-            $accountName = unserialize($firstAuditEvent->serializedData);
-            $this->assertEquals($account->name,     $accountName);
+            $accountInfo = unserialize($firstAuditEvent->serializedData);
+            $this->assertEquals(strval($account),     $accountInfo[0]);
+            $this->assertEquals('name',               $accountInfo[1][0]);
+            $this->assertEquals('aNewDawn Inc 2',     $accountInfo[2]);
+            $this->assertEquals($account->name,       $accountInfo[3]);
 
             //For login/logout events
             $searchAttributeData = AuditEventsListControllerUtil::makeModalSearchAttributeDataByAuditedModel($user);

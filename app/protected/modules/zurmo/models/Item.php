@@ -199,7 +199,7 @@
             parent::afterSave();
             if ($this->isAudited)
             {
-                $this->logAuditEventsListForCreatedAndModified($this->isNewModel);
+                $this->logAuditEventsListForModified($this->isNewModel);
                 AuditUtil::clearRelatedModelsOriginalAttributeValues($this);
             }
             $this->originalAttributeValues      = array();
@@ -207,13 +207,9 @@
             $this->isNewModel = false; //reset.
         }
 
-        protected function logAuditEventsListForCreatedAndModified($newModel)
+        protected function logAuditEventsListForModified($newModel)
         {
-            if ($newModel)
-            {
-                AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_CREATED, strval($this), $this);
-            }
-            else
+            if (!$newModel)
             {
                 AuditUtil::logAuditEventsListForChangedAttributeValues($this);
             }
@@ -349,6 +345,16 @@
         public static function getByName($name)
         {
             return self::getByNameOrEquivalent('name', $name);
+        }
+
+        /**
+         * Can model save AuditEvent data,
+         * Override this function in child classes to return false if you do not want to save AuditEvent for some models
+         * @return bool
+         */
+        protected function canSaveAuditEventData()
+        {
+            return true;
         }
     }
 ?>
