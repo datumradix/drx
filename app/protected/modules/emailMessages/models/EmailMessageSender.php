@@ -41,6 +41,8 @@
      */
     class EmailMessageSender extends OwnedModel
     {
+        protected $isAudited = false;
+
         public function __toString()
         {
             if (trim($this->fromAddress) == '')

@@ -40,6 +40,8 @@
      */
     class GamePointTransaction extends OwnedModel
     {
+        protected $isAudited = false;
+
         public static function getModuleClassName()
         {
             return 'GamificationModule';
