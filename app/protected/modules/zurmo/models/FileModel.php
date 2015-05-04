@@ -36,6 +36,8 @@
 
     class FileModel extends Item
     {
+        protected $isAudited = false;
+
         public function __toString()
         {
             if (trim($this->name) == '')

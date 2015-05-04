@@ -39,6 +39,8 @@
      */
     class EmailMessageSendError extends OwnedModel
     {
+        protected $isAudited = false;
+
         public function __toString()
         {
             if ($this->serializedData != null)

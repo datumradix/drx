@@ -39,6 +39,8 @@
      */
     class GameCoin extends Item
     {
+        protected $isAudited = false;
+
         public function __toString()
         {
             if ($this->value == null)

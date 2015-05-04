@@ -55,6 +55,8 @@
 
         const TYPE_HARD_BOUNCE                = 8;
 
+        protected $isAudited = false;
+
         public static function getTypesArray()
         {
             return array(

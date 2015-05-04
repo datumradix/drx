@@ -49,6 +49,8 @@
 
         protected $isSpecialBox     = false;
 
+        protected $isAudited = false;
+
         public static function getByName($name)
         {
             assert('is_string($name)');

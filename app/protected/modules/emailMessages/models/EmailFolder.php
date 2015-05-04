@@ -55,6 +55,8 @@
 
         const TYPE_ARCHIVED_UNMATCHED  = 'ArchivedUnmatched';
 
+        protected $isAudited = false;
+
         public static function getDefaultDraftName()
         {
             return Zurmo::t('EmailMessagesModule', 'Draft');

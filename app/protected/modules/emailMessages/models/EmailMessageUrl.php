@@ -39,6 +39,8 @@
      */
     class EmailMessageUrl extends OwnedModel
     {
+        protected $isAudited = false;
+
         public static function getModuleClassName()
         {
             return 'EmailMessagesModule';
