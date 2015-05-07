@@ -92,6 +92,7 @@
         {
             $contact = static::getModelAndCatchNotFoundAndDisplayError('Contact', intval($id));
                                     ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($contact);
+            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($contact), 'ContactsModule'), $contact);
             if (KanbanUtil::isKanbanRequest() === false)
             {
                 $breadCrumbView          = StickySearchUtil::resolveBreadCrumbViewForDetailsControllerAction($this, 'ContactsSearchView', $contact);

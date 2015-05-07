@@ -115,6 +115,7 @@
             $product            = static::getModelAndCatchNotFoundAndDisplayError('Product', intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($product);
             $breadCrumbLinks = array(StringUtil::getChoppedStringContent(strval($product), 25));
+            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($product), 'ProductsModule'), $product);
             $detailsView        = new ProductEditAndDetailsView('Details', $this->getId(), $this->getModule()->getId(), $product);
             $view               = new ProductsPageView(ProductDefaultViewUtil::
                                                          makeViewWithBreadcrumbsForCurrentUser(
