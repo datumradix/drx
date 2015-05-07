@@ -152,6 +152,7 @@
             UserAccessUtil::resolveAccessingASystemUser($user);
             $title           = Zurmo::t('UsersModule', 'Profile');
             $breadCrumbLinks = array(strval($user) => array('default/details',  'id' => $id), $title);
+            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($user), 'UsersModule'), $user);
             $params = array(
                 'controllerId'     => $this->getId(),
                 'relationModuleId' => $this->getModule()->getId(),

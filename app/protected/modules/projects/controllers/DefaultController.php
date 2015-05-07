@@ -138,6 +138,8 @@
         {
             $project            = static::getModelAndCatchNotFoundAndDisplayError('Project', intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($project);
+            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED,
+                                      array(strval($project), 'ProjectsModule'), $project);
             $view = TasksUtil::resolveTaskKanbanViewForRelation($project, $this->getModule()->getId(), $this,
                                                                 'TasksForProjectKanbanView', 'ProjectsPageView');
             echo $view->render();

@@ -92,6 +92,7 @@
         {
             $opportunity = static::getModelAndCatchNotFoundAndDisplayError('Opportunity', intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($opportunity);
+            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($opportunity), 'OpportunitiesModule'), $opportunity);
             if (KanbanUtil::isKanbanRequest() === false)
             {
                 $breadCrumbView          = StickySearchUtil::resolveBreadCrumbViewForDetailsControllerAction($this, 'OpportunitiesSearchView', $opportunity);

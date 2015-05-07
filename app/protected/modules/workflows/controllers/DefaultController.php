@@ -125,6 +125,8 @@
             $savedWorkflow = static::getModelAndCatchNotFoundAndDisplayError('SavedWorkflow', intval($id));
             ControllerSecurityUtil::resolveCanCurrentUserAccessModule($savedWorkflow->moduleClassName);
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($savedWorkflow);
+            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED,
+                                      array(strval($savedWorkflow), 'WorkflowsModule'), $savedWorkflow);
             $breadCrumbLinks         = array(strval($savedWorkflow));
             $workflow                = SavedWorkflowToWorkflowAdapter::makeWorkflowBySavedWorkflow($savedWorkflow);
             $workflowToWizardFormAdapter = new WorkflowToWizardFormAdapter($workflow);

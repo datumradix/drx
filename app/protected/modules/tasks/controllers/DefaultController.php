@@ -99,6 +99,7 @@
         {
             $task = static::getModelAndCatchNotFoundAndDisplayError('Task', intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($task);
+            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($task), 'TasksModule'), $task);
             if ($task->project->id > 0)
             {
                 $this->redirect(Yii::app()->createUrl('projects/default/details',
@@ -401,6 +402,7 @@
         {
             $task = Task::getById(intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($task);
+            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($task), 'TasksModule'), $task);
             $this->attemptToValidateAndSaveFromModalDetails($task);
             $this->processModalDetails($task);
         }

@@ -107,6 +107,7 @@
             }
             else
             {
+                AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($contact), 'LeadsModule'), $contact);
                 $getData                 = GetUtil::getData();
                 $isKanbanBoardInRequest  = ArrayUtil::getArrayValue($getData, 'kanbanBoard');
                 if ($isKanbanBoardInRequest == 0 || $isKanbanBoardInRequest == null || Yii::app()->userInterface->isMobile() === true)
