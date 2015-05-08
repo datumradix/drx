@@ -93,7 +93,7 @@
             $this->isSetting = true;
             try
             {
-                if (!$this->isSaving && $this->isAudited)
+                if (!$this->isSaving)
                 {
                     AuditUtil::saveOriginalAttributeValue($this, $attributeName, $value);
                 }
