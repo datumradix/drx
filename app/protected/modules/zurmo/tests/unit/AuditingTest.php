@@ -47,7 +47,7 @@
             $user->lastName  = 'Boondog';
             assert($user->save()); // Not Coding Standard
             BaseControlUserConfigUtil::getUserToRunAs();
-            assert(AuditEvent::getCount() == 10); // Not Coding Standard
+            assert(AuditEvent::getCount() == 6); // Not Coding Standard
             ContactsModule::loadStartingData();
             Yii::app()->gameHelper->muteScoringModelsOnSave();
         }
