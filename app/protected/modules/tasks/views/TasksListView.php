@@ -116,7 +116,14 @@
          */
         public function getLinkString($attributeString, $attribute)
         {
-            return array($this, 'resolveLinkString');
+            if ($attribute == 'name')
+            {
+                return array($this, 'resolveLinkString');
+            }
+            else
+            {
+                return $this->resolveModalDetailsLinkStringByAttribute($attributeString);
+            }
         }
 
         /**
@@ -132,6 +139,20 @@
             return $content;
         }
 
+        /**
+         * Resolves the link string by attribute for task detail modal view
+         * @param string $attributeString
+         * @return string
+         */
+        protected function resolveModalDetailsLinkStringByAttribute($attributeString)
+        {
+           $string  = 'ZurmoHtml::link(';
+           $string .=  $attributeString . ', "#", ';
+           $string .= 'array("id" => "task-" . $data->id, "namespace"=>"modalLink", "class"=>"task-kanban-detail-link")';
+           $string .= ')';
+           return $string;
+        }
+        
         /**
          * Register the additional script for task detail modal
          */
