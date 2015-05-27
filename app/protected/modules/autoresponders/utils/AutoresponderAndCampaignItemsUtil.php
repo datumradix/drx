@@ -128,7 +128,8 @@
         {
             return ($contact->primaryEmail->optOut ||
                 // TODO: @Shoaibi: Critical0: We could use SQL for getByMarketingListIdContactIdandUnsubscribed to save further performance here.
-                (get_class($itemOwnerModel) === "Campaign" && MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed(
+                ((get_class($itemOwnerModel) === "Campaign" || get_class($itemOwnerModel) === "Autoresponder") && 
+                    MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed(
                         $itemOwnerModel->marketingList->id,
                         $contact->id,
                         true) != false));
