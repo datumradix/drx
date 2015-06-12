@@ -148,11 +148,11 @@
         {
            $string  = 'ZurmoHtml::link(';
            $string .=  $attributeString . ', "#", ';
-           $string .= 'array("id" => "task-" . $data->id, "namespace"=>"modalLink", "class"=>"task-kanban-detail-link")';
+           $string .= 'array("id" => "task-" . $data->id, "namespace" => "modalLink", "class" => "task-kanban-detail-link")';
            $string .= ')';
            return $string;
         }
-        
+
         /**
          * Register the additional script for task detail modal
          */
