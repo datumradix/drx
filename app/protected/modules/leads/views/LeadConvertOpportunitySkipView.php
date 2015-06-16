@@ -35,32 +35,20 @@
      ********************************************************************************/
 
     /**
-     * The view for lead conversion, shows selecting an account.
+     * The view for lead conversion, no opportunity, just shows a complete
+     * conversion button.
      */
-    class AccountSelectView extends MetadataView
+    class LeadConvertOpportunitySkipView extends MetadataView
     {
         protected $controllerId;
 
         protected $moduleId;
 
-        protected $model;
-
-        /**
-         * Construct the view to display an input to select an account
-         * @param $controllerId
-         * @param $moduleId
-         * @param $modelId
-         * @param $model
-         */
-        public function __construct($controllerId, $moduleId, $modelId, $model)
+        public function __construct($controllerId, $moduleId, $modelId)
         {
-            assert('$model != null');
-            assert('$model instanceof AccountSelectForm');
-
             $this->controllerId   = $controllerId;
             $this->moduleId       = $moduleId;
             $this->modelId        = $modelId;
-            $this->model          = $model;
         }
 
         /**
@@ -72,10 +60,10 @@
             $content = '<div class="wide form">';
             $clipWidget = new ClipWidget();
             list($form, $formStart) = $clipWidget->renderBeginWidget(
-                                                                'ZurmoActiveForm',
-                                                                array('id'                   => static::getFormId(),
+                                                                'NoRequiredsActiveForm',
+                                                                array('id' => static::getFormId(),
                                                                       'enableAjaxValidation' => false,
-                                                                      'htmlOptions'          => $this->resolveFormHtmlOptions())
+                                                                      'htmlOptions' => $this->resolveFormHtmlOptions())
                                                             );
             $content .= $formStart;
             $content .= $this->renderFormLayout($form);
@@ -87,45 +75,43 @@
 
         protected function renderFormLayout($form = null)
         {
-            $content = '<table class="form-fields">';
-            $content .= TableUtil::getColGroupContent(1);
+            $content  = '<table class="form-fields">';
+            $content .= '<colgroup>';
+            $content .= '<col style="width:100%" />';
+            $content .= '</colgroup>';
             $content .= '<tbody>';
             $content .= '<tr>';
-            $element  = new AccountNameIdElement($this->model, 'null', $form);
-            $content .= $element->render();
+            $content .= '<th>' . Zurmo::t('LeadsModule', 'Complete LeadsModuleSingularLowerCaseLabel conversion without ' .
+                                                   'creating an OpportunitiesModuleSingularLowerCaseLabel.',
+                                                   LabelUtil::getTranslationParamsForAllModules()) . '</th>';
             $content .= '</tr>';
             $content .= '</tbody>';
             $content .= '</table>';
+            $backLink = new BackConvertLinkActionElement($this->controllerId, $this->moduleId, $this->modelId);
             $cancelLink = new CancelConvertLinkActionElement($this->controllerId, $this->moduleId, $this->modelId);
             $content .= '<div class="view-toolbar-container clearfix"><div class="form-toolbar">';
-            $element  = new SaveButtonActionElement($this->controllerId, $this->moduleId,
+            $element  =   new SaveButtonActionElement($this->controllerId, $this->moduleId,
                                                       null,
                                                       array('htmlOptions' =>
-                                                          array('name'   => 'AccountSelect', 'id' => 'AccountSelect'),
-                                                                'label'  => Zurmo::t('ZurmoModule', 'Next')));
+                                                          array('name'   => 'OpportunitySkip', 'id' => 'OpportunitySkip',
+                                                                'params' => array('OpportunitySkip' => true)),
+                                                                'label'  => Zurmo::t('ZurmoModule', 'Complete Conversion')));
+            $content .= $backLink->render();
             $content .= $element->render();
             $content .= $cancelLink->render();
-            $content .= $this->renderModalContainer();
             $content .= '</div></div>';
             return $content;
         }
 
         protected static function getFormId()
         {
-            return 'select-account-form';
+            return 'account-skip-form';
         }
 
         protected function resolveFormHtmlOptions()
         {
             $data = array('onSubmit' => 'js:return $(this).attachLoadingOnSubmit("' . static::getFormId() . '")');
             return $data;
-        }
-
-        protected function renderModalContainer()
-        {
-            return ZurmoHtml::tag('div', array(
-                        'id' => ModelElement::MODAL_CONTAINER_PREFIX . '-' . static::getFormId()
-                   ), '');
         }
     }
 ?>
