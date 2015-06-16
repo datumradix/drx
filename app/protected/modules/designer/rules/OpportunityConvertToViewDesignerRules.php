@@ -34,27 +34,58 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class LeadsModuleForm extends GlobalSearchEnabledModuleForm
+    class OpportunityConvertToViewDesignerRules extends DesignerRules
     {
-        public $convertToAccountSetting;
-        public $convertToOpportunitySetting;
-
-        public function rules()
+        public function getDisplayName()
         {
-            return array_merge(parent::rules(), array(
-                array('convertToAccountSetting', 'required'),
-                array('convertToOpportunitySetting', 'required'),
-            ));
+            return Zurmo::t('DesignerModule', 'Lead to Opportunity Convert View');
         }
 
-        public function attributeLabels()
+        public function getNonPlaceableLayoutAttributeNames()
         {
-            return array_merge(parent::attributeLabels(), array(
-                'convertToAccountSetting' => Zurmo::t('LeadsModule', 'LeadsModuleSingularLabel Conversion (Step 1)',
-                                                LabelUtil::getTranslationParamsForAllModules()),
-                'convertToOpportunitySetting' => Zurmo::t('LeadsModule', 'LeadsModuleSingularLabel Conversion (Final Step)',
-                                                LabelUtil::getTranslationParamsForAllModules()),
-            ));
+            return array(
+                'createdDateTime',
+                'modifiedDateTime',
+                'createdByUser',
+                'modifiedByUser',
+                'id',
+                'owner'
+            );
+        }
+
+        public function canAddPanels()
+        {
+            return false;
+        }
+
+        public function canRemovePanels()
+        {
+            return false;
+        }
+
+        public function canMovePanels()
+        {
+            return false;
+        }
+
+        public function requireAllRequiredFieldsInLayout()
+        {
+            return true;
+        }
+
+        public function canModifyCellSettings()
+        {
+            return false;
+        }
+
+        public function canModifyPanelSettings()
+        {
+            return false;
+        }
+
+        public function getSavableMetadataRules()
+        {
+            return array('AddBlankForDropDown');
         }
     }
 ?>

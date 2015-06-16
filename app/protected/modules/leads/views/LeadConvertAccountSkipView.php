@@ -35,8 +35,8 @@
      ********************************************************************************/
 
     /**
-     * The view for lead conversion, no account, just shows a complete
-     * conversion button.
+     * The view for lead conversion, no account, just shows a next
+     * button.
      */
     class LeadConvertAccountSkipView extends MetadataView
     {
@@ -94,7 +94,7 @@
                                                       array('htmlOptions' =>
                                                           array('name'   => 'AccountSkip', 'id' => 'AccountSkip',
                                                                 'params' => array('AccountSkip' => true)),
-                                                                'label'  => Zurmo::t('ZurmoModule', 'Complete Conversion')));
+                                                                'label'  => Zurmo::t('ZurmoModule', 'Next')));
             $content .= $element->render();
             $content .= $cancelLink->render();
             $content .= '</div></div>';
