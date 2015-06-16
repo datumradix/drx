@@ -36,9 +36,12 @@
 
     class LeadsModule extends SecurableModule
     {
-        const CONVERT_NO_ACCOUNT           = 1;
-        const CONVERT_ACCOUNT_NOT_REQUIRED = 2;
-        const CONVERT_ACCOUNT_REQUIRED     = 3;
+        const CONVERT_NO_ACCOUNT                = 1;
+        const CONVERT_ACCOUNT_NOT_REQUIRED      = 2;
+        const CONVERT_ACCOUNT_REQUIRED          = 3;
+        const CONVERT_NO_OPPORTUNITY            = 4;
+        const CONVERT_OPPORTUNITY_NOT_REQUIRED  = 5;
+        const CONVERT_OPPORTUNITY_REQUIRED      = 6;
 
         const RIGHT_CREATE_LEADS  = 'Create Leads';
         const RIGHT_DELETE_LEADS  = 'Delete Leads';
@@ -75,7 +78,8 @@
         {
             $metadata = array();
             $metadata['global'] = array(
-                'convertToAccountSetting' => LeadsModule::CONVERT_ACCOUNT_NOT_REQUIRED,
+                'convertToAccountSetting'       => LeadsModule::CONVERT_ACCOUNT_NOT_REQUIRED,
+                'convertToOpportunitySetting'   => LeadsModule::CONVERT_OPPORTUNITY_NOT_REQUIRED,
                 'convertToAccountAttributesMapping' => array(
                     'industry'         => 'industry',
                     'website'          => 'website',
@@ -126,7 +130,27 @@
         public static function getConvertToAccountSetting()
         {
             $metadata = LeadsModule::getMetadata();
-            return $metadata['global']['convertToAccountSetting'];
+            if (isset($metadata['global']['convertToAccountSetting']))
+            {
+                return (int)$metadata['global']['convertToAccountSetting'];
+            }
+            else
+            {
+                return (int)LeadsModule::CONVERT_ACCOUNT_NOT_REQUIRED;
+            }
+        }
+        
+        public static function getConvertToOpportunitySetting()
+        {
+            $metadata = LeadsModule::getMetadata();
+            if (isset($metadata['global']['convertToOpportunitySetting']))
+            {
+                return (int)$metadata['global']['convertToOpportunitySetting'];
+            }
+            else
+            {
+                return (int)LeadsModule::CONVERT_OPPORTUNITY_NOT_REQUIRED;
+            }
         }
 
         public static function getAccessRight()

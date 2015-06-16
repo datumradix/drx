@@ -34,27 +34,15 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class LeadsModuleForm extends GlobalSearchEnabledModuleForm
+    /**
+     * Progress bar and steps for the lead conversion wizard
+     */
+    class LeadConversionStepsAndProgressBarForWizardView extends StepsAndProgressBarForWizardView
     {
-        public $convertToAccountSetting;
-        public $convertToOpportunitySetting;
-
-        public function rules()
+        protected function getSpanLabels()
         {
-            return array_merge(parent::rules(), array(
-                array('convertToAccountSetting', 'required'),
-                array('convertToOpportunitySetting', 'required'),
-            ));
-        }
-
-        public function attributeLabels()
-        {
-            return array_merge(parent::attributeLabels(), array(
-                'convertToAccountSetting' => Zurmo::t('LeadsModule', 'LeadsModuleSingularLabel Conversion (Step 1)',
-                                                LabelUtil::getTranslationParamsForAllModules()),
-                'convertToOpportunitySetting' => Zurmo::t('LeadsModule', 'LeadsModuleSingularLabel Conversion (Final Step)',
-                                                LabelUtil::getTranslationParamsForAllModules()),
-            ));
+            return array(Zurmo::t('Core', 'Account'),
+                         Zurmo::t('Core', 'Opportunity'));
         }
     }
 ?>
