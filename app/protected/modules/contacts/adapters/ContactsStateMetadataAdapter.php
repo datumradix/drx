@@ -71,11 +71,24 @@
 
         /**
          * @param RedBeanModel $model
-         * @return null
+         * @return string
          */
         public static function getModuleClassNameByModel(RedBeanModel $model)
         {
             if (!LeadsUtil::isStateALead($model->state))
+            {
+                return 'ContactsModule';
+            }
+            return 'LeadsModule';
+        }
+
+        /**
+         * @param string $stateName
+         * @return string
+         */
+        public static function getModuleClassNameByModelStateName($stateName)
+        {
+            if (!LeadsUtil::isStateALeadByStateName($stateName))
             {
                 return 'ContactsModule';
             }
