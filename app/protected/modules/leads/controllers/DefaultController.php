@@ -41,7 +41,7 @@
             return array_merge(parent::filters(),
                 array(
                    array(
-                        ZurmoBaseController::RIGHTS_FILTER_PATH . ' + convert, saveConvertedContact',
+                        ZurmoBaseController::RIGHTS_FILTER_PATH . ' + convert, convertFinal, saveConvertedContact',
                         'moduleClassName' => 'LeadsModule',
                         'rightName' => LeadsModule::RIGHT_CONVERT_LEADS,
                    ),
@@ -54,6 +54,11 @@
                         ZurmoBaseController::REQUIRED_ATTRIBUTES_FILTER_PATH . ' + convert',
                         'moduleClassName' => 'AccountsModule',
                         'viewClassName'   => 'AccountConvertToView',
+                   ),
+                   array(
+                        ZurmoBaseController::REQUIRED_ATTRIBUTES_FILTER_PATH . ' + convertFinal',
+                        'moduleClassName' => 'OpportunitiesModule',
+                        'viewClassName'   => 'OpportunityConvertToView',
                    ),
                    array(
                         ZurmoModuleController::ZERO_MODELS_CHECK_FILTER_PATH . ' + list, index',
@@ -336,6 +341,8 @@
         public function actionConvert($id)
         {
             assert('!empty($id)');
+            LeadsUtil::removeFromSession(LeadsUtil::LEAD_CONVERSION_ACCOUNT_DATA_SESSION_KEY);
+            
             $contact                 = Contact::getById(intval($id));
             if (!LeadsUtil::isStateALead($contact->state))
             {
@@ -359,7 +366,12 @@
                 if ($selectAccountForm->validate())
                 {
                     $account = Account::getById(intval($selectAccountForm->accountId));
-                    $this->actionSaveConvertedContact($contact, $account);
+                    $accountPostData = array(
+                        'accountId' => intval($selectAccountForm->accountId),
+                        'SelectAccount' => true
+                    );
+                    LeadsUtil::storeIntoSession(LeadsUtil::LEAD_CONVERSION_ACCOUNT_DATA_SESSION_KEY, $accountPostData);
+                    $this->redirect(array('/leads/default/convertFinal', 'id' => $contact->id));
                 }
             }
             elseif (isset($_POST['Account']))
@@ -370,16 +382,13 @@
                 $postData = $_POST['Account'];
                 $controllerUtil   = static::getZurmoControllerUtil();
                 $account            = $controllerUtil->saveModelFromPost($postData, $account, $savedSuccessfully,
-                                                                            $modelToStringValue, false);
-                if ($savedSuccessfully)
+                                                                            $modelToStringValue, true);
+                if (!$account->getErrors())
                 {
-                    $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($contact);
-                    ExplicitReadWriteModelPermissionsUtil::resolveExplicitReadWriteModelPermissions($account, $explicitReadWriteModelPermissions);
-                    if (!$account->save())
-                    {
-                        throw new NotSupportedException();
-                    }
-                    $this->actionSaveConvertedContact($contact, $account);
+                    $accountPostData = $postData;
+                    $accountPostData['CreateAccount'] = true;
+                    LeadsUtil::storeIntoSession(LeadsUtil::LEAD_CONVERSION_ACCOUNT_DATA_SESSION_KEY, $accountPostData);
+                    $this->redirect(array('/leads/default/convertFinal', 'id' => $contact->id));
                 }
             }
             elseif (isset($_POST['AccountSkip']) ||
@@ -387,12 +396,15 @@
                 ($convertToAccountSetting == LeadsModule::CONVERT_ACCOUNT_NOT_REQUIRED && !$userCanAccessAccounts)
                 )
             {
-                $this->actionSaveConvertedContact($contact);
+                $accountPostData = array('AccountSkip' => true);
+                LeadsUtil::storeIntoSession(LeadsUtil::LEAD_CONVERSION_ACCOUNT_DATA_SESSION_KEY, $accountPostData);
+                $this->redirect(array('/leads/default/convertFinal', 'id' => $contact->id));
             }
             else
             {
                 $account = LeadsUtil::attributesToAccount($contact, $account);
             }
+            $progressBarAndStepsView = new LeadConversionStepsAndProgressBarForWizardView();
             $convertView = new LeadConvertView(
                 $this->getId(),
                 $this->getModule()->getId(),
@@ -404,13 +416,102 @@
                 $userCanCreateAccount
             );
             $view = new LeadsPageView(ZurmoDefaultViewUtil::
-                                     makeStandardViewForCurrentUser($this, $convertView));
+                                     makeTwoStandardViewsForCurrentUser($this, $progressBarAndStepsView, $convertView));
+            echo $view->render();
+        }
+        
+        public function actionConvertFinal($id)
+        {
+            assert('!empty($id)');
+            
+            $accountPostData = LeadsUtil::getFromSession(LeadsUtil::LEAD_CONVERSION_ACCOUNT_DATA_SESSION_KEY);
+            if (empty($accountPostData))
+            {
+                $urlParams = array('/leads/' . $this->getId() . '/convert', 'id' => $id);
+                $this->redirect($urlParams);
+            }
+            $contact                        = Contact::getById(intval($id));
+            if (!LeadsUtil::isStateALead($contact->state))
+            {
+                $urlParams = array('/contacts/' . $this->getId() . '/details', 'id' => $contact->id);
+                $this->redirect($urlParams);
+            }
+            $convertToAccountSetting        = LeadsModule::getConvertToAccountSetting();
+            $convertToOpportunitySetting    = LeadsModule::getConvertToOpportunitySetting();
+            $account                        = new Account();
+            $opportunity                    = new Opportunity();
+            ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($contact);
+
+            $userCanAccessContacts = RightsUtil::canUserAccessModule('ContactsModule', Yii::app()->user->userModel);
+            $userCanAccessAccounts = RightsUtil::canUserAccessModule('AccountsModule', Yii::app()->user->userModel);
+            $userCanAccessOpportunities = RightsUtil::canUserAccessModule('OpportunitiesModule', Yii::app()->user->userModel);
+            $userCanCreateOpportunity  = RightsUtil::doesUserHaveAllowByRightName('OpportunitiesModule',
+                                     OpportunitiesModule::RIGHT_CREATE_OPPORTUNITIES, Yii::app()->user->userModel);
+            LeadsControllerSecurityUtil::resolveCanUserProperlyConvertLead($userCanAccessContacts, 
+                                                            $userCanAccessAccounts, $convertToAccountSetting);
+            LeadsControllerSecurityUtil::resolveCanUserProperlyConvertLeadFinalStep($userCanAccessContacts, 
+                                                            $userCanAccessOpportunities, $convertToOpportunitySetting);
+            
+            if (isset($_POST['Opportunity']))
+            {
+                $controllerUtil     = static::getZurmoControllerUtil();
+                $savedSuccessfully  = false;
+                $modelToStringValue = null;
+                $postData           = $_POST['Opportunity'];
+                $opportunity        = $controllerUtil->saveModelFromPost($postData, $opportunity, $savedSuccessfully,
+                                                                                            $modelToStringValue, false);
+                if ($savedSuccessfully)
+                {
+                    $explicitReadWriteModelPermissions  = 
+                            ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($contact);
+                    ExplicitReadWriteModelPermissionsUtil::
+                            resolveExplicitReadWriteModelPermissions($opportunity, $explicitReadWriteModelPermissions);
+                    $account                            = LeadsUtil::
+                        createAccountForLeadConversionFromAccountPostData($accountPostData, $contact, $controllerUtil);
+                    $opportunity->account               = $account;
+                    if (!$opportunity->save())
+                    {
+                        throw new NotSupportedException();
+                    }
+                    LeadsUtil::removeFromSession(LeadsUtil::LEAD_CONVERSION_ACCOUNT_DATA_SESSION_KEY);
+                    $this->actionSaveConvertedContact($contact, $account, $opportunity);
+                }
+            }
+            elseif (isset($_POST['OpportunitySkip']) ||
+                $convertToOpportunitySetting == LeadsModule::CONVERT_NO_OPPORTUNITY ||
+                ($convertToOpportunitySetting == LeadsModule::CONVERT_OPPORTUNITY_NOT_REQUIRED && !$userCanAccessOpportunities)
+                    )
+            {
+                $controllerUtil     = static::getZurmoControllerUtil();
+                $account            = LeadsUtil::createAccountForLeadConversionFromAccountPostData($accountPostData, 
+                                                                                            $contact, $controllerUtil);
+                LeadsUtil::removeFromSession(LeadsUtil::LEAD_CONVERSION_ACCOUNT_DATA_SESSION_KEY);
+                $this->actionSaveConvertedContact($contact, $account, null);
+            }
+            
+            $progressBarAndStepsView = new LeadConversionStepsAndProgressBarForWizardView(1);
+            $convertView = new LeadConvertOpportunityView(
+                $this->getId(),
+                $this->getModule()->getId(),
+                $contact->id,
+                strval($contact),
+                $opportunity,
+                $convertToOpportunitySetting,
+                $userCanCreateOpportunity
+            );
+            
+            $view = new LeadsPageView(ZurmoDefaultViewUtil::
+                                     makeTwoStandardViewsForCurrentUser($this, $progressBarAndStepsView, $convertView));
             echo $view->render();
         }
 
-        protected function actionSaveConvertedContact($contact, $account = null)
+        protected function actionSaveConvertedContact($contact, $account = null, $opportunity = null)
         {
             $contact->account = $account;
+            if ($opportunity !== null)
+            {
+                $contact->opportunities->add($opportunity);
+            }
             $contact->state   = ContactsUtil::getStartingState();
             if ($contact->save())
             {

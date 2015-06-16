@@ -34,27 +34,48 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class LeadsModuleForm extends GlobalSearchEnabledModuleForm
+    /**
+     * Back lead conversion link.
+     */
+    class BackConvertLinkActionElement extends LinkActionElement
     {
-        public $convertToAccountSetting;
-        public $convertToOpportunitySetting;
-
-        public function rules()
+        public function getActionType()
         {
-            return array_merge(parent::rules(), array(
-                array('convertToAccountSetting', 'required'),
-                array('convertToOpportunitySetting', 'required'),
-            ));
+            return 'Details';
         }
 
-        public function attributeLabels()
+        protected function getDefaultLabel()
         {
-            return array_merge(parent::attributeLabels(), array(
-                'convertToAccountSetting' => Zurmo::t('LeadsModule', 'LeadsModuleSingularLabel Conversion (Step 1)',
-                                                LabelUtil::getTranslationParamsForAllModules()),
-                'convertToOpportunitySetting' => Zurmo::t('LeadsModule', 'LeadsModuleSingularLabel Conversion (Final Step)',
-                                                LabelUtil::getTranslationParamsForAllModules()),
-            ));
+            return Zurmo::t('Core', 'Back');
+        }
+
+        protected function getDefaultRoute()
+        {
+            if (!empty($this->modelId))
+            {
+                $convertToAccountSetting = LeadsModule::getConvertToAccountSetting();
+                $userCanAccessAccounts = RightsUtil::canUserAccessModule('AccountsModule', Yii::app()->user->userModel);
+                if ($convertToAccountSetting == LeadsModule::CONVERT_NO_ACCOUNT ||
+                ($convertToAccountSetting == LeadsModule::CONVERT_ACCOUNT_NOT_REQUIRED && !$userCanAccessAccounts))
+                {
+                    return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/details/', array('id' => $this->modelId));
+                }
+                else
+                {
+                    return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/convert/', array('id' => $this->modelId));
+                }
+                
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        protected function resolveHtmlOptionsForRendering()
+        {
+            $htmlOptions = array('class' => 'cancel-button');
+            return $htmlOptions;
         }
     }
 ?>
