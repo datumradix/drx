@@ -99,7 +99,7 @@
             return true;
         }
 
-        protected static function stripTimeDelimiterAndReturnQualifier(& $mergeTag)
+        public static function stripTimeDelimiterAndReturnQualifier(& $mergeTag)
         {
             $timeDelimiterIndex = strpos($mergeTag, MergeTagsUtil::TIME_DELIMITER);
             if ($timeDelimiterIndex !== false)
@@ -317,7 +317,7 @@
             return null;
         }
 
-        protected static function resolveStringToAttributeAccessor($string)
+        public static function resolveStringToAttributeAccessor($string)
         {
             return StringUtil::camelize(str_replace(MergeTagsUtil::PROPERTY_DELIMITER, '->', strtolower($string)),
                                                                                     false,

@@ -45,7 +45,7 @@
                                 );
 
         protected static $specialAttributesResolver = array (
-                                'modelUrl'                          => 'resolveModelUrlByModel',
+                                'modelUrl'                          => 'resolveModelUrlByModelOrParams',
                                 'baseUrl'                           => 'resolveBaseUrl',
                                 'applicationName'                   => 'resolveApplicationName',
                                 'currentYear'                       => 'resolveCurrentYear',
@@ -80,17 +80,50 @@
         }
 
         // individual resolvers
-        protected static function resolveModelUrlByModel($model)
+        protected static function resolveModelUrlByModelOrParams($model, $params = array())
         {
-            $modelClassName     = get_class($model);
+            if (self::isClassNameContactAndAllParametersValid($params))
+            {
+                $modelClassName = $params['modelClassName'];
+                $modelId = $params['modelId'];
+                $stateName = $params['stateName'];
+            }
+            else
+            {
+                $modelClassName     = get_class($model);
+                $modelId = $model->id;
+            }
+
             $moduleClassName    = $modelClassName::getModuleClassName();
             $moduleId           = $moduleClassName::getDirectoryName();
-            if (null != $stateAdapterClassName = $moduleClassName::getStateMetadataAdapterClassName())
+
+            if (!self::isClassNameContactAndAllParametersValid($params))
             {
-                $resolvedModuleClassName = $stateAdapterClassName::getModuleClassNameByModel($model);
+                if (null != $stateAdapterClassName = $moduleClassName::getStateMetadataAdapterClassName())
+                {
+                    $resolvedModuleClassName = $stateAdapterClassName::getModuleClassNameByModel($model);
+                    $moduleId                = $resolvedModuleClassName::getDirectoryName();
+                }
+            }
+            else
+            {
+                $resolvedModuleClassName = ContactsStateMetadataAdapter::getModuleClassNameByModelStateName($stateName);
                 $moduleId                = $resolvedModuleClassName::getDirectoryName();
             }
-            return Yii::app()->createAbsoluteUrl('/' . $moduleId . '/default/details/', array('id' => $model->id));
+            return Yii::app()->createAbsoluteUrl('/' . $moduleId . '/default/details/', array('id' => $modelId));
+        }
+
+        protected static function isClassNameContactAndAllParametersValid($params)
+        {
+            if (isset($params['modelClassName']) && isset($params['modelId']) && isset($params['stateName']))
+            {
+                if ($params['modelClassName'] != 'Contact')
+                {
+                    throw new NotSupportedException();
+                }
+                return true;
+            }
+            return false;
         }
 
         protected static function resolveBaseUrl()
