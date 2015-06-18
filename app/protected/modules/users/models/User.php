@@ -840,6 +840,14 @@
                         'members' => array('permitable_id'),
                         'unique' => false),
                 ),
+                'allowedAttributesForCampaignMergeTags' => array(
+                    'department',
+                    'firstName',
+                    'lastName',
+                    'mobilePhone',
+                    'officePhone',
+                    'officeFax',
+                ),
             );
             return $metadata;
         }

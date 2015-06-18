@@ -147,6 +147,17 @@
                     array('state',      'type',      'type'      => 'string'),
                     array('state',      'length',    'max'       => 32),
                 ),
+                'allowedAttributesForCampaignMergeTags' => array(
+                    'city',
+                    'country',
+                    'invalid',
+                    'latitude',
+                    'longitude',
+                    'postalCode',
+                    'street1',
+                    'street2',
+                    'state',
+                ),
             );
             return $metadata;
         }

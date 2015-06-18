@@ -59,7 +59,12 @@
                     array('isInvalid',    'boolean'),
                     array('optOut',       'boolean'),
                 ),
-                'defaultSortAttribute' => 'emailAddress'
+                'defaultSortAttribute' => 'emailAddress',
+                'allowedAttributesForCampaignMergeTags' => array(
+                    'emailAddress',
+                    'isInvalid',
+                    'optOut',
+                ),
             );
             return $metadata;
         }

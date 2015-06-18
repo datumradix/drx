@@ -46,10 +46,10 @@
          * @param string $treeType
          * @param null $uniqueId
          */
-        public function __construct(Report $report, $treeType, $uniqueId = null)
+        public function __construct(Report $report, $treeType, $uniqueId = null, $isCampaign = false)
         {
             assert('is_string($uniqueId) || $uniqueId === null');
-            parent::__construct($report, $treeType);
+            parent::__construct($report, $treeType, $isCampaign);
             $this->uniqueId   = $uniqueId;
         }
 
