@@ -618,7 +618,8 @@
             $bubby = $this->logoutCurrentUserLoginNewUserAndGetByUsername('bubby');
             //View will not show up properly.
             $this->setGetArray (array('id' => $lead->id));
-            $this->runControllerWithExitExceptionAndGetContent('leads/default/convert');
+            $content = $this->runControllerWithExitExceptionAndGetContent('leads/default/convert');
+            $this->assertContains('Conversion requires access to the contacts module which you do not have. Please contact your administrator.', $content);
 
             //Scenario #2 - User cannot access accounts and an account is required for conversion
             $bubby->setRight   ('ContactsModule', ContactsModule::RIGHT_CREATE_CONTACTS, Right::ALLOW);
@@ -639,7 +640,7 @@
             $metadata['global']['convertToOpportunitySetting'] = LeadsModule::CONVERT_OPPORTUNITY_REQUIRED;
             LeadsModule::setMetadata($metadata);
 
-            //At this point because the account is required, the view will not come up properly.
+            //At this point because the opportunity is required, the view will not come up properly.
             $this->setGetArray (array('id' => $lead->id));
             $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convert');
             $this->setGetArray (array('id' => $lead->id));

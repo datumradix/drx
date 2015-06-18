@@ -438,7 +438,6 @@
             }
             $convertToAccountSetting        = LeadsModule::getConvertToAccountSetting();
             $convertToOpportunitySetting    = LeadsModule::getConvertToOpportunitySetting();
-            $account                        = new Account();
             $opportunity                    = new Opportunity();
             ControllerSecurityUtil::resolveAccessCanCurrentUserWriteModel($contact);
 
