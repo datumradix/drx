@@ -372,8 +372,14 @@
          * @param null $nodeId
          * @param string $modelClassName
          */
-        public function actionRelationsAndAttributesTreeForMergeTags($uniqueId = null, $nodeId = null, $modelClassName = 'Contact')
+        public function actionRelationsAndAttributesTreeForMergeTags($uniqueId = null, $nodeId = null, $modelClassName = 'Contact', $type = null)
         {
+            $isCampaign = false;
+            if ($type == EmailTemplate::TYPE_CONTACT)
+            {
+                $isCampaign = true;
+            }
+            $emailTemplateType = $type;
             if ($modelClassName == null)
             {
                 $modelClassName = 'Contact';
@@ -386,7 +392,7 @@
             $report->setType($type);
             if ($nodeId != null)
             {
-                $reportToTreeAdapter = new MergeTagsReportRelationsAndAttributesToTreeAdapter($report, $treeType, $uniqueId);
+                $reportToTreeAdapter = new MergeTagsReportRelationsAndAttributesToTreeAdapter($report, $treeType, $uniqueId, $isCampaign);
                 echo ZurmoTreeView::saveDataAsJson($reportToTreeAdapter->getData($nodeId));
                 Yii::app()->end(0, false);
             }

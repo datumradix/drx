@@ -41,8 +41,8 @@
     {
         public static $contactAttributesMap = array(
             'COMPANY^NAME'           => 'companyname',
-            'CREATED^DATE^TIME'          => 'createddatetime',
-            'MODIFIED^DATE^TIME'          => 'modifieddatetime',
+//            'CREATED^DATE^TIME'          => 'createddatetime',
+//            'MODIFIED^DATE^TIME'          => 'modifieddatetime',
             'DEPARTMENT'          => 'department',
             'DESCRIPTION'            => 'description',
             'FIRST^NAME'         => 'firstname',

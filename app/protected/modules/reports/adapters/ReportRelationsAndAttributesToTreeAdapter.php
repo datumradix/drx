@@ -44,15 +44,18 @@
          */
         protected $report;
 
+        protected $isCampaign;
+
         /**
          * @param Report $report
          * @param string $treeType
          */
-        public function __construct(Report $report, $treeType)
+        public function __construct(Report $report, $treeType, $isCampaign = null)
         {
             assert('is_string($treeType)');
             $this->report   = $report;
             $this->treeType = $treeType;
+            $this->isCampaign   = $isCampaign;
         }
 
         /**
@@ -114,12 +117,28 @@
             $attributesData          = $this->getAttributesData($modelToReportAdapter, $precedingModel, $precedingRelation);
             foreach ($attributesData as $attribute => $attributeData)
             {
-                $attributeNode      = array('id'           => self::makeNodeId($attribute, $nodeIdPrefix),
-                                            'text'         => $attributeData['label'],
-                                            'wrapperClass' => 'item-to-place',
-                );
-                $this->resolveChildNodeDataValueForAttributeNode($attributeNode, $attribute, $nodeIdPrefix);
-                $childrenNodeData[] = $attributeNode;
+                $allowedAttribute = true;
+                if ($this->isCampaign)
+                {
+                    $model    = $modelToReportAdapter->getModel();
+                    $metadata = $model->getMetadata();
+                    if (isset($metadata[get_class($model)]['allowedAttributesForCampaignMergeTags']) &&
+                        !empty($metadata[get_class($model)]['allowedAttributesForCampaignMergeTags']) &&
+                        !in_array($attribute, $metadata[get_class($model)]['allowedAttributesForCampaignMergeTags'])
+                    )
+                    {
+                        $allowedAttribute = false;
+                    }
+                }
+                if ($allowedAttribute)
+                {
+                    $attributeNode = array('id'           => self::makeNodeId($attribute, $nodeIdPrefix),
+                                           'text'         => $attributeData['label'],
+                                           'wrapperClass' => 'item-to-place',
+                    );
+                    $this->resolveChildNodeDataValueForAttributeNode($attributeNode, $attribute, $nodeIdPrefix);
+                    $childrenNodeData[] = $attributeNode;
+                }
             }
             $selectableRelationsData = $modelToReportAdapter->
                 getSelectableRelationsData($precedingModel, $precedingRelation);

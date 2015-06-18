@@ -158,6 +158,12 @@
                     'latestActivityDateTime',
                     'website',
                 ),
+                'allowedAttributesForCampaignMergeTags' => array(
+                    'name',
+                    'officePhone',
+                    'officeFax',
+                    'website',
+                ),
             );
             return $metadata;
         }

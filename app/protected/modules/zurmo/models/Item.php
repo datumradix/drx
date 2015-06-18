@@ -248,6 +248,7 @@
                     'createdDateTime'  => 'DateTime',
                     'modifiedDateTime' => 'DateTime',
                 ),
+                'allowedAttributesForCampaignMergeTags' => array(),
             );
             return $metadata;
         }

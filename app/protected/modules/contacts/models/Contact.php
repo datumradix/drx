@@ -145,6 +145,11 @@
                         'members' => array('person_id'),
                         'unique' => false),
                 ),
+                'allowedAttributesForCampaignMergeTags' => array(
+                    'companyName',
+                    'description',
+                    'website'
+                ),
             );
             return $metadata;
         }

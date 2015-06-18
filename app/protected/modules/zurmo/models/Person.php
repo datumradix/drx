@@ -179,6 +179,14 @@
                         'members' => array('ownedsecurableitem_id'),
                         'unique' => false),
                 ),
+                'allowedAttributesForCampaignMergeTags' => array(
+                    'department',
+                    'firstName',
+                    'lastName',
+                    'mobilePhone',
+                    'officePhone',
+                    'officeFax',
+                ),
             );
             return $metadata;
         }

@@ -123,21 +123,17 @@
             Yii::app()->user->userModel = $this->user;
         }
 
-        public function testSingleItem()
-        {
-            //$this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(1, 2);
-        }
-
         public function testSingleItemRaw()
         {
-            $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(1, 0.1, true);
+            $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(1, 0.2, true);
         }
+
         /**
-         * @depends testSingleItem
+         * @depends testSingleItemRaw
          */
         public function testFiveItems()
         {
-            //$this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(5, 5);
+            $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(5, 0.5, true);
         }
 
         /**
@@ -145,7 +141,7 @@
          */
         public function testTenItems()
         {
-            //$this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(10, 9);
+            $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(10, 1, true);
         }
 
         /**
@@ -153,7 +149,7 @@
          */
         public function testFiftyItems()
         {
-            //$this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(50, 46);
+            $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(50, 5, true);
         }
 
         /**
@@ -161,31 +157,7 @@
          */
         public function testHundredItems()
         {
-            //$this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(100, 95);
-        }
-
-        /**
-         * @depends testHundredItems
-         */
-        public function testTwoFiftyItems()
-        {
-            //$this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(250, 240);
-        }
-
-        /**
-         * @depends testTwoFiftyItems
-         */
-        public function testFiveHundredItems()
-        {
-            //$this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(500, 490);
-        }
-
-        /**
-         * @depends testFiveHundredItems
-         */
-        public function testThousandItems()
-        {
-            //$this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(1000, 950);
+            $this->ensureTimeSpentIsLessOrEqualThanExpectedForCount(100, 10, true);
         }
 
         protected function ensureTimeSpentIsLessOrEqualThanExpectedForCount($count, $expectedTime, $useRawSqlQuery = false)
@@ -285,7 +257,7 @@ MTG;
                 $this->assertTrue($resolvedContent !== false);
                 $this->assertNotEquals($resolvedContent, $content);
                 //print_r($resolvedContent);
-                print_r($invalidTags);
+                //print_r($invalidTags);
                 //$this->assertEmpty($invalidTags);
             }
             $timeTaken      = microtime(true) - $startedAt;
