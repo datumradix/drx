@@ -113,5 +113,40 @@
             $inputPrefix = $this->resolveInputNamePrefix();
             return $inputPrefix . $this->getUnqualifiedNameForIdField();
         }
+        
+        /**
+         * Generate the error content. Used by editable content
+         * @return error content
+         */
+        protected function renderError()
+        {
+           if ($this->form !== null)
+           {
+               return $this->form->error($this->model, $this->attribute,
+                   array('inputID' => $this->getEditableInputId()));
+           }
+           else
+           {
+               return null;
+           }
+        }
+        
+        /**
+         * Generate the element label content
+         * @return A string containing the element's label
+         */
+        protected function renderLabel()
+        {
+            if ($this->form === null)
+            {
+                return $this->getFormattedAttributeLabel();
+            }
+            $htmlOptions    = array('for' => $this->resolveIdForLabel());
+            if (isset($this->params['labelHtmlOptions']))
+            {
+                $htmlOptions    = CMap::mergeArray($htmlOptions, $this->params['labelHtmlOptions']);
+            }
+            return $this->form->labelEx($this->model, $this->attribute, $htmlOptions);
+        }
     }
 ?>
