@@ -83,7 +83,7 @@
             {
                 throw new MissingRecipientsForEmailMessageException();
             }
-            $box                        = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
+            $box                        = EmailBox::resolveAndGetByName(EmailBox::WORKFLOWS_NAME);
             $emailMessage->folder       = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
             Yii::app()->emailHelper->send($emailMessage);
             ZurmoControllerUtil::updatePermissionsWithDefaultForModelByUser($emailMessage, $this->triggeredByUser);
