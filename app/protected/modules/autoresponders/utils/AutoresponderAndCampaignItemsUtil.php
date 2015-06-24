@@ -124,14 +124,29 @@
             return $itemOwnerModel;
         }
 
-        protected function skipMessage(Contact $contact, Item $itemOwnerModel)
+        public function skipMessage(Contact $contact, Item $itemOwnerModel)
         {
             return ($contact->primaryEmail->optOut ||
                 // TODO: @Shoaibi: Critical0: We could use SQL for getByMarketingListIdContactIdandUnsubscribed to save further performance here.
                 (get_class($itemOwnerModel) === "Campaign" && MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed(
                         $itemOwnerModel->marketingList->id,
                         $contact->id,
-                        true) != false));
+                        true) != false) ||
+                (get_class($itemOwnerModel) === "Autoresponder" && 
+                        (($itemOwnerModel->operationType == Autoresponder::OPERATION_SUBSCRIBE && 
+                        MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed(
+                            $itemOwnerModel->marketingList->id,
+                            $contact->id,
+                            true) != false) ||
+                        ($itemOwnerModel->operationType == Autoresponder::OPERATION_UNSUBSCRIBE && 
+                        MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed(
+                            $itemOwnerModel->marketingList->id,
+                            $contact->id,
+                            false) != false)) 
+                ) ||
+                (MarketingListMember::getByMarketingListIdAndContactId(
+                        $itemOwnerModel->marketingList->id,
+                        $contact->id) === false));
         }
 
         protected function supportsRichText(Item $itemOwnerModel)

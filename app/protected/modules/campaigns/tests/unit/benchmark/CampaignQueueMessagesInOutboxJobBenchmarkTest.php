@@ -228,6 +228,7 @@ MTG;
             $processed                  = 0;
             foreach ($contacts as $contact)
             {
+                MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
                 CampaignItemTestHelper::createCampaignItem($processed, $campaign, $contact);
             }
             AutoresponderOrCampaignBatchSizeConfigUtil::setBatchSize($count);

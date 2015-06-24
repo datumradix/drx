@@ -72,6 +72,7 @@
         {
             $contact                    = ContactTestHelper::createContactByNameForOwner('contact 01', $this->user);
             $marketingList              = MarketingListTestHelper::populateMarketingListByName('marketingList 01');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 01',
                                                                                     '[[TEXT^CONTENT]]',
                                                                                     '[[HTML^CONTENT]]',
@@ -96,6 +97,7 @@
         {
             $contact                    = ContactTestHelper::createContactByNameForOwner('contact 02', $this->user);
             $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 02');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 02',
                                                                                     'text content',
                                                                                     'html content',
@@ -156,6 +158,7 @@
             $contact->primaryEmail      = $email;
             $this->assertTrue($contact->save());
             $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 03');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 03',
                                                                                     'text content',
                                                                                     'html content',
@@ -215,6 +218,7 @@
                                                                                             'description',
                                                                                             'CustomFromName',
                                                                                             'custom@from.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 04',
                                                                                     'text content',
                                                                                     'html content',
@@ -270,6 +274,7 @@
                                                                                             'description',
                                                                                             'CustomFromName',
                                                                                             'custom@from.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 05',
                                                                                 'Dr. [[FIRST^NAME]] [[LAST^NAME]]',
                                                                                 '<b>[[LAST^NAME]]</b>, [[FIRST^NAME]]',
@@ -328,6 +333,7 @@
                                                                                                 'description',
                                                                                                 'CustomFromName',
                                                                                                 'custom@from.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 06',
                                                                                 'Dr. [[FIRST^NAME]] [[LAST^NAME]]',
                                                                                 '<b>[[LAST^NAME]]</b>, [[FIRST^NAME]]',
@@ -409,6 +415,7 @@
                                                                                                     'description',
                                                                                                     'CustomFromName',
                                                                                                     'custom@from.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 07',
                                                                                 'Dr. [[FIRST^NAME]] [[LAST^NAME]]',
                                                                                 '<b>[[LAST^NAME]]</b>, [[FIRST^NAME]]',
@@ -448,6 +455,7 @@
                                                                                                 'description',
                                                                                                 'CustomFromName',
                                                                                                 'custom@from.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 08',
                                                                                 'Dr. [[FIRST^NAME]] [[LAST^NAME]]',
                                                                                 '<b>[[LAST^NAME]]</b>, [[FIRST^NAME]]',
@@ -508,6 +516,7 @@
                                                                                              'description',
                                                                                              'CustomFromName',
                                                                                              'custom@from.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 09',
                                                                             'Url: [[MODEL^URL]]',
                                                                             'Click <a href="[[MODEL^URL]]">here</a>',
@@ -544,6 +553,7 @@
                                                                                             'description',
                                                                                             'CustomFromName',
                                                                                             'custom@from.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 10',
                                                                 GlobalMarketingFooterUtil::resolveUnsubscribeUrlMergeTag(),
                                                                 GlobalMarketingFooterUtil::resolveUnsubscribeUrlMergeTag(),
@@ -586,6 +596,7 @@
                                                                                                 'description',
                                                                                                 'CustomFromName',
                                                                                                 'custom@from.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 11',
                                                                                 GlobalMarketingFooterUtil::resolveManageSubscriptionsMergeTag(),
                                                                                 GlobalMarketingFooterUtil::resolveManageSubscriptionsMergeTag(),
@@ -628,6 +639,7 @@
                                                                                             'description',
                                                                                             'CustomFromName',
                                                                                             'custom@from.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 12',
                                                                             GlobalMarketingFooterUtil::resolveUnsubscribeUrlMergeTag() . ', ' . // Not Coding Standard
                                                                             GlobalMarketingFooterUtil::resolveManageSubscriptionsMergeTag(),
@@ -677,6 +689,7 @@
                                                                                             'description',
                                                                                             'CustomFromName',
                                                                                             'custom@from.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 13',
                                                                                     'Plain Text',
                                                                                     'HTML',
@@ -711,6 +724,145 @@
             $this->assertEquals(2, substr_count($htmlContent, '<br /><a href="localhost/'));
             $this->assertContains('/marketingLists/external/manageSubscriptions?hash=', $htmlContent);
             $this->assertEquals(1, substr_count($htmlContent, '/marketingLists/external/manageSubscriptions?hash='));
+        }
+        
+        /**
+         * @depends testProcessDueAutoresponderItemWithoutUnsubscribeAndManageSubscriptionsUrlMergeTags
+         */
+        public function testProcessDueAutoresponderItemDoesNotThrowExceptionWhenContactDeletedFromMarketingList()
+        {
+            $contact                    = ContactTestHelper::createContactByNameForOwner('contact 14', $this->user);
+            $email                      = new Email();
+            $email->emailAddress        = 'demo@zurmo.com';
+            $contact->primaryEmail      = $email;
+            $this->assertTrue($contact->save());
+            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 14');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(1, $marketingList, $contact);
+            $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 14',
+                                                                                    'text content',
+                                                                                    'html content',
+                                                                                    1,
+                                                                                    Autoresponder::OPERATION_UNSUBSCRIBE,
+                                                                                    false,
+                                                                                    $marketingList);
+            $processed                  = 0;
+            $processDateTime            = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+            $autoresponderItem          = AutoresponderItemTestHelper::createAutoresponderItem($processed,
+                                                                                               $processDateTime,
+                                                                                               $autoresponder,
+                                                                                               $contact);
+            $this->processDueItem($autoresponderItem);
+            $this->assertEquals(1, $autoresponderItem->processed);
+            $emailMessage               = $autoresponderItem->emailMessage;
+            $this->assertEquals($marketingList->owner->id, $emailMessage->owner->id);
+            $marketingListPermissions   = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($marketingList);
+            $emailMessagePermissions    = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($emailMessage);
+            $this->assertEquals($marketingListPermissions, $emailMessagePermissions);
+            $this->assertEquals($autoresponder->subject, $emailMessage->subject);
+            $this->assertContains($autoresponder->textContent, $emailMessage->content->textContent);
+            $this->assertContains($autoresponder->htmlContent, $emailMessage->content->htmlContent);
+            $this->assertEquals(1, $emailMessage->recipients->count());
+
+            // Test when marketing list member is deleted from list
+            $marketingListMember->delete();
+            
+            $processed                  = 0;
+            $processDateTime            = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+            $autoresponderItem          = AutoresponderItemTestHelper::createAutoresponderItem($processed,
+                                                                                               $processDateTime,
+                                                                                               $autoresponder,
+                                                                                               $contact);
+            $this->processDueItem($autoresponderItem);
+            $this->assertEquals(1, $autoresponderItem->processed);
+            $emailMessage               = $autoresponderItem->emailMessage;
+            $this->assertEquals($marketingList->owner->id, $emailMessage->owner->id);
+            $marketingListPermissions   = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($marketingList);
+            $emailMessagePermissions    = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($emailMessage);
+            $this->assertEquals($marketingListPermissions, $emailMessagePermissions);
+            $this->assertNull($emailMessage->subject);
+            $this->assertNull($emailMessage->content->textContent);
+            $this->assertNull($emailMessage->content->htmlContent);
+            $this->assertEquals(0, $emailMessage->recipients->count());
+        }
+        
+        public function testSkipMessage()
+        {
+            // Tests with Autoresponder
+            $contact                    = ContactTestHelper::createContactByNameForOwner('contact 15', $this->user);
+            $email                      = new Email();
+            $email->emailAddress        = 'demo@zurmo.com';
+            $contact->primaryEmail      = $email;
+            $this->assertTrue($contact->save());
+            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 15');
+            $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 15',
+                                                                                    'text content',
+                                                                                    'html content',
+                                                                                    1,
+                                                                                    Autoresponder::OPERATION_UNSUBSCRIBE,
+                                                                                    false,
+                                                                                    $marketingList);
+            $autoresponderItemsUtil = new AutoresponderItemsUtil();
+            // Test when the contact isn't in the marketing list at all, same as it was deleted
+            $this->assertTrue($autoresponderItemsUtil->skipMessage($contact, $autoresponder));
+            // Test when the contact is subscribed but the operation is OPERATION_UNSUBSCRIBE
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
+            $this->assertTrue($autoresponderItemsUtil->skipMessage($contact, $autoresponder));
+            // Test when the contact is unsubscribed, so skipMessage return false
+            $marketingListMember->unsubscribed  = true;
+            $this->assertTrue($marketingListMember->unrestrictedSave());
+            $this->assertFalse($autoresponderItemsUtil->skipMessage($contact, $autoresponder));
+            
+            $contact                    = ContactTestHelper::createContactByNameForOwner('contact 16', $this->user);
+            $email                      = new Email();
+            $email->emailAddress        = 'demo@zurmo.com';
+            $contact->primaryEmail      = $email;
+            $this->assertTrue($contact->save());
+            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 16');
+            $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 16',
+                                                                                    'text content',
+                                                                                    'html content',
+                                                                                    1,
+                                                                                    Autoresponder::OPERATION_SUBSCRIBE,
+                                                                                    false,
+                                                                                    $marketingList);
+            // Test when the contact isn't in the marketing list at all, same as it was deleted
+            $this->assertTrue($autoresponderItemsUtil->skipMessage($contact, $autoresponder));
+            // Test when the contact is unsubscribed but the operation is OPERATION_SUBSCRIBE
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(1, $marketingList, $contact);
+            $this->assertTrue($autoresponderItemsUtil->skipMessage($contact, $autoresponder));
+            // Test when the contact is subscribed, so skipMessage return false
+            $marketingListMember->unsubscribed  = false;
+            $this->assertTrue($marketingListMember->unrestrictedSave());
+            $this->assertFalse($autoresponderItemsUtil->skipMessage($contact, $autoresponder));
+            
+            //Tests with Campaign
+            $contact                    = ContactTestHelper::createContactByNameForOwner('contact 17', $this->user);
+            $email                      = new Email();
+            $email->emailAddress        = 'demo@zurmo.com';
+            $contact->primaryEmail      = $email;
+            $this->assertTrue($contact->save());
+            $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 17');
+            $campaign                   = CampaignTestHelper::createCampaign('campaign 01',
+                                                                                'subject 01',
+                                                                                'text 01',
+                                                                                'html 01',
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                $marketingList);
+            $this->assertNotNull($campaign);
+            // Test when the contact isn't in the marketing list at all, same as it was deleted
+            $this->assertTrue($autoresponderItemsUtil->skipMessage($contact, $campaign));
+            // Test when the contact is unsubscribed
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(1, $marketingList, $contact);
+            $this->assertTrue($autoresponderItemsUtil->skipMessage($contact, $campaign));
+            // Test when the contact is subscribed, so skipMessage return false
+            $marketingListMember->unsubscribed  = false;
+            $this->assertTrue($marketingListMember->unrestrictedSave());
+            $this->assertFalse($autoresponderItemsUtil->skipMessage($contact, $campaign));
         }
     }
 ?>

@@ -62,6 +62,7 @@
             $text = null;
             $contact                    = ContactTestHelper::createContactByNameForOwner('contact 01', $this->user);
             $marketingList              = MarketingListTestHelper::populateMarketingListByName('marketingList 01');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 01',
                                                                                 'subject 01',
                                                                                 $text,
@@ -125,6 +126,7 @@
         {
             $contact                    = ContactTestHelper::createContactByNameForOwner('contact 01', $this->user);
             $marketingList              = MarketingListTestHelper::populateMarketingListByName('marketingList 01');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 01',
                                                                                 'subject 01',
                                                                                 '[[TEXT^CONTENT]]',
@@ -149,6 +151,7 @@
         {
             $contact                    = ContactTestHelper::createContactByNameForOwner('contact 02', $this->user);
             $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 02');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 02',
                                                                                 'subject 02',
                                                                                 'text content',
@@ -205,6 +208,7 @@
             $contact->primaryEmail      = $email;
             $this->assertTrue($contact->save());
             $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 03');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 03',
                                                                                 'subject 03',
                                                                                 'text content',
@@ -262,6 +266,7 @@
                                                                                             'description',
                                                                                             'CustomFromName',
                                                                                             'custom@from.com');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 04',
                                                                                 'subject 04',
                                                                                 'text content',
@@ -318,6 +323,7 @@
                                                                                             'description',
                                                                                             'CustomFromName',
                                                                                             'custom@from.com');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 05',
                                                                                 'subject 05',
                                                                                 'Dr. [[FIRST^NAME]] [[LAST^NAME]]',
@@ -376,6 +382,7 @@
                                                                                                     'description',
                                                                                                     'CustomFromName',
                                                                                                     'custom@from.com');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 06',
                                                                                 'subject 06',
                                                                                 'Dr. [[FIRST^NAME]] [[LAST^NAME]]',
@@ -544,6 +551,7 @@
                                                                                                 'description',
                                                                                                 'CustomFromName',
                                                                                                 'custom@from.com');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 09',
                                                                                 'subject 09',
                                                                                 'Dr. [[FIRST^NAME]] [[LAST^NAME]]',
@@ -603,6 +611,7 @@
                                                                                             'description',
                                                                                             'CustomFromName',
                                                                                             'custom@from.com');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 10',
                                                                              'subject 10',
                                                                              'Dr. [[FIRST^NAME]] [[LAST^NAME]]',
@@ -636,6 +645,7 @@
                                                                                             'description',
                                                                                             'CustomFromName',
                                                                                             'custom@from.com');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 11',
                                                                              'subject 11',
                                                                              null,
@@ -669,6 +679,7 @@
                                                                                             'description',
                                                                                             'CustomFromName',
                                                                                             'custom@from.com');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 12',
                                                                              'subject 12',
                                                                              'Dr. [[FIRST^NAME]] [[LAST^NAME]]',
@@ -702,6 +713,7 @@
                                                                                                 'description',
                                                                                                 'CustomFromName',
                                                                                                 'custom@from.com');
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 13',
                                                                                 'subject 13',
                                                                                 'Url: [[MODEL^URL]]',
@@ -737,6 +749,7 @@
                                                                                             'description',
                                                                                             null,
                                                                                             null);
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 12',
                                                                              'subject 12',
                                                                              'Dr. [[FIRST^NAME]] [[LAST^NAME]]',
@@ -770,6 +783,7 @@
                                                                                                 'description',
                                                                                                 null,
                                                                                                 null);
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 13',
                                                                                 'subject 13',
                                                                                 GlobalMarketingFooterUtil::resolveUnsubscribeUrlMergeTag(),
@@ -811,6 +825,7 @@
                                                                                                 'description',
                                                                                                 null,
                                                                                                 null);
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 14',
                                                                                 'subject 14',
                                                                                 GlobalMarketingFooterUtil::resolveManageSubscriptionsMergeTag(),
@@ -852,6 +867,7 @@
                                                                                                 'description',
                                                                                                 null,
                                                                                                 null);
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 15',
                                                                                 'subject 15',
                                                                                 GlobalMarketingFooterUtil::resolveUnsubscribeUrlMergeTag() . ', ' . // Not Coding Standard
@@ -900,6 +916,7 @@
                                                                                                 'description',
                                                                                                 null,
                                                                                                 null);
+            $marketingListMember = MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 16',
                                                                                 'subject 16',
                                                                                 'Plain Text',
