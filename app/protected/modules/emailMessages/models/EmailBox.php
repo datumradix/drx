@@ -47,6 +47,8 @@
 
         const CAMPAIGNS_NAME        = 'Campaigns';
 
+        const WORKFLOWS_NAME        = 'Workflows';
+
         protected $isSpecialBox     = false;
 
         protected $isAudited = false;
@@ -80,7 +82,7 @@
             catch (NotFoundException $e)
             {
                 // we do this to avoid three "||" inside if below.
-                $allowedBoxes = array(static::NOTIFICATIONS_NAME, static::AUTORESPONDERS_NAME, static::CAMPAIGNS_NAME);
+                $allowedBoxes = array(static::NOTIFICATIONS_NAME, static::AUTORESPONDERS_NAME, static::CAMPAIGNS_NAME, static::WORKFLOWS_NAME);
                 if (in_array($name, $allowedBoxes))
                 {
                     $box = static::makeSystemMissingBox($name);
