@@ -159,6 +159,38 @@
             }
             return $member;
         }
+        
+        public static function getByMarketingListIdAndContactId($marketingListId, $contactId)
+        {
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'             => 'contact',
+                    'relatedAttributeName'      => 'id',
+                    'operatorType'              => 'equals',
+                    'value'                     => intval($contactId),
+                ),
+                2 => array(
+                    'attributeName'             => 'marketingList',
+                    'relatedAttributeName'      => 'id',
+                    'operatorType'              => 'equals',
+                    'value'                     => intval($marketingListId),
+                ),
+            );
+            $searchAttributeData['structure'] = '(1 and 2)';
+            $joinTablesAdapter  = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where              = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            $member             = self::getSubset($joinTablesAdapter, null, null, $where, null);
+            if (count($member) > 1)
+            {
+                throw new NotSupportedException();
+            }
+            elseif (count($member) === 0)
+            {
+                return false;
+            }
+            return $member;
+        }
 
         public static function getByContactIdAndSubscribed($contactId, $unsubscribed)
         {

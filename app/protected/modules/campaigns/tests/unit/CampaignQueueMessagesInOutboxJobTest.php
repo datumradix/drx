@@ -247,6 +247,7 @@
                                                                                                 'description goes here',
                                                                                                 'fromName',
                                                                                                 'from@domain.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 05',
                                                                                 'subject',
                                                                                 '[[TEXT^CONTENT]]',
@@ -322,6 +323,7 @@
                                                                                             'description goes here',
                                                                                             'fromName',
                                                                                             'from@domain.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 07',
                                                                                 'subject',
                                                                                 '[[FIRST^NAME]]',
@@ -470,6 +472,7 @@
             $processed                  = 0;
             foreach ($contacts as $contact)
             {
+                MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
                 CampaignItemTestHelper::createCampaignItem($processed, $campaign, $contact);
             }
             $this->assertTrue($job->run());

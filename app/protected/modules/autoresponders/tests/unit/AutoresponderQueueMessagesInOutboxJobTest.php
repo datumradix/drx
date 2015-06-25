@@ -106,6 +106,7 @@
             $job                        = new AutoresponderQueueMessagesInOutboxJob();
             $contact                    = ContactTestHelper::createContactByNameForOwner('contact 01', $this->user);
             $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 02');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 02',
                                                                                         'text content',
                                                                                         'html content',
@@ -137,6 +138,7 @@
             $contact->primaryEmail      = $email;
             $this->assertTrue($contact->save());
             $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 03');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 03',
                                                                                         'text content',
                                                                                         'html content',
@@ -171,6 +173,7 @@
                                                                                                 'description goes here',
                                                                                                 'fromName',
                                                                                                 'from@domain.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 04',
                                                                                         'text content',
                                                                                         'html content',
@@ -205,6 +208,7 @@
                                                                                                 'description goes here',
                                                                                                 'fromName',
                                                                                                 'from@domain.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 05',
                                                                                             '[[TEXT^CONTENT]]',
                                                                                             '[[HTML^CONTENT]]',
@@ -245,6 +249,7 @@
                                                                                                 'description goes here',
                                                                                                 'fromName',
                                                                                                 'from@domain.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 06',
                                                                                         '[[FIRST^NAME]]',
                                                                                         '[[LAST^NAME]]',
@@ -281,6 +286,7 @@
                                                                                             'description goes here',
                                                                                             'fromName',
                                                                                             'from@domain.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 07',
                                                                                         '[[FIRST^NAME]]',
                                                                                         '[[LAST^NAME]]',
@@ -347,6 +353,7 @@
                                                                                                 'description goes here',
                                                                                                 'fromName',
                                                                                                 'from@domain.com');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $autoresponder              = AutoresponderTestHelper::createAutoresponder('subject 08',
                                                                                     '[[FIRST^NAME]]',
                                                                                     '[[LAST^NAME]]',
