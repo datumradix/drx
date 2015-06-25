@@ -204,6 +204,7 @@
         protected function renderContent()
         {
             $this->registerCopyAddressFromAccountScript();
+            $this->registerCopyOfficePhoneAndFaxFromAccountScript();
             return parent::renderContent();
         }
 
@@ -253,6 +254,40 @@
                                 success : function(data)
                                 {
                                     " . $successScript . "
+                                },
+                                error : function()
+                                {
+                                    //todo: error call
+                                }
+                            }
+                            );
+                          }
+                    }
+                );
+            ");
+            // End Not Coding Standard
+        }
+
+        protected function registerCopyOfficePhoneAndFaxFromAccountScript()
+        {
+            $url           = Yii::app()->createUrl('contacts/default/getAccountOfficePhoneAndFaxToCopy');
+            // Begin Not Coding Standard
+            Yii::app()->clientScript->registerScript('copyOfficePhoneAndFaxFromAccountScript', "
+                $('#Contact_account_id').live('change', function()
+                    {
+                       if ($('#Contact_account_id').val() &&
+                          !$('#Contact_officeFax').val() &&
+                          !$('#Contact_officePhone').val())
+                          {
+                            $.ajax(
+                            {
+                                url : '" . $url . "?id=' + $('#Contact_account_id').val(),
+                                type : 'GET',
+                                dataType: 'json',
+                                success : function(data)
+                                {
+                                    $('#Contact_officePhone').val(data.officePhone).trigger('change');
+                                    $('#Contact_officeFax').val(data.officeFax).trigger('change');
                                 },
                                 error : function()
                                 {
