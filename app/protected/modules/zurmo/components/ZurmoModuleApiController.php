@@ -1261,7 +1261,8 @@
             $maxPostSizeInBytes = StringUtil::convertToBytes($maxPostSize);
             if ($maxPostSizeInBytes > 0)
             {
-                if ($_SERVER['CONTENT_LENGTH'] > $maxPostSizeInBytes) {
+                if ($_SERVER['CONTENT_LENGTH'] > $maxPostSizeInBytes)
+                {
                     $message = 'Max post size exceeded! Sent ' . $_SERVER['CONTENT_LENGTH'] . ' bytes, but limit is ' . $maxPostSizeInBytes . ' bytes.';
                     throw new ApiException($message);
                 }

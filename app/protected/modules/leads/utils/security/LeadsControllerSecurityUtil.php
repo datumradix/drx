@@ -79,7 +79,7 @@
             static::processAccessFailure(false, $scenarioSpecificContent);
             Yii::app()->end(0, false);
         }
-        
+
         /**
          * There are several scenarios that can occur where a user has the right to convert, but is missing other
          * rights in order to properly utilize the convert mechanism.  This method checks for those conditions, and

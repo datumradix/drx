@@ -43,7 +43,7 @@
         protected $moduleId;
 
         protected $convertToOpportunitySetting;
-        
+
         protected $userCanCreateOpportunity;
 
         protected $title;
@@ -63,7 +63,6 @@
             assert('$convertToOpportunitySetting != LeadsModule::CONVERT_NO_OPPORTUNITY');
             assert('is_bool($userCanCreateOpportunity)');
 
-            
             if ($userCanCreateOpportunity)
             {
                 Yii::app()->clientScript->registerScript('leadConvert', "
