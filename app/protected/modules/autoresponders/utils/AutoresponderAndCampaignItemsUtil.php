@@ -126,27 +126,37 @@
 
         public function skipMessage(Contact $contact, Item $itemOwnerModel)
         {
-            return ($contact->primaryEmail->optOut ||
-                // TODO: @Shoaibi: Critical0: We could use SQL for getByMarketingListIdContactIdandUnsubscribed to save further performance here.
-                (get_class($itemOwnerModel) === "Campaign" && MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed(
-                        $itemOwnerModel->marketingList->id,
-                        $contact->id,
-                        true) != false) ||
+            // TODO: @Shoaibi: Critical0: We could use SQL for getByMarketingListIdContactIdandUnsubscribed to save further performance here.
+            if ($contact->primaryEmail->optOut)
+            {
+                return true;
+            }
+            $marketingListMember = MarketingListMember::getByMarketingListIdAndContactId(
+                                                            $itemOwnerModel->marketingList->id,
+                                                            $contact->id);
+            if ($marketingListMember === false)
+            {
+                return true;
+            }
+            else
+            {
+                $marketingListMemberObject = $marketingListMember[0];
+                if ((get_class($itemOwnerModel) === "Campaign" && $marketingListMemberObject->unsubscribed == true) || 
                 (get_class($itemOwnerModel) === "Autoresponder" && 
-                        (($itemOwnerModel->operationType == Autoresponder::OPERATION_SUBSCRIBE && 
-                        MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed(
-                            $itemOwnerModel->marketingList->id,
-                            $contact->id,
-                            true) != false) ||
-                        ($itemOwnerModel->operationType == Autoresponder::OPERATION_UNSUBSCRIBE && 
-                        MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed(
-                            $itemOwnerModel->marketingList->id,
-                            $contact->id,
-                            false) != false)) 
-                ) ||
-                (MarketingListMember::getByMarketingListIdAndContactId(
-                        $itemOwnerModel->marketingList->id,
-                        $contact->id) === false));
+                    $itemOwnerModel->operationType == Autoresponder::OPERATION_SUBSCRIBE &&
+                    $marketingListMemberObject->unsubscribed == true) ||
+                (get_class($itemOwnerModel) === "Autoresponder" && 
+                    $itemOwnerModel->operationType == Autoresponder::OPERATION_UNSUBSCRIBE &&
+                    $marketingListMemberObject->unsubscribed == false)
+                )
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         protected function supportsRichText(Item $itemOwnerModel)
