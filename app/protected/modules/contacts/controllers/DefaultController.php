@@ -377,6 +377,24 @@
             echo CJSON::encode($addressData);
         }
 
+        public function actionGetAccountOfficePhoneAndFaxToCopy($id)
+        {
+            $account = static::getModelAndCatchNotFoundAndDisplayError('Account', intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($account);
+
+            $data = array();
+            if ($account->officePhone != null)
+            {
+                $data['officePhone'] = $account->officePhone;
+            }
+
+            if ($account->officeFax != null)
+            {
+                $data['officeFax'] = $account->officeFax;
+            }
+            echo CJSON::encode($data);
+        }
+
         protected static function getSearchFormClassName()
         {
             return 'ContactsSearchForm';

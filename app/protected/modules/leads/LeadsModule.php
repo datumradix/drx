@@ -139,7 +139,7 @@
                 return (int)LeadsModule::CONVERT_ACCOUNT_NOT_REQUIRED;
             }
         }
-        
+
         public static function getConvertToOpportunitySetting()
         {
             $metadata = LeadsModule::getMetadata();
