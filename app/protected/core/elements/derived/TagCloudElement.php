@@ -113,7 +113,7 @@
             $inputPrefix = $this->resolveInputNamePrefix();
             return $inputPrefix . $this->getUnqualifiedNameForIdField();
         }
-        
+
         /**
          * Generate the error content. Used by editable content
          * @return error content
@@ -130,7 +130,7 @@
                return null;
            }
         }
-        
+
         /**
          * Generate the element label content
          * @return A string containing the element's label

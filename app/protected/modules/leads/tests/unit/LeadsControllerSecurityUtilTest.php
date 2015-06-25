@@ -58,7 +58,7 @@
                 resolveCanUserProperlyConvertLead($userCanAccessContacts, $userCanAccessAccounts, $convertToAccountSetting);
             $this->assertNull($content);
         }
-        
+
         public function testResolveCanUserProperlyConvertLeadFinalStep()
         {
             $billy = User::getByUsername('billy');

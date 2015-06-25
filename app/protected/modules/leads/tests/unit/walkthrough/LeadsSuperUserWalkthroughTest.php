@@ -505,7 +505,7 @@
             $contact6 = Contact::getById($lead6Id);
             $this->assertTrue($contact6->state == $startingContactState);
             $this->assertEquals($account, $contact6->account);
-            
+
             //Test trying to convert by skipping account creation and by creating new opportunity
             $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convert');
             $leadOpp = LeadTestHelper::createLeadbyNameForOwner('superLeadOpp', $super);
@@ -514,15 +514,15 @@
             $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convert');
             $this->setGetArray(array('id' => $leadOpp->id));
             $this->setPostArray(
-                array('Opportunity' => 
+                array('Opportunity' =>
                         array(
-                            'name' => 'someOpportunityName',
-                            'amount'=>array('currency'=>array('id'=>'1'), 'value'=>'100'),
-                            'closeDate'=>'6/19/2014',
-                            'stage'=>array('value'=>'Negotiating'),
-                            'probability'=>'50'
+                            'name'        => 'someOpportunityName',
+                            'amount'      => array('currency' => array('id' => '1'), 'value' => '100'),
+                            'closeDate'   => '6/19/2014',
+                            'stage'       => array('value' => 'Negotiating'),
+                            'probability' => '50'
                         )
-                )    
+                )
             );
             $this->assertEquals(0, Opportunity::getCount());
             $this->assertEquals(2, Account::getCount());

@@ -146,7 +146,7 @@
             $content = ZurmoHtml::tag('div', array('class' => 'view-toolbar-container clearfix dock' . $disableFloatContent), $content);
             return $content;
         }
-        
+
         /**
          * Override to disabling probability attribute.
          */

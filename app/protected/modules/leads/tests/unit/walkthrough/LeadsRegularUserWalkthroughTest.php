@@ -633,7 +633,7 @@
             $this->setGetArray (array('id' => $lead->id));
             $content = $this->runControllerWithExitExceptionAndGetContent('leads/default/convert');
             $this->assertContains('Conversion is set to require an account.  Currently you do not have access to the accounts module.', $content);
-            
+
             //Scenario #3 - User cannot access opportunities and an opportunity is required for conversion
             $metadata = LeadsModule::getMetadata();
             $metadata['global']['convertToAccountSetting'] = LeadsModule::CONVERT_ACCOUNT_NOT_REQUIRED;
@@ -647,7 +647,7 @@
             $content = $this->runControllerWithExitExceptionAndGetContent('leads/default/convertFinal');
             $this->assertContains('Conversion is set to require an opportunity.  Currently you do not have access to the opportunities module.', $content);
         }
-        
+
          /**
          * @deletes selected leads.
          */

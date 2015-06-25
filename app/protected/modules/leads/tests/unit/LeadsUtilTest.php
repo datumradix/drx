@@ -57,7 +57,7 @@
             $this->assertEquals($contact->officePhone, $account->officePhone);
             $this->assertEquals($contact->officeFax, $account->officeFax);
         }
-        
+
         public function testAttributesToAccountWithNoPostData()
         {
             Yii::app()->user->userModel = User::getByUsername('super');
@@ -68,34 +68,34 @@
             $contact->officeFax = '12345';
             $saved = $contact->save();
             $this->assertTrue($saved);
-            $account = LeadsUtil::attributesToAccountWithNoPostData($contact, $account, array('officeFax'=>'15165'));
+            $account = LeadsUtil::attributesToAccountWithNoPostData($contact, $account, array('officeFax' => '15165'));
             $this->assertEquals($contact->officePhone, $account->officePhone);
             $this->assertNotEquals($contact->officeFax, $account->officeFax);
         }
-        
+
         public function testCreateAccountForLeadConversionFromAccountPostData()
         {
             Yii::app()->user->userModel = User::getByUsername('super');
             $super = Yii::app()->user->userModel;
             $contact = ContactTestHelper::createContactByNameForOwner('Contact3', $super);
             $controllerUtil = new ZurmoControllerUtil();
-            
+
             //Scenario #1 - Skip the account creation
             $accountPostData = array('AccountSkip' => true);
             $account = LeadsUtil::
                 createAccountForLeadConversionFromAccountPostData($accountPostData, $contact, $controllerUtil);
             $this->assertNull($account);
-            
+
             //Scenario #2 - Select an already existing account
             $account3 = AccountTestHelper::createAccountByNameForOwner('Account3', $super);
             $accountPostData = array('SelectAccount' => true, 'accountId' => $account3->id);
             $account = LeadsUtil::
                 createAccountForLeadConversionFromAccountPostData($accountPostData, $contact, $controllerUtil);
             $this->assertEquals($account3->id, $account->id);
-            
+
             //Scenario #3 - Create new account from POST data
             $accountPostData = array(
-                'CreateAccount' => true, 
+                'CreateAccount' => true,
                 'name' => 'Account Created From Post',
                 'employees' => '5',
                 'website' => 'http://www.exa.com'
@@ -106,6 +106,5 @@
             $this->assertEquals(5, $account->employees);
             $this->assertEquals('http://www.exa.com', $account->website);
         }
-        
     }
 ?>

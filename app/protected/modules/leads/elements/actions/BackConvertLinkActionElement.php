@@ -64,7 +64,6 @@
                 {
                     return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/convert/', array('id' => $this->modelId));
                 }
-                
             }
             else
             {
