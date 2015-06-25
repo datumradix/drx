@@ -140,23 +140,27 @@
             }
             else
             {
-                $marketingListMemberObject = $marketingListMember[0];
-                if ((get_class($itemOwnerModel) === "Campaign" && $marketingListMemberObject->unsubscribed == true) || 
-                (get_class($itemOwnerModel) === "Autoresponder" && 
-                    $itemOwnerModel->operationType == Autoresponder::OPERATION_SUBSCRIBE &&
-                    $marketingListMemberObject->unsubscribed == true) ||
-                (get_class($itemOwnerModel) === "Autoresponder" && 
-                    $itemOwnerModel->operationType == Autoresponder::OPERATION_UNSUBSCRIBE &&
-                    $marketingListMemberObject->unsubscribed == false)
-                )
+                $marketingListMemberObject  = $marketingListMember[0];
+                $itemOwnerModelClassName    = get_class($itemOwnerModel);
+                if ($itemOwnerModelClassName === "Campaign" && $marketingListMemberObject->unsubscribed == true)
                 {
                     return true;
                 }
-                else
+                elseif ($itemOwnerModelClassName === "Autoresponder")
                 {
-                    return false;
+                    if ($itemOwnerModel->operationType == Autoresponder::OPERATION_SUBSCRIBE &&
+                            $marketingListMemberObject->unsubscribed == true)
+                    {
+                        return true;
+                    }
+                    elseif ($itemOwnerModel->operationType == Autoresponder::OPERATION_UNSUBSCRIBE &&
+                            $marketingListMemberObject->unsubscribed == false)
+                    {
+                        return true;
+                    }
                 }
             }
+            return false;
         }
 
         protected function supportsRichText(Item $itemOwnerModel)
