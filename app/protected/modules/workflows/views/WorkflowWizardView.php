@@ -93,7 +93,7 @@
                         if (" . $isNewWorkflow . " && $('input[name=\"" . $moduleClassNameId . "\"]:checked', '#" . $formId . "').val() != '" . $savedWorkflowModuleClassName . "')
                         {
                             var isComfirm = confirm('" . Zurmo::t('WorkflowsModule', 'Please note that changing workflow module will wipe all Triggers, Actions and Messages you previously had set on the workflow.\n Are you sure you want to change the workflow module?') ."');
-                            if (isComfirm == false) 
+                            if (isComfirm == false)
                             {
                                 $('input[name=\"" . $moduleClassNameId . "\"][value=\"" . $savedWorkflowModuleClassName . "\"]', '#" . $formId . "').prop('checked', true);
                                 return false;

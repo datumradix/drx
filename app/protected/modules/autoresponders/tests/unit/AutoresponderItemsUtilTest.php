@@ -725,7 +725,7 @@
             $this->assertContains('/marketingLists/external/manageSubscriptions?hash=', $htmlContent);
             $this->assertEquals(1, substr_count($htmlContent, '/marketingLists/external/manageSubscriptions?hash='));
         }
-        
+
         /**
          * @depends testProcessDueAutoresponderItemWithoutUnsubscribeAndManageSubscriptionsUrlMergeTags
          */
@@ -765,7 +765,7 @@
 
             // Test when marketing list member is deleted from list
             $marketingListMember->delete();
-            
+
             $processed                  = 0;
             $processDateTime            = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
             $autoresponderItem          = AutoresponderItemTestHelper::createAutoresponderItem($processed,
@@ -784,7 +784,7 @@
             $this->assertNull($emailMessage->content->htmlContent);
             $this->assertEquals(0, $emailMessage->recipients->count());
         }
-        
+
         public function testSkipMessage()
         {
             // Tests with Autoresponder
@@ -811,7 +811,7 @@
             $marketingListMember->unsubscribed  = true;
             $this->assertTrue($marketingListMember->unrestrictedSave());
             $this->assertFalse($autoresponderItemsUtil->skipMessage($contact, $autoresponder));
-            
+
             $contact                    = ContactTestHelper::createContactByNameForOwner('contact 16', $this->user);
             $email                      = new Email();
             $email->emailAddress        = 'demo@zurmo.com';
@@ -834,7 +834,7 @@
             $marketingListMember->unsubscribed  = false;
             $this->assertTrue($marketingListMember->unrestrictedSave());
             $this->assertFalse($autoresponderItemsUtil->skipMessage($contact, $autoresponder));
-            
+
             //Tests with Campaign
             $contact                    = ContactTestHelper::createContactByNameForOwner('contact 17', $this->user);
             $email                      = new Email();
