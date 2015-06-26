@@ -60,6 +60,7 @@
                 'global' => array(
                     'derivedAttributeTypes' => array(
                         'CloseTaskCheckBox',
+                        'TaskActivityItems'
                     ),
                     'nonPlaceableAttributeNames' => array(
                         'latestDateTime',
@@ -91,6 +92,24 @@
                                         array(
                                             'elements' => array(
                                                 array('attributeName' => 'dueDateTime', 'type' => 'DateTime'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'activityItems', 'type' => 'TaskActivityItems', 'isLink' => true),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'project', 'type' => 'ProjectForTask', 'isLink' => true),
                                             ),
                                         ),
                                     )
@@ -226,6 +245,18 @@
         protected function resolveTaskModalButtonColumnClassName()
         {
             return Yii::app()->custom->resolveTaskModalButtonColumnClassNameForTasksMyListView();
+        }
+
+        public static function getLinkStringForActivityItem($text, $url, $modelClassName)
+        {
+            $text = ZurmoHtml::link(strval($text), $url) . " (" . $modelClassName . ")<br />";
+            return $text;
+        }
+
+        public static function getNameForActivityItem($text, $modelClassName)
+        {
+            $text = strval($text) . " (" . $modelClassName . ")<br />";
+            return $text;
         }
     }
 ?>

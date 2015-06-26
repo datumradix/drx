@@ -98,6 +98,15 @@
                 {
                     $offset = 0;
                 }
+                if ($this->value == 'strval($data->activityItems[0])')
+                {
+                    //echo "\n";
+                    //echo print_r($data->name);
+                    //echo "aa";
+                    //echo "\n";
+                    print_r($data->activityItems);
+                    exit;
+                }
                 $value = $this->evaluateExpression($this->value, array('data' => $data, 'row' => $row, 'offset' => ($offset + $row)));
             }
             elseif ($this->name !== null)
