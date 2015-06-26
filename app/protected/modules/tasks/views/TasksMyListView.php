@@ -246,17 +246,5 @@
         {
             return Yii::app()->custom->resolveTaskModalButtonColumnClassNameForTasksMyListView();
         }
-
-        public static function getLinkStringForActivityItem($text, $url, $modelClassName)
-        {
-            $text = ZurmoHtml::link(strval($text), $url) . " (" . $modelClassName . ")<br />";
-            return $text;
-        }
-
-        public static function getNameForActivityItem($text, $modelClassName)
-        {
-            $text = strval($text) . " (" . $modelClassName . ")<br />";
-            return $text;
-        }
     }
 ?>
