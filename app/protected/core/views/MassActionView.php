@@ -122,6 +122,7 @@
         protected function renderItemOperationMessage()
         {
             $message    = 'selected for ' . $this->renderItemOperationType() . '.';
+            $message   .= $this->getOperationAdditionalMessage();
             $category   = $this->renderItemOperationMessageCategory();
             return Zurmo::t($category, $message);
         }
@@ -151,6 +152,11 @@
         protected function getSelectedRecordCount()
         {
             return $this->selectedRecordCount;
+        }
+
+        protected function getOperationAdditionalMessage()
+        {
+            return null;
         }
     }
 ?>
