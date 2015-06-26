@@ -67,11 +67,6 @@
 </tr>
 <!--go to convert lead page-->
 <tr>
-    <td>assertText</td>
-    <td>link=Convert</td>
-    <td>Convert</td>
-</tr>
-<tr>
     <td>clickAndWait</td>
     <td>link=Convert</td>
     <td></td>
@@ -159,14 +154,14 @@
     <td></td>
 </tr>
 <tr>
+    <td>waitForText</td>
+    <td>//div[@id='zurmoView']/div/table/tbody/tr[1]/td</td>
+    <td>Create Account ${randomSuffix}</td>
+</tr>
+<tr>
     <td>waitForTextNotPresent</td>
     <td>Lead Conversion: Create Account ${randomSuffix}</td>
     <td></td>
-</tr>
-<tr>
-    <td>assertText</td>
-    <td>link=Convert</td>
-    <td>Convert</td>
 </tr>
 <tr>
     <td>clickAndWait</td>
@@ -287,14 +282,14 @@
     <td></td>
 </tr>
 <tr>
+    <td>waitForText</td>
+    <td>//div[@id='zurmoView']/div/table/tbody/tr[1]/td</td>
+    <td>Create Account ${randomSuffix}</td>
+</tr>
+<tr>
     <td>waitForTextNotPresent</td>
     <td>Lead Conversion: Create Account ${randomSuffix}</td>
     <td></td>
-</tr>
-<tr>
-    <td>assertText</td>
-    <td>link=Convert</td>
-    <td>Convert</td>
 </tr>
 <tr>
     <td>clickAndWait</td>
