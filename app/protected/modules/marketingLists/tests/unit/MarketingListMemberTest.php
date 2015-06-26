@@ -215,7 +215,7 @@
             $this->assertNotEmpty($autoresponderItemsUnsubscribe);
             $this->assertCount(1, $autoresponderItemsUnsubscribe);
         }
-        
+
         /**
          * @depends testCreateAndGetMarketingListMemberById
          */
@@ -225,20 +225,17 @@
             $this->assertNotNull($marketingList);
             $super = User::getByUsername('super');
             $contact = ContactTestHelper::createContactByNameForOwner('contact 01', $super);
-            $marketingListMember = 
-                MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed($marketingList->id, $contact->id, false);
+            $marketingListMember = MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed($marketingList->id, $contact->id, false);
             $this->assertFalse($marketingListMember);
             MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
-            $marketingListMember = 
-                MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed($marketingList->id, $contact->id, false);
+            $marketingListMember = MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed($marketingList->id, $contact->id, false);
             $this->assertTrue($marketingListMember[0] instanceof MarketingListMember);
             $marketingListMember[0]->unsubscribed  = true;
             $this->assertTrue($marketingListMember[0]->unrestrictedSave());
-            $marketingListMember = 
-                MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed($marketingList->id, $contact->id, false);
+            $marketingListMember = MarketingListMember::getByMarketingListIdContactIdAndUnsubscribed($marketingList->id, $contact->id, false);
             $this->assertFalse($marketingListMember);
         }
-        
+
         /**
          * @depends testCreateAndGetMarketingListMemberById
          */
@@ -248,12 +245,10 @@
             $this->assertNotNull($marketingList);
             $super = User::getByUsername('super');
             $contact = ContactTestHelper::createContactByNameForOwner('contact 02', $super);
-            $marketingListMember = 
-                MarketingListMember::getByMarketingListIdAndContactId($marketingList->id, $contact->id);
+            $marketingListMember = MarketingListMember::getByMarketingListIdAndContactId($marketingList->id, $contact->id);
             $this->assertFalse($marketingListMember);
             MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
-            $marketingListMember = 
-                MarketingListMember::getByMarketingListIdAndContactId($marketingList->id, $contact->id);
+            $marketingListMember = MarketingListMember::getByMarketingListIdAndContactId($marketingList->id, $contact->id);
             $this->assertTrue($marketingListMember[0] instanceof MarketingListMember);
         }
     }

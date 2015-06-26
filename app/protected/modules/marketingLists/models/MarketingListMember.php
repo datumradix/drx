@@ -159,7 +159,7 @@
             }
             return $member;
         }
-        
+
         public static function getByMarketingListIdAndContactId($marketingListId, $contactId)
         {
             $searchAttributeData = array();
