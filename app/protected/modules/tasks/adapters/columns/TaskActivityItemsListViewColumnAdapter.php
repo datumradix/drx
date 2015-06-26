@@ -49,42 +49,59 @@
                 return array(
                     'name' => $this->attribute,
                     'type' => 'raw',
-                    'value' => 'TaskActivityItemsListViewColumnAdapter::getActivityItemsModels($data, "' . get_class($this->view) . '", true)',
+                    'value' => 'TaskActivityItemsListViewColumnAdapter::getActivityItemsModels($data, true)',
+                    'sortable' => false,
                 );
             }
             else
             {
                 return array(
                     'name'  => $this->attribute,
-                    'value' => 'TaskActivityItemsListViewColumnAdapter::getActivityItemsModels($data, $"' . get_class($this->view) . '", false)',
+                    'value' => 'TaskActivityItemsListViewColumnAdapter::getActivityItemsModels($data, false)',
+                    'sortable' => false,
                 );
             }
         }
 
-        public static function getActivityItemsModels($data, $viewClassName, $isLink = false)
+        public static function getActivityItemsModels($data, $isLink = false)
         {
             $text = '';
             foreach($data->activityItems as $activityItem)
             {
                 $model = TasksUtil::castDownActivityItem($activityItem);
+                $modelClassName  = get_class($model);
                 if ($isLink)
                 {
-                    $modelClassName  = get_class($model);
                     $moduleClassName = $modelClassName::getModuleClassName();
                     $moduleId        = $moduleClassName::getDirectoryName();
                     if (null != $stateAdapterClassName = $moduleClassName::getStateMetadataAdapterClassName())
                     {
-                        $resolvedModuleClassName = $stateAdapterClassName::getModuleClassNameByModel($model);
-                        $moduleId                = $resolvedModuleClassName::getDirectoryName();
+                        $moduleClassName = $stateAdapterClassName::getModuleClassNameByModel($model);
+                        $moduleId                = $moduleClassName::getDirectoryName();
                     }
-                    $url = Yii::app()->createUrl('/' . $moduleId . '/default/details/', array('id' => $model->id));
-                    $text .= $viewClassName::getLinkStringForActivityItem(strval($model), $url, $modelClassName);
+                    $linkRoute = '/' . $moduleId . '/default/details/';
+                    $text .= static::getLinkStringForActivityItem($model, $linkRoute, $moduleClassName);
                 }
                 else
                 {
-                    $text .= $viewClassName::getNameForActivityItem(strval($model), $modelClassName);
+                    $text .= static::getNameForActivityItem(strval($model), $modelClassName);
                 }
             }
+            return trim($text, ';');
+        }
+
+        public static function getLinkStringForActivityItem($model, $linkRoute, $moduleClassName)
+        {
+            $modelClassName  = get_class($model);
+            $linkString = ActionSecurityUtil::resolveLinkToEditModelForCurrentUser(strval($model), $model, $moduleClassName, $linkRoute) .
+                ' ( ' . $modelClassName . ' )';
+            $text = ZurmoHtml::tag('div', array(), $linkString);
+            return $text;
+        }
+
+        public static function getNameForActivityItem($text, $modelClassName)
+        {
+            $text = strval($text) . " (" . $modelClassName . ");";
             return $text;
         }
     }
