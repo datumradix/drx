@@ -121,7 +121,7 @@
 
         protected function renderItemOperationMessage()
         {
-            $message    = 'selected for ' . $this->renderItemOperationType() . '.';
+            $message    = 'selected for ' . $this->renderItemOperationType() . '. ';
             $message   .= $this->getOperationAdditionalMessage();
             $category   = $this->renderItemOperationMessageCategory();
             return Zurmo::t($category, $message);
