@@ -81,7 +81,7 @@
             $emailMessage->content     = $emailContent;
             $sender                    = new EmailMessageSender();
             $sender->fromAddress       = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
-            $sender->fromName          = strval($userToSendMessagesFrom);
+            $sender->fromName          = Yii::app()->emailHelper->resolveFromNameForSystemUser($userToSendMessagesFrom);
             $emailMessage->sender      = $sender;
             $recipient                 = new EmailMessageRecipient();
             $recipient->toAddress      = Yii::app()->emailHelper->defaultTestToAddress;

@@ -278,5 +278,11 @@ END;
                       ";
             Yii::app()->clientScript->registerScript('datetimescript', $script);
         }
+
+        protected function getOperationAdditionalMessage()
+        {
+            $message = "Please tick the boxes next to the fields you wish to update and then select the value you wish to be used.";
+            return $message;
+        }
     }
 ?>
