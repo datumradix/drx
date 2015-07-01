@@ -94,7 +94,7 @@
         {
             $modelClassName  = get_class($model);
             $linkString = ActionSecurityUtil::resolveLinkToEditModelForCurrentUser(strval($model), $model, $moduleClassName, $linkRoute) .
-                ' ( ' . $modelClassName . ' )';
+                ' (' . $modelClassName . ')';
             $text = ZurmoHtml::tag('div', array(), $linkString);
             return $text;
         }
