@@ -146,7 +146,28 @@
             {
                 $htmlOptions    = CMap::mergeArray($htmlOptions, $this->params['labelHtmlOptions']);
             }
-            return $this->form->labelEx($this->model, $this->attribute, $htmlOptions);
+            if (isset($this->params['showTooltip']))
+            {
+                $tooltipContent = $this->generateElementTooltipHelpContent($this->resolveIdForLabel() . '_tooltip');
+                return $this->form->labelEx($this->model, $this->attribute, $htmlOptions) . $tooltipContent;
+            }
+            else
+            {
+                return $this->form->labelEx($this->model, $this->attribute, $htmlOptions);
+            }
+        }
+        
+        /**
+         * Generate the element tooltip help content
+         * @return A string containing the element's tooltip
+         */
+        protected static function generateElementTooltipHelpContent($id)
+        {
+            $title      = Zurmo::t('Core', 'Original values will be overwritten.');
+            $content    = '<span id="'.$id.'" class="tooltip" title="' . $title . '">?</span>';
+            $qtip       = new ZurmoTip();
+            $qtip->addQTip("#$id");
+            return $content;
         }
     }
 ?>

@@ -122,6 +122,10 @@
                                     {
                                         $checked = true;
                                     }
+                                    if ($elementInformation['type'] == 'TagCloud')
+                                    {
+                                        $params['showTooltip'] = true;
+                                    }
                                     $element  = new $elementClassName($this->model, $elementInformation['attributeName'], $form, $params);
                                     $content .= $this->renderActiveAttributesCheckBox($element->getEditableNameIds(),
                                                 $elementInformation, $checked, $realAttributeName);
