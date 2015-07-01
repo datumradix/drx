@@ -151,5 +151,25 @@
         {
             throw new NotImplementedException();
         }
+
+        /**
+         * For a given user(which should be backend job user), get name to be shown as sender name
+         * We apply application name only if application name exist and if user name do not already contain it
+         * @param $userToSendMessagesFrom
+         * @return string
+         */
+        public function resolveFromNameForSystemUser($userToSendMessagesFrom)
+        {
+            if (isset(Yii::app()->name) && Yii::app()->name != null &&
+                (strpos(strval($userToSendMessagesFrom), Yii::app()->name) !== false))
+            {
+                $fromName           = Yii::app()->name . ' ' . strval($userToSendMessagesFrom);
+            }
+            else
+            {
+                $fromName           = strval($userToSendMessagesFrom);
+            }
+            return $fromName;
+        }
     }
 ?>
