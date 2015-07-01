@@ -166,7 +166,7 @@
                 $applicationName = Yii::app()->name;
             }
             if ($applicationName != null &&
-                (strpos(strval($userToSendMessagesFrom), Yii::app()->name) !== false))
+                (strpos(strval($userToSendMessagesFrom), Yii::app()->name) === false))
             {
                 $fromName           = Yii::app()->name . ' ' . strval($userToSendMessagesFrom);
             }
