@@ -160,7 +160,12 @@
          */
         public function resolveFromNameForSystemUser($userToSendMessagesFrom)
         {
-            if (isset(Yii::app()->name) && Yii::app()->name != null &&
+            $applicationName = ZurmoConfigurationUtil::getByModuleName('ZurmoModule', 'applicationName');
+            if ($applicationName == null && Yii::app()->name != null)
+            {
+                $applicationName = Yii::app()->name;
+            }
+            if ($applicationName != null &&
                 (strpos(strval($userToSendMessagesFrom), Yii::app()->name) !== false))
             {
                 $fromName           = Yii::app()->name . ' ' . strval($userToSendMessagesFrom);
