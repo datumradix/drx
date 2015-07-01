@@ -314,15 +314,7 @@
             $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
             $sender                     = new EmailMessageSender();
             $sender->fromAddress        = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
-
-            if (isset(Yii::app()->name) && Yii::app()->name != null)
-            {
-                $sender->fromName           = Yii::app()->name . ' ' . strval($userToSendMessagesFrom);
-            }
-            else
-            {
-                $sender->fromName           = strval($userToSendMessagesFrom);
-            }
+            $sender->fromName           = Yii::app()->emailHelper->resolveFromNameForSystemUser($userToSendMessagesFrom);
             return $sender;
         }
 
