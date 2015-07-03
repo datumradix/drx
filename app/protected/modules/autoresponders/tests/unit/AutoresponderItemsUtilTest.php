@@ -188,7 +188,7 @@
             $this->assertEquals(2, substr_count($emailMessage->content->htmlContent, '/marketingLists/external/'));
             $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
             $defaultFromAddress         = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
-            $defaultFromName            = strval($userToSendMessagesFrom);
+            $defaultFromName            = Yii::app()->name . ' ' . strval($userToSendMessagesFrom);
             $this->assertEquals($defaultFromAddress, $emailMessage->sender->fromAddress);
             $this->assertEquals($defaultFromName, $emailMessage->sender->fromName);
             $this->assertEquals(1, $emailMessage->recipients->count());
