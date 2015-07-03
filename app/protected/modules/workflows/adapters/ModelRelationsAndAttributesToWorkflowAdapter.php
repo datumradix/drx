@@ -936,7 +936,10 @@
                     if (($includeNonRequired && !$attributeIsRequired) ||
                        ($includeRequired    && $attributeIsRequired))
                     {
-                        $attributes[$attribute] = array('label' => $this->model->getAttributeLabel($attribute));
+                        $additionalLabelContent = $this->resolveTooltipHelpContentByElementType($this->model, $attribute);
+                        $attributes[$attribute] = array(
+                            'label' => $this->model->getAttributeLabel($attribute) . $additionalLabelContent
+                        );
                     }
                 }
             }
@@ -1169,6 +1172,38 @@
             assert('is_array($attributes)');
             assert('is_string($attribute)');
             $attributes[$attribute] = array('label' => $this->model->getAttributeLabel($attribute));
+        }
+        
+        /**
+         * @param RedBeanModel $model
+         * @param string $attribute
+         * @return null|string
+         */
+        protected function resolveTooltipHelpContentByElementType($model, $attribute)
+        {
+            $modelClassName = get_class($model);
+            $modelMetadata = $modelClassName::getMetadata();
+            $id = $attribute . '_tooltip';
+            $allowedActionTypes = array(
+                ActionForWorkflowForm::TYPE_UPDATE_SELF,
+                ActionForWorkflowForm::TYPE_UPDATE_RELATED,
+            );
+            if (is_object($model->$attribute) &&
+                    get_class($model->$attribute) == 'OwnedMultipleValuesCustomField' &&
+                    isset($modelMetadata[$modelClassName]['elements'][$attribute]) &&
+                    $modelMetadata[$modelClassName]['elements'][$attribute] == 'TagCloud' &&
+                    (isset($_GET['actionType']) && in_array($_GET['actionType'], $allowedActionTypes)))
+            {
+                $title      = Zurmo::t('Core', 'Original values will be overwritten.');
+                $content    = '<span id="'.$id.'" class="tooltip" title="' . $title . '">?</span>';
+                $qtip       = new ZurmoTip();
+                $qtip->addQTip("#$id");
+                return $content;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 ?>
