@@ -743,7 +743,8 @@
                 {
                     $attributeFormsIndexedByAttribute[$attribute]->shouldSetValue = true;
                 }
-                $attributeFormsIndexedByAttribute[$attribute]->setDisplayLabel($data['label']);
+                $additionalLabelContent = $this->resolveTooltipHelpContentByElementType($adapter->getModel(), $attribute);
+                $attributeFormsIndexedByAttribute[$attribute]->setDisplayLabel($data['label'] . $additionalLabelContent);
             }
             $this->resolvePermissionsAttributeForm($modelClassName, $methodToCall, $attributeFormsIndexedByAttribute);
             return $attributeFormsIndexedByAttribute;
@@ -814,6 +815,51 @@
                 {
                     $this->_actionAttributes[$attribute] = $form;
                 }
+            }
+        }
+        
+        /**
+         * @param RedBeanModel $model
+         * @param string $attribute
+         * @return null|string
+         */
+        protected function resolveTooltipHelpContentByElementType($model, $attribute)
+        {
+            static $idIncrement = 0;
+            // Currently this function only works for simple attributes of type Tag Cloud
+            if (strpos($attribute, '__') !== false || strpos($attribute, '___') !== false)
+            {
+                return null;
+            }
+            $modelClassName = get_class($model);
+            $modelMetadata = $modelClassName::getMetadata();
+            $id = $attribute . '_tooltip_' . $idIncrement++;
+            $allowedActionTypes = array(
+                ActionForWorkflowForm::TYPE_UPDATE_SELF,
+                ActionForWorkflowForm::TYPE_UPDATE_RELATED,
+            );
+            try
+            {
+                if (is_object($model->$attribute) &&
+                        get_class($model->$attribute) == 'OwnedMultipleValuesCustomField' &&
+                        isset($modelMetadata[$modelClassName]['elements'][$attribute]) &&
+                        $modelMetadata[$modelClassName]['elements'][$attribute] == 'TagCloud' &&
+                        (in_array($this->type, $allowedActionTypes)))
+                {
+                    $title      = Zurmo::t('Core', 'Original values will be overwritten.');
+                    $content    = '<span id="'.$id.'" class="tooltip" title="' . $title . '">?</span>';
+                    $qtip       = new ZurmoTip();
+                    $qtip->addQTip("#$id");
+                    return $content;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (NotSupportedException $e) 
+            {
+                return null;
             }
         }
     }
