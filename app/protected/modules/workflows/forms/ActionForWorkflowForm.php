@@ -841,10 +841,10 @@
             try
             {
                 if (is_object($model->$attribute) &&
-                        get_class($model->$attribute) == 'OwnedMultipleValuesCustomField' &&
-                        isset($modelMetadata[$modelClassName]['elements'][$attribute]) &&
-                        $modelMetadata[$modelClassName]['elements'][$attribute] == 'TagCloud' &&
-                        (in_array($this->type, $allowedActionTypes)))
+                    get_class($model->$attribute) == 'OwnedMultipleValuesCustomField' &&
+                    isset($modelMetadata[$modelClassName]['elements'][$attribute]) &&
+                    $modelMetadata[$modelClassName]['elements'][$attribute] == 'TagCloud' &&
+                    in_array($this->type, $allowedActionTypes))
                 {
                     $title      = Zurmo::t('Core', 'Original values will be overwritten.');
                     $content    = '<span id="'.$id.'" class="tooltip" title="' . $title . '">?</span>';
