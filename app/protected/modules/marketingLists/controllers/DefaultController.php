@@ -129,7 +129,7 @@
             $marketingList = static::getModelAndCatchNotFoundAndDisplayError('MarketingList', intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($marketingList);
             AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED,
-                                            array(strval($marketingList), 'MarketingListsModule'), $marketingList);
+                                      array(strval($marketingList), 'MarketingListsModule'), $marketingList);
             $breadCrumbView             = MarketingListsStickySearchUtil::
                                           resolveBreadCrumbViewForDetailsControllerAction($this,
                                           'MarketingListsSearchView', $marketingList);

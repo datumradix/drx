@@ -7257,6 +7257,7 @@ a.user-link {
 }
 #CreateEmailMessageModalEditView .redactor_box iframe {
   min-height: 300px !important;
+  height: auto !important;
 }
 .recipient {
   *zoom: 1;

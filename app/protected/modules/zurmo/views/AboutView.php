@@ -79,7 +79,6 @@
                                     <li>Sushil Meher</li>
                                     <li>Nabeel Mushtaq</li>
                                     <li>Ivica Nedeljkovic</li>
-                                    <li>Nilesh Patkar</li>
                                     <li>Ross Peetoom</li>
                                     <li>Sérgio Peixoto</li>
                                     <li>Muhammad Shoaib</li>

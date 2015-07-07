@@ -568,7 +568,7 @@
             $content                    = 'currencyValue: Current: [[CURRENCY^VALUE]] [[CURRENCY^VALUE__VALUE]] ' .
                                             '[[CURRENCY^VALUE__CURRENCY__CODE]] [[CURRENCY^VALUE__CURRENCY__ACTIVE]] ' .
                                             'Old: [[WAS%CURRENCY^VALUE__VALUE]]';
-            $compareContent             = 'currencyValue: Current: 99 99 USD 1 Old: 100';
+            $compareContent             = 'currencyValue: Current: $99 99 USD 1 Old: 100';
             $mergeTagsUtil              = MergeTagsUtilFactory::make(EmailTemplate::TYPE_WORKFLOW, null, $content);
             $this->assertTrue($mergeTagsUtil instanceof MergeTagsUtil);
             $this->assertTrue($mergeTagsUtil instanceof WorkflowMergeTagsUtil);

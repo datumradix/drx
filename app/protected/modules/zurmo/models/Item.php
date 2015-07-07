@@ -93,7 +93,7 @@
             $this->isSetting = true;
             try
             {
-                if (!$this->isSaving && $this->isAudited)
+                if (!$this->isSaving)
                 {
                     AuditUtil::saveOriginalAttributeValue($this, $attributeName, $value);
                 }
@@ -199,7 +199,7 @@
             parent::afterSave();
             if ($this->isAudited)
             {
-                $this->logAuditEventsListForCreatedAndModifed($this->isNewModel);
+                $this->logAuditEventsListForModified($this->isNewModel);
                 AuditUtil::clearRelatedModelsOriginalAttributeValues($this);
             }
             $this->originalAttributeValues      = array();
@@ -207,13 +207,9 @@
             $this->isNewModel = false; //reset.
         }
 
-        protected function logAuditEventsListForCreatedAndModifed($newModel)
+        protected function logAuditEventsListForModified($newModel)
         {
-            if ($newModel)
-            {
-                AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_CREATED, strval($this), $this);
-            }
-            else
+            if (!$newModel)
             {
                 AuditUtil::logAuditEventsListForChangedAttributeValues($this);
             }

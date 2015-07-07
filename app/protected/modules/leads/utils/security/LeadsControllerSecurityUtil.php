@@ -79,5 +79,46 @@
             static::processAccessFailure(false, $scenarioSpecificContent);
             Yii::app()->end(0, false);
         }
+
+        /**
+         * There are several scenarios that can occur where a user has the right to convert, but is missing other
+         * rights in order to properly utilize the convert mechanism.  This method checks for those conditions, and
+         * if present, will alert the user that there is a misconfiguration and they should contact their administrator.
+         * Scenario #1 - User does not have access to contacts
+         * Scenario #2 - User cannot access opportunities and an opportunity is required for conversion
+         */
+        public static function resolveCanUserProperlyConvertLeadFinalStep($userCanAccessContacts, $userCanAccessOpportunities,
+                                                                 $convertToOpportunitySetting)
+        {
+            assert('is_bool($userCanAccessContacts)');
+            assert('is_bool($userCanAccessOpportunities)');
+            assert('is_int($convertToOpportunitySetting)');
+            $userCanConvertProperly = true;
+            //Scenario #1 - User does not have access to contacts
+            if (!$userCanAccessContacts)
+            {
+                $scenarioSpecificContent = // Not Coding Standard
+                Zurmo::t('LeadsModule', 'Conversion requires access to the ContactsModulePluralLowerCaseLabel' .
+                                  ' module which you do not have. Please contact your administrator.',
+                       LabelUtil::getTranslationParamsForAllModules());
+                $userCanConvertProperly  = false;
+            }
+            //Scenario #2 - User cannot access opportunities and an opportunity is required for conversion
+            elseif ( !$userCanAccessOpportunities && $convertToOpportunitySetting == LeadsModule::CONVERT_OPPORTUNITY_REQUIRED)
+            {
+                $scenarioSpecificContent = // Not Coding Standard
+                Zurmo::t('LeadsModule', 'Conversion is set to require an OpportunitiesModuleSingularLowerCaseLabel.  Currently' .
+                                  ' you do not have access to the OpportunitiesModulePluralLowerCaseLabel module.' .
+                                  ' Please contact your administrator.',
+                       LabelUtil::getTranslationParamsForAllModules());
+                $userCanConvertProperly  = false;
+            }
+            if ($userCanConvertProperly)
+            {
+                return;
+            }
+            static::processAccessFailure(false, $scenarioSpecificContent);
+            Yii::app()->end(0, false);
+        }
     }
 ?>

@@ -71,19 +71,6 @@
             return self::makeModels($beans, __CLASS__);
         }
 
-        public static function getTailDistinctEventsByEventName($eventName, User $user, $count)
-        {
-            assert('is_string($eventName)');
-            assert('is_int($count)');
-            $sql = "select id
-                    from ( select id, modelclassname, modelid, datetime from auditevent where _user_id = {$user->id}
-                    AND eventname = '{$eventName}' order by id desc ) auditevent
-                    group by concat(modelclassname, modelid) order by datetime desc limit $count";
-            $ids   = ZurmoRedBean::getCol($sql);
-            $beans = ZurmoRedBean::batch ('auditevent', $ids);
-            return self::makeModels($beans, __CLASS__);
-        }
-
         public static function logAuditEvent($moduleName, $eventName, $data = null, RedBeanModel $model = null, User $user = null)
         {
             assert('is_string($moduleName) && $moduleName != ""');
@@ -96,36 +83,38 @@
                     throw new NoCurrentUserSecurityException();
                 }
             }
-            if ($eventName == "Item Viewed")
+            if ($eventName == ZurmoModule::AUDIT_EVENT_ITEM_VIEWED)
             {
                 AuditEventsRecentlyViewedUtil::
                         resolveNewRecentlyViewedModel($data[1],
                                                       $model,
                                                       AuditEventsRecentlyViewedUtil::RECENTLY_VIEWED_COUNT + 1);
             }
-            if ($eventName == "Item Deleted")
+            if ($eventName == ZurmoModule::AUDIT_EVENT_ITEM_DELETED)
             {
                 $modelClassName = get_class($model);
                 AuditEventsRecentlyViewedUtil::
                         deleteModelFromRecentlyViewed($modelClassName::getModuleClassName(),
                                                       $model);
             }
-            if (!AuditEvent::$isTableOptimized && !AUDITING_OPTIMIZED)
+            if ($eventName != ZurmoModule::AUDIT_EVENT_ITEM_VIEWED)
             {
-                $auditEvent = new AuditEvent();
-                $auditEvent->dateTime       = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
-                $auditEvent->moduleName     = $moduleName;
-                $auditEvent->eventName      = $eventName;
-                $auditEvent->user           = $user;
-                $auditEvent->modelClassName = $model !== null ? get_class($model) : null;
-                $auditEvent->modelId        = $model !== null ? $model->id        : null;
-                $auditEvent->serializedData = serialize($data);
-                $saved = $auditEvent->save();
-                AuditEvent::$isTableOptimized = true;
-            }
-            else
-            {
-                $sql = "insert into auditevent (datetime,
+                if (!AuditEvent::$isTableOptimized && !AUDITING_OPTIMIZED)
+                {
+                    $auditEvent                   = new AuditEvent();
+                    $auditEvent->dateTime         = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
+                    $auditEvent->moduleName       = $moduleName;
+                    $auditEvent->eventName        = $eventName;
+                    $auditEvent->user             = $user;
+                    $auditEvent->modelClassName   = $model !== null ? get_class($model) : null;
+                    $auditEvent->modelId          = $model !== null ? $model->id : null;
+                    $auditEvent->serializedData   = serialize($data);
+                    $saved                        = $auditEvent->save();
+                    AuditEvent::$isTableOptimized = true;
+                }
+                else
+                {
+                    $sql = "insert into auditevent (datetime,
                                                 modulename,
                                                 eventname,
                                                 _user_id,
@@ -136,13 +125,14 @@
                                 '$moduleName',
                                 '$eventName',
                                 {$user->id}, " .
-                                ($model !== null ? "'" . get_class($model) . "', " : 'null, ') .
-                                ($model !== null ? "{$model->id}, "                 : 'null, ') .
-                                ":data)";
-                ZurmoRedBean::exec($sql, array('data' => serialize($data))) !== null;
-                $saved = true;
+                        ($model !== null ? "'" . get_class($model) . "', " : 'null, ') .
+                        ($model !== null ? "{$model->id}, " : 'null, ') .
+                        ":data)";
+                    ZurmoRedBean::exec($sql, array('data' => serialize($data))) !== null;
+                    $saved = true;
+                }
+                return $saved;
             }
-            return $saved;
         }
 
         public function __toString()
@@ -198,7 +188,12 @@
                     array('modelId',        'type', 'type' => 'integer'),
                     array('serializedData', 'required'),
                     array('serializedData', 'type', 'type' => 'string'),
-                )
+                ),
+                'indexes' => array(
+                    'modelclass_modelid_index' => array(
+                        'members' => array('modelClassName', 'modelId'),
+                        'unique' => false),
+                ),
             );
             return $metadata;
         }

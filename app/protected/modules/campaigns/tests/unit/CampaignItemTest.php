@@ -455,6 +455,7 @@
             $this->assertNotNull($campaign);
             $contact        = ContactTestHelper::createContactByNameForOwner('campaignContact 06',
                                                                                         Yii::app()->user->userModel);
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $email                  = new Email();
             $email->emailAddress    = 'info@zurmo.com';
             $contact->primaryEmail  = $email;
@@ -518,6 +519,7 @@
             $this->assertNotNull($campaign);
             $contact        = ContactTestHelper::createContactByNameForOwner('campaignContact 08',
                                                                                         Yii::app()->user->userModel);
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $email                  = new Email();
             $email->emailAddress    = 'info@zurmo.com';
             $contact->primaryEmail  = $email;
@@ -553,6 +555,7 @@
             $this->assertNotNull($campaign);
             $contact        = ContactTestHelper::createContactByNameForOwner('campaignContact 09',
                                                                                         Yii::app()->user->userModel);
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $email                  = new Email();
             $email->emailAddress    = 'info@zurmo.com';
             $contact->primaryEmail  = $email;

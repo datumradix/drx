@@ -339,7 +339,7 @@
                                 }
                                 if('{$sourceActionButtonClass}' == 'action-type-start')
                                 {
-                                    $(element).find('h4 .task-owner').html('{$currentUserLoggedInName}');
+                                    $(element).find('h4 .task-owner').html('" . addslashes($currentUserLoggedInName) . "');
                                 }
                             }
                             else

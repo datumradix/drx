@@ -45,6 +45,8 @@
 
         const TYPE_BADGE_GRADE_CHANGE = 'GradeChange';
 
+        protected $isAudited = false;
+
         public function __toString()
         {
             return Zurmo::t('Core', '(Unnamed)');

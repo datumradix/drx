@@ -41,6 +41,8 @@
      */
     class LeadsUtil
     {
+        const LEAD_CONVERSION_ACCOUNT_DATA_SESSION_KEY = 'leadConversionAccountPostData';
+
         /**
          * Given a contact and an account, use the mapping in the
          * Leads Module to copy attributes from contact to Account
@@ -91,6 +93,54 @@
                 }
             }
             return $account;
+        }
+
+        public static function storeIntoSession($key, $value)
+        {
+            Yii::app()->session->add($key, $value);
+        }
+
+        public static function getFromSession($key)
+        {
+            return Yii::app()->session->get($key);
+        }
+
+        public static function removeFromSession($key)
+        {
+            Yii::app()->session->remove($key);
+        }
+
+        public static function createAccountForLeadConversionFromAccountPostData($accountPostData, $contact, $controllerUtil)
+        {
+            if (isset($accountPostData['AccountSkip']) && $accountPostData['AccountSkip'] == true)
+            {
+                return null;
+            }
+            elseif (isset($accountPostData['SelectAccount']) && $accountPostData['SelectAccount'] == true)
+            {
+                $account = Account::getById(intval($accountPostData['accountId']));
+                return $account;
+            }
+            elseif (isset($accountPostData['CreateAccount']) && $accountPostData['CreateAccount'] == true)
+            {
+                unset($accountPostData['CreateAccount']);
+                $account = new Account();
+                $account = LeadsUtil::attributesToAccountWithNoPostData($contact, $account, $accountPostData);
+                $savedSuccessfully = false;
+                $modelToStringValue = null;
+                $account            = $controllerUtil->saveModelFromPost($accountPostData, $account, $savedSuccessfully,
+                                                                            $modelToStringValue, false);
+                if (!$account->getErrors())
+                {
+                    $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($contact);
+                    ExplicitReadWriteModelPermissionsUtil::resolveExplicitReadWriteModelPermissions($account, $explicitReadWriteModelPermissions);
+                    if (!$account->save())
+                    {
+                        throw new NotSupportedException();
+                    }
+                    return $account;
+                }
+            }
         }
 
         /**

@@ -49,6 +49,16 @@
                         ),
                     ),
                 );
+            $metadata['global']['panels'][0]['rows'][] =
+                array('cells' =>
+                    array(
+                        array(
+                            'elements' => array(
+                                array('attributeName' => 'convertToOpportunitySetting', 'type' => 'LeadsConvertToOpportunityRadio'),
+                            ),
+                        ),
+                    ),
+                );
             return $metadata;
         }
     }

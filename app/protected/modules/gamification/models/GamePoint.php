@@ -69,6 +69,8 @@
          */
         const TYPE_TIME_MANAGEMENT    = 'TimeManagement';
 
+        protected $isAudited = false;
+
         public function __toString()
         {
             if (trim($this->type) == '')

@@ -80,9 +80,25 @@
         protected function registerModuleClassNameChangeScript()
         {
             $moduleClassNameId = get_class($this->model) .  '[moduleClassName]';
+            $formId = $this->getFormId();
+            $savedWorkflowModuleClassName = $this->model->moduleClassName;
+            $isNewWorkflow = 'false';
+            if ($this->model->id > 0)
+            {
+                $isNewWorkflow = 'true';
+            }
             Yii::app()->clientScript->registerScript('moduleForWorkflowChangeScript', "
                 $('input:radio[name=\"" . $moduleClassNameId . "\"]').live('change', function()
                     {
+                        if (" . $isNewWorkflow . " && $('input[name=\"" . $moduleClassNameId . "\"]:checked', '#" . $formId . "').val() != '" . $savedWorkflowModuleClassName . "')
+                        {
+                            var isComfirm = confirm('" . Zurmo::t('WorkflowsModule', 'Please note that changing workflow module will wipe all Triggers, Actions and Messages you previously had set on the workflow.\n Are you sure you want to change the workflow module?') ."');
+                            if (isComfirm == false)
+                            {
+                                $('input[name=\"" . $moduleClassNameId . "\"][value=\"" . $savedWorkflowModuleClassName . "\"]', '#" . $formId . "').prop('checked', true);
+                                return false;
+                            }
+                        }
                         $('#TriggersForWorkflowWizardView').find('.dynamic-rows').find('ul:first').find('li').remove();
                         $('#TriggersTreeArea').html('');
                         $('." . TriggersForWorkflowWizardView::getZeroComponentsClassName() . "').show();
