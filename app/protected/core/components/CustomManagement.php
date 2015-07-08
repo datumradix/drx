@@ -128,7 +128,11 @@
          */
         public function resolveDataProviderClassNameForControllerBySearchModel($searchModel)
         {
-            if ($searchModel->filterByStarred)
+            if($searchModel instanceof ContactsByAccountSearchForm)
+            {
+                return 'ContactModelByAccountDataProvider';
+            }
+            elseif ($searchModel->filterByStarred)
             {
                 return 'StarredModelDataProvider';
             }
