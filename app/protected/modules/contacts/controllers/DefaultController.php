@@ -56,12 +56,21 @@
             );
         }
 
-        public function actionList()
+        public function actionList($searchFormClassName = null)
         {
             $pageSize                       = Yii::app()->pagination->resolveActiveForCurrentUserByType(
                                               'listPageSize', get_class($this->getModule()));
             $contact                        = new Contact(false);
-            $searchForm                     = new ContactsSearchForm($contact);
+
+            if (isset($searchFormClassName))
+            {
+                $searchForm                     = new $searchFormClassName($contact);
+            }
+            else
+            {
+                $searchForm                     = new ContactsSearchForm($contact);
+            }
+
             $listAttributesSelector         = new ListAttributesSelector('ContactsListView', get_class($this->getModule()));
             $searchForm->setListAttributesSelector($listAttributesSelector);
             $dataProvider = $this->resolveSearchDataProvider(

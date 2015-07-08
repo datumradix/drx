@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,45 +31,13 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2015. All rights reserved".
+     * "Copyright Zurmo Inc. 2014. All rights reserved".
      ********************************************************************************/
-
-    class ContactsForAccountRelatedListView extends ContactsRelatedListView
+    /**
+     * Contacts By Account search form
+     */
+    class ContactsByAccountSearchForm extends ContactsSearchForm
     {
-        protected function getRelationAttributeName()
-        {
-            return 'account';
-        }
 
-        public static function getDisplayDescription()
-        {
-            return Zurmo::t('ContactsModule', 'ContactsModulePluralLabel For AccountsModuleSingularLabel',
-                        LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        public static function getAllowedOnPortletViewClassNames()
-        {
-            return array('AccountDetailsAndRelationsView');
-        }
-
-        /**
-         * @return string
-         */
-        public function renderPortletHeadContent()
-        {
-            $defaultOptionsContent  = $this->renderWrapperAndActionElementMenu(Zurmo::t('Core', 'Options'));
-
-            $label = ZurmoHtml::tag('span', array('class' => 'z-label'), Zurmo::t('ContactsModule', 'All Contacts'));
-            $link  = ZurmoHtml::link($label, Yii::app()->createUrl('contacts/default/list',
-                    array('id' => $this->params['relationModel']->id, 'searchFormClassName' => 'ContactsByAccountSearchForm')),
-                array('class' => 'default-btn'));
-            $content = $defaultOptionsContent . $link;
-
-            $wrappedContent         = Yii::app()->custom->renderHeadContentForPortletOnDetailsAndRelationsView(get_class($this),
-                $this->params,
-                $defaultOptionsContent,
-                $content);
-            return $wrappedContent;
-        }
     }
 ?>
