@@ -169,5 +169,10 @@
         {
             return Zurmo::t('WorkflowsModule', 'Workflows', array(), null, $language);
         }
+
+        public static function getDefaultDataMakerClassName()
+        {
+            return 'WorkflowsDefaultDataMaker';
+        }
     }
 ?>
