@@ -132,5 +132,25 @@
             }
             $this->actionCreateByModel($meeting, $redirectUrl);
         }
+
+        public function actionGetMeetingEndDateTimeBasedOnStartDateTime($startDateTime = null)
+        {
+            Yii::app()->getClientScript()->setToAjaxMode();
+            if ($startDateTime == null)
+            {
+                return null;
+            }
+            $timestamp = CDateTimeParser::parse($startDateTime, DateTimeUtil::getLocaleDateTimeFormatForInput());
+            if ($timestamp == null)
+            {
+                return null;
+            }
+            $endTimeStamp = $timestamp + 15 * 60;
+            $endDateTime = DateTimeUtil::convertTimestampToDisplayFormat((int)$endTimeStamp, DateTimeUtil::DATETIME_FORMAT_DATE_WIDTH,
+                DateTimeUtil::DATETIME_FORMAT_TIME_WIDTH,
+                true);
+            echo CJSON::encode(array('endDateTime' => $endDateTime));
+            Yii::app()->end(0, false);
+        }
     }
 ?>
