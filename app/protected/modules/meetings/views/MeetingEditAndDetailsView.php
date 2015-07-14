@@ -150,5 +150,44 @@
             return Zurmo::t('MeetingsModule', 'Create MeetingsModuleSingularLabel',
                                      LabelUtil::getTranslationParamsForAllModules());
         }
+
+        protected function renderAfterFormLayout($form)
+        {
+            $content = parent::renderAfterFormLayout($form);
+            $this->registerSetMeetingEndDateTimeScript($form);
+            return $content;
+        }
+
+        protected function registerSetMeetingEndDateTimeScript($form)
+        {
+            $url     =   Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/getMeetingEndDateTimeBasedOnStartDateTime');
+            $meetingStartDateTimeId        = Element::resolveInputIdPrefixIntoString(array(get_class($this->model), 'startDateTime'));
+            $meetingEndDateTimeId          = Element::resolveInputIdPrefixIntoString(array(get_class($this->model), 'endDateTime'));
+            $ajaxSubmitScript = "
+            $.ajax(
+            {
+                url : '" . $url . "',
+                type : 'GET',
+                data : {
+                    startDateTime : $('#" . $meetingStartDateTimeId . "').val()
+                },
+                dataType: 'json',
+                success : function(data)
+                {
+                    $('#" . $meetingEndDateTimeId . "').val(data['endDateTime']);
+                },
+                error : function()
+                {
+                }
+            }
+            );
+            ";
+            Yii::app()->clientScript->registerScript('SetMeetingEndDateTime', "
+                $('#" . $meetingStartDateTimeId . "').change(function()
+                {
+                    " . $ajaxSubmitScript . "
+                });
+            ");
+        }
     }
 ?>
