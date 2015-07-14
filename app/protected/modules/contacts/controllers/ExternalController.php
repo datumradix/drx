@@ -36,7 +36,7 @@
 
     class ContactsExternalController extends ZurmoModuleController
     {
-        const CAPTCHA_VERIFY_URL  = 'http://www.google.com/recaptcha/api/verify';
+        const CAPTCHA_VERIFY_URL  = 'https://www.google.com/recaptcha/api/verify';
 
         public function filters()
         {
