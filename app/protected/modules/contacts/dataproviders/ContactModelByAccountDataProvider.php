@@ -34,42 +34,44 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class ContactsForAccountRelatedListView extends ContactsRelatedListView
+    class ContactModelByAccountDataProvider extends RedBeanModelDataProvider
     {
-        protected function getRelationAttributeName()
-        {
-            return 'account';
-        }
-
-        public static function getDisplayDescription()
-        {
-            return Zurmo::t('ContactsModule', 'ContactsModulePluralLabel For AccountsModuleSingularLabel',
-                        LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        public static function getAllowedOnPortletViewClassNames()
-        {
-            return array('AccountDetailsAndRelationsView');
-        }
-
         /**
+         * Override to include opportunity id for the search.
+         * @param metadata - array expected to have clauses and structure elements
+         * @param $joinTablesAdapter
+         * @see DataProviderMetadataAdapter
          * @return string
          */
-        public function renderPortletHeadContent()
+        public static function makeWhere($modelClassName, array $metadata, &$joinTablesAdapter)
         {
-            $defaultOptionsContent  = $this->renderWrapperAndActionElementMenu(Zurmo::t('Core', 'Options'));
-
-            $label = ZurmoHtml::tag('span', array('class' => 'z-label'), Zurmo::t('ContactsModule', 'All Contacts'));
-            $link  = ZurmoHtml::link($label, Yii::app()->createUrl('contacts/default/list',
-                    array('id' => $this->params['relationModel']->id, 'searchFormClassName' => 'ContactsByAccountSearchForm')),
-                array('class' => 'default-btn'));
-            $content = $defaultOptionsContent . $link;
-
-            $wrappedContent         = Yii::app()->custom->renderHeadContentForPortletOnDetailsAndRelationsView(get_class($this),
-                $this->params,
-                $defaultOptionsContent,
-                $content);
-            return $wrappedContent;
+            $data           = GetUtil::getData();
+            $additionalMetaData = array(
+                'attributeName'        => 'account',
+                'relatedAttributeName' => 'id',
+                'operatorType'         => 'equals',
+                'value'                => intval($data['id']),
+            );
+            $clausesCount = 0;
+            if(isset($metadata['clauses']))
+            {
+                $clausesCount = count($metadata['clauses']);
+                $metadata['clauses'][count($metadata['clauses']) + 1] = $additionalMetaData;
+            }
+            else
+            {
+                $metadata['clauses'][1] = $additionalMetaData;
+            }
+            if($clausesCount == 0)
+            {
+                $metadata['structure'] =  '(1)';
+            }
+            else
+            {
+                $count = $clausesCount + 1;
+                $metadata['structure'] =  $metadata['structure'] . ' and (' . $count . ')';
+            }
+            return ModelDataProviderUtil::makeWhere($modelClassName, $metadata, $joinTablesAdapter);
         }
     }
 ?>
