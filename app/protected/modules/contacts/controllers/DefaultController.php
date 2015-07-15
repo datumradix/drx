@@ -62,7 +62,7 @@
                                               'listPageSize', get_class($this->getModule()));
             $contact                        = new Contact(false);
 
-            if (isset($searchFormClassName))
+            if (isset($searchFormClassName) && class_exists($searchFormClassName))
             {
                 $searchForm                     = new $searchFormClassName($contact);
                 $stickySearchKey = $searchFormClassName; // We need to change this
