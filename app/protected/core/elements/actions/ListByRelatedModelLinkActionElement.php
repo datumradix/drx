@@ -34,44 +34,21 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class ContactModelByAccountDataProvider extends RedBeanModelDataProvider
+    class ListByRelatedModelLinkActionElement extends ListLinkActionElement
     {
-        /**
-         * Override to include opportunity id for the search.
-         * @param metadata - array expected to have clauses and structure elements
-         * @param $joinTablesAdapter
-         * @see DataProviderMetadataAdapter
-         * @return string
-         */
-        public static function makeWhere($modelClassName, array $metadata, &$joinTablesAdapter)
+        public function getActionType()
         {
-            $data           = GetUtil::getData();
-            $additionalMetaData = array(
-                'attributeName'        => 'account',
-                'relatedAttributeName' => 'id',
-                'operatorType'         => 'equals',
-                'value'                => intval($data['id']),
-            );
-            $clausesCount = 0;
-            if(isset($metadata['clauses']))
-            {
-                $clausesCount = count($metadata['clauses']);
-                $metadata['clauses'][count($metadata['clauses']) + 1] = $additionalMetaData;
-            }
-            else
-            {
-                $metadata['clauses'][1] = $additionalMetaData;
-            }
-            if($clausesCount == 0)
-            {
-                $metadata['structure'] =  '(1)';
-            }
-            else
-            {
-                $count = $clausesCount + 1;
-                $metadata['structure'] =  $metadata['structure'] . ' and (' . $count . ')';
-            }
-            return ModelDataProviderUtil::makeWhere($modelClassName, $metadata, $joinTablesAdapter);
+            return null;
+        }
+
+        protected function getDefaultLabel()
+        {
+            return Zurmo::t('Core', 'View All Related');
+        }
+
+        protected function getDefaultRoute()
+        {
+            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/list/', $this->getRouteParameters());
         }
     }
 ?>
