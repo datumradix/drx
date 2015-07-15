@@ -63,12 +63,12 @@
 
             if (isset($searchFormClassName) && class_exists($searchFormClassName))
             {
-                $searchForm                     = new $searchFormClassName($opportunity);
+                $searchForm      = new $searchFormClassName($opportunity);
                 $stickySearchKey = $searchFormClassName; // We need to change this
             }
             else
             {
-                $searchForm  = new OpportunitiesSearchForm($opportunity);
+                $searchForm      = new OpportunitiesSearchForm($opportunity);
                 $stickySearchKey = 'OpportunitiesSearchView';
             }
 

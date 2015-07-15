@@ -48,17 +48,14 @@
         {
             $data           = GetUtil::getData();
 
-            if (!isset($data['relationAttributeName']) || !$modelClassName::isRelation($data['relationAttributeName']))
+            if (!isset($data['relationAttributeName']) ||
+                !$modelClassName::isRelation($data['relationAttributeName']) ||
+                intval($data['id']) <= 0)
             {
                 throw new NotSupportedException;
             }
             $relationAttributeName = $data['relationAttributeName'];
-            $additionalMetaData = array(
-                'attributeName'        => $relationAttributeName,
-                'relatedAttributeName' => 'id',
-                'operatorType'         => 'equals',
-                'value'                => intval($data['id']),
-            );
+            $additionalMetaData = static::getAdditionalSearchMetadata($relationAttributeName, $data);
             $clausesCount = 0;
             if(isset($metadata['clauses']))
             {
@@ -79,6 +76,17 @@
                 $metadata['structure'] =  $metadata['structure'] . ' and (' . $count . ')';
             }
             return ModelDataProviderUtil::makeWhere($modelClassName, $metadata, $joinTablesAdapter);
+        }
+
+        protected static function getAdditionalSearchMetadata($relationAttributeName, $data)
+        {
+            $additionalMetaData = array(
+                'attributeName'        => $relationAttributeName,
+                'relatedAttributeName' => 'id',
+                'operatorType'         => 'equals',
+                'value'                => intval($data['id']),
+            );
+            return $additionalMetaData;
         }
     }
 ?>
