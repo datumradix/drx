@@ -139,6 +139,7 @@
             if ($startDateTime == null)
             {
                 return null;
+
             }
             $timestamp = CDateTimeParser::parse($startDateTime, DateTimeUtil::getLocaleDateTimeFormatForInput());
             if ($timestamp == null)

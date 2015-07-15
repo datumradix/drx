@@ -163,31 +163,36 @@
             $url     =   Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/getMeetingEndDateTimeBasedOnStartDateTime');
             $meetingStartDateTimeId        = Element::resolveInputIdPrefixIntoString(array(get_class($this->model), 'startDateTime'));
             $meetingEndDateTimeId          = Element::resolveInputIdPrefixIntoString(array(get_class($this->model), 'endDateTime'));
-            $ajaxSubmitScript = "
-            $.ajax(
+
+            // Fill endDateTime only for new meetings
+            if ($this->model->id <= 0)
             {
-                url : '" . $url . "',
-                type : 'GET',
-                data : {
-                    startDateTime : $('#" . $meetingStartDateTimeId . "').val()
-                },
-                dataType: 'json',
-                success : function(data)
-                {
-                    $('#" . $meetingEndDateTimeId . "').val(data['endDateTime']);
-                },
-                error : function()
-                {
-                }
+                Yii::app()->clientScript->registerScript('SetMeetingEndDateTime', "
+                    $('#" . $meetingStartDateTimeId . "').change(function()
+                    {
+                        $.ajax(
+                        {
+                            url : '" . $url . "',
+                            type : 'GET',
+                            data : {
+                                startDateTime : $('#" . $meetingStartDateTimeId . "').val()
+                            },
+                            dataType: 'json',
+                            success : function(data)
+                            {
+                                if (data['endDateTime'] && data['endDateTime'].length > 0)
+                                {
+                                    $('#" . $meetingEndDateTimeId . "').val(data['endDateTime']);
+                                }
+                            },
+                            error : function()
+                            {
+                            }
+                        }
+                        );
+                    });
+                ");
             }
-            );
-            ";
-            Yii::app()->clientScript->registerScript('SetMeetingEndDateTime', "
-                $('#" . $meetingStartDateTimeId . "').change(function()
-                {
-                    " . $ajaxSubmitScript . "
-                });
-            ");
         }
     }
 ?>
