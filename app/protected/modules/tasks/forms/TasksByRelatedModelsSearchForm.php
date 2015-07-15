@@ -33,41 +33,19 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
-
-    class OpenTasksForAccountRelatedListView extends OpenTasksRelatedListView
+    /**
+     * Tasks By Related models search form
+     */
+    class TasksByRelatedModelsSearchForm extends TasksSearchForm implements ModelByRelatedModelsSearchFormInterface
     {
-        /**
-         * @return string
-         */
-        protected function getRelationAttributeName()
+        public function shouldFilterByRelatedModels()
         {
-            return 'Account';
+            return true;
         }
 
-        /**
-         * @return string
-         */
-        public static function getDisplayDescription()
+        public function resolveDataProviderClassName()
         {
-            return Zurmo::t('TasksModule', 'TasksModulePluralLabel For AccountsModuleSingularLabel',
-                        LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        /**
-         * @return array
-         */
-        public static function getAllowedOnPortletViewClassNames()
-        {
-            return array('AccountDetailsAndRelationsView');
-        }
-
-        protected function getRelatedListLinkRouteParametersForTasks()
-        {
-            return array(
-                'id'                        => (int)$this->params['relationModel']->getClassId('Item'),
-                'searchFormClassName'       => 'TasksByRelatedModelsSearchForm',
-                'relationAttributeName'     => 'activityItems',
-            );
+            return 'RedBeanModelByRelatedModelDataProvider';
         }
     }
 ?>

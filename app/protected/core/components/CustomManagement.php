@@ -204,7 +204,7 @@
                                                                              $defaultOptionsContent,
                                                                              $parentContent)
         {
-            return $parentContent;
+            return $defaultOptionsContent;
         }
 
         /**
