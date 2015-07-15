@@ -65,10 +65,12 @@
             if (isset($searchFormClassName))
             {
                 $searchForm                     = new $searchFormClassName($contact);
+                $stickySearchKey = $searchFormClassName; // We need to change this
             }
             else
             {
                 $searchForm                     = new ContactsSearchForm($contact);
+                $stickySearchKey = 'ContactsSearchView';
             }
 
             $listAttributesSelector         = new ListAttributesSelector('ContactsListView', get_class($this->getModule()));
@@ -77,7 +79,7 @@
                 $searchForm,
                 $pageSize,
                 'ContactsStateMetadataAdapter',
-                'ContactsSearchView'
+                $stickySearchKey
             );
             if (isset($_GET['ajax']) && $_GET['ajax'] == 'list-view')
             {

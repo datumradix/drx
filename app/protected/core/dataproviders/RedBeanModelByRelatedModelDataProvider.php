@@ -1,7 +1,7 @@
 <?php
     /*********************************************************************************
      * Zurmo is a customer relationship management program developed by
-     * Zurmo, Inc. Copyright (C) 2014 Zurmo Inc.
+     * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
      * the terms of the GNU Affero General Public License version 3 as published by the
@@ -31,13 +31,54 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
-    /**
-     * Contacts By Account search form
-     */
-    class ContactsByAccountSearchForm extends ContactsSearchForm
-    {
 
+    class RedBeanModelByRelatedModelDataProvider extends RedBeanModelDataProvider
+    {
+        /**
+         * Add where clause for searching for related models
+         * @param $modelClassName
+         * @param array $metadata
+         * @param $joinTablesAdapter
+         * @return string
+         * @throws NotSupportedException
+         */
+        public static function makeWhere($modelClassName, array $metadata, &$joinTablesAdapter)
+        {
+            $data           = GetUtil::getData();
+
+            if (!isset($data['relationAttributeName']) || !$modelClassName::isRelation($data['relationAttributeName']))
+            {
+                throw new NotSupportedException;
+            }
+            $relationAttributeName = $data['relationAttributeName'];
+            $additionalMetaData = array(
+                'attributeName'        => $relationAttributeName,
+                'relatedAttributeName' => 'id',
+                'operatorType'         => 'equals',
+                'value'                => intval($data['id']),
+            );
+            $clausesCount = 0;
+            if(isset($metadata['clauses']))
+            {
+                $clausesCount = count($metadata['clauses']);
+                $metadata['clauses'][count($metadata['clauses']) + 1] = $additionalMetaData;
+            }
+            else
+            {
+                $metadata['clauses'][1] = $additionalMetaData;
+            }
+            if($clausesCount == 0)
+            {
+                $metadata['structure'] =  '(1)';
+            }
+            else
+            {
+                $count = $clausesCount + 1;
+                $metadata['structure'] =  $metadata['structure'] . ' and (' . $count . ')';
+            }
+            return ModelDataProviderUtil::makeWhere($modelClassName, $metadata, $joinTablesAdapter);
+        }
     }
 ?>
