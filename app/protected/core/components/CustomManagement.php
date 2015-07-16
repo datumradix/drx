@@ -128,9 +128,9 @@
          */
         public function resolveDataProviderClassNameForControllerBySearchModel($searchModel)
         {
-            if($searchModel instanceof ContactsByAccountSearchForm)
+            if(method_exists($searchModel, 'shouldFilterByRelatedModels') && $searchModel->shouldFilterByRelatedModels())
             {
-                return 'ContactModelByAccountDataProvider';
+                return $searchModel->resolveDataProviderClassName();
             }
             elseif ($searchModel->filterByStarred)
             {
@@ -204,7 +204,7 @@
                                                                              $defaultOptionsContent,
                                                                              $parentContent)
         {
-            return $parentContent;
+            return $defaultOptionsContent;
         }
 
         /**

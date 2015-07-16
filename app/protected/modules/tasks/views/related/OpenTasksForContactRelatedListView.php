@@ -60,5 +60,15 @@
         {
             return array('ContactDetailsAndRelationsView');
         }
+
+
+        protected function getRelatedListLinkRouteParametersForTasks()
+        {
+            return array(
+                'id'                        => (int)$this->params['relationModel']->getClassId('Item'),
+                'searchFormClassName'       => 'TasksByRelatedModelsSearchForm',
+                'relationAttributeName'     => 'activityItems',
+            );
+        }
     }
 ?>

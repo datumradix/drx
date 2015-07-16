@@ -34,27 +34,14 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class OpportunitiesForAccountRelatedListView extends OpportunitiesRelatedListView
+    interface ModelByRelatedModelsSearchFormInterface
     {
-        protected function getRelationAttributeName()
-        {
-            return 'account';
-        }
+        /**
+         * Is this form used to search model by related models explicitly
+         * Implement in child classes when needed.
+         * @return bool
+         */
+        public function shouldFilterByRelatedModels();
 
-        public static function getDisplayDescription()
-        {
-            return Zurmo::t('OpportunitiesModule', 'OpportunitiesModulePluralLabel For AccountsModuleSingularLabel',
-                        LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        public static function getAllowedOnPortletViewClassNames()
-        {
-            return array('AccountDetailsAndRelationsView');
-        }
-
-        public function renderPortletHeadContent()
-        {
-            return $this->renderWrapperAndActionElementMenu(Zurmo::t('Core', 'Options'));
-        }
+        public function resolveDataProviderClassName();
     }
-?>
