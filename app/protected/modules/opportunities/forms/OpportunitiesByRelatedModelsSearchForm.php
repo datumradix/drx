@@ -33,28 +33,19 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
-
-    class OpportunitiesForAccountRelatedListView extends OpportunitiesRelatedListView
+    /**
+     * Opportunities By Related models search form
+     */
+    class OpportunitiesByRelatedModelsSearchForm extends OpportunitiesSearchForm implements ModelByRelatedModelsSearchFormInterface
     {
-        protected function getRelationAttributeName()
+        public function shouldFilterByRelatedModels()
         {
-            return 'account';
+            return true;
         }
 
-        public static function getDisplayDescription()
+        public function resolveDataProviderClassName()
         {
-            return Zurmo::t('OpportunitiesModule', 'OpportunitiesModulePluralLabel For AccountsModuleSingularLabel',
-                        LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        public static function getAllowedOnPortletViewClassNames()
-        {
-            return array('AccountDetailsAndRelationsView');
-        }
-
-        public function renderPortletHeadContent()
-        {
-            return $this->renderWrapperAndActionElementMenu(Zurmo::t('Core', 'Options'));
+            return 'RedBeanModelByRelatedModelDataProvider';
         }
     }
 ?>

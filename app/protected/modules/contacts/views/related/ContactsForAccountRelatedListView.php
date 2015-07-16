@@ -52,24 +52,9 @@
             return array('AccountDetailsAndRelationsView');
         }
 
-        /**
-         * @return string
-         */
         public function renderPortletHeadContent()
         {
-            $defaultOptionsContent  = $this->renderWrapperAndActionElementMenu(Zurmo::t('Core', 'Options'));
-
-            $label = ZurmoHtml::tag('span', array('class' => 'z-label'), Zurmo::t('ContactsModule', 'All Contacts'));
-            $link  = ZurmoHtml::link($label, Yii::app()->createUrl('contacts/default/list',
-                    array('id' => $this->params['relationModel']->id, 'searchFormClassName' => 'ContactsByAccountSearchForm')),
-                array('class' => 'default-btn'));
-            $content = $defaultOptionsContent . $link;
-
-            $wrappedContent         = Yii::app()->custom->renderHeadContentForPortletOnDetailsAndRelationsView(get_class($this),
-                $this->params,
-                $defaultOptionsContent,
-                $content);
-            return $wrappedContent;
+            return $this->renderWrapperAndActionElementMenu(Zurmo::t('Core', 'Options'));
         }
     }
 ?>
