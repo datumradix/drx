@@ -33,11 +33,22 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
-    /**
-     * Contacts By Account search form
-     */
-    class ContactsByAccountSearchForm extends ContactsSearchForm
-    {
 
+    class ListByRelatedModelLinkActionElement extends ListLinkActionElement
+    {
+        public function getActionType()
+        {
+            return null;
+        }
+
+        protected function getDefaultLabel()
+        {
+            return Zurmo::t('Core', 'View All Related');
+        }
+
+        protected function getDefaultRoute()
+        {
+            return Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/list/', $this->getRouteParameters());
+        }
     }
 ?>

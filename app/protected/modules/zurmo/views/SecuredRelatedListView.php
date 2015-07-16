@@ -82,6 +82,14 @@
             {
                 return false;
             }
+            // If element is ListByRelatedModelLink and there are no related items, do not show this element
+            if ($element instanceof ListByRelatedModelLinkActionElement)
+            {
+                if ($this->getDataProvider()->totalItemCount <= 0)
+                {
+                    return false;
+                }
+            }
             $modelClassName = $this->modelClassName;
             //Todo: figure out how to not need to new up a new model.
             return ActionSecurityUtil::canCurrentUserPerformAction( $element->getActionType(),

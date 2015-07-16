@@ -48,6 +48,10 @@
                             array(  'type'            => 'CreateFromRelatedListLink',
                                     'routeModuleId'   => 'eval:$this->moduleId',
                                     'routeParameters' => 'eval:$this->getCreateLinkRouteParameters()'),
+                            array(  'type'            => 'ListByRelatedModelLink',
+                                    'routeModuleId'   => 'eval:$this->moduleId',
+                                    'routeParameters' => 'eval:$this->getRelatedListLinkRouteParametersForContacts()',
+                                    'label' => 'View All Related ' . Zurmo::t('ContactsModule', 'ContactsModulePluralLabel', LabelUtil::getTranslationParamsForAllModules())),
                         ),
                     ),
                     'rowMenu' => array(
@@ -111,6 +115,15 @@
         public static function getModuleClassName()
         {
             return 'ContactsModule';
+        }
+
+        protected function getRelatedListLinkRouteParametersForContacts()
+        {
+            return array(
+                'id'                        => $this->params['relationModel']->id,
+                'searchFormClassName'       => 'ContactsByRelatedModelsSearchForm',
+                'relationAttributeName'     => $this->getRelationAttributeName(),
+            );
         }
     }
 ?>
