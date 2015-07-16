@@ -56,12 +56,23 @@
             );
         }
 
-        public function actionList()
+        public function actionList($searchFormClassName = null)
         {
             $pageSize                       = Yii::app()->pagination->resolveActiveForCurrentUserByType(
                                               'listPageSize', get_class($this->getModule()));
             $task                           = new Task(false);
-            $searchForm                     = new TasksSearchForm($task);
+
+            if (isset($searchFormClassName) && class_exists($searchFormClassName))
+            {
+                $searchForm      = new $searchFormClassName($task);
+                $stickySearchKey = $searchFormClassName; // We need to change this
+            }
+            else
+            {
+                $searchForm      = new TasksSearchForm($task);
+                $stickySearchKey = 'TasksSearchView';
+            }
+
             $listAttributesSelector         = new ListAttributesSelector('TasksListView', get_class($this->getModule()));
             $searchForm->setListAttributesSelector($listAttributesSelector);
 
@@ -69,7 +80,7 @@
                                                         $searchForm,
                                                         $pageSize,
                                                         null,
-                                                        'TasksSearchView'
+                                                        $stickySearchKey
                                                     );
             if ((isset($_GET['ajax']) && $_GET['ajax'] == 'list-view'))
             {

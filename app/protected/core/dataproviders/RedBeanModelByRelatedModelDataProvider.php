@@ -34,27 +34,59 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class OpportunitiesForAccountRelatedListView extends OpportunitiesRelatedListView
+    class RedBeanModelByRelatedModelDataProvider extends RedBeanModelDataProvider
     {
-        protected function getRelationAttributeName()
+        /**
+         * Add where clause for searching for related models
+         * @param $modelClassName
+         * @param array $metadata
+         * @param $joinTablesAdapter
+         * @return string
+         * @throws NotSupportedException
+         */
+        public static function makeWhere($modelClassName, array $metadata, &$joinTablesAdapter)
         {
-            return 'account';
+            $data           = GetUtil::getData();
+
+            if (!isset($data['relationAttributeName']) ||
+                !$modelClassName::isRelation($data['relationAttributeName']) ||
+                intval($data['id']) <= 0)
+            {
+                throw new NotSupportedException;
+            }
+            $relationAttributeName = $data['relationAttributeName'];
+            $additionalMetaData = static::getAdditionalSearchMetadata($relationAttributeName, $data);
+            $clausesCount = 0;
+            if(isset($metadata['clauses']))
+            {
+                $clausesCount = count($metadata['clauses']);
+                $metadata['clauses'][count($metadata['clauses']) + 1] = $additionalMetaData;
+            }
+            else
+            {
+                $metadata['clauses'][1] = $additionalMetaData;
+            }
+            if($clausesCount == 0)
+            {
+                $metadata['structure'] =  '(1)';
+            }
+            else
+            {
+                $count = $clausesCount + 1;
+                $metadata['structure'] =  $metadata['structure'] . ' and (' . $count . ')';
+            }
+            return ModelDataProviderUtil::makeWhere($modelClassName, $metadata, $joinTablesAdapter);
         }
 
-        public static function getDisplayDescription()
+        protected static function getAdditionalSearchMetadata($relationAttributeName, $data)
         {
-            return Zurmo::t('OpportunitiesModule', 'OpportunitiesModulePluralLabel For AccountsModuleSingularLabel',
-                        LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        public static function getAllowedOnPortletViewClassNames()
-        {
-            return array('AccountDetailsAndRelationsView');
-        }
-
-        public function renderPortletHeadContent()
-        {
-            return $this->renderWrapperAndActionElementMenu(Zurmo::t('Core', 'Options'));
+            $additionalMetaData = array(
+                'attributeName'        => $relationAttributeName,
+                'relatedAttributeName' => 'id',
+                'operatorType'         => 'equals',
+                'value'                => intval($data['id']),
+            );
+            return $additionalMetaData;
         }
     }
 ?>
