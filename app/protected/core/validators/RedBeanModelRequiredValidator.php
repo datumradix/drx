@@ -119,6 +119,7 @@
                     }
                     $this->addError($model, $attributeName, $message);
                 }
+
             }
             else
             {
