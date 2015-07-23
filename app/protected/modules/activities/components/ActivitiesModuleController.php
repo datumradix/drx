@@ -54,11 +54,13 @@
          * @param string $relationModelClassName
          * @param int $relationModelId
          * @param string $relationModuleId
+         * @param array $relationModelRelatedAttributesList
          * @return mixed
          * @throws NotSupportedException
          */
         protected function resolveNewModelByRelationInformation(    $model, $relationModelClassName,
-                                                                    $relationModelId, $relationModuleId)
+                                                                    $relationModelId, $relationModuleId,
+                                                                    $relationModelRelatedAttributesList = array())
         {
             assert('$model instanceof Activity');
             assert('is_string($relationModelClassName)');
@@ -69,6 +71,20 @@
             {
                 $relatedModel = $relationModelClassName::getById((int)$relationModelId);
                 $model->activityItems->add($relatedModel);
+                // Go over all $relationModelRelatedAttributesList and add them as activityItems
+                foreach($relationModelRelatedAttributesList as $activityRelationName => $relatedModelRelationName)
+                {
+                    if ($model->isRelation($activityRelationName) &&
+                        $relatedModel->isRelation($relatedModelRelationName) &&
+                        in_array(get_class($relatedModel->{$relatedModelRelationName}), $metadata['Activity']['activityItemsModelClassNames']))
+                    {
+                        if ($relatedModel->{$relatedModelRelationName} instanceof Item &&
+                            $relatedModel->{$relatedModelRelationName}->id > 0)
+                        {
+                            $model->{$activityRelationName}->add($relatedModel->{$relatedModelRelationName});
+                        }
+                    }
+                }
             }
             else
             {

@@ -163,10 +163,12 @@
          * @param $relationAttributeName
          * @param $relationModelId
          * @param $relationModuleId
+         * @param array $relationModelRelatedAttributesList
          * @return $model;
          */
         protected function resolveNewModelByRelationInformation($model, $relationAttributeName,
-                                                                $relationModelId, $relationModuleId)
+                                                                $relationModelId, $relationModuleId,
+                                                                $relationModelRelatedAttributesList = array())
         {
             assert('$model instanceof RedBeanModel');
             assert('is_string($relationAttributeName)');
