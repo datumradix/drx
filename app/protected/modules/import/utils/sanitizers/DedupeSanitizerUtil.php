@@ -65,7 +65,10 @@
         {
             if (isset($this->mappingRuleData["dedupeRule"]))
             {
-                assert('is_array($this->mappingRuleData["dedupeRule"])');
+                assert('in_array($this->mappingRuleData["dedupeRule"],
+                array(ImportDedupeRulesRadioDropDownElement::DO_NOT_DEDUPE,
+                ImportDedupeRulesRadioDropDownElement::SKIP_ROW_ON_MATCH_FOUND,
+                ImportDedupeRulesRadioDropDownElement::UPDATE_ROW_ON_MATCH_FOUND))');
             }
         }
 
