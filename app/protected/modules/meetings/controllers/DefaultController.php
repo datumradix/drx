@@ -119,13 +119,15 @@
         }
 
         public function actionCreateFromRelationAndStartDate($relationAttributeName, $relationModelId,
-                                                            $relationModuleId, $redirectUrl, $startDate)
+                                                             $relationModuleId, $redirectUrl, $startDate,
+                                                             array $relationModelRelatedAttributesMapList = array())
         {
             $modelClassName   = $this->getModule()->getPrimaryModelName();
             $meeting          = $this->resolveNewModelByRelationInformation( new $modelClassName(),
                                                                                 $relationAttributeName,
                                                                                 (int)$relationModelId,
-                                                                                $relationModuleId);
+                                                                                $relationModuleId,
+                                                                                $relationModelRelatedAttributesMapList);
             if ($startDate != null)
             {
                 $meeting->startDateTime = DateTimeUtil::convertDateIntoTimeZoneAdjustedDateTimeBeginningOfDay($startDate);
