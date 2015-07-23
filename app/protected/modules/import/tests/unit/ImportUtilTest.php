@@ -725,7 +725,7 @@
 
             $emailMappingData = ImportMappingUtil::makeEmailColumnMappingData      ('primaryEmail__emailAddress');
             $emailMappingData['mappingRulesData']['EmailModelAttributeDedupeMappingRuleForm']
-                                            = array('dedupeRule' => array('value' => ImportDedupeRulesRadioDropDownElement::DO_NOT_DEDUPE));
+                                            = array('dedupeRule' => ImportDedupeRulesRadioDropDownElement::DO_NOT_DEDUPE);
             $mappingData = array(
                 'column_0'  => ImportMappingUtil::makeStringColumnMappingData      ('name'),
                 'column_1'  => $emailMappingData
