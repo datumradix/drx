@@ -40,7 +40,7 @@
         {
             $filters = array(
                 'upgradeAccessControl',
-                'maintananceModeAccessControl'
+                'maintenanceModeAccessControl'
             );
             return array_merge($filters, parent::filters());
         }
@@ -66,7 +66,7 @@
          * Allow access to all upgrade actions only to Super Administrators.
          * @param CFilterChain $filterChain
          */
-        public function filterMaintananceModeAccessControl($filterChain)
+        public function filterMaintenanceModeAccessControl($filterChain)
         {
             if (!Yii::app()->isApplicationInMaintenanceMode())
             {
