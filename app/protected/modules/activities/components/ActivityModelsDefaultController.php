@@ -65,14 +65,17 @@
          * @param $relationModelId
          * @param $relationModuleId
          * @param $redirectUrl
+         * @param $relationModelRelatedAttributesMapList
          */
-        public function actionCreateFromRelation($relationAttributeName, $relationModelId, $relationModuleId, $redirectUrl)
+        public function actionCreateFromRelation($relationAttributeName, $relationModelId, $relationModuleId, $redirectUrl,
+                                                 array $relationModelRelatedAttributesMapList = array())
         {
             $modelClassName   = $this->getModule()->getPrimaryModelName();
             $activity         = $this->resolveNewModelByRelationInformation( new $modelClassName(),
                                                                                 $relationAttributeName,
                                                                                 (int)$relationModelId,
-                                                                                $relationModuleId);
+                                                                                $relationModuleId,
+                                                                                $relationModelRelatedAttributesMapList);
             $this->actionCreateByModel($activity, $redirectUrl);
         }
 
