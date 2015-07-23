@@ -193,10 +193,18 @@
         /**
          * Override to handle the special scenario of relations for a conversation. Since relations are done in the
          * ConversationItems, the relation information needs to handled in a specific way.
+         * @param $model
+         * @param $relationModelClassName
+         * @param $relationModelId
+         * @param $relationModuleId
+         * @param array $relationModelRelatedAttributesList
+         * @return mixed
+         * @throws NotSupportedException
          * @see ZurmoModuleController->resolveNewModelByRelationInformation
          */
         protected function resolveNewModelByRelationInformation(    $model, $relationModelClassName,
-                                                                    $relationModelId, $relationModuleId)
+                                                                    $relationModelId, $relationModuleId,
+                                                                    $relationModelRelatedAttributesList = array())
         {
             assert('$model instanceof Conversation');
             assert('is_string($relationModelClassName) || null');

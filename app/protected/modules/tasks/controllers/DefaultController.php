@@ -293,9 +293,10 @@
          * @param null $relationAttributeName
          * @param null $relationModelId
          * @param null $relationModuleId
+         * @param array $relationModelRelatedAttributesMapList
          */
         public function actionModalCreateFromRelation($relationAttributeName = null, $relationModelId = null,
-                                                      $relationModuleId = null)
+                                                      $relationModuleId = null, array $relationModelRelatedAttributesMapList = array())
         {
             $task  = new Task();
             if ($relationAttributeName == 'project' && $relationModelId != null)
@@ -306,7 +307,7 @@
             else
             {
                 $task  = $this->resolveNewModelByRelationInformation($task, $relationAttributeName,
-                        (int)$relationModelId, $relationModuleId);
+                        (int)$relationModelId, $relationModuleId, $relationModelRelatedAttributesMapList);
             }
             $this->processTaskEdit($task);
         }
