@@ -66,6 +66,11 @@
             }
             $note         = new Note();
             $note->activityItems->add($this->params["relationModel"]);
+            if ($this->params["relationModel"] instanceof Contact ||
+                $this->params["relationModel"] instanceof Opportunity)
+            {
+                $this->setNoteAccountForContactAndOpportunity($note, $this->params["relationModel"]);
+            }
             $inlineViewClassName = $this->getInlineEditViewClassName();
 
             $urlParameters = array('redirectUrl' => $this->getPortletDetailsUrl()); //After save, the url to go to.
@@ -91,6 +96,14 @@
         public static function getAllowedOnPortletViewClassNames()
         {
             return array('AccountDetailsAndRelationsView', 'ContactDetailsAndRelationsView', 'OpportunityDetailsAndRelationsView');
+        }
+
+        protected function setNoteAccountForContactAndOpportunity($note, $relatedModel)
+        {
+            if ($relatedModel->account->id > 0)
+            {
+                $note->activityItems->add($relatedModel->account);
+            }
         }
     }
 ?>

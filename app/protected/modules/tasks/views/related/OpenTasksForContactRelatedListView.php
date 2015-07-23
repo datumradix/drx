@@ -74,7 +74,6 @@
         protected function getCreateLinkRouteParameters()
         {
             $params = array('relationModelRelatedAttributesMapList' => array('activityItems' => 'account'));
-            //$params = array('relationModelRelatedAttributesMapList' => 'account');
             return array_merge($params, parent::getCreateLinkRouteParameters());
         }
     }
