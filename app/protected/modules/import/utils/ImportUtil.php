@@ -119,6 +119,7 @@
                 if (isset($attributeValueData['id']) && $attributeValueData['id'] != null)
                 {
                     $model        = $modelClassName::getById($attributeValueData['id']);
+                    $makeNewModel = false;
                 }
                 elseif (isset($attributeValueData[ExternalSystemIdUtil::EXTERNAL_SYSTEM_ID_COLUMN_NAME]) &&
                         $attributeValueData[ExternalSystemIdUtil::EXTERNAL_SYSTEM_ID_COLUMN_NAME] != null)
@@ -208,7 +209,7 @@
                 if ($saved)
                 {
                     static::processAfterSaveActions($afterSaveActionsData, $model);
-                    if ($externalSystemId!= null)
+                    if ($externalSystemId != null)
                     {
                         ExternalSystemIdUtil::updateByModel($model, $externalSystemId);
                     }

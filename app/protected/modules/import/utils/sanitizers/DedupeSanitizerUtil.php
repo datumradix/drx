@@ -77,7 +77,7 @@
         {
             assert('$value === null || is_string($value)');
             if (isset($this->mappingRuleData["dedupeRule"]) &&
-                $this->mappingRuleData["dedupeRule"]["value"] == ImportDedupeRulesRadioDropDownElement::SKIP_ROW_ON_MATCH_FOUND)
+                $this->mappingRuleData["dedupeRule"] == ImportDedupeRulesRadioDropDownElement::SKIP_ROW_ON_MATCH_FOUND)
             {
                 if ($value != null)
                 {
@@ -95,7 +95,7 @@
                 }
             }
             elseif (isset($this->mappingRuleData["dedupeRule"]) &&
-                    $this->mappingRuleData["dedupeRule"]["value"] == ImportDedupeRulesRadioDropDownElement::UPDATE_ROW_ON_MATCH_FOUND
+                    $this->mappingRuleData["dedupeRule"] == ImportDedupeRulesRadioDropDownElement::UPDATE_ROW_ON_MATCH_FOUND
                     )
             {
                 if ($value != null)
