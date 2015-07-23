@@ -332,7 +332,7 @@
         /**
          * @depends testCreateAnTaskAfterTheCustomFieldsArePlacedForTasksModule
          */
-        public function testEditOfTheTaskForTheTagCloudFieldAfterRemovingAllTagsPlacedForTasksModule()
+        public function testEditOfTheTaskForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForTasksModule()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -372,7 +372,7 @@
                                 'decimalCstm'                       => '12',
                                 'picklistCstm'                      => array('value' => 'b'),
                                 'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
-                                'tagcloudCstm'                      => array('values' =>  array()),
+                                'tagcloudCstm'                      => array('values' =>  array('writing')),
                                 'countrylistCstm'                   => array('value'  => 'aaaa'),
                                 'statelistCstm'                     => array('value'  => 'aaa1'),
                                 'citylistCstm'                      => array('value'  => 'ab1'),
@@ -425,15 +425,15 @@
             $this->assertEquals($task[0]->citylistCstm->value              , 'ab1');
             $this->assertContains('gg'                                     , $task[0]->multiselectCstm->values);
             $this->assertContains('hh'                                     , $task[0]->multiselectCstm->values);
-            $this->assertEquals(0                                          , $task[0]->tagcloudCstm->values->count());
+            $this->assertEquals(1                                          , $task[0]->tagcloudCstm->values->count());
             $metadata            = CalculatedDerivedAttributeMetadata::
                                    getByNameAndModelClassName('calcnumber', 'Task');
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $task[0]);
             $this->assertEquals(132                                        , $testCalculatedValue);
         }
-
+        
         /**
-         * @depends testEditOfTheTaskForTheTagCloudFieldAfterRemovingAllTagsPlacedForTasksModule
+         * @depends testEditOfTheTaskForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForTasksModule
          */
         public function testEditOfTheTaskForTheCustomFieldsPlacedForTasksModule()
         {

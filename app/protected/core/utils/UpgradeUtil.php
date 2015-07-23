@@ -52,13 +52,14 @@
         {
             try
             {
+                self::isApplicationInUpgradeMode();
+                self::checkIfThereAreJobsInProcess();
                 $messageStreamer->add(Zurmo::t('Core', 'Clearing cache.'));
                 self::clearCache();
                 $messageStreamer->add(Zurmo::t('Core', 'Checking permissions, files, upgrade version....'));
                 $messageLogger = new MessageLogger($messageStreamer);
 
                 self::setUpgradeState('zurmoUpgradeTimestamp', time());
-                self::isApplicationInUpgradeMode();
                 self::checkPermissions();
                 self::checkIfZipExtensionIsLoaded();
                 self::setCurrentZurmoVersion();
@@ -114,12 +115,13 @@
         {
             try
             {
+                self::isApplicationInUpgradeMode();
+                self::checkIfThereAreJobsInProcess();
                 $messageStreamer->add(Zurmo::t('Core', 'Clearing cache.'));
                 self::clearCache();
                 $upgradeExtractPath = self::getUpgradeState('zurmoUpgradeFolderPath');
                 $messageLogger = new MessageLogger($messageStreamer);
 
-                self::isApplicationInUpgradeMode();
                 $messageStreamer->add(Zurmo::t('Core', 'Loading UpgraderComponent.'));
                 self::loadUpgraderComponent($upgradeExtractPath, $messageLogger);
                 $messageStreamer->add(Zurmo::t('Core', 'Clearing cache.'));
@@ -161,15 +163,33 @@
         }
 
         /*
-         * Check if application is in maintanance mode
+         * Check if application is in maintenance mode
          * @throws NotSupportedException
          * @return boolean
          */
         public static function isApplicationInUpgradeMode()
         {
-            if (isset(Yii::app()->maintenanceMode) && Yii::app()->maintenanceMode)
+            if (!Yii::app()->isApplicationInMaintenanceMode())
             {
                 $message = Zurmo::t('Core', 'Application is not in maintenance mode. Please edit perInstance.php file, and set "$maintenanceMode = true;"');
+                throw new NotSupportedException($message);
+            }
+            return true;
+        }
+
+        public static function checkIfThereAreJobsInProcess()
+        {
+            $jobsInProcess = JobInProcess::getAll();
+            if (!empty($jobsInProcess))
+            {
+                $message = Zurmo::t('Core', 'There are jobs that are currently in progress.') . "\n";
+                $message .= Zurmo::t('Core', 'Please set maintenanceMode to true and wait for these jobs to complete, and run this command again') . "\n";
+                $message .= Zurmo::t('Core', 'Here is list of ative jobs:') . "\n";
+                foreach ($jobsInProcess as $job)
+                {
+                    $message .= Zurmo::t('Core', '{staredAt}: {type}',
+                            array('{staredAt}' => $job->createdDateTime, '{type}' => $job->type)) . "\n";
+                }
                 throw new NotSupportedException($message);
             }
             return true;
