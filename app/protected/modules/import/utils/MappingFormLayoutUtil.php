@@ -259,6 +259,12 @@
                                                   $this->form,
                                                   $params);
                     $element->editableTemplate = '<div>{label}{content}{error}</div>';
+                    // In case of TagCloud or MultiSelectDropbox inform user that in cas of updating existing model, original values will be overwritten.
+                    // Prepend this text before content, so it will appear before "Rules" title
+                    if ($element instanceof ImportMappingRuleDefaultMultiSelectDropDownFormElement)
+                    {
+                        $content = $this->resolveTooltipTextInfoAboutOverwritingValues($columnName . $attributeIndexOrDerivedType) . $content;
+                    }
                     $content .= $element->render();
                 }
             }
@@ -334,7 +340,7 @@
         /**
          * Given a string, chop the string by 22 characters only displaying the first 22 characters with a '...'.
          * Add a div with a title, so that if the user hovers over the text, it will show the entire string.
-         * @param string $value
+         * @param string $string
          * @return string content
          */
         public static function renderChoppedStringContent($string)
@@ -344,5 +350,12 @@
                 return $string;
             }
             return ZurmoHtml::tag('div', array('title' => $string), substr($string, 0, 22) . '...');
+        }
+
+        protected function resolveTooltipTextInfoAboutOverwritingValues($id)
+        {
+            $title      = Zurmo::t('Core', 'When updating existing models, original tag cloud or multiselect dropbox values will be overwritten with values from imported file.');
+            $content    = "<span id='$id'>$title</span>";
+            return $content;
         }
     }
