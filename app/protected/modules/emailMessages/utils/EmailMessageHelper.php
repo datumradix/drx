@@ -153,11 +153,11 @@
                 array('id' => Yii::app()->user->userModel->id));
 
             $textEmailContent = Zurmo::t('EmailMessagesModule', 'A test text message from Zurmo.',
-                LabelUtil::getTranslationParamsForAllModules()). "\n";
+                LabelUtil::getTranslationParamsForAllModules()). PHP_EOL;
             $textEmailContent .= Zurmo::t('EmailMessagesModule', 'Sent from {username}: {usernameLink}.',
                 array(
                     '{username}'     => Yii::app()->user->userModel->username,
-                    '{usernameLink}' => $userProfileUrl)) . "\n";
+                    '{usernameLink}' => $userProfileUrl)) . PHP_EOL;
             $emailContent->textContent = EmailNotificationUtil::
                                             resolveNotificationTextTemplate($textEmailContent);
 

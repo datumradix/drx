@@ -202,15 +202,14 @@
             }
             if (isset($isTestNotification) && $isTestNotification)
             {
-                $url = Yii::app()->createAbsoluteUrl('emailMessages/default/configurationEditOutbound');
+                $htmlContent['{preferenceContent}'] = '';
             }
             else
             {
                 $url = Yii::app()->createAbsoluteUrl('users/default/configurationEdit',
                     array('id' => $user->id));
+                $htmlContent['{preferenceContent}'] = ZurmoHtml::link(Zurmo::t('EmailMessagesModule', 'Manage your email preferences'), $url);
             }
-
-            $htmlContent['{preferenceContent}'] = ZurmoHtml::link(Zurmo::t('EmailMessagesModule', 'Manage your email preferences'), $url);
             $htmlContent['{sourceContent}']     = Zurmo::t('EmailMessagesModule', 'Powered By {link}',
                 array('{link}' => ZurmoHtml::link(Yii::app()->label, self::resolveWebsiteUrlForNotificationMessage())));
             return $htmlContent;
@@ -231,7 +230,7 @@
 
             if (isset($isTestNotification) && $isTestNotification)
             {
-                $url = ShortUrlUtil::createShortUrl(Yii::app()->createAbsoluteUrl('emailMessages/default/configurationEditOutbound'));
+                $textContent['{preferenceContent}'] = '';
             }
             else
             {
@@ -240,9 +239,8 @@
                         array('id' => $user->id)
                     )
                 );
+                $textContent['{preferenceContent}'] = Zurmo::t('EmailMessagesModule', 'Manage your email preferences') . ': ' . $url;
             }
-
-            $textContent['{preferenceContent}'] = Zurmo::t('EmailMessagesModule', 'Manage your email preferences') . ': ' . $url;
             $textContent['{sourceContent}']     = Zurmo::t('EmailMessagesModule', 'Powered By Zurmo', LabelUtil::getTranslationParamsForAllModules());
             $textContent['{sourceContent}']    .= PHP_EOL . self::resolveWebsiteUrlForNotificationMessage();
             return $textContent;

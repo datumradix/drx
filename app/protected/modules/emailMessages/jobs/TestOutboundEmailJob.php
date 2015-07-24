@@ -69,6 +69,14 @@
         {
             $messageContent            = null;
             $userToSendMessagesFrom    = BaseControlUserConfigUtil::getUserToRunAs();
+
+            $from = array(
+                'name'      => Yii::app()->emailHelper->resolveFromNameForSystemUser($userToSendMessagesFrom),
+                'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom)
+            );
+            $emailMessage = EmailMessageHelper::processAndCreateTestEmailMessage($from, Yii::app()->emailHelper->defaultTestToAddress);
+
+            /*
             $emailMessage              = new EmailMessage();
             $emailMessage->owner       = Yii::app()->user->userModel;
             $emailMessage->subject     = Zurmo::t('EmailMessagesModule', 'A test email from Zurmo',
@@ -90,6 +98,7 @@
             $emailMessage->recipients->add($recipient);
             $box                       = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
             $emailMessage->folder      = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
+            */
             $validatedAndSaved          = $emailMessage->save();
             if (!$validatedAndSaved)
             {
