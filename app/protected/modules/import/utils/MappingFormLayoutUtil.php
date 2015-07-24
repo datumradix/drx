@@ -263,7 +263,7 @@
                     // Prepend this text before content, so it will appear before "Rules" title
                     if ($element instanceof ImportMappingRuleDefaultMultiSelectDropDownFormElement)
                     {
-                        $content = $this->resolveTooltipTextInfoAboutOverwritingValues($columnName . $attributeIndexOrDerivedType) . $content;
+                        $content = $this->resolveTextAboutOverwritingMultiselectOrTagCloudValues($columnName . $attributeIndexOrDerivedType) . $content;
                     }
                     $content .= $element->render();
                 }
@@ -352,7 +352,7 @@
             return ZurmoHtml::tag('div', array('title' => $string), substr($string, 0, 22) . '...');
         }
 
-        protected function resolveTooltipTextInfoAboutOverwritingValues($id)
+        protected function resolveTextAboutOverwritingMultiselectOrTagCloudValues($id)
         {
             $title      = Zurmo::t('Core', 'When updating existing models, original tag cloud or multiselect dropbox values will be overwritten with values from imported file.');
             $content    = "<span id='$id'>$title</span>";
