@@ -97,7 +97,7 @@
         {
             ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
             ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', true);
-            $emailMessage = EmailMessageHelper::processAndCreateEmailMessage(array('name' => 'Test User', 'address' => 'test@yahoo.com'), 'abc@yahoo.com');
+            $emailMessage = EmailMessageHelper::processAndCreateTestEmailMessage(array('name' => 'Test User', 'address' => 'test@yahoo.com'), 'abc@yahoo.com');
             $emailMessage->owner = static::$userpsg;
             assert($emailMessage->save()); // Not Coding Standard
             //user sendgrid
@@ -158,7 +158,7 @@
             Yii::app()->sendGridEmailHelper->init();
             ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
             ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', false);
-            $emailMessage = EmailMessageHelper::processAndCreateEmailMessage(array('name' => 'Test User WO sendgrid', 'address' => 'testwosendgrid@yahoo.com'), 'abc@yahoo.com');
+            $emailMessage = EmailMessageHelper::processAndCreateTestEmailMessage(array('name' => 'Test User WO sendgrid', 'address' => 'testwosendgrid@yahoo.com'), 'abc@yahoo.com');
             //user custom
             $emailMessage->owner = static::$usercstmsmtp;
             assert($emailMessage->save()); // Not Coding Standard
@@ -197,7 +197,7 @@
 
             ZurmoConfigurationUtil::setByModuleName('MarketingModule', 'UseAutoresponderOrCampaignOwnerMailSettings', true);
             ZurmoConfigurationUtil::setByModuleName('SendGridModule', 'enableSendgrid', true);
-            $emailMessage = EmailMessageHelper::processAndCreateEmailMessage(array('name' => 'Test User', 'address' => 'test@yahoo.com'), 'abc@yahoo.com');
+            $emailMessage = EmailMessageHelper::processAndCreateTestEmailMessage(array('name' => 'Test User', 'address' => 'test@yahoo.com'), 'abc@yahoo.com');
             $emailMessage->owner = static::$bothSGandCstmUser;
             $this->assertTrue($emailMessage->save());
             $campaignItem->emailMessage = $emailMessage;
