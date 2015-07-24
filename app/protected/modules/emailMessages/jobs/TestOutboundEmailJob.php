@@ -75,30 +75,6 @@
                 'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom)
             );
             $emailMessage = EmailMessageHelper::processAndCreateTestEmailMessage($from, Yii::app()->emailHelper->defaultTestToAddress);
-
-            /*
-            $emailMessage              = new EmailMessage();
-            $emailMessage->owner       = Yii::app()->user->userModel;
-            $emailMessage->subject     = Zurmo::t('EmailMessagesModule', 'A test email from Zurmo',
-                                         LabelUtil::getTranslationParamsForAllModules());
-            $emailContent              = new EmailMessageContent();
-            $emailContent->textContent = Zurmo::t('EmailMessagesModule', 'A test text message from Zurmo.',
-                                         LabelUtil::getTranslationParamsForAllModules());
-            $emailContent->htmlContent = Zurmo::t('EmailMessagesModule', 'A test text message from Zurmo.',
-                                         LabelUtil::getTranslationParamsForAllModules());
-            $emailMessage->content     = $emailContent;
-            $sender                    = new EmailMessageSender();
-            $sender->fromAddress       = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
-            $sender->fromName          = Yii::app()->emailHelper->resolveFromNameForSystemUser($userToSendMessagesFrom);
-            $emailMessage->sender      = $sender;
-            $recipient                 = new EmailMessageRecipient();
-            $recipient->toAddress      = Yii::app()->emailHelper->defaultTestToAddress;
-            $recipient->toName         = 'Test Recipient';
-            $recipient->type           = EmailMessageRecipient::TYPE_TO;
-            $emailMessage->recipients->add($recipient);
-            $box                       = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
-            $emailMessage->folder      = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
-            */
             $validatedAndSaved          = $emailMessage->save();
             if (!$validatedAndSaved)
             {
