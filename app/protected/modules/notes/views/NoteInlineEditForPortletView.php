@@ -66,6 +66,8 @@
             }
             $note         = new Note();
             $note->activityItems->add($this->params["relationModel"]);
+            $this->addRelatedModelAccountToModel($note, $this->params["relationModel"]);
+
             $inlineViewClassName = $this->getInlineEditViewClassName();
 
             $urlParameters = array('redirectUrl' => $this->getPortletDetailsUrl()); //After save, the url to go to.
@@ -73,6 +75,22 @@
             $inlineView    = new $inlineViewClassName($note, 'default', 'notes', 'inlineCreateSave',
                                                       $urlParameters, $uniquePageId);
             return $inlineView->render();
+        }
+
+        /**
+         * Copy the account from a related model to a Note activity items
+         * ToDo: This shouldn't be in a view, but as we already add some activity items in this view, it is fine for now
+         * ToDo: but we should think about refactoring it
+         * @param RedBeanModel $model
+         * @param RedBeanModel $relatedModel
+         */
+        protected function addRelatedModelAccountToModel(RedBeanModel $model, RedBeanModel $relatedModel)
+        {
+            if ($relatedModel->isRelation('account') && isset($relatedModel->account) &&
+                $relatedModel->account->id > 0)
+            {
+                $model->activityItems->add($relatedModel->account);
+            }
         }
 
         public function getInlineEditViewClassName()
