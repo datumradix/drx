@@ -34,61 +34,53 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * View for showing a list of reports
-     */
-    class ReportsListView extends StarredListView
+    class SavedReportStarred extends BaseStarredModel
     {
-        /**
-         * @return array
-         */
         public static function getDefaultMetadata()
         {
-            $metadata = array(
-                'global' => array(
-                    //'derivedAttributeTypes' => array(
-                     //   'FullName',
-                    //),
-                    'nonPlaceableAttributeNames' => array(
-                        'serializedData',
-                    ),
-                    'panels' => array(
-                        array(
-                            'rows' => array(
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'name', 'type' => 'Text', 'isLink' => true),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'moduleClassName',
-                                                      'type' => 'ModuleForReportStaticDropDown'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'type', 'type' => 'ReportTypeStaticDropDown'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
+            $metadata = parent::getDefaultMetadata();
+            $metadata[__CLASS__] = array(
+                'relations' => array(
+                    static::getRelationName()     => array(static::HAS_ONE,  static::getRelatedModelClassName()),
                 ),
+                'indexes' => static::getIndexesDefinition(),
             );
             return $metadata;
+        }
+
+        public static function getModuleClassName()
+        {
+            return 'ReportsModule';
+        }
+
+        /**
+         * Returns the display name for the model class.
+         * @param null | string $language
+         * @return dynamic label name based on module.
+         */
+        protected static function getLabel($language = null)
+        {
+            return Zurmo::t('ReportsModule', 'Report Starred', array(), null, $language);
+        }
+
+        /**
+         * Returns the display name for plural of the model class.
+         * @param null | string $language
+         * @return dynamic label name based on module.
+         */
+        protected static function getPluralLabel($language = null)
+        {
+            return Zurmo::t('ReportsModule', 'Reports Starred', array(), null, $language);
+        }
+
+        protected static function getRelationName()
+        {
+            return 'savedReport';
+        }
+
+        protected static function getRelatedModelClassName()
+        {
+            return 'SavedReport';
         }
     }
 ?>
