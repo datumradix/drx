@@ -98,10 +98,11 @@
                 $moduleClassName = $this->model->moduleClassName;
                 $moduleLabel = $this->getPuralModuleLabelForReportTitle($moduleClassName);
                 $typesAndLabels  = Report::getTypeDropDownArray();
-                return strval($this->model) . ' - ' .
+                $title = strval($this->model) . ' - ' .
                        Zurmo::t('ReportsModule', '{moduleLabel} {typeLabel} Report',
                               array('{moduleLabel}' => $moduleLabel,
                                     '{typeLabel}'   => $typesAndLabels[$this->model->type]));
+                return $title;
             }
             else
             {
@@ -138,6 +139,11 @@
             $content .= '</nav></div>';
             $this->registerScripts();
             return $content;
+        }
+
+        public function getPostTruncatedTitleContent()
+        {
+            return StarredUtil::getToggleStarStatusLink($this->savedReport, null);
         }
 
         protected function shouldRenderToolBarElement($element, $elementInformation)
