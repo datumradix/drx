@@ -354,7 +354,7 @@
 
         protected function resolveTextAboutOverwritingMultiselectOrTagCloudValues($id)
         {
-            $title      = Zurmo::t('Core', 'When updating existing models, original tag cloud or multiselect dropbox values will be overwritten with values from imported file.');
+            $title      = Zurmo::t('Core', 'REMEMBER: If you are updating existing records tag cloud or multiselect values will be overwritten with those in your import file.');
             $content    = "<span id='$id'>$title</span>";
             return $content;
         }
