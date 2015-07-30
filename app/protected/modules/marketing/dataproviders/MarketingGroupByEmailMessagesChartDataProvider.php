@@ -278,6 +278,7 @@
                 self::UNIQUE_CLICKS,
                 self::BOUNCED,
                 self::UNSUBSCRIBED,
+                SELF::SKIPPED
             );
         }
     }
