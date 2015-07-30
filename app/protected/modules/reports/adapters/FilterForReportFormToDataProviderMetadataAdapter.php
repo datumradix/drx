@@ -151,6 +151,10 @@
             {
                 $this->resolveDropDownVariantAttributeClauseAndStructure();
             }
+            elseif ($this->filter->getValueElementType() == 'MixedLoggedInUserTypesAndUsers')
+            {
+                $this->resolveUserAttributeClauseAndStructure();
+            }
             else
             {
                 //handles likeContactState for example
@@ -163,6 +167,10 @@
             if ($this->filter->getValueElementType() == 'MixedDateTypesForReport')
             {
                 $this->resolveDateAttributeClauseAndStructure();
+            }
+            elseif ($this->filter->getValueElementType() == 'MixedLoggedInUserTypesAndUsers')
+            {
+                $this->resolveUserAttributeClauseAndStructure();
             }
             elseif ($this->filter->getValueElementType() == 'MixedNumberTypes')
             {
@@ -225,6 +233,33 @@
             else
             {
                 throw new NotSupportedException();
+            }
+        }
+
+        protected function resolveUserAttributeClauseAndStructure()
+        {
+            $rulesClassName         = 'MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules';
+            $value                  = array();
+            $value['type']          = $this->filter->valueType;
+            $value['id']     = $this->filter->value;
+            $attributesAndRelations  = 'resolveEntireMappingByRules';
+            $rulesClassName::resolveAttributesAndRelations('notUsed__notUsed', $attributesAndRelations, $value);
+            $count = 1;
+            foreach ($attributesAndRelations as $attributeAndRelation)
+            {
+                $this->clauses[$count] = array('attributeName' => $this->getRealAttributeName(),
+                                               'operatorType'  => $attributeAndRelation[2],
+                                               'value'         => $this->resolveForValueByRules($rulesClassName,
+                                                   $attributeAndRelation, $value));
+                if ($this->structure == null)
+                {
+                    $this->structure  = $count;
+                }
+                else
+                {
+                    $this->structure  .= ' and ' . $count;
+                }
+                $count++;
             }
         }
 

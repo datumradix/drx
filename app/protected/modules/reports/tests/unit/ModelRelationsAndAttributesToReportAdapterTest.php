@@ -1401,7 +1401,7 @@
             $this->assertEquals('MixedNumberTypes',               $adapter->getFilterValueElementType('float'));
             $this->assertEquals('MixedNumberTypes',               $adapter->getFilterValueElementType('integer'));
             $this->assertEquals('StaticDropDownForReport',        $adapter->getFilterValueElementType('multiDropDown'));
-            $this->assertEquals('UserNameId',                     $adapter->getFilterValueElementType('owner__User'));
+            $this->assertEquals('MixedLoggedInUserTypesAndUsers', $adapter->getFilterValueElementType('owner__User'));
             $this->assertEquals('Text',                           $adapter->getFilterValueElementType('phone'));
             $this->assertEquals('StaticDropDownForReport',        $adapter->getFilterValueElementType('radioDropDown'));
             $this->assertEquals('Text',                           $adapter->getFilterValueElementType('string'));
