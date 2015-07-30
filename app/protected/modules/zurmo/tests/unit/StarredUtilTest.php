@@ -60,7 +60,7 @@
         {
             $sql = "SHOW TABLES LIKE '%starred'";
             $allStarredTableRows = ZurmoRedBean::getAll($sql);
-            $this->assertCount(4, $allStarredTableRows);
+            $this->assertCount(5, $allStarredTableRows);
         }
 
         /**
