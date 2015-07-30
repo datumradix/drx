@@ -196,7 +196,6 @@
             {
                 $this->timeout          = $sessionGcMaxLifeTime;
             }
-            $this->timeout = 90;
         }
     }
 ?>
