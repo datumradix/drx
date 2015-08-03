@@ -136,7 +136,7 @@
                                          $quote . " = '0000-00-00 00:00:00' OR {$quote}{$emailMessageTableName}{$quote}" .
                                          ".{$quote}{$sentDateTimeColumnName}{$quote} IS NULL) AND ".
                                          "({$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_OUTBOX . "'" .
-                                         " AND {$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_OUTBOX_ERROR . "'))" .
+                                         " OR {$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_OUTBOX_ERROR . "'))" .
                                          " THEN 1 ELSE 0 END)"; // Not Coding Standard
             $sentEmailsSelectPart       = "sum(CASE WHEN (({$quote}{$emailMessageTableName}{$quote}.{$quote}{$sentDateTimeColumnName}" .
                                          $quote . " > '0000-00-00 00:00:00') AND " .
