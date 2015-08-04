@@ -41,10 +41,17 @@
     {
         protected $model;
 
-        public function __construct($model)
+        protected $explicitReadWriteModelPermissions = null;
+
+        /**
+         * @param $model
+         * @param null || ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions
+         */
+        public function __construct($model, $explicitReadWriteModelPermissions = null)
         {
             assert('$model instanceof RedBeanModel');
             $this->model         = $model;
+            $this->explicitReadWriteModelPermissions         = $explicitReadWriteModelPermissions;
         }
 
         /**
@@ -60,6 +67,11 @@
         public function getModelClassName()
         {
             return get_class($this->model);
+        }
+
+        public function getExplicitReadWriteModelPermissions()
+        {
+            return $this->explicitReadWriteModelPermissions;
         }
 
         /**

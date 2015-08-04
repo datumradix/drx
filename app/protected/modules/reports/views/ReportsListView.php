@@ -37,7 +37,7 @@
     /**
      * View for showing a list of reports
      */
-    class ReportsListView extends SecuredListView
+    class ReportsListView extends StarredListView
     {
         /**
          * @return array

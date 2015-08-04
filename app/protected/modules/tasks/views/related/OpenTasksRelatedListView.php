@@ -56,6 +56,10 @@
                                     'uniqueLayoutId'   => 'eval:$this->uniqueLayoutId',
                                     'modalContainerId' => 'eval:TasksUtil::getModalContainerId()'
                                  ),
+                            array(  'type'            => 'ListByRelatedModelLink',
+                                    'routeModuleId'   => 'eval:$this->moduleId',
+                                    'routeParameters' => 'eval:$this->getRelatedListLinkRouteParametersForTasks()',
+                                    'label' => 'View All Related ' . Zurmo::t('TasksModule', 'Open TasksModulePluralLabel', LabelUtil::getTranslationParamsForAllModules())),
                         ),
                     ),
                     'rowMenu' => array(

@@ -55,5 +55,15 @@
         {
             return array('dedupeRule');
         }
+
+        public function rules()
+        {
+            // The reason why we made this attribute is because setAttributes method skip attributes
+            // that do not have validators, so set safe validator for this attribute, and it's value will be assigned to
+            // form attributes during mass assign
+            return array(
+                array(static::getAttributeName(),  'safe')
+            );
+        }
     }
 ?>

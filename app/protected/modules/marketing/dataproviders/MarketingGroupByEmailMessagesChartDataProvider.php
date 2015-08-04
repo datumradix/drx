@@ -278,6 +278,8 @@
                 self::UNIQUE_CLICKS,
                 self::BOUNCED,
                 self::UNSUBSCRIBED,
+                self::SKIPPED,
+                self::FAILED_TO_SEND,
             );
         }
     }

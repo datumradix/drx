@@ -100,7 +100,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'activityItems', 'type' => 'TaskActivityItems', 'isLink' => true),
+                                                array('attributeName' => 'null', 'type' => 'TaskActivityItems', 'isLink' => true),
                                             ),
                                         ),
                                     )

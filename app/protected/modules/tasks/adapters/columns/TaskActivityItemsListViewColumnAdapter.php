@@ -48,6 +48,7 @@
             {
                 return array(
                     'name' => $this->attribute,
+                    'header'      => Zurmo::t('TasksModule', 'Activity Items'),
                     'type' => 'raw',
                     'value' => 'TaskActivityItemsListViewColumnAdapter::getActivityItemsModels($data, true)',
                     'sortable' => false,
@@ -57,6 +58,7 @@
             {
                 return array(
                     'name'  => $this->attribute,
+                    'header'      => Zurmo::t('TasksModule', 'Activity Items'),
                     'value' => 'TaskActivityItemsListViewColumnAdapter::getActivityItemsModels($data, false)',
                     'sortable' => false,
                 );

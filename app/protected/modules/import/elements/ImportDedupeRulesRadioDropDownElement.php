@@ -76,5 +76,14 @@
             }
             return $htmlOptions;
         }
+
+        /**
+         * We do not need two nested arrays for attribute name, so avoid ['value'] part
+         * @return string
+         */
+        protected function getNameForSelectInput()
+        {
+            return $this->getEditableInputName($this->attribute);
+        }
     }
 ?>

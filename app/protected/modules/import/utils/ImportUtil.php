@@ -79,10 +79,12 @@
 
         /**
          * Given a row of data, resolve each value of the row for import and either create or update an existing model.
-         * @param object $importRules
-         * @param array $rowData
+         * @param ImportRules $importRules
+         * @param RedBean_OODBBean $rowBean
          * @param array $mappingData
-         * @param object $importRowDataResultsUtil
+         * @param ImportRowDataResultsUtil $importRowDataResultsUtil
+         * @param ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions
+         * @throws NotSupportedException
          */
         public static function importByImportRulesRowData(ImportRules $importRules,
                                                           $rowBean,
@@ -111,11 +113,13 @@
                                                                         $idColumnName,
                                                                         $columnMappingData,
                                                                         $rowBean,
-                                                                        $importSanitizeResultsUtil);
+                                                                        $importSanitizeResultsUtil,
+                                                                        $explicitReadWriteModelPermissions);
                 assert('count($attributeValueData) == 0 || count($attributeValueData) == 1');
                 if (isset($attributeValueData['id']) && $attributeValueData['id'] != null)
                 {
                     $model        = $modelClassName::getById($attributeValueData['id']);
+                    $makeNewModel = false;
                 }
                 elseif (isset($attributeValueData[ExternalSystemIdUtil::EXTERNAL_SYSTEM_ID_COLUMN_NAME]) &&
                         $attributeValueData[ExternalSystemIdUtil::EXTERNAL_SYSTEM_ID_COLUMN_NAME] != null)
@@ -132,7 +136,8 @@
                                                                                $rowBean,
                                                                                $importRowDataResultsUtil,
                                                                                $importSanitizeResultsUtil,
-                                                                               $skippedColumns) !== true)
+                                                                               $skippedColumns,
+                                                                               $explicitReadWriteModelPermissions) !== true)
             {
                 if (null != $matchedModel = $importSanitizeResultsUtil->getMatchedModel())
                 {
@@ -152,7 +157,8 @@
                                                                                          $rowBean,
                                                                                          $importSanitizeResultsUtil,
                                                                                          $model,
-                                                                                         $afterSaveActionsData);
+                                                                                         $afterSaveActionsData,
+                                                                                         $explicitReadWriteModelPermissions);
                     }
                 }
             }
@@ -174,7 +180,8 @@
                                                                                      $rowBean,
                                                                                      $importSanitizeResultsUtil,
                                                                                      $model,
-                                                                                     $afterSaveActionsData);
+                                                                                     $afterSaveActionsData,
+                                                                                     $explicitReadWriteModelPermissions);
                 }
             }
 
@@ -191,7 +198,8 @@
                                                                                      $rowBean,
                                                                                      $importSanitizeResultsUtil,
                                                                                      $model,
-                                                                                     $afterSaveActionsData);
+                                                                                     $afterSaveActionsData,
+                                                                                     $explicitReadWriteModelPermissions);
                 }
             }
             $validated = $model->validate();
@@ -201,7 +209,7 @@
                 if ($saved)
                 {
                     static::processAfterSaveActions($afterSaveActionsData, $model);
-                    if ($externalSystemId!= null)
+                    if ($externalSystemId != null)
                     {
                         ExternalSystemIdUtil::updateByModel($model, $externalSystemId);
                     }
@@ -595,8 +603,8 @@
 
         /**
          * Get Penultimate ModelClassName By Import Rules
-         * @param type $importRules
-         * @return type
+         * @param ImportRules $importRules
+         * @return mixed
          */
         public static function getPenultimateModelClassNameByImportRules(ImportRules $importRules)
         {
@@ -606,23 +614,26 @@
 
         /**
          * Gets attribute value data
-         * @param AttributeImportRules $attributeImportRules
+         * @param ImportRules $importRules
          * @param string $columnName
          * @param array $columnMappingData
-         * @param string $valueReadyToSanitize
+         * @param RedBean_OODBBean $rowBean
          * @param ImportSanitizeResultsUtil $importSanitizeResultsUtil
+         * @param null || ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions
+         * @return mixed
+         * @throws NotSupportedException
          */
         protected static function getAttributeValueData(ImportRules $importRules,
                                                  $columnName,
                                                  $columnMappingData,
                                                  $rowBean,
-                                                 ImportSanitizeResultsUtil $importSanitizeResultsUtil)
+                                                 ImportSanitizeResultsUtil $importSanitizeResultsUtil,
+                                                 $explicitReadWriteModelPermissions = null)
         {
-            $attributeImportRules = static::getAttributeImportRules($importRules, $columnMappingData);
+            $attributeImportRules = static::getAttributeImportRules($importRules, $columnMappingData, $explicitReadWriteModelPermissions);
             $valueReadyToSanitize = static::
                                     resolveValueToSanitizeByValueAndColumnType($rowBean->$columnName,
                                                                                $columnMappingData['type']);
-
             return $attributeImportRules->resolveValueForImport($valueReadyToSanitize, $columnName,
                                                                 $columnMappingData,
                                                                 $importSanitizeResultsUtil);
@@ -632,16 +643,18 @@
          * Get attribute import rules
          * @param ImportRules $importRules
          * @param array $columnMappingData
+         * @param null || ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions
          * @return object containing attribute import rules
          * @throws NotSupportedException
          */
-        protected static function getAttributeImportRules(ImportRules $importRules, $columnMappingData)
+        protected static function getAttributeImportRules(ImportRules $importRules, $columnMappingData, $explicitReadWriteModelPermissions = null)
         {
             $attributeImportRules =  AttributeImportRulesFactory::
                                         makeByImportRulesTypeAndAttributeIndexOrDerivedType(
                                             $importRules::getType(),
                                             $columnMappingData['attributeIndexOrDerivedType'],
-                                            self::getPenultimateModelClassNameByImportRules($importRules));
+                                            self::getPenultimateModelClassNameByImportRules($importRules),
+                                            $explicitReadWriteModelPermissions);
             if ($attributeImportRules->getModelClassName() == null)
             {
                 throw new NotSupportedException();
@@ -650,14 +663,14 @@
         }
 
         /**
-         * Process import information, get attribute value data and populates the model
          * @param ImportRules $importRules
          * @param string $columnName
          * @param array $columnMappingData
          * @param RedBean_OODBBean $rowBean
          * @param ImportSanitizeResultsUtil $importSanitizeResultsUtil
          * @param RedBeanModel $model
-         * @param array $afterSaveActionsData
+         * @param $afterSaveActionsData
+         * @param null || ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions
          */
         protected static function processImportInformationForAttributeDataAndPopulateModel(ImportRules $importRules,
                                                                                     $columnName,
@@ -665,14 +678,16 @@
                                                                                     $rowBean,
                                                                                     ImportSanitizeResultsUtil $importSanitizeResultsUtil,
                                                                                     RedBeanModel $model,
-                                                                                    & $afterSaveActionsData)
+                                                                                    & $afterSaveActionsData,
+                                                                                    $explicitReadWriteModelPermissions = null)
         {
             assert('$rowBean instanceof RedBean_OODBBean');
             $attributeValueData = static::getAttributeValueData($importRules,
                                                                 $columnName,
                                                                 $columnMappingData,
                                                                 $rowBean,
-                                                                $importSanitizeResultsUtil);
+                                                                $importSanitizeResultsUtil,
+                                                                $explicitReadWriteModelPermissions);
             static::sanitizeValueAndPopulateModel($importRules,
                                                   $model,
                                                   $columnMappingData,
@@ -686,8 +701,12 @@
          * @param RedBeanModel $model
          * @param array $mappingData
          * @param RedBean_OODBBean $rowBean
+         * @param ImportRowDataResultsUtil $importRowDataResultsUtil
          * @param ImportSanitizeResultsUtil $importSanitizeResultsUtil
-         * @param array $skippedColumns
+         * @param array$skippedColumns
+         * @param null || ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions
+         * @return bool
+         * @throws NotSupportedException
          */
         protected static function processDedupeAttributesToCheckForSkipIfRequired(ImportRules $importRules,
                                                                                 RedBeanModel $model,
@@ -695,7 +714,8 @@
                                                                                 $rowBean,
                                                                                 ImportRowDataResultsUtil $importRowDataResultsUtil,
                                                                                 ImportSanitizeResultsUtil $importSanitizeResultsUtil,
-                                                                                & $skippedColumns)
+                                                                                & $skippedColumns,
+                                                                                $explicitReadWriteModelPermissions = null)
         {
             assert('$rowBean instanceof RedBean_OODBBean');
             $isSkipped = false;
@@ -710,7 +730,8 @@
                                                                         $sourceColumnName,
                                                                         $columnMappingData,
                                                                         $rowBean,
-                                                                        $importSanitizeResultsUtil);
+                                                                        $importSanitizeResultsUtil,
+                                                                        $explicitReadWriteModelPermissions);
                     if (!$importSanitizeResultsUtil->shouldSaveModel())
                     {
                         $importRowDataResultsUtil->addMessages($importSanitizeResultsUtil->getMessages());
