@@ -49,18 +49,22 @@
 
         /**
          * Given an import rules type and an attribute index or derived type string, make an AttributeImportRules object.
-         * @param string $importRulesType
+         * @param $importRulesType
          * @param string $attributeIndexOrDerivedType
-         * @param string $penultimateModelClassName
+         * @param null || string $penultimateModelClassName
+         * @param null || ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions
          * @return object AttributeImportRules
+         * @throws NotSupportedException
          */
         public static function makeByImportRulesTypeAndAttributeIndexOrDerivedType($importRulesType,
                                                                                   $attributeIndexOrDerivedType,
-                                                                                  $penultimateModelClassName = null)
+                                                                                  $penultimateModelClassName = null,
+                                                                                  $explicitReadWriteModelPermissions = null)
         {
             assert('is_string($importRulesType)');
             assert('is_string($attributeIndexOrDerivedType)');
             assert('($penultimateModelClassName === null) || is_string($penultimateModelClassName)');
+            assert('($explicitReadWriteModelPermissions === null) || $explicitReadWriteModelPermissions instanceof ExplicitReadWriteModelPermissions');
             $importRulesTypeClassName = ImportRulesUtil::getImportRulesClassNameByType($importRulesType);
             $attributeImportRulesType = $importRulesTypeClassName::getAttributeImportRulesType(
                                         $attributeIndexOrDerivedType);
@@ -82,11 +86,11 @@
             $attributeImportRulesClassName = $attributeImportRulesType . 'AttributeImportRules';
             if (is_subclass_of($attributeImportRulesClassName, 'DerivedAttributeImportRules'))
             {
-                return new $attributeImportRulesClassName($model);
+                return new $attributeImportRulesClassName($model, $explicitReadWriteModelPermissions);
             }
             if (is_subclass_of($attributeImportRulesClassName, 'NonDerivedAttributeImportRules'))
             {
-                $attributeImportRules = new $attributeImportRulesClassName($model, $attributeName);
+                $attributeImportRules = new $attributeImportRulesClassName($model, $attributeName, $explicitReadWriteModelPermissions);
                 $attributeImportRules->setPenultimateModelClassName($penultimateModelClassName);
                 $penultimateAttributeName  = AttributeImportRulesFactory::
                                             getAttributeNameFromAttributeNameByAttributeIndexOrDerivedType(
@@ -94,7 +98,7 @@
                 $attributeImportRules->setPenultimateAttributeName($penultimateAttributeName);
                 return $attributeImportRules;
             }
-            return new $attributeImportRulesClassName($model, $attributeName);
+            return new $attributeImportRulesClassName($model, $attributeName, $explicitReadWriteModelPermissions);
         }
 
         /**

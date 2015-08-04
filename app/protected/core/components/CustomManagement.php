@@ -128,7 +128,11 @@
          */
         public function resolveDataProviderClassNameForControllerBySearchModel($searchModel)
         {
-            if ($searchModel->filterByStarred)
+            if(method_exists($searchModel, 'shouldFilterByRelatedModels') && $searchModel->shouldFilterByRelatedModels())
+            {
+                return $searchModel->resolveDataProviderClassName();
+            }
+            elseif ($searchModel->filterByStarred)
             {
                 return 'StarredModelDataProvider';
             }
@@ -200,7 +204,7 @@
                                                                              $defaultOptionsContent,
                                                                              $parentContent)
         {
-            return $parentContent;
+            return $defaultOptionsContent;
         }
 
         /**

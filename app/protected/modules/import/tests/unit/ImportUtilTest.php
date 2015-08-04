@@ -725,7 +725,7 @@
 
             $emailMappingData = ImportMappingUtil::makeEmailColumnMappingData      ('primaryEmail__emailAddress');
             $emailMappingData['mappingRulesData']['EmailModelAttributeDedupeMappingRuleForm']
-                                            = array('dedupeRule' => array('value' => ImportDedupeRulesRadioDropDownElement::DO_NOT_DEDUPE));
+                                            = array('dedupeRule' => ImportDedupeRulesRadioDropDownElement::DO_NOT_DEDUPE);
             $mappingData = array(
                 'column_0'  => ImportMappingUtil::makeStringColumnMappingData      ('name'),
                 'column_1'  => $emailMappingData
@@ -779,7 +779,7 @@
             $emailMappingData = ImportMappingUtil::makeEmailColumnMappingData      ('primaryEmail__emailAddress');
             $emailMappingData['mappingRulesData']['EmailModelAttributeDedupeMappingRuleForm']
                                             = array('dedupeRule' =>
-                                                        array('value' => ImportDedupeRulesRadioDropDownElement::SKIP_ROW_ON_MATCH_FOUND));
+                                                        ImportDedupeRulesRadioDropDownElement::SKIP_ROW_ON_MATCH_FOUND);
             $mappingData = array(
                 'column_0'  => ImportMappingUtil::makeStringColumnMappingData      ('name'),
                 'column_1'  => $emailMappingData
@@ -839,7 +839,7 @@
             $emailMappingData = ImportMappingUtil::makeEmailColumnMappingData      ('primaryEmail__emailAddress');
             $emailMappingData['mappingRulesData']['EmailModelAttributeDedupeMappingRuleForm']
                                             = array('dedupeRule' =>
-                                                        array('value' => ImportDedupeRulesRadioDropDownElement::UPDATE_ROW_ON_MATCH_FOUND));
+                                                        ImportDedupeRulesRadioDropDownElement::UPDATE_ROW_ON_MATCH_FOUND);
             $mappingData = array(
                 'column_0'  => ImportMappingUtil::makeStringColumnMappingData      ('name'),
                 'column_1'  => $emailMappingData
@@ -902,11 +902,11 @@
             $emailMappingData = ImportMappingUtil::makeEmailColumnMappingData      ('primaryEmail__emailAddress');
             $emailMappingData['mappingRulesData']['EmailModelAttributeDedupeMappingRuleForm']
                                             = array('dedupeRule' =>
-                                                        array('value' => ImportDedupeRulesRadioDropDownElement::DO_NOT_DEDUPE));
+                                                        ImportDedupeRulesRadioDropDownElement::DO_NOT_DEDUPE);
             $nameMappingData = ImportMappingUtil::makeEmailColumnMappingData      ('name');
             $nameMappingData['mappingRulesData']['NameModelAttributeDedupeMappingRuleForm']
                                             = array('dedupeRule' =>
-                                                        array('value' => ImportDedupeRulesRadioDropDownElement::SKIP_ROW_ON_MATCH_FOUND));
+                                                        ImportDedupeRulesRadioDropDownElement::SKIP_ROW_ON_MATCH_FOUND);
             $mappingData = array(
                 'column_0'  => $nameMappingData,
                 'column_1'  => $emailMappingData
@@ -959,11 +959,11 @@
             $emailMappingData = ImportMappingUtil::makeEmailColumnMappingData      ('primaryEmail__emailAddress');
             $emailMappingData['mappingRulesData']['EmailModelAttributeDedupeMappingRuleForm']
                                             = array('dedupeRule' =>
-                                                        array('value' => ImportDedupeRulesRadioDropDownElement::DO_NOT_DEDUPE));
+                                                        ImportDedupeRulesRadioDropDownElement::DO_NOT_DEDUPE);
             $nameMappingData = ImportMappingUtil::makeEmailColumnMappingData      ('name');
             $nameMappingData['mappingRulesData']['NameModelAttributeDedupeMappingRuleForm']
                                             = array('dedupeRule' =>
-                                                        array('value' => ImportDedupeRulesRadioDropDownElement::UPDATE_ROW_ON_MATCH_FOUND));
+                                                        ImportDedupeRulesRadioDropDownElement::UPDATE_ROW_ON_MATCH_FOUND);
             $mappingData = array(
                 'column_0'  => $nameMappingData,
                 'column_1'  => $emailMappingData

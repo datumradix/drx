@@ -80,7 +80,8 @@
             $sanitizedValue = ImportSanitizerUtil::
                               sanitizeValueBySanitizerTypes(static::getSanitizerUtilTypesInProcessingOrder(),
                                                    $modelClassName, null, $value, $columnName, $columnMappingData,
-                                                   $importSanitizeResultsUtil);
+                                                   $importSanitizeResultsUtil, null, null,
+                                                   $this->getExplicitReadWriteModelPermissions());
             @list($firstName, $lastName) = explode(' ', trim($sanitizedValue));
             if ($lastName == null)
             {

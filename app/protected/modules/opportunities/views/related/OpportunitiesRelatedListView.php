@@ -48,6 +48,10 @@
                             array(  'type'            => 'CreateFromRelatedListLink',
                                     'routeModuleId'   => 'eval:$this->moduleId',
                                     'routeParameters' => 'eval:$this->getCreateLinkRouteParameters()'),
+                            array(  'type'            => 'ListByRelatedModelLink',
+                                    'routeModuleId'   => 'eval:$this->moduleId',
+                                    'routeParameters' => 'eval:$this->getRelatedListLinkRouteParametersForOpportunities()',
+                                    'label' => 'View All Related ' . Zurmo::t('OpportunitiesModule', 'OpportunitiesModulePluralLabel', LabelUtil::getTranslationParamsForAllModules())),
                         ),
                     ),
                     'rowMenu' => array(
@@ -112,6 +116,15 @@
         public static function getModuleClassName()
         {
             return 'OpportunitiesModule';
+        }
+
+        protected function getRelatedListLinkRouteParametersForOpportunities()
+        {
+            return array(
+                'id'                        => $this->params['relationModel']->id,
+                'searchFormClassName'       => 'OpportunitiesByRelatedModelsSearchForm',
+                'relationAttributeName'     => $this->getRelationAttributeName(),
+            );
         }
     }
 ?>

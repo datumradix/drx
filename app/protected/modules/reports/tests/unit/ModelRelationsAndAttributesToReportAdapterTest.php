@@ -262,7 +262,7 @@
             //Includes derived attributes as well
             $compareData        = array('label' => 'Test Calculated', 'derivedAttributeType' => 'CalculatedNumber');
             $this->assertEquals($compareData, $attributes['calculated']);
-            $compareData        = array('label' => 'ID',       'derivedAttributeType' => 'UniqueIdentifier');
+            $compareData        = array('label' => 'Id',       'derivedAttributeType' => 'UniqueIdentifier');
             $this->assertEquals($compareData, $attributes['UniqueIdentifier']);
             $compareData        = array('label' => 'Full Name',       'derivedAttributeType' => 'FullName');
             $this->assertEquals($compareData, $attributes['FullName']);
@@ -1051,7 +1051,7 @@
             $this->assertEquals($compareData, $attributes['calculated']);
             $compareData        = array('label' => 'Full Name',       'derivedAttributeType' => 'FullName');
             $this->assertEquals($compareData, $attributes['FullName']);
-            $compareData        = array('label' => 'ID',       'derivedAttributeType' => 'UniqueIdentifier');
+            $compareData        = array('label' => 'Id',       'derivedAttributeType' => 'UniqueIdentifier');
             $this->assertEquals($compareData, $attributes['UniqueIdentifier']);
         }
 

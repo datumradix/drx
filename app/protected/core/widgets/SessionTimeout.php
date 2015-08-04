@@ -41,13 +41,15 @@
      */
     class SessionTimeout extends CJuiWidget
     {
+        const MAX_SESSION_TIMEOUT_IN_SECONDS = 31536000; // One year
+
         /**
          * @var integer The number of your session timeout (in seconds).
          * The timeout value minus the countdown value determines how long until
          * the dialog appears.
-         * Default: 1200
+         * Default: 1400
          */
-        public $timeout;
+        public $timeout = 1400;
 
         /**
          * @var integer The countdown total value (in seconds).
@@ -126,23 +128,12 @@
 
         public $cssFile = null;
 
+        public $countdownCookieName;
+
         public function init()
         {
             parent::init();
-            $sessionCookieLifeTime      = ini_get('session.cookie_lifetime');
-            $sessionGcMaxLifeTime       = ini_get('session.gc_maxlifetime');
-            if (isset($sessionCookieLifeTime) && $sessionCookieLifeTime != 0)
-            {
-                $this->timeout          = $sessionCookieLifeTime;
-            }
-            elseif (isset($sessionGcMaxLifeTime))
-            {
-                $this->timeout          = $sessionGcMaxLifeTime;
-            }
-            else
-            {
-                $this->timeout          = 1400;
-            }
+            $this->getSessionTimeout();
             $this->countdown            = 60;
             $this->title                = Zurmo::t('Core', 'Your Zurmo session is about to expire?',
                                                     LabelUtil::getTranslationParamsForAllModules());
@@ -153,6 +144,7 @@
             $this->keepAliveUrl         = Yii::app()->request->url;
             $this->logoutUrl            = Yii::app()->baseUrl . '/index.php/zurmo/default/logout';
             $this->logoutRedirectUrl    = Yii::app()->baseUrl . '/index.php/zurmo/default/logout';
+            $this->countdownCookieName    = 'Countdown_' . Yii::app()->request->getHostInfo() . Yii::app()->baseUrl;
             $cs                         = Yii::app()->getClientScript();
             $baseScriptUrl              = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.core.widgets.assets'));
             $cs->registerScriptFile($baseScriptUrl . '/sessionTimeout/timeout-dialog.js', ClientScript::POS_HEAD);
@@ -173,6 +165,7 @@
                 'restart_on_yes'            => $this->restartOnYes,
                 'logout_redirect_url'       => $this->logoutRedirectUrl,
                 'dialog_width'              => $this->dialogWidth,
+                'start_countdown_timestamp_cookie_name'     => $this->countdownCookieName,
             );
             foreach ($options as $key => $value)
             {
@@ -183,6 +176,26 @@
             }
             $options = CJSON::encode($options);
             Yii::app()->getClientScript()->registerScript('TimeoutDialog', "$.timeoutDialog($options);", CClientScript::POS_READY);
+        }
+
+        protected function getSessionTimeout()
+        {
+            $sessionCookieLifeTime      = ini_get('session.cookie_lifetime');
+            $sessionGcMaxLifeTime       = ini_get('session.gc_maxlifetime');
+
+            if (isset($sessionCookieLifeTime) && $sessionCookieLifeTime > 0)
+            {
+                $this->timeout          = $sessionCookieLifeTime;
+            }
+            else
+            {
+                $this->timeout          = static::MAX_SESSION_TIMEOUT_IN_SECONDS;
+            }
+
+            if (isset($sessionGcMaxLifeTime) && $sessionGcMaxLifeTime > 0 && $sessionGcMaxLifeTime < $this->timeout)
+            {
+                $this->timeout          = $sessionGcMaxLifeTime;
+            }
         }
     }
 ?>

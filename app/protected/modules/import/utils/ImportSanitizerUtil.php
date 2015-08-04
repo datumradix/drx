@@ -55,7 +55,8 @@
                                                              $attributeName, $value, $columnName, $columnMappingData,
                                                              ImportSanitizeResultsUtil $importSanitizeResultsUtil,
                                                              $penultimateModelClassName = null,
-                                                             $penultimateAttributeName = null
+                                                             $penultimateAttributeName = null,
+                                                             $explicitReadWriteModelPermissions = null
                                                              )
         {
             assert('is_array($sanitizerUtilTypes)');
@@ -71,7 +72,8 @@
                                                                   $modelClassName, $attributeName,
                                                                   $columnName, $columnMappingData,
                                                                   $importSanitizeResultsUtil,
-                                                                  $penultimateModelClassName, $penultimateAttributeName);
+                                                                  $penultimateModelClassName, $penultimateAttributeName,
+                                                                  $explicitReadWriteModelPermissions);
                     if ($sanitizer->shouldSanitizeValue())
                     {
                         $value = $sanitizer->sanitizeValue($value);
