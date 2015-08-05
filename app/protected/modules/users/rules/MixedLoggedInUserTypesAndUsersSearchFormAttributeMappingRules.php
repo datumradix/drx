@@ -43,8 +43,6 @@
 
         const TYPE_LOGGED_IN_USER   = 'Logged In User';
 
-        const ID_VALUE_FOR_LOGGED_IN_USER = -99;
-
         const NAME_VALUE_FOR_LOGGED_IN_USER = "Logged In User";
 
         /**
@@ -123,7 +121,7 @@
             list($realAttributeName, $type) = $parts;
             if (isset($value['type']) && $value['type'] != null)
             {
-                if ($value['type'] == self::TYPE_LOGGED_IN_USER)
+                if ($value['type'] == self::TYPE_LOGGED_IN_USER || $value['type'] == self::TYPE_SELECT_USER)
                 {
                     $attributeAndRelations = array(array($realAttributeName, null, 'equals', 'resolveValueByRules'));
                 }

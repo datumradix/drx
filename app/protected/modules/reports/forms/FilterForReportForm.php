@@ -179,7 +179,11 @@
                ($this->getValueElementType() == 'BooleanForWizardStaticDropDown' ||
                $this->getValueElementType()  == 'UserNameId' ||
                ($this->getValueElementType() == 'MixedDateTypesForReport' && $this->valueType == null) ||
-               ($this->getValueElementType() == 'MixedLoggedInUserTypesAndUsers' && $this->valueType == null))) && // ToDo: Use MixedLoggedInUserTypesAndUsersForReportElement
+               ($this->getValueElementType() == 'MixedLoggedInUserTypesAndUsers' &&
+                   ($this->valueType == null ||
+                    $this->valueType == MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER
+                   )
+               ))) &&
                $this->value == null)
             {
                 $this->addError('value', Zurmo::t('Core', 'Value cannot be blank.'));

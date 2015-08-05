@@ -44,6 +44,8 @@
 
         public $nonEditableTemplate = '<th>{label}</th><td colspan="{colspan}">{valueType}{content}</td>';
 
+        protected $userSelectCssClassName = 'user-select-area';
+
         protected function renderEditable()
         {
             $data = array();
@@ -71,15 +73,17 @@
                     {
                         arr  = " . CJSON::encode($valueTypesRequiringSelectUserInput) . ";
                         selectUserSpanAreaQualifier = '#' + $(this).attr('id') + '" . $selectUserSpanAreaId . "';
+                        console.log('$selectUserSpanAreaId');
+                        console.log(selectUserSpanAreaQualifier);
                         if ($.inArray($(this).val(), arr) != -1)
                         {
-                            $(selectUserSpanAreaQualifier).show();
-                            $(selectUserSpanAreaQualifier).find('.hasDatepicker').prop('disabled', false);
+                            $('#".$selectUserSpanAreaId."').show();
+                            //$('#".$selectUserSpanAreaId."').find('input').prop('disabled', false);
                         }
                         else
                         {
-                            $(selectUserSpanAreaQualifier).hide();
-                            $(selectUserSpanAreaQualifier).find('.hasDatepicker').prop('disabled', true);
+                            $('#" . $selectUserSpanAreaId . "').hide();
+                            //$('#".$selectUserSpanAreaId."').find('input').prop('disabled', true);
                         }
                     }
                 );
@@ -95,55 +99,27 @@
                 $selectUserDisabled         = null;
             }
             $content  = ZurmoHtml::tag('span', array('id'    => $selectUserSpanAreaId,
-                                                     'class' => 'user-select-area', // ToDo: add this class to css
+                                                     'class' => $this->userSelectCssClassName, // ToDo: add this class to css
                                                      'style' => $startingDivStyleSelectUser),
-                $this->renderEditableUserContent($selectUserDisabled));
-            $content .= $this->renderSelectUserContent();
+                                                     $this->renderSelectUserContent($selectUserDisabled));
             return $content;
         }
 
-        protected function renderSelectUserContent()
+        protected function renderSelectUserContent($disabled = null)
         {
-            $staticUserElement = new UserNameIdElement($this->model, $this->getValueUserEditableInputName(), $this->form);
-            $staticUserElement->setIdAttributeId($this->getValueUserEditableInputId());
+            $params = $this->params;
+            if ($disabled)
+            {
+                // ToDo: Code blow disable user select area, so we should probably extend UserNameIdElement for
+                // this special purpose and fix issue in extending class
+                //$params['disabled'] = $disabled;
+            }
+            $staticUserElement = new UserNameIdElement($this->model, 'userId', $this->form, $params);
+            $staticUserElement->setIdAttributeId('value');
             $staticUserElement->setNameAttributeName('stringifiedModelForValue');
             $staticUserElement->editableTemplate = '<div class="value-data">{content}{error}</div>';
             return $staticUserElement->render();
         }
-
-        protected function renderEditableFirstDateContent($disabled = null)
-        {
-            assert('$disabled === null || $disabled = "disabled"');
-            $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("EditableDateElement");
-            $cClipWidget->widget('application.core.widgets.ZurmoJuiDatePicker', array(
-                'attribute'           => $this->attribute,
-                'value'               => DateTimeUtil::resolveValueForDateLocaleFormattedDisplay(
-                    $this->getValueFirstDate(),
-                    DateTimeUtil::DISPLAY_FORMAT_FOR_INPUT),
-                'htmlOptions'         => array(
-                    'id'              => $this->getValueFirstDateEditableInputId(),
-                    'name'            => $this->getValueFirstDateEditableInputName(),
-                    'disabled'        => $disabled,
-                )));
-            $cClipWidget->endClip();
-            $content =  $cClipWidget->getController()->clips['EditableDateElement'];
-            return      ZurmoHtml::tag('div', array('class' => 'has-date-select'), $content);
-        }
-
-
-        /*
-         * This is from MixedDateTimeElement, try with default one from Element for now
-        protected function renderLabel()
-        {
-            $label = $this->getFormattedAttributeLabel();
-            if ($this->form === null)
-            {
-                return $label;
-            }
-            return ZurmoHtml::label($label, false);
-        }
-        */
 
         protected function renderEditableValueTypeContent()
         {
@@ -170,30 +146,6 @@
             $htmlOptions['empty']    = Zurmo::t('Core', '(None)');
             $htmlOptions['disabled'] = $this->getDisabledValue();
             return $htmlOptions;
-        }
-
-
-        protected function renderEditableUserContent($disabled = null)
-        {
-            assert('$disabled === null || $disabled = "disabled"');
-            $cClipWidget = new CClipWidget();
-            $cClipWidget->beginClip("EditableDateElement");
-            $cClipWidget->widget('application.core.widgets.ZurmoJuiDatePicker', array(
-                'attribute'           => $this->attribute,
-                'value'               => DateTimeUtil::resolveValueForDateLocaleFormattedDisplay(
-                    $this->getValueUser(),
-                    DateTimeUtil::DISPLAY_FORMAT_FOR_INPUT),
-                'htmlOptions'         => array(
-                    'id'              => $this->getValueUserEditableInputId(),
-                    'name'            => $this->getValueUserEditableInputName(),
-                    'disabled'        => $disabled,
-                )));
-            $cClipWidget->endClip();
-            $content = $cClipWidget->getController()->clips['EditableDateElement'];
-            $content = ZurmoHtml::tag('div', array('class' => 'has-date-select'), $content);
-            $error   = $this->form->error($this->model, 'value',
-                array('inputID' => $this->getValueUserEditableInputId()));
-            return $content . $error;
         }
 
         protected function getValueTypeEditableInputId()
@@ -228,7 +180,7 @@
 
         /**
          * Renders the attribute from the model.
-         * @return The element's content.
+         * @throws NotSupportedException
          */
         protected function renderControlNonEditable()
         {
