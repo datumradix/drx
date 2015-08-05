@@ -108,7 +108,14 @@
             //is Dynamically Derived Attributes? __User
             if ($this->modelRelationsAndAttributesToReportAdapter->isDynamicallyDerivedAttribute($attribute))
             {
-                $this->resolveDynamicallyDerivedAttributeClauseAndStructure();
+                if ($this->filter->getValueElementType() == 'MixedLoggedInUserTypesAndUsers')
+                {
+                    $this->resolveUserAttributeClauseAndStructure();
+                }
+                else
+                {
+                    $this->resolveDynamicallyDerivedAttributeClauseAndStructure();
+                }
             }
             elseif ($this->modelRelationsAndAttributesToReportAdapter instanceof
                    ModelRelationsAndAttributesToSummableReportAdapter &&
@@ -241,9 +248,9 @@
             $rulesClassName         = 'MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules';
             $value                  = array();
             $value['type']          = $this->filter->valueType;
-            $value['id']     = $this->filter->value;
+            $value['id']            = $this->filter->value;
             $attributesAndRelations  = 'resolveEntireMappingByRules';
-            $rulesClassName::resolveAttributesAndRelations('notUsed__notUsed', $attributesAndRelations, $value);
+            $rulesClassName::resolveAttributesAndRelations($this->filter->getAttributeIndexOrDerivedType(), $attributesAndRelations, $value);
             $count = 1;
             foreach ($attributesAndRelations as $attributeAndRelation)
             {
