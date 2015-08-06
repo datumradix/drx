@@ -76,6 +76,16 @@
                     return $value['id'];
                 }
             }
+            else
+            {
+                // Allow because backward compatibility, so users do not need to edit their existing reports.
+                // However when they try to edit an existing report taht use user, they will be asked to select valueType
+                //@ToDO: change id with parameter name
+                if ($value["id"] != null)
+                {
+                    return $value['id'];
+                }
+            }
             return null;
         }
 
