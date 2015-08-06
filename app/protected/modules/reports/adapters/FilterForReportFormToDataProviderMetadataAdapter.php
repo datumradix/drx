@@ -255,7 +255,8 @@
             foreach ($attributesAndRelations as $attributeAndRelation)
             {
                 $this->clauses[$count] = array('attributeName' => $this->getRealAttributeName(),
-                                               'operatorType'  => $attributeAndRelation[2],
+                                               'operatorType'  => $this->filter->getOperator(),
+                                               'relatedAttributeName' => 'id',
                                                'value'         => $this->resolveForValueByRules($rulesClassName,
                                                    $attributeAndRelation, $value));
                 if ($this->structure == null)
