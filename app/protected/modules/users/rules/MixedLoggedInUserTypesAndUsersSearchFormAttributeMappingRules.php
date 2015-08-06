@@ -114,11 +114,20 @@
             assert('empty($value) || $value == null || is_array($value)');
             $delimiter                      = FormModelUtil::DELIMITER;
             $parts = explode($delimiter, $attributeName);
-            if (count($parts) != 2)
+            if (count($parts) < 2)
             {
                 throw new NotSupportedException();
             }
-            list($realAttributeName, $type) = $parts;
+            elseif (count($parts) > 2)
+            {
+                $count = count($parts);
+                $realAttributeName = $parts[$count - 2];
+                $type              = $parts[$count - 1];
+            }
+            else
+            {
+                list($realAttributeName, $type) = $parts;
+            }
             if (isset($value['type']) && $value['type'] != null)
             {
                 if ($value['type'] == self::TYPE_LOGGED_IN_USER || $value['type'] == self::TYPE_SELECT_USER)
