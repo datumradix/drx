@@ -251,5 +251,17 @@
         {
             return ucfirst($columnInformation['type']) . 'ListViewColumnAdapter';
         }
+        
+        public function resolveLeadToAccountCustomAttributesWithNoPostData(Contact $contact, 
+                                                                        Account $account, array $postData)
+        {
+            return $account;
+        }
+        
+        public function resolveLeadToOpportunityCustomAttributesWithNoPostData(Contact $contact, 
+                                                                            Opportunity $opportunity, array $postData)
+        {
+            return $opportunity;
+        }
     }
 ?>
