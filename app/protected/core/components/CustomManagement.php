@@ -263,5 +263,9 @@
         {
             return $opportunity;
         }
+        
+        public function resolveOpportunityCustomActionsAfterSave($model)
+        {
+        }
     }
 ?>
