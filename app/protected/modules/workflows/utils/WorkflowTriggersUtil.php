@@ -112,16 +112,6 @@
                     throw new NotSupportedException();
                 }
                 $evaluatedString = preg_replace('/(?<![0-9])' . $key . '(?![0-9])/', BooleanUtil::boolToString($boolean), strtolower($evaluatedString));
-                /*
-                if ($key < 10)
-                {
-                    $evaluatedString = preg_replace('/^' . $key . '![0-9]/', BooleanUtil::boolToString($boolean), strtolower($evaluatedString));
-                }
-                else
-                {
-                    $evaluatedString = preg_replace('/' . $key . '/', BooleanUtil::boolToString($boolean), strtolower($evaluatedString));
-                }
-*/
             }
             return $evaluatedString;
         }
