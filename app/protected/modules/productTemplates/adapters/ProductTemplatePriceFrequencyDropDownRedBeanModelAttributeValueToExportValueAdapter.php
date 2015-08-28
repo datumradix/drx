@@ -34,11 +34,11 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class ProductTemplateTypeDropDownRedBeanModelAttributeValueToExportValueAdapter extends StaticDropDownRedBeanModelAttributeValueToExportValueAdapter
+    class ProductTemplatePriceFrequencyDropDownRedBeanModelAttributeValueToExportValueAdapter extends StaticDropDownRedBeanModelAttributeValueToExportValueAdapter
     {
         protected function getDropDownArray()
         {
-            return ProductTemplateElementUtil::getProductTemplateTypeDropdownArray();
+            return ProductTemplateElementUtil::getProductTemplatePriceFrequencyDropdownArray();
         }
     }
 ?>
