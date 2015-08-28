@@ -375,7 +375,7 @@
          */
         protected function resolveStatusAndSetCompletedFields()
         {
-            if ($this->completed != true && $this->status != Task::STATUS_COMPLETED)
+            if ($this->status != Task::STATUS_COMPLETED)
             {
                 $this->completed = false;
             }
