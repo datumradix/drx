@@ -170,5 +170,10 @@
         {
             return array(self::TYPE_SELECT_USER);
         }
+
+        public static function getValueTypesWhereValueIsNotRequired()
+        {
+            return array(self::TYPE_LOGGED_IN_USER);
+        }
     }
 ?>

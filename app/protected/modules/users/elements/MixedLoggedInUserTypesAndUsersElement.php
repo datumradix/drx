@@ -73,8 +73,6 @@
                     {
                         arr  = " . CJSON::encode($valueTypesRequiringSelectUserInput) . ";
                         selectUserSpanAreaQualifier = '#' + $(this).attr('id') + '" . $selectUserSpanAreaId . "';
-                        console.log('$selectUserSpanAreaId');
-                        console.log(selectUserSpanAreaQualifier);
                         if ($.inArray($(this).val(), arr) != -1)
                         {
                             $('#".$selectUserSpanAreaId."').show();

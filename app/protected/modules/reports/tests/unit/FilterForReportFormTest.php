@@ -634,8 +634,7 @@
             $validated = $filter->validate();
             $this->assertFalse($validated);
             $errors = $filter->getErrors();
-            $compareErrors                       = array('value'     => array('Value cannot be blank.'),
-                                                         'operator'  => array('Operator cannot be blank.'),
+            $compareErrors                       = array('operator'  => array('Operator cannot be blank.'),
                                                          'valueType' => array('Type cannot be blank.'));
             $this->assertEquals($compareErrors, $errors);
 
