@@ -388,7 +388,7 @@
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $note[0]);
             $this->assertEquals(23                                         , $testCalculatedValue);
         }
-        
+
         /**
          * @depends testEditOfTheNoteForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForNotesModule
          */

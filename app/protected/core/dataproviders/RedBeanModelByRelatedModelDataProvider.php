@@ -57,7 +57,7 @@
             $relationAttributeName = $data['relationAttributeName'];
             $additionalMetaData = static::getAdditionalSearchMetadata($relationAttributeName, $data);
             $clausesCount = 0;
-            if(isset($metadata['clauses']))
+            if (isset($metadata['clauses']))
             {
                 $clausesCount = count($metadata['clauses']);
                 $metadata['clauses'][count($metadata['clauses']) + 1] = $additionalMetaData;
@@ -66,7 +66,7 @@
             {
                 $metadata['clauses'][1] = $additionalMetaData;
             }
-            if($clausesCount == 0)
+            if ($clausesCount == 0)
             {
                 $metadata['structure'] =  '(1)';
             }

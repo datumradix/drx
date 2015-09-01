@@ -603,7 +603,7 @@
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $lead);
             $this->assertEquals(23                                    , $testCalculatedValue);
         }
-        
+
         /**
          * @depends testEditOfTheLeadUserForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForLeadsModule
          */

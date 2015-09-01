@@ -75,7 +75,6 @@
             exec($command, $output);
             $this->assertContains('$maintenanceMode = false;', file_get_contents(static::$perInstanceTestFilePath));
 
-
             $command = "php zurmocTest.php SetMaintenanceMode super 0";
             if (!IS_WINNT)
             {

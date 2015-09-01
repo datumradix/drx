@@ -53,10 +53,11 @@
             $contact1->primaryEmail->emailAddress = 'contact1@example.com';
             $contact2->primaryEmail->emailAddress = 'contact2@example.com';
             $contact3->primaryEmail->emailAddress = 'contact3@example.com';
+            // Begin Not Coding Standard
             assert($contact1->save());
             assert($contact2->save());
             assert($contact3->save());
-
+            // End Not Coding Standard
         }
 
         public function setUp()

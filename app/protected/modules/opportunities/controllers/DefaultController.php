@@ -72,7 +72,6 @@
                 $stickySearchKey = 'OpportunitiesSearchView';
             }
 
-
             $listAttributesSelector = new ListAttributesSelector('OpportunitiesListView', get_class($this->getModule()));
             $searchForm->setListAttributesSelector($listAttributesSelector);
             $dataProvider = $this->resolveSearchDataProvider(

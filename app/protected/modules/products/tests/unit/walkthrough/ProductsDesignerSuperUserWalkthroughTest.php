@@ -431,7 +431,7 @@
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $product);
             $this->assertEquals(132                                      , intval(str_replace(',', '', $testCalculatedValue))); // Not Coding Standard
         }
-        
+
         /**
          * @depends testEditOfTheProductForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForProductsModule
          */

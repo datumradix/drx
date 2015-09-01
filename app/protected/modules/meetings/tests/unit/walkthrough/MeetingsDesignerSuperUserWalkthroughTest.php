@@ -400,7 +400,7 @@
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $meeting[0]);
             $this->assertEquals(1                                             , $testCalculatedValue);
         }
-        
+
         /**
          * @depends testEditOfTheMeetingForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForMeetingsModule
          */

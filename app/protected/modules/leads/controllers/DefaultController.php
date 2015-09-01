@@ -457,7 +457,7 @@
                 $savedSuccessfully  = false;
                 $modelToStringValue = null;
                 $postData           = $_POST['Opportunity'];
-                $opportunity = Yii::app()->custom->resolveLeadToOpportunityCustomAttributesWithNoPostData($contact, 
+                $opportunity = Yii::app()->custom->resolveLeadToOpportunityCustomAttributesWithNoPostData($contact,
                                                                                             $opportunity, $postData);
                 $opportunity        = $controllerUtil->saveModelFromPost($postData, $opportunity, $savedSuccessfully,
                                                                                             $modelToStringValue, false);

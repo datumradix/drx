@@ -608,7 +608,7 @@
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $account[0]);
             $this->assertEquals('472,000,630'                               , $testCalculatedValue); // Not Coding Standard
         }
-        
+
         /**
          * @depends testEditOfTheAccountUserForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForAccountsModule
          */

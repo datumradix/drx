@@ -66,7 +66,7 @@
                 return false;
             }
         }
-        
+
         protected function afterSave()
         {
             Yii::app()->custom->resolveOpportunityCustomActionsAfterSave($this);

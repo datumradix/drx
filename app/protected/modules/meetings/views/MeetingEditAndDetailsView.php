@@ -167,6 +167,7 @@
             // Fill endDateTime only for new meetings
             if ($this->model->id <= 0)
             {
+                // Begin Not Coding Standard
                 Yii::app()->clientScript->registerScript('SetMeetingEndDateTime', "
                     $('#" . $meetingStartDateTimeId . "').change(function()
                     {
@@ -192,6 +193,7 @@
                         );
                     });
                 ");
+                // End Not Coding Standard
             }
         }
     }

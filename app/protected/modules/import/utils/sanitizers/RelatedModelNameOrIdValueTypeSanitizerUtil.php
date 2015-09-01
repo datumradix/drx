@@ -56,6 +56,7 @@
                                 $importSanitizeResultsUtil, $penultimateModelClassName, $penultimateAttributeName);
             $this->explicitReadWriteModelPermissions = $explicitReadWriteModelPermissions;
         }
+
         public static function getLinkedMappingRuleType()
         {
             return 'RelatedModelValueType';

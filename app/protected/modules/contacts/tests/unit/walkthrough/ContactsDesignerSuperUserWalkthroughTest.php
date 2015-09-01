@@ -747,7 +747,7 @@
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $contact);
             $this->assertEquals(23                                       , $testCalculatedValue);
         }
-        
+
         /**
          * @depends testEditOfTheContactForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForContactsModule
          */
@@ -760,7 +760,7 @@
             $datetime       = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateTimeFormatForInput(), time());
             $baseCurrency   = Currency::getByCode(Yii::app()->currencyHelper->getBaseCode());
             $explicitReadWriteModelPermission = ExplicitReadWriteModelPermissionsUtil::MIXED_TYPE_EVERYONE_GROUP;
-            
+
             //Retrieve the super account id and the super user id.
             $accountId   = self::getModelIdByModelNameAndName ('Account', 'superAccount');
             $superUserId = $super->id;

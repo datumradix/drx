@@ -128,7 +128,7 @@
          */
         public function resolveDataProviderClassNameForControllerBySearchModel($searchModel)
         {
-            if(method_exists($searchModel, 'shouldFilterByRelatedModels') && $searchModel->shouldFilterByRelatedModels())
+            if (method_exists($searchModel, 'shouldFilterByRelatedModels') && $searchModel->shouldFilterByRelatedModels())
             {
                 return $searchModel->resolveDataProviderClassName();
             }
@@ -251,19 +251,19 @@
         {
             return ucfirst($columnInformation['type']) . 'ListViewColumnAdapter';
         }
-        
-        public function resolveLeadToAccountCustomAttributesWithNoPostData(Contact $contact, 
+
+        public function resolveLeadToAccountCustomAttributesWithNoPostData(Contact $contact,
                                                                         Account $account, array $postData)
         {
             return $account;
         }
-        
-        public function resolveLeadToOpportunityCustomAttributesWithNoPostData(Contact $contact, 
+
+        public function resolveLeadToOpportunityCustomAttributesWithNoPostData(Contact $contact,
                                                                             Opportunity $opportunity, array $postData)
         {
             return $opportunity;
         }
-        
+
         public function resolveOpportunityCustomActionsAfterSave($model)
         {
         }

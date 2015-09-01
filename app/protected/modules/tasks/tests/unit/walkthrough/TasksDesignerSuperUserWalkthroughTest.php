@@ -431,7 +431,7 @@
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $task[0]);
             $this->assertEquals(132                                        , $testCalculatedValue);
         }
-        
+
         /**
          * @depends testEditOfTheTaskForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForTasksModule
          */

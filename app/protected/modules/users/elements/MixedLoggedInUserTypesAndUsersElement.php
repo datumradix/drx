@@ -68,6 +68,7 @@
             $selectUserSpanAreaId                = $valueTypeId . $selectUserAreaSuffix;
             $valueTypesRequiringSelectUserInput  = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::
                 getValueTypesRequiringSelectUserInput();
+            // Begin Not Coding Standard
             Yii::app()->clientScript->registerScript('mixedLoggedInUserTypesAndUsers', "
                 $('.selectUserValueType').change( function()
                     {
@@ -86,6 +87,7 @@
                     }
                 );
             ");
+            // End Not Coding Standard
             $startingDivStyleSelectUser   = null;
             if (!in_array($this->getValueType(), $valueTypesRequiringSelectUserInput))
             {

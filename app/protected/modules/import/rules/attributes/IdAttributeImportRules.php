@@ -85,7 +85,7 @@
                                                             $columnName,
                                                             $columnMappingData,
                                                             $importSanitizeResultsUtil,
-                                                            null,null,
+                                                            null, null,
                                                             $this->getExplicitReadWriteModelPermissions());
                     if ($value != null)
                     {

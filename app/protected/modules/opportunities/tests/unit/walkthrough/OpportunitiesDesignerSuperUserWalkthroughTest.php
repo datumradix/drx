@@ -496,7 +496,7 @@
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $opportunity);
             $this->assertEquals(132                                      , $testCalculatedValue);
         }
-        
+
         /**
          * @depends testEditOfTheOpportunityForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForOpportunitiesModule
          */

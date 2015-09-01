@@ -129,6 +129,7 @@
         {
             $jobUrl   = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/runAjaxJob/',
                 array('type' => $this->type, 'timeLimit' => $this->timeLimit, 'messageLoggerClassName' => $this->messageLoggerClassName));
+            // Begin Not Coding Standard
             $script = <<<EOD
     $(function()
     {
@@ -154,6 +155,7 @@
     }
     );
 EOD;
+            // End Not Coding Standard
             Yii::app()->getClientScript()->registerScript('RunJobInBackgroundScript', $script);
         }
     }

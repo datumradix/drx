@@ -132,12 +132,13 @@
                 $where,
                 $selectDistinct);
             $selectQueryAdapter        = new RedBeanModelSelectQueryAdapter($selectDistinct);
-            $queuedEmailsSelectPart     = "sum(CASE WHEN (({$quote}{$emailMessageTableName}{$quote}.{$quote}{$sentDateTimeColumnName}" .
+            // Begin Not Coding Standard
+			$queuedEmailsSelectPart     = "sum(CASE WHEN (({$quote}{$emailMessageTableName}{$quote}.{$quote}{$sentDateTimeColumnName}" .
                                          $quote . " = '0000-00-00 00:00:00' OR {$quote}{$emailMessageTableName}{$quote}" .
                                          ".{$quote}{$sentDateTimeColumnName}{$quote} IS NULL) AND ".
                                          "({$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_OUTBOX . "'" .
                                          " OR {$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_OUTBOX_ERROR . "'))" .
-                                         " THEN 1 ELSE 0 END)"; // Not Coding Standard
+                                         " THEN 1 ELSE 0 END)";
             $sentEmailsSelectPart       = "sum(CASE WHEN (({$quote}{$emailMessageTableName}{$quote}.{$quote}{$sentDateTimeColumnName}" .
                                          $quote . " > '0000-00-00 00:00:00') AND " .
                                         "{$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_SENT . "')" .
@@ -147,7 +148,8 @@
                 $quote . " = '0000-00-00 00:00:00' OR {$quote}{$emailMessageTableName}{$quote}" .
                 ".{$quote}{$sentDateTimeColumnName}{$quote} IS NULL) AND ".
                 "({$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_OUTBOX_FAILURE . "'))" .
-                " THEN 1 ELSE 0 END)"; // Not Coding Standard
+                " THEN 1 ELSE 0 END)"; 
+			// End Not Coding Standard
 
             $uniqueOpensSelectPart     = static::resolveCampaignTypeSubQuery(EmailMessageActivity::TYPE_OPEN);
             $uniqueClicksSelectPart    = static::resolveCampaignTypeSubQuery(EmailMessageActivity::TYPE_CLICK);

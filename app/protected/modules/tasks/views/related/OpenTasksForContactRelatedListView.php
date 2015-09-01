@@ -61,7 +61,6 @@
             return array('ContactDetailsAndRelationsView');
         }
 
-
         protected function getRelatedListLinkRouteParametersForTasks()
         {
             return array(
