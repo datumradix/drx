@@ -112,7 +112,7 @@ Thanks!';
             $emailTemplate->isDraft = false;
             $emailTemplate->save();
 
-            $trigger = new TriggerForWorkflowForm('OpportunitiesModuleModule', 'Opportunity', Workflow::TYPE_ON_SAVE);
+            $trigger = new TriggerForWorkflowForm('OpportunitiesModule', 'Opportunity', Workflow::TYPE_ON_SAVE);
             $trigger->attributeIndexOrDerivedType = 'stage';
             $trigger->value                       = 'Closed Won';
             $trigger->operator                    = OperatorRules::TYPE_BECOMES;
