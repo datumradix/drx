@@ -70,29 +70,68 @@
          */
         public function run()
         {
-            $workflows = WorkflowActionsUtil::getWorkflowsMissingRequiredActionAttributes();
-            if (count($workflows) > 0)
+            $workflowsWithInvalidActions  = WorkflowActionsUtil::getWorkflowsMissingRequiredActionAttributes();
+            if (count($workflowsWithInvalidActions) > 0)
             {
-                $message                      = new NotificationMessage();
                 $commonMessage                = Zurmo::t('WorkflowsModule', 'As a result of a field or fields recently ' .
-                                                'becoming required, at least 1 workflow rule will no longer work properly.');
-                $message->htmlContent         = $commonMessage;
-                $message->htmlContent        .= "<div><ul>";
-                $message->textContent         = $commonMessage;
-                foreach ($workflows as $workflow)
+                    'becoming required, at least 1 workflow action rule will no longer work properly:');
+
+                $message                      = new NotificationMessage();
+                $message = $this->updateNotificationMessage($workflowsWithInvalidActions, $message, $commonMessage);
+            }
+
+            $workflowsWithInvalidTriggers = WorkflowTriggersUtil::getWorkflowsWithInvalidTriggerCustomFieldValue();
+            if (count($workflowsWithInvalidTriggers) > 0)
+            {
+                if (!isset($message))
                 {
-                    $message->htmlContent      .= "<li>";
-                    $url                        = Yii::app()->createUrl('workflows/default/details',
-                                                  array('id' => $workflow->getId()));
-                    $message->htmlContent      .= ZurmoHtml::link(strval($workflow) , $url, array('target' => '_blank'));
-                    $message->htmlContent      .= "</li>";
-                    $message->textContent      .= "\n" . strval($workflow) .': ' . ShortUrlUtil::createShortUrl($url);
+                    $message                      = new NotificationMessage();
                 }
-                $message->htmlContent      .= "</ul></div>";
+                $commonMessage                = Zurmo::t('WorkflowsModule', 'As a result of modifying picklist data recently, ' .
+                    'at least 1 workflow trigger rule will no longer work properly:');
+                $message = $this->updateNotificationMessage($workflowsWithInvalidTriggers, $message, $commonMessage);
+            }
+
+            if (count($workflowsWithInvalidActions) > 0 || count($workflowsWithInvalidTriggers) > 0)
+            {
                 $rules                        = new WorkflowValidityCheckNotificationRules();
                 NotificationsUtil::submit($message, $rules);
             }
             return true;
+        }
+
+        protected function updateNotificationMessage($workflows, $message, $commonMessage)
+        {
+            if ($message->htmlContent == '')
+            {
+                $message->htmlContent         = $commonMessage;
+            }
+            else
+            {
+                $message->htmlContent         = '<br /><br /><br />' . $commonMessage;
+            }
+            $message->htmlContent        .= "<div><ul>";
+
+            if ($message->textContent == '')
+            {
+                $message->textContent         = $commonMessage;
+            }
+            else
+            {
+                $message->textContent         = "\n\n\n" . $commonMessage;
+            }
+
+            foreach ($workflows as $workflow)
+            {
+                $message->htmlContent      .= "<li>";
+                $url                        = Yii::app()->createUrl('workflows/default/details',
+                    array('id' => $workflow->getId()));
+                $message->htmlContent      .= ZurmoHtml::link(strval($workflow) , $url, array('target' => '_blank'));
+                $message->htmlContent      .= "</li>";
+                $message->textContent      .= "\n" . strval($workflow) .': ' . ShortUrlUtil::createShortUrl($url);
+            }
+            $message->htmlContent      .= "</ul></div>";
+            return $message;
         }
     }
 ?>
