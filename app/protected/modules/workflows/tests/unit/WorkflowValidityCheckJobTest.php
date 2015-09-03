@@ -42,7 +42,7 @@
             Yii::app()->user->userModel->primaryEmail->emailAddress = 'super@zurmo.com';
         }
 
-        public function testRun()
+        public function atestRunWithValidAndInvalidAction()
         {
             //Create workflow
             $workflow = new Workflow();
@@ -78,6 +78,171 @@
             $this->assertTrue($job->run());
             $this->assertEquals(1, Notification::getCount());
             $this->assertEquals(1, EmailMessage::getCount());
+        }
+
+        public function testRunWithMissingTriggerPicklistValue()
+        {
+            $this->clearNotificationsWorkflowsAndEmailMessages();
+            $this->createStageValues();
+
+            //Create workflow
+            $workflow = new Workflow();
+            $workflow->setDescription    ('bDescription');
+            $workflow->setIsActive       (true);
+            $workflow->setOrder          (5);
+            $workflow->setModuleClassName('OpportunitiesModule');
+            $workflow->setName           ('mySecondWorkflow');
+            $workflow->setTriggerOn      (Workflow::TRIGGER_ON_NEW_AND_EXISTING);
+            $workflow->setType           (Workflow::TYPE_ON_SAVE);
+            $workflow->setTriggersStructure('1');
+
+            $trigger = new TriggerForWorkflowForm('OpportunitiesModule', 'Opportunity', Workflow::TYPE_ON_SAVE);
+            $trigger->attributeIndexOrDerivedType = 'stage';
+            $trigger->value                       = 'Closed Won';
+            $trigger->operator                    = OperatorRules::TYPE_BECOMES;
+            $trigger->relationFilter              = TriggerForWorkflowForm::RELATION_FILTER_ANY;
+            $workflow->addTrigger($trigger);
+            //Create the saved Workflow
+            $savedWorkflow = new SavedWorkflow();
+            SavedWorkflowToWorkflowAdapter::resolveWorkflowToSavedWorkflow($workflow, $savedWorkflow);
+            $saved = $savedWorkflow->save();
+            $this->assertTrue($saved);
+
+            $this->assertEquals(0, Notification::getCount());
+            $this->assertEquals(0, EmailMessage::getCount());
+            $job = new WorkflowValidityCheckJob();
+            $this->assertTrue($job->run());
+            $this->assertEquals(0, Notification::getCount());
+            $this->assertEquals(0, EmailMessage::getCount());
+
+            $this->clearNotificationsWorkflowsAndEmailMessages();
+            $workflow = new Workflow();
+            $workflow->setDescription    ('cDescription');
+            $workflow->setIsActive       (true);
+            $workflow->setOrder          (5);
+            $workflow->setModuleClassName('OpportunitiesModule');
+            $workflow->setName           ('mySecondWorkflow');
+            $workflow->setTriggerOn      (Workflow::TRIGGER_ON_NEW_AND_EXISTING);
+            $workflow->setType           (Workflow::TYPE_ON_SAVE);
+            $workflow->setTriggersStructure('1');
+
+            $trigger = new TriggerForWorkflowForm('OpportunitiesModule', 'Opportunity', Workflow::TYPE_ON_SAVE);
+            $trigger->attributeIndexOrDerivedType = 'stage';
+            $trigger->value                       = 'Unexisting state';
+            $trigger->operator                    = OperatorRules::TYPE_BECOMES;
+            $trigger->relationFilter              = TriggerForWorkflowForm::RELATION_FILTER_ANY;
+            $workflow->addTrigger($trigger);
+            //Create the saved Workflow
+            $savedWorkflow = new SavedWorkflow();
+            SavedWorkflowToWorkflowAdapter::resolveWorkflowToSavedWorkflow($workflow, $savedWorkflow);
+            $saved = $savedWorkflow->save();
+            $this->assertTrue($saved);
+
+            $this->assertEquals(0, Notification::getCount());
+            $this->assertEquals(0, EmailMessage::getCount());
+            $job = new WorkflowValidityCheckJob();
+            $this->assertTrue($job->run());
+            $this->assertEquals(1, Notification::getCount());
+            $this->assertEquals(1, EmailMessage::getCount());
+        }
+
+        public function testRunWithMissingTriggerMultiselectPicklistValue()
+        {
+            $this->clearNotificationsWorkflowsAndEmailMessages();
+            $this->createStageValues();
+
+            //Create workflow
+            $workflow = new Workflow();
+            $workflow->setDescription    ('bDescription');
+            $workflow->setIsActive       (true);
+            $workflow->setOrder          (5);
+            $workflow->setModuleClassName('OpportunitiesModule');
+            $workflow->setName           ('mySecondWorkflow');
+            $workflow->setTriggerOn      (Workflow::TRIGGER_ON_NEW_AND_EXISTING);
+            $workflow->setType           (Workflow::TYPE_ON_SAVE);
+            $workflow->setTriggersStructure('1');
+
+            $trigger = new TriggerForWorkflowForm('OpportunitiesModule', 'Opportunity', Workflow::TYPE_ON_SAVE);
+            $trigger->attributeIndexOrDerivedType = 'stage';
+            $trigger->value                       = 'Closed Won,Negotiating';
+            $trigger->operator                    = OperatorRules::TYPE_ONE_OF;
+            $trigger->relationFilter              = TriggerForWorkflowForm::RELATION_FILTER_ANY;
+            $workflow->addTrigger($trigger);
+            //Create the saved Workflow
+            $savedWorkflow = new SavedWorkflow();
+            SavedWorkflowToWorkflowAdapter::resolveWorkflowToSavedWorkflow($workflow, $savedWorkflow);
+            $saved = $savedWorkflow->save();
+            $this->assertTrue($saved);
+
+            $this->assertEquals(0, Notification::getCount());
+            $this->assertEquals(0, EmailMessage::getCount());
+            $job = new WorkflowValidityCheckJob();
+            $this->assertTrue($job->run());
+            $this->assertEquals(0, Notification::getCount());
+            $this->assertEquals(0, EmailMessage::getCount());
+
+            $this->clearNotificationsWorkflowsAndEmailMessages();
+            $workflow = new Workflow();
+            $workflow->setDescription    ('cDescription');
+            $workflow->setIsActive       (true);
+            $workflow->setOrder          (5);
+            $workflow->setModuleClassName('OpportunitiesModule');
+            $workflow->setName           ('mySecondWorkflow');
+            $workflow->setTriggerOn      (Workflow::TRIGGER_ON_NEW_AND_EXISTING);
+            $workflow->setType           (Workflow::TYPE_ON_SAVE);
+            $workflow->setTriggersStructure('1');
+
+            $trigger = new TriggerForWorkflowForm('OpportunitiesModule', 'Opportunity', Workflow::TYPE_ON_SAVE);
+            $trigger->attributeIndexOrDerivedType = 'stage';
+            $trigger->value                       = 'Closed Won,Unexisting state';
+            $trigger->operator                    = OperatorRules::TYPE_BECOMES;
+            $trigger->relationFilter              = TriggerForWorkflowForm::RELATION_FILTER_ANY;
+            $workflow->addTrigger($trigger);
+            //Create the saved Workflow
+            $savedWorkflow = new SavedWorkflow();
+            SavedWorkflowToWorkflowAdapter::resolveWorkflowToSavedWorkflow($workflow, $savedWorkflow);
+            $saved = $savedWorkflow->save();
+            $this->assertTrue($saved);
+
+            $this->assertEquals(0, Notification::getCount());
+            $this->assertEquals(0, EmailMessage::getCount());
+            $job = new WorkflowValidityCheckJob();
+            $this->assertTrue($job->run());
+            $this->assertEquals(1, Notification::getCount());
+            $this->assertEquals(1, EmailMessage::getCount());
+        }
+
+        protected function clearNotificationsWorkflowsAndEmailMessages()
+        {
+            $notifications = Notification::getAll();
+            foreach ($notifications  as $notification)
+            {
+                $notification->delete();
+            }
+
+            $emailMessages = EmailMessage::getAll();
+            foreach ($emailMessages as $emailMessage)
+            {
+                $emailMessage->delete();
+            }
+
+            $workflows = SavedWorkflow::getAll();
+            foreach ($workflows as $workflow)
+            {
+                $workflow->delete();
+            }
+        }
+
+        protected function createStageValues()
+        {
+            $stageValues = array(
+                'Prospecting',
+                'Negotiating',
+                'Closed Won',
+            );
+            $stageFieldData = CustomFieldData::getByName('SalesStages');
+            $stageFieldData->serializedData = serialize($stageValues);
+            $this->assertTrue($stageFieldData->save());
         }
     }
 ?>
