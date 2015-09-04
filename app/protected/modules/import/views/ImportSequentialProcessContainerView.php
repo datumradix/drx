@@ -45,7 +45,32 @@
         {
             $content = parent::renderContent();
             Yii::app()->clientScript->registerCoreScript('yii');
+            $this->registerCheckIfImportIsCompletedOnWindowCloseAlert();
             return $content;
+        }
+
+        protected function registerCheckIfImportIsCompletedOnWindowCloseAlert()
+        {
+            // SHow only on import data page, not on analyzing data page
+            $message = Zurmo::t('ImportModule', 'Are you sure you want to leave this page, remaining records will not be processed');
+            if ($this->title == Zurmo::t('ImportModule', 'Import Wizard - Import Data'))
+            {
+                $allStepMessage = $this->allStepsMessage;
+                Yii::app()->clientScript->registerScript('CheckIfImportIsCompletedOnWindowCloseAlert', "
+                $(window).on('beforeunload', function(){
+                  var processingMessage;
+                  processingMessage = $('#SequentialProcessView h3').html();
+                  if ($('#ImportSequentialProcessContainerView #ContainedViewCompleteSequentialProcessView').length > 0)
+                  {
+                    return null;
+                  }
+                  else
+                  {
+                    return '" . $message . " (' + processingMessage + ').';
+                  }
+                });
+            ");
+            }
         }
     }
 ?>
