@@ -49,6 +49,8 @@
          * Important Limitations to understand!!
          * Only supports up to one attribute per model that uses the same customFieldData.
          * Only searches primary models of the modules in the system.
+         * Do not search for custedUp relationships, for example do not return person Title, but it is
+         * used in User and Contact models
          */
         public static function getModelPluralNameAndAttributeLabelsByName($name)
         {
