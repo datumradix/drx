@@ -241,5 +241,10 @@
                 }
             }
         }
+
+        public static function getAllowedCastedUpAttributeNames()
+        {
+            return array('title');
+        }
     }
 ?>

@@ -79,7 +79,7 @@
                         $information['elementType'] == 'User' ||
                         $information['isReadOnly'] ||
                         $attributeName == 'id' ||
-                        $this->isAttributeOnModelOrCastedUp($attributeName) ||
+                        ($this->isAttributeOnModelOrCastedUp($attributeName) && !$this->isCastedUpAttributeConfigurationAllowed($attributeName)) ||
                                 in_array($attributeName, $modelClassName::getNonConfigurableAttributes()))
                     {
                         //temporary until we figure out how to handle these types.
@@ -87,12 +87,12 @@
                     }
                     else
                     {
-                        $url         = Yii::app()->createUrl($route,
-                                            array(
-                                                'moduleClassName' => $this->moduleClassName,
-                                                'attributeTypeName' => $information['elementType'],
-                                                'attributeName' => $attributeName)
-                                            );
+                        $elementType  = $information['elementType'];
+                        $params = array(
+                            'moduleClassName' => $this->moduleClassName,
+                            'attributeTypeName' => $elementType,
+                            'attributeName' => $attributeName);
+                        $url         = Yii::app()->createUrl($route, $params);
                         $linkContent = static::renderConfigureLinkContent($url, 'edit-link-' . $attributeName);
                     }
                     $content .= '<li>';
@@ -125,6 +125,12 @@
                 return true;
             }
             return false;
+        }
+
+        protected function isCastedUpAttributeConfigurationAllowed($attributeName)
+        {
+            $modelClassName = $this->modelClassName;
+            return ModelMetadataUtil::isCastedUpAttributeConfigurationAllowed($modelClassName, $attributeName);
         }
 
         public function isUniqueToAPage()
