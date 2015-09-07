@@ -209,6 +209,10 @@
         protected function processActivityInformation($value)
         {
             $type                       = $this->getActivityTypeByEvent($value);
+            if ($type == EmailMessageActivity::TYPE_BOUNCE)
+            {
+                EmailBounceUtil::markPersonPrimaryEmailAsInvalid($value['personId']);
+            }
             $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($value['itemClass']);
             $activityUtilClassName      = $activityClassName . 'Util';
             $activityData               = array('modelId'   => $value['itemId'],
