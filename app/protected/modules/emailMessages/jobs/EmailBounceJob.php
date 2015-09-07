@@ -101,6 +101,7 @@
             assert('$zurmoItemClass === "AutoresponderItem" || $zurmoItemClass === "CampaignItem"');
             assert('$zurmoItemId > 0');
             assert('$zurmoPersonId > 0');
+            EmailBounceUtil::markPersonPrimaryEmailAsInvalid($zurmoPersonId);
             $activityClassName          = EmailMessageActivityUtil::resolveModelClassNameByModelType($zurmoItemClass);
             $activityUtilClassName      = $activityClassName . 'Util';
             $type                       = $activityClassName::TYPE_BOUNCE;

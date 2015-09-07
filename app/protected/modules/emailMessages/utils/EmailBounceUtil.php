@@ -59,6 +59,27 @@
             return $headers;
         }
 
+        /**
+         * 
+         * @param integer $personId
+         * @return boolean
+         */
+        public static function markPersonPrimaryEmailAsInvalid($personId)
+        {
+            try
+            {
+                $person = Person::getById(intval($personId));
+            }
+            catch (NotFoundException $e)
+            {
+                return false;
+            }
+            $person->primaryEmail->isInvalid = true;
+            $person->save(false);
+            return true;
+        }
+                
+        
         protected static function resolveHeaderTagValueFromTextBody($headerTag, $textBody)
         {
             $regex = '/' . $headerTag . ': ([\w\d]+)/is'; // Not Coding Standard
