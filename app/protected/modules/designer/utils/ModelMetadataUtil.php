@@ -212,11 +212,12 @@
 
             //Is attribute belong to downcasted model, in that case do not allow change of any metadata
             // Check if attribute name belong to some downcasted models
-            $castedUpRelationModelClassName = self::getCastedUpRelationModelClassName($metadata, $modelClassName, $relationName);
-            if ($castedUpRelationModelClassName != null)
+            $castedUpRelationModelClassName = self::getCastedUpRelationModelClassName($metadata, $relationName);
+            if ($castedUpRelationModelClassName != null && $castedUpRelationModelClassName != $modelClassName)
             {
                 $modelClassName = $castedUpRelationModelClassName;
             }
+
 
             if (!isset($metadata[$modelClassName]['relations']) ||
                     !array_key_exists($relationName, $metadata[$modelClassName]['relations']))
@@ -249,27 +250,19 @@
             $modelClassName::setMetadata($metadata);
         }
 
-        public static function getCastedUpRelationModelClassName($metadata, $modelClassName, $relationName)
+        public static function getCastedUpRelationModelClassName($metadata, $relationName)
         {
-            $attributeAdapter = new RedBeanModelAttributeToDataProviderAdapter($modelClassName, $relationName);
-            $attributeModelClassName = $attributeAdapter->getAttributeModelClassName();
-            if (isset($metadata[$attributeModelClassName]['relations']) &&
-                array_key_exists($relationName, $metadata[$attributeModelClassName]['relations']))
+            foreach ($metadata as $attributeModelClassName => $relatedMetadata)
             {
-                $modelClassName = $attributeModelClassName;
-                return $modelClassName;
+                if (isset($metadata[$attributeModelClassName]['relations']) &&
+                    array_key_exists($relationName, $metadata[$attributeModelClassName]['relations'])
+                )
+                {
+                    $modelClassName = $attributeModelClassName;
+                    return $modelClassName;
+                }
             }
             return null;
-        }
-
-        public static function isCastedUpAttributeConfigurationAllowed($modelClassName, $attributeName)
-        {
-            if (method_exists($modelClassName, 'getAllowedCastedUpAttributeNames') &&
-                in_array($attributeName, $modelClassName::getAllowedCastedUpAttributeNames()))
-            {
-                return true;
-            }
-            return false;
         }
 
         private static function updateCustomFieldData($customFieldDataName, $customFieldDataData, $customFieldDataLabels)

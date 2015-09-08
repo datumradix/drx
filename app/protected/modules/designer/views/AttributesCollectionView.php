@@ -87,12 +87,12 @@
                     }
                     else
                     {
-                        $elementType  = $information['elementType'];
-                        $params = array(
-                            'moduleClassName' => $this->moduleClassName,
-                            'attributeTypeName' => $elementType,
-                            'attributeName' => $attributeName);
-                        $url         = Yii::app()->createUrl($route, $params);
+                        $url         = Yii::app()->createUrl($route,
+                                            array(
+                                                'moduleClassName' => $this->moduleClassName,
+                                                'attributeTypeName' => $information['elementType'],
+                                                'attributeName' => $attributeName)
+                                            );
                         $linkContent = static::renderConfigureLinkContent($url, 'edit-link-' . $attributeName);
                     }
                     $content .= '<li>';
@@ -130,7 +130,11 @@
         protected function isCastedUpAttributeConfigurationAllowed($attributeName)
         {
             $modelClassName = $this->modelClassName;
-            return ModelMetadataUtil::isCastedUpAttributeConfigurationAllowed($modelClassName, $attributeName);
+            if (method_exists($modelClassName, 'getAllowedCastedUpAttributeNames') &&
+                in_array($attributeName, $modelClassName::getAllowedCastedUpAttributeNames()))
+            {
+                return true;
+            }
         }
 
         public function isUniqueToAPage()
