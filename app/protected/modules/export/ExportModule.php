@@ -58,7 +58,7 @@
          * How many total models to process in a given export job run
          * @var int
          */
-        public static $asynchronousMaximumModelsToProcess = 2000;
+        public static $asynchronousMaximumModelsToProcess = 1000;
 
         public static function getTranslatedRightsLabels()
         {
