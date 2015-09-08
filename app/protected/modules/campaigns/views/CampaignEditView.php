@@ -42,7 +42,8 @@
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type'    => 'SaveButton', 'label' => 'eval:static::renderLabelForSaveButton()'),
+                            array('type'    => 'SaveButton', 'label' => 'eval:static::renderLabelForSaveButton()',
+                                  'htmlOptions' => 'eval:static::resolveHtmlOptionsForSaveButton()'),
                             array('type'    => 'CancelLink'),
                             array('type'    => 'SendTestEmailLink'),
                             array('type'    => 'CampaignDeleteLink'),
@@ -280,6 +281,23 @@
             else
             {
                 Zurmo::t('Core', 'Save');
+            }
+        }
+
+        /**
+         * Show save button only for active campaigns, otherwise Campaign saving would cause error because required
+         * fields are disabled
+         * @return array|null
+         */
+        protected function resolveHtmlOptionsForSaveButton()
+        {
+            if ($this->model->status == Campaign::STATUS_ACTIVE)
+            {
+                return null;
+            }
+            else
+            {
+                return array('style' => 'display: none');
             }
         }
 
