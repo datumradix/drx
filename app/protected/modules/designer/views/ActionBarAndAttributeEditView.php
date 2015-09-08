@@ -50,35 +50,13 @@
         {
             parent::__construct(2, 1);
             $this->setView(new ActionBarForDesignerModuleView($controllerId, $moduleId, $module, 'DesignerFieldsMenu'), 0, 0);
-            $attributeTypeEditViewClassName = $this->resolveAttributeEditViewClassName($attributeTypeName, $attributeForm, $modelClassName);
+            $attributeTypeEditViewClassName = $attributeTypeName. 'AttributeEditView';
             $this->setView(new $attributeTypeEditViewClassName($controllerId, $moduleId, $attributeForm, $title), 1, 0);
         }
 
         public function isUniqueToAPage()
         {
             return true;
-        }
-
-        protected function resolveAttributeEditViewClassName($attributeTypeName, $attributeForm, $modelClassName)
-        {
-            /*
-            if (ModelMetadataUtil::isCastedUpAttributeConfigurationAllowed($modelClassName, $attributeForm->attributeName))
-            {
-                $metadata                       = $modelClassName::getMetadata();
-                $castedUpRelationModelClassName = ModelMetadataUtil::getCastedUpRelationModelClassName(
-                    $metadata, $modelClassName, $attributeForm->attributeName);
-                if ($castedUpRelationModelClassName != null &&
-                    $castedUpRelationModelClassName != $modelClassName
-                )
-                {
-                    if ($attributeForm instanceOf DropDownAttributeForm)
-                    {
-                        return 'DropDownAttributeForCastedUp' . 'AttributeEditView';
-                    }
-                }
-            }
-            */
-            return $attributeTypeName. 'AttributeEditView';
         }
     }
 ?>
