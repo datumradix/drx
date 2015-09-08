@@ -209,8 +209,18 @@
                     throw new NotSupportedException();
                 }
             }
-            if (!isset           (               $metadata[$modelClassName]['relations']) ||
-                 !array_key_exists($relationName, $metadata[$modelClassName]['relations']))
+
+            //Is attribute belong to downcasted model, in that case do not allow change of any metadata
+            // Check if attribute name belong to some downcasted models
+            $castedUpRelationModelClassName = self::getCastedUpRelationModelClassName($metadata, $relationName);
+            if ($castedUpRelationModelClassName != null && $castedUpRelationModelClassName != $modelClassName)
+            {
+                $modelClassName = $castedUpRelationModelClassName;
+            }
+
+
+            if (!isset($metadata[$modelClassName]['relations']) ||
+                    !array_key_exists($relationName, $metadata[$modelClassName]['relations']))
             {
                 $relationName = self::resolveName($relationName);
                 $metadata[$modelClassName]['relations'][$relationName] = array(RedBeanModel::HAS_ONE,
@@ -234,6 +244,29 @@
                 $metadata[$modelClassName]['customFields'][$relationName] = $customFieldDataName;
             }
             static::resolveAddOrRemoveNoAuditInformation($isAudited, $metadata[$modelClassName], $relationName);
+            self::updateCustomFieldData($customFieldDataName, $customFieldDataData, $customFieldDataLabels);
+            self::addOrUpdateRules($modelClassName, $relationName, $defaultValue, null, null,
+                                   null, null, $isRequired, array(), $metadata);
+            $modelClassName::setMetadata($metadata);
+        }
+
+        public static function getCastedUpRelationModelClassName($metadata, $relationName)
+        {
+            foreach ($metadata as $attributeModelClassName => $relatedMetadata)
+            {
+                if (isset($metadata[$attributeModelClassName]['relations']) &&
+                    array_key_exists($relationName, $metadata[$attributeModelClassName]['relations'])
+                )
+                {
+                    $modelClassName = $attributeModelClassName;
+                    return $modelClassName;
+                }
+            }
+            return null;
+        }
+
+        private static function updateCustomFieldData($customFieldDataName, $customFieldDataData, $customFieldDataLabels)
+        {
             if ($customFieldDataData !== null)
             {
                 $customFieldData                   = CustomFieldData::getByName($customFieldDataName);
@@ -249,9 +282,6 @@
             {
                 throw new NotSupportedException();
             }
-            self::addOrUpdateRules($modelClassName, $relationName, $defaultValue, null, null,
-                                   null, null, $isRequired, array(), $metadata);
-            $modelClassName::setMetadata($metadata);
         }
 
         private static function addOrUpdateRules($modelClassName,
