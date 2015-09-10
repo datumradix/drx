@@ -51,6 +51,8 @@
 
         const SENT                       = 'sent';
 
+        const FAILED_TO_SEND             = 'failed';
+
         const UNIQUE_OPENS               = 'uniqueOpens';
 
         const UNIQUE_CLICKS              = 'uniqueClicks';
@@ -58,6 +60,8 @@
         const BOUNCED                    = 'bounced';
 
         const UNSUBSCRIBED               = 'optedOut';
+
+        const SKIPPED                    = 'skipped';
 
         const DAY_DATE                   = 'dayDate';
 

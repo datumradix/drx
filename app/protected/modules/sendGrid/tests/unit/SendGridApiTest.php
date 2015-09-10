@@ -79,7 +79,7 @@
                             'name'      => 'Test User',
                             'address'   => 'Super.test@test.zurmo.com'
                         );
-            $emailMessage = EmailMessageHelper::processAndCreateEmailMessage($from, static::$testEmailAddress);
+            $emailMessage = EmailMessageHelper::processAndCreateTestEmailMessage($from, static::$testEmailAddress);
             $mailer       = new ZurmoSendGridMailer($emailMessage, $sendGridEmailAccount);
             $emailMessage = $mailer->sendTestEmail(true);
             $this->assertEquals('EmailMessage', get_class($emailMessage));

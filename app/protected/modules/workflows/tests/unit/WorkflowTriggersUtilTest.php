@@ -65,6 +65,12 @@
             $this->assertEquals('true && false', WorkflowTriggersUtil::resolveBooleansDataToPHPString('1 && false', $data));
         }
 
+        public function testResolveBooleansDataToPHPStringWithOverTenConditions()
+        {
+            $data = array(1 => true, 2 => false, 10 => false, 21 => true);
+            $this->assertEquals('true && false && false && true', WorkflowTriggersUtil::resolveBooleansDataToPHPString('1 && 2 && 10 && 21', $data));
+        }
+
         /**
          * @expectedException NotSupportedException()
          */

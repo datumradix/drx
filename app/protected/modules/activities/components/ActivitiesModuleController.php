@@ -74,7 +74,24 @@
             {
                 throw new NotSupportedException();
             }
+            $this->addRelatedModelAccountToModel($model, $relatedModel);
             return $model;
+        }
+
+        /**
+         * Copy the account from a related model to a activity items
+         * @param RedBeanModel $model
+         * @param RedBeanModel $relatedModel
+         */
+        protected function addRelatedModelAccountToModel(RedBeanModel $model, RedBeanModel $relatedModel)
+        {
+            $metadata = Activity::getMetadata();
+            if ($relatedModel->isRelation('account') && isset($relatedModel->account) &&
+                $relatedModel->account->id > 0 &&
+                in_array(get_class($relatedModel->account), $metadata['Activity']['activityItemsModelClassNames']))
+            {
+                $model->activityItems->add($relatedModel->account);
+            }
         }
     }
 ?>

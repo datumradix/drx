@@ -555,13 +555,14 @@
             $this->assertEquals($compareStructure, $metadata['structure']);
         }
 
-        public function testDerivedIdAttribute()
+        public function atestDerivedIdAttribute()
         {
             $filter                              = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem',
-                                                   Report::TYPE_ROWS_AND_COLUMNS);
+                Report::TYPE_ROWS_AND_COLUMNS);
             $filter->attributeIndexOrDerivedType = 'owner__User';
             $filter->operator                    = OperatorRules::TYPE_EQUALS;
             $filter->value                       = '7';
+            $filter->valueType                   = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $metadataAdapter                     = new FilterForReportFormToDataProviderMetadataAdapter($filter);
             $metadata                            = $metadataAdapter->getAdaptedMetadata();
             $compareClauses = array(
@@ -570,6 +571,52 @@
                     'relatedAttributeName' => 'id',
                     'operatorType'         => 'equals',
                     'value'                => '7',
+                ),
+            );
+            $compareStructure = '1';
+            $this->assertEquals($compareClauses, $metadata['clauses']);
+            $this->assertEquals($compareStructure, $metadata['structure']);
+        }
+
+        public function testDerivedUserIdAttribute()
+        {
+            $filter                              = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem',
+                                                   Report::TYPE_ROWS_AND_COLUMNS);
+            $filter->attributeIndexOrDerivedType = 'owner__User';
+            $filter->operator                    = OperatorRules::TYPE_EQUALS;
+            $filter->value                       = '7';
+            $filter->valueType                   = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
+            $metadataAdapter                     = new FilterForReportFormToDataProviderMetadataAdapter($filter);
+            $metadata                            = $metadataAdapter->getAdaptedMetadata();
+            $compareClauses = array(
+                1 => array(
+                    'attributeName'        => 'owner',
+                    'relatedAttributeName' => 'id',
+                    'operatorType'         => 'equals',
+                    'value'                => '7',
+                ),
+            );
+            $compareStructure = '1';
+            $this->assertEquals($compareClauses, $metadata['clauses']);
+            $this->assertEquals($compareStructure, $metadata['structure']);
+        }
+
+        public function testDerivedUserIdAttributeForLoggedInUser()
+        {
+            $filter                              = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem',
+                Report::TYPE_ROWS_AND_COLUMNS);
+            $filter->attributeIndexOrDerivedType = 'owner__User';
+            $filter->operator                    = OperatorRules::TYPE_EQUALS;
+            $filter->value                       = '7';
+            $filter->valueType                   = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_LOGGED_IN_USER;
+            $metadataAdapter                     = new FilterForReportFormToDataProviderMetadataAdapter($filter);
+            $metadata                            = $metadataAdapter->getAdaptedMetadata();
+            $compareClauses = array(
+                1 => array(
+                    'attributeName'        => 'owner',
+                    'relatedAttributeName' => 'id',
+                    'operatorType'         => 'equals',
+                    'value'                => Yii::app()->user->userModel->id,
                 ),
             );
             $compareStructure = '1';

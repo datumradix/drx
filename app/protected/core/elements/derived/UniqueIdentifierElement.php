@@ -65,7 +65,7 @@
 
         public static function getDisplayName()
         {
-            return Zurmo::t('Core', 'ID');
+            return Zurmo::t('Core', 'Id');
         }
 
         public static function getModelAttributeNames()

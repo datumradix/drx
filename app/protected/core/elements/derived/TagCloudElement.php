@@ -156,7 +156,7 @@
                 return $this->form->labelEx($this->model, $this->attribute, $htmlOptions);
             }
         }
-        
+
         /**
          * Generate the element tooltip help content
          * @return A string containing the element's tooltip
@@ -164,7 +164,7 @@
         protected function generateElementTooltipHelpContent($id)
         {
             $title      = Zurmo::t('Core', 'Original values will be overwritten.');
-            $content    = '<span id="'.$id.'" class="tooltip" title="' . $title . '">?</span>';
+            $content    = '<span id="'.$id.'" class="tooltip" title="' . $title . '">?</span>'; // Not Coding Standard
             $qtip       = new ZurmoTip();
             $qtip->addQTip("#$id");
             return $content;

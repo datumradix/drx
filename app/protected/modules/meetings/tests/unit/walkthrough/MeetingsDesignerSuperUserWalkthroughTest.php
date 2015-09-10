@@ -296,7 +296,7 @@
         /**
          * @depends testCreateAnMeetingAfterTheCustomFieldsArePlacedForMeetingsModule
          */
-        public function testEditOfTheMeetingForTheTagCloudFieldAfterRemovingAllTagsPlacedForMeetingsModule()
+        public function testEditOfTheMeetingForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForMeetingsModule()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -341,7 +341,7 @@
                                 'decimalCstm'                       => '12',
                                 'picklistCstm'                      => array('value'  => 'b'),
                                 'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
-                                'tagcloudCstm'                      => array('values' =>  array()),
+                                'tagcloudCstm'                      => array('values' =>  array('writing')),
                                 'countrylistCstm'                   => array('value'  => 'aaaa'),
                                 'statelistCstm'                     => array('value'  => 'aaa1'),
                                 'citylistCstm'                      => array('value'  => 'ab1'),
@@ -394,11 +394,75 @@
             $this->assertEquals($meeting[0]->citylistCstm->value              , 'ab1');
             $this->assertContains('gg'                                        , $meeting[0]->multiselectCstm->values);
             $this->assertContains('hh'                                        , $meeting[0]->multiselectCstm->values);
-            $this->assertEquals(0                                             , $meeting[0]->tagcloudCstm->values->count());
+            $this->assertEquals(1                                             , $meeting[0]->tagcloudCstm->values->count());
             $metadata            = CalculatedDerivedAttributeMetadata::
                                    getByNameAndModelClassName('calcnumber', 'Meeting');
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $meeting[0]);
             $this->assertEquals(1                                             , $testCalculatedValue);
+        }
+
+        /**
+         * @depends testEditOfTheMeetingForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForMeetingsModule
+         */
+        public function testEditOfTheMeetingForTheTagCloudFieldAfterRemovingAllTagsPlacedForMeetingsModule()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            //Retrieve the meeting Id.
+            $meeting = Meeting::getByName('myEditMeeting');
+            $this->assertEquals(1, $meeting[0]->tagcloudCstm->values->count());
+
+            //Set the date and datetime variable values here.
+            $date           = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateFormatForInput(), time());
+            $datetime       = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateTimeFormatForInput(), time());
+
+            //Get the super user, account, opportunity and contact id.
+            $superUserId        = $super->id;
+            $superAccount       = Account::getByName('superAccount');
+            $superContactId1    = self::getModelIdByModelNameAndName('Contact', 'superContact1 superContact1son');
+            $superContactId2    = self::getModelIdByModelNameAndName('Contact', 'superContact2 superContact2son');
+            $superContactId3    = self::getModelIdByModelNameAndName('Contact', 'superContact3 superContact3son');
+            $superOpportunityId = self::getModelIdByModelNameAndName('Opportunity', 'superOpp');
+            $baseCurrency       = Currency::getByCode(Yii::app()->currencyHelper->getBaseCode());
+            $explicitReadWriteModelPermission = ExplicitReadWriteModelPermissionsUtil::MIXED_TYPE_EVERYONE_GROUP;
+            $activityItemFormContacts         = $superContactId1 . ',' . $superContactId2 . ',' . $superContactId3; // Not Coding Standard
+
+            //Edit the meeting based on the custom fields and the meeting Id.
+            $this->setGetArray (array('id' => $meeting[0]->id));
+            $this->setPostArray(array('Meeting' => array(
+                                'name'                              => 'myEditMeeting',
+                                'location'                          => 'LandLine',
+                                'startDateTime'                     => $datetime,
+                                'endDateTime'                       => $datetime,
+                                'category'                          => array('value' => 'Call'),
+                                'description'                       => 'This is Edit Meeting Description',
+                                'owner'                             => array('id' => $superUserId),
+                                'explicitReadWriteModelPermissions' => array('type' => $explicitReadWriteModelPermission),
+                                'checkboxCstm'                      => '0',
+                                'currencyCstm'                      => array('value'   => 40,
+                                                                             'currency' => array(
+                                                                             'id' => $baseCurrency->id)),
+                                'dateCstm'                          => $date,
+                                'datetimeCstm'                      => $datetime,
+                                'decimalCstm'                       => '12',
+                                'picklistCstm'                      => array('value'  => 'b'),
+                                'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
+                                'tagcloudCstm'                      => array('values' =>  array()),
+                                'countrylistCstm'                   => array('value'  => 'aaaa'),
+                                'statelistCstm'                     => array('value'  => 'aaa1'),
+                                'citylistCstm'                      => array('value'  => 'ab1'),
+                                'integerCstm'                       => '11',
+                                'phoneCstm'                         => '259-784-2069',
+                                'radioCstm'                         => array('value' => 'e'),
+                                'textCstm'                          => 'This is a test Edit Text',
+                                'textareaCstm'                      => 'This is a test Edit TextArea',
+                                'urlCstm'                           => 'http://wwww.abc-edit.com'),
+                                'ActivityItemForm' => array(
+                                'Account'     => array('id'  => $superAccount[0]->id),
+                                'contact'     => array('ids' => $activityItemFormContacts),
+                                'Opportunity' => array('id'  => $superOpportunityId))));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('meetings/default/edit');
+            $this->assertContains("tagcloud en cannot be blank.", $content);
         }
 
         /**

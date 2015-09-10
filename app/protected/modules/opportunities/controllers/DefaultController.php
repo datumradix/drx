@@ -55,19 +55,30 @@
             );
         }
 
-        public function actionList()
+        public function actionList($searchFormClassName = null)
         {
             $pageSize    = Yii::app()->pagination->resolveActiveForCurrentUserByType(
                            'listPageSize', get_class($this->getModule()));
             $opportunity = new Opportunity(false);
-            $searchForm  = new OpportunitiesSearchForm($opportunity);
+
+            if (isset($searchFormClassName) && class_exists($searchFormClassName))
+            {
+                $searchForm      = new $searchFormClassName($opportunity);
+                $stickySearchKey = $searchFormClassName; // We need to change this
+            }
+            else
+            {
+                $searchForm      = new OpportunitiesSearchForm($opportunity);
+                $stickySearchKey = 'OpportunitiesSearchView';
+            }
+
             $listAttributesSelector = new ListAttributesSelector('OpportunitiesListView', get_class($this->getModule()));
             $searchForm->setListAttributesSelector($listAttributesSelector);
             $dataProvider = $this->resolveSearchDataProvider(
                 $searchForm,
                 $pageSize,
                 null,
-                'OpportunitiesSearchView'
+                $stickySearchKey
             );
             if (isset($_GET['ajax']) && $_GET['ajax'] == 'list-view')
             {

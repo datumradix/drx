@@ -817,7 +817,7 @@
                 }
             }
         }
-        
+
         /**
          * @param RedBeanModel $model
          * @param string $attribute
@@ -847,7 +847,7 @@
                     in_array($this->type, $allowedActionTypes))
                 {
                     $title      = Zurmo::t('Core', 'Original values will be overwritten.');
-                    $content    = '<span id="'.$id.'" class="tooltip" title="' . $title . '">?</span>';
+                    $content    = '<span id="'.$id.'" class="tooltip" title="' . $title . '">?</span>'; // Not Coding Standard
                     $qtip       = new ZurmoTip();
                     $qtip->addQTip("#$id");
                     return $content;
@@ -857,7 +857,7 @@
                     return null;
                 }
             }
-            catch (NotSupportedException $e) 
+            catch (NotSupportedException $e)
             {
                 return null;
             }

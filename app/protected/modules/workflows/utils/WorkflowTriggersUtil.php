@@ -111,7 +111,7 @@
                 {
                     throw new NotSupportedException();
                 }
-                $evaluatedString = str_replace($key, BooleanUtil::boolToString($boolean), strtolower($evaluatedString));
+                $evaluatedString = preg_replace('/(?<![0-9])' . $key . '(?![0-9])/', BooleanUtil::boolToString($boolean), strtolower($evaluatedString));
             }
             return $evaluatedString;
         }
@@ -338,6 +338,66 @@
             {
                 return $triggerRules->evaluateBeforeSave($model, $attribute);
             }
+        }
+
+        /**
+         * Check if picklist modification caused some issues with workflow triggers and if yes notify users
+         * @return array
+         * @throws NotSupportedException
+         */
+        public static function getWorkflowsWithInvalidTriggerCustomFieldValue()
+        {
+            $savedWorkflows = SavedWorkflow::getAll();
+            $workflows      = array();
+            foreach ($savedWorkflows as $savedWorkflow)
+            {
+                $workflow        = SavedWorkflowToWorkflowAdapter::makeWorkflowBySavedWorkflow($savedWorkflow);
+                $hasInvalidCustomFieldValue = false;
+                foreach ($workflow->getTriggers() as $trigger)
+                {
+                    $modelClassName = $trigger->getModelClassName();
+                    $customFieldAttributeNames = CustomFieldUtil::getCustomFieldAttributeNames($modelClassName);
+                    $triggerAttributeName = $trigger->getAttribute();
+                    if (in_array($triggerAttributeName, $customFieldAttributeNames))
+                    {
+                        $customFieldData = CustomFieldDataModelUtil::getDataByModelClassNameAndAttributeName($modelClassName, $triggerAttributeName);
+                        $allCustomFieldValues = unserialize($customFieldData->serializedData);
+
+                        // Check with triggers that allow single value
+                        if (in_array($trigger->getOperator(),
+                            array(OperatorRules::TYPE_EQUALS, OperatorRules::TYPE_DOES_NOT_EQUAL,
+                                OperatorRules::TYPE_BECOMES, OperatorRules::TYPE_WAS)))
+                        {
+                            if (!in_array($trigger->value, $allCustomFieldValues))
+                            {
+                                $hasInvalidCustomFieldValue = true;
+                                break;
+                            }
+                        }
+                        // Check with triggers that allow multiple trigger values
+                        elseif (in_array($trigger->getOperator(),
+                            array(OperatorRules::TYPE_BECOMES_ONE_OF, OperatorRules::TYPE_WAS_ONE_OF,
+                                OperatorRules::TYPE_ONE_OF)))
+                        {
+                            $triggerSelectedCustomFieldValues = MultiSelectDropDownSanitizerUtil::
+                            getCustomFieldValuesFromValueString($trigger->value);
+                            foreach ($triggerSelectedCustomFieldValues as $triggerValue)
+                            {
+                                if (!in_array($triggerValue, $allCustomFieldValues))
+                                {
+                                    $hasInvalidCustomFieldValue = true;
+                                    break 2;
+                                }
+                            }
+                        }
+                    }
+                }
+                if ($hasInvalidCustomFieldValue)
+                {
+                    $workflows[] = $workflow;
+                }
+            }
+            return $workflows;
         }
     }
 ?>

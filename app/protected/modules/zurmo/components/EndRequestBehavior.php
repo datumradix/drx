@@ -31,7 +31,7 @@
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
-     * "Copyright Zurmo Inc. 2014. All rights reserved".
+     * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
     /**
@@ -44,6 +44,7 @@
     {
         public function attach($owner)
         {
+            $owner->attachEventHandler('onEndRequest', array($this, 'handleSetLoggerAutoDumpAndAutoFlush'));
             if (Yii::app()->isApplicationInstalled())
             {
                 $owner->attachEventHandler('onEndRequest', array($this, 'handleGamification'));
@@ -120,7 +121,8 @@
             if (Yii::app()->errorHandler->error == null &&
                 Yii::app()->areAllClassesImported() &&
                 Yii::app()->user->userModel != null &&
-                Yii::app()->gameHelper instanceof GameHelper)
+                Yii::app()->gameHelper instanceof GameHelper
+                )
             {
                 Yii::app()->gameHelper->processDeferredPoints();
                 Yii::app()->gameHelper->resolveNewBadges();
@@ -142,6 +144,20 @@
             {
                 Yii::app()->jobQueue->processAll();
             }
+        }
+
+        /**
+         * There is issue with Yii framework that does not log events that are happen in EndRequestBehavior
+         * What we did here is that we set to automatically flash error messages during EndRequest evens and dump
+         * them to error file. This shouldn't cause any perfomanse issue, because it will affect only OnEndRequest events.
+         * @param $event
+         */
+        public function handleSetLoggerAutoDumpAndAutoFlush($event)
+        {
+            // automatically flush to router
+            Yii::getLogger()->autoFlush = 1;
+            // automatically write when router gets a message
+            Yii::getLogger()->autoDump = true;
         }
     }
 ?>

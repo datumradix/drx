@@ -176,12 +176,22 @@
         {
             if ((in_array($this->operator, self::getOperatorsWhereValueIsRequired()) ||
                in_array($this->valueType, self::getValueTypesWhereValueIsRequired()) ||
-               ($this->getValueElementType() == 'BooleanForWizardStaticDropDown' ||
-               $this->getValueElementType()  == 'UserNameId' ||
-               ($this->getValueElementType() == 'MixedDateTypesForReport' && $this->valueType == null))) &&
+               (
+                   $this->getValueElementType() == 'BooleanForWizardStaticDropDown' ||
+                   $this->getValueElementType()  == 'UserNameId' ||
+                   ($this->getValueElementType() == 'MixedDateTypesForReport' && $this->valueType == null)
+               )) &&
                $this->value == null)
             {
-                $this->addError('value', Zurmo::t('Core', 'Value cannot be blank.'));
+                if ($this->getValueElementType() == 'MixedLoggedInUserTypesAndUsers' &&
+                    in_array($this->valueType, MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::getValueTypesWhereValueIsNotRequired()))
+                {
+                    // Do nothing
+                }
+                else
+                {
+                    $this->addError('value', Zurmo::t('Core', 'Value cannot be blank.'));
+                }
             }
             $passedValidation = true;
             $rules            = array();
@@ -235,7 +245,9 @@
          */
         public function validateValueType()
         {
-            if ($this->getValueElementType() == 'MixedDateTypesForReport' && $this->valueType == null)
+            if (
+                ($this->getValueElementType() == 'MixedDateTypesForReport' && $this->valueType == null) ||
+                ($this->getValueElementType() == 'MixedLoggedInUserTypesAndUsers' && $this->valueType == null))
             {
                 $this->addError('valueType', Zurmo::t('ZurmoModule', 'Type cannot be blank.'));
                 return false;
@@ -330,7 +342,10 @@
          */
         protected static function getValueTypesWhereValueIsRequired()
         {
-            return MixedDateTypesSearchFormAttributeMappingRules::getValueTypesWhereValueIsRequired();
+            return array_merge(
+                    MixedDateTypesSearchFormAttributeMappingRules::getValueTypesWhereValueIsRequired(),
+                    MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::getValueTypesWhereValueIsRequired()
+                );
         }
 
         /**

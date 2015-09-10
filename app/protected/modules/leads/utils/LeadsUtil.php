@@ -126,6 +126,8 @@
                 unset($accountPostData['CreateAccount']);
                 $account = new Account();
                 $account = LeadsUtil::attributesToAccountWithNoPostData($contact, $account, $accountPostData);
+                $account = Yii::app()->custom->resolveLeadToAccountCustomAttributesWithNoPostData($contact,
+                                                                                $account, $accountPostData);
                 $savedSuccessfully = false;
                 $modelToStringValue = null;
                 $account            = $controllerUtil->saveModelFromPost($accountPostData, $account, $savedSuccessfully,

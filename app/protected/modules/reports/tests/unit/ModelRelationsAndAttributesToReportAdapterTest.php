@@ -262,7 +262,7 @@
             //Includes derived attributes as well
             $compareData        = array('label' => 'Test Calculated', 'derivedAttributeType' => 'CalculatedNumber');
             $this->assertEquals($compareData, $attributes['calculated']);
-            $compareData        = array('label' => 'ID',       'derivedAttributeType' => 'UniqueIdentifier');
+            $compareData        = array('label' => 'Id',       'derivedAttributeType' => 'UniqueIdentifier');
             $this->assertEquals($compareData, $attributes['UniqueIdentifier']);
             $compareData        = array('label' => 'Full Name',       'derivedAttributeType' => 'FullName');
             $this->assertEquals($compareData, $attributes['FullName']);
@@ -1051,7 +1051,7 @@
             $this->assertEquals($compareData, $attributes['calculated']);
             $compareData        = array('label' => 'Full Name',       'derivedAttributeType' => 'FullName');
             $this->assertEquals($compareData, $attributes['FullName']);
-            $compareData        = array('label' => 'ID',       'derivedAttributeType' => 'UniqueIdentifier');
+            $compareData        = array('label' => 'Id',       'derivedAttributeType' => 'UniqueIdentifier');
             $this->assertEquals($compareData, $attributes['UniqueIdentifier']);
         }
 
@@ -1401,7 +1401,7 @@
             $this->assertEquals('MixedNumberTypes',               $adapter->getFilterValueElementType('float'));
             $this->assertEquals('MixedNumberTypes',               $adapter->getFilterValueElementType('integer'));
             $this->assertEquals('StaticDropDownForReport',        $adapter->getFilterValueElementType('multiDropDown'));
-            $this->assertEquals('UserNameId',                     $adapter->getFilterValueElementType('owner__User'));
+            $this->assertEquals('MixedLoggedInUserTypesAndUsers', $adapter->getFilterValueElementType('owner__User'));
             $this->assertEquals('Text',                           $adapter->getFilterValueElementType('phone'));
             $this->assertEquals('StaticDropDownForReport',        $adapter->getFilterValueElementType('radioDropDown'));
             $this->assertEquals('Text',                           $adapter->getFilterValueElementType('string'));

@@ -67,6 +67,12 @@
             }
         }
 
+        protected function afterSave()
+        {
+            Yii::app()->custom->resolveOpportunityCustomActionsAfterSave($this);
+            parent::afterSave();
+        }
+
         public function __toString()
         {
             try

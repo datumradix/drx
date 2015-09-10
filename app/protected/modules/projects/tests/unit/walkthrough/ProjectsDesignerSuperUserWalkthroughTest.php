@@ -314,7 +314,7 @@
         /**
          * @depends testWhetherSearchWorksForTheCustomFieldsPlacedForProjectsModuleAfterCreatingTheProject
          */
-        public function testEditOfTheProjectForTheTagCloudFieldAfterRemovingAllTagsPlacedForProjectsModule()
+        public function testEditOfTheProjectForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForProjectsModule()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -347,7 +347,7 @@
                             'datetimeCstm'                      => $datetime,
                             'picklistCstm'                      => array('value'  => 'b'),
                             'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
-                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'tagcloudCstm'                      => array('values' =>  array('writing')),
                             'countrylistCstm'                   => array('value'  => 'aaaa'),
                             'statelistCstm'                     => array('value'  => 'aaa1'),
                             'citylistCstm'                      => array('value'  => 'ab1'),
@@ -393,11 +393,59 @@
             $this->assertEquals($project->citylistCstm->value        , 'ab1');
             $this->assertContains('gg'                                   , $project->multiselectCstm->values);
             $this->assertContains('hh'                                   , $project->multiselectCstm->values);
-            $this->assertEquals(0                                        , $project->tagcloudCstm->values->count());
+            $this->assertEquals(1                                        , $project->tagcloudCstm->values->count());
             $metadata            = CalculatedDerivedAttributeMetadata::
                                    getByNameAndModelClassName('calcnumber', 'Project');
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $project);
             $this->assertEquals(132                                      , intval(str_replace(',', '', $testCalculatedValue))); // Not Coding Standard
+        }
+
+        /**
+         * @depends testEditOfTheProjectForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForProjectsModule
+         */
+        public function testEditOfTheProjectForTheTagCloudFieldAfterRemovingAllTagsPlacedForProjectsModule()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            //Set the date and datetime variable values here.
+            $date           = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateFormatForInput(), time());
+            $datetime       = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateTimeFormatForInput(), time());
+            $baseCurrency   = Currency::getByCode(Yii::app()->currencyHelper->getBaseCode());
+
+            //Retrieve the account id, the super user id and project Id.
+            $superUserId                      = $super->id;
+            $explicitReadWriteModelPermission = ExplicitReadWriteModelPermissionsUtil::MIXED_TYPE_EVERYONE_GROUP;
+            $project                          = Project::getByName('myEditProject');
+            $projectId                        = $project[0]->id;
+            $this->assertEquals(1, $project[0]->tagcloudCstm->values->count());
+
+            //Edit a new Project based on the custom fields.
+            $this->setGetArray(array('id' => $projectId));
+            $this->setPostArray(array('Project' => array(
+                            'name'                              => 'myEditProject',
+                            'owner'                             => array('id' => $superUserId),
+                            'explicitReadWriteModelPermissions' => array('type' => $explicitReadWriteModelPermission),
+                            'checkboxCstm'                      => '0',
+                            'currencyCstm'                      => array('value'       => 40,
+                                                                         'currency'    => array(
+                                                                             'id' => $baseCurrency->id)),
+                            'decimalCstm'                       => '12',
+                            'dateCstm'                          => $date,
+                            'datetimeCstm'                      => $datetime,
+                            'picklistCstm'                      => array('value'  => 'b'),
+                            'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
+                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'countrylistCstm'                   => array('value'  => 'aaaa'),
+                            'statelistCstm'                     => array('value'  => 'aaa1'),
+                            'citylistCstm'                      => array('value'  => 'ab1'),
+                            'integerCstm'                       => '11',
+                            'phoneCstm'                         => '259-784-2069',
+                            'radioCstm'                         => array('value' => 'e'),
+                            'textCstm'                          => 'This is a test Edit Text',
+                            'textareaCstm'                      => 'This is a test Edit TextArea',
+                            'urlCstm'                           => 'http://wwww.abc-edit.com')));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('projects/default/edit');
+            $this->assertContains("tagcloud en cannot be blank.", $content);
         }
 
         /**

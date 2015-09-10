@@ -68,7 +68,7 @@
         public static function getActivityItemsModels($data, $isLink = false)
         {
             $text = '';
-            foreach($data->activityItems as $activityItem)
+            foreach ($data->activityItems as $activityItem)
             {
                 $model = TasksUtil::castDownActivityItem($activityItem);
                 $modelClassName  = get_class($model);

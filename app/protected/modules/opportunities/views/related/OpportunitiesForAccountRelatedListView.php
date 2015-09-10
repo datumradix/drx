@@ -51,5 +51,10 @@
         {
             return array('AccountDetailsAndRelationsView');
         }
+
+        public function renderPortletHeadContent()
+        {
+            return $this->renderWrapperAndActionElementMenu(Zurmo::t('Core', 'Options'));
+        }
     }
 ?>

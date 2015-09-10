@@ -108,6 +108,11 @@
     <td></td>
 </tr>
 <tr>
+    <td>waitForElementPresent</td>
+    <td>//select[@id='RowsAndColumnsReportWizardForm_Filters_0_valueType']</td>
+    <td></td>
+</tr>
+<tr>
     <td>waitForTextPresent</td>
     <td>Available At Run Time</td>
     <td></td>
@@ -118,10 +123,18 @@
     <td></td>
 </tr>
 <tr>
+    <td>select</td>
+    <td>RowsAndColumnsReportWizardForm_Filters_0_valueType</td>
+    <td>label=Select User</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
     <td>click</td>
-    <td>
-        //div[@id='SavedCalendarFiltersForReportWizardView']/div/div[2]/div[1]/div[1]/ul/li/div/div/div[2]/div/div/a/span[1]
-    </td>
+    <td>RowsAndColumnsReportWizardForm_Filters_0_users_SelectLink</td>
     <td></td>
 </tr>
 <tr>
@@ -155,9 +168,9 @@
     <td>Super User</td>
 </tr>
 <tr>
-    <td>assertText</td>
+    <td>assertElementPresent</td>
     <td>link=Super User</td>
-    <td>Super User</td>
+    <td></td>
 </tr>
 <tr>
     <td>click</td>
@@ -171,9 +184,7 @@
 </tr>
 <tr>
     <td>waitForValue</td>
-    <td>
-        //div[@id='SavedCalendarFiltersForReportWizardView']/div/div[2]/div[1]/div[1]/ul/li/div/div/div[2]/div/div/input
-    </td>
+    <td>//input[@id='RowsAndColumnsReportWizardForm_Filters_0_stringifiedModelForValue']</td>
     <td>Super User</td>
 </tr>
 <tr>
@@ -239,9 +250,7 @@
 </tr>
 <tr>
     <td>verifyValue</td>
-    <td>
-        //div[@id='SavedCalendarFiltersForReportWizardView']/div/div[2]/div[1]/div[1]/ul/li/div/div/div[2]/div/div/input
-    </td>
+    <td>//input[@id='RowsAndColumnsReportWizardForm_Filters_0_stringifiedModelForValue']</td>
     <td>Super User</td>
 </tr>
 </tbody>

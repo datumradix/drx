@@ -454,7 +454,7 @@
         /**
          * @depends testWhetherSearchWorksForTheCustomFieldsPlacedForLeadsModuleAfterCreatingTheLeadUser
          */
-        public function testEditOfTheLeadUserForTheTagCloudFieldAfterRemovingAllTagsPlacedForLeadsModule()
+        public function testEditOfTheLeadUserForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForLeadsModule()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -524,7 +524,7 @@
                             'decimalCstm'                       => '12',
                             'picklistCstm'                      => array('value'  => 'b'),
                             'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
-                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'tagcloudCstm'                      => array('values' =>  array('writing')),
                             'countrylistCstm'                   => array('value'  => 'aaaa'),
                             'statelistCstm'                     => array('value'  => 'aaa1'),
                             'citylistCstm'                      => array('value'  => 'ab1'),
@@ -597,11 +597,99 @@
             $this->assertEquals($lead->citylistCstm->value            , 'ab1');
             $this->assertContains('gg'                                , $lead->multiselectCstm->values);
             $this->assertContains('hh'                                , $lead->multiselectCstm->values);
-            $this->assertEquals(0                                     , $lead->tagcloudCstm->values->count());
+            $this->assertEquals(1                                     , $lead->tagcloudCstm->values->count());
             $metadata            = CalculatedDerivedAttributeMetadata::
                                    getByNameAndModelClassName('calcnumber', 'Contact');
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $lead);
             $this->assertEquals(23                                    , $testCalculatedValue);
+        }
+
+        /**
+         * @depends testEditOfTheLeadUserForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForLeadsModule
+         */
+        public function testEditOfTheLeadUserForTheTagCloudFieldAfterRemovingAllTagsPlacedForLeadsModule()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            //Retrieve the the super user id.
+            $superUserId = $super->id;
+
+            //Retrieve the lead id.
+            $lead   = Contact::getByName('Sarah Williams Edit');
+            $leadId = $lead[0]->id;
+            $this->assertEquals(1, $lead[0]->tagcloudCstm->values->count());
+
+            //Set the date and datetime variable values here.
+            $date           = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateFormatForInput(), time());
+            //$dateAssert     = date('Y-m-d');
+            $datetime       = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateTimeFormatForInput(), time());
+            //$datetimeAssert = date('Y-m-d H:i:')."00";
+            $baseCurrency   = Currency::getByCode(Yii::app()->currencyHelper->getBaseCode());
+
+            //Retrieve the Lead State (Status) Id based on the name.
+            $leadState   = ContactState::getByName('In Progress');
+            $leadStateId = $leadState[0]->id;
+            $explicitReadWriteModelPermission = ExplicitReadWriteModelPermissionsUtil::MIXED_TYPE_EVERYONE_GROUP;
+
+            //Edit and save the lead.
+            $this->setGetArray(array('id' => $leadId));
+            $this->setPostArray(array('Contact' => array(
+                            'title'                             => array('value' => 'Mrs.'),
+                            'firstName'                         => 'Sarah',
+                            'lastName'                          => 'Williams Edit',
+                            'jobTitle'                          => 'Sales Director Edit',
+                            'companyName'                       => 'ABC Telecom Edit',
+                            'industry'                          => array('value' => 'Banking'),
+                            'website'                           => 'http://www.companyedit.com',
+                            'department'                        => 'Sales Edit',
+                            'officePhone'                       => '739-742-3005',
+                            'source'                            => array('value' => 'Inbound Call'),
+                            'mobilePhone'                       => '285-300-8232',
+                            'officeFax'                         => '255-454-1914',
+                            'state'                             => array('id' => $leadStateId),
+                            'owner'                             => array('id' => $superUserId),
+                            'primaryEmail'                      => array('emailAddress' => 'info@myNewLead.com',
+                                                                         'optOut' => '0',
+                                                                         'isInvalid' => '0'),
+                            'secondaryEmail'                    => array('emailAddress' => 'info@myNewLeadEdit.com',
+                                                                         'optOut' => '0',
+                                                                         'isInvalid' => '0'),
+                            'primaryAddress'                    => array('street1' => '26378 South Arlington Ave',
+                                                                         'street2' => '',
+                                                                         'city' => 'San Jose',
+                                                                         'state' => 'CA',
+                                                                         'postalCode' => '95131',
+                                                                         'country' => 'USA'),
+                            'secondaryAddress'                  => array('street1' => '1652 North Cedar Court',
+                                                                         'street2' => '',
+                                                                         'city' => 'Phoenix',
+                                                                         'state' => 'AZ',
+                                                                         'postalCode' => '85003',
+                                                                         'country' => 'USA'),
+                            'explicitReadWriteModelPermissions' => array('type' => $explicitReadWriteModelPermission),
+                            'description'                       => 'This is a Edit Description',
+                            'checkboxCstm'                      => '0',
+                            'currencyCstm'                      => array('value'   => 40,
+                                                                         'currency' => array(
+                                                                         'id' => $baseCurrency->id)),
+                            'dateCstm'                          => $date,
+                            'datetimeCstm'                      => $datetime,
+                            'decimalCstm'                       => '12',
+                            'picklistCstm'                      => array('value'  => 'b'),
+                            'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
+                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'countrylistCstm'                   => array('value'  => 'aaaa'),
+                            'statelistCstm'                     => array('value'  => 'aaa1'),
+                            'citylistCstm'                      => array('value'  => 'ab1'),
+                            'integerCstm'                       => '11',
+                            'phoneCstm'                         => '259-784-2069',
+                            'radioCstm'                         => array('value' => 'e'),
+                            'textCstm'                          => 'This is a test Edit Text',
+                            'textareaCstm'                      => 'This is a test Edit TextArea',
+                            'urlCstm'                           => 'http://wwww.abc-edit.com'),
+                            'save'                              => 'Save'));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/edit');
+            $this->assertContains("tagcloud en cannot be blank.", $content);
         }
 
         /**

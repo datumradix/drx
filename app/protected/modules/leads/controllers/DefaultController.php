@@ -403,6 +403,8 @@
             else
             {
                 $account = LeadsUtil::attributesToAccount($contact, $account);
+                $account = Yii::app()->custom->resolveLeadToAccountCustomAttributesWithNoPostData($contact, 
+                                                                                        $account, array());
             }
             $progressBarAndStepsView = new LeadConversionStepsAndProgressBarForWizardView();
             $convertView = new LeadConvertView(
@@ -457,6 +459,8 @@
                 $savedSuccessfully  = false;
                 $modelToStringValue = null;
                 $postData           = $_POST['Opportunity'];
+                $opportunity = Yii::app()->custom->resolveLeadToOpportunityCustomAttributesWithNoPostData($contact,
+                                                                                            $opportunity, $postData);
                 $opportunity        = $controllerUtil->saveModelFromPost($postData, $opportunity, $savedSuccessfully,
                                                                                             $modelToStringValue, false);
                 if ($savedSuccessfully)
@@ -483,6 +487,11 @@
                                                                                             $contact, $controllerUtil);
                 LeadsUtil::removeFromSession(LeadsUtil::LEAD_CONVERSION_ACCOUNT_DATA_SESSION_KEY);
                 $this->actionSaveConvertedContact($contact, $account, null);
+            }
+            else
+            {
+                $opportunity = Yii::app()->custom->resolveLeadToOpportunityCustomAttributesWithNoPostData(
+                                                                            $contact, $opportunity, array());
             }
 
             $progressBarAndStepsView = new LeadConversionStepsAndProgressBarForWizardView(1);

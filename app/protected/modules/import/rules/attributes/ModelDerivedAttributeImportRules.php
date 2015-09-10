@@ -87,7 +87,9 @@
             $sanitizedValue = ImportSanitizerUtil::
                               sanitizeValueBySanitizerTypes(static::getSanitizerUtilTypesInProcessingOrder(),
                                                             $modelClassName, null,
-                                                            $value, $columnName, $columnMappingData, $importSanitizeResultsUtil);
+                                                            $value, $columnName, $columnMappingData, $importSanitizeResultsUtil,
+                                                            null, null,
+                                                            $this->getExplicitReadWriteModelPermissions());
              if ($sanitizedValue == null &&
                 $columnMappingData['mappingRulesData']
                                   ['DefaultModelNameIdDerivedAttributeMappingRuleForm']['defaultModelId'] != null)

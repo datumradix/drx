@@ -1064,11 +1064,13 @@
             $filter->attributeIndexOrDerivedType   = 'createdByUser__User';
             $filter->value                         = 'green';
             $filter->operator                      = OperatorRules::TYPE_EQUALS;
+            $filter->valueType                     = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $filter2                               = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem9',
                                                      Report::TYPE_ROWS_AND_COLUMNS);
             $filter2->attributeIndexOrDerivedType  = 'modifiedByUser__User';
             $filter2->value                        = 'blue';
             $filter2->operator                     = OperatorRules::TYPE_EQUALS;
+            $filter2->valueType                    = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $content                               = $builder->makeQueryContent(array($filter, $filter2));
             $compareContent                        = "(({$q}item{$q}.{$q}createdbyuser__user_id{$q} = 'green') and " .
                                                      "({$q}item{$q}.{$q}modifiedbyuser__user_id{$q} = 'blue'))";
@@ -1088,11 +1090,13 @@
             $filter->attributeIndexOrDerivedType   = 'createdByUser__User';
             $filter->value                         = 'green';
             $filter->operator                      = OperatorRules::TYPE_EQUALS;
+            $filter->valueType                     = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $filter2                               = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem9',
                                                      Report::TYPE_ROWS_AND_COLUMNS);
             $filter2->attributeIndexOrDerivedType  = 'owner__User';
             $filter2->value                        = 'blue';
             $filter2->operator                     = OperatorRules::TYPE_EQUALS;
+            $filter2->valueType                    = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $content                               = $builder->makeQueryContent(array($filter, $filter2));
             $compareContent                        = "(({$q}item{$q}.{$q}createdbyuser__user_id{$q} = 'green') and " .
                                                      "({$q}ownedsecurableitem{$q}.{$q}owner__user_id{$q} = 'blue'))";
@@ -1117,11 +1121,13 @@
             $filter->attributeIndexOrDerivedType   = 'createdByUser__User';
             $filter->value                         = 'green';
             $filter->operator                      = OperatorRules::TYPE_EQUALS;
+            $filter->valueType                     = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $filter2                               = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem9',
                                                      Report::TYPE_ROWS_AND_COLUMNS);
             $filter2->attributeIndexOrDerivedType  = 'hasOne___modifiedByUser__User';
             $filter2->value                        = 'blue';
             $filter2->operator                     = OperatorRules::TYPE_EQUALS;
+            $filter2->valueType                    = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $content                               = $builder->makeQueryContent(array($filter, $filter2));
             $compareContent                        = "(({$q}item{$q}.{$q}createdbyuser__user_id{$q} = 'green') and " .
                                                      "({$q}item1{$q}.{$q}modifiedbyuser__user_id{$q} = 'blue'))";
@@ -1146,11 +1152,13 @@
             $filter->attributeIndexOrDerivedType   = 'createdByUser__User';
             $filter->value                         = 'green';
             $filter->operator                      = OperatorRules::TYPE_EQUALS;
+            $filter->valueType                     = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $filter2                               = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem9',
                                                      Report::TYPE_ROWS_AND_COLUMNS);
             $filter2->attributeIndexOrDerivedType  = 'hasOne___owner__User';
             $filter2->value                        = 'blue';
             $filter2->operator                     = OperatorRules::TYPE_EQUALS;
+            $filter2->valueType                    = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $content                               = $builder->makeQueryContent(array($filter, $filter2));
             $compareContent                        = "(({$q}item{$q}.{$q}createdbyuser__user_id{$q} = 'green') and " .
                                                      "({$q}ownedsecurableitem1{$q}.{$q}owner__user_id{$q} = 'blue'))";
@@ -1175,11 +1183,13 @@
             $filter->attributeIndexOrDerivedType   = 'hasOne___createdByUser__User';
             $filter->value                         = 'green';
             $filter->operator                      = OperatorRules::TYPE_EQUALS;
+            $filter->valueType                     = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $filter2                               = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem9',
                                                      Report::TYPE_ROWS_AND_COLUMNS);
             $filter2->attributeIndexOrDerivedType  = 'hasOne___owner__User';
             $filter2->value                        = 'blue';
             $filter2->operator                     = OperatorRules::TYPE_EQUALS;
+            $filter2->valueType                     = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $content                               = $builder->makeQueryContent(array($filter, $filter2));
             $compareContent                        = "(({$q}item{$q}.{$q}createdbyuser__user_id{$q} = 'green') and " .
                                                      "({$q}ownedsecurableitem{$q}.{$q}owner__user_id{$q} = 'blue'))";
@@ -1566,6 +1576,7 @@
             $filter->attributeIndexOrDerivedType   = 'Account__activityItems__Inferred___owner__User';
             $filter->value                         = 'a value';
             $filter->operator                      = OperatorRules::TYPE_EQUALS;
+            $filter->valueType                     = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $content                               = $builder->makeQueryContent(array($filter));
             $this->assertEquals("(({$q}ownedsecurableitem{$q}.{$q}owner__user_id{$q} = 'a value'))", $content);
             $this->assertEquals(1, $joinTablesAdapter->getFromTableJoinCount());

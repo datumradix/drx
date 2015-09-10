@@ -69,7 +69,7 @@
                         'address'   => Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom)
                     );
                 }
-                $emailMessage = EmailMessageHelper::processAndCreateEmailMessage($from, $configurationForm->aTestToAddress);
+                $emailMessage = EmailMessageHelper::processAndCreateTestEmailMessage($from, $configurationForm->aTestToAddress);
                 $mailer       = new ZurmoSendGridMailer($emailMessage, $sendGridEmailAccount);
                 $emailMessage = $mailer->sendTestEmail($isUser);
                 $messageContent  = EmailHelper::prepareMessageContent($emailMessage);
