@@ -74,9 +74,16 @@
             {
                 return false;
             }
-            $person->primaryEmail->isInvalid = true;
-            $person->save(false);
-            return true;
+            if ($person->primaryEmail->id > 0)
+            {
+                $person->primaryEmail->isInvalid = true;
+                $person->save(false);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
                 
         

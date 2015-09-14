@@ -72,7 +72,7 @@
             $this->user                 = User::getByUsername('super');
             Yii::app()->user->userModel = $this->user;
         }
-
+        
         public function testRunWithNoMessages()
         {
             $this->skipTestIfMissingSettings();
@@ -338,6 +338,41 @@
             $this->assertEquals(0, count($messages));
         }
 
+        public function testResolveMarkingPersonPrimaryEmailAsInvalid()
+        {
+            $imapMessage            = new ImapMessage();
+            $imapMessage->fromEmail = 'steve@testmail.zurmo.com';
+            $contact                = ContactTestHelper::createContactByNameForOwner('contact 03', $this->user);
+            $personId               = $contact->getClassId('Person');
+            $contact->primaryEmail->emailAddress = 'test3@zurmo.com';
+            $this->assertTrue($contact->save());
+            $this->assertNull($contact->primaryEmail->isInvalid);
+            $job                    = new EmailBounceJob();
+            $job->resolveMarkingPersonPrimaryEmailAsInvalid($imapMessage, $personId);
+            $this->assertNull($contact->primaryEmail->isInvalid);
+
+            $imapMessage            = new ImapMessage();
+            $imapMessage->fromEmail = 'postmaster@testmail.zurmo.com';
+            $contact                = ContactTestHelper::createContactByNameForOwner('contact 04', $this->user);
+            $personId               = $contact->getClassId('Person');
+            $contact->primaryEmail->emailAddress = 'test4@zurmo.com';
+            $this->assertTrue($contact->save());
+            $this->assertNull($contact->primaryEmail->isInvalid);
+            $job                    = new EmailBounceJob();
+            $job->resolveMarkingPersonPrimaryEmailAsInvalid($imapMessage, $personId);
+            $this->assertEquals(1, $contact->primaryEmail->isInvalid);
+
+            $imapMessage            = new ImapMessage();
+            $imapMessage->fromEmail = 'postmaster@testmail.zurmo.com';
+            $contact                = ContactTestHelper::createContactByNameForOwner('contact 05', $this->user);
+            $personId               = $contact->getClassId('Person');
+            $this->assertTrue($contact->save());
+            $this->assertNull($contact->primaryEmail->isInvalid);
+            $job                    = new EmailBounceJob();
+            $job->resolveMarkingPersonPrimaryEmailAsInvalid($imapMessage, $personId);
+            $this->assertNull($contact->primaryEmail->isInvalid);
+        }
+        
         protected function skipTestIfMissingSettings()
         {
             if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
