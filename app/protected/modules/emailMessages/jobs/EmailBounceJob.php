@@ -121,10 +121,7 @@
             {
                 return false;
             }
-            if (isset($message->fromEmail) && preg_match("/^(postmaster|mailer-daemon)/i", $message->fromEmail))
-            {
-                EmailBounceUtil::markPersonPrimaryEmailAsInvalid($zurmoPersonId);
-            }
+            $this->resolveMarkingPersonPrimaryEmailAsInvalid($message, $zurmoPersonId);
             return true;
         }
 
@@ -133,6 +130,14 @@
             if (isset($message->uid)) // For tests uid will not be setup
             {
                 $this->imapManager->deleteMessage($message->uid);
+            }
+        }
+        
+        public function resolveMarkingPersonPrimaryEmailAsInvalid(ImapMessage $message, $zurmoPersonId)
+        {
+            if (isset($message->fromEmail) && preg_match("/^(postmaster|mailer-daemon)/i", $message->fromEmail))
+            {
+                EmailBounceUtil::markPersonPrimaryEmailAsInvalid($zurmoPersonId);
             }
         }
     }
