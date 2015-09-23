@@ -52,7 +52,6 @@
                     ),
                     'nonPlaceableAttributeNames' => array(
                         'account',
-                        'owner',
                         'latestActivityDateTime'
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
@@ -180,6 +179,11 @@
         protected function renderAfterFormLayoutForDetailsContent()
         {
             return AccountDetailsViewUtil::renderAfterFormLayoutForDetailsContent($this->getModel());
+        }
+        
+        public static function getDesignerRulesType()
+        {
+            return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
         }
     }
 ?>

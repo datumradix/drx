@@ -185,6 +185,29 @@
             $this->assertEquals($editableMetadataNew['global']['panels'], $compareMetadata['panels']);
             $this->assertNotEmpty($adapter->getMessage());
 
+            $layout = array('panels' =>
+                array(
+                    array(
+                        'rows' => array(
+                            array(
+                                'cells' => array(
+                                    array('element' => 'id'),
+                                ),
+                            ),
+                            array(
+                                'cells' => array(
+                                    array('element' => 'name', 'detailViewOnly' => 1),
+                                )
+                            ),
+                            array(
+                                'cells' => array(
+                                    array('element' => 'owner'),
+                                )
+                            )
+                        )
+                    )
+                )
+            );
             //DetailViewOnly is setted
             $compareMetadata = array('panels' =>
                                      array(
@@ -204,6 +227,16 @@
                                                          array('elements' => array(
                                                              array('attributeName' => 'name',
                                                                    'type' => 'Text')
+                                                         ),
+                                                         'detailViewOnly' => 1
+                                                         ),
+                                                     )
+                                                 ),
+                                                 array(
+                                                     'cells' => array(
+                                                         array('elements' => array(
+                                                             array('attributeName' => 'owner',
+                                                                   'type' => 'User')
                                                          ),
                                                          'detailViewOnly' => 1
                                                          ),
