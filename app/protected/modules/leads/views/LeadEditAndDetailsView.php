@@ -61,7 +61,6 @@
                         'lastName',
                         'state',
                         'account',
-                        'owner',
                         'latestActivityDateTime'
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
@@ -229,6 +228,11 @@
         protected function renderAfterFormLayoutForDetailsContent()
         {
             return ContactDetailsViewUtil::renderAfterFormLayoutForDetailsContent($this->getModel(), null);
+        }
+        
+        public static function getDesignerRulesType()
+        {
+            return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
         }
     }
 ?>

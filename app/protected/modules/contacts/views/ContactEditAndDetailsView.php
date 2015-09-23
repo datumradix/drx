@@ -58,7 +58,6 @@
                         'title',
                         'firstName',
                         'lastName',
-                        'owner',
                         'state',
                         'googleWebTrackingId',
                         'latestActivityDateTime'
@@ -300,6 +299,11 @@
                 );
             ");
             // End Not Coding Standard
+        }
+        
+        public static function getDesignerRulesType()
+        {
+            return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
         }
     }
 ?>
