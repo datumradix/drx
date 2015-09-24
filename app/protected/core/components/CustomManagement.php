@@ -264,7 +264,7 @@
             return $opportunity;
         }
 
-        public function resolveOpportunityCustomActionsAfterSave($model)
+        public function resolveOpportunityCustomActionsBeforeSave($model)
         {
         }
     }

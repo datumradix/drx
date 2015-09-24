@@ -59,18 +59,13 @@
                 {
                     $this->resolveStageToProbability();
                 }
+                Yii::app()->custom->resolveOpportunityCustomActionsBeforeSave($this);
                 return true;
             }
             else
             {
                 return false;
             }
-        }
-
-        protected function afterSave()
-        {
-            Yii::app()->custom->resolveOpportunityCustomActionsAfterSave($this);
-            parent::afterSave();
         }
 
         public function __toString()
