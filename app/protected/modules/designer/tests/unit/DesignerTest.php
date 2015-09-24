@@ -256,7 +256,7 @@
             $adapter = new LayoutMetadataAdapter('AccountEditAndDetailsView',
                 'AccountsModule',
                 $editableMetadata,
-                new EditAndDetailsViewDesignerRules(),
+                new DetailsViewOnlyForUserOwnerEditAndDetailsViewDesignerRules(),
                 $attributesLayoutAdapter->getPlaceableLayoutAttributes(),
                 $attributesLayoutAdapter->getRequiredDerivedLayoutAttributeTypes()
             );
