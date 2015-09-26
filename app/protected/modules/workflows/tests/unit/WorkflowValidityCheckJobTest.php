@@ -164,7 +164,7 @@
 
             $trigger = new TriggerForWorkflowForm('OpportunitiesModule', 'Opportunity', Workflow::TYPE_ON_SAVE);
             $trigger->attributeIndexOrDerivedType = 'stage';
-            $trigger->value                       = 'Closed Won,Negotiating';
+            $trigger->value                       = 'Closed Won,Negotiating'; // Not Coding Standard
             $trigger->operator                    = OperatorRules::TYPE_ONE_OF;
             $trigger->relationFilter              = TriggerForWorkflowForm::RELATION_FILTER_ANY;
             $workflow->addTrigger($trigger);
@@ -194,7 +194,7 @@
 
             $trigger = new TriggerForWorkflowForm('OpportunitiesModule', 'Opportunity', Workflow::TYPE_ON_SAVE);
             $trigger->attributeIndexOrDerivedType = 'stage';
-            $trigger->value                       = 'Closed Won,Unexisting state';
+            $trigger->value                       = 'Closed Won,Unexisting state'; // Not Coding Standard
             $trigger->operator                    = OperatorRules::TYPE_BECOMES;
             $trigger->relationFilter              = TriggerForWorkflowForm::RELATION_FILTER_ANY;
             $workflow->addTrigger($trigger);

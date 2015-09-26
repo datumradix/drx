@@ -181,7 +181,7 @@ TXT;
             $this->assertEquals('AutoresponderItem', $headers['zurmoItemClass']);
             $this->assertEquals('KOGyLSQUS92LYi12duzB4F5GulU', $headers['X-Google-Sender-Auth']);
         }
-        
+
         public function testMarkPersonPrimaryEmailAsInvalid()
         {
             $contact    = ContactTestHelper::createContactByNameForOwner('contact 01', Yii::app()->user->userModel);
