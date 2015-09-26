@@ -64,7 +64,7 @@
             $this->assertEquals("Bounced Address", trim($activities[1]->reason));
             $this->assertEquals("Marked as spam", $activities[2]->reason);
         }
-        
+
         public function testResolveMarkingPersonPrimaryEmailAsInvalid()
         {
             $contact        = ContactTestHelper::createContactByNameForOwner('contact 01', $this->user);
@@ -75,7 +75,7 @@
             $job            = new SendGridEmailEventsJob();
             $job->resolveMarkingPersonPrimaryEmailAsInvalid(EmailMessageActivity::TYPE_SOFT_BOUNCE, $personId);
             $this->assertNull($contact->primaryEmail->isInvalid);
-            
+
             $contact        = ContactTestHelper::createContactByNameForOwner('contact 02', $this->user);
             $personId       = $contact->getClassId('Person');
             $contact->primaryEmail->emailAddress = 'test2@zurmo.com';
@@ -84,7 +84,7 @@
             $job            = new SendGridEmailEventsJob();
             $job->resolveMarkingPersonPrimaryEmailAsInvalid(EmailMessageActivity::TYPE_HARD_BOUNCE, $personId);
             $this->assertEquals(1, $contact->primaryEmail->isInvalid);
-            
+
             $contact        = ContactTestHelper::createContactByNameForOwner('contact 03', $this->user);
             $personId       = $contact->getClassId('Person');
             $this->assertTrue($contact->save());

@@ -72,7 +72,7 @@
             $this->user                 = User::getByUsername('super');
             Yii::app()->user->userModel = $this->user;
         }
-        
+
         public function testRunWithNoMessages()
         {
             $this->skipTestIfMissingSettings();
@@ -372,7 +372,7 @@
             $job->resolveMarkingPersonPrimaryEmailAsInvalid($imapMessage, $personId);
             $this->assertNull($contact->primaryEmail->isInvalid);
         }
-        
+
         protected function skipTestIfMissingSettings()
         {
             if (!EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
