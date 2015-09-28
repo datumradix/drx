@@ -403,7 +403,7 @@
             else
             {
                 $account = LeadsUtil::attributesToAccount($contact, $account);
-                $account = Yii::app()->custom->resolveLeadToAccountCustomAttributesWithNoPostData($contact, 
+                $account = Yii::app()->custom->resolveLeadToAccountCustomAttributesWithNoPostData($contact,
                                                                                         $account, array());
             }
             $progressBarAndStepsView = new LeadConversionStepsAndProgressBarForWizardView();

@@ -218,7 +218,6 @@
                 $modelClassName = $castedUpRelationModelClassName;
             }
 
-
             if (!isset($metadata[$modelClassName]['relations']) ||
                     !array_key_exists($relationName, $metadata[$modelClassName]['relations']))
             {

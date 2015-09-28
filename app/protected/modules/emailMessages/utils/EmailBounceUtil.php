@@ -60,7 +60,7 @@
         }
 
         /**
-         * 
+         *
          * @param integer $personId
          * @return boolean
          */
@@ -85,8 +85,7 @@
                 return false;
             }
         }
-                
-        
+
         protected static function resolveHeaderTagValueFromTextBody($headerTag, $textBody)
         {
             $regex = '/' . $headerTag . ': ([\w\d]+)/is'; // Not Coding Standard

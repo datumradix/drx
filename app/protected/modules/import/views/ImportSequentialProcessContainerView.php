@@ -53,6 +53,7 @@
         {
             // SHow only on import data page, not on analyzing data page
             $message = Zurmo::t('ImportModule', 'Are you sure you want to leave this page, remaining records will not be processed');
+            // Begin Not Coding Standard
             if ($this->title == Zurmo::t('ImportModule', 'Import Wizard - Import Data'))
             {
                 $allStepMessage = $this->allStepsMessage;
@@ -71,6 +72,7 @@
                 });
             ");
             }
+            // End Not Coding Standard
         }
     }
 ?>
