@@ -229,7 +229,7 @@
                 $this->resolveMarkingPersonPrimaryEmailAsInvalid($value['type'], $value['personId']);
             }
         }
-        
+
         public function resolveMarkingPersonPrimaryEmailAsInvalid($type, $zurmoPersonId)
         {
             if ($type == EmailMessageActivity::TYPE_HARD_BOUNCE)
