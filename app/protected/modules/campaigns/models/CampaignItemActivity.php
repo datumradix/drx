@@ -74,5 +74,86 @@
         {
             return 'campaignItem';
         }
+
+        /**
+         * Get ActivityItems by Type and campaign
+         * @param $type
+         * @param $campaign
+         * @return array of CampaignActivityItem
+         */
+        public static function getByTypeAndCampaign($type, $campaign)
+        {
+            assert('is_int($type) || is_null($type)');
+            $searchAttributeData = array();
+            if (is_null($type))
+            {
+                $typeClause = array(
+                    'attributeName'        => 'type',
+                    'operatorType'         => 'isNull',
+                    'value'                => null,
+                );
+            }
+            else
+            {
+                $typeClause = array(
+                    'attributeName'        => 'type',
+                    'operatorType'         => 'equals',
+                    'value'                => $type,
+                );
+            }
+            $searchAttributeData['clauses'] = array(
+                1 => $typeClause,
+                2 => array(
+                    'attributeName' => 'campaignItem',
+                    'relatedModelData' => array(
+                        'attributeName'     => 'campaign',
+                        'relatedModelData'  => array(
+                            'attributeName'     => 'id',
+                            'operatorType'      => 'equals',
+                            'value'             => $campaign->id,
+                        ),
+                    ),
+                ),
+            );
+            $searchAttributeData['structure'] = '1 AND 2';
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            return self::getSubset($joinTablesAdapter, null, null, $where, 'latestDateTime');
+        }
+
+        public static function getNotClickedItems($campaign)
+        {
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'type',
+                    'operatorType'         => 'isNull',
+                    'value'                => null,
+                ),
+                2 => array(
+                    'attributeName'        => 'type',
+                    'operatorType'         => 'oneOf',
+                    'value'                => array(EmailMessageActivity::TYPE_OPEN,
+                        EmailMessageActivity::TYPE_BOUNCE,
+                        EmailMessageActivity::TYPE_SKIP,
+                        EmailMessageActivity::TYPE_SOFT_BOUNCE),
+                ),
+                3 => array(
+                    'attributeName' => 'campaignItem',
+                    'relatedModelData' => array(
+                        'attributeName'     => 'campaign',
+                        'relatedModelData'  => array(
+                            'attributeName'     => 'id',
+                            'operatorType'      => 'equals',
+                            'value'             => $campaign->id,
+                        ),
+                    ),
+                ),
+            );
+            $searchAttributeData['structure'] = '(1 OR 2) AND 3';
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            return self::getSubset($joinTablesAdapter, null, null, $where, 'latestDateTime');
+        }
     }
 ?>

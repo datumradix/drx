@@ -60,6 +60,11 @@
 
         protected function renderContent()
         {
+            $className = get_class($this->portlet->getView());
+            if (method_exists($className, 'getAdditionalOptionMenuItems'))
+            {
+                $additionalOptionMenuItems = $className::getAdditionalOptionMenuItems();
+            }
             $juiPortletItem = array(
                 'id'            => $this->portlet->id,
                 'uniqueId'      => $this->portlet->getUniquePortletPageId(),
@@ -70,6 +75,7 @@
                 'collapsed'     => $this->portlet->collapsed,
                 'removable'     => $this->arePortletsRemovable(),
                 'portletParams' => $this->portlet->getPortletParams(),
+                'additionalOptionMenuItems' => $additionalOptionMenuItems,
             );
             $cClipWidget = new CClipWidget();
             $cClipWidget->beginClip("JuiPortlet");
