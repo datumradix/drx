@@ -264,5 +264,15 @@
             $this->assertEquals($person,           $activity->person);
             $this->assertEquals($campaignItem,     $activity->campaignItem);
         }
+
+        public function testGetByTypeAndCampaign()
+        {
+
+        }
+
+        public function testGetNotClickedItems()
+        {
+
+        }
     }
 ?>

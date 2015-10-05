@@ -185,6 +185,42 @@
             echo CJSON::encode($data);
         }
 
+        public function actionResolveSubscribersFromCampaign($campaignId)
+        {
+            $resolveSubscribersForm           = new MarketingListResolveSubscribersFromCampaignForm();
+            $resolveSubscribersForm->campaignId = $campaignId;
+            $campaign = Campaign::getById(intval($campaignId));
+            if ($campaign->status != Campaign::STATUS_COMPLETED)
+            {
+                $message = Zurmo::t('MarketingListsModule', 'You can not retarged uncompleted campaigns!');
+                throw new NotSupportedException($message);
+            }
+            if (isset($_POST['MarketingListResolveSubscribersFromCampaignForm']))
+            {
+                $resolveSubscribersForm->attributes = $_POST['MarketingListResolveSubscribersFromCampaignForm'];
+                $resolveSubscribersForm->campaignId = $campaignId;
+                if ($resolveSubscribersForm->validate())
+                {
+                    $marketingList = MarketingListsUtil::resolveAndSaveMarketingList($resolveSubscribersForm, $campaign);
+                    Yii::app()->user->setFlash('notification',
+                        Zurmo::t('MarketingListsModule', 'Contacts added to Marketing List.')
+                    );
+                    $this->redirect(array($this->getId() . '/details', 'id' => $marketingList->id));
+                }
+            }
+            $title                         = Zurmo::t('UsersModule', 'Retarget subscribers from existing campaign("{{campaignName}}") results',
+                array("{{campaignName}}" => $campaign->name));
+            $resolveSubscribersFromCampaignView                  = new MarketingListResolveSubscribersFromCampaignView(
+                $this->getId(),
+                $this->getModule()->getId(),
+                $resolveSubscribersForm,
+                $title);
+
+            $view                       = new MarketingListsPageView(MarketingDefaultViewUtil::
+            makeViewWithBreadcrumbsForCurrentUser($this, $resolveSubscribersFromCampaignView, array(Zurmo::t('MarketingListsModule', 'Lists')), 'MarketingBreadCrumbView'));
+            echo $view->render();
+        }
+
         protected static function getSearchFormClassName()
         {
             return 'MarketingListsSearchForm';
