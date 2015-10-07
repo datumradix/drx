@@ -370,5 +370,52 @@
             }
             return parent::afterDelete();
         }
+
+        /**
+         * Get not Viewed items.
+         * @param $campaign
+         * @return array
+         *
+         */
+        public static function getNotViewedItems($campaign)
+        {
+            // todo: Code below need to be optimized so we do not go over all campaign items, and get only those that do not have activities
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'     => 'campaign',
+                    'relatedAttributeName' => 'id',
+                    'operatorType'         => 'equals',
+                    'value'                => $campaign->id,
+                ),
+            );
+            $searchAttributeData['structure'] = '1';
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter('CampaignItem');
+            $where = RedBeanModelDataProvider::makeWhere('CampaignItem', $searchAttributeData, $joinTablesAdapter);
+            $items = self::getSubset($joinTablesAdapter, null, null, $where, 'id');
+            $filteredItems = array();
+            foreach ($items as $item)
+            {
+                if (!count($item->campaignItemActivities))
+                {
+                    $filteredItems[] = $item;
+                }
+            }
+            return $filteredItems;
+        }
+
+        public static function getNotClickedItems($campaign)
+        {
+            // todo: Maybe this can be optimized too, if we can write query in CampaignItemActivity::getNotClickedItemsWithoutNotOpened
+            // todo: and get both not viewed items and not clieked items. We need right join here
+            $notViewedItems = static::getNotViewedItems($campaign);
+            $notClickedItemsWithoutNotOpenedActivities = CampaignItemActivity::getNotClickedItemsWithoutNotOpened($campaign);
+            $notClickedItems = $notViewedItems;
+            foreach ($notClickedItemsWithoutNotOpenedActivities as $activity)
+            {
+                $notClickedItems[] = $activity->campaignItem;
+            }
+            return $notClickedItems;
+        }
     }
 ?>

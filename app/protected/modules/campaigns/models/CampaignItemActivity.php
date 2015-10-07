@@ -83,26 +83,14 @@
          */
         public static function getByTypeAndCampaign($type, $campaign)
         {
-            assert('is_int($type) || is_null($type)');
+            assert('is_int($type)');
             $searchAttributeData = array();
-            if (is_null($type))
-            {
-                $typeClause = array(
-                    'attributeName'        => 'type',
-                    'operatorType'         => 'isNull',
-                    'value'                => null,
-                );
-            }
-            else
-            {
-                $typeClause = array(
+            $searchAttributeData['clauses'] = array(
+                1 => array(
                     'attributeName'        => 'type',
                     'operatorType'         => 'equals',
                     'value'                => $type,
-                );
-            }
-            $searchAttributeData['clauses'] = array(
-                1 => $typeClause,
+                ),
                 2 => array(
                     'attributeName' => 'campaignItem',
                     'relatedModelData' => array(
@@ -121,7 +109,7 @@
             return self::getSubset($joinTablesAdapter, null, null, $where, 'latestDateTime');
         }
 
-        public static function getNotClickedItems($campaign)
+        public static function getNotClickedItemsWithoutNotOpened($campaign)
         {
             $searchAttributeData = array();
             $searchAttributeData['clauses'] = array(
