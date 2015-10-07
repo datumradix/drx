@@ -41,6 +41,12 @@
     {
         public static function resolveAndSaveMarketingList($resolveSubscribersForm, $campaign)
         {
+            if ($campaign->status != Campaign::STATUS_COMPLETED)
+            {
+                $message = Zurmo::t('MarketingListsModule', 'You can not retarged uncompleted campaigns!');
+                throw new NotSupportedException($message);
+            }
+
             $marketingList = MarketingList::getById(intval($resolveSubscribersForm->marketingList['id']));
             $newMarketingListContacts = array();
 
@@ -62,18 +68,19 @@
             }
             if ($resolveSubscribersForm->retargetNotViewedEmailRecipients)
             {
-                $campaignItemNotViewedActivities     = CampaignItemActivity::getByTypeAndCampaign(null, $campaign);
-                foreach ($campaignItemNotViewedActivities as $campaignItemActivity)
+                $campaignItemNotViewedItems     = CampaignItem::getNotViewedItems($campaign);
+
+                foreach ($campaignItemNotViewedItems as $campaignItem)
                 {
-                    $newMarketingListContacts[] = $campaignItemActivity->campaignItem->contact;
+                    $newMarketingListContacts[] = $campaignItem->contact;
                 }
             }
             if ($resolveSubscribersForm->retargetNotClickedEmailRecipients)
             {
-                $campaignItemNotClickedActivities     = CampaignItemActivity::getNotClickedItems($campaign);
-                foreach ($campaignItemNotClickedActivities as $campaignItemActivity)
+                $campaignItemNotClickedItems     = CampaignItem::getNotClickedItems($campaign);
+                foreach ($campaignItemNotClickedItems as $campaignItem)
                 {
-                    $newMarketingListContacts[] = $campaignItemActivity->campaignItem->contact;
+                    $newMarketingListContacts[] = $campaignItem->contact;
                 }
             }
             foreach ($newMarketingListContacts as $marketingListContact)

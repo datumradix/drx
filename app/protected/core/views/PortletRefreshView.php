@@ -65,6 +65,10 @@
             {
                 $additionalOptionMenuItems = $className::getAdditionalOptionMenuItems();
             }
+            else
+            {
+                $additionalOptionMenuItems = null;
+            }
             $juiPortletItem = array(
                 'id'            => $this->portlet->id,
                 'uniqueId'      => $this->portlet->getUniquePortletPageId(),
