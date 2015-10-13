@@ -82,6 +82,7 @@
                 'id'        => $this->getEditableInputId(),
                 'separator' => '',
                 'template'  => '{input}{label}',
+                'uncheckValue' => null
             );
             return $htmlOptions;
         }
