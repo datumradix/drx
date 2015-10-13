@@ -3376,6 +3376,7 @@ input[type="button"]:hover:after {
 label.hasCheckBox {
   display: block;
   background: url("../images/checkbox.png") left 4px no-repeat;
+  transform: translate3d(0,0,0);
   width: 16px;
   height: 20px;
   padding: 0;
