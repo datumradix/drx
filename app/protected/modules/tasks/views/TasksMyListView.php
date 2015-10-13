@@ -246,5 +246,10 @@
         {
             return Yii::app()->custom->resolveTaskModalButtonColumnClassNameForTasksMyListView();
         }
+
+        public static function getDesignerRulesType()
+        {
+            return 'TaskMyListView';
+        }
     }
 ?>
