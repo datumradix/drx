@@ -46,7 +46,9 @@
                             array('type' => 'CancelLink'),
                         ),
                     ),
-                    'nonPlaceableAttributeNames' => array(),
+                    'nonPlaceableAttributeNames' => array(
+                        'productTemplate'
+                    ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
                         array(
