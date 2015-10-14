@@ -156,7 +156,7 @@
             }
             else
             {
-                $element  = new TextAreaElement($this->model, 'description');
+                $element  = new ConversationLinkableTextAreaElement($this->model, 'description');
             }
             $element->nonEditableTemplate = '<div class="comment-content">{content}</div>';
             $content .= $element->render();

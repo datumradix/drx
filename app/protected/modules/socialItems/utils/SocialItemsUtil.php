@@ -96,11 +96,11 @@
         {
             if ($model->note->id > 0)
             {
-                return Yii::app()->format->html(strval($model->note));
+                return TextUtil::textWithUrlToTextWithLink(Yii::app()->format->html(strval($model->note)));
             }
             else
             {
-                return Yii::app()->format->html($model->description);
+                return TextUtil::textWithUrlToTextWithLink(Yii::app()->format->html($model->description));
             }
         }
 
