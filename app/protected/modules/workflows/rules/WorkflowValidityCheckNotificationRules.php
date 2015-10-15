@@ -40,6 +40,8 @@
      */
     class WorkflowValidityCheckNotificationRules extends NotificationRules
     {
+        protected $allowDuplicates = true;
+
         /**
          * @return string|The
          */
