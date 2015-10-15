@@ -46,7 +46,7 @@
             $filters = array();
             $filters[] = array(
                 ZurmoBaseController::RIGHTS_FILTER_PATH . ' - redeemList, redeemReward',
-                'moduleClassName' => 'UsersModule',
+                'moduleClassName' => 'GameRewardsModule',
                 'rightName' => GameRewardsModule::getAccessRight(),
             );
             $filters[] = array(
