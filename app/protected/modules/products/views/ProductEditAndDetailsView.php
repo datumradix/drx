@@ -50,7 +50,6 @@
                         ),
                     ),
                     'nonPlaceableAttributeNames' => array(
-                        'owner',
                     ),
                     'derivedAttributeTypes' => array(
                         'MultipleProductCategoriesForProduct',
@@ -190,6 +189,11 @@
             Yii::app()->clientScript->registerScriptFile(Yii::app()->getAssetManager()->publish(
                     Yii::getPathOfAlias('application.modules.productTemplates.elements.assets')) . '/ProductTemplateUtils.js',
                 CClientScript::POS_END);
+        }
+        
+        public static function getDesignerRulesType()
+        {
+            return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
         }
     }
 ?>
