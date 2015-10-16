@@ -92,6 +92,13 @@
                                 array('cells' =>
                                     array(
                                         array(
+                                            'element' => 'owner',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
                                             'element' => 'checkboxCstm',
                                         ),
                                     )

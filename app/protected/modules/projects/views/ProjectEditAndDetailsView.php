@@ -55,7 +55,6 @@
                         ),
                     ),
                     'nonPlaceableAttributeNames' => array(
-                        'owner',
                     ),
                     'derivedAttributeTypes' => array(
                         'MultipleAccountsForProjects',
@@ -152,6 +151,11 @@
             assert('$form instanceof ZurmoActiveForm');
             $content = parent::renderRightSideFormLayoutForEdit($form);
             return $content;
+        }
+        
+        public static function getDesignerRulesType()
+        {
+            return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
         }
     }
 ?>
