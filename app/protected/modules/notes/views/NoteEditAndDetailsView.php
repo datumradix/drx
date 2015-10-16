@@ -56,8 +56,7 @@
                         'Files',
                     ),
                     'nonPlaceableAttributeNames' => array(
-                        'latestDateTime',
-                        'owner'
+                        'latestDateTime'
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
@@ -111,6 +110,11 @@
         {
             return Zurmo::t('NotesModule', 'Create NotesModuleSingularLabel',
                                      LabelUtil::getTranslationParamsForAllModules());
+        }
+        
+        public static function getDesignerRulesType()
+        {
+            return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
         }
     }
 ?>

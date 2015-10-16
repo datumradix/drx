@@ -53,7 +53,6 @@
                     'derivedAttributeTypes' => array(
                     ),
                     'nonPlaceableAttributeNames' => array(
-                        'owner',
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
@@ -212,6 +211,11 @@
                  ".$initialCallToFunction // Not Coding Standard
                  );
             }
+        }
+        
+        public static function getDesignerRulesType()
+        {
+            return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
         }
     }
 ?>
