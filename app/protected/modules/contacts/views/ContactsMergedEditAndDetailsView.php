@@ -66,6 +66,7 @@
                             array('type' => 'SaveButton', 'renderType' => 'Edit'),
                             array('type' => 'CancelLink', 'renderType' => 'Edit')
                         );
+            $metadata['global']['nonPlaceableAttributeNames'][] = 'owner';
             return $metadata;
         }
 
