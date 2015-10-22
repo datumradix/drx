@@ -53,7 +53,7 @@
             }
             catch (NotFoundException $e)
             {
-                $message = Zurmo::t('MarketingListsModule', 'Invalid Marketing List!');
+                $message = Zurmo::t('MarketingListsModule', 'Invalid or not selected marketing list entered. Please go back and select marketing list!');
                 throw new NotFoundException($message);
             }
 
