@@ -192,7 +192,7 @@
             $campaign = Campaign::getById(intval($campaignId));
             if ($campaign->status != Campaign::STATUS_COMPLETED)
             {
-                $message = Zurmo::t('MarketingListsModule', 'You can not retarged uncompleted campaigns!');
+                $message = Zurmo::t('MarketingListsModule', 'You can not retarget uncompleted campaigns!');
                 throw new NotSupportedException($message);
             }
             if (isset($_POST['MarketingListResolveSubscribersFromCampaignForm']))

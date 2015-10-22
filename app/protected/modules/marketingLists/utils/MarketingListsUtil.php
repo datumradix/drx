@@ -43,11 +43,20 @@
         {
             if ($campaign->status != Campaign::STATUS_COMPLETED)
             {
-                $message = Zurmo::t('MarketingListsModule', 'You can not retarged uncompleted campaigns!');
+                $message = Zurmo::t('MarketingListsModule', 'You can not retarget uncompleted campaigns!');
                 throw new NotSupportedException($message);
             }
 
-            $marketingList = MarketingList::getById(intval($resolveSubscribersForm->marketingList['id']));
+            try
+            {
+                $marketingList = MarketingList::getById(intval($resolveSubscribersForm->marketingList['id']));
+            }
+            catch (NotFoundException $e)
+            {
+                $message = Zurmo::t('MarketingListsModule', 'Invalid Marketing List!');
+                throw new NotFoundException($message);
+            }
+
             $newMarketingListContacts = array();
 
             if ($resolveSubscribersForm->retargetOpenedEmailRecipients)
