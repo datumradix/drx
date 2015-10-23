@@ -765,7 +765,7 @@
             $this->assertTrue(in_array($contact2->id, $contactsIds));
         }
 
-        public function getNotClickedItems()
+        public function testGetNotClickedItems()
         {
             $user = User::getByUsername('super');
             $marketingList = MarketingListTestHelper::createMarketingListByName('Test List');
@@ -803,6 +803,7 @@
             $contact8            = ContactTestHelper::createContactByNameForOwner('contact88', $user);
             $contact9            = ContactTestHelper::createContactByNameForOwner('contact99', $user);
             $contact10           = ContactTestHelper::createContactByNameForOwner('contact100', $user);
+            $contact11           = ContactTestHelper::createContactByNameForOwner('contact110', $user);
 
             // Without campaign activity
             $campaignItem1       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact1);
@@ -834,7 +835,11 @@
             $campaignItemSec       = CampaignItemTestHelper::createCampaignItem(1, $campaign2, $contact10);
             CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_OPEN, 1, $campaignItemSec, '121.212.122.112');
 
-            $items = CampaignItem::getNotClickedItems($campaign1);
+            $campaignItem11       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact11);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_OPEN, 1, $campaignItem11, '121.212.122.112');
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_CLICK, 1, $campaignItem11, '121.212.122.112');
+
+            $items = CampaignItem::getNotClickedOrUnsubscribedOrSpamItems($campaign1);
             $this->assertEquals(5, count($items));
             $contactsIds = array();
             foreach ($items as $item)
