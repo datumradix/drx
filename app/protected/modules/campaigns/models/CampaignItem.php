@@ -404,18 +404,56 @@
             return $filteredItems;
         }
 
-        public static function getNotClickedItems($campaign)
+        /**
+         * Get activity items that are not clicked, but do not return those that are marked as spam, unsubscribed, or hard bounced
+         * @param $campaign
+         * @return array
+         */
+        public static function getNotClickedOrUnsubscribedOrSpamItems($campaign)
         {
-            // todo: Maybe this can be optimized too, if we can write query in CampaignItemActivity::getNotClickedItemsWithoutNotOpened
-            // todo: and get both not viewed items and not clieked items. We need right join here
-            $notViewedItems = static::getNotViewedItems($campaign);
-            $notClickedItemsWithoutNotOpenedActivities = CampaignItemActivity::getNotClickedItemsWithoutNotOpened($campaign);
-            $notClickedItems = $notViewedItems;
-            foreach ($notClickedItemsWithoutNotOpenedActivities as $activity)
+            // todo: Code below need to be optimized so we do not go over all campaign items, and get only those that do not have activities
+            // todo: We should add pagination
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'     => 'campaign',
+                    'relatedAttributeName' => 'id',
+                    'operatorType'         => 'equals',
+                    'value'                => $campaign->id,
+                ),
+            );
+            $searchAttributeData['structure'] = '1';
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter('CampaignItem');
+            $where = RedBeanModelDataProvider::makeWhere('CampaignItem', $searchAttributeData, $joinTablesAdapter);
+            $items = self::getSubset($joinTablesAdapter, null, null, $where, 'id');
+            $filteredItems = array();
+            foreach ($items as $item)
             {
-                $notClickedItems[] = $activity->campaignItem;
+                if (!count($item->campaignItemActivities))
+                {
+                    $filteredItems[] = $item;
+                }
+                else
+                {
+                    $isClicked = false;
+                    foreach ($item->campaignItemActivities as $campaignItemActivity)
+                    {
+                        if (in_array($campaignItemActivity->type, array(EmailMessageActivity::TYPE_CLICK,
+                            EmailMessageActivity::TYPE_UNSUBSCRIBE,
+                            EmailMessageActivity::TYPE_SPAM,
+                            EmailMessageActivity::TYPE_HARD_BOUNCE)))
+                        {
+                            $isClicked = true;
+                        }
+                    }
+                    if (!$isClicked)
+                    {
+                        $filteredItems[] = $item;
+                    }
+                }
             }
-            return $notClickedItems;
+            return $filteredItems;
+
         }
     }
 ?>

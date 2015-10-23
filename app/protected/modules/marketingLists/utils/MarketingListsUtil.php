@@ -86,7 +86,7 @@
             }
             if ($resolveSubscribersForm->retargetNotClickedEmailRecipients)
             {
-                $campaignItemNotClickedItems     = CampaignItem::getNotClickedItems($campaign);
+                $campaignItemNotClickedItems     = CampaignItem::getNotClickedOrUnsubscribedOrSpamItems($campaign);
                 foreach ($campaignItemNotClickedItems as $campaignItem)
                 {
                     $newMarketingListContacts[] = $campaignItem->contact;
