@@ -94,13 +94,15 @@
             }
             foreach ($newMarketingListContacts as $marketingListContact)
             {
-                $marketingListMember                = new MarketingListMember();
-                $marketingListMember->unsubscribed  = 0;
-                $marketingListMember->contact       = $marketingListContact;
-                $marketingList->marketingListMembers->add($marketingListMember);
-                $marketingList->save();
+                if (!MarketingListMember::getByMarketingListIdAndContactId($marketingList->id, $marketingListContact->id))
+                {
+                    $marketingListMember                = new MarketingListMember();
+                    $marketingListMember->unsubscribed  = 0;
+                    $marketingListMember->contact       = $marketingListContact;
+                    $marketingList->marketingListMembers->add($marketingListMember);
+                    $marketingList->save();
+                }
             }
-
             return $marketingList;
         }
     }
