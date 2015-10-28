@@ -604,14 +604,14 @@
          * Given a partial name search for all users unless the current user has security restrictions.
          * JSON encode the resulting array of results in requested format.
          */
-        public function actionGetUsersByPartialString($term, $autoCompleteOptions = null)
+        public function actionGetUsersByPartialString($term)
         {
-            $users    = UserSearch::getUsersByPartialFullName($term, null, $autoCompleteOptions);
+            $users    = UserSearch::getUsersByPartialFullNameOrUsername($term);
             $autoCompleteResults  = array();
             foreach ($users as $user)
             {
                 $autoCompleteResult = array(
-                    'id'       => $user->getClassId('Item'),
+                    'id'       => $user->id,
                     'name'     => strval($user),
                     'username' => $user->username,
                     'type'     => 'users',

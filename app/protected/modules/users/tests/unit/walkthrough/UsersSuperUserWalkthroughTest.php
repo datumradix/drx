@@ -777,10 +777,22 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
             $this->assertEmpty(json_decode($content));
 
-            // We do not search by username, so array should be empty
+            // Search by partial username
+            $this->setGetArray(array('term' => 'lio'));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
+            $userData = json_decode($content);
+            $this->assertNotEmpty($userData);
+            $this->assertEquals(1, count($userData));
+            $this->assertEquals($user->id, $userData[0]->id);
+            $this->assertEquals(strval($user), $userData[0]->name);
+            $this->assertEquals($user->username, $userData[0]->username);
+            $this->assertEquals('users', $userData[0]->type);
+            $this->assertEquals($user->getAvatarImageUrl(20, true), $userData[0]->avatar);
+
+            // Search by full username
             $this->setGetArray(array('term' => 'lion'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
-            $this->assertEmpty(json_decode($content));
+            $this->assertNotEmpty(json_decode($content));
 
             // Now search by partial first name
             $this->setGetArray(array('term' => 'Sam'));
