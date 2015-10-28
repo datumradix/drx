@@ -54,6 +54,7 @@
             // Load widget for mention input
             $widgetSettings = array(
                 'callBackUrl' => Yii::app()->createUrl('users/default/getUsersByPartialString'),
+                'id'          => $this->getEditableInputId(),
             );
             $cClipWidget             = new CClipWidget();
             $cClipWidget->beginClip("MentionInput");
