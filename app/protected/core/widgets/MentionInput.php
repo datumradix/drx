@@ -101,7 +101,7 @@
             };
             // Begin Not Coding Standard
             $javaScript = <<<EOD
-$('textarea').mentionsInput({
+$('#$id').mentionsInput({
 onDataRequest:function (mode, query, callback) {
   $.ajax({
     dataType: "json",
@@ -114,6 +114,7 @@ onDataRequest:function (mode, query, callback) {
     }
   });
     },
+    onCaret: true,
     triggerChar: '{$this->triggerChar}',
     minChars:    '{$this->minChars}',
     {$additionalSettingsJs}
