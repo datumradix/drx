@@ -48,21 +48,7 @@
 
         public $assetFolderName = 'mentionInput';
 
-        /**
-         * Data to pass to the file upload script.
-         * @var array
-         */
-        public $htmlOptions;
-
-        /**
-         * Id of the file input field.
-         * @var string
-         */
-        public $inputId;
-
         public $callBackUrl = '';
-
-        public $inputValue = '';
 
         public $triggerChar = '@';
 
@@ -73,7 +59,6 @@
         public $classes = '';
 
         public $templates = '';
-
 
         /**
          * Initializes the widget.
@@ -108,8 +93,6 @@ onDataRequest:function (mode, query, callback) {
     url: '{$this->callBackUrl}?term=' + query,
     data: [],
     success: function (responseData) {
-      //responseData = _.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
-      console.log(responseData);
       callback.call(this, responseData);
     }
   });
