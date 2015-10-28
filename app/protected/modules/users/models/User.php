@@ -448,7 +448,7 @@
                                                                               'height' => $size));
         }
 
-        private function getAvatarImageUrl($size, $addScheme = false)
+        public function getAvatarImageUrl($size, $addScheme = false)
         {
             assert('is_int($size)');
             {

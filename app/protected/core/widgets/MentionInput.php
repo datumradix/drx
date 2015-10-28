@@ -42,9 +42,9 @@
     class MentionInput extends ZurmoWidget
     {
         public $scriptFile = array('lib/jquery.events.input.js',
-            'lib/jquery.elastic.js', 'jquery.mentionsInput.js', 'lib/underscore.js');
+            'lib/jquery.elastic.js', 'lib/underscore.js', 'jquery.mentionsInput.js');
 
-        public $cssFile    = array('jquery.mentionsInput.css');
+        public $cssFile    = 'jquery.mentionsInput.css';
 
         public $assetFolderName = 'mentionInput';
 
@@ -55,18 +55,25 @@
         public $htmlOptions;
 
         /**
-         * Name of the file input field.
-         * @var string
-         */
-        public $inputName;
-
-        /**
          * Id of the file input field.
          * @var string
          */
         public $inputId;
 
         public $callBackUrl = '';
+
+        public $inputValue = '';
+
+        public $triggerChar = '@';
+
+        public $minChars = 2;
+
+        public $showAvatars = true;
+
+        public $classes = '';
+
+        public $templates = '';
+
 
         /**
          * Initializes the widget.
@@ -83,44 +90,37 @@
         public function run()
         {
             $id = $this->getId();
+            $additionalSettingsJs = "showAvatars: " . var_export($this->showAvatars, true) . ",";
+            if ($this->classes)
+            {
+                $additionalSettingsJs .=  $this->classes . ',';
+            };
+            if ($this->templates)
+            {
+                $additionalSettingsJs .=  $this->templates;
+            };
             // Begin Not Coding Standard
             $javaScript = <<<EOD
 $('textarea').mentionsInput({
-    onDataRequest:function (mode, query, callback) {
-      var data = [
-        { id:1, name:'Kenneth Auchenberg', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:2, name:'Jon Froda', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:3, name:'Anders Pollas', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:4, name:'Kasper Hulthin', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:5, name:'Andreas Haugstrup', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:6, name:'Pete Lacey', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:7, name:'kenneth@auchenberg.dk', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:8, name:'Pete Awesome Lacey', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:9, name:'Kenneth Hulthin', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' }
-      ];
-
-      data = _.filter(data, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
-
-      callback.call(this, data);
+onDataRequest:function (mode, query, callback) {
+  $.ajax({
+    dataType: "json",
+    url: '{$this->callBackUrl}?term=' + query,
+    data: [],
+    success: function (responseData) {
+      //responseData = _.filter(responseData, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+      console.log(responseData);
+      callback.call(this, responseData);
+    }
+  });
     },
-	onCaret: true
+    triggerChar: '{$this->triggerChar}',
+    minChars:    '{$this->minChars}',
+    {$additionalSettingsJs}
   });
-
-  $('.get-syntax-text').click(function() {
-    $('textarea.mention').mentionsInput('val', function(text) {
-      alert(text);
-    });
-  });
-
-  $('.get-mentions').click(function() {
-    $('textarea.mention').mentionsInput('getMentions', function(data) {
-      alert(JSON.stringify(data));
-    });
-  }) ;
-
 EOD;
             // End Not Coding Standard
-            Yii::app()->getClientScript()->registerScript(__CLASS__ . '#' . $id, $javaScript);
+            Yii::app()->getClientScript()->registerScript(__CLASS__ . '#' . $id, $javaScript, CClientScript::POS_END);
         }
     }
 ?>

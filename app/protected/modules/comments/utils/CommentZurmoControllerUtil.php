@@ -93,12 +93,16 @@
             $user = Yii::app()->user->userModel;
             if ($this->relatedModel instanceof Conversation)
             {
+                $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
                 $participants = ConversationsUtil::resolvePeopleToSendNotificationToOnNewComment($this->relatedModel, $user);
+                $participants  = array_merge($participants, $mentionedUsers);
                 CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
             }
             elseif ($this->relatedModel instanceof Mission)
             {
+                $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
                 $participants = MissionsUtil::resolvePeopleToSendNotificationToOnNewComment($this->relatedModel, $user);
+                $participants  = array_merge($participants, $mentionedUsers);
                 CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
             }
             elseif ($this->relatedModel instanceof Task)
