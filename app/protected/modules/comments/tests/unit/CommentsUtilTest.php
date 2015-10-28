@@ -52,7 +52,7 @@
             Yii::app()->user->userModel = User::getByUsername('super');
         }
 
-        public function testsSendNotificationOnNewComment()
+        public function testSendNotificationOnNewComment()
         {
             $super                      = User::getByUsername('super');
             $steven                     = User::getByUsername('steven');
@@ -111,6 +111,70 @@
             $notifications = Notification::getAll();
             $notification  = $notifications[4];
             $this->assertEquals(strval($steven), strval($notification->owner));
+        }
+
+        public function testGetMentionedUsersForNotification()
+        {
+            $super                      = User::getByUsername('super');
+            $steven                     = User::getByUsername('steven');
+            $jack                       = User::getByUsername('jack');
+
+            $comment                    = new Comment();
+            $comment->description       = 'Hello steven, How are you?';
+
+            $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($comment);
+            $this->assertEmpty($mentionedUsers);
+
+            // Second string([~ste]) whouldn't be replaced, because username need to be full
+            $comment->description       = 'Hello [~steven] and [~ste], How are you?';
+            $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($comment);
+            $this->assertNotEmpty($mentionedUsers);
+            $this->assertEquals(1, count($mentionedUsers));
+            $this->assertEquals($steven->id, $mentionedUsers[0]->id);
+
+            $comment->description       = 'Hello [~steven] and [~jack] and [~super], How are you?';
+            $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($comment);
+            $this->assertNotEmpty($mentionedUsers);
+            $this->assertEquals(2, count($mentionedUsers));
+            $this->assertTrue(in_array($steven->id, array($mentionedUsers[0]->id, $mentionedUsers[1]->id)));
+            $this->assertTrue(in_array($jack->id, array($mentionedUsers[0]->id, $mentionedUsers[1]->id)));
+        }
+
+        public function testReplaceMentionedUsernamesWithFullNamesAndLinksInComments()
+        {
+            $super                      = User::getByUsername('super');
+            $steven                     = User::getByUsername('steven');
+            $jack                       = User::getByUsername('jack');
+
+            $description       = 'Hello steven, How are you?';
+            $modifiedDescription = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($description);
+            $this->assertEquals($description, $modifiedDescription);
+
+            $description       = 'Hello [~steven] and [~jack] and [~super] and [~sup], How are you?';
+            $modifiedDescription = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($description);
+            $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>";
+            if(preg_match_all("/$regexp/siU", $modifiedDescription, $matches))
+            {
+                // $matches[2] = array of link addresses
+                // $matches[3] = array of link text - including HTML code
+                $this->assertEquals(3, count($matches[2]));
+                $this->assertEquals(3, count($matches[3]));
+                $this->assertTrue(strpos($matches[2][0], 'details?id=' . $steven->id) != null);
+                $this->assertEquals(strval($steven), $matches[3][0]);
+                $this->assertTrue(strpos($matches[2][1], 'details?id=' . $jack->id) != null);
+                $this->assertEquals(strval($jack), $matches[3][1]);
+                $this->assertTrue(strpos($matches[2][2], 'details?id=' . $super->id) != null);
+                $this->assertEquals(strval($super), $matches[3][2]);
+            }
+            else
+            {
+                $this->fail('Usernames not replaced with links in description.');
+            }
+            // Ensure that existing users are replaced with names and links, while nonexisting are not
+            $this->assertTrue(strpos($modifiedDescription, '[~steven]') == null);
+            $this->assertTrue(strpos($modifiedDescription, '[~jack]')   == null);
+            $this->assertTrue(strpos($modifiedDescription, '[~super]')  == null);
+            $this->assertTrue(strpos($modifiedDescription, '[~sup]')    != null);
         }
     }
 ?>

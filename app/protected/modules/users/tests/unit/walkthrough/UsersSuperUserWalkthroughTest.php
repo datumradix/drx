@@ -757,5 +757,40 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/auditEventsModalList');
             $this->assertContains('User Password Changed', $content);
         }
+
+        public function testGetUsersByPartialString()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            $user = new User();
+            $user->username     = 'lion';
+            $user->title->value = 'Mr.';
+            $user->firstName    = 'Samuel';
+            $user->lastName     = 'Simson';
+            $user->setPassword('asdfgh');
+            $this->assertTrue($user->save());
+
+            // Get list of users by search term
+            $timeZoneHelper = new ZurmoTimeZoneHelper();
+            $timeZoneHelper->confirmCurrentUsersTimeZone();
+            $this->setGetArray(array('term' => 'ahs'));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
+            $this->assertEmpty(json_decode($content));
+
+            // We do not search by username, so array should be empty
+            $this->setGetArray(array('term' => 'lion'));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
+            $this->assertEmpty(json_decode($content));
+
+            // Now search by partial first name
+            $this->setGetArray(array('term' => 'Sam'));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
+            $this->assertNotEmpty(json_decode($content));
+
+            // Now search by partial last name
+            $this->setGetArray(array('term' => 'Simson'));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
+            $this->assertNotEmpty(json_decode($content));
+        }
     }
 ?>

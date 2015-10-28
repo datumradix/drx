@@ -141,7 +141,11 @@
                     try
                     {
                         $user = User::getByUsername(trim(strtolower($mentionedUsername)));
-                        $mentionedUsers[] = $user;
+                        // DO not send notification if user mentioned himself
+                        if (Yii::app()->user->userModel->id != $user->id)
+                        {
+                            $mentionedUsers[] = $user;
+                        }
                     }
                     catch (NotFoundException $e)
                     {
