@@ -37,40 +37,43 @@
     /**
      * Display the text area input box.
      */
-    class MentionableTextArea extends Element
+    class MentionableTextAreaElement extends CommentTextAreaElement
     {
-        protected function renderControlNonEditable()
-        {
-            assert('$this->attribute != null');
-            return $this->model->{$this->attribute};
-        }
-
+        /**
+         * Render A text area with X rows and Y columns.
+         */
         protected function renderControlEditable()
         {
-            assert('$this->attribute != null');
+            assert('empty($this->model->{$this->attribute}) || is_string($this->model->{$this->attribute}) || is_integer($this->model->{$this->attribute})');
+            $htmlOptions             = array('encode' => false);
+            $htmlOptions['id']       = $this->getEditableInputId();
+            $htmlOptions['name']     = $this->getEditableInputName();
+            $htmlOptions['rows']     = $this->getRows();
+            $htmlOptions['cols']     = $this->getCols();
+
+            // Load widget for mention input
+            $widgetSettings = array(
+                'callBackUrl' => Yii::app()->createUrl('users/default/getUsersByPartialString'),
+            );
             $cClipWidget             = new CClipWidget();
             $cClipWidget->beginClip("MentionInput");
-            $cClipWidget->widget('application.core.widgets.MentionInput', $this->resolveOptions());
+            $cClipWidget->widget('application.core.widgets.MentionInput', $widgetSettings);
             $cClipWidget->endClip();
-            $content                 = $cClipWidget->getController()->clips['MentionInput'];
-            return $content;
+            $cClipWidget->getController()->clips['MentionInput'];
+
+            return $this->form->textArea($this->model, $this->attribute, $htmlOptions);
         }
 
-        protected function resolveHtmlOptions()
+        /**
+         * Render the text area as a non-editable display
+         * @return The element's content.
+         */
+        protected function renderControlNonEditable()
         {
-            $id                      = $this->getEditableInputId();
-            $htmlOptions             = array();
-            $htmlOptions['id']       = $id;
-            $htmlOptions['name']     = $this->getEditableInputName();
-            return $htmlOptions;
-        }
-
-        protected function resolveOptions()
-        {
-            return array(
-                'htmlOptions' => $this->resolveHtmlOptions(),
-                'content'   => $this->model->{$this->attribute},
-            );
+            //return parent::renderControlNonEditable();
+            $text = $this->model->{$this->attribute};
+            $text = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($text);
+            return TextUtil::textWithUrlToTextWithLink($text);
         }
     }
 ?>

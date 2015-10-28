@@ -82,7 +82,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'description', 'type' => 'TextArea', 'rows' => 2),
+                                                array('attributeName' => 'description', 'type' => 'MentionableTextArea', 'rows' => 2),
                                             ),
                                         ),
                                     )
