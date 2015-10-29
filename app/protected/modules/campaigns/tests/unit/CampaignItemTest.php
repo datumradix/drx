@@ -706,5 +706,151 @@
                                                             $contact->getClassId('Person'), null, null, $campaignItem);
             $this->assertTrue($campaignItem->hasAtLeastOneBounceActivity());
         }
+
+        public function testGetNotViewedItems()
+        {
+            $user = User::getByUsername('super');
+            $marketingList = MarketingListTestHelper::createMarketingListByName('Test List');
+            $campaign1     = CampaignTestHelper::createCampaign('campaign new 01',
+                'subject 01',
+                'text Content 01',
+                'html Content 01',
+                'fromName 01',
+                'fromAddress01@zurmo.com',
+                null,
+                null,
+                null,
+                null,
+                $marketingList);
+
+            $campaign2     = CampaignTestHelper::createCampaign('campaign new 02',
+                'subject 02',
+                'text Content 02',
+                'html Content 02',
+                'fromName 02',
+                'fromAddress02@zurmo.com',
+                null,
+                null,
+                null,
+                null,
+                $marketingList);
+
+            $contact1            = ContactTestHelper::createContactByNameForOwner('contact1', $user);
+            $contact2            = ContactTestHelper::createContactByNameForOwner('contact2', $user);
+            $contact3            = ContactTestHelper::createContactByNameForOwner('contact3', $user);
+            $contact4            = ContactTestHelper::createContactByNameForOwner('contact4', $user);
+            $contact5            = ContactTestHelper::createContactByNameForOwner('contact5', $user);
+
+            // Without campaign activity
+            $campaignItem1       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact1);
+            $campaignItem2       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact2);
+
+            $campaignItem3       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact3);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_CLICK, 1, $campaignItem3, '121.212.122.112');
+
+            $campaignItem4       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact4);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_OPEN, 1, $campaignItem4, '121.212.122.112');
+
+            $campaignItem5       = CampaignItemTestHelper::createCampaignItem(1, $campaign2, $contact5);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_BOUNCE, 1, $campaignItem5, '121.212.122.112');
+
+            $items = CampaignItem::getNotViewedItems($campaign1);
+            $this->assertEquals(2, count($items));
+            $contactsIds = array();
+            foreach ($items as $item)
+            {
+                $contactsIds[] = $item->contact->id;
+            }
+            $this->assertTrue(in_array($contact1->id, $contactsIds));
+            $this->assertTrue(in_array($contact2->id, $contactsIds));
+        }
+
+        public function testGetNotClickedItems()
+        {
+            $user = User::getByUsername('super');
+            $marketingList = MarketingListTestHelper::createMarketingListByName('Test List');
+            $campaign1     = CampaignTestHelper::createCampaign('campaign new 01',
+                'subject 01',
+                'text Content 01',
+                'html Content 01',
+                'fromName 01',
+                'fromAddress01@zurmo.com',
+                null,
+                null,
+                null,
+                null,
+                $marketingList);
+
+            $campaign2     = CampaignTestHelper::createCampaign('campaign new 02',
+                'subject 02',
+                'text Content 02',
+                'html Content 02',
+                'fromName 02',
+                'fromAddress02@zurmo.com',
+                null,
+                null,
+                null,
+                null,
+                $marketingList);
+
+            $contact1            = ContactTestHelper::createContactByNameForOwner('contact11', $user);
+            $contact2            = ContactTestHelper::createContactByNameForOwner('contact22', $user);
+            $contact3            = ContactTestHelper::createContactByNameForOwner('contact33', $user);
+            $contact4            = ContactTestHelper::createContactByNameForOwner('contact44', $user);
+            $contact5            = ContactTestHelper::createContactByNameForOwner('contact55', $user);
+            $contact6            = ContactTestHelper::createContactByNameForOwner('contact66', $user);
+            $contact7            = ContactTestHelper::createContactByNameForOwner('contact77', $user);
+            $contact8            = ContactTestHelper::createContactByNameForOwner('contact88', $user);
+            $contact9            = ContactTestHelper::createContactByNameForOwner('contact99', $user);
+            $contact10           = ContactTestHelper::createContactByNameForOwner('contact100', $user);
+            $contact11           = ContactTestHelper::createContactByNameForOwner('contact110', $user);
+
+            // Without campaign activity
+            $campaignItem1       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact1);
+
+            $campaignItem2       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact2);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_OPEN, 1, $campaignItem2, '121.212.122.112');
+
+            $campaignItem3       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact3);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_CLICK, 1, $campaignItem3, '121.212.122.112');
+
+            $campaignItem4       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact4);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_UNSUBSCRIBE, 1, $campaignItem4, '121.212.122.112');
+
+            $campaignItem5       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact5);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_BOUNCE, 1, $campaignItem5, '121.212.122.112');
+
+            $campaignItem6       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact6);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_SKIP, 1, $campaignItem6, '121.212.122.112');
+
+            $campaignItem7       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact7);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_SPAM, 1, $campaignItem7, '121.212.122.112');
+
+            $campaignItem8       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact8);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_SOFT_BOUNCE, 1, $campaignItem8, '121.212.122.112');
+
+            $campaignItem9       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact9);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_HARD_BOUNCE, 1, $campaignItem9, '121.212.122.112');
+
+            $campaignItemSec       = CampaignItemTestHelper::createCampaignItem(1, $campaign2, $contact10);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_OPEN, 1, $campaignItemSec, '121.212.122.112');
+
+            $campaignItem11       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact11);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_OPEN, 1, $campaignItem11, '121.212.122.112');
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_CLICK, 1, $campaignItem11, '121.212.122.112');
+
+            $items = CampaignItem::getNotClickedOrUnsubscribedOrSpamItems($campaign1);
+            $this->assertEquals(5, count($items));
+            $contactsIds = array();
+            foreach ($items as $item)
+            {
+                $contactsIds[] = $item->contact->id;
+            }
+            $this->assertTrue(in_array($contact2->id, $contactsIds));
+            $this->assertTrue(in_array($contact5->id, $contactsIds));
+            $this->assertTrue(in_array($contact6->id, $contactsIds));
+            $this->assertTrue(in_array($contact8->id, $contactsIds));
+            $this->assertTrue(in_array($contact1->id, $contactsIds));
+        }
     }
 ?>
