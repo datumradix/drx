@@ -86,6 +86,11 @@
         public $sendFromAddress;
 
         /**
+         * @var bool
+         */
+        public $excludeIfTriggeredByUser = false;
+
+        /**
          * @var string
          */
         private $_workflowType;
@@ -204,6 +209,7 @@
                 array('sendFromType',              'validateSendFromType'),
                 array('sendFromName',              'type',  'type' => 'string'),
                 array('sendFromAddress',           'type',  'type' => 'string'),
+                array('excludeIfTriggeredByUser',  'type',  'type' => 'boolean'),
             ));
         }
 
@@ -217,6 +223,7 @@
                          'sendFromType'              => Zurmo::t('WorkflowsModule', 'Send From'),
                          'sendFromName'              => Zurmo::t('EmailMessagesModule', 'From Name'),
                          'sendFromAddress'           => Zurmo::t('EmailMessagesModule', 'From Address'),
+                         'excludeIfTriggeredByUser'  => Zurmo::t('WorkflowsModule', 'Exclude if triggered by user'),
             );
         }
 

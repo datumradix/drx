@@ -178,6 +178,10 @@
             $element           = new TextElement(
                                  $this->model, 'sendFromAddress', $this->form, $params);
             $innerContent     .= '<tr>' . $element->render() . '</tr>';
+            $element           = new CheckBoxElement(
+                                 $this->model, 'excludeIfTriggeredByUser', $this->form, $params);
+            $innerContent     .= '<tr>' . $element->render() . '</tr>';
+
             $innerContent     .= '</table>';
             $content          .= ZurmoHtml::tag('div', array('class' => 'panel'), $innerContent);
             $content          .= '</div>';
