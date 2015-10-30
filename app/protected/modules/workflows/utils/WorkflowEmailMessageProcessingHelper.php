@@ -198,7 +198,7 @@
                     // If user selected not to email triggered user, then skip it, except in case when
                     // user explicitly selected to email user who triggered workflow by selecting "User who triggered process" option
                     if (isset($this->emailMessageForm->excludeIfTriggeredByUser) &&
-                        boolval($this->emailMessageForm->excludeIfTriggeredByUser) == true &&
+                        ((bool)$this->emailMessageForm->excludeIfTriggeredByUser) == true &&
                         get_class($emailMessageRecipient) != 'DynamicTriggeredByUserWorkflowEmailMessageRecipientForm')
                     {
                         if ($this->triggeredByUser->primaryEmail->emailAddress != $recipient->toAddress)
