@@ -126,9 +126,14 @@
 
             $this->assertTrue($dataProvider instanceof RedBeanModelDataProvider);
             $data = $dataProvider->getData();
-            $this->assertEquals(1, count($data));
-            $firstAuditEvent = current($data);
+            $this->assertEquals(2, count($data));
+            $firstAuditEvent = $data[0];
             $accountInfo = unserialize($firstAuditEvent->serializedData);
+            $this->assertEquals($account->id,         $firstAuditEvent->modelId);
+            $this->assertEquals('aNewDawn Inc 2',     $accountInfo['oldName']);
+            $this->assertEquals($account->name,       $accountInfo['newName']);
+            $secondAuditEvent = $data[1];
+            $accountInfo = unserialize($secondAuditEvent->serializedData);
             $this->assertEquals(strval($account),     $accountInfo[0]);
             $this->assertEquals('name',               $accountInfo[1][0]);
             $this->assertEquals('aNewDawn Inc 2',     $accountInfo[2]);
