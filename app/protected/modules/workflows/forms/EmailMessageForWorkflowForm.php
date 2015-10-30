@@ -243,6 +243,10 @@
                 unset($values[self::EMAIL_MESSAGE_RECIPIENTS]);
                 $this->_emailMessageRecipients = array();
             }
+            if (isset($values['excludeIfTriggeredByUser']))
+            {
+                $values['excludeIfTriggeredByUser'] = boolval($values['excludeIfTriggeredByUser']);
+            }
             parent::setAttributes($values, $safeOnly);
             if ($recipients != null)
             {
