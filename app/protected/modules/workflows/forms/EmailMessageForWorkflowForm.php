@@ -245,7 +245,7 @@
             }
             if (isset($values['excludeIfTriggeredByUser']))
             {
-                $values['excludeIfTriggeredByUser'] = boolval($values['excludeIfTriggeredByUser']);
+                $values['excludeIfTriggeredByUser'] = (bool)$values['excludeIfTriggeredByUser'];
             }
             parent::setAttributes($values, $safeOnly);
             if ($recipients != null)
