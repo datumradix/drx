@@ -250,5 +250,26 @@
                 }
             }
         }
+
+        protected function afterSave()
+        {
+            if (!$this->isNewModel)
+            {
+                $this->logAuditEventForNameChange();
+            }
+            parent::afterSave();
+        }
+
+        protected function logAuditEventForNameChange()
+        {
+            if (isset($this->originalAttributeValues['name']) && $this->originalAttributeValues['name'] != $this->name)
+            {
+                $modelClassName = get_class($this);
+                $data = array('oldName' => $this->originalAttributeValues['name'],
+                              'newName' => $this->name);
+                AuditEvent::logAuditEvent($modelClassName::getModuleClassName(),
+                                          ZurmoModule::AUDIT_EVENT_ITEM_NAME_CHANGED, $data, $this);
+            }
+        }
     }
 ?>
