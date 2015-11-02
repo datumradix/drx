@@ -453,7 +453,6 @@
                 }
             }
             return $filteredItems;
-
         }
     }
 ?>

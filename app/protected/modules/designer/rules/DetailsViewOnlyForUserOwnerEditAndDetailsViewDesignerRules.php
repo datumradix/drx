@@ -42,9 +42,9 @@
             $savableMetadataRules[]     = 'DetailsViewOnlyForUserOwner';
             return $savableMetadataRules;
         }
-        
+
         /**
-         * This override is here because the 'owner' field is already placed by default in edit view 
+         * This override is here because the 'owner' field is already placed by default in edit view
          * on the right sidebar.
          * @param string $attributeName
          */

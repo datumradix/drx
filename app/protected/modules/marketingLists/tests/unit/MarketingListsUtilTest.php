@@ -100,7 +100,6 @@
             }
             catch (NotSupportedException $e)
             {
-
             }
             $newMarketingListId = $newMarketingList->id;
             $newMarketingList->forgetAll();
@@ -129,7 +128,6 @@
 
             $campaignItem6       = CampaignItemTestHelper::createCampaignItem(1, $campaign, $contact6);
             CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_SPAM, 1, $campaignItem6, '121.212.122.112');
-
 
             $newMarketingList = MarketingListsUtil::resolveAndSaveMarketingList($resolveSubscribersForm, $campaign);
             $newMarketingList->forgetAll();
