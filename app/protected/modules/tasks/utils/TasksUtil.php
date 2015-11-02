@@ -1241,5 +1241,29 @@
             }
             return $redirectUrl;
         }
+
+        /**
+         * Process subscription request for task
+         * @param $id
+         * @param User $user
+         * @return A
+         * @throws Exception
+         * @throws NotFoundException
+         * @throws NotSuportedException
+         * @throws NotSupportedException
+         */
+        public static function processSubscriptionRequest($id, User $user)
+        {
+            $task = Task::getById(intval($id));
+            if (!$task->doNotificationSubscribersContainPerson($user))
+            {
+                $notificationSubscriber = new NotificationSubscriber();
+                $notificationSubscriber->person = $user;
+                $notificationSubscriber->hasReadLatest = false;
+                $task->notificationSubscribers->add($notificationSubscriber);
+            }
+            $task->save();
+            return $task;
+        }
     }
 ?>

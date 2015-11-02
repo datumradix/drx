@@ -94,8 +94,26 @@
             if ($this->relatedModel instanceof Conversation)
             {
                 $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
+                $itemIds = array();
+                $conversationPeople = ConversationsUtil::resolvePeopleOnConversation($this->relatedModel);
+                foreach ($conversationPeople as $user)
+                {
+                    $itemIds[] = $user->getClassId('Item');
+                }
+                foreach ($mentionedUsers as $mentionedUser)
+                {
+                    $itemIds[] = $mentionedUser->getClassId('Item');
+                }
+                $itemIdsImploded = array();
+                $itemIdsImploded['itemIds'] = implode(',', $itemIds);
+
+                $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($this->relatedModel);
+                ConversationParticipantsUtil::resolveConversationHasManyParticipantsFromPost($this->relatedModel,
+                    $itemIdsImploded,
+                    $explicitReadWriteModelPermissions);
+                $this->relatedModel->save();
+
                 $participants = ConversationsUtil::resolvePeopleToSendNotificationToOnNewComment($this->relatedModel, $user);
-                $participants  = array_merge($participants, $mentionedUsers);
                 CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
             }
             elseif ($this->relatedModel instanceof Mission)
@@ -107,6 +125,12 @@
             }
             elseif ($this->relatedModel instanceof Task)
             {
+                $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
+                foreach ($mentionedUsers as $user)
+                {
+                    TasksUtil::processSubscriptionRequest($this->relatedModel->id, $user);
+                }
+
                 TasksNotificationUtil::submitTaskNotificationMessage($this->relatedModel,
                                                                     TasksNotificationUtil::TASK_NEW_COMMENT,
                                                                     $model->createdByUser, $model);

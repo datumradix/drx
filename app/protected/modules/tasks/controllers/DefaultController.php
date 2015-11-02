@@ -232,7 +232,7 @@
          */
         public function actionAddSubscriber($id)
         {
-            $task    = $this->processSubscriptionRequest($id);
+            $task    = TasksUtil::processSubscriptionRequest($id, Yii::app()->user->userModel);
             $content = TasksUtil::getTaskSubscriberData($task);
             $content .= TasksUtil::resolveSubscriptionLink($task, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
             echo $content;
@@ -263,7 +263,7 @@
          */
         public function actionAddKanbanSubscriber($id)
         {
-            $task = $this->processSubscriptionRequest($id);
+            $task    = TasksUtil::processSubscriptionRequest($id, Yii::app()->user->userModel);
             $content = TasksUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
             $content .= TasksUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
             echo $content;
@@ -619,19 +619,6 @@
          * Process subscription request for task
          * @param int $id
          */
-        protected function processSubscriptionRequest($id)
-        {
-            $task = Task::getById(intval($id));
-            if (!$task->doNotificationSubscribersContainPerson(Yii::app()->user->userModel))
-            {
-                $notificationSubscriber = new NotificationSubscriber();
-                $notificationSubscriber->person = Yii::app()->user->userModel;
-                $notificationSubscriber->hasReadLatest = false;
-                $task->notificationSubscribers->add($notificationSubscriber);
-            }
-            $task->save();
-            return $task;
-        }
 
         /**
          * Process unsubscription request for task
