@@ -68,8 +68,6 @@
             $notificationRulesClassName = static::resolveNotificationRulesClassByAction($action);
             $rule = new $notificationRulesClassName();
             $peopleToSendNotification = static::resolvePeopleToSendNotification($task, $action, $relatedUser);
-            $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($comment);
-            $peopleToSendNotification = array_merge($peopleToSendNotification, $mentionedUsers);
             foreach ($peopleToSendNotification as $person)
             {
                 $rule->addUser($person);
