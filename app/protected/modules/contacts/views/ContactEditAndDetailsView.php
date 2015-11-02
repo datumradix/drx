@@ -300,7 +300,7 @@
             ");
             // End Not Coding Standard
         }
-        
+
         public static function getDesignerRulesType()
         {
             return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
