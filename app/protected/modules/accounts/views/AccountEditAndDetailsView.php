@@ -180,7 +180,7 @@
         {
             return AccountDetailsViewUtil::renderAfterFormLayoutForDetailsContent($this->getModel());
         }
-        
+
         public static function getDesignerRulesType()
         {
             return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
