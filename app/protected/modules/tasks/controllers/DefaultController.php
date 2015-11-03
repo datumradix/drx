@@ -128,7 +128,6 @@
                     $castedDownModel = TasksUtil::castDownActivityItem($task->activityItems[0]);
                     $moduleClassName = StateMetadataAdapter::resolveModuleClassNameByModel($castedDownModel);
                     if (RightsUtil::canUserAccessModule($moduleClassName, Yii::app()->user->userModel) &&
-                        ControllerSecurityUtil::doesCurrentUserHavePermissionOnSecurableItem($task, Permission::READ_WRITE) &&
                         ControllerSecurityUtil::doesCurrentUserHavePermissionOnSecurableItem($castedDownModel, Permission::READ))
                     {
                         $this->redirect(Yii::app()->createUrl($moduleClassName::getDirectoryName() . '/default/details',
@@ -240,7 +239,7 @@
          */
         public function actionAddSubscriber($id)
         {
-            $task    = TasksUtil::processSubscriptionRequest($id, Yii::app()->user->userModel);
+            $task    = TasksUtil::processTaskSubscriptionRequest($id, Yii::app()->user->userModel);
             $content = TasksUtil::getTaskSubscriberData($task);
             $content .= TasksUtil::resolveSubscriptionLink($task, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
             echo $content;
@@ -252,7 +251,7 @@
          */
         public function actionRemoveSubscriber($id)
         {
-            $task    = $this->processUnsubscriptionRequest($id);
+            $task    = TasksUtil::processTaskUnsubscriptionRequest($id, Yii::app()->user->userModel);
             $content = TasksUtil::getTaskSubscriberData($task);
             $content .= TasksUtil::resolveSubscriptionLink($task, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
             if ($content == null)
@@ -271,7 +270,7 @@
          */
         public function actionAddKanbanSubscriber($id)
         {
-            $task    = TasksUtil::processSubscriptionRequest($id, Yii::app()->user->userModel);
+            $task    = TasksUtil::processTaskSubscriptionRequest($id, Yii::app()->user->userModel);
             $content = TasksUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
             $content .= TasksUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
             echo $content;
@@ -283,7 +282,7 @@
          */
         public function actionRemoveKanbanSubscriber($id)
         {
-            $task = $this->processUnsubscriptionRequest($id);
+            $task = TasksUtil::processTaskUnsubscriptionRequest($id, Yii::app()->user->userModel);
             $content = TasksUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
             $content .= TasksUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
             if ($content == null)
@@ -628,30 +627,6 @@
          * @param int $id
          */
 
-        /**
-         * Process unsubscription request for task
-         * @param int $id
-         * @throws FailedToSaveModelException
-         * @return Task $task
-         */
-        protected function processUnsubscriptionRequest($id)
-        {
-            $task = Task::getById(intval($id));
-            foreach ($task->notificationSubscribers as $notificationSubscriber)
-            {
-                if ($notificationSubscriber->person->getClassId('Item') == Yii::app()->user->userModel->getClassId('Item'))
-                {
-                    $task->notificationSubscribers->remove($notificationSubscriber);
-                    break;
-                }
-            }
-            $saved = $task->save();
-            if (!$saved)
-            {
-                throw new FailedToSaveModelException();
-            }
-            return $task;
-        }
 
         /**
          * Gets zurmo controller util for task

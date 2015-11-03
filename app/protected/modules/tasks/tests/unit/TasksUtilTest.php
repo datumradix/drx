@@ -592,5 +592,67 @@
             $this->assertContains('hellodear', $content);
             $this->assertContains('task-owner', $content);
         }
+
+        /**
+         * @covers TasksUtil::processTaskSubscriptionRequest
+         */
+        public function testProcessTaskSubscriptionRequest()
+        {
+            $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
+
+            $mark                   = UserTestHelper::createBasicUser('mark');
+            $jim                    = UserTestHelper::createBasicUser('jim');
+
+            $task = TaskTestHelper::createTaskByNameForOwner('SubTask', Yii::app()->user->userModel);
+            $this->assertEquals(1, count($task->notificationSubscribers));
+            $subscribedUser = $task->notificationSubscribers[0]->person->castDown(array($modelDerivationPathToItem));
+            $this->assertEquals(Yii::app()->user->userModel->id, $subscribedUser->id);
+
+            $task = TasksUtil::processTaskSubscriptionRequest($task->id, $mark);
+            $this->assertEquals(2, count($task->notificationSubscribers));
+            $subscribedUser1 = $task->notificationSubscribers[0]->person->castDown(array($modelDerivationPathToItem));
+            $subscribedUser2 = $task->notificationSubscribers[1]->person->castDown(array($modelDerivationPathToItem));
+            $this->assertTrue(in_array(Yii::app()->user->userModel->id, array($subscribedUser1->id, $subscribedUser2->id)));
+            $this->assertTrue(in_array($mark->id, array($subscribedUser1->id, $subscribedUser2->id)));
+
+            $task = TasksUtil::processTaskSubscriptionRequest($task->id, $jim);
+            $this->assertEquals(3, count($task->notificationSubscribers));
+            $subscribedUser1 = $task->notificationSubscribers[0]->person->castDown(array($modelDerivationPathToItem));
+            $subscribedUser2 = $task->notificationSubscribers[1]->person->castDown(array($modelDerivationPathToItem));
+            $subscribedUser3 = $task->notificationSubscribers[2]->person->castDown(array($modelDerivationPathToItem));
+            $this->assertTrue(in_array(Yii::app()->user->userModel->id, array($subscribedUser1->id, $subscribedUser2->id, $subscribedUser3->id)));
+            $this->assertTrue(in_array($mark->id, array($subscribedUser1->id, $subscribedUser2->id, $subscribedUser3->id)));
+            $this->assertTrue(in_array($jim->id, array($subscribedUser1->id, $subscribedUser2->id, $subscribedUser3->id)));
+        }
+
+        /**
+         * @covers TasksUtil::processTaskUnsubscriptionRequest
+         * @depends testProcessTaskSubscriptionRequest
+         */
+        public function testProcessTaskUnsubscriptionRequest()
+        {
+            $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
+
+            $maria                   = UserTestHelper::createBasicUser('maria');
+            $john                    = UserTestHelper::createBasicUser('john');
+
+            $task = TaskTestHelper::createTaskByNameForOwner('SubTask2', Yii::app()->user->userModel);
+            $task = TasksUtil::processTaskSubscriptionRequest($task->id, $maria);
+            $task = TasksUtil::processTaskSubscriptionRequest($task->id, $john);
+            // Just check number of subscribed users, checking if their ids are done in testProcessTaskSubscriptionRequest
+            $this->assertEquals(3, count($task->notificationSubscribers));
+
+            $task = TasksUtil::processTaskUnsubscriptionRequest($task->id, $maria);
+            $this->assertEquals(2, count($task->notificationSubscribers));
+            $subscribedUser1 = $task->notificationSubscribers[0]->person->castDown(array($modelDerivationPathToItem));
+            $subscribedUser2 = $task->notificationSubscribers[1]->person->castDown(array($modelDerivationPathToItem));
+            $this->assertTrue(in_array(Yii::app()->user->userModel->id, array($subscribedUser1->id, $subscribedUser2->id)));
+            $this->assertTrue(in_array($john->id, array($subscribedUser1->id, $subscribedUser2->id)));
+
+            $task = TasksUtil::processTaskUnsubscriptionRequest($task->id, $john);
+            $this->assertEquals(1, count($task->notificationSubscribers));
+            $subscribedUser = $task->notificationSubscribers[0]->person->castDown(array($modelDerivationPathToItem));
+            $this->assertEquals(Yii::app()->user->userModel->id, $subscribedUser->id);
+        }
     }
 ?>
