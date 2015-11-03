@@ -113,17 +113,27 @@
             AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($task), 'TasksModule'), $task);
             if ($task->project->id > 0)
             {
-                $this->redirect(Yii::app()->createUrl('projects/default/details',
-                                                      array('id' => $task->project->id, 'openToTaskId' => $task->id)));
+                if (RightsUtil::canUserAccessModule('ProjectModule', Yii::app()->user->userModel) &&
+                    ControllerSecurityUtil::doesCurrentUserHavePermissionOnSecurableItem($task, Permission::READ_WRITE))
+                {
+                    $this->redirect(Yii::app()->createUrl('projects/default/details',
+                        array('id' => $task->project->id, 'openToTaskId' => $task->id)));
+                }
             }
-            elseif ($task->activityItems->count() > 0)
+
+            if ($task->activityItems->count() > 0)
             {
                 try
                 {
                     $castedDownModel = TasksUtil::castDownActivityItem($task->activityItems[0]);
                     $moduleClassName = StateMetadataAdapter::resolveModuleClassNameByModel($castedDownModel);
-                    $this->redirect(Yii::app()->createUrl($moduleClassName::getDirectoryName() . '/default/details',
-                        array('id' => $castedDownModel->id, 'kanbanBoard' => true, 'openToTaskId' => $task->id)));
+                    if (RightsUtil::canUserAccessModule($moduleClassName, Yii::app()->user->userModel) &&
+                        ControllerSecurityUtil::doesCurrentUserHavePermissionOnSecurableItem($task, Permission::READ_WRITE) &&
+                        ControllerSecurityUtil::doesCurrentUserHavePermissionOnSecurableItem($castedDownModel, Permission::READ))
+                    {
+                        $this->redirect(Yii::app()->createUrl($moduleClassName::getDirectoryName() . '/default/details',
+                            array('id' => $castedDownModel->id, 'kanbanBoard' => true, 'openToTaskId' => $task->id)));
+                    }
                 }
                 catch (NotFoundException $e)
                 {
@@ -131,11 +141,9 @@
                     $this->redirect(Yii::app()->createUrl('home/default/index'));
                 }
             }
-            else
-            {
-                $this->redirect(Yii::app()->createUrl('tasks/default/list',
+
+            $this->redirect(Yii::app()->createUrl('tasks/default/list',
                                                       array('openToTaskId' => $id)));
-            }
         }
 
         public function actionEdit($id, $redirectUrl = null)
