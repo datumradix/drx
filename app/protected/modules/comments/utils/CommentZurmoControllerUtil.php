@@ -138,7 +138,7 @@
                 $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
                 foreach ($mentionedUsers as $user)
                 {
-                    TasksUtil::processSubscriptionRequest($this->relatedModel->id, $user);
+                    TasksUtil::processTaskSubscriptionRequest($this->relatedModel->id, $user);
                 }
 
                 TasksNotificationUtil::submitTaskNotificationMessage($this->relatedModel,
