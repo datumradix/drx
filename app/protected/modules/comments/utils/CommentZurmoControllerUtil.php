@@ -111,7 +111,17 @@
                 ConversationParticipantsUtil::resolveConversationHasManyParticipantsFromPost($this->relatedModel,
                     $itemIdsImploded,
                     $explicitReadWriteModelPermissions);
-                $this->relatedModel->save();
+                $saved = $this->relatedModel->save();
+                if ($saved)
+                {
+                    ExplicitReadWriteModelPermissionsUtil::
+                        resolveExplicitReadWriteModelPermissions($this->relatedModel, $explicitReadWriteModelPermissions);
+                    $this->relatedModel->save();
+                }
+                else
+                {
+                    throw new FailedToSaveModelException();
+                }
 
                 $participants = ConversationsUtil::resolvePeopleToSendNotificationToOnNewComment($this->relatedModel, $user);
                 CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
