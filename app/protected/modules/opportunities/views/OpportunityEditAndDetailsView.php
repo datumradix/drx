@@ -53,6 +53,7 @@
                     'derivedAttributeTypes' => array(
                     ),
                     'nonPlaceableAttributeNames' => array(
+                        'stageModifiedDateTime',
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
