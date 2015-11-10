@@ -94,7 +94,7 @@
                                                      Report::TYPE_SUMMATION);
             $groupBy->attributeIndexOrDerivedType  = 'date__Week';
             $content                               = $builder->makeQueryContent(array($groupBy));
-            $this->assertEquals("week({$q}reportmodeltestitem{$q}.{$q}date{$q})", $content);
+            $this->assertEquals("weekofyear({$q}reportmodeltestitem{$q}.{$q}date{$q})", $content);
             $this->assertEquals(0, $joinTablesAdapter->getFromTableJoinCount());
             $this->assertEquals(0, $joinTablesAdapter->getLeftTableJoinCount());
 
@@ -167,7 +167,7 @@
                                                      Report::TYPE_SUMMATION);
             $groupBy->attributeIndexOrDerivedType  = 'dateTime__Week';
             $content                               = $builder->makeQueryContent(array($groupBy));
-            $this->assertEquals("week({$q}reportmodeltestitem{$q}.{$q}datetime{$q} - INTERVAL " .
+            $this->assertEquals("weekofyear({$q}reportmodeltestitem{$q}.{$q}datetime{$q} - INTERVAL " .
                                 abs(self::$chicagoOffsetInSeconds) . " SECOND)", $content);
             $this->assertEquals(0, $joinTablesAdapter->getFromTableJoinCount());
             $this->assertEquals(0, $joinTablesAdapter->getLeftTableJoinCount());

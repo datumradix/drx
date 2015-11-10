@@ -136,6 +136,14 @@
                                 array('cells' =>
                                     array(
                                         array(
+                                            'detailViewOnly' => true,
+                                            'element' => 'owner',
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
                                             'element' => 'checkboxCstm',
                                         ),
                                     )

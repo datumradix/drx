@@ -57,7 +57,6 @@
                     'nonPlaceableAttributeNames' => array(
                         'processedForLatestActivity',
                         'latestDateTime',
-                        'owner'
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
@@ -195,6 +194,11 @@
                 ");
                 // End Not Coding Standard
             }
+        }
+
+        public static function getDesignerRulesType()
+        {
+            return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
         }
     }
 ?>

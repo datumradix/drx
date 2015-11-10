@@ -54,7 +54,7 @@
                 $startingDivStyleFirstValue = "display:none;";
             }
 
-            if (!in_array($this->model->type, array(ChartRules::TYPE_STACKED_BAR_3D, ChartRules::TYPE_STACKED_COLUMN_3D)))
+            if (!in_array($this->model->type, ChartRules::getChartTypesRequiringSecondInputs()))
             {
                 $startingDivStyleSecondValue = "display:none;";
             }
