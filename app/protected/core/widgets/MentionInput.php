@@ -60,6 +60,8 @@
 
         public $templates = '';
 
+        public $defaultValue = '';
+
         /**
          * Initializes the widget.
          * This method will publish assets if necessary.
@@ -98,8 +100,10 @@ onDataRequest:function (mode, query, callback) {
   });
     },
     onCaret: true,
+    allowRepeat: true,
     triggerChar: '{$this->triggerChar}',
     minChars:    '{$this->minChars}',
+    defaultValue: '{$this->defaultValue}',
     {$additionalSettingsJs}
   });
 EOD;

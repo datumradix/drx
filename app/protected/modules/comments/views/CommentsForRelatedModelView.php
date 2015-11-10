@@ -176,7 +176,7 @@
                     $deleteCommentLink = null;
                     $editCommentLink   = null;
                 }
-                $editCommentLink   = null; //temporary until edit link is added
+                //$editCommentLink   = null; //temporary until edit link is added
                 $stringContent .= '<span class="comment-details"><strong>'. DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
                                               $comment->createdDateTime, 'long', null) . '</strong></span>' . $editCommentLink . $deleteCommentLink;
 
@@ -194,7 +194,12 @@
         protected function renderDeleteLinkContent(Comment $comment)
         {
             $url     =   Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/deleteViaAjax',
-                            array_merge($this->getParams, array('id' => $comment->id)));
+                            array_merge(
+                                $this->getParams,
+                                array('id' => $comment->id,
+                                      'relatedModelId' => $this->relatedModel->id,
+                                      'relatedModelClassName' => get_class($this->relatedModel),
+                                      'relatedModelRelationName' => 'comments')));
             // Begin Not Coding Standard
             return       ZurmoHtml::ajaxLink(Zurmo::t('Core', 'Delete'), $url,
                          array('type'     => 'GET',
@@ -211,7 +216,17 @@
          */
         protected function renderEditLinkContent(Comment $comment)
         {
-            $url     =   '';
+            $url     =   Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/InlineEditCommentFromAjax',
+                array_merge($this->getParams, array('id' => $comment->id)));
+            // Begin Not Coding Standard
+            return       ZurmoHtml::ajaxLink(Zurmo::t('Core', 'Edit'), $url,
+                array('type'     => 'GET',
+                      'complete' => "function(jqXHR, textStatus){
+                                              $('#editCommentLink" . $comment->id . "').parent().parent().find('p:first').html(jqXHR.responseText);}"),
+                array( 'id'         => 'editCommentLink' . $comment->id,
+                       'class'     => 'editCommentLink' . $comment->id,
+                       'namespace' => 'edit'));
+            // End Not Coding Standard
             return       ZurmoHtml::ajaxLink(Zurmo::t('Core', 'Edit'), $url);
         }
 

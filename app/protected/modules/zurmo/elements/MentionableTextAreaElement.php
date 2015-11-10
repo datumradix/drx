@@ -55,6 +55,7 @@
             $widgetSettings = array(
                 'callBackUrl' => Yii::app()->createUrl('users/default/getUsersByPartialString'),
                 'id'          => $this->getEditableInputId(),
+                'defaultValue' => $this->model->description,
             );
             $cClipWidget             = new CClipWidget();
             $cClipWidget->beginClip("MentionInput");
@@ -71,10 +72,19 @@
          */
         protected function renderControlNonEditable()
         {
-            //return parent::renderControlNonEditable();
             $text = $this->model->{$this->attribute};
             $text = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($text);
             return TextUtil::textWithUrlToTextWithLink($text);
+        }
+
+        protected function getEditableInputId($attributeName = null, $relationAttributeName = null)
+        {
+            $inputId = parent::getEditableInputId($attributeName, $relationAttributeName);
+            if ($this->model->id > 0)
+            {
+                $inputId = $inputId . '_' . $this->model->id;
+            }
+            return $inputId;
         }
     }
 ?>

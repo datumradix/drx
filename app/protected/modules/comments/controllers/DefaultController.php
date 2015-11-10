@@ -49,6 +49,35 @@
             $this->attemptToSaveModelFromPost(new Comment(), $redirectUrl);
         }
 
+        public function actionInlineEditSave($id, $redirectUrl = null, $uniquePageId = null)
+        {
+            $comment = Comment::getById($id);
+            if (isset($_POST['ajax']) && $_POST['ajax'] === 'comment-inline-edit-form' . $uniquePageId)
+            {
+                $this->actionInlineEditValidate($comment);
+            }
+            $this->attemptToSaveModelFromPost($comment, $redirectUrl);
+        }
+
+        public function actionInlineEditCommentFromAjax($id, $relatedModelId, $relatedModelClassName, $relatedModelRelationName, $uniquePageId = null)
+        {
+            $comment = Comment::getById($id);
+            $redirectUrl   = Yii::app()->createUrl('/comments/default/inlineEditSave',
+                array('id'           => $id,
+                      'uniquePageId' => $uniquePageId));
+            $urlParameters = array('id' => $comment->id,
+                                   'relatedModelId'           => (int)$relatedModelId,
+                                   'relatedModelClassName'    => $relatedModelClassName,
+                                   'relatedModelRelationName' => $relatedModelRelationName,
+                                   'redirectUrl'              => $redirectUrl); //After save, the url to go to.
+            $uniquePageId  = 'CommentInlineEditForExistingModelView' . $uniquePageId;
+            echo             ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Edit Comment'));
+            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineEditSave',
+                $urlParameters, $uniquePageId);
+            $view          = new AjaxPageView($inlineView);
+            echo $view->render();
+        }
+
         public function actionAjaxListForRelatedModel($uniquePageId = null)
         {
             $getData                  = GetUtil::getData();
