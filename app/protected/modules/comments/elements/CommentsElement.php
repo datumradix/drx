@@ -159,5 +159,33 @@
             $htmlOptions = array('id' => 'CommentInlineEditForModelView');
             return ZurmoHtml::tag('div', $htmlOptions, $content);
         }
+
+        /**
+         * Used for inline comments edit
+         * Get view and set parameters for comment inline edit
+         * @param $id
+         * @param $relatedModelId
+         * @param $relatedModelClassName
+         * @param $relatedModelRelationName
+         * @param null $uniquePageId
+         * @return CommentInlineEditView
+         * @throws NotFoundException
+         */
+        public static function getRelatedModelCommentInlineEditView($id, $relatedModelId, $relatedModelClassName, $relatedModelRelationName, $uniquePageId = null)
+        {
+            $comment = Comment::getById($id);
+            $redirectUrl   = Yii::app()->createUrl('/comments/default/inlineEditSave',
+                array('id'           => $id,
+                      'uniquePageId' => $uniquePageId));
+            $urlParameters = array('id' => $comment->id,
+                                   'relatedModelId'           => (int)$relatedModelId,
+                                   'relatedModelClassName'    => $relatedModelClassName,
+                                   'relatedModelRelationName' => $relatedModelRelationName,
+                                   'redirectUrl'              => $redirectUrl); //After save, the url to go to.
+            $uniquePageId  = 'CommentInlineEditForExistingModelView' . $uniquePageId;
+            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineEditSave',
+                $urlParameters, $uniquePageId);
+            return $inlineView;
+        }
     }
 ?>

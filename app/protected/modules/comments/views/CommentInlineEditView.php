@@ -42,22 +42,6 @@
     {
         protected $viewContainsFileUploadElement = true;
 
-        public function __construct(RedBeanModel $model, $controllerId, $moduleId, $saveActionId, $urlParameters, $uniquePageId)
-        {
-            assert('is_string($controllerId)');
-            assert('is_string($moduleId)');
-            assert('is_string($saveActionId)');
-            assert('is_array($urlParameters)');
-            assert('is_string($uniquePageId) || $uniquePageId == null');
-            $this->model              = $model;
-            $this->modelClassName     = get_class($model);
-            $this->controllerId       = $controllerId;
-            $this->moduleId           = $moduleId;
-            $this->saveActionId       = $saveActionId;
-            $this->urlParameters      = $urlParameters;
-            $this->uniquePageId       = $uniquePageId;
-        }
-
         public function getFormName()
         {
             if ($this->model->id > 0)
