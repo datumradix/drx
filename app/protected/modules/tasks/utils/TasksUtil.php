@@ -1241,5 +1241,59 @@
             }
             return $redirectUrl;
         }
+
+        /**
+         * Process subscription request for task
+         * @param int $taskId
+         * @param User $user
+         * @return Task $task | error
+         * @throws Exception
+         * @throws NotFoundException
+         * @throws NotSupportedException
+         */
+        public static function processTaskSubscriptionRequest($taskId, User $user)
+        {
+            assert('$user instanceof User');
+            $task = Task::getById(intval($taskId));
+            if (!$task->doNotificationSubscribersContainPerson($user))
+            {
+                $notificationSubscriber = new NotificationSubscriber();
+                $notificationSubscriber->person = $user;
+                $notificationSubscriber->hasReadLatest = false;
+                $task->notificationSubscribers->add($notificationSubscriber);
+            }
+            $task->save();
+            return $task;
+        }
+
+        /**
+         * Process unsubscription request for task
+         * @param int $taskId
+         * @param User $user
+         * @return Task $task
+         * @throws Exception
+         * @throws FailedToSaveModelException
+         * @throws NotFoundException
+         * @throws NotSupportedException
+         */
+        public static function processTaskUnsubscriptionRequest($taskId, User $user)
+        {
+            assert('$user instanceof User');
+            $task = Task::getById(intval($taskId));
+            foreach ($task->notificationSubscribers as $notificationSubscriber)
+            {
+                if ($notificationSubscriber->person->getClassId('Item') == $user->getClassId('Item'))
+                {
+                    $task->notificationSubscribers->remove($notificationSubscriber);
+                    break;
+                }
+            }
+            $saved = $task->save();
+            if (!$saved)
+            {
+                throw new FailedToSaveModelException();
+            }
+            return $task;
+        }
     }
 ?>

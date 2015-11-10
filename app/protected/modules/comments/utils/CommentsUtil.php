@@ -124,6 +124,69 @@
         }
 
         /**
+         * Parse comments and extract all username between '[~' and ']'
+         * For example if we have string: "Hello [~john]"
+         * @param Comment $comment
+         * @return array
+         */
+        public static function getMentionedUsersForNotification(Comment $comment)
+        {
+            $mentionedUsers = array();
+            preg_match_all("/\[\~(.+?)\]/is", $comment->description, $matches);
+            if (is_array($matches[1]) && !empty($matches[1]))
+            {
+                foreach ($matches[1] as $mentionedUsername)
+                {
+                    if ($mentionedUsername == '') continue;
+                    try
+                    {
+                        $user = User::getByUsername(trim(strtolower($mentionedUsername)));
+                        // DO not send notification if user mentioned himself
+                        if (Yii::app()->user->userModel->id != $user->id)
+                        {
+                            $mentionedUsers[] = $user;
+                        }
+                    }
+                    catch (NotFoundException $e)
+                    {
+                        // Just skip this user
+                    }
+                }
+            }
+            return $mentionedUsers;
+        }
+
+        /**
+         * Parse comments and extract all username between '[~' and ']'
+         * For example if we have string: "Hello [~john]", after replacement, it will be: Hello <a href='...'>John Smith</a>
+         * @param string $commentDescription
+         * @return array
+         */
+        public static function replaceMentionedUsernamesWithFullNamesAndLinksInComments($commentDescription)
+        {
+            preg_match_all("/\[\~(.+?)\]/is", $commentDescription, $matches);
+            if (is_array($matches[1]) && !empty($matches[1]))
+            {
+                foreach ($matches[1] as $mentionedUsername)
+                {
+                    if ($mentionedUsername == '') continue;
+                    try
+                    {
+                        $user = User::getByUsername(trim(strtolower($mentionedUsername)));
+                        $link = Yii::app()->createUrl('users/default/details/', array('id' => $user->id));
+                        $link = ZurmoHtml::link(strval($user), $link);
+                        $commentDescription = str_replace('[~' . $mentionedUsername . ']', $link, $commentDescription);
+                    }
+                    catch (NotFoundException $e)
+                    {
+                        // Just skip replacing this string with user
+                    }
+                }
+            }
+            return $commentDescription;
+        }
+
+        /**
          * Resolve the notification setting name by model
          * @return string
          */

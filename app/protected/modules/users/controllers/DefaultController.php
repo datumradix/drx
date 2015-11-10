@@ -60,7 +60,7 @@
                     ZurmoBaseController::RIGHTS_FILTER_PATH .
                     ' - modalList, - switchTo, autoComplete, details, profile, edit, auditEventsModalList, changePassword, ' .
                     'configurationEdit, emailConfiguration, securityDetails, notificationConfiguration, ' .
-                    'autoCompleteForMultiSelectAutoComplete, confirmTimeZone, changeAvatar, gameDashboard',
+                    'autoCompleteForMultiSelectAutoComplete, getUsersByPartialString, confirmTimeZone, changeAvatar, gameDashboard',
                     'moduleClassName' => 'UsersModule',
                     'rightName' => UsersModule::getAccessRight(),
             );
@@ -581,10 +581,8 @@
         }
 
         /**
-         * Given a partial name or e-mail address, search for all contacts regardless of contact state unless the
-         * current user has security restrictions on some states.  If the adapter resolver returns false, then the
-         * user does not have access to the Leads or Contacts module.
-         * JSON encode the resulting array of contacts.
+         * Given a partial name search for all users unless the current user has security restrictions.
+         * JSON encode the resulting array of users.
          */
         public function actionAutoCompleteForMultiSelectAutoComplete($term, $autoCompleteOptions = null)
         {
@@ -598,6 +596,32 @@
                     'id'   => $user->getClassId('Item'),
                     'name' => strval($user)
                 );
+            }
+            echo CJSON::encode($autoCompleteResults);
+        }
+
+        /**
+         * Given a partial name search for all users unless the current user has security restrictions.
+         * JSON encode the resulting array of results in requested format.
+         */
+        public function actionGetUsersByPartialString($term)
+        {
+            $users    = UserSearch::getUsersByPartialFullNameOrUsername($term);
+            $autoCompleteResults  = array();
+            foreach ($users as $user)
+            {
+                $autoCompleteResult = array(
+                    'id'       => $user->id,
+                    'name'     => strval($user),
+                    'username' => $user->username,
+                    'type'     => 'users',
+                );
+                $avatar = $user->getAvatarImageUrl(20, true);
+                if ($avatar != null)
+                {
+                    $autoCompleteResult['avatar'] = $avatar;
+                }
+                $autoCompleteResults[] = $autoCompleteResult;
             }
             echo CJSON::encode($autoCompleteResults);
         }

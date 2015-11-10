@@ -34,11 +34,47 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class TaskMyListViewDesignerRules extends MyListViewDesignerRules
+    /**
+     * Display the text area input box.
+     */
+    class MentionableTextAreaElement extends CommentTextAreaElement
     {
-        public function getSavableMetadataRules()
+        /**
+         * Render A text area with X rows and Y columns.
+         */
+        protected function renderControlEditable()
         {
-            return array_merge(parent::getSavableMetadataRules(), array('AddIsLinkForTaskActivityItems'));
+            assert('empty($this->model->{$this->attribute}) || is_string($this->model->{$this->attribute}) || is_integer($this->model->{$this->attribute})');
+            $htmlOptions             = array('encode' => false);
+            $htmlOptions['id']       = $this->getEditableInputId();
+            $htmlOptions['name']     = $this->getEditableInputName();
+            $htmlOptions['rows']     = $this->getRows();
+            $htmlOptions['cols']     = $this->getCols();
+
+            // Load widget for mention input
+            $widgetSettings = array(
+                'callBackUrl' => Yii::app()->createUrl('users/default/getUsersByPartialString'),
+                'id'          => $this->getEditableInputId(),
+            );
+            $cClipWidget             = new CClipWidget();
+            $cClipWidget->beginClip("MentionInput");
+            $cClipWidget->widget('application.core.widgets.MentionInput', $widgetSettings);
+            $cClipWidget->endClip();
+            $cClipWidget->getController()->clips['MentionInput'];
+
+            return $this->form->textArea($this->model, $this->attribute, $htmlOptions);
+        }
+
+        /**
+         * Render the text area as a non-editable display
+         * @return The element's content.
+         */
+        protected function renderControlNonEditable()
+        {
+            //return parent::renderControlNonEditable();
+            $text = $this->model->{$this->attribute};
+            $text = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($text);
+            return TextUtil::textWithUrlToTextWithLink($text);
         }
     }
 ?>

@@ -113,17 +113,26 @@
             AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($task), 'TasksModule'), $task);
             if ($task->project->id > 0)
             {
-                $this->redirect(Yii::app()->createUrl('projects/default/details',
-                                                      array('id' => $task->project->id, 'openToTaskId' => $task->id)));
+                if (RightsUtil::canUserAccessModule('ProjectModule', Yii::app()->user->userModel) &&
+                    ControllerSecurityUtil::doesCurrentUserHavePermissionOnSecurableItem($task, Permission::READ_WRITE))
+                {
+                    $this->redirect(Yii::app()->createUrl('projects/default/details',
+                        array('id' => $task->project->id, 'openToTaskId' => $task->id)));
+                }
             }
-            elseif ($task->activityItems->count() > 0)
+
+            if ($task->activityItems->count() > 0)
             {
                 try
                 {
                     $castedDownModel = TasksUtil::castDownActivityItem($task->activityItems[0]);
                     $moduleClassName = StateMetadataAdapter::resolveModuleClassNameByModel($castedDownModel);
-                    $this->redirect(Yii::app()->createUrl($moduleClassName::getDirectoryName() . '/default/details',
-                        array('id' => $castedDownModel->id, 'kanbanBoard' => true, 'openToTaskId' => $task->id)));
+                    if (RightsUtil::canUserAccessModule($moduleClassName, Yii::app()->user->userModel) &&
+                        ControllerSecurityUtil::doesCurrentUserHavePermissionOnSecurableItem($castedDownModel, Permission::READ))
+                    {
+                        $this->redirect(Yii::app()->createUrl($moduleClassName::getDirectoryName() . '/default/details',
+                            array('id' => $castedDownModel->id, 'kanbanBoard' => true, 'openToTaskId' => $task->id)));
+                    }
                 }
                 catch (NotFoundException $e)
                 {
@@ -131,11 +140,9 @@
                     $this->redirect(Yii::app()->createUrl('home/default/index'));
                 }
             }
-            else
-            {
-                $this->redirect(Yii::app()->createUrl('tasks/default/list',
+
+            $this->redirect(Yii::app()->createUrl('tasks/default/list',
                                                       array('openToTaskId' => $id)));
-            }
         }
 
         public function actionEdit($id, $redirectUrl = null)
@@ -232,7 +239,7 @@
          */
         public function actionAddSubscriber($id)
         {
-            $task    = $this->processSubscriptionRequest($id);
+            $task    = TasksUtil::processTaskSubscriptionRequest($id, Yii::app()->user->userModel);
             $content = TasksUtil::getTaskSubscriberData($task);
             $content .= TasksUtil::resolveSubscriptionLink($task, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
             echo $content;
@@ -244,7 +251,7 @@
          */
         public function actionRemoveSubscriber($id)
         {
-            $task    = $this->processUnsubscriptionRequest($id);
+            $task    = TasksUtil::processTaskUnsubscriptionRequest($id, Yii::app()->user->userModel);
             $content = TasksUtil::getTaskSubscriberData($task);
             $content .= TasksUtil::resolveSubscriptionLink($task, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
             if ($content == null)
@@ -263,7 +270,7 @@
          */
         public function actionAddKanbanSubscriber($id)
         {
-            $task = $this->processSubscriptionRequest($id);
+            $task    = TasksUtil::processTaskSubscriptionRequest($id, Yii::app()->user->userModel);
             $content = TasksUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
             $content .= TasksUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
             echo $content;
@@ -275,7 +282,7 @@
          */
         public function actionRemoveKanbanSubscriber($id)
         {
-            $task = $this->processUnsubscriptionRequest($id);
+            $task = TasksUtil::processTaskUnsubscriptionRequest($id, Yii::app()->user->userModel);
             $content = TasksUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
             $content .= TasksUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
             if ($content == null)
@@ -619,44 +626,7 @@
          * Process subscription request for task
          * @param int $id
          */
-        protected function processSubscriptionRequest($id)
-        {
-            $task = Task::getById(intval($id));
-            if (!$task->doNotificationSubscribersContainPerson(Yii::app()->user->userModel))
-            {
-                $notificationSubscriber = new NotificationSubscriber();
-                $notificationSubscriber->person = Yii::app()->user->userModel;
-                $notificationSubscriber->hasReadLatest = false;
-                $task->notificationSubscribers->add($notificationSubscriber);
-            }
-            $task->save();
-            return $task;
-        }
 
-        /**
-         * Process unsubscription request for task
-         * @param int $id
-         * @throws FailedToSaveModelException
-         * @return Task $task
-         */
-        protected function processUnsubscriptionRequest($id)
-        {
-            $task = Task::getById(intval($id));
-            foreach ($task->notificationSubscribers as $notificationSubscriber)
-            {
-                if ($notificationSubscriber->person->getClassId('Item') == Yii::app()->user->userModel->getClassId('Item'))
-                {
-                    $task->notificationSubscribers->remove($notificationSubscriber);
-                    break;
-                }
-            }
-            $saved = $task->save();
-            if (!$saved)
-            {
-                throw new FailedToSaveModelException();
-            }
-            return $task;
-        }
 
         /**
          * Gets zurmo controller util for task

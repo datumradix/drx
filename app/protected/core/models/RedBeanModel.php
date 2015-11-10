@@ -1954,7 +1954,7 @@
                                     }
                                     elseif ($relatedModel->isModified())
                                     {
-                                        throw new NotSuportedException();
+                                        throw new NotSupportedException();
                                     }
                                 }
                             }

@@ -65,6 +65,35 @@
         }
 
         /**
+         * For a give User name, run a partial search by
+         * full name and retrieve user models.
+         * @param $partialName
+         * @param $pageSize
+         * @param $autoCompleteOptions
+         * @return Array
+         */
+        public static function getUsersByPartialFullNameOrUsername($partialName, $pageSize = null, $autoCompleteOptions = null)
+        {
+            assert('is_string($partialName)');
+            assert('is_int($pageSize)');
+            static::sanitizeSearchTerm($partialName);
+            $personTableName   = Person::getTableName();
+            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('User');
+            $joinTablesAdapter->addFromTableAndGetAliasName($personTableName, "{$personTableName}_id");
+            $fullNameSql = DatabaseCompatibilityUtil::concat(array('person.firstname',
+                                                                   '\' \'',
+                                                                   'person.lastname'));
+             $where  = '(_user.hidefromselecting is null OR _user.hidefromselecting = 0) and ';
+             $where .= "      (person.firstname      like lower('$partialName%') or "    .
+                       "       person.lastname       like lower('$partialName%') or "    .
+                       "       _user.username        like lower('$partialName%') or "    .
+                       "       $fullNameSql like lower('%$partialName%')) ";
+            static::handleAutoCompleteOptions($joinTablesAdapter, $where, $autoCompleteOptions);
+            return User::getSubset($joinTablesAdapter, null, $pageSize,
+                                            $where, "person.firstname, person.lastname");
+        }
+
+        /**
          * @param string $emailAddress
          * @param null|string $operatorType
          * @param bool $filterOutHideFromSelecting
