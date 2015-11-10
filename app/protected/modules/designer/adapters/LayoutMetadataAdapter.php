@@ -327,6 +327,11 @@
                 if ($attributeInformation['isRequired'] &&
                     !in_array($attributeName, $this->placedAttributeNames))
                 {
+                    if (method_exists($this->designerRules, 'isRequiredAttributeExemptFromBeingPlacedInLayout') &&
+                        $this->designerRules->isRequiredAttributeExemptFromBeingPlacedInLayout($attributeName))
+                    {
+                        continue;
+                    }
                     $elementClassName = $attributeInformation['elementType'] . 'Element';
                     if (!$elementClassName::isReadOnly())
                     {

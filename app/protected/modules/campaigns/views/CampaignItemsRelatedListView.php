@@ -339,10 +339,35 @@
                                                'uniqueLayoutId'  => $this->uniqueLayoutId,
                                                'redirectUrl'    => $redirectUrl,
                                                'portletParams'   => array('relationModuleId' => $this->relationModuleId,
-                                                                         'relationModelId' => $this->params['relationModel']->id)
+                                                                         'relationModelId' => $this->params['relationModel']->id),
+                                               'portletsAreRemovable' => false
                                                )
                                   );
             return Yii::app()->createUrl('/' . $this->relationModuleId . '/defaultPortlet/modalRefresh', $params);
+        }
+
+        public static function getAdditionalOptionMenuItems()
+        {
+            $campaignId = intval(Yii::app()->getRequest()->getQuery('id'));
+            if ($campaignId > 0)
+            {
+                $campaign = Campaign::getById($campaignId);
+                if ($campaign->status == Campaign::STATUS_COMPLETED)
+                {
+                    return array(array('label' => Zurmo::t('CampaignsModule', 'Retarget'),
+                                       'url' => Yii::app()->createUrl('/marketingLists/default/resolveSubscribersFromCampaign',
+                                           array('campaignId' => Yii::app()->getRequest()->getQuery('id')))));
+                }
+            }
+            return null;
+        }
+
+        /**
+         * @return bool
+         */
+        public static function canUserRemove()
+        {
+            return false;
         }
     }
 ?>

@@ -41,7 +41,6 @@
             $metadata = array(
                 'perUser' => array(
                     'title' => "eval:Zurmo::t('ReportsModule', 'Favorite ReportsModulePluralLabel', LabelUtil::getTranslationParamsForAllModules())",
-                    'searchAttributes' => array('ownedItemsOnly' => true),
                 ),
                 'global' => array(
                     'panels' => array(

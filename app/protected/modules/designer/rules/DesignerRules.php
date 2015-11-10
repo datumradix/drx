@@ -121,6 +121,13 @@
                                             $elementInformation,
                                             $metadata['global']['panels'][$panelKey]['rows'][$rowKey]['cells'][$cellKey]['elements'][$elementKey]
                                         );
+                                        if (method_exists($ruleClassName, 'resolveCellMetadata'))
+                                        {
+                                            $ruleClassName::resolveCellMetadata(
+                                                $elementInformation,
+                                                $metadata['global']['panels'][$panelKey]['rows'][$rowKey]['cells'][$cellKey]
+                                            );
+                                        }
                                     }
                                 }
                             }
@@ -213,6 +220,15 @@
         }
 
         public function requireAllRequiredFieldsInLayout()
+        {
+            return false;
+        }
+
+        /**
+         * Override if a rule allows that certain required attributes
+         * be not placed in layout since they are placed by default in edit view.
+         */
+        public function isRequiredAttributeExemptFromBeingPlacedInLayout($attributeName)
         {
             return false;
         }
