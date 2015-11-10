@@ -264,5 +264,114 @@
             $this->assertEquals($person,           $activity->person);
             $this->assertEquals($campaignItem,     $activity->campaignItem);
         }
+
+        public function testGetByTypeAndCampaign()
+        {
+            $marketingList = MarketingListTestHelper::createMarketingListByName('Test List');
+            $campaign1     = CampaignTestHelper::createCampaign('campaign new 01',
+                'subject 01',
+                'text Content 01',
+                'html Content 01',
+                'fromName 01',
+                'fromAddress01@zurmo.com',
+                null,
+                null,
+                null,
+                null,
+                $marketingList);
+
+            $campaign2     = CampaignTestHelper::createCampaign('campaign new 02',
+                'subject 02',
+                'text Content 02',
+                'html Content 02',
+                'fromName 02',
+                'fromAddress02@zurmo.com',
+                null,
+                null,
+                null,
+                null,
+                $marketingList);
+
+            $contact1            = ContactTestHelper::createContactByNameForOwner('contact1', $this->user);
+            $contact2            = ContactTestHelper::createContactByNameForOwner('contact2', $this->user);
+            $contact3            = ContactTestHelper::createContactByNameForOwner('contact3', $this->user);
+            $contact4            = ContactTestHelper::createContactByNameForOwner('contact4', $this->user);
+            $contact5            = ContactTestHelper::createContactByNameForOwner('contact5', $this->user);
+            $contact6            = ContactTestHelper::createContactByNameForOwner('contact6', $this->user);
+            $contact7            = ContactTestHelper::createContactByNameForOwner('contact7', $this->user);
+            $contact8            = ContactTestHelper::createContactByNameForOwner('contact8', $this->user);
+            $contact9            = ContactTestHelper::createContactByNameForOwner('contact9', $this->user);
+            $contact10           = ContactTestHelper::createContactByNameForOwner('contact10', $this->user);
+
+            // Without campaign activity
+            $campaignItem1       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact1);
+
+            $campaignItem2       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact2);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_OPEN, 1, $campaignItem2, '121.212.122.112');
+
+            $campaignItem3       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact3);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_CLICK, 1, $campaignItem3, '121.212.122.112');
+
+            $campaignItem4       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact4);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_UNSUBSCRIBE, 1, $campaignItem4, '121.212.122.112');
+
+            $campaignItem5       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact5);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_BOUNCE, 1, $campaignItem5, '121.212.122.112');
+
+            $campaignItem6       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact6);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_SKIP, 1, $campaignItem6, '121.212.122.112');
+
+            $campaignItem7       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact7);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_SPAM, 1, $campaignItem7, '121.212.122.112');
+
+            $campaignItem8       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact8);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_SOFT_BOUNCE, 1, $campaignItem8, '121.212.122.112');
+
+            $campaignItem9       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact9);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_HARD_BOUNCE, 1, $campaignItem9, '121.212.122.112');
+
+            $campaignItemSec       = CampaignItemTestHelper::createCampaignItem(1, $campaign2, $contact10);
+            CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_OPEN, 1, $campaignItemSec, '121.212.122.112');
+
+            $activities = CampaignItemActivity::getByTypeAndCampaign(CampaignItemActivity::TYPE_OPEN, $campaign1);
+            $this->assertEquals(1, count($activities));
+            $this->assertEquals($campaign1->id, $activities[0]->campaignItem->campaign->id);
+            $this->assertEquals($contact2->id, $activities[0]->campaignItem->contact->id);
+
+            $activities = CampaignItemActivity::getByTypeAndCampaign(CampaignItemActivity::TYPE_OPEN, $campaign2);
+            $this->assertEquals(1, count($activities));
+            $this->assertEquals($campaign2->id, $activities[0]->campaignItem->campaign->id);
+            $this->assertEquals($contact10->id, $activities[0]->campaignItem->contact->id);
+
+            $activities = CampaignItemActivity::getByTypeAndCampaign(CampaignItemActivity::TYPE_CLICK, $campaign2);
+            $this->assertEquals(0, count($activities));
+        }
+
+        /**
+         * @depends testGetByTypeAndCampaign
+         */
+        public function testGetNotClickedItemsWithoutNotOpened()
+        {
+            $contacts1 = Contact::getByName('contact1 contact1son');
+            $contacts2 = Contact::getByName('contact2 contact2son');
+            $contacts5 = Contact::getByName('contact5 contact5son');
+            $contacts6 = Contact::getByName('contact6 contact6son');
+            $contacts8 = Contact::getByName('contact8 contact8son');
+
+            $campaigns = Campaign::getByName('campaign new 01');
+            $this->assertEquals(1, count($campaigns));
+
+            $activities = CampaignItemActivity::getNotClickedItemsWithoutNotOpened($campaigns[0]);
+            $this->assertEquals(4, count($activities));
+            $contactsIds = array();
+            foreach ($activities as $activity)
+            {
+                $contactsIds[] = $activity->campaignItem->contact->id;
+            }
+            $this->assertTrue(in_array($contacts2[0]->id, $contactsIds));
+            $this->assertTrue(in_array($contacts5[0]->id, $contactsIds));
+            $this->assertTrue(in_array($contacts6[0]->id, $contactsIds));
+            $this->assertTrue(in_array($contacts8[0]->id, $contactsIds));
+        }
     }
 ?>

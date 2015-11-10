@@ -34,29 +34,19 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class NoteEditAndDetailsView extends SecuredEditAndDetailsView
+    /**
+     * View to display to users upon first login.  Allows them to confirm their timezone.
+     */
+    class MarketingListResolveSubscribersFromCampaignView extends EditView
     {
-        protected $viewContainsFileUploadElement = true;
-
         public static function getDefaultMetadata()
         {
             $metadata = array(
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type' => 'SaveButton', 'renderType' => 'Edit'),
-                            array('type' => 'CancelLink', 'renderType' => 'Edit'),
-                            array('type' => 'NoteDeleteLink'),
-                            array('type' => 'EditLink', 'renderType' => 'Details'),
-                            array('type' => 'AuditEventsModalListLink', 'renderType' => 'Details'),
+                            array('type' => 'SaveButton', 'label' => 'Retarget'),
                         ),
-                    ),
-                    'derivedAttributeTypes' => array(
-                        'ActivityItems',
-                        'Files',
-                    ),
-                    'nonPlaceableAttributeNames' => array(
-                        'latestDateTime'
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
@@ -66,37 +56,46 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'description', 'type' => 'TextArea'),
+                                                array('attributeName' => 'marketingList', 'type' => 'MarketingList'),
                                             ),
                                         ),
                                     )
                                 ),
                                 array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'occurredOnDateTime', 'type' => 'DateTime'),
-                                            ),
-                                        ),
-                                    )
+                                          array(
+                                              array(
+                                                  'elements' => array(
+                                                      array('attributeName' => 'retargetOpenedEmailRecipients', 'type' => 'CheckBox'),
+                                                  ),
+                                              ),
+                                          )
                                 ),
                                 array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'Files'),
-                                            ),
-                                        ),
-                                    )
+                                          array(
+                                              array(
+                                                  'elements' => array(
+                                                      array('attributeName' => 'retargetClickedEmailRecipients', 'type' => 'CheckBox'),
+                                                  ),
+                                              ),
+                                          )
                                 ),
                                 array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'null', 'type' => 'ActivityItems'),
-                                            ),
-                                        ),
-                                    )
+                                          array(
+                                              array(
+                                                  'elements' => array(
+                                                      array('attributeName' => 'retargetNotViewedEmailRecipients', 'type' => 'CheckBox'),
+                                                  ),
+                                              ),
+                                          )
+                                ),
+                                array('cells' =>
+                                          array(
+                                              array(
+                                                  'elements' => array(
+                                                      array('attributeName' => 'retargetNotClickedEmailRecipients', 'type' => 'CheckBox'),
+                                                  ),
+                                              ),
+                                          )
                                 ),
                             ),
                         ),
@@ -104,17 +103,6 @@
                 ),
             );
             return $metadata;
-        }
-
-        protected function getNewModelTitleLabel()
-        {
-            return Zurmo::t('NotesModule', 'Create NotesModuleSingularLabel',
-                                     LabelUtil::getTranslationParamsForAllModules());
-        }
-
-        public static function getDesignerRulesType()
-        {
-            return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';
         }
     }
 ?>
