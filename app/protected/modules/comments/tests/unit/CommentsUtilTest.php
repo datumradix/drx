@@ -176,5 +176,28 @@
             $this->assertTrue(strpos($modifiedDescription, '[~super]')  == null);
             $this->assertTrue(strpos($modifiedDescription, '[~sup]')    != null);
         }
+
+        public function testHasUserHaveAccessToEditOrDeleteComment()
+        {
+            $super                      = User::getByUsername('super');
+            $steven                     = User::getByUsername('steven');
+            $jack                       = User::getByUsername('jack');
+
+            Yii::app()->user->userModel = $super;
+            $comment1                  = new Comment();
+            $comment1->description     = 'Comment 1';
+            $this->assertTrue($comment1->save());
+            $this->assertTrue(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment1, $super));
+            $this->assertFalse(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment1, $steven));
+            $this->assertFalse(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment1, $jack));
+
+            Yii::app()->user->userModel = $steven;
+            $comment2                  = new Comment();
+            $comment2->description     = 'Comment 2';
+            $this->assertTrue($comment2->save());
+            $this->assertTrue(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment2, $super));
+            $this->assertTrue(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment2, $steven));
+            $this->assertFalse(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment2, $jack));
+        }
     }
 ?>

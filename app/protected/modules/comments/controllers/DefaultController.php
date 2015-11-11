@@ -59,7 +59,7 @@
         public function actionInlineEditSave($id, $redirectUrl = null, $uniquePageId = null)
         {
             $comment = Comment::getById((int)$id);
-            $this->checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAccessFailure($comment, Yii::app()->user->userModel);
+            $this->checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAjaxAccessFailure($comment, Yii::app()->user->userModel);
             if (isset($_POST['ajax']) && $_POST['ajax'] === 'comment-inline-edit-form' . $id)
             {
                 $this->actionInlineEditValidate($comment);
@@ -78,7 +78,7 @@
         public function actionInlineEditCommentFromAjax($id, $relatedModelId, $relatedModelClassName, $relatedModelRelationName, $uniquePageId = null)
         {
             $comment = Comment::getById((int)$id);
-            $this->checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAccessFailure($comment, Yii::app()->user->userModel);
+            $this->checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAjaxAccessFailure($comment, Yii::app()->user->userModel);
             $inlineView    = CommentsElement::getRelatedModelCommentInlineEditView($id, $relatedModelId,
                 $relatedModelClassName, $relatedModelRelationName, $uniquePageId);
             $view          = new AjaxPageView($inlineView);
@@ -120,7 +120,7 @@
         public function actionDeleteViaAjax($id)
         {
             $comment                  = Comment::getById(intval($id));
-            $this->checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAccessFailure($comment, Yii::app()->user->userModel);
+            $this->checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAjaxAccessFailure($comment, Yii::app()->user->userModel);
 
             $deleted = $comment->delete();
             if (!$deleted)
@@ -163,7 +163,7 @@
          */
         protected function checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAjaxAccessFailure(Comment $comment, User $user)
         {
-            if (!CommentsUtil::shouldUserHaveAccessToEditOrDeleteComment($comment, $user))
+            if (!CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment, $user))
             {
                 $messageView = new AccessFailureAjaxView();
                 $view        = new AjaxPageView($messageView);
