@@ -130,7 +130,9 @@
         {
             $mergeTagsUtil = MergeTagsUtilFactory::make($emailTemplate->type, $emailTemplate->language,
                                                         $emailTemplate->htmlContent);
-            if (false === $resolvedContent = $mergeTagsUtil->resolveMergeTags($this->triggeredModel))
+            $invalidTags = array();
+            if (false === $resolvedContent = $mergeTagsUtil->resolveMergeTags($this->triggeredModel, $invalidTags, null,
+                    MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG, array(), true))
             {
                 return $emailTemplate->htmlContent;
             }

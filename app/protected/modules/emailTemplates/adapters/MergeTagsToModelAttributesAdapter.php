@@ -50,10 +50,21 @@
 
         const SUPPRESS_INVALID_TAG_ERRORS_KEEP_TAG              = -2;
 
+        /**
+         * @param $mergeTags
+         * @param $model
+         * @param array $invalidTags
+         * @param $language
+         * @param int $errorOnFirstMissing
+         * @param array $params
+         * @param bool|false $convertNewLinesToBrForAttributeValues
+         * @return bool
+         */
         public static function resolveMergeTagsArrayToAttributesFromModel(& $mergeTags, $model,
                                                                           & $invalidTags = array(), $language,
                                                                           $errorOnFirstMissing = self::DO_NOT_ERROR_ON_FIRST_INVALID_TAG,
-                                                                          $params = array())
+                                                                          $params = array(),
+                                                                          $convertNewLinesToBrForAttributeValues = false)
         {
             assert('$language == null || is_string($language)');
             if ($language == null)
@@ -86,7 +97,14 @@
                 }
                 else
                 {
-                    $resolvedMergeTags[$mergeTag] = $resolvedValue;
+                    if ($convertNewLinesToBrForAttributeValues)
+                    {
+                        $resolvedMergeTags[$mergeTag] = nl2br($resolvedValue);
+                    }
+                    else
+                    {
+                        $resolvedMergeTags[$mergeTag] = $resolvedValue;
+                    }
                 }
             }
             $mergeTags = $resolvedMergeTags;
