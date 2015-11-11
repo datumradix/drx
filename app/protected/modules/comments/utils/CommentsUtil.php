@@ -212,10 +212,10 @@
          * @return bool
          * @throws NotFoundException
          */
-        public static function shouldUserHaveAccessToEditOrDeleteComment(Comment $comment, User $user)
+        public static function hasUserHaveAccessToEditOrDeleteComment(Comment $comment, User $user)
         {
             $group = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
-            if ($comment->createdByUser == Yii::app()->user->userModel ||
+            if ($comment->createdByUser == $user ||
                 $group->users->contains($user))
             {
                 return true;

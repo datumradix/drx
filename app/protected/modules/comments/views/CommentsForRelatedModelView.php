@@ -164,7 +164,7 @@
                 {
                     $stringContent .= FileModelDisplayUtil::renderFileDataDetailsWithDownloadLinksContent($comment, 'files', true);
                 }
-                if (CommentsUtil::shouldUserHaveAccessToEditOrDeleteComment($comment, Yii::app()->user->userModel))
+                if (CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment, Yii::app()->user->userModel))
                 {
                     $deleteCommentLink   = ' · <span class="delete-comment">' . $this->renderDeleteLinkContent($comment) . '</span>';
                     $editCommentLink     = ' · <span class="edit-comment">' . $this->renderEditLinkContent($comment) . '</span>';
