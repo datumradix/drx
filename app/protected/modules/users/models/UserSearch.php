@@ -75,7 +75,7 @@
         public static function getUsersByPartialFullNameOrUsername($partialName, $pageSize = null, $autoCompleteOptions = null)
         {
             assert('is_string($partialName)');
-            assert('is_int($pageSize)');
+            assert('is_int($pageSize) || $pageSize == null');
             static::sanitizeSearchTerm($partialName);
             $personTableName   = Person::getTableName();
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('User');

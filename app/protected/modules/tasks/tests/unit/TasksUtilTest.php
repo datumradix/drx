@@ -600,7 +600,7 @@
         {
             $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
 
-            $mark                   = UserTestHelper::createBasicUser('mark');
+            $marko                   = UserTestHelper::createBasicUser('marko');
             $jim                    = UserTestHelper::createBasicUser('jim');
 
             $task = TaskTestHelper::createTaskByNameForOwner('SubTask', Yii::app()->user->userModel);
@@ -608,12 +608,12 @@
             $subscribedUser = $task->notificationSubscribers[0]->person->castDown(array($modelDerivationPathToItem));
             $this->assertEquals(Yii::app()->user->userModel->id, $subscribedUser->id);
 
-            $task = TasksUtil::processTaskSubscriptionRequest($task->id, $mark);
+            $task = TasksUtil::processTaskSubscriptionRequest($task->id, $marko);
             $this->assertEquals(2, count($task->notificationSubscribers));
             $subscribedUser1 = $task->notificationSubscribers[0]->person->castDown(array($modelDerivationPathToItem));
             $subscribedUser2 = $task->notificationSubscribers[1]->person->castDown(array($modelDerivationPathToItem));
             $this->assertTrue(in_array(Yii::app()->user->userModel->id, array($subscribedUser1->id, $subscribedUser2->id)));
-            $this->assertTrue(in_array($mark->id, array($subscribedUser1->id, $subscribedUser2->id)));
+            $this->assertTrue(in_array($marko->id, array($subscribedUser1->id, $subscribedUser2->id)));
 
             $task = TasksUtil::processTaskSubscriptionRequest($task->id, $jim);
             $this->assertEquals(3, count($task->notificationSubscribers));
@@ -621,7 +621,7 @@
             $subscribedUser2 = $task->notificationSubscribers[1]->person->castDown(array($modelDerivationPathToItem));
             $subscribedUser3 = $task->notificationSubscribers[2]->person->castDown(array($modelDerivationPathToItem));
             $this->assertTrue(in_array(Yii::app()->user->userModel->id, array($subscribedUser1->id, $subscribedUser2->id, $subscribedUser3->id)));
-            $this->assertTrue(in_array($mark->id, array($subscribedUser1->id, $subscribedUser2->id, $subscribedUser3->id)));
+            $this->assertTrue(in_array($marko->id, array($subscribedUser1->id, $subscribedUser2->id, $subscribedUser3->id)));
             $this->assertTrue(in_array($jim->id, array($subscribedUser1->id, $subscribedUser2->id, $subscribedUser3->id)));
         }
 
