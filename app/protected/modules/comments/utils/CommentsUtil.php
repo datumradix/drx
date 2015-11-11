@@ -203,5 +203,24 @@
         {
             return get_class($model) . 'NewCommentNotificationRules';
         }
+
+        /**
+         * Check if user should have access to comment edit and delete comments
+         * Only user who created comment and super administrators should have access to these actions
+         * @param Comment $comment
+         * @param User $user
+         * @return bool
+         * @throws NotFoundException
+         */
+        public static function shouldUserHaveAccessToEditOrDeleteComment(Comment $comment, User $user)
+        {
+            $group = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
+            if ($comment->createdByUser == Yii::app()->user->userModel ||
+                $group->users->contains($user))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 ?>
