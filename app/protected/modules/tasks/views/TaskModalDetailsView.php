@@ -338,13 +338,13 @@
             $content .= '<div id="subscriberList" class="clearfix">';
             if ($task->notificationSubscribers->count() > 0)
             {
-                $content .= TasksUtil::getTaskSubscriberData($task);
+                $content .= NotificationSubscriberUtil::getSubscriberData($task);
             }
-            $content .= TasksUtil::getDetailSubscriptionLink($task, 0);
+            $content .= NotificationSubscriberUtil::getDetailSubscriptionLink($task, 0);
             $content .= '</div>';
             $content .= '</div>';
-            TasksUtil::registerSubscriptionScript($this->model->id);
-            TasksUtil::registerUnsubscriptionScript($this->model->id);
+            NotificationSubscriberUtil::registerSubscriptionScript('Task', $this->model);
+            NotificationSubscriberUtil::registerUnsubscriptionScript('Task', $this->model);
             return $content;
         }
 

@@ -384,7 +384,7 @@
         {
             Yii::app()->user->userModel = User::getByUsername('super');
             $tasks = Task::getByName('MyTest');
-            $isContained = $tasks[0]->doNotificationSubscribersContainPerson(Yii::app()->user->userModel);
+            $isContained = NotificationSubscriberUtil::doNotificationSubscribersContainPerson($tasks[0], Yii::app()->user->userModel);
             $this->assertTrue($isContained);
         }
 

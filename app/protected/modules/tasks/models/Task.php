@@ -281,18 +281,6 @@
             return true;
         }
 
-        public function doNotificationSubscribersContainPerson(Item $item)
-        {
-            foreach ($this->notificationSubscribers as $notificationSubscriber)
-            {
-                if ($notificationSubscriber->person->getClassId('Item') == $item->getClassId('Item'))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         protected function afterSave()
         {
             if ($this->getScenario() != 'importModel')
@@ -365,9 +353,9 @@
             //Add requested by user as default subscriber
             if ($this->requestedByUser->id > 0)
             {
-                TasksUtil::addSubscriber($this->requestedByUser, $this, false);
+                NotificationSubscriberUtil::addSubscriber($this->requestedByUser, $this, false);
             }
-            TasksUtil::addSubscriber($this->owner, $this, false);
+            NotificationSubscriberUtil::addSubscriber($this->owner, $this, false);
         }
 
         /**

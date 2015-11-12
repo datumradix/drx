@@ -169,7 +169,7 @@
             }
             elseif ($action == self::TASK_NEW_COMMENT)
             {
-                $peopleToSendNotification = TasksUtil::getTaskSubscribers($task);
+                $peopleToSendNotification = NotificationSubscriberUtil::getModelSubscribers($task);
                 if ($relatedUser != null)
                 {
                     foreach ($peopleToSendNotification as $key => $person)

@@ -162,8 +162,8 @@
                         Zurmo::t('Core', 'Reject'), Task::STATUS_AWAITING_ACCEPTANCE, $url);
             $this->registerKanbanColumnAcceptActionScript('', Task::STATUS_COMPLETED, $url);
             $this->registerKanbanColumnRejectActionScript(Zurmo::t('Core', 'Restart'), Task::STATUS_REJECTED, $url);
-            TasksUtil::registerSubscriptionScript();
-            TasksUtil::registerUnsubscriptionScript();
+            NotificationSubscriberUtil::registerSubscriptionScript();
+            NotificationSubscriberUtil::registerUnsubscriptionScript();
         }
 
         /**
@@ -430,7 +430,7 @@
             $content .= ZurmoHtml::closeTag('div');
 
             $content .= ZurmoHtml::openTag('div', array('class' => 'task-subscribers'));
-            $content .= TasksUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
+            $content .= NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
             $content .= $this->renderCardDataContent($this->cardColumns['subscribe'], $task, $row);
             $content .= ZurmoHtml::closeTag('div');
 
