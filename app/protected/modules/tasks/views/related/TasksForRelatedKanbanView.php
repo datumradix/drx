@@ -169,7 +169,7 @@
                 'status' => array('value'   => 'TasksUtil::resolveActionButtonForTaskByStatus(intval($data->status), "' .
                                                $this->controllerId . '", "' . $this->moduleId . '", $data->id)',
                                                'class' => 'task-status'),
-                'subscribe' => array('value' => array('TasksUtil', 'getKanbanSubscriptionLink'),
+                'subscribe' => array('value' => array('NotificationSubscriberUtil', 'getKanbanSubscriptionLink'),
                                                 'class' => 'task-subscription'),
                 'completionBar' => array('value' => 'TasksUtil::renderCompletionProgressBarContent($data)',
                                                     'class' => 'task-completion')
