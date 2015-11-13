@@ -368,5 +368,94 @@
         {
             $this->export('OpportunitiesSearchView');
         }
+
+        /**
+         * Create comment via ajax for task
+         * @param type $id
+         * @param string $uniquePageId
+         */
+        public function actionInlineCreateCommentFromAjax($id, $uniquePageId)
+        {
+            $comment       = new Comment();
+            $redirectUrl   = Yii::app()->createUrl('/opportunities/default/inlineCreateCommentFromAjax',
+                array('id'           => $id,
+                      'uniquePageId' => $uniquePageId));
+            $urlParameters = array('relatedModelId'           => (int)$id,
+                                   'relatedModelClassName'    => 'Opportunity',
+                                   'relatedModelRelationName' => 'comments',
+                                   'redirectUrl'              => $redirectUrl); //After save, the url to go to.
+            $uniquePageId  = 'CommentInlineEditForModelView';
+            echo             ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Add Comment'));
+            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
+                $urlParameters, $uniquePageId);
+            $view          = new AjaxPageView($inlineView);
+            echo $view->render();
+        }
+
+        /**
+         * Add subscriber for task
+         * @param int $id
+         */
+        public function actionAddSubscriber($id)
+        {
+            $opportunity = Opportunity::getById((int)$id);
+            $opportunity    = NotificationSubscriberUtil::processSubscriptionRequest($opportunity, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::getSubscriberData($opportunity);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            echo $content;
+        }
+
+        /**
+         * Remove subscriber for task
+         * @param int $id
+         */
+        public function actionRemoveSubscriber($id)
+        {
+            $opportunity = Opportunity::getById((int)$id);
+            $opportunity    = NotificationSubscriberUtil::processUnsubscriptionRequest($opportunity, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::getSubscriberData($opportunity);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            if ($content == null)
+            {
+                echo "";
+            }
+            else
+            {
+                echo $content;
+            }
+        }
+
+        /**
+         * Add kanban subscriber
+         * @param string $id
+         */
+        public function actionAddKanbanSubscriber($id)
+        {
+            $opportunity = Opportunity::getById((int)$id);
+            $opportunity    = NotificationSubscriberUtil::processSubscriptionRequest($opportunity, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($opportunity);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'subscribe-task-link', 'unsubscribe-task-link');
+            echo $content;
+        }
+
+        /**
+         * Unsubscribe the user from the task
+         * @param string $id
+         */
+        public function actionRemoveKanbanSubscriber($id)
+        {
+            $opportunity = Opportunity::getById((int)$id);
+            $opportunity = NotificationSubscriberUtil::processUnsubscriptionRequest($opportunity, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($opportunity);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'subscribe-task-link', 'unsubscribe-task-link');
+            if ($content == null)
+            {
+                echo "";
+            }
+            else
+            {
+                echo $content;
+            }
+        }
     }
 ?>

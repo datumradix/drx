@@ -11784,16 +11784,19 @@ a#claim-item-link {
   width: 1%;
   vertical-align: middle;
 }
-.task-activity {
+.task-activity,
+.model-comments-activity {
   margin-top: 30px;
 }
-.task-activity #CommentsForRelatedModelView {
+.task-activity #CommentsForRelatedModelView,
+.model-comments-activity #CommentsForRelatedModelView {
   width: 100%;
   max-width: 100%;
   margin: 0;
   padding: 0;
 }
-.task-activity #CommentInlineEditForModelView {
+.task-activity #CommentInlineEditForModelView,
+.model-comments-activity #CommentInlineEditForModelView {
   width: 100%;
   max-width: 100%;
   margin: 10px 0 0 0;
@@ -11803,36 +11806,50 @@ a#claim-item-link {
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
-  background: rgba(236,240,241,0.25) url("../images/stripes.png") left top repeat;
 }
-.task-activity #CommentList {
+.task-activity #CommentList,
+.model-comments-activity #CommentList {
   margin: 0 0 0 0;
 }
-.task-activity #comment-inline-edit-form {
+.task-activity #comment-inline-edit-form,
+.model-comments-activity #comment-inline-edit-form {
   margin: 0;
 }
-.task-activity #comment-inline-edit-form .form-toolbar {
+.task-activity #comment-inline-edit-form .form-toolbar,
+.model-comments-activity #comment-inline-edit-form .form-toolbar {
   margin-top: 5px;
   padding-right: 0;
 }
-.task-activity .comment {
+.task-activity .comment,
+.model-comments-activity .comment {
   *zoom: 1;
   margin-top: 10px;
 }
 .task-activity .comment:before,
-.task-activity .comment:after {
+.task-activity .comment:after,
+.model-comments-activity .comment:before,
+.model-comments-activity .comment:after {
   content: " ";
   display: table;
 }
-.task-activity .comment:after {
+.task-activity .comment:after,
+.model-comments-activity .comment:after {
   clear: both;
 }
-.task-activity .left-column {
+.task-activity .left-column,
+.model-comments-activity .left-column {
   padding-right: 0;
 }
-.task-activity .show-file-upload-box {
+.task-activity .show-file-upload-box,
+.model-comments-activity .show-file-upload-box {
   z-index: 99999;
   position: relative;
+}
+.task-activity #CommentInlineEditForModelView {
+  background: rgba(236,240,241,0.25) url("../images/stripes.png") left top repeat;
+}
+.model-comments-activity div.wide.form {
+  float: none !important;
 }
 .right-side-details-view-panel {
   margin-top: 15px;

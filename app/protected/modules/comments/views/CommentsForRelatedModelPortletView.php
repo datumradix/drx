@@ -35,40 +35,87 @@
      ********************************************************************************/
 
     /**
-     * A class for notification subscriber. A subscriber can be owner, requestedByUser,
-     * user that can comment on owned model and creation of the owned model
+     * Base class used for wrapping a view of social items
      */
-    class NotificationSubscriber extends OwnedModel
+    abstract class CommentsForRelatedModelPortletView extends ConfigurableMetadataView
+                                                      implements PortletViewInterface, RelatedPortletViewInterface
     {
+        protected $controllerId;
+
+        protected $moduleId;
+
+        protected $commentsData;
+
+        protected $relatedModel;
+
+        protected $pageSize;
+
+        protected $getParams;
+
+        protected $uniquePageId;
+
+        public function __construct($viewData, $params, $uniquePortletPageId)
+        {
+            assert('isset($params["controllerId"])');
+            assert('isset($params["relationModuleId"])');
+            assert('$params["relationModel"] instanceof RedBeanModel || $params["relationModel"] instanceof ModelForm');
+            assert('isset($params["portletId"])');
+            assert('isset($params["redirectUrl"])');
+            assert('$this->getRelationAttributeName() != null');
+            $this->modelClassName    = get_class($params['relationModel']);
+            $this->viewData          = $viewData;
+            $this->params            = $params;
+            $this->uniqueLayoutId    = $uniquePortletPageId;
+            $this->controllerId      = $params['controllerId'];
+            $this->moduleId          = $params['relationModuleId'];
+            $this->relatedModel = $params['relationModel'];
+        }
+
+        public function renderContent()
+        {
+            $content = $this->renderNotificationSubscribersContent();
+            $content .= $this->renderCommentsContent();
+            return $content;
+        }
+
         public static function getDefaultMetadata()
         {
-            $metadata = parent::getDefaultMetadata();
-            $metadata[__CLASS__] = array(
-                'members' => array(
-                    'hasReadLatest'
-                ),
-                'relations' => array(
-                    'person'      => array(static::HAS_ONE, 'Item', static::NOT_OWNED,
-                                                static::LINK_TYPE_SPECIFIC, 'person'),
-                ),
-                'rules' => array(
-                    array('hasReadLatest', 'type', 'type' => 'boolean')
-                ),
-                'defaultSortAttribute' => '',
-                'customFields' => array(
+            $metadata = array(
+                'perUser' => array(
+                    'title' => "eval:Zurmo::t('CommentsModule', 'Feed Comments')",
                 ),
             );
             return $metadata;
         }
 
-        protected static function translatedAttributeLabels($language)
+        public static function canUserConfigure()
         {
-            return array_merge(parent::translatedAttributeLabels($language),
-                array(
-                    'hasReadLatest' => Zurmo::t('NotificationsModule', 'Has Read Latest',  array(), null, $language),
-                    'person'        => Zurmo::t('NotificationsModule', 'Subscriber',  array(), null, $language)
-                )
-            );
+            return false;
+        }
+
+        public static function getPortletRulesType()
+        {
+            return 'ModelDetails';
+        }
+
+        public static function getModuleClassName()
+        {
+
+        }
+
+        public static function getPortletDescription()
+        {
+
+        }
+
+        public function renderPortletHeadContent()
+        {
+            return null;
+        }
+
+        public function getPortletParams()
+        {
+            return array();
         }
     }
 ?>

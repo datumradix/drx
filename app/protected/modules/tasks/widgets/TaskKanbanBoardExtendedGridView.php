@@ -162,8 +162,8 @@
                         Zurmo::t('Core', 'Reject'), Task::STATUS_AWAITING_ACCEPTANCE, $url);
             $this->registerKanbanColumnAcceptActionScript('', Task::STATUS_COMPLETED, $url);
             $this->registerKanbanColumnRejectActionScript(Zurmo::t('Core', 'Restart'), Task::STATUS_REJECTED, $url);
-            NotificationSubscriberUtil::registerSubscriptionScript();
-            NotificationSubscriberUtil::registerUnsubscriptionScript();
+            NotificationSubscriberUtil::registerSubscriptionScript('Task');
+            NotificationSubscriberUtil::registerUnsubscriptionScript('Task');
         }
 
         /**
