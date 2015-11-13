@@ -503,5 +503,94 @@
                 echo CJSON::encode(array('content' => $content, 'message' => $message));
             }
         }
+
+        /**
+         * Create comment via ajax for contact
+         * @param type $id
+         * @param string $uniquePageId
+         */
+        public function actionInlineCreateCommentFromAjax($id, $uniquePageId)
+        {
+            $comment       = new Comment();
+            $redirectUrl   = Yii::app()->createUrl('/contacts/default/inlineCreateCommentFromAjax',
+                array('id'           => $id,
+                      'uniquePageId' => $uniquePageId));
+            $urlParameters = array('relatedModelId'           => (int)$id,
+                                   'relatedModelClassName'    => 'Contact',
+                                   'relatedModelRelationName' => 'comments',
+                                   'redirectUrl'              => $redirectUrl); //After save, the url to go to.
+            $uniquePageId  = 'CommentInlineEditForModelView';
+            echo             ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Add Comment'));
+            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
+                $urlParameters, $uniquePageId);
+            $view          = new AjaxPageView($inlineView);
+            echo $view->render();
+        }
+
+        /**
+         * Add subscriber for contact
+         * @param int $id
+         */
+        public function actionAddSubscriber($id)
+        {
+            $contact = Contact::getById((int)$id);
+            $contact    = NotificationSubscriberUtil::processSubscriptionRequest($contact, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::getSubscriberData($contact);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($contact, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            echo $content;
+        }
+
+        /**
+         * Remove subscriber for contact
+         * @param int $id
+         */
+        public function actionRemoveSubscriber($id)
+        {
+            $contact = Contact::getById((int)$id);
+            $contact    = NotificationSubscriberUtil::processUnsubscriptionRequest($contact, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::getSubscriberData($contact);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($contact, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            if ($content == null)
+            {
+                echo "";
+            }
+            else
+            {
+                echo $content;
+            }
+        }
+
+        /**
+         * Add kanban subscriber
+         * @param string $id
+         */
+        public function actionAddKanbanSubscriber($id)
+        {
+            $contact = Contact::getById((int)$id);
+            $contact    = NotificationSubscriberUtil::processSubscriptionRequest($contact, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($contact);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($contact, 'subscribe-task-link', 'unsubscribe-task-link');
+            echo $content;
+        }
+
+        /**
+         * Unsubscribe the user from the contact
+         * @param string $id
+         */
+        public function actionRemoveKanbanSubscriber($id)
+        {
+            $contact = Contact::getById((int)$id);
+            $contact = NotificationSubscriberUtil::processUnsubscriptionRequest($contact, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($contact);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($contact, 'subscribe-task-link', 'unsubscribe-task-link');
+            if ($content == null)
+            {
+                echo "";
+            }
+            else
+            {
+                echo $content;
+            }
+        }
     }
 ?>

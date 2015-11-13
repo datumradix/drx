@@ -37,51 +37,16 @@
     /**
      * Base class used for wrapping a view of social items
      */
-    class CommentsForOpportunityRelatedModelPortletView extends CommentsForRelatedModelPortletView
+    class CommentsForContactRelatedModelPortletView extends CommentsForRelatedModelPortletView
     {
-        // ToDo: We should probably move function renderCommentsContent to CommentsForRelatedModelPortletView
-        protected function renderCommentsContent()
-        {
-            $commentsElement = new CommentsForModelCommentsFeedPortletElement($this->relatedModel, 'null', null, array('moduleId' => $this->moduleId));
-            return $commentsElement->render();
-        }
-
-        // ToDo: check TaskModalDetailsView::renderNotificationSubscribersContent, maybe we can unify code and use same function
-        protected function renderNotificationSubscribersContent()
-        {
-            $model = $this->relatedModel;
-            $content = '<div id="task-subscriber-box">';
-            $content .= ZurmoHtml::tag('h4', array(), Zurmo::t('Core', 'Who is receiving notifications'));
-            $content .= '<div id="subscriberList" class="clearfix">';
-            if ($model->notificationSubscribers->count() > 0)
-            {
-                $content .= NotificationSubscriberUtil::getSubscriberData($model);
-            }
-            $content .= NotificationSubscriberUtil::getDetailSubscriptionLink($model, 0);
-            $content .= '</div>';
-            $content .= '</div>';
-            NotificationSubscriberUtil::registerSubscriptionScript($this->modelClassName, $model);
-            NotificationSubscriberUtil::registerUnsubscriptionScript($this->modelClassName, $model);
-            return $content;
-        }
-
-        protected function renderSubscriptionContent()
-        {
-        }
-
         public static function getModuleClassName()
         {
-            return 'OpportunitiesModule';
+            return 'ContactsModule';
         }
 
         public static function getAllowedOnPortletViewClassNames()
         {
-            return array('OpportunityDetailsAndRelationsView');
-        }
-
-        public static function allowMultiplePlacement()
-        {
-            return false;
+            return array('ContactDetailsAndRelationsView');
         }
     }
 ?>
