@@ -35,63 +35,18 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when a new comment is added to a task
+     * Base class used for wrapping a view of social items
      */
-    class OpportunityNewCommentNotificationRules extends NotificationRules
+    class CommentsForOpportunityRelatedModelPortletView extends CommentsForRelatedModelPortletView
     {
-        protected $allowSendingEmail    = true;
-        protected $allowDuplicates      = true;
-
-        // START - FROM BASE CLASS
-        // ToDo: Maybe move this to new class because this will be similar for all notification rules
-        /**
-         * @inheritdoc
-         */
-        public function getModuleClassNames()
+        public static function getModuleClassName()
         {
-            return array('OpportunitiesModule');
+            return 'OpportunitiesModule';
         }
 
-        protected function getParamsForEmailSubject()
+        public static function getAllowedOnPortletViewClassNames()
         {
-            assert('$this->model instanceof OwnedSecurableItem');
-            $params = array('{model}'         => strval($this->model));
-            return $params;
-        }
-        // END FROM BASE CLASS
-
-        /**
-         * @returns Translated label that describes this rule type.
-         */
-        public function getDisplayName()
-        {
-            return Zurmo::t('OpportunitiesModule', 'New Opportunity Comments');
-        }
-
-        /**
-         * @return The type of the NotificationRules
-         */
-        public function getType()
-        {
-            return 'OpportunityNewComment';
-        }
-
-        public function getTooltipId()
-        {
-            return 'task-new-comment-notification-tooltip';
-        }
-
-        public function getTooltipTitle()
-        {
-            return Zurmo::t('UsersModule', 'Notify me of new comments on opportunities I am following.');
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getSubjectForEmailNotification()
-        {
-            return Zurmo::t('Core', 'NEW COMMENT ON {model}', $this->getParamsForEmailSubject());
+            return array('OpportunityDetailsAndRelationsView');
         }
     }
 ?>

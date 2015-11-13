@@ -88,6 +88,31 @@
             return $metadata;
         }
 
+        protected function renderCommentsContent()
+        {
+            $commentsElement = new CommentsForModelCommentsFeedPortletElement($this->relatedModel, 'null', null, array('moduleId' => $this->moduleId));
+            return $commentsElement->render();
+        }
+
+        // ToDo: check TaskModalDetailsView::renderNotificationSubscribersContent, maybe we can unify code and use same function
+        protected function renderNotificationSubscribersContent()
+        {
+            $model = $this->relatedModel;
+            $content = '<div id="task-subscriber-box">';
+            $content .= ZurmoHtml::tag('h4', array(), Zurmo::t('Core', 'Who is receiving notifications'));
+            $content .= '<div id="subscriberList" class="clearfix">';
+            if ($model->notificationSubscribers->count() > 0)
+            {
+                $content .= NotificationSubscriberUtil::getSubscriberData($model);
+            }
+            $content .= NotificationSubscriberUtil::getDetailSubscriptionLink($model, 0);
+            $content .= '</div>';
+            $content .= '</div>';
+            NotificationSubscriberUtil::registerSubscriptionScript($this->modelClassName, $model);
+            NotificationSubscriberUtil::registerUnsubscriptionScript($this->modelClassName, $model);
+            return $content;
+        }
+
         public static function canUserConfigure()
         {
             return false;
@@ -116,6 +141,11 @@
         public function getPortletParams()
         {
             return array();
+        }
+
+        public static function allowMultiplePlacement()
+        {
+            return false;
         }
     }
 ?>

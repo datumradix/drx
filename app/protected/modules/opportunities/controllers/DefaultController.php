@@ -370,7 +370,7 @@
         }
 
         /**
-         * Create comment via ajax for task
+         * Create comment via ajax for opportunity
          * @param type $id
          * @param string $uniquePageId
          */
@@ -393,7 +393,7 @@
         }
 
         /**
-         * Add subscriber for task
+         * Add subscriber for opportunity
          * @param int $id
          */
         public function actionAddSubscriber($id)
@@ -406,7 +406,7 @@
         }
 
         /**
-         * Remove subscriber for task
+         * Remove subscriber for opportunity
          * @param int $id
          */
         public function actionRemoveSubscriber($id)
@@ -439,7 +439,7 @@
         }
 
         /**
-         * Unsubscribe the user from the task
+         * Unsubscribe the user from the opportunity
          * @param string $id
          */
         public function actionRemoveKanbanSubscriber($id)

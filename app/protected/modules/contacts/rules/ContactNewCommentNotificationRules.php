@@ -37,7 +37,7 @@
     /**
      * A  NotificationRules to manage when a new comment is added to a task
      */
-    class OpportunityNewCommentNotificationRules extends NotificationRules
+    class ContactNewCommentNotificationRules extends NotificationRules
     {
         protected $allowSendingEmail    = true;
         protected $allowDuplicates      = true;
@@ -49,7 +49,7 @@
          */
         public function getModuleClassNames()
         {
-            return array('OpportunitiesModule');
+            return array('ContactsModule');
         }
 
         protected function getParamsForEmailSubject()
@@ -65,7 +65,7 @@
          */
         public function getDisplayName()
         {
-            return Zurmo::t('OpportunitiesModule', 'New Opportunity Comments');
+            return Zurmo::t('ContactsModule', 'New Contact Comments');
         }
 
         /**
@@ -73,7 +73,7 @@
          */
         public function getType()
         {
-            return 'OpportunityNewComment';
+            return 'ContactNewComment';
         }
 
         public function getTooltipId()
@@ -83,7 +83,7 @@
 
         public function getTooltipTitle()
         {
-            return Zurmo::t('UsersModule', 'Notify me of new comments on opportunities I am following.');
+            return Zurmo::t('UsersModule', 'Notify me of new comments on contacts I am following.');
         }
 
         /**
