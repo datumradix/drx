@@ -35,22 +35,53 @@
      ********************************************************************************/
 
     /**
-     * Displays the comments list for task along with input text area
+     * Base class used for wrapping a view of social items
      */
-    class TaskCommentsElement extends CommentsElement
+    class CommentsForOpportunityRelatedModelPortletView extends CommentsForRelatedModelPortletView
     {
-        /**
-         * Gets formatted attribute label
-         * @return string
-         */
-        protected function getFormattedAttributeLabel()
+        // ToDo: We should probably move function renderCommentsContent to CommentsForRelatedModelPortletView
+        protected function renderCommentsContent()
         {
-            return '<h3>' . Zurmo::t('CommentsModule', 'Comments') . '</h3>';
+            $commentsElement = new CommentsForModelCommentsFeedPortletElement($this->relatedModel, 'null', null, array('moduleId' => $this->moduleId));
+            return $commentsElement->render();
         }
 
-        protected function getCommentsWrappingCssClass()
+        // ToDo: check TaskModalDetailsView::renderNotificationSubscribersContent, maybe we can unify code and use same function
+        protected function renderNotificationSubscribersContent()
         {
-            return 'task-activity';
+            $model = $this->relatedModel;
+            $content = '<div id="task-subscriber-box">';
+            $content .= ZurmoHtml::tag('h4', array(), Zurmo::t('Core', 'Who is receiving notifications'));
+            $content .= '<div id="subscriberList" class="clearfix">';
+            if ($model->notificationSubscribers->count() > 0)
+            {
+                $content .= NotificationSubscriberUtil::getSubscriberData($model);
+            }
+            $content .= NotificationSubscriberUtil::getDetailSubscriptionLink($model, 0);
+            $content .= '</div>';
+            $content .= '</div>';
+            NotificationSubscriberUtil::registerSubscriptionScript($this->modelClassName, $model);
+            NotificationSubscriberUtil::registerUnsubscriptionScript($this->modelClassName, $model);
+            return $content;
+        }
+
+        protected function renderSubscriptionContent()
+        {
+        }
+
+        public static function getModuleClassName()
+        {
+            return 'OpportunitiesModule';
+        }
+
+        public static function getAllowedOnPortletViewClassNames()
+        {
+            return array('OpportunityDetailsAndRelationsView');
+        }
+
+        public static function allowMultiplePlacement()
+        {
+            return false;
         }
     }
 ?>

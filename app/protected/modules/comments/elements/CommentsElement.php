@@ -80,6 +80,11 @@
             $this->moduleId = $params["moduleId"];
         }
 
+        protected function getCommentsWrappingCssClass()
+        {
+            return 'model-comments-activity';
+        }
+
         /**
          * @throws NotImplementedException
          */
@@ -94,10 +99,11 @@
          */
         protected function renderControlNonEditable()
         {
+            $wrappingCssClass = $this->getCommentsWrappingCssClass();
             $content  = $this->getFormattedAttributeLabel();
             $content .= $this->renderRelatedModelCommentsContent();
             $content .= $this->renderRelatedModelCreateCommentContent();
-            $content  = ZurmoHtml::tag('div', array('class' => 'task-activity'), $content);
+            $content  = ZurmoHtml::tag('div', array('class' => $wrappingCssClass), $content);
             return $content;
         }
 

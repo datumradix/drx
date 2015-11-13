@@ -35,9 +35,9 @@
      ********************************************************************************/
 
     /**
-     * Displays the comments list for task along with input text area
+     * Displays the comments list for Model Comments Feed Portlet along with input text area
      */
-    class TaskCommentsElement extends CommentsElement
+    class CommentsForModelCommentsFeedPortletElement extends CommentsElement
     {
         /**
          * Gets formatted attribute label
@@ -45,12 +45,7 @@
          */
         protected function getFormattedAttributeLabel()
         {
-            return '<h3>' . Zurmo::t('CommentsModule', 'Comments') . '</h3>';
-        }
-
-        protected function getCommentsWrappingCssClass()
-        {
-            return 'task-activity';
+            return '';
         }
     }
 ?>

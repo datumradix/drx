@@ -133,7 +133,8 @@
                 $participants  = array_merge($participants, $mentionedUsers);
                 CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
             }
-            elseif ($this->relatedModel instanceof Task)
+            elseif ($this->relatedModel instanceof Task || $this->relatedModel instanceof Account ||
+                    $this->relatedModel instanceof Contact || $this->relatedModel instanceof Opportunity)
             {
                 $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
                 foreach ($mentionedUsers as $user)
@@ -141,13 +142,22 @@
                     NotificationSubscriberUtil::processSubscriptionRequest($this->relatedModel, $user);
                 }
 
-                TasksNotificationUtil::submitTaskNotificationMessage($this->relatedModel,
-                                                                    TasksNotificationUtil::TASK_NEW_COMMENT,
-                                                                    $model->createdByUser, $model);
-                //Log the event
-                if ($this->relatedModel->project->id > 0)
+                if ($this->relatedModel instanceof Task)
                 {
-                    ProjectsUtil::logAddCommentEvent($this->relatedModel, $model->description);
+                    TasksNotificationUtil::submitTaskNotificationMessage($this->relatedModel,
+                        TasksNotificationUtil::TASK_NEW_COMMENT,
+                        $model->createdByUser, $model);
+                    //Log the event
+                    if ($this->relatedModel->project->id > 0)
+                    {
+                        ProjectsUtil::logAddCommentEvent($this->relatedModel, $model->description);
+                    }
+                }
+                else
+                {
+                    CommentsNotificationUtil::submitNotificationMessage($this->relatedModel,
+                        CommentsNotificationUtil::NEW_COMMENT,
+                        $model->createdByUser, $model);
                 }
             }
         }

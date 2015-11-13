@@ -334,7 +334,7 @@
         {
             $task = Task::getById($this->model->id);
             $content = '<div id="task-subscriber-box">';
-            $content .= ZurmoHtml::tag('h4', array(), Zurmo::t('TasksModule', 'Who is receiving notifications'));
+            $content .= ZurmoHtml::tag('h4', array(), Zurmo::t('Core', 'Who is receiving notifications'));
             $content .= '<div id="subscriberList" class="clearfix">';
             if ($task->notificationSubscribers->count() > 0)
             {

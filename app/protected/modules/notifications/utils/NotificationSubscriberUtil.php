@@ -180,7 +180,7 @@
             }
             else
             {
-                $url     = Yii::app()->createUrl($moduleId . 'default/addSubscriber', array('id' => $model->id));
+                $url     = Yii::app()->createUrl($moduleId . '/default/addSubscriber', array('id' => $model->id));
                 $script  = self::getDetailSubscriptionScript($url, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link', $unsubscribeLink, $model->id);
                 Yii::app()->clientScript->registerScript('detail-subscribe-task-link-script', $script);
             }

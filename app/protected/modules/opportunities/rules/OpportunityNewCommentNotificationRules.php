@@ -35,22 +35,63 @@
      ********************************************************************************/
 
     /**
-     * Displays the comments list for task along with input text area
+     * A  NotificationRules to manage when a new comment is added to a task
      */
-    class TaskCommentsElement extends CommentsElement
+    class OpportunityNewCommentNotificationRules extends NotificationRules
     {
+        protected $allowSendingEmail    = true;
+        protected $allowDuplicates      = true;
+
+        // START - FROM BASE CLASS
+        // ToDo: Maybe move this to new class because this will be similar for all notification rules
         /**
-         * Gets formatted attribute label
-         * @return string
+         * @inheritdoc
          */
-        protected function getFormattedAttributeLabel()
+        public function getModuleClassNames()
         {
-            return '<h3>' . Zurmo::t('CommentsModule', 'Comments') . '</h3>';
+            return array('OpportunitiesModule');
         }
 
-        protected function getCommentsWrappingCssClass()
+        protected function getParamsForEmailSubject()
         {
-            return 'task-activity';
+            assert('$this->model instanceof OwnedSecurableItem');
+            $params = array('{model}'         => strval($this->model));
+            return $params;
+        }
+        // END FROM BASE CLASS
+
+        /**
+         * @returns Translated label that describes this rule type.
+         */
+        public function getDisplayName()
+        {
+            return Zurmo::t('OpportunitiesModule', 'New Opportunity Comments');
+        }
+
+        /**
+         * @return The type of the NotificationRules
+         */
+        public function getType()
+        {
+            return 'OpportunityNewComment';
+        }
+
+        public function getTooltipId()
+        {
+            return 'task-new-comment-notification-tooltip';
+        }
+
+        public function getTooltipTitle()
+        {
+            return Zurmo::t('UsersModule', 'Notify me of new comments on Opportunities I am following.');
+        }
+
+        /**
+         * @inheritdoc
+         */
+        public function getSubjectForEmailNotification()
+        {
+            return Zurmo::t('Core', 'NEW COMMENT ON {model}', $this->getParamsForEmailSubject());
         }
     }
 ?>
