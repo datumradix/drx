@@ -39,6 +39,8 @@
      */
     class MentionableTextAreaElement extends CommentTextAreaElement
     {
+        protected $elementIdPostfix = '';
+
         /**
          * Render A text area with X rows and Y columns.
          */
@@ -79,12 +81,21 @@
 
         protected function getEditableInputId($attributeName = null, $relationAttributeName = null)
         {
-            $inputId = parent::getEditableInputId($attributeName, $relationAttributeName);
+            $inputId = parent::getEditableInputId($attributeName, $relationAttributeName) . $this->getElementIdPostfix();
             if ($this->model->id > 0)
             {
                 $inputId = $inputId . '_' . $this->model->id;
             }
             return $inputId;
+        }
+
+        protected function getElementIdPostfix()
+        {
+            if (isset($this->params['elementIdPostfix']))
+            {
+                return $this->params['elementIdPostfix'];
+            }
+            return $this->elementIdPostfix;
         }
     }
 ?>
