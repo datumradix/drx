@@ -42,7 +42,8 @@
          */
         public function actionInlineCreateSave($redirectUrl = null, $uniquePageId = null)
         {
-            if (isset($_POST['ajax']) && $_POST['ajax'] === 'comment-inline-edit-form' . $uniquePageId)
+            if (isset($_POST['ajax']) &&  ($_POST['ajax'] === 'comment-inline-edit-form' . $uniquePageId ||
+                    $_POST['ajax'] === 'comment-for-task-inline-edit-form' . $uniquePageId))
             {
                 $this->actionInlineEditValidate(new Comment());
             }

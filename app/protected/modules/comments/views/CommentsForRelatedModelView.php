@@ -86,7 +86,15 @@
          */
         protected function getId()
         {
-            return 'CommentsForRelatedModelView' . $this->uniquePageId;
+            if ($this->relatedModel instanceOf Task)
+            {
+                return 'CommentsForRelatedTaskModelView' . $this->uniquePageId;
+            }
+            else
+            {
+                return 'CommentsForRelatedModelView' . $this->uniquePageId;
+            }
+
         }
 
         /**
@@ -115,8 +123,8 @@
                             $this->getParams);
             return       ZurmoHtml::ajaxLink('Refresh', $url,
                          array('type' => 'GET',
-                               'success' => 'function(data){$("#CommentsForRelatedModelView' . $this->uniquePageId . '").replaceWith(data)}'),
-                         array('id'         => 'hiddenCommentRefresh'. $this->uniquePageId,
+                               'success' => 'function(data){$("#' . $this->getId() . '").replaceWith(data)}'),
+                         array('id'         => 'hiddenCommentRefresh'. $this->getId(),
                                 'class'     => 'hiddenCommentRefresh',
                                 'namespace' => 'refresh',
                                 'style'     => 'display:none;'));
@@ -131,7 +139,7 @@
                             array_merge($this->getParams, array('noPaging' => true)));
             return       ZurmoHtml::ajaxLink(Zurmo::t('CommentsModule', 'Show older comments'), $url,
                          array('type' => 'GET',
-                               'success' => 'function(data){$("#CommentsForRelatedModelView' . $this->uniquePageId . '").replaceWith(data)}'),
+                               'success' => 'function(data){$("#' . $this->getId() . '").replaceWith(data)}'),
                          array('id'         => 'showAllCommentsLink' . $this->uniquePageId,
                                 'class'     => 'showAllCommentsLink',
                                 'namespace' => 'refresh'));

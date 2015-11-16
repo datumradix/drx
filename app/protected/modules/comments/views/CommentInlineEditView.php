@@ -126,15 +126,20 @@
         {
             // Begin Not Coding Standard
             return ZurmoHtml::ajax(array(
-                    'type' => 'POST',
-                    'data' => 'js:$("#' . $formName . '").serialize()',
-                    'url'  =>  $this->getValidateAndSaveUrl(),
-                    'update' => '#' . $this->uniquePageId,
-                    'complete' => "function(XMLHttpRequest, textStatus){
+                'type' => 'POST',
+                'data' => 'js:$("#' . $formName . '").serialize()',
+                'url'  =>  $this->getValidateAndSaveUrl(),
+                'update' => '#' . $this->uniquePageId,
+                'complete' => "function(XMLHttpRequest, textStatus){
                         //find if there is a comment thread to refresh
-                        $('.hiddenCommentRefresh').click();}"
-                ));
+                        $('." . $this->getCommentsWrappingCssClass() . " .hiddenCommentRefresh').click();}"
+            ));
             // End Not Coding Standard
+        }
+
+        protected function getCommentsWrappingCssClass()
+        {
+            return 'model-comments-activity';
         }
 
         protected function doesLabelHaveOwnCell()

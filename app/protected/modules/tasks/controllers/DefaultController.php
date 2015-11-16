@@ -211,7 +211,7 @@
                                    'relatedModelClassName'    => 'Task',
                                    'relatedModelRelationName' => 'comments',
                                    'redirectUrl'              => $redirectUrl); //After save, the url to go to.
-            $uniquePageId  = 'CommentInlineEditForModelView';
+            $uniquePageId  = 'CommentForTaskInlineEditForModelView';
             echo             ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Add Comment'));
             $inlineView    = new CommentForTaskInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
                                                        $urlParameters, $uniquePageId);

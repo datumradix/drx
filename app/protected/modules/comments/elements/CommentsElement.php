@@ -150,7 +150,15 @@
         {
             $content       = '';//ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Add Comment'));
             $comment       = new Comment();
-            $uniquePageId  = 'CommentInlineEditForModelView';
+            if ($this->moduleId == 'tasks')
+            {
+                $uniquePageId  = 'CommentForTaskInlineEditForModelView';;
+            }
+            else
+            {
+                $uniquePageId  = 'CommentInlineEditForModelView';
+            }
+
             $redirectUrl   = Yii::app()->createUrl('/' . $this->moduleId . '/default/inlineCreateCommentFromAjax',
                                                     array('id' => $this->model->id,
                                                           'uniquePageId' => $uniquePageId));
@@ -163,15 +171,16 @@
             {
                 $inlineView    = new CommentForTaskInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
                     $urlParameters, $uniquePageId);
+                $htmlOptions = array('id' => 'CommentForTaskInlineEditForModelView');
             }
             else
             {
                 $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
                     $urlParameters, $uniquePageId);
+                $htmlOptions = array('id' => 'CommentInlineEditForModelView');
             }
-
+            $content      .= ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Add Comment'));
             $content      .= $inlineView->render();
-            $htmlOptions = array('id' => 'CommentInlineEditForModelView');
             return ZurmoHtml::tag('div', $htmlOptions, $content);
         }
 

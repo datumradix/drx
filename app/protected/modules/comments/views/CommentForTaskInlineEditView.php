@@ -40,6 +40,15 @@
      */
     class CommentForTaskInlineEditView extends CommentInlineEditView
     {
+        public function getFormName()
+        {
+            if ($this->model->id > 0)
+            {
+                return "comment-for-task-inline-edit-form" . $this->model->id;
+            }
+            return "comment-for-task-inline-edit-form";
+        }
+
         public static function getDefaultMetadata()
         {
             $metadata = array(
@@ -64,7 +73,7 @@
                                         array(
                                             'elements' => array(
                                                 array('attributeName' => 'description', 'type' => 'MentionableTextArea',
-                                                      'rows' => 3, 'elementIdPostfix' => 'Task'),
+                                                      'rows' => 2, 'elementIdPostfix' => 'Task'),
                                             ),
                                         ),
                                     )
@@ -85,6 +94,11 @@
                 ),
             );
             return $metadata;
+        }
+
+        protected function getCommentsWrappingCssClass()
+        {
+            return 'task-activity';
         }
     }
 ?>
