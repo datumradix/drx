@@ -122,6 +122,20 @@
         }
 
         /**
+         * Given a datetime, return the number of days that have elapsed since the $dateTime to now
+         * @param $dateTime
+         * @return integer
+         */
+        public static function getTimeSinceInDays($dateTime)
+        {
+            assert('DateTimeUtil::isValidDbFormattedDateTime($dateTime)');
+            $nowTimeStamp   = time();
+            $dateTimeStamp  = DateTimeUtil::convertDbFormatDateTimeToTimeStamp($dateTime);
+            $timeSince      = $nowTimeStamp - $dateTimeStamp;
+            return floor($timeSince / 86400);
+        }
+        
+        /**
          * Convert month to a display label. If the month is invalid then it just returns the month passed in.
          * @param string $month
          * @return mixed

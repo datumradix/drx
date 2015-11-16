@@ -34,52 +34,53 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class OpportunitiesModuleEditView extends GlobalSearchEnabledModuleEditView
+    /**
+     * Display the opportunity's time in stage
+     */
+    class OpportunityTimeInStageElement extends Element implements DerivedElementInterface
     {
-        public static function getDefaultMetadata()
+        protected function renderEditable()
         {
-            $metadata = parent::getDefaultMetadata();
-            $metadata['global']['panels'][0]['rows'][] =
-                array('cells' =>
-                array(
-                    array(
-                        'elements' => array(
-                            array('attributeName' => 'automaticProbabilityMappingDisabled', 'type' => 'AutomaticProbabilityMappingDisabled'),
-                        ),
-                    ),
-                ),
-                );
-            $metadata['global']['panels'][0]['rows'][] =
-                array('cells' =>
-                array(
-                    array(
-                        'elements' => array(
-                            array('attributeName' => 'stageToProbabilityMapping', 'type' => 'StageToProbabilityMapping'),
-                        ),
-                    ),
-                ),
-                );
-            $metadata['global']['panels'][0]['rows'][] =
-                array('cells' =>
-                array(
-                    array(
-                        'elements' => array(
-                            array('attributeName' => 'opportunityRottingMappingEnabled', 'type' => 'CheckBox'),
-                        ),
-                    ),
-                ),
-                );
-            $metadata['global']['panels'][0]['rows'][] =
-                array('cells' =>
-                array(
-                    array(
-                        'elements' => array(
-                            array('attributeName' => 'stageToRottingMapping', 'type' => 'StageToRottingMapping'),
-                        ),
-                    ),
-                ),
-                );
-            return $metadata;
+            throw new NotSupportedException();
+        }
+
+        protected function renderControlEditable()
+        {
+            throw new NotSupportedException();
+        }
+
+        /**
+         * Render the full name as a non-editable display
+         * @return The element's content.
+         */
+        protected function renderControlNonEditable()
+        {
+            assert('$this->attribute == "null"');
+            assert('$this->model instanceof Opportunity');
+            return OpportunitiesUtil::renderTimeInStageForListView($this->model);
+        }
+
+        protected function renderLabel()
+        {
+            return Zurmo::t('OpportunitiesModule', 'Time in stage');
+        }
+
+        public static function getDisplayName()
+        {
+            return Zurmo::t('OpportunitiesModule', 'Time in stage');
+        }
+
+        /**
+         * Get the attributeNames of attributes used in
+         * the derived element.
+         * @return array of model attributeNames used.
+         */
+        public static function getModelAttributeNames()
+        {
+            return array(
+                'stage',
+                'stageModifiedDateTime',
+            );
         }
     }
 ?>
