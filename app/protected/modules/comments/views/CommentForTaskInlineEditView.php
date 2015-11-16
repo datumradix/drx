@@ -83,7 +83,7 @@
                                         array(
                                             'elements' => array(
                                                 array('attributeName' => 'null', 'type' => 'Files',
-                                                      'showMaxSize'   => false),
+                                                      'showMaxSize'   => false, 'elementIdPostfix' => 'Task'),
                                             ),
                                         ),
                                     )
