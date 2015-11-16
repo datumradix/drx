@@ -34,52 +34,26 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class OpportunitiesModuleEditView extends GlobalSearchEnabledModuleEditView
+    class OpportunityTimeInStageListViewColumnAdapter extends ListViewColumnAdapter
     {
-        public static function getDefaultMetadata()
+        public function renderGridViewData()
         {
-            $metadata = parent::getDefaultMetadata();
-            $metadata['global']['panels'][0]['rows'][] =
-                array('cells' =>
-                array(
-                    array(
-                        'elements' => array(
-                            array('attributeName' => 'automaticProbabilityMappingDisabled', 'type' => 'AutomaticProbabilityMappingDisabled'),
-                        ),
-                    ),
-                ),
+            if ($this->view instanceof OpportunitiesRelatedListView)
+            {
+                return array(
+                    'name'  => Zurmo::t('OpportunitiesModule', 'Time in stage'),
+                    'value' => 'OpportunitiesUtil::renderTimeInStageForRelatedListView($data)',
+                    'type'  => 'raw',
                 );
-            $metadata['global']['panels'][0]['rows'][] =
-                array('cells' =>
-                array(
-                    array(
-                        'elements' => array(
-                            array('attributeName' => 'stageToProbabilityMapping', 'type' => 'StageToProbabilityMapping'),
-                        ),
-                    ),
-                ),
+            }
+            else
+            {
+                return array(
+                    'name'  => Zurmo::t('OpportunitiesModule', 'Time in stage'),
+                    'value' => 'OpportunitiesUtil::renderTimeInStageForListView($data)',
+                    'type'  => 'raw',
                 );
-            $metadata['global']['panels'][0]['rows'][] =
-                array('cells' =>
-                array(
-                    array(
-                        'elements' => array(
-                            array('attributeName' => 'opportunityRottingMappingEnabled', 'type' => 'CheckBox'),
-                        ),
-                    ),
-                ),
-                );
-            $metadata['global']['panels'][0]['rows'][] =
-                array('cells' =>
-                array(
-                    array(
-                        'elements' => array(
-                            array('attributeName' => 'stageToRottingMapping', 'type' => 'StageToRottingMapping'),
-                        ),
-                    ),
-                ),
-                );
-            return $metadata;
+            }
         }
     }
 ?>
