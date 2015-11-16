@@ -159,8 +159,17 @@
                                    'relatedModelRelationName' => 'comments',
                                    'redirectUrl'              => $redirectUrl); //After save, the url to go to.
 
-            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
-                                                      $urlParameters, $uniquePageId);
+            if ($this->moduleId == 'tasks')
+            {
+                $inlineView    = new CommentForTaskInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
+                    $urlParameters, $uniquePageId);
+            }
+            else
+            {
+                $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
+                    $urlParameters, $uniquePageId);
+            }
+
             $content      .= $inlineView->render();
             $htmlOptions = array('id' => 'CommentInlineEditForModelView');
             return ZurmoHtml::tag('div', $htmlOptions, $content);
