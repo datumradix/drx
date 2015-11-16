@@ -264,13 +264,15 @@
 
 .task-activity, .model-comments-activity{
 	margin-top: 30px;
-	#CommentsForRelatedModelView{
+	#CommentsForRelatedModelView,
+	#CommentsForRelatedTaskModelView{
 		width: 100%;
 		max-width: 100%;
 		margin: 0;
 		padding: 0;
 	}
-	#CommentInlineEditForModelView{
+	#CommentInlineEditForModelView,
+	#CommentForTaskInlineEditForModelView{
 		width: 100%;
 		max-width: 100%;
 		margin: 10px 0 0 0;
@@ -280,7 +282,8 @@
 	#CommentList{
 		margin: 0 0 0 0;
 	}
-	#comment-inline-edit-form{
+	#comment-inline-edit-form,
+	#comment-for-task-inline-edit-form{
 		margin:0;
 		.form-toolbar{
 			margin-top: 5px;
@@ -300,7 +303,8 @@
 	}
 }
 .task-activity{
-  	#CommentInlineEditForModelView{
+  	#CommentInlineEditForModelView,
+	#CommentForTaskInlineEditForModelView{
 		background: rgba(236, 240, 241, 0.25) url("@{path}stripes.png") left top repeat;
   	}
 }
