@@ -118,6 +118,14 @@
             return false;
         }
 
+        /**
+         * @return bool
+         */
+        public static function canUserRemove()
+        {
+            return false;
+        }
+
         public static function getPortletRulesType()
         {
             return 'ModelDetails';
