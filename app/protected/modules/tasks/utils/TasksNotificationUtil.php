@@ -49,7 +49,7 @@
 
         const TASK_OWNER_CHANGE                       = 'TaskOwnerChange';
 
-        const TASK_NEW_COMMENT                        = 'TaskNewComment';
+        const TASK_COMMENT_CREATED_OR_UPDATED         = 'TaskCommentCreatedOrUpdated';
 
         /**
          * Submit task notification message
@@ -167,7 +167,7 @@
             {
                 $peopleToSendNotification[] = $task->requestedByUser;
             }
-            elseif ($action == self::TASK_NEW_COMMENT)
+            elseif ($action == self::TASK_COMMENT_CREATED_OR_UPDATED)
             {
                 $peopleToSendNotification = NotificationSubscriberUtil::getModelSubscribers($task);
                 if ($relatedUser != null)
@@ -222,7 +222,7 @@
                 return Zurmo::t('TasksModule', "The task you requested, '{task}', has a new owner.",
                                                array('{task}'   => strval($task)));
             }
-            elseif ($action == self::TASK_NEW_COMMENT)
+            elseif ($action == self::TASK_COMMENT_CREATED_OR_UPDATED)
             {
                 return Zurmo::t('TasksModule', "{user} has commented on the task '{task}':",
                                                array('{task}'         => strval($task),
@@ -238,7 +238,7 @@
         public static function getEmailMessageContentSecondPart($action, Comment $comment = null)
         {
             assert('is_string($action)');
-            if ($action == self::TASK_NEW_COMMENT)
+            if ($action == self::TASK_COMMENT_CREATED_OR_UPDATED)
             {
                 return strval($comment);
             }
@@ -299,8 +299,8 @@
                 case TasksNotificationUtil::TASK_OWNER_CHANGE:
                     return 'TaskOwnerChangeNotificationRules';
                     break;
-                case TasksNotificationUtil::TASK_NEW_COMMENT:
-                    return 'TaskNewCommentNotificationRules';
+                case TasksNotificationUtil::TASK_COMMENT_CREATED_OR_UPDATED:
+                    return 'TaskCommentNotificationRules';
                     break;
                 default:
                     throw new NotFoundException();

@@ -35,22 +35,13 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when a new comment is added to a task
+     * A  NotificationRules to manage when a new comment is added or updated existing
      */
-    class OpportunityNewCommentNotificationRules extends NotificationRules
+    abstract class CommentNotificationRules extends NotificationRules
     {
         protected $allowSendingEmail    = true;
-        protected $allowDuplicates      = true;
 
-        // START - FROM BASE CLASS
-        // ToDo: Maybe move this to new class because this will be similar for all notification rules
-        /**
-         * @inheritdoc
-         */
-        public function getModuleClassNames()
-        {
-            return array('OpportunitiesModule');
-        }
+        protected $allowDuplicates      = true;
 
         protected function getParamsForEmailSubject()
         {
@@ -58,40 +49,13 @@
             $params = array('{model}'         => strval($this->model));
             return $params;
         }
-        // END FROM BASE CLASS
-
-        /**
-         * @returns Translated label that describes this rule type.
-         */
-        public function getDisplayName()
-        {
-            return Zurmo::t('OpportunitiesModule', 'New Opportunity Comments');
-        }
-
-        /**
-         * @return The type of the NotificationRules
-         */
-        public function getType()
-        {
-            return 'OpportunityNewComment';
-        }
-
-        public function getTooltipId()
-        {
-            return 'task-new-comment-notification-tooltip';
-        }
-
-        public function getTooltipTitle()
-        {
-            return Zurmo::t('UsersModule', 'Notify me of new comments on opportunities I am following.');
-        }
 
         /**
          * @inheritdoc
          */
         public function getSubjectForEmailNotification()
         {
-            return Zurmo::t('Core', 'NEW COMMENT ON {model}', $this->getParamsForEmailSubject());
+            return Zurmo::t('Core', 'Comment added or updated for {model}', $this->getParamsForEmailSubject());
         }
     }
 ?>

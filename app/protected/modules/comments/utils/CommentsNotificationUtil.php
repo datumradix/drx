@@ -39,9 +39,7 @@
      */
     class CommentsNotificationUtil extends NotificationsUtil
     {
-        const NEW_COMMENT                        = 'NewComment';
-
-        const COMMENT_UPDATED                    = 'CommentUpdated';
+        const COMMENT_CREATED_OR_UPDATED         = 'CommentCreatedOrUpdated';
 
         const COMMENT_DELETED                    = 'CommentDeleted';
 
@@ -49,15 +47,19 @@
          * Submit comment notification message
          * @param OwnedSecurableItem $model
          * @param $action
-         * @param User|null $relatedUser, the user associated with the model notification, user who created/edited comment
          * @param Comment $comment
          * @throws NotFoundException
          */
-        public static function submitNotificationMessage(OwnedSecurableItem $model, $action, User $relatedUser = null, Comment $comment)
+        public static function submitNotificationMessage(OwnedSecurableItem $model, $action, Comment $comment)
         {
-            // ToDo: Try to get rid of $relatedUser, it can probably be gathered from $comment->modifiedBy
             assert('is_string($action)');
-            $message = static::getNotificationMessageByAction($model, $action, $relatedUser, $comment);
+            $relatedUser = null;
+            if (isset($comment) && $comment instanceof Comment)
+            {
+                $relatedUser = $comment->modifiedByUser;
+            }
+
+            $message = static::getNotificationMessageByAction($model, $action, $comment);
             $notificationRulesClassName = static::resolveNotificationRulesClassByModelAndAction($model, $action);
             $rule = new $notificationRulesClassName();
             $peopleToSendNotification = static::resolvePeopleToSendNotification($model, $action, $relatedUser);
@@ -74,14 +76,17 @@
          * Get notification message by action
          * @param OwnedSecurableItem $model
          * @param $action
-         * @param User|null $relatedUser
          * @param Comment|null $comment
          * @return NotificationMessage
          */
-        protected static function getNotificationMessageByAction(OwnedSecurableItem $model, $action, User $relatedUser = null,
-                                                                 Comment $comment = null)
+        protected static function getNotificationMessageByAction(OwnedSecurableItem $model, $action, Comment $comment = null)
         {
             assert('is_string($action)');
+            $relatedUser = null;
+            if (isset($comment) && $comment instanceof Comment)
+            {
+                $relatedUser = $comment->modifiedByUser;
+            }
             $message                     = new NotificationMessage();
             $messageContent              = static::getEmailMessageContent($model, $action, $relatedUser);
             $messageContentSecondPart    = static::getEmailMessageContentSecondPart($action, $comment);
@@ -209,17 +214,9 @@
         public static function getEmailMessageContent(OwnedSecurableItem $model, $action, User $relatedUser = null)
         {
             assert('is_string($action)');
-            if ($action == self::NEW_COMMENT)
+            if ($action == self::COMMENT_CREATED_OR_UPDATED)
             {
                 return Zurmo::t('CommentsModule', "{user} has commented on the {modelClassName} '{model}':",
-                    array('{model}'          => strval($model),
-                          '{user}'           => strval($relatedUser),
-                          '{modelClassName}' => $model->getModelLabelByTypeAndLanguage(
-                              'SingularLowerCase')));
-            }
-            elseif ($action == self::COMMENT_UPDATED)
-            {
-                return Zurmo::t('CommentsModule', "{user} updated comment on the {modelClassName} '{model}':",
                     array('{model}'          => strval($model),
                           '{user}'           => strval($relatedUser),
                           '{modelClassName}' => $model->getModelLabelByTypeAndLanguage(
@@ -236,8 +233,7 @@
         public static function getEmailMessageContentSecondPart($action, Comment $comment = null)
         {
             assert('is_string($action)');
-            if ($action == self::NEW_COMMENT ||
-                $action == self::COMMENT_UPDATED)
+            if ($action == self::COMMENT_CREATED_OR_UPDATED)
             {
                 return $comment->description;
             }
@@ -253,11 +249,8 @@
         {
             switch ($action)
             {
-                case self::NEW_COMMENT:
-                    return get_class($model) . 'NewCommentNotificationRules';
-                    break;
-                case self::COMMENT_UPDATED:
-                    return get_class($model) . 'UpdatedCommentNotificationRules';
+                case self::COMMENT_CREATED_OR_UPDATED:
+                    return get_class($model) . 'CommentNotificationRules';
                     break;
                 default:
                     throw new NotFoundException();
@@ -275,7 +268,7 @@
         {
             assert('is_string($action)');
             $peopleToSendNotification = array();
-            if ($action == self::NEW_COMMENT)
+            if ($action == self::COMMENT_CREATED_OR_UPDATED)
             {
                 $peopleToSendNotification = NotificationSubscriberUtil::getModelSubscribers($model);
                 if ($relatedUser != null)

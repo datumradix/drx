@@ -124,14 +124,14 @@
                 }
 
                 $participants = ConversationsUtil::resolvePeopleToSendNotificationToOnNewComment($this->relatedModel, $user);
-                CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
+                CommentsUtil::sendNotificationOnCommentCreateOrUpdate($this->relatedModel, $model, $participants);
             }
             elseif ($this->relatedModel instanceof Mission)
             {
                 $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
                 $participants = MissionsUtil::resolvePeopleToSendNotificationToOnNewComment($this->relatedModel, $user);
                 $participants  = array_merge($participants, $mentionedUsers);
-                CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
+                CommentsUtil::sendNotificationOnCommentCreateOrUpdate($this->relatedModel, $model, $participants);
             }
             elseif ($this->relatedModel instanceof Task || $this->relatedModel instanceof Account ||
                     $this->relatedModel instanceof Contact || $this->relatedModel instanceof Opportunity)
@@ -145,7 +145,7 @@
                 if ($this->relatedModel instanceof Task)
                 {
                     TasksNotificationUtil::submitTaskNotificationMessage($this->relatedModel,
-                        TasksNotificationUtil::TASK_NEW_COMMENT,
+                        TasksNotificationUtil::TASK_COMMENT_CREATED_OR_UPDATED,
                         $model->createdByUser, $model);
                     //Log the event
                     if ($this->relatedModel->project->id > 0)
@@ -156,8 +156,8 @@
                 else
                 {
                     CommentsNotificationUtil::submitNotificationMessage($this->relatedModel,
-                        CommentsNotificationUtil::NEW_COMMENT,
-                        $model->createdByUser, $model);
+                        CommentsNotificationUtil::COMMENT_CREATED_OR_UPDATED,
+                        $model);
                 }
             }
         }

@@ -35,55 +35,36 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when a new comment is added to a task
+     * A  NotificationRules to manage when a new comment is added for mission.
      */
-    class AccountNewCommentNotificationRules extends NotificationRules
+    class MissionCommentNotificationRules extends CommentNotificationRules
     {
-        protected $allowSendingEmail    = true;
-        protected $allowDuplicates      = true;
+        public function getDisplayName()
+        {
+            return Zurmo::t('MissionsModule', 'Mission comment creation or modification');
+        }
 
-        // START - FROM BASE CLASS
-        // ToDo: Maybe move this to new class because this will be similar for all notification rules
+        public function getType()
+        {
+            return 'MissionComment';
+        }
+
         /**
          * @inheritdoc
          */
         public function getModuleClassNames()
         {
-            return array('AccountsModule');
-        }
-
-        protected function getParamsForEmailSubject()
-        {
-            assert('$this->model instanceof OwnedSecurableItem');
-            $params = array('{model}'         => strval($this->model));
-            return $params;
-        }
-        // END FROM BASE CLASS
-
-        /**
-         * @returns Translated label that describes this rule type.
-         */
-        public function getDisplayName()
-        {
-            return Zurmo::t('AccountsModule', 'New Account Comments');
-        }
-
-        /**
-         * @return The type of the NotificationRules
-         */
-        public function getType()
-        {
-            return 'AccountNewComment';
+            return array('MissionsModule');
         }
 
         public function getTooltipId()
         {
-            return 'task-new-comment-notification-tooltip';
+            return 'mission-comment-notification-tooltip';
         }
 
         public function getTooltipTitle()
         {
-            return Zurmo::t('UsersModule', 'Notify me of new comments on accounts I am following.');
+            return Zurmo::t('UsersModule', 'Notify me when a comment is added or updated on one of my missions.');
         }
 
         /**
@@ -91,7 +72,12 @@
          */
         public function getSubjectForEmailNotification()
         {
-            return Zurmo::t('Core', 'NEW COMMENT ON {model}', $this->getParamsForEmailSubject());
+            if ($this->model instanceof Mission)
+            {
+                return Zurmo::t('CommentsModule', 'New comment on {modelName}: {subject}',
+                    array('{subject}'   => strval($this->model),
+                          '{modelName}' => $this->model->getModelLabelByTypeAndLanguage('SingularLowerCase')));
+            }
         }
     }
 ?>
