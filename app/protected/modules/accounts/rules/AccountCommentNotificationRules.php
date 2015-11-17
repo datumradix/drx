@@ -35,52 +35,42 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when a new comment is added for mission.
+     * A  NotificationRules to manage when a new comment is added to a account or when updated existing
      */
-    class MissionNewCommentNotificationRules extends NotificationRules
+    class AccountCommentNotificationRules extends CommentNotificationRules
     {
-        protected $allowSendingEmail    = true;
-        protected $allowDuplicates      = true;
-
-        public function getDisplayName()
-        {
-            return Zurmo::t('MissionsModule', 'Mission new comment');
-        }
-
-        public function getType()
-        {
-            return 'MissionNewComment';
-        }
-
         /**
          * @inheritdoc
          */
         public function getModuleClassNames()
         {
-            return array('MissionsModule');
+            return array('AccountsModule');
+        }
+
+        /**
+         * @returns Translated label that describes this rule type.
+         */
+        public function getDisplayName()
+        {
+            return Zurmo::t('AccountsModule', 'Account comments creation or modification');
+        }
+
+        /**
+         * @return The type of the NotificationRules
+         */
+        public function getType()
+        {
+            return 'AccountComment';
         }
 
         public function getTooltipId()
         {
-            return 'mission-new-comment-notification-tooltip';
+            return 'account-comment-notification-tooltip';
         }
 
         public function getTooltipTitle()
         {
-            return Zurmo::t('UsersModule', 'Notify me when a comment is added to one of my missions.');
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getSubjectForEmailNotification()
-        {
-            if ($this->model instanceof Mission)
-            {
-                return Zurmo::t('CommentsModule', 'New comment on {modelName}: {subject}',
-                    array('{subject}'   => strval($this->model),
-                          '{modelName}' => $this->model->getModelLabelByTypeAndLanguage('SingularLowerCase')));
-            }
+            return Zurmo::t('UsersModule', 'Notify me when new comment is added or updated existing on accounts I am following.');
         }
     }
 ?>

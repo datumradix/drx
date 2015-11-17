@@ -52,7 +52,7 @@
             Yii::app()->user->userModel = User::getByUsername('super');
         }
 
-        public function testSendNotificationOnNewComment()
+        public function testSendNotificationOnCommentCreateOrUpdate()
         {
             $super                      = User::getByUsername('super');
             $steven                     = User::getByUsername('steven');
@@ -72,7 +72,7 @@
             $this->assertEquals(0, Notification::getCount());
 
             //No message was sent because Steven and Jack don't have primary email address
-            CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $jack));
+            CommentsUtil::sendNotificationOnCommentCreateOrUpdate($conversation, $comment, array($steven, $jack));
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             //Two inbox notifications sent
@@ -86,7 +86,7 @@
             $this->assertTrue($jack->save());
 
             //Two email message were sent one to Steven and one to Jack
-            CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $jack));
+            CommentsUtil::sendNotificationOnCommentCreateOrUpdate($conversation, $comment, array($steven, $jack));
             $this->assertEquals(2, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $emailMessages = EmailMessage::getAll();
@@ -101,7 +101,7 @@
             //One inbox notification to Steven but not to Super
             NotificationTestHelper::setNotificationSettingsForUser($steven, 'ConversationNewComment', true, false);
             NotificationTestHelper::setNotificationSettingsForUser($super, 'ConversationNewComment', false, true);
-            CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $super));
+            CommentsUtil::sendNotificationOnCommentCreateOrUpdate($conversation, $comment, array($steven, $super));
             $this->assertEquals(3, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $emailMessages = EmailMessage::getAll();

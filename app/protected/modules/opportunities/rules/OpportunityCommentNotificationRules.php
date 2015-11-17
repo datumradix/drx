@@ -35,37 +35,24 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when a new comment is added to a task
+     * A  NotificationRules to manage when a new comment is added to a account or when updated existing
      */
-    class ContactNewCommentNotificationRules extends NotificationRules
+    class OpportunityCommentNotificationRules extends CommentNotificationRules
     {
-        protected $allowSendingEmail    = true;
-        protected $allowDuplicates      = true;
-
-        // START - FROM BASE CLASS
-        // ToDo: Maybe move this to new class because this will be similar for all notification rules
         /**
          * @inheritdoc
          */
         public function getModuleClassNames()
         {
-            return array('ContactsModule');
+            return array('OpportunitiesModule');
         }
-
-        protected function getParamsForEmailSubject()
-        {
-            assert('$this->model instanceof OwnedSecurableItem');
-            $params = array('{model}'         => strval($this->model));
-            return $params;
-        }
-        // END FROM BASE CLASS
 
         /**
          * @returns Translated label that describes this rule type.
          */
         public function getDisplayName()
         {
-            return Zurmo::t('ContactsModule', 'New Contact Comments');
+            return Zurmo::t('OpportunitiesModule', 'Opportunity comment creation or modification');
         }
 
         /**
@@ -73,25 +60,17 @@
          */
         public function getType()
         {
-            return 'ContactNewComment';
+            return 'OpportunityComment';
         }
 
         public function getTooltipId()
         {
-            return 'task-new-comment-notification-tooltip';
+            return 'opportunity-comment-notification-tooltip';
         }
 
         public function getTooltipTitle()
         {
-            return Zurmo::t('UsersModule', 'Notify me of new comments on contacts I am following.');
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getSubjectForEmailNotification()
-        {
-            return Zurmo::t('Core', 'NEW COMMENT ON {model}', $this->getParamsForEmailSubject());
+            return Zurmo::t('UsersModule', 'Notify me when new comment is added or updated existing on opportunities I am following.');
         }
     }
 ?>

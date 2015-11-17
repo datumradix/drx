@@ -35,37 +35,36 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when a new comment is added to a task
+     * A  NotificationRules to manage when a new comment is added to a conversation or existing comment updated.
      */
-    class TaskNewCommentNotificationRules extends TaskNotificationRules
+    class ConversationCommentNotificationRules extends NotificationRules
     {
-        protected $allowSendingEmail    = true;
-        protected $allowDuplicates      = true;
-
-        /**
-         * @returns Translated label that describes this rule type.
-         */
         public function getDisplayName()
         {
-            return Zurmo::t('TasksModule', 'New Task Comments');
+            return Zurmo::t('ConversationsModule', 'Conversation comments creation/modification');
+        }
+
+        public function getType()
+        {
+            return 'ConversationComment';
         }
 
         /**
-         * @return The type of the NotificationRules
+         * @inheritdoc
          */
-        public function getType()
+        public function getModuleClassNames()
         {
-            return 'TaskNewComment';
+            return array('ConversationsModule');
         }
 
         public function getTooltipId()
         {
-            return 'task-new-comment-notification-tooltip';
+            return 'conversation-comment-notification-tooltip';
         }
 
         public function getTooltipTitle()
         {
-            return Zurmo::t('UsersModule', 'Notify me of new comments on Tasks I am following.');
+            return Zurmo::t('UsersModule', 'Notify me when a comment is added or updated to a conversation I am participating in.');
         }
 
         /**
@@ -73,7 +72,12 @@
          */
         public function getSubjectForEmailNotification()
         {
-            return Zurmo::t('TasksModule', 'NEW COMMENT {relatedModel}: {task}', $this->getParamsForEmailSubject());
+            if ($this->model instanceof Conversation)
+            {
+                return Zurmo::t('CommentsModule', 'Comment on {modelName}: {subject} is added or updated',
+                    array('{subject}'   => strval($this->model),
+                          '{modelName}' => $this->model->getModelLabelByTypeAndLanguage('SingularLowerCase')));
+            }
         }
     }
 ?>

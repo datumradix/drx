@@ -35,52 +35,42 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when a new comment is added to a conversation.
+     * A  NotificationRules to manage when a new comment is added or updated for contact
      */
-    class ConversationNewCommentNotificationRules extends NotificationRules
+    class ContactCommentNotificationRules extends CommentNotificationRules
     {
-        protected $allowSendingEmail = true;
-        protected $allowDuplicates   = true;
-
-        public function getDisplayName()
-        {
-            return Zurmo::t('ConversationsModule', 'Conversation new comment');
-        }
-
-        public function getType()
-        {
-            return 'ConversationNewComment';
-        }
-
         /**
          * @inheritdoc
          */
         public function getModuleClassNames()
         {
-            return array('ConversationsModule');
+            return array('ContactsModule');
+        }
+
+        /**
+         * @returns Translated label that describes this rule type.
+         */
+        public function getDisplayName()
+        {
+            return Zurmo::t('ContactsModule', 'Contact comment creation or modification');
+        }
+
+        /**
+         * @return The type of the NotificationRules
+         */
+        public function getType()
+        {
+            return 'ContactComment';
         }
 
         public function getTooltipId()
         {
-            return 'conversation-new-comment-notification-tooltip';
+            return 'contact-comment-notification-tooltip';
         }
 
         public function getTooltipTitle()
         {
-            return Zurmo::t('UsersModule', 'Notify me when a comment is added to a conversation I am participating in.');
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getSubjectForEmailNotification()
-        {
-            if ($this->model instanceof Conversation)
-            {
-                return Zurmo::t('CommentsModule', 'New comment on {modelName}: {subject}',
-                    array('{subject}'   => strval($this->model),
-                          '{modelName}' => $this->model->getModelLabelByTypeAndLanguage('SingularLowerCase')));
-            }
+            return Zurmo::t('UsersModule', 'Notify me when new comment is added or updated existing on contacts I am following.');
         }
     }
 ?>
