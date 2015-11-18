@@ -60,7 +60,8 @@
                     ZurmoBaseController::RIGHTS_FILTER_PATH .
                     ' - modalList, - switchTo, autoComplete, details, profile, edit, auditEventsModalList, changePassword, ' .
                     'configurationEdit, emailConfiguration, securityDetails, notificationConfiguration, ' .
-                    'autoCompleteForMultiSelectAutoComplete, getUsersByPartialString, confirmTimeZone, changeAvatar, gameDashboard',
+                    'autoCompleteForMultiSelectAutoComplete, getUsersByPartialStringWithReadPermissionsForSecurableItem, ' .
+                    'confirmTimeZone, changeAvatar, gameDashboard',
                     'moduleClassName' => 'UsersModule',
                     'rightName' => UsersModule::getAccessRight(),
             );
@@ -601,15 +602,40 @@
         }
 
         /**
-         * Given a partial name search for all users unless the current user has security restrictions.
+         * Given a partial name search for all users.
+         * If related model details are not empty, return only users that have access to read model
          * JSON encode the resulting array of results in requested format.
+         * @param $term
+         * @param null $relatedModelClassName
+         * @param null $relatedModelId
          */
-        public function actionGetUsersByPartialString($term)
+        public function actionGetUsersByPartialStringWithReadPermissionsForSecurableItem($term, $relatedModelClassName = null, $relatedModelId = null)
         {
+            if ($relatedModelClassName != null && class_exists($relatedModelClassName) &&
+                is_subclass_of($relatedModelClassName, 'OwnedSecurableItem') && $relatedModelId != null)
+            {
+                $relatedModel = $relatedModelClassName::getById((int)$relatedModelId);
+            }
             $users    = UserSearch::getUsersByPartialFullNameOrUsername($term);
             $autoCompleteResults  = array();
             foreach ($users as $user)
             {
+                // Check privileges if users have access to model
+                if ($relatedModel instanceof SecurableItem && !$relatedModel instanceof Conversation)
+                {
+                    if (!RightsUtil::canUserAccessModule($relatedModel->getModuleClassName(), $user))
+                    {
+                        continue;
+                    }
+                    try
+                    {
+                        $relatedModel->checkPermissionsHasAnyOf(Permission::READ, $user);
+                    }
+                    catch (AccessDeniedSecurityException $e)
+                    {
+                        continue;
+                    }
+                }
                 $autoCompleteResult = array(
                     'id'       => $user->id,
                     'name'     => strval($user),

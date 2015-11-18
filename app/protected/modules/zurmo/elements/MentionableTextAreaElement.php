@@ -55,7 +55,7 @@
 
             // Load widget for mention input
             $widgetSettings = array(
-                'callBackUrl' => Yii::app()->createUrl('users/default/getUsersByPartialString'),
+                'callBackUrl' => Yii::app()->createUrl('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem'),
                 'id'          => $this->getEditableInputId(),
                 'defaultValue' => $this->model->description,
             );
