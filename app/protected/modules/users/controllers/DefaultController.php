@@ -621,7 +621,8 @@
             foreach ($users as $user)
             {
                 // Check privileges if users have access to model
-                if ($relatedModel instanceof SecurableItem &&
+                if (isset($relatedModel) &&
+                    $relatedModel instanceof SecurableItem &&
                     !($relatedModel instanceof Conversation) &&
                     !($relatedModel instanceof SocialItem))
                 {
