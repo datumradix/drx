@@ -803,6 +803,14 @@
             $this->setGetArray(array('term' => 'Simson'));
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
             $this->assertNotEmpty(json_decode($content));
+
+            // Now test with contact(OwnedSecurableItem)
+            $contact = ContactTestHelper::createContactByNameForOwner('Simon', $super);
+            $this->setGetArray(array('term' => 'Simson', 'relatedModelClassName' => 'Contact', 'relatedModelId' => $contact->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
+            $this->assertEmpty(json_decode($content));
+
+
         }
     }
 ?>
