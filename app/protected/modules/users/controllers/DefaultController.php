@@ -621,7 +621,9 @@
             foreach ($users as $user)
             {
                 // Check privileges if users have access to model
-                if ($relatedModel instanceof SecurableItem && !$relatedModel instanceof Conversation)
+                if ($relatedModel instanceof SecurableItem &&
+                    !($relatedModel instanceof Conversation) &&
+                    !($relatedModel instanceof SocialItem))
                 {
                     if (!RightsUtil::canUserAccessModule($relatedModel->getModuleClassName(), $user))
                     {
