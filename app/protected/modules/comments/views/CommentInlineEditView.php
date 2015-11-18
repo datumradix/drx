@@ -132,7 +132,7 @@
                 'update' => '#' . $this->uniquePageId,
                 'complete' => "function(XMLHttpRequest, textStatus){
                         //find if there is a comment thread to refresh
-                        $('." . $this->getCommentsWrappingCssClass() . " .hiddenCommentRefresh').click();}"
+                        $('." . $this->getCommentsWrappingCssClass() . " .hiddenCommentRefresh, .comments-activity .hiddenCommentRefresh').click();}"
             ));
             // End Not Coding Standard
         }
