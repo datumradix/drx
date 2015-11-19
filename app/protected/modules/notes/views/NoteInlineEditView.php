@@ -58,6 +58,7 @@
                     ),
                     'nonPlaceableAttributeNames' => array(
                         'latestDateTime',
+                        'owner',
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_FIRST,
                     'panels' => array(
