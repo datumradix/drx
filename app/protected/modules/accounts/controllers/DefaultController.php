@@ -440,7 +440,7 @@
             $account = Account::getById((int)$id);
             $account    = NotificationSubscriberUtil::processSubscriptionRequest($account, Yii::app()->user->userModel);
             $content = NotificationSubscriberUtil::getSubscriberData($account);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($account, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($account, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
             echo $content;
         }
 
@@ -453,7 +453,7 @@
             $account = Account::getById((int)$id);
             $account    = NotificationSubscriberUtil::processUnsubscriptionRequest($account, Yii::app()->user->userModel);
             $content = NotificationSubscriberUtil::getSubscriberData($account);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($account, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($account, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
             if ($content == null)
             {
                 echo "";

@@ -40,7 +40,7 @@
     class NotificationSubscriberUtil
     {
         /**
-         * Get task subscriber data
+         * Get model subscriber data
          * @param OwnedSecurableItem $model
          * @return string
          */
@@ -128,38 +128,6 @@
         }
 
         /**
-         * Resolves Subscribe Url
-         * @param int $taskId
-         * @return string
-         * @todo Check if we remove it
-         */
-        public static function NotUsedresolveSubscribeUrl(OwnedSecurableItem $model)
-        {
-            $moduleClassName   = $model::getModuleClassName();
-            $moduleId        = $moduleClassName::getDirectoryName();
-            return Yii::app()->createUrl($moduleId . '/default/addSubscriber', array('id' => $model->id));
-        }
-
-        /**
-         * Resolve subscriber ajax options
-         * @return array
-         * @todo Check if we remove it
-         */
-        public static function NotUsedresolveSubscriberAjaxOptions()
-        {
-            return array(
-                'type'     => 'GET',
-                'dataType' => 'html',
-                'data'     => array(),
-                'success'  => 'function(data)
-                               {
-                                 $("#subscribe-task-link").hide();
-                                 $("#subscriberList").replaceWith(data);
-                               }'
-            );
-        }
-
-        /**
          * Register subscription script
          * @param string $modelClassName
          * @param OwnedSecurableItem $model
@@ -172,17 +140,17 @@
             $moduleClassName   = $modelClassName::getModuleClassName();
             $moduleId        = $moduleClassName::getDirectoryName();
 
-            if ($model == null)
+            if ($model == null && $modelClassName == 'Task')
             {
                 $url     = Yii::app()->createUrl($moduleId . '/default/addKanbanSubscriber');
-                $script  = self::getKanbanSubscriptionScript($url, 'subscribe-task-link', 'unsubscribe-task-link', $unsubscribeLink);
+                $script  = self::getKanbanSubscriptionScript($url, 'subscribe-model-link', 'unsubscribe-model-link', $unsubscribeLink);
                 Yii::app()->clientScript->registerScript('kanban-subscribe-task-link-script', $script);
             }
             else
             {
                 $url     = Yii::app()->createUrl($moduleId . '/default/addSubscriber', array('id' => $model->id));
-                $script  = self::getDetailSubscriptionScript($url, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link', $unsubscribeLink, $model->id);
-                Yii::app()->clientScript->registerScript('detail-subscribe-task-link-script', $script);
+                $script  = self::getDetailSubscriptionScript($url, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link', $unsubscribeLink, $model->id);
+                Yii::app()->clientScript->registerScript('detail-subscribe-model-link-script', $script);
             }
         }
 
@@ -199,17 +167,17 @@
             $moduleClassName   = $modelClassName::getModuleClassName();
             $moduleId        = $moduleClassName::getDirectoryName();
 
-            if ($model == null)
+            if ($model == null && $modelClassName == 'Task')
             {
                 $url    = Yii::app()->createUrl($moduleId . '/default/removeKanbanSubscriber');
-                $script = self::getKanbanSubscriptionScript($url, 'unsubscribe-task-link', 'subscribe-task-link', $subscribeLink);
+                $script = self::getKanbanSubscriptionScript($url, 'unsubscribe-model-link', 'subscribe-model-link', $subscribeLink);
                 Yii::app()->clientScript->registerScript('kanban-unsubscribe-task-link-script', $script);
             }
             else
             {
                 $url    = Yii::app()->createUrl($moduleId . '/default/removeSubscriber', array('id' => $model->id));
-                $script = self::getDetailSubscriptionScript($url, 'detail-unsubscribe-task-link', 'detail-subscribe-task-link', $subscribeLink, $model->id);
-                Yii::app()->clientScript->registerScript('detail-unsubscribe-task-link-script', $script);
+                $script = self::getDetailSubscriptionScript($url, 'detail-unsubscribe-model-link', 'detail-subscribe-model-link', $subscribeLink, $model->id);
+                Yii::app()->clientScript->registerScript('detail-unsubscribe-model-link-script', $script);
             }
         }
 
@@ -305,18 +273,18 @@
          */
         public static function getKanbanSubscriptionLink(OwnedSecurableItem $model, $row)
         {
-            return self::resolveSubscriptionLink($model, 'subscribe-task-link', 'unsubscribe-task-link');
+            return self::resolveSubscriptionLink($model, 'subscribe-model-link', 'unsubscribe-model-link');
         }
 
         /**
-         * Get subscription link on the task detail view
+         * Get subscription link on the model detail view
          * @param OwnedSecurableItem $model
          * @param int $row
          * @return string
          */
         public static function getDetailSubscriptionLink(OwnedSecurableItem $model, $row)
         {
-            return self::resolveSubscriptionLink($model, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            return self::resolveSubscriptionLink($model, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
         }
 
         /**
@@ -355,7 +323,7 @@
         }
 
         /**
-         * Add subscriber to the task
+         * Add subscriber to the model
          * @param User $user
          * @param OwnedSecurableItem $model
          * @param bool $hasReadLatest
@@ -409,7 +377,7 @@
          * Process subscription request for model
          * @param OwnedSecurableItem $model
          * @param User $user
-         * @return Task $task | error
+         * @return OwnedSecurableItem $model | error
          * @throws Exception
          * @throws NotFoundException
          * @throws NotSupportedException
@@ -432,7 +400,7 @@
          * Process unsubscription request for model
          * @param OwnedSecurableItem $model
          * @param User $user
-         * @return Task $task
+         * @return OwnedSecurableItem $model
          * @throws Exception
          * @throws FailedToSaveModelException
          * @throws NotFoundException
