@@ -285,7 +285,7 @@
                 }
             }
             //There should have been a total of 5 portlets.
-            $this->assertEquals(5, $portletCount);
+            $this->assertEquals(6, $portletCount);
             $this->resetGetArray();
             $this->setPostArray(array(
                 'portletLayoutConfiguration' => array(
@@ -297,7 +297,7 @@
             //Now test that all the portlets are collapsed and moved to the first column.
             $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition(
                             'LeadDetailsAndRelationsView', $super->id, array());
-            $this->assertEquals (5, count($portlets[1]));
+            $this->assertEquals (6, count($portlets[1]));
             $this->assertFalse  (array_key_exists(2, $portlets) );
             foreach ($portlets as $column => $columns)
             {
@@ -780,6 +780,50 @@
             $this->assertEquals(1, Account::getCount());
             $accounts = Account::getAll();
             $this->assertEquals('English, French', strval($accounts[0]->tagcloudCstm));
+        }
+
+        public function testInlineCreateCommentFromAjax()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $lead = LeadTestHelper::createLeadbyNameForOwner('testLead22', $super);
+
+            $this->setGetArray(array('id' => $lead->id, 'uniquePageId' => 'CommentInlineEditForModelView'));
+            $this->runControllerWithNoExceptionsAndGetContent('leads/default/inlineCreateCommentFromAjax');
+        }
+
+        /**
+         * @depends testInlineCreateCommentFromAjax
+         */
+        public function testAddAndRemoveSubscriberViaAjaxAsSuperUser()
+        {
+            //Login with super and check subscribe unsubscribe from modal detail view when super
+            //is not owner or requested by user
+            $super              = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $mike = UserTestHelper::createBasicUser('mike');
+            $lead = LeadTestHelper::createLeadbyNameForOwner('leadNew', $mike);
+            $this->assertEquals(1, $lead->notificationSubscribers->count());
+
+            $this->setGetArray(array('id' => $lead->id));
+            $this->assertFalse(NotificationSubscriberUtil::doNotificationSubscribersContainPerson($lead, $super));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/addSubscriber', false);
+            $this->assertContains('gravatar', $content);
+            $this->assertContains('users/default/details', $content);
+            $this->assertContains($super->getFullName(), $content);
+            $this->assertEquals(2, $lead->notificationSubscribers->count());
+
+            $this->setGetArray(array('id' => $lead->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/removeSubscriber', false);
+            $this->assertNotContains($super->getFullName(), $content);
+            $this->assertEquals(1, $lead->notificationSubscribers->count());
+            $lead->owner        = $super;
+            $this->assertTrue($lead->save());
+            $this->assertEquals(2, $lead->notificationSubscribers->count());
+
+            //Super user is owner so even if it is removed, it would be restored
+            $this->setGetArray(array('id' => $lead->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/removeSubscriber', false);
+            $this->assertContains($super->getFullName(), $content);
+            $this->assertEquals(2, $lead->notificationSubscribers->count());
         }
     }
 ?>
