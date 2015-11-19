@@ -39,6 +39,14 @@
      */
     class MarketingListsUtil
     {
+        /**
+         * @param $resolveSubscribersForm
+         * @param $campaign
+         * @return A
+         * @throws Exception
+         * @throws NotFoundException
+         * @throws NotSupportedException
+         */
         public static function resolveAndSaveMarketingList($resolveSubscribersForm, $campaign)
         {
             if ($campaign->status != Campaign::STATUS_COMPLETED)
@@ -47,14 +55,24 @@
                 throw new NotSupportedException($message);
             }
 
+            // First check if user selected existing marketing list, if he didn't create new marketing list
             try
             {
                 $marketingList = MarketingList::getById(intval($resolveSubscribersForm->marketingList['id']));
             }
             catch (NotFoundException $e)
             {
-                $message = Zurmo::t('MarketingListsModule', 'Invalid or not selected marketing list entered. Please go back and select marketing list!');
-                throw new NotFoundException($message);
+                if ($resolveSubscribersForm->newMarketingListName != '')
+                {
+                    $marketingList = new MarketingList();
+                    $marketingList->name = $resolveSubscribersForm->newMarketingListName;
+                    $marketingList->save();
+                }
+                else
+                {
+                    $message = Zurmo::t('MarketingListsModule', 'Invalid or not selected marketing list entered. Please go back and select marketing list!');
+                    throw new NotFoundException($message);
+                }
             }
 
             $newMarketingListContacts = array();
@@ -104,6 +122,17 @@
                 }
             }
             return $marketingList;
+        }
+
+        /**
+         * Generate name for new marketing list based on $campaign that user is retargeting
+         * @param Campaign $campaign
+         * @return string
+         */
+        public static function generateRandomNameForCampaignRetargetingList(Campaign $campaign)
+        {
+            $text = Zurmo::t('MarketingListsModule', 'Retargeting List');
+            return  $campaign->name . ' - ' . $text . ' - ' . DateTimeUtil::getTodaysDate();
         }
     }
 ?>

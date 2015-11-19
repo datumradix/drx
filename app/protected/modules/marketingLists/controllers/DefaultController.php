@@ -208,6 +208,10 @@
                     $this->redirect(array($this->getId() . '/details', 'id' => $marketingList->id));
                 }
             }
+            else
+            {
+                $resolveSubscribersForm->newMarketingListName = MarketingListsUtil::generateRandomNameForCampaignRetargetingList($campaign);
+            }
             $title                         = Zurmo::t('UsersModule', 'Retarget subscribers from existing campaign("{{campaignName}}") results',
                 array("{{campaignName}}" => $campaign->name));
             $resolveSubscribersFromCampaignView                  = new MarketingListResolveSubscribersFromCampaignView(
@@ -217,7 +221,7 @@
                 $title);
 
             $view                       = new MarketingListsPageView(MarketingDefaultViewUtil::
-            makeViewWithBreadcrumbsForCurrentUser($this, $resolveSubscribersFromCampaignView, array(Zurmo::t('MarketingListsModule', 'Lists')), 'MarketingBreadCrumbView'));
+                makeViewWithBreadcrumbsForCurrentUser($this, $resolveSubscribersFromCampaignView, array(Zurmo::t('MarketingListsModule', 'Lists')), 'MarketingBreadCrumbView'));
             echo $view->render();
         }
 
