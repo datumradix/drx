@@ -62,6 +62,15 @@
                                     )
                                 ),
                                 array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'newMarketingListName', 'type' => 'Text'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
                                           array(
                                               array(
                                                   'elements' => array(
@@ -103,6 +112,28 @@
                 ),
             );
             return $metadata;
+        }
+
+        protected function resolveElementDuringFormLayoutRender(& $element)
+        {
+            if ($element->getAttribute() == 'marketingList')
+            {
+                $title    = Zurmo::t('MarketingListsModule', 'Add subscribers to existing marketing list. Please select either existing marketing list or enter name for new one, but not both!');
+                $content  = '<span id="existing-marketing-list-tooltip" class="tooltip"  title="' . $title . '">?</span>';
+                $qtip     = new ZurmoTip();
+                $qtip->addQTip("#existing-marketing-list-tooltip");
+                $element->editableTemplate = '<th>{label}' . $content . '</th>' .
+                    '<td colspan="{colspan}">{content}{error}</td>';
+            }
+            elseif ($element->getAttribute() == 'newMarketingListName')
+            {
+                $title    = Zurmo::t('MarketingListsModule', 'Create new marketing list and add subscribers to it. Please select either existing marketing list or enter name for new one, but not both!');
+                $content  = '<span id="new-marketing-list-tooltip" class="tooltip"  title="' . $title . '">?</span>';
+                $qtip     = new ZurmoTip();
+                $qtip->addQTip("#new-marketing-list-tooltip");
+                $element->editableTemplate = '<th>{label}' . $content . '</th>' .
+                    '<td colspan="{colspan}">{content}{error}</td>';
+            }
         }
     }
 ?>

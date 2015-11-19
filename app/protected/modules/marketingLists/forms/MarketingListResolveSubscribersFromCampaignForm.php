@@ -39,6 +39,8 @@
      */
     class MarketingListResolveSubscribersFromCampaignForm extends CFormModel
     {
+        public $newMarketingListName;
+
         public $marketingList;
 
         public $campaignId;
@@ -56,23 +58,32 @@
         public function rules()
         {
             return array(
-                array('campaignId',                       'required'),
-                array('marketingList',                    'required'),
-                array('retargetOpenedEmailRecipients',    'boolean'),
-                array('retargetOpenedEmailRecipients',    'default', 'value' => false),
-                array('retargetClickedEmailRecipients',   'boolean'),
-                array('retargetClickedEmailRecipients',   'default', 'value' => false),
-                array('retargetNotViewedEmailRecipients', 'boolean'),
-                array('retargetNotViewedEmailRecipients', 'default', 'value' => false),
+                array('campaignId',                        'required'),
+                array('marketingList',                     'ExistingMarketingListOrNewMarketingListNameRequiredValidator'),
+                array('newMarketingListName',              'safe'),
+                array('retargetOpenedEmailRecipients',     'boolean'),
+                array('retargetOpenedEmailRecipients',     'default', 'value' => false),
+                array('retargetOpenedEmailRecipients',     'AtLeastOneRetargetingOptionRequiredValidator'),
+                array('retargetClickedEmailRecipients',    'boolean'),
+                array('retargetClickedEmailRecipients',    'default', 'value' => false),
+                array('retargetClickedEmailRecipients',    'AtLeastOneRetargetingOptionRequiredValidator'),
+                array('retargetNotViewedEmailRecipients',  'boolean'),
+                array('retargetNotViewedEmailRecipients',  'default', 'value' => false),
+                array('retargetNotViewedEmailRecipients',  'AtLeastOneRetargetingOptionRequiredValidator'),
                 array('retargetNotClickedEmailRecipients', 'boolean'),
                 array('retargetNotClickedEmailRecipients', 'default', 'value' => false),
+                array('retargetNotClickedEmailRecipients', 'AtLeastOneRetargetingOptionRequiredValidator'),
 
             );
         }
 
         public function attributeLabels()
         {
-            return array('marketingList' => Zurmo::t('MarketingListsModule', 'Add to Existing Marketing List'));
+            return array(
+                'campaignId'    => Zurmo::t('MarketingListsModule', 'Campaign'),
+                'marketingList' => Zurmo::t('MarketingListsModule', 'Add to Existing Marketing List'),
+                'newMarketingListName' => Zurmo::t('MarketingListsModule', 'Name for New Marketing list'),
+            );
         }
     }
 ?>
