@@ -785,7 +785,9 @@ body > div {
 }
 #ModelDetailsSummaryView,
 #CommentInlineEditForModelView,
-#CommentsForRelatedModelView {
+#CommentsForRelatedModelView,
+#CommentForTaskInlineEditForModelView,
+#CommentsForRelatedTaskModelView {
   width: 100%;
   margin-right: 0;
   float: none;
@@ -804,7 +806,8 @@ body > div {
 .CommentList {
   margin-left: 0;
 }
-#CommentInlineEditForModelView {
+#CommentInlineEditForModelView,
+#CommentForTaskInlineEditForModelView {
   padding: 0 10px 0 0;
 }
 div:not(#LeaderboardView) .toolbar-mbmenu,

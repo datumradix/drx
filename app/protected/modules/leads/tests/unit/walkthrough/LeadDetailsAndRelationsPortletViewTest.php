@@ -73,7 +73,7 @@
 
             $this->assertEquals (3, count($portlets[1]));
             $this->assertFalse  (array_key_exists(3, $portlets) );
-            $this->assertEquals (2, count($portlets[2]));
+            $this->assertEquals (3, count($portlets[2]));
             foreach ($portlets[2] as $position => $portlet)
             {
                 $portlet->delete();

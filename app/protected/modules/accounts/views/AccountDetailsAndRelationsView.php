@@ -84,6 +84,9 @@
                                 array(
                                     'type' => 'OpportunitiesForAccountRelatedList',
                                 ),
+                                array(
+                                    'type' => 'CommentsForAccountRelatedModelPortlet',
+                                ),
                             )
                         )
                     )

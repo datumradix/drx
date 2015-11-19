@@ -86,7 +86,15 @@
          */
         protected function getId()
         {
-            return 'CommentsForRelatedModelView' . $this->uniquePageId;
+            if ($this->relatedModel instanceOf Task)
+            {
+                return 'CommentsForRelatedTaskModelView' . $this->uniquePageId;
+            }
+            else
+            {
+                return 'CommentsForRelatedModelView' . $this->uniquePageId;
+            }
+
         }
 
         /**
@@ -115,8 +123,8 @@
                             $this->getParams);
             return       ZurmoHtml::ajaxLink('Refresh', $url,
                          array('type' => 'GET',
-                               'success' => 'function(data){$("#CommentsForRelatedModelView' . $this->uniquePageId . '").replaceWith(data)}'),
-                         array('id'         => 'hiddenCommentRefresh'. $this->uniquePageId,
+                               'success' => 'function(data){$("#' . $this->getId() . '").replaceWith(data)}'),
+                         array('id'         => 'hiddenCommentRefresh'. $this->getId(),
                                 'class'     => 'hiddenCommentRefresh',
                                 'namespace' => 'refresh',
                                 'style'     => 'display:none;'));
@@ -131,7 +139,7 @@
                             array_merge($this->getParams, array('noPaging' => true)));
             return       ZurmoHtml::ajaxLink(Zurmo::t('CommentsModule', 'Show older comments'), $url,
                          array('type' => 'GET',
-                               'success' => 'function(data){$("#CommentsForRelatedModelView' . $this->uniquePageId . '").replaceWith(data)}'),
+                               'success' => 'function(data){$("#' . $this->getId() . '").replaceWith(data)}'),
                          array('id'         => 'showAllCommentsLink' . $this->uniquePageId,
                                 'class'     => 'showAllCommentsLink',
                                 'namespace' => 'refresh'));
@@ -164,9 +172,7 @@
                 {
                     $stringContent .= FileModelDisplayUtil::renderFileDataDetailsWithDownloadLinksContent($comment, 'files', true);
                 }
-                if ($comment->createdByUser == Yii::app()->user->userModel ||
-                   $this->relatedModel->createdByUser == Yii::app()->user->userModel ||
-                   ($this->relatedModel instanceof OwnedSecurableItem && $this->relatedModel->owner == Yii::app()->user->userModel))
+                if (CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment, Yii::app()->user->userModel))
                 {
                     $deleteCommentLink   = ' · <span class="delete-comment">' . $this->renderDeleteLinkContent($comment) . '</span>';
                     $editCommentLink     = ' · <span class="edit-comment">' . $this->renderEditLinkContent($comment) . '</span>';
@@ -176,7 +182,6 @@
                     $deleteCommentLink = null;
                     $editCommentLink   = null;
                 }
-                $editCommentLink   = null; //temporary until edit link is added
                 $stringContent .= '<span class="comment-details"><strong>'. DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
                                               $comment->createdDateTime, 'long', null) . '</strong></span>' . $editCommentLink . $deleteCommentLink;
 
@@ -188,17 +193,25 @@
             return $content;
         }
 
+
+
         /**
+         * Render comment delete link
          * @return string
          */
         protected function renderDeleteLinkContent(Comment $comment)
         {
             $url     =   Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/deleteViaAjax',
-                            array_merge($this->getParams, array('id' => $comment->id)));
+                            array_merge(
+                                $this->getParams,
+                                array('id' => $comment->id,
+                                      'relatedModelId' => $this->relatedModel->id,
+                                      'relatedModelClassName' => get_class($this->relatedModel),
+                                      'relatedModelRelationName' => 'comments')));
             // Begin Not Coding Standard
             return       ZurmoHtml::ajaxLink(Zurmo::t('Core', 'Delete'), $url,
                          array('type'     => 'GET',
-                               'complete' => "function(XMLHttpRequest, textStatus){
+                               'success'  => "function(data, textStatus, jqXHR){
                                               $('#deleteCommentLink" . $comment->id . "').parent().parent().parent().remove();}"),
                          array( 'id'         => 'deleteCommentLink' . $comment->id,
                                 'class'     => 'deleteCommentLink' . $comment->id,
@@ -207,11 +220,22 @@
         }
 
         /**
+         * Render comment edit link
          * @return string
          */
         protected function renderEditLinkContent(Comment $comment)
         {
-            $url     =   '';
+            $url     =   Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/inlineEditCommentFromAjax',
+                array_merge($this->getParams, array('id' => $comment->id)));
+            // Begin Not Coding Standard
+            return       ZurmoHtml::ajaxLink(Zurmo::t('Core', 'Edit'), $url,
+                array('type'     => 'GET',
+                      'success'  => "function(data, textStatus, jqXHR){
+                                              $('#editCommentLink" . $comment->id . "').parent().parent().find('p:first').html(data);}"),
+                array( 'id'         => 'editCommentLink' . $comment->id,
+                       'class'     => 'editCommentLink' . $comment->id,
+                       'namespace' => 'edit'));
+            // End Not Coding Standard
             return       ZurmoHtml::ajaxLink(Zurmo::t('Core', 'Edit'), $url);
         }
 
