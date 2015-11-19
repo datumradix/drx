@@ -345,7 +345,9 @@
 
 #ModelDetailsSummaryView,
 #CommentInlineEditForModelView,
-#CommentsForRelatedModelView{
+#CommentsForRelatedModelView,
+#CommentForTaskInlineEditForModelView,
+#CommentsForRelatedTaskModelView{
     max-width: 600px;
 
     .wide.form{
@@ -356,7 +358,8 @@
     }
 }
 
-#CommentInlineEditForModelView{
+#CommentInlineEditForModelView,
+#CommentForTaskInlineEditForModelView{
     margin-top: 0;
     padding-left: 115px;
     td{
@@ -551,6 +554,7 @@ a.user-link{
 #MissionsPageView,
 #ConversationsPageView{
 	#comment-inline-edit-form,
+    #comment-for-task-inline-edit-form,
 	#social-item-inline-edit-form{
 		.left-column{
 			padding: 0;
@@ -564,6 +568,7 @@ a.user-link{
 }
 
 #comment-inline-edit-form,
+#comment-for-task-inline-edit-form,
 #social-item-inline-edit-form{
     padding-bottom:15px;
     border:none;
@@ -609,7 +614,8 @@ a.user-link{
     }
 }
 
-#comment-inline-edit-form{
+#comment-inline-edit-form,
+#comment-for-task-inline-edit-form{
     border-bottom: none;
     .file-upload-box{
         padding: 14px 0 0 0;

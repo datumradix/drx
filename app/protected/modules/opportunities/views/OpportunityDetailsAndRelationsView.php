@@ -73,13 +73,16 @@
                             'rows' => array(
                                 array(
                                      'type' => 'UpcomingMeetingsForOpportunityCalendar',
-                                    ),
+                                ),
                                 array(
                                      'type' => 'OpenTasksForOpportunityRelatedList',
-                                    ),
+                                ),
                                 array(
                                      'type' => 'ContactsForOpportunityRelatedList',
-                                    )
+                                ),
+                                array(
+                                     'type' => 'CommentsForOpportunityRelatedModelPortlet',
+                                ),
                             )
                         )
                     )

@@ -334,17 +334,17 @@
         {
             $task = Task::getById($this->model->id);
             $content = '<div id="task-subscriber-box">';
-            $content .= ZurmoHtml::tag('h4', array(), Zurmo::t('TasksModule', 'Who is receiving notifications'));
+            $content .= ZurmoHtml::tag('h4', array(), Zurmo::t('Core', 'Who is receiving notifications'));
             $content .= '<div id="subscriberList" class="clearfix">';
             if ($task->notificationSubscribers->count() > 0)
             {
-                $content .= TasksUtil::getTaskSubscriberData($task);
+                $content .= NotificationSubscriberUtil::getSubscriberData($task);
             }
-            $content .= TasksUtil::getDetailSubscriptionLink($task, 0);
+            $content .= NotificationSubscriberUtil::getDetailSubscriptionLink($task, 0);
             $content .= '</div>';
             $content .= '</div>';
-            TasksUtil::registerSubscriptionScript($this->model->id);
-            TasksUtil::registerUnsubscriptionScript($this->model->id);
+            NotificationSubscriberUtil::registerSubscriptionScript('Task', $this->model);
+            NotificationSubscriberUtil::registerUnsubscriptionScript('Task', $this->model);
             return $content;
         }
 
@@ -369,7 +369,7 @@
                 'data'     => array(),
                 'success'  => 'function(data)
                               {
-                                $("#subscribe-task-link").hide();
+                                $("#subscribe-model-link").hide();
                                 $("#subscriberList").replaceWith(data);
                               }'
             );

@@ -368,5 +368,61 @@
         {
             $this->export('OpportunitiesSearchView');
         }
+
+        /**
+         * Create comment via ajax for opportunity
+         * @param type $id
+         * @param string $uniquePageId
+         */
+        public function actionInlineCreateCommentFromAjax($id, $uniquePageId)
+        {
+            $comment       = new Comment();
+            $redirectUrl   = Yii::app()->createUrl('/opportunities/default/inlineCreateCommentFromAjax',
+                array('id'           => $id,
+                      'uniquePageId' => $uniquePageId));
+            $urlParameters = array('relatedModelId'           => (int)$id,
+                                   'relatedModelClassName'    => 'Opportunity',
+                                   'relatedModelRelationName' => 'comments',
+                                   'redirectUrl'              => $redirectUrl); //After save, the url to go to.
+            $uniquePageId  = 'CommentInlineEditForModelView';
+            echo             ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Add Comment'));
+            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
+                $urlParameters, $uniquePageId);
+            $view          = new AjaxPageView($inlineView);
+            echo $view->render();
+        }
+
+        /**
+         * Add subscriber for opportunity
+         * @param int $id
+         */
+        public function actionAddSubscriber($id)
+        {
+            $opportunity = Opportunity::getById((int)$id);
+            $opportunity    = NotificationSubscriberUtil::processSubscriptionRequest($opportunity, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::getSubscriberData($opportunity);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
+            echo $content;
+        }
+
+        /**
+         * Remove subscriber for opportunity
+         * @param int $id
+         */
+        public function actionRemoveSubscriber($id)
+        {
+            $opportunity = Opportunity::getById((int)$id);
+            $opportunity    = NotificationSubscriberUtil::processUnsubscriptionRequest($opportunity, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::getSubscriberData($opportunity);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
+            if ($content == null)
+            {
+                echo "";
+            }
+            else
+            {
+                echo $content;
+            }
+        }
     }
 ?>

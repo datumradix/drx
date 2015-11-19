@@ -35,52 +35,18 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when a new comment is added for mission.
+     * Base class used for wrapping a view of social items
      */
-    class MissionNewCommentNotificationRules extends NotificationRules
+    class CommentsForContactRelatedModelPortletView extends CommentsForRelatedModelPortletView
     {
-        protected $allowSendingEmail    = true;
-        protected $allowDuplicates      = true;
-
-        public function getDisplayName()
+        public static function getModuleClassName()
         {
-            return Zurmo::t('MissionsModule', 'Mission new comment');
+            return 'ContactsModule';
         }
 
-        public function getType()
+        public static function getAllowedOnPortletViewClassNames()
         {
-            return 'MissionNewComment';
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getModuleClassNames()
-        {
-            return array('MissionsModule');
-        }
-
-        public function getTooltipId()
-        {
-            return 'mission-new-comment-notification-tooltip';
-        }
-
-        public function getTooltipTitle()
-        {
-            return Zurmo::t('UsersModule', 'Notify me when a comment is added to one of my missions.');
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getSubjectForEmailNotification()
-        {
-            if ($this->model instanceof Mission)
-            {
-                return Zurmo::t('CommentsModule', 'New comment on {modelName}: {subject}',
-                    array('{subject}'   => strval($this->model),
-                          '{modelName}' => $this->model->getModelLabelByTypeAndLanguage('SingularLowerCase')));
-            }
+            return array('ContactDetailsAndRelationsView');
         }
     }
 ?>

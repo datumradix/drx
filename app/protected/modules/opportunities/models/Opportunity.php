@@ -59,6 +59,7 @@
                 {
                     $this->resolveStageToProbability();
                 }
+                $this->resolveAndSetDefaultSubscribers();
                 Yii::app()->custom->resolveOpportunityCustomActionsBeforeSave($this);
                 return true;
             }
@@ -133,6 +134,10 @@
                     'source'        => array(static::HAS_ONE,   'OwnedCustomField', static::OWNED,
                                              static::LINK_TYPE_SPECIFIC, 'source'),
                     'projects'      => array(static::MANY_MANY, 'Project'),
+                    'notificationSubscribers'   => array(static::HAS_MANY, 'NotificationSubscriber', static::OWNED,
+                                             static::LINK_TYPE_POLYMORPHIC, 'relatedModel'),
+                    'comments'      => array(static::HAS_MANY, 'Comment', static::OWNED,
+                                             static::LINK_TYPE_POLYMORPHIC, 'relatedModel'),
                 ),
                 'derivedRelationsViaCastedUpModel' => array(
                     'meetings' => array(static::MANY_MANY, 'Meeting', 'activityItems'),
@@ -205,6 +210,14 @@
             {
                 $this->probability = OpportunitiesModule::getProbabilityByStageValue($this->stage->value);
             }
+        }
+
+        /**
+         * Resolve and set default subscribers
+         */
+        protected function resolveAndSetDefaultSubscribers()
+        {
+            NotificationSubscriberUtil::addSubscriber($this->owner, $this, false);
         }
     }
 ?>
