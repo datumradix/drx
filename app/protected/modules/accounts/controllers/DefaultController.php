@@ -463,38 +463,5 @@
                 echo $content;
             }
         }
-
-        /**
-         * Add kanban subscriber
-         * @param string $id
-         */
-        public function actionAddKanbanSubscriber($id)
-        {
-            $account = Account::getById((int)$id);
-            $account    = NotificationSubscriberUtil::processSubscriptionRequest($account, Yii::app()->user->userModel);
-            $content = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($account);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($account, 'subscribe-task-link', 'unsubscribe-task-link');
-            echo $content;
-        }
-
-        /**
-         * Unsubscribe the user from the account
-         * @param string $id
-         */
-        public function actionRemoveKanbanSubscriber($id)
-        {
-            $account = Account::getById((int)$id);
-            $account = NotificationSubscriberUtil::processUnsubscriptionRequest($account, Yii::app()->user->userModel);
-            $content = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($account);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($account, 'subscribe-task-link', 'unsubscribe-task-link');
-            if ($content == null)
-            {
-                echo "";
-            }
-            else
-            {
-                echo $content;
-            }
-        }
     }
 ?>

@@ -424,38 +424,5 @@
                 echo $content;
             }
         }
-
-        /**
-         * Add kanban subscriber
-         * @param string $id
-         */
-        public function actionAddKanbanSubscriber($id)
-        {
-            $opportunity = Opportunity::getById((int)$id);
-            $opportunity    = NotificationSubscriberUtil::processSubscriptionRequest($opportunity, Yii::app()->user->userModel);
-            $content = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($opportunity);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'subscribe-task-link', 'unsubscribe-task-link');
-            echo $content;
-        }
-
-        /**
-         * Unsubscribe the user from the opportunity
-         * @param string $id
-         */
-        public function actionRemoveKanbanSubscriber($id)
-        {
-            $opportunity = Opportunity::getById((int)$id);
-            $opportunity = NotificationSubscriberUtil::processUnsubscriptionRequest($opportunity, Yii::app()->user->userModel);
-            $content = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($opportunity);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'subscribe-task-link', 'unsubscribe-task-link');
-            if ($content == null)
-            {
-                echo "";
-            }
-            else
-            {
-                echo $content;
-            }
-        }
     }
 ?>

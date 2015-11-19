@@ -810,7 +810,23 @@
             $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
             $this->assertEmpty(json_decode($content));
 
+            $user->setRight('ContactsModule', ContactsModule::RIGHT_ACCESS_CONTACTS);
+            $this->assertTrue($user->save());
 
+            $contact->addPermissions($user, Permission::READ);
+            $this->assertTrue($contact->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForUser($contact, $user);
+            $this->setGetArray(array('term' => 'Simson', 'relatedModelClassName' => 'Contact', 'relatedModelId' => $contact->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
+            $this->assertNotEmpty(json_decode($content));
+            $userData = json_decode($content);
+            $this->assertNotEmpty($userData);
+            $this->assertEquals(1, count($userData));
+            $this->assertEquals($user->id, $userData[0]->id);
+            $this->assertEquals(strval($user), $userData[0]->name);
+            $this->assertEquals($user->username, $userData[0]->username);
+            $this->assertEquals('users', $userData[0]->type);
+            $this->assertEquals($user->getAvatarImageUrl(20, true), $userData[0]->avatar);
         }
     }
 ?>

@@ -560,5 +560,87 @@
             $opportunities = Opportunity::getAll();
             $this->assertEquals(0, count($opportunities));
         }
+
+        public function testInlineCreateCommentFromAjax()
+        {
+            UserTestHelper::createBasicUser('sally');
+            $sally = $this->logoutCurrentUserLoginNewUserAndGetByUsername('sally');
+
+            $opportunity = OpportunityTestHelper::createOpportunityByNameForOwner('testOpportunity2', $sally);
+            $this->setGetArray(array('id' => $opportunity->id, 'uniquePageId' => 'CommentInlineEditForModelView'));
+            $this->runControllerShouldResultInAccessFailureAndGetContent('opportunities/default/inlineCreateCommentFromAjax');
+
+            //Now test peon with elevated rights to accounts
+            $sally->setRight('OpportunitiesModule', OpportunitiesModule::RIGHT_ACCESS_OPPORTUNITIES);
+            $sally->setRight('OpportunitiesModule', OpportunitiesModule::RIGHT_CREATE_OPPORTUNITIES);
+            $sally->setRight('OpportunitiesModule', OpportunitiesModule::RIGHT_DELETE_OPPORTUNITIES);
+            $this->assertTrue($sally->save());
+            $opportunity->addPermissions($sally, Permission::READ_WRITE_CHANGE_PERMISSIONS);
+            $this->assertTrue($opportunity->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($opportunity, $sally);
+
+            $this->setGetArray(array('id' => $opportunity->id, 'uniquePageId' => 'CommentInlineEditForModelView'));
+            $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/inlineCreateCommentFromAjax');
+        }
+
+        public function testAddAndRemoveSubscriberViaAjaxWithNormalUser()
+        {
+            $super = User::getByUsername('super');
+            $billy              = $this->logoutCurrentUserLoginNewUserAndGetByUsername('billy');
+            $opportunity = OpportunityTestHelper::createOpportunityByNameForOwner('testOpportunity3', $billy);
+
+            $this->setGetArray(array('id' => $opportunity->id));
+            $this->runControllerShouldResultInAccessFailureAndGetContent('opportunities/default/removeSubscriber');
+            $this->setGetArray(array('id' => $opportunity->id));
+            $this->runControllerShouldResultInAccessFailureAndGetContent('opportunities/default/addSubscriber');
+
+            //Now test peon with elevated rights to accounts
+            $billy->setRight('OpportunitiesModule', OpportunitiesModule::RIGHT_ACCESS_OPPORTUNITIES);
+            $billy->setRight('OpportunitiesModule', OpportunitiesModule::RIGHT_CREATE_OPPORTUNITIES);
+            $billy->setRight('OpportunitiesModule', OpportunitiesModule::RIGHT_DELETE_OPPORTUNITIES);
+            $this->assertTrue($billy->save());
+            $opportunity->addPermissions($billy, Permission::READ_WRITE_CHANGE_PERMISSIONS);
+            $this->assertTrue($opportunity->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($opportunity, $billy);
+
+            //Test nobody with elevated rights.
+            Yii::app()->user->userModel = User::getByUsername('billy');
+
+            $this->setGetArray(array('id' => $opportunity->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/removeSubscriber', false);
+            $this->assertContains($billy->getFullName(), $content);
+            $this->assertEquals(1, $opportunity->notificationSubscribers->count());
+
+            //Now super user would be added as a subscriber as he becomes the owner
+            $opportunity->owner        = $super;
+            $this->assertTrue($opportunity->save());
+
+            $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/removeSubscriber', false);
+            $this->assertNotContains($billy->getFullName(), $content);
+            $this->assertEquals(1, $opportunity->notificationSubscribers->count());
+
+            $this->assertFalse($this->checkIfUserFoundInSubscribersList($opportunity, $billy->id));
+
+            $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/addSubscriber', false);
+            $this->assertContains($billy->getFullName(), $content);
+            $this->assertEquals(2, $opportunity->notificationSubscribers->count());
+
+            $this->assertTrue($this->checkIfUserFoundInSubscribersList($opportunity, $billy->id));
+        }
+
+        private function checkIfUserFoundInSubscribersList($opportunity, $compareId)
+        {
+            $isUserFound = false;
+            $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
+            foreach ($opportunity->notificationSubscribers as $subscriber)
+            {
+                $user     = $subscriber->person->castDown(array($modelDerivationPathToItem));
+                if ($user->id == $compareId)
+                {
+                    $isUserFound = true;
+                }
+            }
+            return $isUserFound;
+        }
     }
 ?>
