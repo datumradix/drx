@@ -369,7 +369,7 @@
                 'data'     => array(),
                 'success'  => 'function(data)
                               {
-                                $("#subscribe-task-link").hide();
+                                $("#subscribe-model-link").hide();
                                 $("#subscriberList").replaceWith(data);
                               }'
             );

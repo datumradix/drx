@@ -153,7 +153,7 @@
                 $task->save();
             }
             $link = NotificationSubscriberUtil::getKanbanSubscriptionLink($task, 0);
-            $this->assertContains('unsubscribe-task-link', $link);
+            $this->assertContains('unsubscribe-model-link', $link);
             $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
             foreach ($task->notificationSubscribers as $notificationSubscriber)
             {
@@ -165,7 +165,7 @@
             }
             $task->save();
             $link = NotificationSubscriberUtil::getKanbanSubscriptionLink($task, 0);
-            $this->assertContains('subscribe-task-link', $link);
+            $this->assertContains('subscribe-model-link', $link);
         }
 
         /**
@@ -183,7 +183,7 @@
                 $task->save();
             }
             $link = NotificationSubscriberUtil::getDetailSubscriptionLink($task, 0);
-            $this->assertContains('detail-unsubscribe-task-link', $link);
+            $this->assertContains('detail-unsubscribe-model-link', $link);
             $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
             foreach ($task->notificationSubscribers as $index => $notificationSubscriber)
             {
@@ -195,7 +195,7 @@
             }
             $task->save();
             $link = NotificationSubscriberUtil::getDetailSubscriptionLink($task, 0);
-            $this->assertContains('detail-subscribe-task-link', $link);
+            $this->assertContains('detail-subscribe-model-link', $link);
         }
 
         /**

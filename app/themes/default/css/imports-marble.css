@@ -9710,52 +9710,52 @@ a[id^="SendTestEmailLinkActionElement"] .z-label:after {
   left: 0;
   z-index: -1;
 }
-.subscribe-task-link,
-.unsubscribe-task-link {
+.subscribe-model-link,
+.unsubscribe-model-link {
   background: #DFDFDF;
   padding: 2px;
   display: inline-block;
   width: 20px;
   height: 20px;
 }
-.subscribe-task-link .icon-subscribe,
-.subscribe-task-link .icon-unsubscribe,
-.unsubscribe-task-link .icon-subscribe,
-.unsubscribe-task-link .icon-unsubscribe {
+.subscribe-model-link .icon-subscribe,
+.subscribe-model-link .icon-unsubscribe,
+.unsubscribe-model-link .icon-subscribe,
+.unsubscribe-model-link .icon-unsubscribe {
   position: relative;
   top: -3px;
   display: block;
   text-align: center;
 }
-.subscribe-task-link .icon-subscribe:after,
-.subscribe-task-link .icon-unsubscribe:after,
-.unsubscribe-task-link .icon-subscribe:after,
-.unsubscribe-task-link .icon-unsubscribe:after {
+.subscribe-model-link .icon-subscribe:after,
+.subscribe-model-link .icon-unsubscribe:after,
+.unsubscribe-model-link .icon-subscribe:after,
+.unsubscribe-model-link .icon-unsubscribe:after {
   color: #545454;
   content: '\2260';
   font-size: 29px;
 }
-.detail-subscribe-task-link,
-.detail-unsubscribe-task-link {
+.detail-subscribe-model-link,
+.detail-unsubscribe-model-link {
   background: #DFDFDF;
   padding: 2px;
   display: inline-block;
   width: 36px;
   height: 36px;
 }
-.detail-subscribe-task-link .icon-subscribe,
-.detail-subscribe-task-link .icon-unsubscribe,
-.detail-unsubscribe-task-link .icon-subscribe,
-.detail-unsubscribe-task-link .icon-unsubscribe {
+.detail-subscribe-model-link .icon-subscribe,
+.detail-subscribe-model-link .icon-unsubscribe,
+.detail-unsubscribe-model-link .icon-subscribe,
+.detail-unsubscribe-model-link .icon-unsubscribe {
   position: relative;
   top: -2px;
   display: block;
   text-align: center;
 }
-.detail-subscribe-task-link .icon-subscribe:after,
-.detail-subscribe-task-link .icon-unsubscribe:after,
-.detail-unsubscribe-task-link .icon-subscribe:after,
-.detail-unsubscribe-task-link .icon-unsubscribe:after {
+.detail-subscribe-model-link .icon-subscribe:after,
+.detail-subscribe-model-link .icon-unsubscribe:after,
+.detail-unsubscribe-model-link .icon-subscribe:after,
+.detail-unsubscribe-model-link .icon-unsubscribe:after {
   color: #545454;
   content: '\2260';
   font-size: 44px;

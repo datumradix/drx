@@ -242,7 +242,7 @@
             $task = Task::getById((int)$id);
             $task    = NotificationSubscriberUtil::processSubscriptionRequest($task, Yii::app()->user->userModel);
             $content = NotificationSubscriberUtil::getSubscriberData($task);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
             echo $content;
         }
 
@@ -255,7 +255,7 @@
             $task = Task::getById((int)$id);
             $task    = NotificationSubscriberUtil::processUnsubscriptionRequest($task, Yii::app()->user->userModel);
             $content = NotificationSubscriberUtil::getSubscriberData($task);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
             if ($content == null)
             {
                 echo "";
@@ -275,7 +275,7 @@
             $task = Task::getById((int)$id);
             $task    = NotificationSubscriberUtil::processSubscriptionRequest($task, Yii::app()->user->userModel);
             $content = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'subscribe-model-link', 'unsubscribe-model-link');
             echo $content;
         }
 
@@ -288,7 +288,7 @@
             $task = Task::getById((int)$id);
             $task = NotificationSubscriberUtil::processUnsubscriptionRequest($task, Yii::app()->user->userModel);
             $content = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'subscribe-model-link', 'unsubscribe-model-link');
             if ($content == null)
             {
                 echo "";
@@ -522,7 +522,7 @@
                             $response['status'] = Task::getStatusDisplayName($task->status);
                             $response['owner']  = $task->owner->getFullName();
                             $subscriptionContent = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
-                            $subscriptionContent .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
+                            $subscriptionContent .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'subscribe-model-link', 'unsubscribe-model-link');
                             $response['subscriptionContent']  = $subscriptionContent;
                         }
                         else
@@ -546,7 +546,7 @@
                                 $kanbanItem->type = intval($type);
                                 $kanbanItem->save();
                                 $subscriptionContent = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
-                                $subscriptionContent .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
+                                $subscriptionContent .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'subscribe-model-link', 'unsubscribe-model-link');
                                 $response['button'] = $content;
                                 $response['status'] = Task::getStatusDisplayName($task->status);
                                 $response['owner']  = $task->owner->getFullName();
@@ -575,7 +575,7 @@
            $this->processStatusUpdateViaAjax($task, $targetStatus, false);
            TasksUtil::processKanbanItemUpdateOnButtonAction(intval($targetStatus), intval($taskId), intval($sourceKanbanType));
            $subscriptionContent = NotificationSubscriberUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
-           $subscriptionContent .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'subscribe-task-link', 'unsubscribe-task-link');
+           $subscriptionContent .= NotificationSubscriberUtil::resolveSubscriptionLink($task, 'subscribe-model-link', 'unsubscribe-model-link');
            $response['subscriptionContent']  = $subscriptionContent;
            echo CJSON::encode($response);
         }

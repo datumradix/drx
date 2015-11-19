@@ -401,7 +401,7 @@
             $opportunity = Opportunity::getById((int)$id);
             $opportunity    = NotificationSubscriberUtil::processSubscriptionRequest($opportunity, Yii::app()->user->userModel);
             $content = NotificationSubscriberUtil::getSubscriberData($opportunity);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
             echo $content;
         }
 
@@ -414,7 +414,7 @@
             $opportunity = Opportunity::getById((int)$id);
             $opportunity    = NotificationSubscriberUtil::processUnsubscriptionRequest($opportunity, Yii::app()->user->userModel);
             $content = NotificationSubscriberUtil::getSubscriberData($opportunity);
-            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'detail-subscribe-task-link', 'detail-unsubscribe-task-link');
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($opportunity, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
             if ($content == null)
             {
                 echo "";
