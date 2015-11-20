@@ -80,6 +80,11 @@
             $this->moduleId = $params["moduleId"];
         }
 
+        protected function getCommentsWrappingCssClass()
+        {
+            return 'model-comments-activity';
+        }
+
         /**
          * @throws NotImplementedException
          */
@@ -94,10 +99,11 @@
          */
         protected function renderControlNonEditable()
         {
+            $wrappingCssClass = $this->getCommentsWrappingCssClass();
             $content  = $this->getFormattedAttributeLabel();
             $content .= $this->renderRelatedModelCommentsContent();
             $content .= $this->renderRelatedModelCreateCommentContent();
-            $content  = ZurmoHtml::tag('div', array('class' => 'task-activity'), $content);
+            $content  = ZurmoHtml::tag('div', array('class' => $wrappingCssClass), $content);
             return $content;
         }
 
@@ -144,7 +150,15 @@
         {
             $content       = '';//ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Add Comment'));
             $comment       = new Comment();
-            $uniquePageId  = 'CommentInlineEditForModelView';
+            if ($this->moduleId == 'tasks')
+            {
+                $uniquePageId  = 'CommentForTaskInlineEditForModelView';;
+            }
+            else
+            {
+                $uniquePageId  = 'CommentInlineEditForModelView';
+            }
+
             $redirectUrl   = Yii::app()->createUrl('/' . $this->moduleId . '/default/inlineCreateCommentFromAjax',
                                                     array('id' => $this->model->id,
                                                           'uniquePageId' => $uniquePageId));
@@ -153,11 +167,49 @@
                                    'relatedModelRelationName' => 'comments',
                                    'redirectUrl'              => $redirectUrl); //After save, the url to go to.
 
-            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
-                                                      $urlParameters, $uniquePageId);
+            if ($this->moduleId == 'tasks')
+            {
+                $inlineView    = new CommentForTaskInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
+                    $urlParameters, $uniquePageId);
+                $htmlOptions = array('id' => 'CommentForTaskInlineEditForModelView');
+            }
+            else
+            {
+                $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
+                    $urlParameters, $uniquePageId);
+                $htmlOptions = array('id' => 'CommentInlineEditForModelView');
+            }
+            $content      .= ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Add Comment'));
             $content      .= $inlineView->render();
-            $htmlOptions = array('id' => 'CommentInlineEditForModelView');
             return ZurmoHtml::tag('div', $htmlOptions, $content);
+        }
+
+        /**
+         * Used for inline comments edit
+         * Get view and set parameters for comment inline edit
+         * @param $id
+         * @param $relatedModelId
+         * @param $relatedModelClassName
+         * @param $relatedModelRelationName
+         * @param null $uniquePageId
+         * @return CommentInlineEditView
+         * @throws NotFoundException
+         */
+        public static function getRelatedModelCommentInlineEditView($id, $relatedModelId, $relatedModelClassName, $relatedModelRelationName, $uniquePageId = null)
+        {
+            $comment = Comment::getById($id);
+            $redirectUrl   = Yii::app()->createUrl('/comments/default/inlineEditSave',
+                array('id'           => $id,
+                      'uniquePageId' => $uniquePageId));
+            $urlParameters = array('id' => $comment->id,
+                                   'relatedModelId'           => (int)$relatedModelId,
+                                   'relatedModelClassName'    => $relatedModelClassName,
+                                   'relatedModelRelationName' => $relatedModelRelationName,
+                                   'redirectUrl'              => $redirectUrl); //After save, the url to go to.
+            $uniquePageId  = 'CommentInlineEditForExistingModelView' . $uniquePageId;
+            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineEditSave',
+                $urlParameters, $uniquePageId);
+            return $inlineView;
         }
     }
 ?>

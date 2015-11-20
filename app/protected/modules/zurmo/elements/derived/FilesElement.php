@@ -42,6 +42,8 @@
     {
         const ALLOW_DOWNLOAD_ON_EDITABLE_KEY    = 'allowDownloadOnEditable';
 
+        protected $elementIdPostfix = '';
+
         protected function renderControlNonEditable()
         {
             assert('$this->model instanceof Item || $this->model->getModel() instanceof Item');
@@ -163,7 +165,7 @@
 
         protected function getId()
         {
-            return get_class($this->model);
+            return get_class($this->model) . $this->getElementIdPostfix() . $this->getElementModeIdForElementId();
         }
 
         /**
@@ -191,6 +193,33 @@
         public function getAllowDownloadOnEditableDefault()
         {
             return true;
+        }
+
+        /**
+         * Add ElementId Postfix, which is used to distinct file uploads elements by their ids
+         * For now this feature is usefull only for comments.
+         * @return string
+         */
+        protected function getElementIdPostfix()
+        {
+            if (isset($this->params['elementIdPostfix']))
+            {
+                return $this->params['elementIdPostfix'];
+            }
+            return $this->elementIdPostfix;
+        }
+
+        /**
+         * Used now only for comments, because in case when we have multiple comments on same page, and because user
+         * can edit comments(and remove files from comments), we need to provide unique id for each comment.
+         * @return model id or null
+         */
+        protected function getElementModeIdForElementId()
+        {
+            if ($this->model instanceOf Comment && $this->model->id > 0)
+            {
+                return $this->model->id;
+            }
         }
     }
 ?>

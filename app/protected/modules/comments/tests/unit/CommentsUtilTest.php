@@ -52,7 +52,7 @@
             Yii::app()->user->userModel = User::getByUsername('super');
         }
 
-        public function testSendNotificationOnNewComment()
+        public function testSendNotificationOnCommentCreateOrUpdate()
         {
             $super                      = User::getByUsername('super');
             $steven                     = User::getByUsername('steven');
@@ -72,7 +72,7 @@
             $this->assertEquals(0, Notification::getCount());
 
             //No message was sent because Steven and Jack don't have primary email address
-            CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $jack));
+            CommentsUtil::sendNotificationOnCommentCreateOrUpdate($conversation, $comment, array($steven, $jack));
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             //Two inbox notifications sent
@@ -86,7 +86,7 @@
             $this->assertTrue($jack->save());
 
             //Two email message were sent one to Steven and one to Jack
-            CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $jack));
+            CommentsUtil::sendNotificationOnCommentCreateOrUpdate($conversation, $comment, array($steven, $jack));
             $this->assertEquals(2, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $emailMessages = EmailMessage::getAll();
@@ -99,9 +99,9 @@
 
             //One email message was sent to Super but not to Steven
             //One inbox notification to Steven but not to Super
-            NotificationTestHelper::setNotificationSettingsForUser($steven, 'ConversationNewComment', true, false);
-            NotificationTestHelper::setNotificationSettingsForUser($super, 'ConversationNewComment', false, true);
-            CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $super));
+            NotificationTestHelper::setNotificationSettingsForUser($steven, 'ConversationComment', true, false);
+            NotificationTestHelper::setNotificationSettingsForUser($super, 'ConversationComment', false, true);
+            CommentsUtil::sendNotificationOnCommentCreateOrUpdate($conversation, $comment, array($steven, $super));
             $this->assertEquals(3, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $emailMessages = EmailMessage::getAll();
@@ -175,6 +175,29 @@
             $this->assertTrue(strpos($modifiedDescription, '[~jack]')   == null);
             $this->assertTrue(strpos($modifiedDescription, '[~super]')  == null);
             $this->assertTrue(strpos($modifiedDescription, '[~sup]')    != null);
+        }
+
+        public function testHasUserHaveAccessToEditOrDeleteComment()
+        {
+            $super                      = User::getByUsername('super');
+            $steven                     = User::getByUsername('steven');
+            $jack                       = User::getByUsername('jack');
+
+            Yii::app()->user->userModel = $super;
+            $comment1                  = new Comment();
+            $comment1->description     = 'Comment 1';
+            $this->assertTrue($comment1->save());
+            $this->assertTrue(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment1, $super));
+            $this->assertFalse(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment1, $steven));
+            $this->assertFalse(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment1, $jack));
+
+            Yii::app()->user->userModel = $steven;
+            $comment2                  = new Comment();
+            $comment2->description     = 'Comment 2';
+            $this->assertTrue($comment2->save());
+            $this->assertTrue(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment2, $super));
+            $this->assertTrue(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment2, $steven));
+            $this->assertFalse(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment2, $jack));
         }
     }
 ?>

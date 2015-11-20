@@ -110,7 +110,7 @@
                     'update' => '#' . $this->uniquePageId,
                     'complete' => "function(XMLHttpRequest, textStatus){
                         //find if there is a comment thread to refresh
-                        $('#hiddenCommentRefresh" . $this->uniquePageId . "').click();
+                        $('.comments-activity .hiddenCommentRefresh').click();
                     }"
                 ));
             // End Not Coding Standard

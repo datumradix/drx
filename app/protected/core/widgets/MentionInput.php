@@ -42,7 +42,7 @@
     class MentionInput extends ZurmoWidget
     {
         public $scriptFile = array('lib/jquery.events.input.js',
-            'lib/jquery.elastic.js', 'lib/underscore.js', 'jquery.mentionsInput.js');
+            'lib/jquery.elastic.js', 'lib/underscore.js', 'jquery.mentionsInput.js', 'lib/purl.js');
 
         public $cssFile    = 'jquery.mentionsInput.css';
 
@@ -59,6 +59,8 @@
         public $classes = '';
 
         public $templates = '';
+
+        public $defaultValue = '';
 
         /**
          * Initializes the widget.
@@ -86,11 +88,19 @@
             };
             // Begin Not Coding Standard
             $javaScript = <<<EOD
+var action = $('#$id').closest("form").attr('action');
+var relatedModelClassName = purl(action).param('relatedModelClassName');
+var relatedModelId = purl(action).param('relatedModelId');
+var queryString = '';
+if (relatedModelClassName != 'undefined' && relatedModelId != 'undefined')
+{
+    queryString = '&relatedModelClassName=' + relatedModelClassName + '&relatedModelId=' + relatedModelId;
+}
 $('#$id').mentionsInput({
 onDataRequest:function (mode, query, callback) {
   $.ajax({
     dataType: "json",
-    url: '{$this->callBackUrl}?term=' + query,
+    url: '{$this->callBackUrl}?term=' + query + queryString,
     data: [],
     success: function (responseData) {
       callback.call(this, responseData);
@@ -98,8 +108,10 @@ onDataRequest:function (mode, query, callback) {
   });
     },
     onCaret: true,
+    allowRepeat: true,
     triggerChar: '{$this->triggerChar}',
     minChars:    '{$this->minChars}',
+    defaultValue: '{$this->defaultValue}',
     {$additionalSettingsJs}
   });
 EOD;
