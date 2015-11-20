@@ -44,7 +44,7 @@
          * @param Comment $comment
          * @param array $peopleToSendNotification
          */
-        public static function sendNotificationOnNewComment(RedBeanModel $relatedModel, Comment $comment, $peopleToSendNotification)
+        public static function sendNotificationOnCommentCreateOrUpdate(RedBeanModel $relatedModel, Comment $comment, $peopleToSendNotification)
         {
             if (count($peopleToSendNotification) > 0)
             {
@@ -192,7 +192,7 @@
          */
         protected static function resolveOnNewCommentNotificationSettingNameByModel(RedBeanModel $model)
         {
-            return 'enable' . get_class($model) . 'NewCommentNotification';
+            return 'enable' . get_class($model) . 'CommentNotification';
         }
 
         /**
@@ -201,7 +201,26 @@
          */
         protected static function resolveNotificationRulesClassByModel(RedBeanModel $model)
         {
-            return get_class($model) . 'NewCommentNotificationRules';
+            return get_class($model) . 'CommentNotificationRules';
+        }
+
+        /**
+         * Check if user should have access to comment edit and delete comments
+         * Only user who created comment and super administrators should have access to these actions
+         * @param Comment $comment
+         * @param User $user
+         * @return bool
+         * @throws NotFoundException
+         */
+        public static function hasUserHaveAccessToEditOrDeleteComment(Comment $comment, User $user)
+        {
+            $group = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
+            if ($comment->createdByUser->id == $user->id ||
+                $group->users->contains($user))
+            {
+                return true;
+            }
+            return false;
         }
     }
 ?>

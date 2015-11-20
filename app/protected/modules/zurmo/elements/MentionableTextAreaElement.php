@@ -39,6 +39,8 @@
      */
     class MentionableTextAreaElement extends CommentTextAreaElement
     {
+        protected $elementIdPostfix = '';
+
         /**
          * Render A text area with X rows and Y columns.
          */
@@ -53,8 +55,9 @@
 
             // Load widget for mention input
             $widgetSettings = array(
-                'callBackUrl' => Yii::app()->createUrl('users/default/getUsersByPartialString'),
+                'callBackUrl' => Yii::app()->createUrl('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem'),
                 'id'          => $this->getEditableInputId(),
+                'defaultValue' => $this->model->description,
             );
             $cClipWidget             = new CClipWidget();
             $cClipWidget->beginClip("MentionInput");
@@ -71,10 +74,28 @@
          */
         protected function renderControlNonEditable()
         {
-            //return parent::renderControlNonEditable();
             $text = $this->model->{$this->attribute};
             $text = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($text);
             return TextUtil::textWithUrlToTextWithLink($text);
+        }
+
+        protected function getEditableInputId($attributeName = null, $relationAttributeName = null)
+        {
+            $inputId = parent::getEditableInputId($attributeName, $relationAttributeName) . $this->getElementIdPostfix();
+            if ($this->model->id > 0)
+            {
+                $inputId = $inputId . '_' . $this->model->id;
+            }
+            return $inputId;
+        }
+
+        protected function getElementIdPostfix()
+        {
+            if (isset($this->params['elementIdPostfix']))
+            {
+                return $this->params['elementIdPostfix'];
+            }
+            return $this->elementIdPostfix;
         }
     }
 ?>

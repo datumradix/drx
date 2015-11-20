@@ -368,7 +368,7 @@
                 }
             }
             //There should have been a total of 3 portlets.
-            $this->assertEquals(6, $portletCount);
+            $this->assertEquals(7, $portletCount);
             $this->resetGetArray();
             $this->setPostArray(array(
                 'portletLayoutConfiguration' => array(
@@ -380,7 +380,7 @@
             //Now test that all the portlets are collapsed and moved to the first column.
             $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition(
                             'OpportunityDetailsAndRelationsView', $super->id, array());
-            $this->assertEquals (6, count($portlets[1]));
+            $this->assertEquals (7, count($portlets[1]));
             $this->assertFalse  (array_key_exists(2, $portlets) );
             foreach ($portlets as $column => $columns)
             {
@@ -682,6 +682,50 @@
             //calculating lead's count
             $Opportunities = Opportunity::getAll();
             $this->assertEquals(0, count($Opportunities));
+        }
+
+        public function testInlineCreateCommentFromAjax()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $opportunity = OpportunityTestHelper::createOpportunityByNameForOwner('testAccount2', $super);
+
+            $this->setGetArray(array('id' => $opportunity->id, 'uniquePageId' => 'CommentInlineEditForModelView'));
+            $this->runControllerWithNoExceptionsAndGetContent('accounts/default/inlineCreateCommentFromAjax');
+        }
+
+        /**
+         * @depends testInlineCreateCommentFromAjax
+         */
+        public function testAddAndRemoveSubscriberViaAjaxAsSuperUser()
+        {
+            //Login with super and check subscribe unsubscribe from modal detail view when super
+            //is not owner or requested by user
+            $super              = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $mike = UserTestHelper::createBasicUser('mike');
+            $opportunity = OpportunityTestHelper::createOpportunityByNameForOwner('testAccount3', $mike);
+            $this->assertEquals(1, $opportunity->notificationSubscribers->count());
+
+            $this->setGetArray(array('id' => $opportunity->id));
+            $this->assertFalse(NotificationSubscriberUtil::doNotificationSubscribersContainPerson($opportunity, $super));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/addSubscriber', false);
+            $this->assertContains('gravatar', $content);
+            $this->assertContains('users/default/details', $content);
+            $this->assertContains($super->getFullName(), $content);
+            $this->assertEquals(2, $opportunity->notificationSubscribers->count());
+
+            $this->setGetArray(array('id' => $opportunity->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/removeSubscriber', false);
+            $this->assertNotContains($super->getFullName(), $content);
+            $this->assertEquals(1, $opportunity->notificationSubscribers->count());
+            $opportunity->owner        = $super;
+            $this->assertTrue($opportunity->save());
+            $this->assertEquals(2, $opportunity->notificationSubscribers->count());
+
+            //Super user is owner so even if it is removed, it would be restored
+            $this->setGetArray(array('id' => $opportunity->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/removeSubscriber', false);
+            $this->assertContains($super->getFullName(), $content);
+            $this->assertEquals(2, $opportunity->notificationSubscribers->count());
         }
     }
 ?>

@@ -340,7 +340,7 @@
                 }
             }
             //There should have been a total of 2 portlets.
-            $this->assertEquals(6, $portletCount);
+            $this->assertEquals(7, $portletCount);
             $this->resetGetArray();
             $this->setPostArray(array(
                 'portletLayoutConfiguration' => array(
@@ -352,7 +352,7 @@
             //Now test that all the portlets are collapsed and moved to the first column.
             $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition(
                             'ContactDetailsAndRelationsView', $super->id, array());
-            $this->assertEquals (6, count($portlets[1])         );
+            $this->assertEquals (7, count($portlets[1])         );
             $this->assertFalse  (array_key_exists(2, $portlets) );
             foreach ($portlets as $column => $columns)
             {
@@ -833,6 +833,50 @@
             $object = json_decode($content);
             $this->assertEquals  ('There is 1 possible match. <span class="underline">Click here</span> to view.', $object->message);
             $this->assertContains('CreateModelsToMergeListAndChartView',       $object->content);
+        }
+
+        public function testInlineCreateCommentFromAjax()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $contact = ContactTestHelper::createContactByNameForOwner('testContact2', $super);
+
+            $this->setGetArray(array('id' => $contact->id, 'uniquePageId' => 'CommentInlineEditForModelView'));
+            $this->runControllerWithNoExceptionsAndGetContent('contacts/default/inlineCreateCommentFromAjax');
+        }
+
+        /**
+         * @depends testInlineCreateCommentFromAjax
+         */
+        public function testAddAndRemoveSubscriberViaAjaxAsSuperUser()
+        {
+            //Login with super and check subscribe unsubscribe from modal detail view when super
+            //is not owner or requested by user
+            $super              = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $mike = UserTestHelper::createBasicUser('mike');
+            $contact = ContactTestHelper::createContactByNameForOwner('contactNew', $mike);
+            $this->assertEquals(1, $contact->notificationSubscribers->count());
+
+            $this->setGetArray(array('id' => $contact->id));
+            $this->assertFalse(NotificationSubscriberUtil::doNotificationSubscribersContainPerson($contact, $super));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/addSubscriber', false);
+            $this->assertContains('gravatar', $content);
+            $this->assertContains('users/default/details', $content);
+            $this->assertContains($super->getFullName(), $content);
+            $this->assertEquals(2, $contact->notificationSubscribers->count());
+
+            $this->setGetArray(array('id' => $contact->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/removeSubscriber', false);
+            $this->assertNotContains($super->getFullName(), $content);
+            $this->assertEquals(1, $contact->notificationSubscribers->count());
+            $contact->owner        = $super;
+            $this->assertTrue($contact->save());
+            $this->assertEquals(2, $contact->notificationSubscribers->count());
+
+            //Super user is owner so even if it is removed, it would be restored
+            $this->setGetArray(array('id' => $contact->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/removeSubscriber', false);
+            $this->assertContains($super->getFullName(), $content);
+            $this->assertEquals(2, $contact->notificationSubscribers->count());
         }
     }
 ?>

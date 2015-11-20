@@ -66,7 +66,7 @@
             $this->runControllerWithNoExceptionsAndGetContent('accounts/default/details');
             $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition(
                 'AccountDetailsAndRelationsView', $super->id, array());
-            $this->assertEquals (4, count($portlets[2]));
+            $this->assertEquals (5, count($portlets[2]));
             $this->setGetArray(array(
                 'modelId'    => self::$account->id,
                 'portletType'    => 'AccountAccountAffiliationsRelatedList',
@@ -75,7 +75,7 @@
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/defaultPortlet/add');
             $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition(
                         'AccountDetailsAndRelationsView', $super->id, array());
-            $this->assertEquals (5, count($portlets[2]));
+            $this->assertEquals (6, count($portlets[2]));
 
             //Load Details View again to make sure everything is ok after the layout change.
             $this->setGetArray(array('id' => self::$account->id));

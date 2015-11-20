@@ -163,6 +163,8 @@
                                                             $getParams,
                                                             self::makeUniquePageIdByModel($model));
             $content      = $view->render();
+            $wrappingCssClass = static::getCommentsWrappingCssClass();
+            $content  = ZurmoHtml::tag('div', array('class' => $wrappingCssClass), $content);
             return $content;
         }
 
@@ -205,6 +207,11 @@
                 );
             ");
             // End Not Coding Standard
+        }
+
+        private static function getCommentsWrappingCssClass()
+        {
+            return 'comments-activity';
         }
     }
 ?>

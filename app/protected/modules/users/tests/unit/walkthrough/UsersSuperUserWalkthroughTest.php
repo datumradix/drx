@@ -758,7 +758,7 @@
             $this->assertContains('User Password Changed', $content);
         }
 
-        public function testGetUsersByPartialString()
+        public function testGetUsersByPartialStringWithReadPermissionsForSecurableItem()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -774,12 +774,12 @@
             $timeZoneHelper = new ZurmoTimeZoneHelper();
             $timeZoneHelper->confirmCurrentUsersTimeZone();
             $this->setGetArray(array('term' => 'ahs'));
-            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
             $this->assertEmpty(json_decode($content));
 
             // Search by partial username
             $this->setGetArray(array('term' => 'lio'));
-            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
             $userData = json_decode($content);
             $this->assertNotEmpty($userData);
             $this->assertEquals(1, count($userData));
@@ -791,18 +791,42 @@
 
             // Search by full username
             $this->setGetArray(array('term' => 'lion'));
-            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
             $this->assertNotEmpty(json_decode($content));
 
             // Now search by partial first name
             $this->setGetArray(array('term' => 'Sam'));
-            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
             $this->assertNotEmpty(json_decode($content));
 
             // Now search by partial last name
             $this->setGetArray(array('term' => 'Simson'));
-            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialString');
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
             $this->assertNotEmpty(json_decode($content));
+
+            // Now test with contact(OwnedSecurableItem)
+            $contact = ContactTestHelper::createContactByNameForOwner('Simon', $super);
+            $this->setGetArray(array('term' => 'Simson', 'relatedModelClassName' => 'Contact', 'relatedModelId' => $contact->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
+            $this->assertEmpty(json_decode($content));
+
+            $user->setRight('ContactsModule', ContactsModule::RIGHT_ACCESS_CONTACTS);
+            $this->assertTrue($user->save());
+
+            $contact->addPermissions($user, Permission::READ);
+            $this->assertTrue($contact->save());
+            AllPermissionsOptimizationUtil::securableItemGivenReadPermissionsForUser($contact, $user);
+            $this->setGetArray(array('term' => 'Simson', 'relatedModelClassName' => 'Contact', 'relatedModelId' => $contact->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/getUsersByPartialStringWithReadPermissionsForSecurableItem');
+            $this->assertNotEmpty(json_decode($content));
+            $userData = json_decode($content);
+            $this->assertNotEmpty($userData);
+            $this->assertEquals(1, count($userData));
+            $this->assertEquals($user->id, $userData[0]->id);
+            $this->assertEquals(strval($user), $userData[0]->name);
+            $this->assertEquals($user->username, $userData[0]->username);
+            $this->assertEquals('users', $userData[0]->type);
+            $this->assertEquals($user->getAvatarImageUrl(20, true), $userData[0]->avatar);
         }
     }
 ?>
