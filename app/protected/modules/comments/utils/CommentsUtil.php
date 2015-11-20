@@ -215,7 +215,7 @@
         public static function hasUserHaveAccessToEditOrDeleteComment(Comment $comment, User $user)
         {
             $group = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
-            if ($comment->createdByUser == $user ||
+            if ($comment->createdByUser->id == $user->id ||
                 $group->users->contains($user))
             {
                 return true;
