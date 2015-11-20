@@ -96,6 +96,11 @@
          * The report results drill-down page size
          */
         protected $_reportResultsSubListPageSize;
+        
+        /**
+         * The kanban board page size
+         */
+        protected $_kanbanBoardPageSize;
 
         /**
          * This is set from the value in the application common config file. It is used as the final fall back
@@ -193,6 +198,15 @@
         public function setApiListPageSize($value)
         {
             $this->_apiListPageSize = $value;
+        }
+        
+        /**
+        * This is set from the value in the application common config file. It is used as the final fall back
+        * if no other configuration settings are found.
+        */
+        public function setKanbanBoardPageSize($value)
+        {
+            $this->_kanbanBoardPageSize = $value;
         }
 
         /**
@@ -328,7 +342,8 @@
         {
             return array('listPageSize', 'subListPageSize', 'modalListPageSize', 'massEditProgressPageSize',
                          'autoCompleteListPageSize', 'importPageSize', 'dashboardListPageSize', 'apiListPageSize',
-                         'massDeleteProgressPageSize', 'reportResultsListPageSize', 'reportResultsSubListPageSize');
+                         'massDeleteProgressPageSize', 'reportResultsListPageSize', 'reportResultsSubListPageSize',
+                         'kanbanBoardPageSize');
         }
     }
 ?>
