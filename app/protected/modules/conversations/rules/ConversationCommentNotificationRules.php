@@ -37,7 +37,7 @@
     /**
      * A  NotificationRules to manage when a new comment is added to a conversation or existing comment updated.
      */
-    class ConversationCommentNotificationRules extends NotificationRules
+    class ConversationCommentNotificationRules extends CommentNotificationRules
     {
         public function getDisplayName()
         {

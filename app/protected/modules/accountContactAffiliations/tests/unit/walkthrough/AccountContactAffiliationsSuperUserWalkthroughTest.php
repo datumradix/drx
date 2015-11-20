@@ -99,7 +99,7 @@
             //Add the portlet in for the account and contact detailview. then load up the details to make sure it is ok
             $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition(
                                     'ContactDetailsAndRelationsView', $super->id, array());
-            $this->assertEquals (3, count($portlets[2]));
+            $this->assertEquals (4, count($portlets[2]));
             $this->setGetArray(array(
                 'modelId'    => self::$contact->id,
                 'portletType'    => 'AccountAffiliationsForContactRelatedList',
@@ -108,7 +108,7 @@
             $this->runControllerWithRedirectExceptionAndGetContent('contacts/defaultPortlet/add');
             $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition(
                                     'ContactDetailsAndRelationsView', $super->id, array());
-            $this->assertEquals (4, count($portlets[2]));
+            $this->assertEquals (5, count($portlets[2]));
 
             //Now add portlet in on account detailview
             $this->setGetArray(array('id' => self::$account->id));
@@ -116,7 +116,7 @@
             $this->runControllerWithNoExceptionsAndGetContent('accounts/default/details');
             $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition(
                 'AccountDetailsAndRelationsView', $super->id, array());
-            $this->assertEquals (4, count($portlets[2]));
+            $this->assertEquals (5, count($portlets[2]));
             $this->setGetArray(array(
                 'modelId'    => self::$account->id,
                 'portletType'    => 'ContactAffiliationsForAccountRelatedList',
@@ -125,7 +125,7 @@
             $this->runControllerWithRedirectExceptionAndGetContent('accounts/defaultPortlet/add');
             $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition(
                 'AccountDetailsAndRelationsView', $super->id, array());
-            $this->assertEquals (5, count($portlets[2]));
+            $this->assertEquals (6, count($portlets[2]));
 
             //Load Details View again to make sure everything is ok after the layout change.
             $this->setGetArray(array('id' => self::$contact->id));

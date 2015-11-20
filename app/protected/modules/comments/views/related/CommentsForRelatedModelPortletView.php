@@ -61,14 +61,14 @@
             assert('$params["relationModel"] instanceof RedBeanModel || $params["relationModel"] instanceof ModelForm');
             assert('isset($params["portletId"])');
             assert('isset($params["redirectUrl"])');
-            assert('$this->getRelationAttributeName() != null');
+            //assert('$this->getRelationAttributeName() != null');
             $this->modelClassName    = get_class($params['relationModel']);
             $this->viewData          = $viewData;
             $this->params            = $params;
             $this->uniqueLayoutId    = $uniquePortletPageId;
             $this->controllerId      = $params['controllerId'];
             $this->moduleId          = $params['relationModuleId'];
-            $this->relatedModel = $params['relationModel'];
+            $this->relatedModel      = $params['relationModel'];
         }
 
         public function renderContent()
