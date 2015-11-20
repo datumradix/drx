@@ -248,6 +248,7 @@
                 'massDeleteProgressPageSize'   => 5,
                 'reportResultsListPageSize'    => 20,
                 'reportResultsSubListPageSize' => 5,
+                'kanbanBoardPageSize'          => 50,
             ),
             'performance' => array(
                 'class'          => 'application.core.components.PerformanceMeasurement',
