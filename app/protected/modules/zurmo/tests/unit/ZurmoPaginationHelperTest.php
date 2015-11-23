@@ -139,6 +139,7 @@
             $pager->setMassDeleteProgressPageSize(18);
             $pager->setReportResultsListPageSize(19);
             $pager->setReportResultsSubListPageSize(20);
+            $pager->setKanbanBoardPageSize(21);
             $this->assertEquals         (11, $pager->getGlobalValueByType('listPageSize'));
             $this->assertEquals         (12, $pager->getGlobalValueByType('subListPageSize'));
             $this->assertEquals         (13, $pager->getGlobalValueByType('modalListPageSize'));
@@ -149,6 +150,7 @@
             $this->assertEquals         (18, $pager->getGlobalValueByType('massDeleteProgressPageSize'));
             $this->assertEquals         (19, $pager->getGlobalValueByType('reportResultsListPageSize'));
             $this->assertEquals         (20, $pager->getGlobalValueByType('reportResultsSubListPageSize'));
+            $this->assertEquals         (21, $pager->getGlobalValueByType('kanbanBoardPageSize'));
             $pager->setGlobalValueByType('listPageSize',                 88);
             $pager->setGlobalValueByType('subListPageSize',              89);
             $pager->setGlobalValueByType('modalListPageSize',            90);
@@ -159,6 +161,7 @@
             $pager->setGlobalValueByType('massDeleteProgressPageSize',   95);
             $pager->setGlobalValueByType('reportResultsListPageSize',    96);
             $pager->setGlobalValueByType('reportResultsSubListPageSize', 97);
+            $pager->setGlobalValueByType('kanbanBoardPageSize', 98);
             $this->assertEquals         (88, $pager->getGlobalValueByType('listPageSize'));
             $this->assertEquals         (89, $pager->getGlobalValueByType('subListPageSize'));
             $this->assertEquals         (90, $pager->getGlobalValueByType('modalListPageSize'));
@@ -169,6 +172,7 @@
             $this->assertEquals         (95, $pager->getGlobalValueByType('massDeleteProgressPageSize'));
             $this->assertEquals         (96, $pager->getGlobalValueByType('reportResultsListPageSize'));
             $this->assertEquals         (97, $pager->getGlobalValueByType('reportResultsSubListPageSize'));
+            $this->assertEquals         (98, $pager->getGlobalValueByType('kanbanBoardPageSize'));
         }
 
         public function testSetForCurrentUserByType()
