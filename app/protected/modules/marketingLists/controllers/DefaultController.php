@@ -210,18 +210,35 @@
             }
             else
             {
+                $introView               = new MarketingDashboardIntroView(get_class($this->getModule()));
                 $resolveSubscribersForm->newMarketingListName = MarketingListsUtil::generateRandomNameForCampaignRetargetingList($campaign);
             }
+            $introView               = new MarketingListCampaignRetargetingIntroView(get_class($this->getModule()));
+            $actionBarView           = new SecuredActionBarForMarketingListCampaignRetargetingView(
+                'default',
+                'marketingList',
+                new MarketingList(), //Just to fill in a marketing model
+                'notUsed',
+                'notUsed',
+                false,
+                null,
+                $introView);
+
             $title                         = Zurmo::t('UsersModule', 'Retarget subscribers from existing campaign("{{campaignName}}") results',
                 array("{{campaignName}}" => $campaign->name));
+
             $resolveSubscribersFromCampaignView                  = new MarketingListResolveSubscribersFromCampaignView(
                 $this->getId(),
                 $this->getModule()->getId(),
                 $resolveSubscribersForm,
                 $title);
 
+            $gridView                = new GridView(2, 1);
+            $gridView->setView($actionBarView, 0, 0);
+            $gridView->setView($resolveSubscribersFromCampaignView, 1, 0);
+
             $view                       = new MarketingListsPageView(MarketingDefaultViewUtil::
-                makeViewWithBreadcrumbsForCurrentUser($this, $resolveSubscribersFromCampaignView, array(Zurmo::t('MarketingListsModule', 'Lists')), 'MarketingBreadCrumbView'));
+                makeViewWithBreadcrumbsForCurrentUser($this, $gridView, array(Zurmo::t('MarketingListsModule', 'Lists')), 'MarketingBreadCrumbView'));
             echo $view->render();
         }
 
