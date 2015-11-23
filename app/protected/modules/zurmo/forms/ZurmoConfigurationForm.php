@@ -86,7 +86,7 @@
                 array('reCaptchaPublicKey',                     'type',      'type' => 'string'),
                 array('kanbanBoardPageSize',                    'required'),
                 array('kanbanBoardPageSize',                    'type',      'type' => 'integer'),
-                array('kanbanBoardPageSize',                    'numerical', 'min' => 1, 'max' => 100),
+                array('kanbanBoardPageSize',                    'numerical', 'min' => 1, 'max' => ZurmoKanbanConfigurationUtil::getBatchSize()),
             );
         }
 
