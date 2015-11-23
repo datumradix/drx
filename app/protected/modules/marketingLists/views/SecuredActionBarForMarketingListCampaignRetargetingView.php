@@ -35,15 +35,16 @@
      ********************************************************************************/
 
     /**
-     * Action bar view for the marketing list campaign retargetinguser interface. Provides link to openclose intro view.
+     * Action bar view for the campaign retargeting.
      */
-    class SecuredActionBarForMarketingListCampaignRetargetingView extends SecuredActionBarForSearchAndListView
+    class SecuredActionBarForMarketingListCampaignRetargetingView extends SecuredActionBarForMarketingListsSearchAndListView
     {
         /**
          * @return array
          */
         public static function getDefaultMetadata()
         {
+            $metadata = parent::getDefaultMetadata();
             $metadata['global']['secondToolbar'] = array(
                         'elements' => array(
                             array('type'        => 'MarketingListCampaignRetargetingIntroLink',

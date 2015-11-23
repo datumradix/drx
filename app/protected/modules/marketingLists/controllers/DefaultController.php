@@ -210,7 +210,6 @@
             }
             else
             {
-                $introView               = new MarketingDashboardIntroView(get_class($this->getModule()));
                 $resolveSubscribersForm->newMarketingListName = MarketingListsUtil::generateRandomNameForCampaignRetargetingList($campaign);
             }
             $introView               = new MarketingListCampaignRetargetingIntroView(get_class($this->getModule()));
