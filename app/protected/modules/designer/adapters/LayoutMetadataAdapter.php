@@ -346,6 +346,11 @@
                     return false;
                 }
             }
+            if (method_exists($this->designerRules, 'areAllPseudoRequiredDerivedAttributeTypesPlacedInLayout') &&
+                !$this->designerRules->areAllPseudoRequiredDerivedAttributeTypesPlacedInLayout($this->placedDerivedAttributeTypes))
+            {
+                return false;
+            }
             return true;
         }
 

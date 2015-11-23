@@ -123,6 +123,11 @@
             return $metadata;
         }
 
+        public static function getDesignerRulesType()
+        {
+            return 'NoteInlineEditView';
+        }
+        
         /**
          * Override to change the editableTemplate to place the label above the input.
          * @see DetailsView::resolveElementDuringFormLayoutRender()

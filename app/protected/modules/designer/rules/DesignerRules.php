@@ -232,6 +232,15 @@
         {
             return false;
         }
+        
+        /**
+         * Override if a rule allows that certain non-required derived attribute types
+         * being actually required to be placed in layout.
+         */
+        public function areAllPseudoRequiredDerivedAttributeTypesPlacedInLayout($placedDerivedAttributeTypes)
+        {
+            return true;
+        }
 
         public function requireOnlyUniqueFieldsInLayout()
         {
