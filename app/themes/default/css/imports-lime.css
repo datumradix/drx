@@ -6883,6 +6883,12 @@ a.dashboard-link .z-label {
 .comment-content .missionStatusChangeArea a:first-child {
   margin-left: 15px;
 }
+.comment-content p a:not(.user-link) {
+  color: #BCC98E;
+}
+.comment-content p a:not(.user-link):hover {
+  color: #90a34e;
+}
 a.user-link {
   font-weight: bold;
   color: #545454;
