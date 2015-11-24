@@ -39,6 +39,8 @@
      */
     class EmailMessage extends OwnedSecurableItem implements MashableActivityInterface
     {
+        protected $isAudited = false;
+
         public static function getMashableActivityRulesType()
         {
             return 'EmailMessage';

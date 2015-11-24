@@ -38,7 +38,7 @@
     {
         protected function getDropDownArray()
         {
-            return ProductTemplateElementUtil::getProductTemplateStatusDropdownArray();
+            return ProductTemplateElementUtil::getProductTemplateTypeDropdownArray();
         }
     }
 ?>

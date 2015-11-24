@@ -40,6 +40,8 @@
      */
     class WorkflowValidityCheckNotificationRules extends NotificationRules
     {
+        protected $allowDuplicates = true;
+
         /**
          * @return string|The
          */
@@ -62,7 +64,7 @@
          */
         protected function loadUsers()
         {
-            foreach (User::getActiveUsers() as $user)
+            foreach (User::getActiveUsers(true) as $user)
             {
                 if ($user->getEffectiveRight('WorkflowsModule', WorkflowsModule::RIGHT_ACCESS_WORKFLOWS) ==
                     Right::ALLOW)

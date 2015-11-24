@@ -82,7 +82,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'description', 'type' => 'TextArea', 'rows' => 2),
+                                                array('attributeName' => 'description', 'type' => 'MentionableTextArea', 'rows' => 2),
                                             ),
                                         ),
                                     )
@@ -110,7 +110,7 @@
                     'update' => '#' . $this->uniquePageId,
                     'complete' => "function(XMLHttpRequest, textStatus){
                         //find if there is a comment thread to refresh
-                        $('#hiddenCommentRefresh" . $this->uniquePageId . "').click();
+                        $('.comments-activity .hiddenCommentRefresh').click();
                     }"
                 ));
             // End Not Coding Standard

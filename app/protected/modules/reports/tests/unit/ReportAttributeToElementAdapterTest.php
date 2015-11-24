@@ -290,6 +290,7 @@
             $content                            = $adapter->getContent();
             $this->assertNotNull($content);
             $this->assertContains('"some[prefix][operator]"', $content);
+            $this->assertContains('"some[prefix][valueType]"', $content);
             $this->assertContains('"some[prefix][value]"', $content);
             $this->assertContains('"some[prefix][availableAtRunTime]"', $content);
             $this->assertContains('"some[prefix][stringifiedModelForValue]"', $content);

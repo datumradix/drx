@@ -42,7 +42,8 @@
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type'    => 'SaveButton', 'label' => 'eval:static::renderLabelForSaveButton()'),
+                            array('type'    => 'SaveButton', 'label' => 'eval:static::renderLabelForSaveButton()',
+                                  'htmlOptions' => 'eval:static::resolveHtmlOptionsForSaveButton()'),
                             array('type'    => 'CancelLink'),
                             array('type'    => 'SendTestEmailLink'),
                             array('type'    => 'CampaignDeleteLink'),
@@ -283,6 +284,23 @@
             }
         }
 
+        /**
+         * Show save button only for active campaigns, otherwise Campaign saving would cause error because required
+         * fields are disabled
+         * @return array|null
+         */
+        protected function resolveHtmlOptionsForSaveButton()
+        {
+            if ($this->model->status == Campaign::STATUS_ACTIVE)
+            {
+                return null;
+            }
+            else
+            {
+                return array('style' => 'display: none');
+            }
+        }
+
         protected function renderRightSideFormLayoutForEdit($form)
         {
             assert('$form instanceof ZurmoActiveForm');
@@ -317,12 +335,29 @@
                 Yii::app()->clientScript->registerScript($scriptName, "
                 window.{$functionName} = function ()
                     {
+                        var textContent, htmlContent;
+                        if ($('#" . ZurmoHtml::activeId($this->model, 'textContent') . "').length > 0) {
+                            textContent = $('#" . ZurmoHtml::activeId($this->model, 'textContent') . "').val();
+                        }
+                        else
+                        {
+                            textContent = $('.email-template-textContent').text();
+                        }
+
+                        if ($('#" . ZurmoHtml::activeId($this->model, 'htmlContent') . "').length > 0) {
+                            htmlContent = $('#" . ZurmoHtml::activeId($this->model, 'htmlContent') . "').val();
+                        }
+                        else
+                        {
+                            htmlContent = $('.email-template-htmlContent iframe').contents().find('html').html()
+                        }
+
                         var testData    = {
                             fromName            : $('#" . ZurmoHtml::activeId($this->model, 'fromName') . "').val(),
                             fromAddress         : $('#" . ZurmoHtml::activeId($this->model, 'fromAddress') . "').val(),
                             subject             : $('#" . ZurmoHtml::activeId($this->model, 'subject') . "').val(),
-                            textContent         : $('#" . ZurmoHtml::activeId($this->model, 'textContent') . "').val(),
-                            htmlContent         : $('#" . ZurmoHtml::activeId($this->model, 'htmlContent') . "').val(),
+                            textContent         : textContent,
+                            htmlContent         : htmlContent,
                             marketingListId     : $('#" . ZurmoHtml::activeId($this->model, '_marketingList_id') . "').val(),
                             enableTracking      : $('input:checkbox[name*=enableTracking]').prop('checked') ? 1 : 0,
                             supportsRichText    : $('input:checkbox[name*=supportsRichText]').prop('checked') ? 1 : 0,

@@ -529,7 +529,7 @@
                                                      Report::TYPE_SUMMATION);
             $displayAttribute->attributeIndexOrDerivedType  = 'createdDateTime__Week';
             $content                               = $builder->makeQueryContent(array($displayAttribute));
-            $this->assertEquals("select week({$q}item{$q}.{$q}createddatetime{$q} - INTERVAL " .
+            $this->assertEquals("select weekofyear({$q}item{$q}.{$q}createddatetime{$q} - INTERVAL " .
                                 abs(self::$chicagoOffsetInSeconds) . " SECOND) col0 ", $content);
             $this->assertEquals(3, $joinTablesAdapter->getFromTableJoinCount());
             $this->assertEquals(0, $joinTablesAdapter->getLeftTableJoinCount());
@@ -629,7 +629,7 @@
             $compareContent .= "sum({$q}reportmodeltestitem{$q}.{$q}integer{$q}) col4, ";
             $compareContent .= "day({$q}item{$q}.{$q}createddatetime{$q} - INTERVAL " .
                                 abs(self::$chicagoOffsetInSeconds) . " SECOND) col5, ";
-            $compareContent .= "week({$q}item{$q}.{$q}createddatetime{$q} - INTERVAL " .
+            $compareContent .= "weekofyear({$q}item{$q}.{$q}createddatetime{$q} - INTERVAL " .
                                 abs(self::$chicagoOffsetInSeconds) . " SECOND) col6, ";
             $compareContent .= "month({$q}item{$q}.{$q}createddatetime{$q} - INTERVAL " .
                                 abs(self::$chicagoOffsetInSeconds) . " SECOND) col7, ";

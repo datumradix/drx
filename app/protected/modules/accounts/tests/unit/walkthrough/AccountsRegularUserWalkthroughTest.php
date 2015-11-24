@@ -760,5 +760,87 @@
             $content = $this->runControllerWithExitExceptionAndGetContent('accounts/default/copy');
             $this->assertContains('You have tried to access a page you do not have access to.', $content);
         }
+
+        public function testInlineCreateCommentFromAjax()
+        {
+            $sally = UserTestHelper::createBasicUser('sally');
+            $sally = $this->logoutCurrentUserLoginNewUserAndGetByUsername('sally');
+
+            $account = AccountTestHelper::createAccountByNameForOwner('testAccount2', $sally);
+            $this->setGetArray(array('id' => $account->id, 'uniquePageId' => 'CommentInlineEditForModelView'));
+            $this->runControllerShouldResultInAccessFailureAndGetContent('accounts/default/inlineCreateCommentFromAjax');
+
+            //Now test peon with elevated rights to accounts
+            $sally->setRight('AccountsModule', AccountsModule::RIGHT_ACCESS_ACCOUNTS);
+            $sally->setRight('AccountsModule', AccountsModule::RIGHT_CREATE_ACCOUNTS);
+            $sally->setRight('AccountsModule', AccountsModule::RIGHT_DELETE_ACCOUNTS);
+            $this->assertTrue($sally->save());
+            $account->addPermissions($sally, Permission::READ_WRITE_CHANGE_PERMISSIONS);
+            $this->assertTrue($account->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($account, $sally);
+
+            $this->setGetArray(array('id' => $account->id, 'uniquePageId' => 'CommentInlineEditForModelView'));
+            $this->runControllerWithNoExceptionsAndGetContent('accounts/default/inlineCreateCommentFromAjax');
+        }
+
+        public function testAddAndRemoveSubscriberViaAjaxWithNormalUser()
+        {
+            $super = User::getByUsername('super');
+            $billy              = $this->logoutCurrentUserLoginNewUserAndGetByUsername('billy');
+            $account = AccountTestHelper::createAccountByNameForOwner('testAccount2', $billy);
+
+            $this->setGetArray(array('id' => $account->id));
+            $this->runControllerShouldResultInAccessFailureAndGetContent('accounts/default/removeSubscriber');
+            $this->setGetArray(array('id' => $account->id));
+            $this->runControllerShouldResultInAccessFailureAndGetContent('accounts/default/addSubscriber');
+
+            //Now test peon with elevated rights to accounts
+            $billy->setRight('AccountsModule', AccountsModule::RIGHT_ACCESS_ACCOUNTS);
+            $billy->setRight('AccountsModule', AccountsModule::RIGHT_CREATE_ACCOUNTS);
+            $billy->setRight('AccountsModule', AccountsModule::RIGHT_DELETE_ACCOUNTS);
+            $this->assertTrue($billy->save());
+            $account->addPermissions($billy, Permission::READ_WRITE_CHANGE_PERMISSIONS);
+            $this->assertTrue($account->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($account, $billy);
+
+            //Test nobody with elevated rights.
+            Yii::app()->user->userModel = User::getByUsername('billy');
+
+            $this->setGetArray(array('id' => $account->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/removeSubscriber', false);
+            $this->assertContains($billy->getFullName(), $content);
+            $this->assertEquals(1, $account->notificationSubscribers->count());
+
+            //Now super user would be added as a subscriber as he becomes the owner
+            $account->owner        = $super;
+            $this->assertTrue($account->save());
+
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/removeSubscriber', false);
+            $this->assertNotContains($billy->getFullName(), $content);
+            $this->assertEquals(1, $account->notificationSubscribers->count());
+
+            $this->assertFalse($this->checkIfUserFoundInSubscribersList($account, $billy->id));
+
+            $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/addSubscriber', false);
+            $this->assertContains($billy->getFullName(), $content);
+            $this->assertEquals(2, $account->notificationSubscribers->count());
+
+            $this->assertTrue($this->checkIfUserFoundInSubscribersList($account, $billy->id));
+        }
+
+        private function checkIfUserFoundInSubscribersList($account, $compareId)
+        {
+            $isUserFound = false;
+            $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
+            foreach ($account->notificationSubscribers as $subscriber)
+            {
+                $user     = $subscriber->person->castDown(array($modelDerivationPathToItem));
+                if ($user->id == $compareId)
+                {
+                    $isUserFound = true;
+                }
+            }
+            return $isUserFound;
+        }
     }
 ?>

@@ -251,7 +251,7 @@
             $emailTemplate = static::getModelAndCatchNotFoundAndDisplayError('EmailTemplate', intval($id));
             ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($emailTemplate);
             AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($emailTemplate),
-                                                                                'EmailTemplatesModule'), $emailTemplate);
+                                      'EmailTemplatesModule'), $emailTemplate);
             $detailsView                = new EmailTemplateDetailsView($this->getId(), $this->getModule()->getId(),
                                                                         $emailTemplate, strval($emailTemplate));
             $viewUtil                   = static::getViewUtilByType($emailTemplate->type);

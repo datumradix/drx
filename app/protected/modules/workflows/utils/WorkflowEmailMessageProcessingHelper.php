@@ -83,7 +83,7 @@
             {
                 throw new MissingRecipientsForEmailMessageException();
             }
-            $box                        = EmailBox::resolveAndGetByName(EmailBox::NOTIFICATIONS_NAME);
+            $box                        = EmailBox::resolveAndGetByName(EmailBox::WORKFLOWS_NAME);
             $emailMessage->folder       = EmailFolder::getByBoxAndType($box, EmailFolder::TYPE_DRAFT);
             Yii::app()->emailHelper->send($emailMessage);
             ZurmoControllerUtil::updatePermissionsWithDefaultForModelByUser($emailMessage, $this->triggeredByUser);
@@ -130,7 +130,9 @@
         {
             $mergeTagsUtil = MergeTagsUtilFactory::make($emailTemplate->type, $emailTemplate->language,
                                                         $emailTemplate->htmlContent);
-            if (false === $resolvedContent = $mergeTagsUtil->resolveMergeTags($this->triggeredModel))
+            $invalidTags = array();
+            if (false === $resolvedContent = $mergeTagsUtil->resolveMergeTags($this->triggeredModel, $invalidTags, null,
+                    MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG, array(), true))
             {
                 return $emailTemplate->htmlContent;
             }
@@ -183,7 +185,7 @@
         {
             $userToSendMessagesFrom     = BaseControlUserConfigUtil::getUserToRunAs();
             $sender->fromAddress        = Yii::app()->emailHelper->resolveFromAddressByUser($userToSendMessagesFrom);
-            $sender->fromName           = strval($userToSendMessagesFrom);
+            $sender->fromName           = Yii::app()->emailHelper->resolveFromNameForSystemUser($userToSendMessagesFrom);
         }
 
         /**
@@ -195,7 +197,21 @@
             {
                 foreach ($emailMessageRecipient->makeRecipients($this->triggeredModel, $this->triggeredByUser) as $recipient)
                 {
-                    $emailMessage->recipients->add($recipient);
+                    // If user selected not to email triggered user, then skip it, except in case when
+                    // user explicitly selected to email user who triggered workflow by selecting "User who triggered process" option
+                    if (isset($this->emailMessageForm->excludeIfTriggeredByUser) &&
+                        ((bool)$this->emailMessageForm->excludeIfTriggeredByUser) == true &&
+                        get_class($emailMessageRecipient) != 'DynamicTriggeredByUserWorkflowEmailMessageRecipientForm')
+                    {
+                        if ($this->triggeredByUser->primaryEmail->emailAddress != $recipient->toAddress)
+                        {
+                            $emailMessage->recipients->add($recipient);
+                        }
+                    }
+                    else
+                    {
+                        $emailMessage->recipients->add($recipient);
+                    }
                 }
             }
         }

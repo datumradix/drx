@@ -47,6 +47,16 @@
     {
         protected $maxNameLength;
 
+        public function __construct($modelClassName, $attributeName, $columnName, array $columnMappingData,
+                                    ImportSanitizeResultsUtil $importSanitizeResultsUtil = null,
+                                    $penultimateModelClassName, $penultimateAttributeName,
+                                    $explicitReadWriteModelPermissions = null)
+        {
+            parent::__construct($modelClassName, $attributeName, $columnName, $columnMappingData,
+                                $importSanitizeResultsUtil, $penultimateModelClassName, $penultimateAttributeName);
+            $this->explicitReadWriteModelPermissions = $explicitReadWriteModelPermissions;
+        }
+
         public static function getLinkedMappingRuleType()
         {
             return 'RelatedModelValueType';
@@ -208,6 +218,18 @@
                                     Zurmo::t('ImportModule', '{modelLabel} saved correctly: {linkToModel}',
                                         array('{modelLabel}'  => $newRelatedModel->getModelLabelByTypeAndLanguage('Singular'),
                                               '{linkToModel}' => ImportUtil::resolveLinkMessageToModel($newRelatedModel))));
+                        if ($newRelatedModel instanceof SecurableItem &&
+                            $this->explicitReadWriteModelPermissions instanceof ExplicitReadWriteModelPermissions)
+                        {
+                            $resolved = ExplicitReadWriteModelPermissionsUtil::resolveExplicitReadWriteModelPermissions(
+                                $newRelatedModel,
+                                $this->explicitReadWriteModelPermissions);
+                            if (!$resolved)
+                            {
+                                $this->importSanitizeResultsUtil->addRelatedModelMessage('The record saved, but there was a problem '.
+                                    'setting the security permissions. It will at least be viewable by the owner.');
+                            }
+                        }
                     }
                     return $newRelatedModel;
                 }
@@ -216,6 +238,7 @@
                     return $modelsFound[0];
                 }
             }
+            exit;
         }
 
         /**

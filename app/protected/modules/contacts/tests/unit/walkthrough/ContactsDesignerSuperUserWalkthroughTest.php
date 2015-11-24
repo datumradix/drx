@@ -602,7 +602,7 @@
         /**
          * @depends testWhetherSearchWorksForTheCustomFieldsPlacedForContactsModuleAfterCreatingTheContact
          */
-        public function testEditOfTheContactForTheTagCloudFieldAfterRemovingAllTagsPlacedForContactsModule()
+        public function testEditOfTheContactForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForContactsModule()
         {
             $super          = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -671,7 +671,7 @@
                             'decimalCstm'                       => '12',
                             'picklistCstm'                      => array('value'  => 'b'),
                             'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
-                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'tagcloudCstm'                      => array('values' =>  array('writing')),
                             'countrylistCstm'                   => array('value'  => 'aaaa'),
                             'statelistCstm'                     => array('value'  => 'aaa1'),
                             'citylistCstm'                      => array('value'  => 'ab1'),
@@ -741,11 +741,96 @@
             $this->assertEquals($contact->citylistCstm->value            , 'ab1');
             $this->assertContains('gg'                                   , $contact->multiselectCstm->values);
             $this->assertContains('hh'                                   , $contact->multiselectCstm->values);
-            $this->assertEquals(0                                        , $contact->tagcloudCstm->values->count());
+            $this->assertEquals(1                                        , $contact->tagcloudCstm->values->count());
             $metadata            = CalculatedDerivedAttributeMetadata::
                                    getByNameAndModelClassName('calcnumber', 'Contact');
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $contact);
             $this->assertEquals(23                                       , $testCalculatedValue);
+        }
+
+        /**
+         * @depends testEditOfTheContactForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForContactsModule
+         */
+        public function testEditOfTheContactForTheTagCloudFieldAfterRemovingAllTagsPlacedForContactsModule()
+        {
+            $super          = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            //Set the date and datetime variable values here.
+            $date           = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateFormatForInput(), time());
+            $datetime       = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateTimeFormatForInput(), time());
+            $baseCurrency   = Currency::getByCode(Yii::app()->currencyHelper->getBaseCode());
+            $explicitReadWriteModelPermission = ExplicitReadWriteModelPermissionsUtil::MIXED_TYPE_EVERYONE_GROUP;
+
+            //Retrieve the super account id and the super user id.
+            $accountId   = self::getModelIdByModelNameAndName ('Account', 'superAccount');
+            $superUserId = $super->id;
+
+            //Retrieve the contact id.
+            $contact   = Contact::getByName('Sarah Williams Edit');
+            $contactId = $contact[0]->id;
+            $this->assertEquals(1, $contact[0]->tagcloudCstm->values->count());
+
+            //Retrieve the Contact State (Status) Id based on the name.
+            $contactState   = ContactState::getByName('RecycledC');
+            $contactStateId = $contactState[0]->id;
+
+            //Edit and save the contact.
+            $this->setGetArray(array('id' => $contactId));
+            $this->setPostArray(array('Contact' => array(
+                            'title'                             => array('value' => 'Mrs.'),
+                            'firstName'                         => 'Sarah',
+                            'lastName'                          => 'Williams Edit',
+                            'jobTitle'                          => 'Sales Director Edit',
+                            'department'                        => 'Sales Edit',
+                            'officePhone'                       => '739-742-3005',
+                            'source'                            => array('value' => 'Inbound Call'),
+                            'mobilePhone'                       => '285-300-8232',
+                            'officeFax'                         => '255-454-1914',
+                            'state'                             => array('id' => $contactStateId),
+                            'owner'                             => array('id' => $superUserId),
+                            'account'                           => array('id' => $accountId),
+                            'primaryEmail'                      => array('emailAddress' => 'info@myNewContact.com',
+                                                                         'optOut' => '0',
+                                                                         'isInvalid' => '0'),
+                            'secondaryEmail'                    => array('emailAddress' => 'info@myNewContactEdit.com',
+                                                                         'optOut' => '0',
+                                                                         'isInvalid' => '0'),
+                            'primaryAddress'                    => array('street1' => '26378 South Arlington Ave',
+                                                                         'street2' => '',
+                                                                         'city' => 'San Jose',
+                                                                         'state' => 'CA',
+                                                                         'postalCode' => '95131',
+                                                                         'country' => 'USA'),
+                            'secondaryAddress'                  => array('street1' => '18693 West Spring Center',
+                                                                         'street2' => '',
+                                                                         'city' => 'Philadelphia',
+                                                                         'state' => 'PA',
+                                                                         'postalCode' => '19102',
+                                                                         'country' => 'USA'),
+                            'explicitReadWriteModelPermissions' => array('type' => $explicitReadWriteModelPermission),
+                            'description'                       => 'This is a Edit Description',
+                            'checkboxCstm'                      => '0',
+                            'currencyCstm'                      => array('value'    => 40,
+                                                                     'currency' => array(
+                                                                     'id' => $baseCurrency->id)),
+                            'dateCstm'                          => $date,
+                            'datetimeCstm'                      => $datetime,
+                            'decimalCstm'                       => '12',
+                            'picklistCstm'                      => array('value'  => 'b'),
+                            'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
+                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'countrylistCstm'                   => array('value'  => 'aaaa'),
+                            'statelistCstm'                     => array('value'  => 'aaa1'),
+                            'citylistCstm'                      => array('value'  => 'ab1'),
+                            'integerCstm'                       => '11',
+                            'phoneCstm'                         => '259-784-2069',
+                            'radioCstm'                         => array('value' => 'e'),
+                            'textCstm'                          => 'This is a test Edit Text',
+                            'textareaCstm'                      => 'This is a test Edit TextArea',
+                            'urlCstm'                           => 'http://wwww.abc-edit.com'),
+                                'save' => 'Save'));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('contacts/default/edit');
+            $this->assertContains("tagcloud en cannot be blank.", $content);
         }
 
         /**

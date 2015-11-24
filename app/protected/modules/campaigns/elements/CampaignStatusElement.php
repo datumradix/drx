@@ -50,15 +50,6 @@
             return Campaign::getStatusDropDownArray();
         }
 
-        /**
-         * @return A|void
-         * @throws NotSupportedException
-         */
-        protected function renderControlEditable()
-        {
-            throw new NotSupportedException();
-        }
-
         protected function getDropDownArray()
         {
             return Campaign::getStatusDropDownArray();

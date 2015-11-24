@@ -47,7 +47,7 @@
             $user->lastName  = 'Boondog';
             assert($user->save()); // Not Coding Standard
             BaseControlUserConfigUtil::getUserToRunAs();
-            assert(AuditEvent::getCount() == 10); // Not Coding Standard
+            assert(AuditEvent::getCount() == 6); // Not Coding Standard
             ContactsModule::loadStartingData();
             Yii::app()->gameHelper->muteScoringModelsOnSave();
         }
@@ -81,7 +81,7 @@
 
             $model = new TestOwnedCustomFieldsModel();
             $this->assertTrue($model->save());
-            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $model = TestOwnedCustomFieldsModel::getById($model->id);
             $value = new CustomFieldValue();
@@ -90,30 +90,26 @@
                                                              //setValues($values) in MultipleValuesCustomField.
             $model->multipleIndustries->values->add($value);
             $this->assertTrue($model->save());
-            $this->assertEquals($beforeCount + 2, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
 
             $model = TestOwnedCustomFieldsModel::getById($model->id);
             $value = new CustomFieldValue();
             $value->value = 'B';
             $model->multipleIndustries->values->add($value);
             $this->assertTrue($model->save());
-            $this->assertEquals($beforeCount + 3, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 2, AuditEvent::getCount());
 
-            $AuditEventsList = AuditEvent::getTailEvents(3);
-            $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, '   .    // Not Coding Standard
-                            'James Boondog, Item Created, '                       .
-                            'TestOwnedCustomFieldsModel\([0-9]+\), \(None\)/',         // Not Coding Standard
-                            ZurmoModule::stringifyAuditEvent($AuditEventsList[0]));
+            $AuditEventsList = AuditEvent::getTailEvents(2);
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, '   .    // Not Coding Standard
                             'James Boondog, Item Modified, '                      .
                             'TestOwnedCustomFieldsModel\([0-9]+\), \(None\), '    .    // Not Coding Standard
                             'Changed Multiple Industries Values from  to C/',  // Not Coding Standard
-                            ZurmoModule::stringifyAuditEvent($AuditEventsList[1]));
+                            ZurmoModule::stringifyAuditEvent($AuditEventsList[0]));
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, '   .    // Not Coding Standard
                             'James Boondog, Item Modified, '                      .
                             'TestOwnedCustomFieldsModel\([0-9]+\), \(None\), '    .    // Not Coding Standard
                             'Changed Multiple Industries Values from C to C, B/',      // Not Coding Standard
-                            ZurmoModule::stringifyAuditEvent($AuditEventsList[2]));
+                            ZurmoModule::stringifyAuditEvent($AuditEventsList[1]));
         }
 
         public function testLogAuditEventsListForUser()
@@ -121,32 +117,17 @@
             Yii::app()->user->userModel = User::getByUsername('jimmy');
             $beforeCount = AuditEvent::getCount();
 
-            // To be called just after login and just before logout.
-            $this->assertTrue(AuditEvent::logAuditEvent('UsersModule', UsersModule::AUDIT_EVENT_USER_LOGGED_IN));
-            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
-
-            $this->assertTrue(AuditEvent::logAuditEvent('UsersModule', UsersModule::AUDIT_EVENT_USER_LOGGED_OUT));
-            $this->assertEquals($beforeCount + 2, AuditEvent::getCount());
-
-            $AuditEventsList = AuditEvent::getTailEvents(2);
-            $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
-                                'James Boondog, User Logged In/',
-                                UsersModule::stringifyAuditEvent($AuditEventsList[0]));
-            $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
-                                'James Boondog, User Logged Out/',
-                                UsersModule::stringifyAuditEvent($AuditEventsList[1]));
-
             $user = new User();
             $user->username  = 'benedict';
             $user->firstName = 'Benedict';
             $user->lastName  = 'Niñero';
             $this->assertTrue($user->save());
-            $this->assertEquals($beforeCount + 4, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
 
-            $AuditEventsList = AuditEvent::getTailEvents(2);
+            $AuditEventsList = AuditEvent::getTailEvents(1);
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
-                                'James Boondog, Item Created, '                 .
-                                'User\([0-9]+\), Benedict Niñero/',               // Not Coding Standard
+                                'James Boondog, Item Modified, '                 .
+                                'User\([0-9]+\), Benedict Niñero, Changed Is Active from false to true/',               // Not Coding Standard
                                 ZurmoModule::stringifyAuditEvent($AuditEventsList[0]));
 
             $user->delete();
@@ -166,20 +147,16 @@
             $account = new Account();
             $account->name = 'Yoddle';
             $this->assertTrue($account->save());
-            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $account->delete();
-            $this->assertEquals($beforeCount + 2, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
 
-            $AuditEventsList = AuditEvent::getTailEvents(2);
-            $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
-                                'James Boondog, Item Created, '                 .
-                                'Account\([0-9]+\), Yoddle/',                     // Not Coding Standard
-                                ZurmoModule::stringifyAuditEvent($AuditEventsList[0]));
+            $AuditEventsList = AuditEvent::getTailEvents(1);
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
                                 'James Boondog, Item Deleted, '                 .
                                 'Account\([0-9]+\), Yoddle/',                     // Not Coding Standard
-                                ZurmoModule::stringifyAuditEvent($AuditEventsList[1]));
+                                ZurmoModule::stringifyAuditEvent($AuditEventsList[0]));
         }
 
         public function testLogAuditEventsListWithShortFormat()
@@ -190,56 +167,48 @@
             $account = new Account();
             $account->name = 'Yoddle';
             $this->assertTrue($account->save());
-            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $account->delete();
-            $this->assertEquals($beforeCount + 2, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
 
-            $AuditEventsList = AuditEvent::getTailEvents(2);
-            $this->assertEquals('Item Created', ZurmoModule::stringifyAuditEvent($AuditEventsList[0], 'short'));
-            $this->assertEquals('Item Deleted', ZurmoModule::stringifyAuditEvent($AuditEventsList[1], 'short'));
+            $AuditEventsList = AuditEvent::getTailEvents(1);
+            $this->assertEquals('Item Deleted', ZurmoModule::stringifyAuditEvent($AuditEventsList[0], 'short'));
         }
 
         public function testLogAuditEventChangingItemMembers()
         {
             Yii::app()->user->userModel = User::getByUsername('jimmy');
             $beforeCount = AuditEvent::getCount();
-            if (Yii::app()->edition == 'Community')
-            {
-                $differential = 0;
-            }
-            else
-            {
-                $differential = 1;
-            }
+            $differential = 1;
             $account = new Account();
             $account->name = 'Dooble';
             $this->assertTrue($account->save());
-            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $account->name = 'Dooble'; // Change to same thing, no audit Event.
             $this->assertTrue($account->save());
-            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $account->name = 'Kookle';
             $this->assertTrue($account->save());
-            $this->assertEquals($beforeCount + 2 + $differential, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1 + $differential, AuditEvent::getCount());
 
             $account->officePhone = 'klm-noodles'; // No event until save.
-            $this->assertEquals($beforeCount + 2 + $differential, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1 + $differential, AuditEvent::getCount());
 
             $account->officeFax = '555-dontcall';
-            $this->assertEquals($beforeCount + 2 + $differential, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1 + $differential, AuditEvent::getCount());
 
             $account->website = 'http://example.com';
-            $this->assertEquals($beforeCount + 2 + $differential, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1 + $differential, AuditEvent::getCount());
 
             $account->annualRevenue = 4039311;
-            $this->assertEquals($beforeCount + 2 + $differential, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1 + $differential, AuditEvent::getCount());
 
             //Several attributes are not audited by default.
             $this->assertTrue($account->save());
-            $this->assertEquals($beforeCount + 4 + $differential, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 3 + $differential, AuditEvent::getCount());
 
             $AuditEventsList = AuditEvent::getTailEvents(3);
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' .    // Not Coding Standard
@@ -258,9 +227,9 @@
                                 'Changed Office Fax from \(None\) to 555-dontcall/', // Not Coding Standard
                                 ZurmoModule::stringifyAuditEvent($AuditEventsList[2]));
             $account->name = 'Bookle';
-            $this->assertEquals($beforeCount + 4 + $differential, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 3 + $differential, AuditEvent::getCount());
             $this->assertTrue($account->save());
-            $this->assertEquals($beforeCount + 5 + $differential + $differential, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 4 + $differential + $differential, AuditEvent::getCount());
 
             $AuditEventsList = AuditEvent::getTailEvents(1);
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' .    // Not Coding Standard
@@ -278,12 +247,12 @@
             $account1 = new Account();
             $account1->name = 'Giggle';
             $this->assertTrue($account1->save());
-            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $account2 = new Account();
             $account2->name = 'Gargle';
             $this->assertTrue($account2->save());
-            $this->assertEquals($beforeCount + 2, AuditEvent::getCount());
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $contact = new Contact();
             $contact->lastName = 'Smith';
@@ -291,15 +260,15 @@
             $contact->state->name = 'Warped';
             $contact->state->order = 1;
             $this->assertTrue($contact->save());
-            $this->assertEquals($beforeCount + 4, AuditEvent::getCount());
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $contact->account = $account1; // Change to same thing, no audit Event.
             $this->assertTrue($contact->save());
-            $this->assertEquals($beforeCount + 4, AuditEvent::getCount());
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $contact->account = $account2;
             $this->assertTrue($contact->save());
-            $this->assertEquals($beforeCount + 6, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
 
             $AuditEventsList = AuditEvent::getTailEvents(1);
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
@@ -319,7 +288,7 @@
             $account->name = 'Nubble';
             $account->billingAddress->street1 = '29 Wherever St';
             $this->assertTrue($account->save());
-            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $account->billingAddress->street1 = '229 Wherever St';
             $account->industry->value         = 'Automotive';
@@ -363,7 +332,7 @@
             }
 
             $this->assertTrue($account->save()); // Must save through the Item.
-            $this->assertEquals($beforeCount + 3, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 2, AuditEvent::getCount());
 
             $AuditEventsList = AuditEvent::getTailEvents(2);
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
@@ -389,15 +358,15 @@
             $user->firstName = 'Ed';
             $user->lastName  = 'Gein';
             $this->assertTrue($user->save());
-            $this->assertEquals($beforeCount + 2, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
 
             $user->setPassword('waggles');
             $this->assertTrue($user->save());
-            $this->assertEquals($beforeCount + 3, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 2, AuditEvent::getCount());
 
             $user->setPassword('bibbler');
             $this->assertTrue($user->save());
-            $this->assertEquals($beforeCount + 4, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 3, AuditEvent::getCount());
 
             $AuditEventsList = AuditEvent::getTailEvents(2);
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
@@ -415,13 +384,7 @@
 
             $item = new AuditTestItem();
             $this->assertTrue($item->save());
-            $this->assertEquals($beforeCount + 1, AuditEvent::getCount());
-
-            $auditEvents = AuditEvent::getTailEvents(1);
-            $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
-                                'James Boondog, Item Created, '                 .
-                                'AuditTestItem\([0-9]+\), \(None\)/',             // Not Coding Standard
-                                ZurmoModule::stringifyAuditEvent($auditEvents[0]));
+            $this->assertEquals($beforeCount, AuditEvent::getCount());
 
             $item->dateTime = DateTimeUtil::convertTimestampToDbFormatDateTime(time() - 120);
             $item->date     = '2010-12-20';
@@ -429,7 +392,7 @@
             $item->integer  = 666;
             $item->time     = '11:59';
             $this->assertTrue($item->save());
-            $this->assertEquals($beforeCount + 6, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 5, AuditEvent::getCount());
             $auditEvents = AuditEvent::getTailEvents(5);
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
                                 'James Boondog, Item Modified, '                .
@@ -463,7 +426,7 @@
             $item->integer  = 69;
             $item->time     = '12:00';
             $this->assertTrue($item->save());
-            $this->assertEquals($beforeCount + 11, AuditEvent::getCount());
+            $this->assertEquals($beforeCount + 10, AuditEvent::getCount());
 
             $auditEvents = AuditEvent::getTailEvents(5);
             $this->assertRegExp('/[0-9]+\/[0-9]+\/[0-9]+ [0-9]+:[0-9]+ [AP]M, ' . // Not Coding Standard
@@ -486,39 +449,6 @@
                                 'AuditTestItem\([0-9]+\), \(None\), '           . // Not Coding Standard
                                 'Changed Time from 11:59 to 12:00/',
                                 ZurmoModule::stringifyAuditEvent($auditEvents[4]));
-        }
-
-        public function testGetTailDistinctEventsByEventName()
-        {
-            Yii::app()->user->userModel = User::getByUsername('super');
-            $account1 = new Account();
-            $account1->name = 'Dooble1';
-            $this->assertTrue($account1->save());
-
-            $account2 = new Account();
-            $account2->name = 'Dooble2';
-            $this->assertTrue($account2->save());
-
-            $account3 = new Account();
-            $account3->name = 'Dooble3';
-            $account3->owner = User::getByUsername('jimmy');
-            $this->assertTrue($account3->save());
-
-            $auditEvents = AuditEvent::getTailDistinctEventsByEventName('Item Viewed', Yii::app()->user->userModel, 5);
-            $this->assertEquals(0, count($auditEvents));
-
-            //Now create some audit entries for the Item Viewed event.
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($account1), 'AccountsModule'), $account1);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($account2), 'AccountsModule'), $account2);
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($account1), 'AccountsModule'), $account1);
-
-            //Switch users to add an audit event.
-            Yii::app()->user->userModel = User::getByUsername('jimmy');
-            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($account3), 'AccountsModule'), $account3);
-            Yii::app()->user->userModel = User::getByUsername('super');
-
-            $auditEvents = AuditEvent::getTailDistinctEventsByEventName('Item Viewed', Yii::app()->user->userModel, 5);
-            $this->assertEquals(2, count($auditEvents));
         }
 
         /**

@@ -155,19 +155,31 @@
             }
             $breadCrumbLinks = array(
                 Zurmo::t('JobsManagerModule',
-                         'JobsManagerModuleSingularLabel',
-                         LabelUtil::getTranslationParamsForAllModules()) => array('/jobsManager/default'),
+                    'JobsManagerModuleSingularLabel',
+                    LabelUtil::getTranslationParamsForAllModules()) => array('/jobsManager/default'),
                 Zurmo::t('JobsManagerModule', 'Run Job'),
             );
-            $runJobView = new RunJobView($this->getId(), $this->getModule()->getId(), $type, (int)$timeLimit);
+            $runJobView = new RunJobView($this->getId(), $this->getModule()->getId(), $type, (int)$timeLimit, $messageLoggerClassName);
             $view = new JobsManagerPageView(ZurmoDefaultAdminViewUtil::
-                        makeViewWithBreadcrumbsForCurrentUser($this, $runJobView, $breadCrumbLinks, 'SettingsBreadCrumbView'));
+            makeViewWithBreadcrumbsForCurrentUser($this, $runJobView, $breadCrumbLinks, 'SettingsBreadCrumbView'));
             echo $view->render();
-            $template = ZurmoHtml::script("$('#logging-table ol').append('<li>{message}</li>');");
+        }
+
+        public function actionRunAjaxJob($type, $timeLimit = 500, $messageLoggerClassName = 'MessageLogger')
+        {
+            Yii::app()->getClientScript()->setToAjaxMode();
+            $template = '<li>{message}</li>';
             $isJobInProgress = false;
-            JobsManagerUtil::runFromJobManagerCommandOrBrowser($type, (int)$timeLimit, $messageLoggerClassName,
-                                                               $isJobInProgress, true, $template);
-            echo ZurmoHtml::script('$("#progress-table").hide(); $("#complete-table").show();');
+            try
+            {
+                JobsManagerUtil::runFromJobManagerCommandOrBrowser($type, (int)$timeLimit, $messageLoggerClassName,
+                    $isJobInProgress, true, $template);
+            }
+            catch (Exception $e)
+            {
+                echo Zurmo::t('JobsManagerModule', 'There was an error. Please check logs for more details');
+            }
+            Yii::app()->end(0, false);
         }
 
         public function actionQueueJob($type, $delay = 0, $messageLoggerClassName = 'MessageLogger')

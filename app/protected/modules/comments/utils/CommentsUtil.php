@@ -44,7 +44,7 @@
          * @param Comment $comment
          * @param array $peopleToSendNotification
          */
-        public static function sendNotificationOnNewComment(RedBeanModel $relatedModel, Comment $comment, $peopleToSendNotification)
+        public static function sendNotificationOnCommentCreateOrUpdate(RedBeanModel $relatedModel, Comment $comment, $peopleToSendNotification)
         {
             if (count($peopleToSendNotification) > 0)
             {
@@ -124,12 +124,75 @@
         }
 
         /**
+         * Parse comments and extract all username between '[~' and ']'
+         * For example if we have string: "Hello [~john]"
+         * @param Comment $comment
+         * @return array
+         */
+        public static function getMentionedUsersForNotification(Comment $comment)
+        {
+            $mentionedUsers = array();
+            preg_match_all("/\[\~(.+?)\]/is", $comment->description, $matches);
+            if (is_array($matches[1]) && !empty($matches[1]))
+            {
+                foreach ($matches[1] as $mentionedUsername)
+                {
+                    if ($mentionedUsername == '') continue;
+                    try
+                    {
+                        $user = User::getByUsername(trim(strtolower($mentionedUsername)));
+                        // DO not send notification if user mentioned himself
+                        if (Yii::app()->user->userModel->id != $user->id)
+                        {
+                            $mentionedUsers[] = $user;
+                        }
+                    }
+                    catch (NotFoundException $e)
+                    {
+                        // Just skip this user
+                    }
+                }
+            }
+            return $mentionedUsers;
+        }
+
+        /**
+         * Parse comments and extract all username between '[~' and ']'
+         * For example if we have string: "Hello [~john]", after replacement, it will be: Hello <a href='...'>John Smith</a>
+         * @param string $commentDescription
+         * @return array
+         */
+        public static function replaceMentionedUsernamesWithFullNamesAndLinksInComments($commentDescription)
+        {
+            preg_match_all("/\[\~(.+?)\]/is", $commentDescription, $matches);
+            if (is_array($matches[1]) && !empty($matches[1]))
+            {
+                foreach ($matches[1] as $mentionedUsername)
+                {
+                    if ($mentionedUsername == '') continue;
+                    try
+                    {
+                        $user = User::getByUsername(trim(strtolower($mentionedUsername)));
+                        $link = Yii::app()->createUrl('users/default/details/', array('id' => $user->id));
+                        $link = ZurmoHtml::link(strval($user), $link);
+                        $commentDescription = str_replace('[~' . $mentionedUsername . ']', $link, $commentDescription);
+                    }
+                    catch (NotFoundException $e)
+                    {
+                        // Just skip replacing this string with user
+                    }
+                }
+            }
+            return $commentDescription;
+        }
+
+        /**
          * Resolve the notification setting name by model
          * @return string
          */
         protected static function resolveOnNewCommentNotificationSettingNameByModel(RedBeanModel $model)
         {
-            return 'enable' . get_class($model) . 'NewCommentNotification';
+            return 'enable' . get_class($model) . 'CommentNotification';
         }
 
         /**
@@ -138,7 +201,26 @@
          */
         protected static function resolveNotificationRulesClassByModel(RedBeanModel $model)
         {
-            return get_class($model) . 'NewCommentNotificationRules';
+            return get_class($model) . 'CommentNotificationRules';
+        }
+
+        /**
+         * Check if user should have access to comment edit and delete comments
+         * Only user who created comment and super administrators should have access to these actions
+         * @param Comment $comment
+         * @param User $user
+         * @return bool
+         * @throws NotFoundException
+         */
+        public static function hasUserHaveAccessToEditOrDeleteComment(Comment $comment, User $user)
+        {
+            $group = Group::getByName(Group::SUPER_ADMINISTRATORS_GROUP_NAME);
+            if ($comment->createdByUser->id == $user->id ||
+                $group->users->contains($user))
+            {
+                return true;
+            }
+            return false;
         }
     }
 ?>

@@ -83,8 +83,8 @@
             $accounts = Account::getByName('superAccount');
             $this->assertEquals(1, count($accounts));
 
-            $this->assertEquals(round('41.8817767', 4),  round($accounts[0]->billingAddress->latitude, 4));
-            $this->assertEquals(round('-87.6371461', 4), round($accounts[0]->billingAddress->longitude, 4));
+            $this->assertEquals(round('42.11529', 4),  round($accounts[0]->billingAddress->latitude, 4));
+            $this->assertEquals(round('-87.976399', 4), round($accounts[0]->billingAddress->longitude, 4));
             $this->assertEquals(0,             $accounts[0]->billingAddress->invalid);
 
             $addressString = $accounts[0]->billingAddress->makeAddress();
@@ -108,7 +108,7 @@
 
             $this->assertEquals (3, count($portlets[1]));
             $this->assertFalse  (array_key_exists(3, $portlets) );
-            $this->assertEquals (4, count($portlets[2]));
+            $this->assertEquals (5, count($portlets[2]));
             foreach ($portlets[2] as $position => $portlet)
             {
                 $portlet->delete();

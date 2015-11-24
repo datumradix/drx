@@ -35,45 +35,18 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when a new comment is added to a task
+     * Base class used for wrapping a view of social items
      */
-    class TaskNewCommentNotificationRules extends TaskNotificationRules
+    class CommentsForContactRelatedModelPortletView extends CommentsForRelatedModelPortletView
     {
-        protected $allowSendingEmail    = true;
-        protected $allowDuplicates      = true;
-
-        /**
-         * @returns Translated label that describes this rule type.
-         */
-        public function getDisplayName()
+        public static function getModuleClassName()
         {
-            return Zurmo::t('TasksModule', 'New Task Comments');
+            return 'ContactsModule';
         }
 
-        /**
-         * @return The type of the NotificationRules
-         */
-        public function getType()
+        public static function getAllowedOnPortletViewClassNames()
         {
-            return 'TaskNewComment';
-        }
-
-        public function getTooltipId()
-        {
-            return 'task-new-comment-notification-tooltip';
-        }
-
-        public function getTooltipTitle()
-        {
-            return Zurmo::t('UsersModule', 'Notify me of new comments on Tasks I am following.');
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getSubjectForEmailNotification()
-        {
-            return Zurmo::t('TasksModule', 'NEW COMMENT {relatedModel}: {task}', $this->getParamsForEmailSubject());
+            return array('ContactDetailsAndRelationsView');
         }
     }
 ?>

@@ -395,7 +395,7 @@
         /**
          * @depends testWhetherSearchWorksForTheCustomFieldsPlacedForOpportunitiesModuleAfterCreatingTheOpportunity
          */
-        public function testEditOfTheOpportunityForTheTagCloudFieldAfterRemovingAllTagsPlacedForOpportunitiesModule()
+        public function testEditOfTheOpportunityForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForOpportunitiesModule()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -437,7 +437,7 @@
                             'datetimeCstm'                      => $datetime,
                             'picklistCstm'                      => array('value'  => 'b'),
                             'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
-                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'tagcloudCstm'                      => array('values' =>  array('writing')),
                             'countrylistCstm'                   => array('value'  => 'aaaa'),
                             'statelistCstm'                     => array('value'  => 'aaa1'),
                             'citylistCstm'                      => array('value'  => 'ab1'),
@@ -490,11 +490,68 @@
             $this->assertEquals($opportunity->citylistCstm->value        , 'ab1');
             $this->assertContains('gg'                                   , $opportunity->multiselectCstm->values);
             $this->assertContains('hh'                                   , $opportunity->multiselectCstm->values);
-            $this->assertEquals(0                                        , $opportunity->tagcloudCstm->values->count());
+            $this->assertEquals(1                                        , $opportunity->tagcloudCstm->values->count());
             $metadata            = CalculatedDerivedAttributeMetadata::
                                    getByNameAndModelClassName('calcnumber', 'Opportunity');
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $opportunity);
             $this->assertEquals(132                                      , $testCalculatedValue);
+        }
+
+        /**
+         * @depends testEditOfTheOpportunityForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForOpportunitiesModule
+         */
+        public function testEditOfTheOpportunityForTheTagCloudFieldAfterRemovingAllTagsPlacedForOpportunitiesModule()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            //Set the date and datetime variable values here.
+            $date           = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateFormatForInput(), time());
+            $datetime       = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateTimeFormatForInput(), time());
+            $baseCurrency   = Currency::getByCode(Yii::app()->currencyHelper->getBaseCode());
+
+            //Retrieve the account id, the super user id and opportunity Id.
+            $accountId                        = self::getModelIdByModelNameAndName ('Account', 'superAccount');
+            $superUserId                      = $super->id;
+            $explicitReadWriteModelPermission = ExplicitReadWriteModelPermissionsUtil::MIXED_TYPE_EVERYONE_GROUP;
+            $opportunity   = Opportunity::getByName('myEditOpportunity');
+            $opportunityId = $opportunity[0]->id;
+            $this->assertEquals(1, $opportunity[0]->tagcloudCstm->values->count());
+
+            //Edit a new Opportunity based on the custom fields.
+            $this->setGetArray(array('id' => $opportunityId));
+            $this->setPostArray(array('Opportunity' => array(
+                            'name'                              => 'myEditOpportunity',
+                            'amount'                            => array('value'       => 288000,
+                                                                         'currency'    => array(
+                                                                             'id'      => $baseCurrency->id)),
+                            'account'                           => array('id' => $accountId),
+                            'closeDate'                         => $date,
+                            'stage'                             => array('value' => 'Qualification'),
+                            'source'                            => array('value' => 'Inbound Call'),
+                            'description'                       => 'This is the Edit Description',
+                            'owner'                             => array('id' => $superUserId),
+                            'explicitReadWriteModelPermissions' => array('type' => $explicitReadWriteModelPermission),
+                            'checkboxCstm'                      => '0',
+                            'currencyCstm'                      => array('value'       => 40,
+                                                                         'currency'    => array(
+                                                                             'id' => $baseCurrency->id)),
+                            'decimalCstm'                       => '12',
+                            'dateCstm'                          => $date,
+                            'datetimeCstm'                      => $datetime,
+                            'picklistCstm'                      => array('value'  => 'b'),
+                            'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
+                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'countrylistCstm'                   => array('value'  => 'aaaa'),
+                            'statelistCstm'                     => array('value'  => 'aaa1'),
+                            'citylistCstm'                      => array('value'  => 'ab1'),
+                            'integerCstm'                       => '11',
+                            'phoneCstm'                         => '259-784-2069',
+                            'radioCstm'                         => array('value' => 'e'),
+                            'textCstm'                          => 'This is a test Edit Text',
+                            'textareaCstm'                      => 'This is a test Edit TextArea',
+                            'urlCstm'                           => 'http://wwww.abc-edit.com')));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('opportunities/default/edit');
+            $this->assertContains("tagcloud en cannot be blank.", $content);
         }
 
         /**

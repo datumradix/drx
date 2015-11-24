@@ -60,6 +60,9 @@
                         array('state' => 'id'),
                     'relationsReportedAsAttributesRawValueAttributes' =>
                         array('state'    => 'id'),
+                    'nonReportable' =>
+                        array('notificationSubscribers', 'comments'),
+
                 )
             );
             return array_merge(parent::getDefaultMetadata(), $metadata);

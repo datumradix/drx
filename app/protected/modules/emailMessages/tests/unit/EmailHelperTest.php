@@ -409,6 +409,7 @@
             $contact->primaryEmail      = $email;
             $this->assertTrue($contact->save());
             $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign',
                                                                                 'subject',
                                                                                 'text Content',

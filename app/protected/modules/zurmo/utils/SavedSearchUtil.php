@@ -128,7 +128,9 @@
                 if (isset($unserializedData[KanbanBoard::GROUP_BY_ATTRIBUTE_VISIBLE_VALUES]) &&
                     $searchForm->getKanbanBoard() != null)
                 {
-                    $searchForm->getKanbanBoard()->setIsActive();
+                    // ToDO: Line below is commented, until we find better way so when user save search under kanboard,
+                    // When it load it will load resuls in kanboard(for now search results are always loaded in list view)
+                    // $searchForm->getKanbanBoard()->setIsActive();
                     $searchForm->getKanbanBoard()->setGroupByAttributeVisibleValues(
                         $unserializedData[KanbanBoard::GROUP_BY_ATTRIBUTE_VISIBLE_VALUES]);
                 }

@@ -91,6 +91,9 @@
             $amChart->addSerialGraph(MarketingChartDataProvider::SENT, 'column',
                                      array('title'       => "'" . Zurmo::t('Core', 'Sent') . "'",
                                            'balloonText' => "'" . Zurmo::t('Core', 'Sent') . ": [[value]]'"));
+            $amChart->addSerialGraph(MarketingChartDataProvider::FAILED_TO_SEND, 'column',
+                                     array('title'       => "'" . Zurmo::t('Core', 'Failed') . "'",
+                                           'balloonText' => "'" . Zurmo::t('Core', 'Failed') . ": [[value]]'"));
             $amChart->addSerialGraph(MarketingChartDataProvider::UNIQUE_OPENS, 'column',
                                      array('title'       => "'" . Zurmo::t('MarketingModule', 'Opened') . "'",
                                            'balloonText' => "'" . Zurmo::t('MarketingModule', 'Opened') . ": [[value]]'"));
@@ -103,6 +106,9 @@
             $amChart->addSerialGraph(MarketingChartDataProvider::UNSUBSCRIBED, 'column',
                                      array('title'       => "'" . Zurmo::t('Core', 'Unsubscribed') . "'",
                                            'balloonText' => "'" . Zurmo::t('Core', 'Unsubscribed') . ": [[value]]'"));
+            $amChart->addSerialGraph(MarketingChartDataProvider::SKIPPED, 'column',
+                                     array('title'       => "'" . Zurmo::t('Core', 'Skipped') . "'",
+                                           'balloonText' => "'" . Zurmo::t('Core', 'Skipped') . ": [[value]]'"));
 
             $amChart->xAxisName        = $chartDataProvider->getXAxisName();
             $amChart->yAxisName        = $chartDataProvider->getYAxisName();

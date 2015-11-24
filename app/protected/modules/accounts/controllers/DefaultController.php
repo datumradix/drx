@@ -407,5 +407,61 @@
             $view = new ModalView($this, $renderOrgGraphModalView);
             return $view->render();
         }
+
+        /**
+         * Create comment via ajax for account
+         * @param type $id
+         * @param string $uniquePageId
+         */
+        public function actionInlineCreateCommentFromAjax($id, $uniquePageId)
+        {
+            $comment       = new Comment();
+            $redirectUrl   = Yii::app()->createUrl('/accounts/default/inlineCreateCommentFromAjax',
+                array('id'           => $id,
+                      'uniquePageId' => $uniquePageId));
+            $urlParameters = array('relatedModelId'           => (int)$id,
+                                   'relatedModelClassName'    => 'Account',
+                                   'relatedModelRelationName' => 'comments',
+                                   'redirectUrl'              => $redirectUrl); //After save, the url to go to.
+            $uniquePageId  = 'CommentInlineEditForModelView';
+            echo             ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Add Comment'));
+            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
+                $urlParameters, $uniquePageId);
+            $view          = new AjaxPageView($inlineView);
+            echo $view->render();
+        }
+
+        /**
+         * Add subscriber for account
+         * @param int $id
+         */
+        public function actionAddSubscriber($id)
+        {
+            $account = Account::getById((int)$id);
+            $account    = NotificationSubscriberUtil::processSubscriptionRequest($account, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::getSubscriberData($account);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($account, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
+            echo $content;
+        }
+
+        /**
+         * Remove subscriber for account
+         * @param int $id
+         */
+        public function actionRemoveSubscriber($id)
+        {
+            $account = Account::getById((int)$id);
+            $account    = NotificationSubscriberUtil::processUnsubscriptionRequest($account, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::getSubscriberData($account);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($account, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
+            if ($content == null)
+            {
+                echo "";
+            }
+            else
+            {
+                echo $content;
+            }
+        }
     }
 ?>

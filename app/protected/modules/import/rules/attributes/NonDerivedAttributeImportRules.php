@@ -45,9 +45,14 @@
 
         protected $penultimateAttributeName;
 
-        public function __construct($model, $attributeName)
+        /**
+         * @param $model
+         * @param null $attributeName
+         * @param null || ExplicitReadWriteModelPermissions $explicitReadWriteModelPermissions
+         */
+        public function __construct($model, $attributeName, $explicitReadWriteModelPermissions = null)
         {
-            parent::__construct($model);
+            parent::__construct($model, $explicitReadWriteModelPermissions);
             assert('is_string($attributeName)');
             $this->attributeName = $attributeName;
         }
@@ -96,7 +101,8 @@
                                                     $columnMappingData,
                                                     $importSanitizeResultsUtil,
                                                     $this->penultimateModelClassName,
-                                                    $this->penultimateAttributeName);
+                                                    $this->penultimateAttributeName,
+                                                    $this->getExplicitReadWriteModelPermissions());
             return array($this->getModelAttributeName() => $value);
         }
 

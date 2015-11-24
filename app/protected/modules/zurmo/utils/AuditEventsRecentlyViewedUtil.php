@@ -106,17 +106,6 @@
         }
 
         /**
-         * Given a user and a count, get a tail of recent audit events for that user limited by the count.
-         * @param User $user
-         * @param int $count
-         */
-        protected static function getRecentlyViewedAuditEventsByUser(User $user, $count)
-        {
-            assert('is_int($count)');
-            return AuditEvent::getTailDistinctEventsByEventName('Item Viewed', $user, $count);
-        }
-
-        /**
          * Given an AuditEvent, build a route to the event's model's details action.
          * @param AuditEvent $auditEvent
          * @param string $moduleClassName

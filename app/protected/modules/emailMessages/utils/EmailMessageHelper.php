@@ -123,7 +123,7 @@
         /*
         public static function sendTestEmail(EmailHelper $emailHelper, Array $from, $toAddress)
         {
-            $emailMessage              = self::processAndCreateEmailMessage($from, $toAddress);
+            $emailMessage              = self::processAndCreateTestEmailMessage($from, $toAddress);
             $validated                 = $emailMessage->validate();
             if ($validated)
             {
@@ -135,12 +135,12 @@
         */
 
         /**
-         * Process and create email message.
+         * Process and create email message. Used for testing outbound setting, and outbound job
          * @param array $from
          * @param string $toAddress
          * @return \EmailMessage
          */
-        public static function processAndCreateEmailMessage(Array $from, $toAddress)
+        public static function processAndCreateTestEmailMessage(Array $from, $toAddress)
         {
             assert('is_string($from["name"])');
             assert('is_string($from["address"])');
@@ -149,14 +149,25 @@
             $emailMessage->subject     = Zurmo::t('EmailMessagesModule', 'A test email from Zurmo',
                                          LabelUtil::getTranslationParamsForAllModules());
             $emailContent              = new EmailMessageContent();
+            $userProfileUrl                                = Yii::app()->createAbsoluteUrl('users/default/details',
+                array('id' => Yii::app()->user->userModel->id));
+
+            $textEmailContent = Zurmo::t('EmailMessagesModule', 'A test text message from Zurmo.',
+                LabelUtil::getTranslationParamsForAllModules()). PHP_EOL;
+            $textEmailContent .= Zurmo::t('EmailMessagesModule', 'Sent from {username}: {usernameLink}.',
+                array(
+                    '{username}'     => Yii::app()->user->userModel->username,
+                    '{usernameLink}' => $userProfileUrl)) . PHP_EOL;
             $emailContent->textContent = EmailNotificationUtil::
-                                            resolveNotificationTextTemplate(
-                                            Zurmo::t('EmailMessagesModule', 'A test text message from Zurmo.',
-                                            LabelUtil::getTranslationParamsForAllModules()));
+                                            resolveNotificationTextTemplate($textEmailContent);
+
+            $htmlEmailContent = ZurmoHtml::tag('p', array(), Zurmo::t('EmailMessagesModule', 'A test text message from Zurmo.',
+                LabelUtil::getTranslationParamsForAllModules()));
+            $htmlEmailContent .= ZurmoHtml::tag('p', array(), Zurmo::t('EmailMessagesModule', 'Sent from {usernameLink}.',
+                array('{usernameLink}' => ZurmoHtml::link(Yii::app()->user->userModel->username, $userProfileUrl))));
             $emailContent->htmlContent = EmailNotificationUtil::
-                                            resolveNotificationHtmlTemplate(
-                                            Zurmo::t('EmailMessagesModule', 'A test text message from Zurmo.',
-                                            LabelUtil::getTranslationParamsForAllModules()));
+                                            resolveNotificationHtmlTemplate($htmlEmailContent, Yii::app()->user->userModel, true);
+
             $emailMessage->content     = $emailContent;
             $sender                    = new EmailMessageSender();
             $sender->fromAddress       = $from['address'];

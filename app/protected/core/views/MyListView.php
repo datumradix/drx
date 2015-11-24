@@ -120,7 +120,8 @@
                 $sortAttribute  = $this->getSortAttributeForDataProvider();
                 $sortDescending = $this->resolveSortDescendingForDataProvider();
             }
-            $redBeanModelDataProvider = new RedBeanModelDataProvider($this->modelClassName, $sortAttribute, $sortDescending,
+            $dataProviderClassName = $this->getDataProviderClassName();
+            $redBeanModelDataProvider = new $dataProviderClassName($this->modelClassName, $sortAttribute, $sortDescending,
                                                                 $searchAttributeData, array(
                                                                     'pagination' => array(
                                                                         'pageSize' => $pageSize,
@@ -320,6 +321,11 @@
                 $this->dataProvider = $this->makeDataProviderBySearchAttributeData($this->makeSearchAttributeData());
             }
             return $this->dataProvider;
+        }
+
+        protected function getDataProviderClassName()
+        {
+            return "RedBeanModelDataProvider";
         }
 
         /**

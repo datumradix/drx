@@ -77,17 +77,7 @@
             $jobManagerFileMessageStreamer = new JobManagerFileLogRouteMessageStreamer("{message}\n", $jobManagerFileLogger);
             $messageStreamer = new MessageStreamer($template);
             $messageStreamer->setExtraRenderBytes(0);
-            $streamers = array($messageStreamer, $jobManagerFileMessageStreamer);
-            foreach ($streamers as $streamer)
-            {
-                $streamer->add(Zurmo::t('JobsManagerModule', 'Script will run at most for {seconds} seconds.',
-                                        array('{seconds}' => $timeLimit)));
-                $streamer->add(Zurmo::t('JobsManagerModule', 'Sending output to runtime/jobLogs/{type}.log',
-                                        array('{type}' => $type)));
-                $streamer->add(Zurmo::t('JobsManagerModule', '{dateTimeString} Starting job type: {type}',
-                                        array('{type}' => $type,
-                                              '{dateTimeString}' => static::getLocalizedDateTimeTimeZoneString())));
-            }
+
             if ($useMessageStreamer)
             {
                 $messageLogger = new $messageLoggerClassName(array($messageStreamer, $jobManagerFileMessageStreamer));
@@ -96,24 +86,49 @@
             {
                 $messageLogger = new $messageLoggerClassName(array($jobManagerFileMessageStreamer));
             }
-            $messageLogger->addInfoMessage(Zurmo::t('JobsManagerModule', 'Script will run at most for {seconds} seconds.',
-                            array('{seconds}' => $timeLimit)));
-            $messageLogger->addInfoMessage(Zurmo::t('JobsManagerModule', 'Starting job type: {type}',
-                            array('{type}' => $type)));
-            $messageLogger->addDebugMessage('Showing Debug Messages');
-            if ($type == 'Monitor')
+
+            $streamers = array($messageStreamer, $jobManagerFileMessageStreamer);
+            if (Yii::app()->isApplicationInMaintenanceMode())
             {
-                static::runMonitorJob($messageLogger, $isJobInProgress);
+                foreach ($streamers as $streamer)
+                {
+                    $streamer->add(Zurmo::t('JobsManagerModule', '{dateTimeString} Application is in maintenanceMode and {type}Job can not be started.',
+                        array('{type}' => $type, '{dateTimeString}' => static::getLocalizedDateTimeTimeZoneString())));
+                }
             }
             else
             {
-                static::runNonMonitorJob($type, $messageLogger, $isJobInProgress);
-            }
-            foreach ($streamers as $streamer)
-            {
-                $streamer->add(Zurmo::t('JobsManagerModule', '{dateTimeString} Ending job type: {type}',
-                                        array('{type}' => $type,
-                                              '{dateTimeString}' => static::getLocalizedDateTimeTimeZoneString())));
+                foreach ($streamers as $streamer)
+                {
+                    $streamer->add(Zurmo::t('JobsManagerModule', 'Script will run at most for {seconds} seconds.',
+                        array('{seconds}' => $timeLimit)));
+                    $streamer->add(Zurmo::t('JobsManagerModule', 'Sending output to runtime/jobLogs/{type}.log',
+                        array('{type}' => $type)));
+                    $streamer->add(Zurmo::t('JobsManagerModule', '{dateTimeString} Starting job type: {type}',
+                        array('{type}'           => $type,
+                              '{dateTimeString}' => static::getLocalizedDateTimeTimeZoneString())));
+                }
+
+                $messageLogger->addInfoMessage(Zurmo::t('JobsManagerModule', 'Script will run at most for {seconds} seconds.',
+                    array('{seconds}' => $timeLimit)));
+                $messageLogger->addInfoMessage(Zurmo::t('JobsManagerModule', 'Starting job type: {type}',
+                    array('{type}' => $type)));
+                $messageLogger->addDebugMessage('Showing Debug Messages');
+                if ($type == 'Monitor')
+                {
+                    static::runMonitorJob($messageLogger, $isJobInProgress);
+                }
+                else
+                {
+                    static::runNonMonitorJob($type, $messageLogger, $isJobInProgress);
+                }
+
+                foreach ($streamers as $streamer)
+                {
+                    $streamer->add(Zurmo::t('JobsManagerModule', '{dateTimeString} Ending job type: {type}',
+                        array('{type}'           => $type,
+                              '{dateTimeString}' => static::getLocalizedDateTimeTimeZoneString())));
+                }
             }
         }
 

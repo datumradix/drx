@@ -41,23 +41,16 @@
          * content tags with the appropriate strings
          * @param string $bodyContent
          * @param User|null $user
+         * @param null $isTestNotification
          * @return string
          */
-        public static function resolveNotificationHtmlTemplate($bodyContent, User $user = null)
+        public static function resolveNotificationHtmlTemplate($bodyContent, User $user = null, $isTestNotification = null)
         {
             assert('is_string($bodyContent)');
-            if ($user === null)
-            {
-                $user = Yii::app()->user->userModel;
-            }
-            $url                                = Yii::app()->createAbsoluteUrl('users/default/configurationEdit',
-                                                  array('id' => $user->id));
             $htmlTemplate                       = self::getNotificationHtmlTemplate();
             $htmlContent                        = array();
             $htmlContent['{bodyContent}']       = $bodyContent;
-            $htmlContent['{preferenceContent}'] = ZurmoHtml::link(Zurmo::t('EmailMessagesModule', 'Manage your email preferences'), $url);
-            $htmlContent['{sourceContent}']     = Zurmo::t('EmailMessagesModule', 'Powered By {link}',
-                array('{link}' => ZurmoHtml::link(Yii::app()->label, self::resolveWebsiteUrlForNotificationMessage())));
+            $htmlContent = self::resolvePreferenceAndSourceContentForHtmlTemplate($htmlContent, $user, $isTestNotification);
             return strtr($htmlTemplate, $htmlContent);
         }
 
@@ -95,27 +88,17 @@
          * Based on the current theme, retrieve the email notification template for text content and replace the
          * content tags with the appropriate strings
          * @param string $bodyContent
-         * @param User $user
+         * @param User|null $user
+         * @param null $isTestNotification
          * @return string
          */
-        public static function resolveNotificationTextTemplate($bodyContent, User $user = null)
+        public static function resolveNotificationTextTemplate($bodyContent, User $user = null, $isTestNotification = null)
         {
             assert('is_string($bodyContent)');
-            if ($user === null)
-            {
-                $user = Yii::app()->user->userModel;
-            }
-            $url                                = ShortUrlUtil::createShortUrl(
-                                                        Yii::app()->createAbsoluteUrl('users/default/configurationEdit',
-                                                                                      array('id' => $user->id)
-                                                        )
-                                                  );
             $textTemplate                       = self::getNotificationTextTemplate();
             $textContent                        = array();
             $textContent['{bodyContent}']       = $bodyContent;
-            $textContent['{preferenceContent}'] = Zurmo::t('EmailMessagesModule', 'Manage your email preferences') . ': ' . $url;
-            $textContent['{sourceContent}']     = Zurmo::t('EmailMessagesModule', 'Powered By Zurmo', LabelUtil::getTranslationParamsForAllModules());
-            $textContent['{sourceContent}']    .= PHP_EOL . self::resolveWebsiteUrlForNotificationMessage();
+            $textContent = self::resolvePreferenceAndSourceContentForTextTemplate($textContent, $user, $isTestNotification);
             return strtr($textTemplate, $textContent);
         }
 
@@ -203,6 +186,64 @@
             {
                 return "http://www.zurmo.com";
             }
+        }
+
+        /**
+         * @param array $htmlContent
+         * @param User|null $user
+         * @param $isTestNotification
+         * @return array
+         */
+        protected static function resolvePreferenceAndSourceContentForHtmlTemplate(array $htmlContent, User $user = null, $isTestNotification)
+        {
+            if ($user === null)
+            {
+                $user = Yii::app()->user->userModel;
+            }
+            if (isset($isTestNotification) && $isTestNotification)
+            {
+                $htmlContent['{preferenceContent}'] = '';
+            }
+            else
+            {
+                $url = Yii::app()->createAbsoluteUrl('users/default/configurationEdit',
+                    array('id' => $user->id));
+                $htmlContent['{preferenceContent}'] = ZurmoHtml::link(Zurmo::t('EmailMessagesModule', 'Manage your email preferences'), $url);
+            }
+            $htmlContent['{sourceContent}']     = Zurmo::t('EmailMessagesModule', 'Powered By {link}',
+                array('{link}' => ZurmoHtml::link(Yii::app()->label, self::resolveWebsiteUrlForNotificationMessage())));
+            return $htmlContent;
+        }
+
+        /**
+         * @param array $textContent
+         * @param User|null $user
+         * @param $isTestNotification
+         * @return array
+         */
+        protected static function resolvePreferenceAndSourceContentForTextTemplate(array $textContent, User $user = null, $isTestNotification)
+        {
+            if ($user === null)
+            {
+                $user = Yii::app()->user->userModel;
+            }
+
+            if (isset($isTestNotification) && $isTestNotification)
+            {
+                $textContent['{preferenceContent}'] = '';
+            }
+            else
+            {
+                $url = ShortUrlUtil::createShortUrl(
+                    Yii::app()->createAbsoluteUrl('users/default/configurationEdit',
+                        array('id' => $user->id)
+                    )
+                );
+                $textContent['{preferenceContent}'] = Zurmo::t('EmailMessagesModule', 'Manage your email preferences') . ': ' . $url;
+            }
+            $textContent['{sourceContent}']     = Zurmo::t('EmailMessagesModule', 'Powered By Zurmo', LabelUtil::getTranslationParamsForAllModules());
+            $textContent['{sourceContent}']    .= PHP_EOL . self::resolveWebsiteUrlForNotificationMessage();
+            return $textContent;
         }
     }
 ?>

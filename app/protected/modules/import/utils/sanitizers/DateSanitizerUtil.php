@@ -87,7 +87,10 @@
             {
                 return $value;
             }
+            $timeZone = date_default_timezone_get();
+            date_default_timezone_set('GMT');
             $timeStamp = CDateTimeParser::parse($value, $this->mappingRuleData['format']);
+            date_default_timezone_set($timeZone);
             if ($timeStamp === false)
             {
                 throw new InvalidValueToSanitizeException(Zurmo::t('ImportModule', 'Invalid date format.'));

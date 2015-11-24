@@ -109,6 +109,10 @@
                     'type'             => array(static::HAS_ONE,              'OwnedCustomField', static::OWNED,
                                                 static::LINK_TYPE_SPECIFIC, 'type'),
                     'projects'         => array(static::MANY_MANY,            'Project'),
+                    'notificationSubscribers'   => array(static::HAS_MANY, 'NotificationSubscriber', static::OWNED,
+                                                static::LINK_TYPE_POLYMORPHIC, 'relatedModel'),
+                    'comments'         => array(static::HAS_MANY, 'Comment', static::OWNED,
+                                                static::LINK_TYPE_POLYMORPHIC, 'relatedModel')
                 ),
                 'derivedRelationsViaCastedUpModel' => array(
                     'meetings' => array(static::MANY_MANY, 'Meeting', 'activityItems'),
@@ -249,6 +253,48 @@
                     return parent::isAllowedToSetReadOnlyAttribute($attributeName);
                 }
             }
+        }
+
+        protected function beforeSave()
+        {
+            if (parent::beforeSave())
+            {
+                $this->resolveAndSetDefaultSubscribers();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        protected function afterSave()
+        {
+            if (!$this->isNewModel)
+            {
+                $this->logAuditEventForNameChange();
+            }
+            parent::afterSave();
+        }
+
+        protected function logAuditEventForNameChange()
+        {
+            if (isset($this->originalAttributeValues['name']) && $this->originalAttributeValues['name'] != $this->name)
+            {
+                $modelClassName = get_class($this);
+                $data = array('oldName' => $this->originalAttributeValues['name'],
+                              'newName' => $this->name);
+                AuditEvent::logAuditEvent($modelClassName::getModuleClassName(),
+                                          ZurmoModule::AUDIT_EVENT_ITEM_NAME_CHANGED, $data, $this);
+            }
+        }
+
+        /**
+         * Resolve and set default subscribers
+         */
+        protected function resolveAndSetDefaultSubscribers()
+        {
+            NotificationSubscriberUtil::addSubscriber($this->owner, $this, false);
         }
     }
 ?>

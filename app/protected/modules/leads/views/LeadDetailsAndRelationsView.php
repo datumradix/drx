@@ -77,10 +77,13 @@
                             'rows' => array(
                                 array(
                                      'type' => 'UpcomingMeetingsForContactCalendar',
-                                    ),
+                                ),
                                 array(
                                      'type' => 'OpenTasksForContactRelatedList',
-                                    )
+                                ),
+                                array(
+                                     'type' => 'CommentsForLeadRelatedModelPortlet',
+                                )
                             )
                         )
                     )

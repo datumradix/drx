@@ -4,7 +4,7 @@
      * Zurmo, Inc. Copyright (C) 2015 Zurmo Inc.
      *
      * Zurmo is free software; you can redistribute it and/or modify it under
-     * the terms of the GNU General Public License version 3 as published by the
+     * the terms of the GNU Affero General Public License version 3 as published by the
      * Free Software Foundation with the addition of the following permission added
      * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
      * IN WHICH THE COPYRIGHT IS OWNED BY ZURMO, ZURMO DISCLAIMS THE WARRANTY
@@ -12,10 +12,10 @@
      *
      * Zurmo is distributed in the hope that it will be useful, but WITHOUT
      * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-     * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+     * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
      * details.
      *
-     * You should have received a copy of the GNU General Public License along with
+     * You should have received a copy of the GNU Affero General Public License along with
      * this program; if not, see http://www.gnu.org/licenses or write to the Free
      * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
      * 02110-1301 USA.
@@ -25,9 +25,9 @@
      *
      * The interactive user interfaces in original and modified versions
      * of this program must display Appropriate Legal Notices, as required under
-     * Section 5 of the GNU General Public License version 3.
+     * Section 5 of the GNU Affero General Public License version 3.
      *
-     * In accordance with Section 7(b) of the GNU General Public License version 3,
+     * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
      * these Appropriate Legal Notices must retain the display of the Zurmo
      * logo and Zurmo copyright notice. If the display of the logo is not reasonably
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
@@ -47,9 +47,17 @@
             UserTestHelper::createBasicUser('normal');
 
             EmailBoxUtil::getDefaultEmailBoxByUser(User::getByUsername('super'));
-            ContactTestHelper::createContactByNameForOwner('contact01', Yii::app()->user->userModel);
-            ContactTestHelper::createContactByNameForOwner('contact02', Yii::app()->user->userModel);
-            ContactTestHelper::createContactByNameForOwner('contact03', Yii::app()->user->userModel);
+            $contact1 = ContactTestHelper::createContactByNameForOwner('contact01', Yii::app()->user->userModel);
+            $contact2 = ContactTestHelper::createContactByNameForOwner('contact02', Yii::app()->user->userModel);
+            $contact3 = ContactTestHelper::createContactByNameForOwner('contact03', Yii::app()->user->userModel);
+            $contact1->primaryEmail->emailAddress = 'contact1@example.com';
+            $contact2->primaryEmail->emailAddress = 'contact2@example.com';
+            $contact3->primaryEmail->emailAddress = 'contact3@example.com';
+            // Begin Not Coding Standard
+            assert($contact1->save());
+            assert($contact2->save());
+            assert($contact3->save());
+            // End Not Coding Standard
         }
 
         public function setUp()
@@ -149,7 +157,8 @@
                     CampaignItemActivity::TYPE_OPEN => 1,
                     CampaignItemActivity::TYPE_SKIP => 1,
                     CampaignItemActivity::TYPE_UNSUBSCRIBE => 1),
-                null
+                null,
+                EmailFolder::TYPE_SENT
             );
 
             $this->addCampaignItem($contacts[1], '2000-01-02', array(
@@ -158,13 +167,15 @@
                     CampaignItemActivity::TYPE_OPEN => 1,
                     CampaignItemActivity::TYPE_SKIP => 1,
                     CampaignItemActivity::TYPE_UNSUBSCRIBE => 1),
-                '2000-01-01'
+                '2000-01-01',
+                EmailFolder::TYPE_SENT
             );
             $chartDataProvider  = new MarketingEmailsInThisListChartDataProvider();
             $chartDataProvider->setBeginDate('2000-01-01');
             $chartDataProvider->setEndDate('2000-01-02');
             $chartDataProvider->setGroupBy(MarketingOverallMetricsForm::GROUPING_TYPE_DAY);
             $chartData          = $chartDataProvider->getChartData();
+
             $this->assertEquals(
                 array(
                     'queued' => 0,
@@ -173,6 +184,8 @@
                     'uniqueOpens' => 2,
                     'bounced' => 2,
                     'optedOut' => 2,
+                    'failed' => 0,
+                    'skipped' => 2,  // ToDo: Why!!!
                     'displayLabel' => 'Jan 1',
                     'dateBalloonLabel' => 'Jan 1'
                 ),
@@ -186,11 +199,11 @@
         public function testGetChartData($activityCreationArray, $emailMessageSentDateTime, $isMultiplierOn)
         {
             $contacts = Contact::getAll();
-            $this->addCampaignItem     ($contacts[0], $emailMessageSentDateTime, $activityCreationArray, null);
+            $this->addCampaignItem     ($contacts[0], $emailMessageSentDateTime, $activityCreationArray, null, EmailFolder::TYPE_SENT);
             $this->addAutoresponderItem($contacts[0], $emailMessageSentDateTime, $activityCreationArray);
             if ($isMultiplierOn)
             {
-                $this->addCampaignItem     ($contacts[1], $emailMessageSentDateTime, $activityCreationArray, null);
+                $this->addCampaignItem     ($contacts[1], $emailMessageSentDateTime, $activityCreationArray, null, EmailFolder::TYPE_SENT);
                 $this->addAutoresponderItem($contacts[1], $emailMessageSentDateTime, $activityCreationArray);
             }
 
@@ -364,6 +377,8 @@
                 $expectedArray['uniqueOpens']       = 0;
                 $expectedArray['bounced']           = 0;
                 $expectedArray['optedOut']          = 0;
+                $expectedArray['failed']            = 0;
+                $expectedArray['skipped']           = 0;
                 $expectedArray['displayLabel']      = $displayLabel;
                 if ($groupingBy == 'Week')
                 {
@@ -421,6 +436,8 @@
                 $expectedArray['uniqueOpens']       = 0;
                 $expectedArray['bounced']           = 0;
                 $expectedArray['optedOut']          = 0;
+                $expectedArray['failed']            = 0;
+                $expectedArray['skipped']           = 0;
                 $expectedArray['displayLabel']      = $displayLabel;
                 if ($groupingBy == 'Week')
                 {
@@ -570,9 +587,9 @@
                                 $chartDataColumn['dateBalloonLabel']);
         }
 
-        private function addCampaignItem($contact, $emailMessageSentDateTime, $creationArray, $emailMessageCreatedDateTime = null)
+        private function addCampaignItem($contact, $emailMessageSentDateTime, $creationArray, $emailMessageCreatedDateTime = null, $emailFolder = EmailFolder::TYPE_ARCHIVED)
         {
-            $emailMessage                            = $this->createEmailMessage($contact, $emailMessageSentDateTime, $emailMessageCreatedDateTime);
+            $emailMessage                            = $this->createEmailMessage($contact, $emailMessageSentDateTime, $emailMessageCreatedDateTime, $emailFolder);
             $campaignItem                            = new CampaignItem();
             $campaignItem->contact                   = $contact;
             $campaignItem->processed                 = true;
@@ -582,9 +599,9 @@
             $this->assertTrue($this->campaign->save());
         }
 
-        private function addAutoresponderItem($contact, $emailMessageSentDateTime, $creationArray, $emailMessageCreatedDateTime = null)
+        private function addAutoresponderItem($contact, $emailMessageSentDateTime, $creationArray, $emailMessageCreatedDateTime = null, $emailFolder = EmailFolder::TYPE_ARCHIVED)
         {
-            $emailMessage                            = $this->createEmailMessage($contact, $emailMessageSentDateTime, $emailMessageCreatedDateTime);
+            $emailMessage                            = $this->createEmailMessage($contact, $emailMessageSentDateTime, $emailMessageCreatedDateTime, $emailFolder);
             $autoresponderItem                       = new AutoresponderItem();
             $autoresponderItem->contact              = $contact;
             $autoresponderItem->processed            = true;
@@ -597,7 +614,7 @@
             $this->assertTrue($this->autoresponder->save());
         }
 
-        private function createEmailMessage($contact, $emailMessageSentDateTime, $emailMessageCreatedDateTime = null)
+        private function createEmailMessage($contact, $emailMessageSentDateTime, $emailMessageCreatedDateTime = null, $emailFolder)
         {
             if ($emailMessageCreatedDateTime == null)
             {
@@ -634,7 +651,7 @@
                         ::convertTimestampToDbFormatDateTime(strtotime($emailMessageCreatedDateTime));
             }
             $emailMessage->folder                    =
-                    EmailFolder::getByBoxAndType($emailBox, EmailFolder::TYPE_ARCHIVED);
+                    EmailFolder::getByBoxAndType($emailBox, $emailFolder);
             $emailMessage->recipients->add($recipient);
             return $emailMessage;
         }

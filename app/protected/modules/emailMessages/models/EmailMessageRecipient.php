@@ -47,6 +47,8 @@
 
         const TYPE_BCC = 3;
 
+        protected $isAudited = false;
+
         public function __toString()
         {
             if (trim($this->toAddress) == '')

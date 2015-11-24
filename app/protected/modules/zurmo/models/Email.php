@@ -55,6 +55,7 @@
                     'optOut',
                 ),
                 'rules' => array(
+                    array('emailAddress', 'filter', 'filter' => 'trim'),
                     array('emailAddress', 'email'),
                     array('isInvalid',    'boolean'),
                     array('optOut',       'boolean'),

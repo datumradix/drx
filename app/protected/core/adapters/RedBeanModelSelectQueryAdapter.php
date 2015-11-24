@@ -152,7 +152,7 @@
             {
                 $queryString     .= DatabaseCompatibilityUtil::makeTimeZoneAdjustmentContent();
             }
-            return "week({$queryString})";
+            return "weekofyear({$queryString})";
         }
 
         public static function makeFirstDayOfWeekDateModifierString($tableName, $columnName, $adjustForTimeZone = false)

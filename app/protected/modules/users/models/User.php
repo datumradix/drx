@@ -325,7 +325,7 @@
             ReadPermissionsSubscriptionUtil::deleteUserItemsFromAllReadSubscriptionTables($this->id);
         }
 
-        protected function logAuditEventsListForCreatedAndModifed($newModel)
+        protected function logAuditEventsListForModified($newModel)
         {
             if ($newModel)
             {
@@ -335,7 +335,6 @@
                 {
                     Yii::app()->user->userModel = $this;
                 }
-                AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_CREATED, strval($this), $this);
             }
             else
             {
@@ -449,7 +448,7 @@
                                                                               'height' => $size));
         }
 
-        private function getAvatarImageUrl($size, $addScheme = false)
+        public function getAvatarImageUrl($size, $addScheme = false)
         {
             assert('is_int($size)');
             {

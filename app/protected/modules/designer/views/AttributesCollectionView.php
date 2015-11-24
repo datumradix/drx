@@ -79,7 +79,7 @@
                         $information['elementType'] == 'User' ||
                         $information['isReadOnly'] ||
                         $attributeName == 'id' ||
-                        $this->isAttributeOnModelOrCastedUp($attributeName) ||
+                        ($this->isAttributeOnModelOrCastedUp($attributeName) && !$this->isCastedUpAttributeConfigurationAllowed($attributeName)) ||
                                 in_array($attributeName, $modelClassName::getNonConfigurableAttributes()))
                     {
                         //temporary until we figure out how to handle these types.
@@ -125,6 +125,16 @@
                 return true;
             }
             return false;
+        }
+
+        protected function isCastedUpAttributeConfigurationAllowed($attributeName)
+        {
+            $modelClassName = $this->modelClassName;
+            if (method_exists($modelClassName, 'getAllowedCastedUpAttributeNames') &&
+                in_array($attributeName, $modelClassName::getAllowedCastedUpAttributeNames()))
+            {
+                return true;
+            }
         }
 
         public function isUniqueToAPage()

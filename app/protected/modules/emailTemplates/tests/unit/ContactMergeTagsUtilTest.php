@@ -561,7 +561,7 @@
         {
             $content                    = 'currencyValue: [[CURRENCY^VALUE]] [[CURRENCY^VALUE__VALUE]] ' .
                                             '[[CURRENCY^VALUE__CURRENCY__CODE]] [[CURRENCY^VALUE__CURRENCY__ACTIVE]]';
-            $compareContent             = 'currencyValue: 100 100 USD 1';
+            $compareContent             = 'currencyValue: $100 100 USD 1';
             $mergeTagsUtil              = MergeTagsUtilFactory::make(EmailTemplate::TYPE_CONTACT, null, $content);
             $this->assertTrue($mergeTagsUtil instanceof MergeTagsUtil);
             $this->assertTrue($mergeTagsUtil instanceof ContactMergeTagsUtil);

@@ -57,6 +57,7 @@
             $userOrContact      = $this->resolveContactByPostRecipientDataOrResolveCurrentUser($recipientData);
             $recipientEmail     = $this->resolveRecipientEmailByPostRecipientDataAndUserOrContact($recipientData, $userOrContact);
             $emailData          = $this->resolveEmailDataByPostSourceDataAttributesOrReferredModel($sourceData, $userOrContact, $recipientEmail);
+            $emailData          = $this->disableTrackingForTestEmails($emailData);
             $this->resolveAndSendEmailMessageByPostSourceDataAndUserOrContact($emailData, $userOrContact);
         }
 
@@ -458,6 +459,12 @@
                     $emailMessage->files->add($emailMessageFile);
                 }
             }
+        }
+
+        protected function disableTrackingForTestEmails($emailData)
+        {
+            $emailData['enableTracking'] = false;
+            return $emailData;
         }
     }
 ?>
