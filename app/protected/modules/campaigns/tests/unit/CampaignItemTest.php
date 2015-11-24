@@ -740,10 +740,20 @@
             $contact3            = ContactTestHelper::createContactByNameForOwner('contact3', $user);
             $contact4            = ContactTestHelper::createContactByNameForOwner('contact4', $user);
             $contact5            = ContactTestHelper::createContactByNameForOwner('contact5', $user);
+            $contact6            = ContactTestHelper::createContactByNameForOwner('contact6', $user);
+            $contact7            = ContactTestHelper::createContactByNameForOwner('contact7', $user);
+            $contact8            = ContactTestHelper::createContactByNameForOwner('contact8', $user);
+            $contact9            = ContactTestHelper::createContactByNameForOwner('contact9', $user);
+            $contact10            = ContactTestHelper::createContactByNameForOwner('contact10', $user);
 
             // Without campaign activity
             $campaignItem1       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact1);
             $campaignItem2       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact2);
+            $campaignItem6       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact6);
+            $campaignItem7       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact7);
+            $campaignItem8       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact8);
+            $campaignItem9       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact9);
+            $campaignItem10       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact10);
 
             $campaignItem3       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact3);
             CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_CLICK, 1, $campaignItem3, '121.212.122.112');
@@ -754,7 +764,7 @@
             $campaignItem5       = CampaignItemTestHelper::createCampaignItem(1, $campaign2, $contact5);
             CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_BOUNCE, 1, $campaignItem5, '121.212.122.112');
 
-            $items = CampaignItem::getNotViewedItems($campaign1);
+            $items = CampaignItem::getNotViewedItems($campaign1, 0, 2);
             $this->assertEquals(2, count($items));
             $contactsIds = array();
             foreach ($items as $item)
@@ -763,6 +773,38 @@
             }
             $this->assertTrue(in_array($contact1->id, $contactsIds));
             $this->assertTrue(in_array($contact2->id, $contactsIds));
+
+            $items = CampaignItem::getNotViewedItems($campaign1, 2, 2);
+            $this->assertEquals(2, count($items));
+            $contactsIds = array();
+            foreach ($items as $item)
+            {
+                $contactsIds[] = $item->contact->id;
+            }
+            $this->assertTrue(in_array($contact6->id, $contactsIds));
+            $this->assertTrue(in_array($contact7->id, $contactsIds));
+
+            $items = CampaignItem::getNotViewedItems($campaign1, 4, 2);
+            $this->assertEquals(2, count($items));
+            $contactsIds = array();
+            foreach ($items as $item)
+            {
+                $contactsIds[] = $item->contact->id;
+            }
+            $this->assertTrue(in_array($contact8->id, $contactsIds));
+            $this->assertTrue(in_array($contact9->id, $contactsIds));
+
+            $items = CampaignItem::getNotViewedItems($campaign1, 6, 2);
+            $this->assertEquals(1, count($items));
+            $contactsIds = array();
+            foreach ($items as $item)
+            {
+                $contactsIds[] = $item->contact->id;
+            }
+            $this->assertTrue(in_array($contact10->id, $contactsIds));
+
+            $items = CampaignItem::getNotViewedItems($campaign1, 8, 2);
+            $this->assertEquals(0, count($items));
         }
 
         public function testGetNotClickedItems()
@@ -804,6 +846,9 @@
             $contact9            = ContactTestHelper::createContactByNameForOwner('contact99', $user);
             $contact10           = ContactTestHelper::createContactByNameForOwner('contact100', $user);
             $contact11           = ContactTestHelper::createContactByNameForOwner('contact110', $user);
+            $contact12           = ContactTestHelper::createContactByNameForOwner('contact112', $user);
+            $contact13           = ContactTestHelper::createContactByNameForOwner('contact113', $user);
+            $contact14           = ContactTestHelper::createContactByNameForOwner('contact114', $user);
 
             // Without campaign activity
             $campaignItem1       = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact1);
@@ -839,7 +884,11 @@
             CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_OPEN, 1, $campaignItem11, '121.212.122.112');
             CampaignItemActivityTestHelper::createCampaignItemActivity(CampaignItemActivity::TYPE_CLICK, 1, $campaignItem11, '121.212.122.112');
 
-            $items = CampaignItem::getNotClickedOrUnsubscribedOrSpamItems($campaign1);
+            $campaignItem12      = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact12);
+            $campaignItem13      = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact13);
+            $campaignItem14      = CampaignItemTestHelper::createCampaignItem(1, $campaign1, $contact14);
+
+            $items = CampaignItem::getNotClickedOrUnsubscribedOrSpamItems($campaign1, 0, 5);
             $this->assertEquals(5, count($items));
             $contactsIds = array();
             foreach ($items as $item)
@@ -851,6 +900,17 @@
             $this->assertTrue(in_array($contact6->id, $contactsIds));
             $this->assertTrue(in_array($contact8->id, $contactsIds));
             $this->assertTrue(in_array($contact1->id, $contactsIds));
+
+            $items = CampaignItem::getNotClickedOrUnsubscribedOrSpamItems($campaign1, 5, 5);
+            $this->assertEquals(3, count($items));
+            $contactsIds = array();
+            foreach ($items as $item)
+            {
+                $contactsIds[] = $item->contact->id;
+            }
+            $this->assertTrue(in_array($contact12->id, $contactsIds));
+            $this->assertTrue(in_array($contact13->id, $contactsIds));
+            $this->assertTrue(in_array($contact14->id, $contactsIds));
         }
     }
 ?>
