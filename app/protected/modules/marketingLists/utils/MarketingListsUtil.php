@@ -40,6 +40,12 @@
     class MarketingListsUtil
     {
         /**
+         * How many items of each type per one request - this is done for performance reasons
+         * @var int
+         */
+        public static $pageSize = 50;
+
+        /**
          * @param $resolveSubscribersForm
          * @param $campaign
          * @return A
@@ -75,52 +81,57 @@
                 }
             }
 
-            $newMarketingListContacts = array();
+            $offset = 0;
+            $pageSize = static::$pageSize;
+            do
+            {
+                $newMarketingListContacts = array();
+                if ($resolveSubscribersForm->retargetOpenedEmailRecipients)
+                {
+                    $campaignItemOpenActivities = CampaignItemActivity::getByTypeAndCampaign(CampaignItemActivity::TYPE_OPEN, $campaign, $offset, $pageSize);
+                    foreach ($campaignItemOpenActivities as $campaignItemActivity)
+                    {
+                        $newMarketingListContacts[] = $campaignItemActivity->campaignItem->contact;
+                    }
+                }
+                if ($resolveSubscribersForm->retargetClickedEmailRecipients)
+                {
+                    $campaignItemClickActivities = CampaignItemActivity::getByTypeAndCampaign(CampaignItemActivity::TYPE_CLICK, $campaign, $offset, $pageSize);
+                    foreach ($campaignItemClickActivities as $campaignItemActivity)
+                    {
+                        $newMarketingListContacts[] = $campaignItemActivity->campaignItem->contact;
+                    }
+                }
+                if ($resolveSubscribersForm->retargetNotViewedEmailRecipients)
+                {
+                    $campaignItemNotViewedItems = CampaignItem::getNotViewedItems($campaign, $offset, $pageSize);
 
-            if ($resolveSubscribersForm->retargetOpenedEmailRecipients)
-            {
-                $campaignItemOpenActivities     = CampaignItemActivity::getByTypeAndCampaign(CampaignItemActivity::TYPE_OPEN, $campaign);
-                foreach ($campaignItemOpenActivities as $campaignItemActivity)
-                {
-                    $newMarketingListContacts[] = $campaignItemActivity->campaignItem->contact;
+                    foreach ($campaignItemNotViewedItems as $campaignItem)
+                    {
+                        $newMarketingListContacts[] = $campaignItem->contact;
+                    }
                 }
-            }
-            if ($resolveSubscribersForm->retargetClickedEmailRecipients)
-            {
-                $campaignItemClickActivities     = CampaignItemActivity::getByTypeAndCampaign(CampaignItemActivity::TYPE_CLICK, $campaign);
-                foreach ($campaignItemClickActivities as $campaignItemActivity)
+                if ($resolveSubscribersForm->retargetNotClickedEmailRecipients)
                 {
-                    $newMarketingListContacts[] = $campaignItemActivity->campaignItem->contact;
+                    $campaignItemNotClickedItems = CampaignItem::getNotClickedOrUnsubscribedOrSpamItems($campaign, $offset, $pageSize);
+                    foreach ($campaignItemNotClickedItems as $campaignItem)
+                    {
+                        $newMarketingListContacts[] = $campaignItem->contact;
+                    }
                 }
-            }
-            if ($resolveSubscribersForm->retargetNotViewedEmailRecipients)
-            {
-                $campaignItemNotViewedItems     = CampaignItem::getNotViewedItems($campaign);
-
-                foreach ($campaignItemNotViewedItems as $campaignItem)
+                foreach ($newMarketingListContacts as $marketingListContact)
                 {
-                    $newMarketingListContacts[] = $campaignItem->contact;
+                    if (!MarketingListMember::getByMarketingListIdAndContactId($marketingList->id, $marketingListContact->id))
+                    {
+                        $marketingListMember               = new MarketingListMember();
+                        $marketingListMember->unsubscribed = 0;
+                        $marketingListMember->contact      = $marketingListContact;
+                        $marketingList->marketingListMembers->add($marketingListMember);
+                        $marketingList->save();
+                    }
                 }
-            }
-            if ($resolveSubscribersForm->retargetNotClickedEmailRecipients)
-            {
-                $campaignItemNotClickedItems     = CampaignItem::getNotClickedOrUnsubscribedOrSpamItems($campaign);
-                foreach ($campaignItemNotClickedItems as $campaignItem)
-                {
-                    $newMarketingListContacts[] = $campaignItem->contact;
-                }
-            }
-            foreach ($newMarketingListContacts as $marketingListContact)
-            {
-                if (!MarketingListMember::getByMarketingListIdAndContactId($marketingList->id, $marketingListContact->id))
-                {
-                    $marketingListMember                = new MarketingListMember();
-                    $marketingListMember->unsubscribed  = 0;
-                    $marketingListMember->contact       = $marketingListContact;
-                    $marketingList->marketingListMembers->add($marketingListMember);
-                    $marketingList->save();
-                }
-            }
+                $offset = $offset + $pageSize;
+            } while (!empty($newMarketingListContacts));
             return $marketingList;
         }
 
