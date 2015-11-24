@@ -217,6 +217,30 @@
         /**
          * @depends testTriggerBeforeSaveStartsWith
          */
+        public function testTriggerBeforeSaveDoesNotStartsWith()
+        {
+            $workflow = self::makeOnSaveWorkflowAndTriggerWithoutValueType('string', 'doesNotStartsWith', 'abc');
+            $model           = new WorkflowModelTestItem();
+            $model->lastName = 'someLastName';
+            $model->string = 'abc123';
+            $this->assertFalse(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'bValue';
+            $this->assertTrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model         = self::saveAndReloadModel($model);
+            $this->assertTrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'abc';
+            $this->assertFalse(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'ABC';
+            $this->assertFalse(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'ab';
+            $this->assertTrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'aabc';
+            $this->assertTrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+        }
+
+        /**
+         * @depends testTriggerBeforeSaveStartsWith
+         */
         public function testTriggerBeforeSaveEndsWith()
         {
             $workflow = self::makeOnSaveWorkflowAndTriggerWithoutValueType('string', 'endsWith', 'def');
@@ -234,6 +258,28 @@
             $this->assertTrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
             $model->string = 'de';
             $this->assertFalse(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+        }
+
+        /**
+         * @depends testTriggerBeforeSaveEndsWith
+         */
+        public function testTriggerBeforeSaveDoesNotEndsWith()
+        {
+            $workflow = self::makeOnSaveWorkflowAndTriggerWithoutValueType('string', 'doesNotEndsWith', 'def');
+            $model           = new WorkflowModelTestItem();
+            $model->lastName = 'someLastName';
+            $model->string = 'abcdef';
+            $this->assertFalse(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'def123';
+            $this->assertTrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model         = self::saveAndReloadModel($model);
+            $this->asserttrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'def';
+            $this->assertFalse(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'redDEF';
+            $this->assertFalse(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'de';
+            $this->assertTrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
         }
 
         /**
@@ -260,6 +306,28 @@
 
         /**
          * @depends testTriggerBeforeSaveContains
+         */
+        public function testTriggerBeforeSaveDoesNotContains()
+        {
+            $workflow = self::makeOnSaveWorkflowAndTriggerWithoutValueType('string', 'doesNotContains', 'chocolate');
+            $model           = new WorkflowModelTestItem();
+            $model->lastName = 'someLastName';
+            $model->string = 'AchocolateB';
+            $this->assertFalse(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'def123';
+            $this->assertTrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model         = self::saveAndReloadModel($model);
+            $this->assertTrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'chocolate';
+            $this->assertFalse(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'chocolateCookie';
+            $this->assertFalse(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+            $model->string = 'chocol';
+            $this->assertTrue(WorkflowTriggersUtil::areTriggersTrueBeforeSave($workflow, $model));
+        }
+
+        /**
+         * @depends testTriggerBeforeSaveDoesNotContains
          */
         public function testTriggerBeforeSaveBecomes()
         {

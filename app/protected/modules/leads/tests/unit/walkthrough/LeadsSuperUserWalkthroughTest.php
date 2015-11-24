@@ -285,7 +285,7 @@
                 }
             }
             //There should have been a total of 5 portlets.
-            $this->assertEquals(5, $portletCount);
+            $this->assertEquals(6, $portletCount);
             $this->resetGetArray();
             $this->setPostArray(array(
                 'portletLayoutConfiguration' => array(
@@ -297,7 +297,7 @@
             //Now test that all the portlets are collapsed and moved to the first column.
             $portlets = Portlet::getByLayoutIdAndUserSortedByColumnIdAndPosition(
                             'LeadDetailsAndRelationsView', $super->id, array());
-            $this->assertEquals (5, count($portlets[1]));
+            $this->assertEquals (6, count($portlets[1]));
             $this->assertFalse  (array_key_exists(2, $portlets) );
             foreach ($portlets as $column => $columns)
             {
@@ -457,23 +457,29 @@
             $this->setGetArray(array('id' => $lead->id));
             $this->resetPostArray();
 
-            //Test trying to convert by skipping account creation
+            //Test trying to convert by skipping account creation and by skipping opportunity creation
             $this->runControllerWithNoExceptionsAndGetContent('leads/default/convert');
             $this->setGetArray(array('id' => $lead->id));
             $this->setPostArray(array('AccountSkip' => 'Not Used'));
             $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convert');
+            $this->setGetArray(array('id' => $lead->id));
+            $this->setPostArray(array('OpportunitySkip' => 'Not Used'));
+            $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convertFinal');
             $leadId = $lead->id;
             $lead->forget();
             $contact = Contact::getById($leadId);
             $this->assertTrue($contact->state == $startingContactState);
 
-            //Test trying to convert by creating a new account.
+            //Test trying to convert by creating a new account and by skipping opportunity creation.
             $lead5 = LeadTestHelper::createLeadbyNameForOwner('superLead5', $super);
             $this->assertTrue($lead5->state == $startingLeadState);
             $this->setGetArray(array('id' => $lead5->id));
             $this->setPostArray(array('Account' => array('name' => 'someAccountName')));
             $this->assertEquals(0, Account::getCount());
             $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convert');
+            $this->setGetArray(array('id' => $lead5->id));
+            $this->setPostArray(array('OpportunitySkip' => 'Not Used'));
+            $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convertFinal');
             $this->assertEquals(1, Account::getCount());
             $lead5Id = $lead5->id;
             $lead5->forget();
@@ -481,7 +487,7 @@
             $this->assertTrue($contact5->state == $startingContactState);
             $this->assertEquals('someAccountName', $contact5->account->name);
 
-            //Test trying to convert by selecting an existing account
+            //Test trying to convert by selecting an existing account and by skipping opportunity creation.
             $account = AccountTestHelper::createAccountbyNameForOwner('someNewAccount', $super);
             $lead6 = LeadTestHelper::createLeadbyNameForOwner('superLead6', $super);
             $this->assertTrue($lead6->state == $startingLeadState);
@@ -490,12 +496,43 @@
                                                                    'accountName' => 'someNewAccount')));
             $this->assertEquals(2, Account::getCount());
             $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convert');
+            $this->setGetArray(array('id' => $lead6->id));
+            $this->setPostArray(array('OpportunitySkip' => 'Not Used'));
+            $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convertFinal');
             $this->assertEquals(2, Account::getCount());
             $lead6Id = $lead6->id;
             $lead6->forget();
             $contact6 = Contact::getById($lead6Id);
             $this->assertTrue($contact6->state == $startingContactState);
             $this->assertEquals($account, $contact6->account);
+
+            //Test trying to convert by skipping account creation and by creating new opportunity
+            $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convert');
+            $leadOpp = LeadTestHelper::createLeadbyNameForOwner('superLeadOpp', $super);
+            $this->setGetArray(array('id' => $leadOpp->id));
+            $this->setPostArray(array('AccountSkip' => 'Not Used'));
+            $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convert');
+            $this->setGetArray(array('id' => $leadOpp->id));
+            $this->setPostArray(
+                array('Opportunity' =>
+                        array(
+                            'name'        => 'someOpportunityName',
+                            'amount'      => array('currency' => array('id' => '1'), 'value' => '100'),
+                            'closeDate'   => '6/19/2014',
+                            'stage'       => array('value' => 'Negotiating'),
+                            'probability' => '50'
+                        )
+                )
+            );
+            $this->assertEquals(0, Opportunity::getCount());
+            $this->assertEquals(2, Account::getCount());
+            $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convertFinal');
+            $leadId = $leadOpp->id;
+            $leadOpp->forget();
+            $contact = Contact::getById($leadId);
+            $this->assertTrue($contact->state == $startingContactState);
+            $this->assertEquals(1, Opportunity::getCount());
+            $this->assertEquals(2, Account::getCount());
         }
 
         public function testAccessingContactNotLeadWillRedirectToContacts()
@@ -520,7 +557,7 @@
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $leads = Contact::getAll();
-            $this->assertEquals(16, count($leads));
+            $this->assertEquals(17, count($leads));
             $superLeadId   = self::getModelIdByModelNameAndName('Contact', 'superLead');
             $superLeadId2  = self::getModelIdByModelNameAndName('Contact', 'superLead2 superLead2son');
             $superLeadId3  = self::getModelIdByModelNameAndName('Contact', 'superLead3 superLead3son');
@@ -549,7 +586,7 @@
             $this->assertContains('<strong>12</strong>&#160;Leads selected for removal', $content);
             //MassDelete for selected Record Count
             $leads = Contact::getAll();
-            $this->assertEquals(16, count($leads));
+            $this->assertEquals(17, count($leads));
 
             //MassDelete for selected ids for paged scenario
             $lead1 = Contact::getById($superLeadId);
@@ -574,7 +611,7 @@
 
             //MassDelete for selected Record Count
             $leads = Contact::getAll();
-            $this->assertEquals(11, count($leads));
+            $this->assertEquals(12, count($leads));
 
             //MassDelete for selected ids for page 2
             $this->setGetArray(array(
@@ -590,7 +627,7 @@
 
            //MassDelete for selected Record Count
             $leads = Contact::getAll();
-            $this->assertEquals(9, count($leads));
+            $this->assertEquals(10, count($leads));
         }
 
          /**
@@ -602,7 +639,7 @@
 
             //MassDelete for selected Record Count
             $leads = Contact::getAll();
-            $this->assertEquals(9, count($leads));
+            $this->assertEquals(10, count($leads));
 
             //save Model MassDelete for entire search result
             $this->setGetArray(array(
@@ -616,7 +653,7 @@
 
             //check for previous mass delete progress
             $leads = Contact::getAll();
-            $this->assertEquals(4, count($leads));
+            $this->assertEquals(5, count($leads));
 
             $this->setGetArray(array(
                 'selectAll' => '1',           // Not Coding Standard
@@ -635,7 +672,7 @@
             $this->assertContains('ContactNotLead', serialize($leads));
             $this->assertContains('superLead5', serialize($leads));
             $this->assertContains('superLead6', serialize($leads));
-            $this->assertEquals(3, count($leads));
+            $this->assertEquals(4, count($leads));
         }
 
         public function testSuperUserSearchForDuplicateModelsAction()
@@ -737,9 +774,56 @@
             );
             $this->assertEquals(0, Account::getCount());
             $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convert');
+            $this->setGetArray(array('id' => $lead->id));
+            $this->setPostArray(array('OpportunitySkip' => 'Not Used'));
+            $this->runControllerWithRedirectExceptionAndGetContent('leads/default/convertFinal');
             $this->assertEquals(1, Account::getCount());
             $accounts = Account::getAll();
             $this->assertEquals('English, French', strval($accounts[0]->tagcloudCstm));
+        }
+
+        public function testInlineCreateCommentFromAjax()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $lead = LeadTestHelper::createLeadbyNameForOwner('testLead22', $super);
+
+            $this->setGetArray(array('id' => $lead->id, 'uniquePageId' => 'CommentInlineEditForModelView'));
+            $this->runControllerWithNoExceptionsAndGetContent('leads/default/inlineCreateCommentFromAjax');
+        }
+
+        /**
+         * @depends testInlineCreateCommentFromAjax
+         */
+        public function testAddAndRemoveSubscriberViaAjaxAsSuperUser()
+        {
+            //Login with super and check subscribe unsubscribe from modal detail view when super
+            //is not owner or requested by user
+            $super              = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $mike = UserTestHelper::createBasicUser('mike');
+            $lead = LeadTestHelper::createLeadbyNameForOwner('leadNew', $mike);
+            $this->assertEquals(1, $lead->notificationSubscribers->count());
+
+            $this->setGetArray(array('id' => $lead->id));
+            $this->assertFalse(NotificationSubscriberUtil::doNotificationSubscribersContainPerson($lead, $super));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/addSubscriber', false);
+            $this->assertContains('gravatar', $content);
+            $this->assertContains('users/default/details', $content);
+            $this->assertContains($super->getFullName(), $content);
+            $this->assertEquals(2, $lead->notificationSubscribers->count());
+
+            $this->setGetArray(array('id' => $lead->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/removeSubscriber', false);
+            $this->assertNotContains($super->getFullName(), $content);
+            $this->assertEquals(1, $lead->notificationSubscribers->count());
+            $lead->owner        = $super;
+            $this->assertTrue($lead->save());
+            $this->assertEquals(2, $lead->notificationSubscribers->count());
+
+            //Super user is owner so even if it is removed, it would be restored
+            $this->setGetArray(array('id' => $lead->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/removeSubscriber', false);
+            $this->assertContains($super->getFullName(), $content);
+            $this->assertEquals(2, $lead->notificationSubscribers->count());
         }
     }
 ?>

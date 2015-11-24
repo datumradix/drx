@@ -82,11 +82,13 @@
         public function getEditableHtmlOptions()
         {
             $htmlOptions = array(
-                'name'      => $this->getEditableInputName(),
-                'id'        => $this->getEditableInputId(),
-                'separator' => '',
-                'template'  => '{input}{label}',
+                'name'         => $this->getEditableInputName(),
+                'id'           => $this->getEditableInputId(),
+                'separator'    => '',
+                'template'     => '{input}{label}',
+                'uncheckValue' => null
             );
+
             return $htmlOptions;
         }
 

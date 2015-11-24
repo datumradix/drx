@@ -37,18 +37,22 @@
     class LeadsModuleForm extends GlobalSearchEnabledModuleForm
     {
         public $convertToAccountSetting;
+        public $convertToOpportunitySetting;
 
         public function rules()
         {
             return array_merge(parent::rules(), array(
                 array('convertToAccountSetting', 'required'),
+                array('convertToOpportunitySetting', 'required'),
             ));
         }
 
         public function attributeLabels()
         {
             return array_merge(parent::attributeLabels(), array(
-                'convertToAccountSetting' => Zurmo::t('LeadsModule', 'LeadsModuleSingularLabel Conversion',
+                'convertToAccountSetting' => Zurmo::t('LeadsModule', 'LeadsModuleSingularLabel Conversion (Step 1)',
+                                                LabelUtil::getTranslationParamsForAllModules()),
+                'convertToOpportunitySetting' => Zurmo::t('LeadsModule', 'LeadsModuleSingularLabel Conversion (Final Step)',
                                                 LabelUtil::getTranslationParamsForAllModules()),
             ));
         }

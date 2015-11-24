@@ -106,7 +106,8 @@
                     'comments'                  => array(static::HAS_MANY, 'Comment', static::OWNED,
                                                         static::LINK_TYPE_POLYMORPHIC, 'relatedModel'),
                     'checkListItems'            => array(static::HAS_MANY, 'TaskCheckListItem', static::OWNED),
-                    'notificationSubscribers'   => array(static::HAS_MANY, 'NotificationSubscriber', static::OWNED),
+                    'notificationSubscribers'   => array(static::HAS_MANY, 'NotificationSubscriber', static::OWNED,
+                                                        static::LINK_TYPE_POLYMORPHIC, 'relatedModel'),
                     'files'                     => array(static::HAS_MANY, 'FileModel', static::OWNED,
                                                         static::LINK_TYPE_POLYMORPHIC, 'relatedModel'),
                     'project'                   => array(static::HAS_ONE, 'Project'),
@@ -281,18 +282,6 @@
             return true;
         }
 
-        public function doNotificationSubscribersContainPerson(Item $item)
-        {
-            foreach ($this->notificationSubscribers as $notificationSubscriber)
-            {
-                if ($notificationSubscriber->person->getClassId('Item') == $item->getClassId('Item'))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         protected function afterSave()
         {
             if ($this->getScenario() != 'importModel')
@@ -365,9 +354,9 @@
             //Add requested by user as default subscriber
             if ($this->requestedByUser->id > 0)
             {
-                TasksUtil::addSubscriber($this->requestedByUser, $this, false);
+                NotificationSubscriberUtil::addSubscriber($this->requestedByUser, $this, false);
             }
-            TasksUtil::addSubscriber($this->owner, $this, false);
+            NotificationSubscriberUtil::addSubscriber($this->owner, $this, false);
         }
 
         /**
@@ -375,7 +364,7 @@
          */
         protected function resolveStatusAndSetCompletedFields()
         {
-            if ($this->completed != true && $this->status != Task::STATUS_COMPLETED)
+            if ($this->status != Task::STATUS_COMPLETED)
             {
                 $this->completed = false;
             }

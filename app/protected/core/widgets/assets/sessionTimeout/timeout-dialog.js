@@ -55,7 +55,8 @@ String.prototype.format = function() {
       logout_url: null,
       logout_redirect_url: '/',
       restart_on_yes: true,
-      dialog_width: 350
+      dialog_width: 350,
+      start_countdown_timestamp_cookie_name: 'StartCountdownTimestamp',
     }
 
     $.extend(settings, options);
@@ -65,11 +66,15 @@ String.prototype.format = function() {
         this.setupDialogTimer();
       },
 
-      setupDialogTimer: function() {
+      setupDialogTimer: function(timeout) {
         var self = this;
+        if (typeof(timeout)==='undefined') timeout = settings.timeout;
+        now = Math.round(new Date().getTime() / 1000);
+        timestampStart = parseInt(now) + parseInt(timeout)  - parseInt(settings.countdown)  - 2;
+        $.cookie(settings.start_countdown_timestamp_cookie_name, timestampStart, {path:  "/"});
         window.setTimeout(function() {
-           self.setupDialog();
-        }, (settings.timeout - settings.countdown) * 1000);
+          self.setupDialog();
+        }, (timeout - settings.countdown) * 1000);
       },
 
       setupDialog: function() {
@@ -84,18 +89,18 @@ String.prototype.format = function() {
             '<a href="#" id="timeout-sign-out-button" class="z-button secondary-button"><span class="z-label">' + settings.sign_out_button_text + '</span></a>' +
             '</div></div></div></div>' +
             '</div>')
-        .appendTo('body')
-        .dialog({
-          modal: true,
-          width: settings.dialog_width,
-          minHeight: 'auto',
-          zIndex: 10000,
-          closeOnEscape: false,
-          draggable: false,
-          resizable: false,
-          dialogClass: 'timeout-dialog',
-          title: settings.title
-        });
+            .appendTo('body')
+            .dialog({
+              modal: true,
+              width: settings.dialog_width,
+              minHeight: 'auto',
+              zIndex: 10000,
+              closeOnEscape: false,
+              draggable: false,
+              resizable: false,
+              dialogClass: 'timeout-dialog',
+              title: settings.title
+            });
 
         $('#timeout-keep-signin-btn').click(function(){ self.keepAlive(); });
         $('#timeout-sign-out-button').click(function(){ self.signOut(true); });
@@ -113,17 +118,29 @@ String.prototype.format = function() {
       startCountdown: function() {
         var self = this,
             counter = settings.countdown;
+        if (parseInt(Math.round(new Date().getTime() / 1000)) > parseInt($.cookie(settings.start_countdown_timestamp_cookie_name)))
+        {
+          this.countdown = window.setInterval(function () {
+            counter -= 1;
+            $("#timeout-countdown").html(counter);
 
-        this.countdown = window.setInterval(function() {
-          counter -= 1;
-          $("#timeout-countdown").html(counter);
-
-          if (counter <= 0) {
-            window.clearInterval(self.countdown);
-            self.signOut(false);
-          }
-
-        }, 1000);
+            if (parseInt(Math.round(new Date().getTime() / 1000)) < parseInt($.cookie(settings.start_countdown_timestamp_cookie_name)))
+            {
+              window.clearInterval(self.countdown);
+              self.destroyDialog();
+              self.setupDialogTimer(parseInt($.cookie(settings.start_countdown_timestamp_cookie_name)) - parseInt(Math.round(new Date().getTime() / 1000)) + parseInt(settings.countdown));
+            }
+            if (counter <= 0) {
+              window.clearInterval(self.countdown);
+              self.signOut(false);
+            }
+          }, 1000);
+        }
+        else
+        {
+          self.destroyDialog();
+          self.setupDialogTimer($.cookie(settings.start_countdown_timestamp_cookie_name) - Math.round(new Date().getTime() / 1000) + settings.countdown);
+        }
       },
 
       keepAlive: function() {
@@ -146,12 +163,12 @@ String.prototype.format = function() {
         var self = this;
         this.destroyDialog();
         if (settings.logout_url != null) {
-            $.get(settings.logout_url, function(data){
-                self.redirectLogout(is_forced);
-            });
+          $.get(settings.logout_url, function(data){
+            self.redirectLogout(is_forced);
+          });
         }
         else {
-            self.redirectLogout(is_forced);
+          self.redirectLogout(is_forced);
         }
       },
 

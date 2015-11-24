@@ -309,7 +309,7 @@
         /**
          * @depends testWhetherSearchWorksForTheCustomFieldsPlacedForProductTemplatesModuleAfterCreatingTheProductTemplate
          */
-        public function testEditOfTheProductTemplateForTheTagCloudFieldAfterRemovingAllTagsPlacedForProductTemplatesModule()
+        public function testEditOfTheProductTemplateForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForProductTemplatesModule()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -346,7 +346,7 @@
                             'datetimeCstm'                      => $datetime,
                             'picklistCstm'                      => array('value'  => 'b'),
                             'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
-                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'tagcloudCstm'                      => array('values' =>  array('writing')),
                             'countrylistCstm'                   => array('value'  => 'aaaa'),
                             'statelistCstm'                     => array('value'  => 'aaa1'),
                             'citylistCstm'                      => array('value'  => 'ab1'),
@@ -391,11 +391,62 @@
             $this->assertEquals($productTemplate->citylistCstm->value        , 'ab1');
             $this->assertContains('gg'                                   , $productTemplate->multiselectCstm->values);
             $this->assertContains('hh'                                   , $productTemplate->multiselectCstm->values);
-            $this->assertEquals(0                                        , $productTemplate->tagcloudCstm->values->count());
+            $this->assertEquals(1                                        , $productTemplate->tagcloudCstm->values->count());
             $metadata            = CalculatedDerivedAttributeMetadata::
                                    getByNameAndModelClassName('calcnumber', 'ProductTemplate');
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $productTemplate);
             $this->assertEquals(132                                     , intval(str_replace(',', "", $testCalculatedValue))); // Not Coding Standard
+        }
+
+        /**
+         * @depends testEditOfTheProductTemplateForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForProductTemplatesModule
+         */
+        public function testEditOfTheProductTemplateForTheTagCloudFieldAfterRemovingAllTagsPlacedForProductTemplatesModule()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            //Set the date and datetime variable values here.
+            $date               = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateFormatForInput(), time());
+            $datetime           = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateTimeFormatForInput(), time());
+            $baseCurrency       = Currency::getByCode(Yii::app()->currencyHelper->getBaseCode());
+
+            $productTemplate    = ProductTemplate::getByName('myEditProductTemplate');
+            $productTemplateId  = $productTemplate[0]->id;
+            $this->assertEquals(1, $productTemplate[0]->tagcloudCstm->values->count());
+
+            //Edit a new ProductTemplate based on the custom fields.
+            $this->setGetArray(array('id' => $productTemplateId));
+            $this->setPostArray(array('ProductTemplate' => array(
+                            'name'                              => 'myEditProductTemplate',
+                            'type'                              => ProductTemplate::TYPE_PRODUCT,
+                            'description'                       => 'Test Description',
+                            'sellPrice'                         => array ('currency' => array ('id' => $baseCurrency->id), 'value' => 200 ),
+                            'cost'                              => array ('currency' => array ('id' => $baseCurrency->id), 'value' => 200 ),
+                            'listPrice'                         => array ('currency' => array ('id' => $baseCurrency->id), 'value' => 200 ),
+                            'priceFrequency'                    => 2,
+                            'status'                            => ProductTemplate::STATUS_ACTIVE,
+                            'sellPriceFormula'                  => array ( 'type' => SellPriceFormula::TYPE_EDITABLE ),
+                            'checkboxCstm'                      => '0',
+                            'currencyCstm'                      => array('value'       => 40,
+                                                                         'currency'    => array(
+                                                                             'id' => $baseCurrency->id)),
+                            'decimalCstm'                       => '12',
+                            'dateCstm'                          => $date,
+                            'datetimeCstm'                      => $datetime,
+                            'picklistCstm'                      => array('value'  => 'b'),
+                            'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
+                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'countrylistCstm'                   => array('value'  => 'aaaa'),
+                            'statelistCstm'                     => array('value'  => 'aaa1'),
+                            'citylistCstm'                      => array('value'  => 'ab1'),
+                            'integerCstm'                       => '11',
+                            'phoneCstm'                         => '259-784-2069',
+                            'radioCstm'                         => array('value' => 'e'),
+                            'textCstm'                          => 'This is a test Edit Text',
+                            'textareaCstm'                      => 'This is a test Edit TextArea',
+                            'urlCstm'                           => 'http://wwww.abc-edit.com')));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('productTemplates/default/edit');
+            $this->assertContains("tagcloud en cannot be blank.", $content);
         }
 
         /**

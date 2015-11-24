@@ -156,7 +156,7 @@
             }
             else
             {
-                $element  = new TextAreaElement($this->model, 'description');
+                $element  = new ConversationLinkableTextAreaElement($this->model, 'description');
             }
             $element->nonEditableTemplate = '<div class="comment-content">{content}</div>';
             $content .= $element->render();
@@ -178,6 +178,8 @@
                                                                                 $this->modelId, ($pageSize + 1));
             $view         = new CommentsForRelatedModelView('default', 'comments', $commentsData, $this->model, $pageSize, $getParams);
             $content      = $view->render();
+            $wrappingCssClass = $this->getCommentsWrappingCssClass();
+            $content  = ZurmoHtml::tag('div', array('class' => $wrappingCssClass), $content);
             return $content;
         }
 
@@ -216,6 +218,11 @@
          */
         protected function renderAfterFormLayoutForDetailsContent()
         {
+        }
+
+        protected function getCommentsWrappingCssClass()
+        {
+            return 'comments-activity';
         }
     }
 ?>

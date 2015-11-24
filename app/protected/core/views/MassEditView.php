@@ -122,6 +122,10 @@
                                     {
                                         $checked = true;
                                     }
+                                    if ($elementInformation['type'] == 'TagCloud')
+                                    {
+                                        $params['showTooltip'] = true;
+                                    }
                                     $element  = new $elementClassName($this->model, $elementInformation['attributeName'], $form, $params);
                                     $content .= $this->renderActiveAttributesCheckBox($element->getEditableNameIds(),
                                                 $elementInformation, $checked, $realAttributeName);
@@ -273,6 +277,12 @@ END;
                         );
                       ";
             Yii::app()->clientScript->registerScript('datetimescript', $script);
+        }
+
+        protected function getOperationAdditionalMessage()
+        {
+            $message = "Please tick the boxes next to the fields you wish to update and then select the value you wish to be used.";
+            return $message;
         }
     }
 ?>

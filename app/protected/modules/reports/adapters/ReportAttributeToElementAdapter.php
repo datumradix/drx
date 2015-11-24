@@ -116,6 +116,12 @@
                                                       '<div class="value-data one-value-area has-date-inputs">' .
                                                       '<div class="first-value-area one-value-area">{content}{error}</div></div>';
                 }
+                elseif ($valueElement instanceof MixedLoggedInUserTypesAndUsersElement)
+                {
+                    $valueElement->editableTemplate = '<div class="dynamic-row-operator">{valueType}</div>' .
+                        '<div class="value-data one-value-area">' .
+                        '<div class="first-value-area one-value-area">{content}{error}</div></div>';
+                }
                 else
                 {
                     $startingDivStyleFirstValue     = null;

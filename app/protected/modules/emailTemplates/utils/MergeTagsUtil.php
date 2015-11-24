@@ -105,11 +105,13 @@
          * @param null $language
          * @param int $errorOnFirstMissing
          * @param array $params
+         * @param bool|false $convertNewLinesToBrForAttributeValues
          * @return bool
          */
         public function resolveMergeTagsArrayToAttributes($model, & $invalidTags = array(), $language = null,
                                                           $errorOnFirstMissing = MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG,
-                                                          $params = array())
+                                                          $params = array(),
+                                                          $convertNewLinesToBrForAttributeValues = false)
         {
             $mergeTagsToAttributes  = false;
             if (!$language)
@@ -121,7 +123,8 @@
                 $mergeTagsToAttributes = MergeTagsToModelAttributesAdapter::
                                             resolveMergeTagsArrayToAttributesFromModel($this->mergeTags[1], $model,
                                                                                         $invalidTags, $language,
-                                                                                        $errorOnFirstMissing, $params);
+                                                                                        $errorOnFirstMissing, $params,
+                                                                                        $convertNewLinesToBrForAttributeValues);
             }
             return $mergeTagsToAttributes;
         }
@@ -136,14 +139,15 @@
          */
         public function resolveMergeTags($model, & $invalidTags = array(), $language = null,
                                          $errorOnFirstMissing = MergeTagsToModelAttributesAdapter::DO_NOT_ERROR_ON_FIRST_INVALID_TAG,
-                                         $params = array())
+                                         $params = array(), $convertNewLinesToBrForAttributeValues = false)
         {
             if (!isset($language))
             {
                 $language = $this->language;
             }
             if (!$this->extractMergeTagsPlaceHolders() ||
-                    $this->resolveMergeTagsArrayToAttributes($model, $invalidTags, $language, $errorOnFirstMissing, $params) &&
+                    $this->resolveMergeTagsArrayToAttributes($model, $invalidTags, $language, $errorOnFirstMissing,
+                                                             $params, $convertNewLinesToBrForAttributeValues) &&
                     $this->resolveMergeTagsInTemplateToAttributes())
             {
                 return $this->content;

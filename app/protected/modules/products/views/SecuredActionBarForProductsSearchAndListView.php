@@ -61,6 +61,10 @@
                                 'type'        => 'ProductCategoriesMenu',
                                 'iconClass'   => 'icon-product-categories',
                             ),
+                            array('type'  => 'MassEditMenu',
+                                  'listViewGridId' => 'eval:$this->listViewGridId',
+                                  'pageVarName' => 'eval:$this->pageVarName',
+                                  'iconClass'   => 'icon-edit'),
                             array(
                                 'type'            => 'MassDeleteMenu',
                                 'iconClass'       => 'icon-delete',

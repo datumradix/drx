@@ -17,6 +17,14 @@ class ExtMinScriptController extends CExtController {
 	 * Serve files.
 	 */
 	public function actionServe() {
+		if (isset(Yii::app()->gameHelper) && Yii::app()->gameHelper->enabled == true)
+		{
+			Yii::app()->gameHelper->enabled = false;
+		}
+		if (isset(Yii::app()->gamificationObserver) && Yii::app()->gamificationObserver->enabled == true)
+		{
+			Yii::app()->gamificationObserver->enabled = false;
+		}
 		require (dirname(dirname(__FILE__)) . '/vendors/minify/min/index.php');
 	}
 

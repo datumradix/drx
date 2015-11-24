@@ -38,6 +38,16 @@
     {
         public function allowEditInLayoutTool()
         {
+            return true;
+        }
+
+        public function getDisplayName()
+        {
+            return Zurmo::t('DesignerModule', 'Merge View');
+        }
+
+        public function canConfigureLayoutPanelsType()
+        {
             return false;
         }
     }

@@ -61,7 +61,7 @@
 </tr>
 <tr>
     <td>waitForText</td>
-    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[2]/a</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[3]/a</td>
     <td>Test Account Report ${randomSuffix}</td>
 </tr>
 <tr>
@@ -76,7 +76,7 @@
 </tr>
 <tr>
     <td>click</td>
-    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[5]/a</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr/td[6]/a</td>
     <td></td>
 </tr>
 <tr>
@@ -123,6 +123,16 @@
     <td>assertTextPresent</td>
     <td>Annual Revenue</td>
     <td></td>
+</tr>
+<tr>		
+    <td>waitForElementPresent</td>		
+    <td>//select[@id='RowsAndColumnsReportWizardForm_Filters_1_valueType']</td>		
+    <td></td>		
+</tr>		
+<tr>		
+    <td>select</td>		
+    <td>RowsAndColumnsReportWizardForm_Filters_1_valueType</td>		
+    <td>label=Logged In User</td>		
 </tr>
 <tr>
     <td>click</td>
@@ -224,6 +234,31 @@
     <td>Test Account Report ${randomSuffix}</td>
     <td></td>
 </tr>
+<tr>		
+    <td>waitForTextPresent</td>		
+    <td>Created Date Time</td>		
+    <td></td>		
+</tr>		
+<tr>		
+    <td>assertTextPresent</td>		
+    <td>Created Date Time</td>		
+    <td></td>		
+</tr>		
+<tr>		
+    <td>waitForTextPresent</td>		
+    <td>Created By User</td>		
+    <td></td>		
+</tr>		
+<tr>		
+    <td>assertTextPresent</td>		
+    <td>Created By User</td>		
+    <td></td>
+</tr>
+<tr>		
+    <td>verifyValue</td>		
+    <td>RowsAndColumnsReportWizardForm_Filters_1_valueType</td>		
+    <td>Logged In User</td>		
+</tr>
 <tr>
     <td>waitForTextPresent</td>
     <td>Name</td>
@@ -262,6 +297,21 @@
 <tr>
     <td>assertTextPresent</td>
     <td>Type</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//a[@id='apply-runtime-filters']/span[3]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>No results found</td>
     <td></td>
 </tr>
 <tr>

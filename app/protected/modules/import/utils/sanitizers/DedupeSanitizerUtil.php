@@ -65,7 +65,10 @@
         {
             if (isset($this->mappingRuleData["dedupeRule"]))
             {
-                assert('is_array($this->mappingRuleData["dedupeRule"])');
+                assert('in_array($this->mappingRuleData["dedupeRule"],
+                array(ImportDedupeRulesRadioDropDownElement::DO_NOT_DEDUPE,
+                ImportDedupeRulesRadioDropDownElement::SKIP_ROW_ON_MATCH_FOUND,
+                ImportDedupeRulesRadioDropDownElement::UPDATE_ROW_ON_MATCH_FOUND))');
             }
         }
 
@@ -77,7 +80,7 @@
         {
             assert('$value === null || is_string($value)');
             if (isset($this->mappingRuleData["dedupeRule"]) &&
-                $this->mappingRuleData["dedupeRule"]["value"] == ImportDedupeRulesRadioDropDownElement::SKIP_ROW_ON_MATCH_FOUND)
+                $this->mappingRuleData["dedupeRule"] == ImportDedupeRulesRadioDropDownElement::SKIP_ROW_ON_MATCH_FOUND)
             {
                 if ($value != null)
                 {
@@ -95,7 +98,7 @@
                 }
             }
             elseif (isset($this->mappingRuleData["dedupeRule"]) &&
-                    $this->mappingRuleData["dedupeRule"]["value"] == ImportDedupeRulesRadioDropDownElement::UPDATE_ROW_ON_MATCH_FOUND
+                    $this->mappingRuleData["dedupeRule"] == ImportDedupeRulesRadioDropDownElement::UPDATE_ROW_ON_MATCH_FOUND
                     )
             {
                 if ($value != null)

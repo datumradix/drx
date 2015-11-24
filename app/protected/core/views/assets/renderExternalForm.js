@@ -5,17 +5,17 @@ if(typeof window.jQQ !== 'object'){
     function loadScript(url, callback){
         var script = document.createElement("script")
         script.type = "text/javascript";
-        if (typeof script.readyState === 'undefined'){  
+        if (typeof script.readyState === 'undefined'){
             script.onload = function(){
                 callback();
-            };            
+            };
         } else { // IE LAST!
             script.onreadystatechange = function(){
                 if (script.readyState === "loaded" || script.readyState === "complete"){
                     script.onreadystatechange = null;
                     callback();
                 }
-            };            
+            };
         };
         script.src = url;
         document.getElementsByTagName("head")[0].appendChild(script);
@@ -46,7 +46,7 @@ if(typeof window.jQQ !== 'object'){
           if(!document.body) return window.onload = function(){ window.jQQ.setup(url) };
           loadScript( url , function() {
               window.jQQ.isReady = true;
-              // this stores the new version and gives back the old one, completely.              
+              // this stores the new version and gives back the old one, completely.
               jq = jQuery.noConflict(true);
               //callbacks.forEach(window.jQQ.isolate);
               for (var thisCallback in callbacks)
@@ -61,7 +61,7 @@ if(typeof window.jQQ !== 'object'){
 }
 	var requireJS = function (scripts, scriptIndex, callback) {
 		var length = scripts.length;
-		if (scriptIndex == length) 
+		if (scriptIndex == length)
 		{
 			callback();
 			return;
@@ -71,24 +71,24 @@ if(typeof window.jQQ !== 'object'){
 		script.async = false;
 		script.type = "text/javascript";
 		script.src = scripts[scriptIndex];
-		if (typeof script.readyState === 'undefined'){  
+		if (typeof script.readyState === 'undefined'){
             script.onload = function(){
                 requireJS(scripts, scriptIndex+1, callback);
-            };            
-        } 
+            };
+        }
 		else { // IE LAST!
             script.onreadystatechange = function(){
                 if (script.readyState === "loaded" || script.readyState === "complete"){
                     script.onreadystatechange = null;
                     requireJS(scripts, scriptIndex+1, callback);
                 }
-            };            
+            };
         };
 		document.getElementsByTagName("head")[0].appendChild(script);
 	};
 	var requireCSS = function (scripts, scriptIndex, callback) {
 		var length = scripts.length;
-		if (scriptIndex == length) 
+		if (scriptIndex == length)
 		{
 			callback();
 			return;
@@ -99,18 +99,18 @@ if(typeof window.jQQ !== 'object'){
 		script.type = scripts[scriptIndex].type;
 		script.href = scripts[scriptIndex].href;
 		script.async = false;
-		if (typeof script.readyState === 'undefined'){  
+		if (typeof script.readyState === 'undefined'){
             script.onload = function(){
                 requireCSS(scripts, scriptIndex+1, callback);
-            };            
-        } 
+            };
+        }
 		else { // IE LAST!
             script.onreadystatechange = function(){
                 if (script.readyState === "loaded" || script.readyState === "complete"){
                     script.onreadystatechange = null;
                     requireCSS(scripts, scriptIndex+1, callback);
                 }
-            };            
+            };
         };
 		document.getElementsByTagName("head")[0].appendChild(script);
 	};
@@ -201,7 +201,7 @@ if(typeof window.jQQ !== 'object'){
     }
     function enableCaptcha()
     {
-        requireJS(['http://www.google.com/recaptcha/api/js/recaptcha_ajax.js'], 0, function(){
+        requireJS(['https://www.google.com/recaptcha/api/js/recaptcha_ajax.js'], 0, function(){
 
             var reCaptchaPublicKey = document.getElementById('reCaptchaPublicKey').value;
             Recaptcha.create(reCaptchaPublicKey,

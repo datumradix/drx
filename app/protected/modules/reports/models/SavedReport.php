@@ -39,7 +39,7 @@
      * should act when run.  Most information is defined as serializedData.  @see Report model which is used to interact
      * with most report components views.
      */
-    class SavedReport extends OwnedSecurableItem
+    class SavedReport extends OwnedSecurableItem implements StarredInterface
     {
         public function __toString()
         {

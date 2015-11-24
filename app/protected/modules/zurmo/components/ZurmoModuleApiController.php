@@ -121,6 +121,14 @@
             if (!isset($params['data']))
             {
                 $message = Zurmo::t('ZurmoModule', 'Please provide data.');
+                try
+                {
+                    $this->checkPostSizeExceeded();
+                }
+                catch (ApiException $e)
+                {
+                    $message = $e->getMessage();
+                }
                 throw new ApiException($message);
             }
             $result    =  $this->processCreate($params['data']);
@@ -134,7 +142,20 @@
         public function actionUpdate()
         {
             $params = Yii::app()->apiRequest->getParams();
-            if (!isset($params['id']))
+            if (!isset($params['data']))
+            {
+                $message = Zurmo::t('ZurmoModule', 'Please provide data.');
+                try
+                {
+                    $this->checkPostSizeExceeded();
+                }
+                catch (ApiException $e)
+                {
+                    $message = $e->getMessage();
+                }
+                throw new ApiException($message);
+            }
+            if (!isset($params['id']) || intval($params['id']) <= 0)
             {
                 $message = Zurmo::t('ZurmoModule', 'The ID specified was invalid.');
                 throw new ApiException($message);
@@ -1232,6 +1253,21 @@
                 throw new ApiException($message);
             }
             return $result;
+        }
+
+        protected function checkPostSizeExceeded()
+        {
+            $maxPostSize = trim(ini_get('post_max_size'));
+            $maxPostSizeInBytes = StringUtil::convertToBytes($maxPostSize);
+            if ($maxPostSizeInBytes > 0)
+            {
+                if ($_SERVER['CONTENT_LENGTH'] > $maxPostSizeInBytes)
+                {
+                    $message = 'Max post size exceeded! Sent ' . $_SERVER['CONTENT_LENGTH'] . ' bytes, but limit is ' . $maxPostSizeInBytes . ' bytes.';
+                    throw new ApiException($message);
+                }
+            }
+            return true;
         }
     }
 ?>

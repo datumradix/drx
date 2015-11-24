@@ -473,7 +473,7 @@
         /**
          * @depends testWhetherSearchWorksForTheCustomFieldsPlacedForAccountsModuleAfterCreatingTheAccountUser
          */
-        public function testEditOfTheAccountUserForTheTagCloudFieldAfterRemovingAllTagsPlacedForAccountsModule()
+        public function testEditOfTheAccountUserForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForAccountsModule()
         {
             $super          = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -530,7 +530,7 @@
                             'decimalCstm'                       => '12',
                             'picklistCstm'                      => array('value'  => 'b'),
                             'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
-                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'tagcloudCstm'                      => array('values' =>  array('writing')),
                             'countrylistCstm'                   => array('value'  => 'aaaa'),
                             'statelistCstm'                     => array('value'  => 'aaa1'),
                             'citylistCstm'                      => array('value'  => 'ab1'),
@@ -599,7 +599,7 @@
             $this->assertEquals($account[0]->citylistCstm->value            , 'ab1');
             $this->assertContains('gg'                                      , $account[0]->multiselectCstm->values);
             $this->assertContains('hh'                                      , $account[0]->multiselectCstm->values);
-            $this->assertEquals(0                                           , $account[0]->tagcloudCstm->values->count());
+            $this->assertEquals(1                                           , $account[0]->tagcloudCstm->values->count());
 
             $metadata            = CalculatedDerivedAttributeMetadata::
                                    getByNameAndModelClassName('calcnumber', 'Account');
@@ -607,6 +607,80 @@
             $currencyCode        = null;
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $account[0]);
             $this->assertEquals('472,000,630'                               , $testCalculatedValue); // Not Coding Standard
+        }
+
+        /**
+         * @depends testEditOfTheAccountUserForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForAccountsModule
+         */
+        public function testEditOfTheAccountUserForTheTagCloudFieldAfterRemovingAllTagsPlacedForAccountsModule()
+        {
+           $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+           //Set the date and datetime variable values here.
+           $date           = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateFormatForInput(), time());
+           $datetime       = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateTimeFormatForInput(), time());
+           $baseCurrency   = Currency::getByCode(Yii::app()->currencyHelper->getBaseCode());
+           $explicitReadWriteModelPermission = ExplicitReadWriteModelPermissionsUtil::MIXED_TYPE_EVERYONE_GROUP;
+
+           $account = Account::getByName('myEditAccount');
+           $accountId      = $account[0]->id;
+           $this->assertEquals(1, count($account));
+           $this->assertEquals($account[0]->name, 'myEditAccount');
+           $this->assertEquals(1, $account[0]->tagcloudCstm->values->count());
+
+           //Edit and save the account.
+           $this->setGetArray(array('id' => $accountId));
+           $this->setPostArray(array('Account' => array(
+                           'name'                              => '',
+                           'officePhone'                       => '259-734-2169',
+                           'industry'                          => array('value' => 'Energy'),
+                           'officeFax'                         => '299-825-7863',
+                           'employees'                         => '630',
+                           'annualRevenue'                     => '472000000',
+                           'type'                              => array('value' => 'Customer'),
+                           'website'                           => 'http://www.UnnamedEdit.com',
+                           'primaryEmail'                      => array('emailAddress' => 'info@myEditAccount.com',
+                                                                        'optOut' => '0',
+                                                                        'isInvalid' => '0'),
+                           'secondaryEmail'                    => array('emailAddress' => '',
+                                                                        'optOut' => '0',
+                                                                        'isInvalid' => '0'),
+                           'billingAddress'                    => array('street1' => '26378 South Arlington Ave',
+                                                                        'street2' => '',
+                                                                        'city' => 'San Jose',
+                                                                        'state' => 'CA',
+                                                                        'postalCode' => '95131',
+                                                                        'country' => 'USA'),
+                           'shippingAddress'                   => array('street1' => '8519 East Franklin Center',
+                                                                        'street2' => '',
+                                                                        'city' => 'Chicago',
+                                                                        'state' => 'IL',
+                                                                        'postalCode' => '60652',
+                                                                        'country' => 'USA'),
+                           'description'                       => 'This is a Edit Description',
+                           'explicitReadWriteModelPermissions' => array('type' => $explicitReadWriteModelPermission),
+                           'dateCstm'                          => $date,
+                           'datetimeCstm'                      => $datetime,
+                           'checkboxCstm'                      => '0',
+                           'currencyCstm'                      => array('value'   => 40,
+                                                                         'currency' => array(
+                                                                         'id' => $baseCurrency->id)),
+                           'decimalCstm'                       => '12',
+                           'picklistCstm'                      => array('value'  => 'b'),
+                           'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
+                           'tagcloudCstm'                      => array('values' =>  array()),
+                           'countrylistCstm'                   => array('value'  => 'aaaa'),
+                           'statelistCstm'                     => array('value'  => 'aaa1'),
+                           'citylistCstm'                      => array('value'  => 'ab1'),
+                           'integerCstm'                       => '11',
+                           'phoneCstm'                         => '259-784-2069',
+                           'radioCstm'                         => array('value' => 'e'),
+                           'textCstm'                          => 'This is a test Edit Text',
+                           'textareaCstm'                      => 'This is a test Edit TextArea',
+                           'urlCstm'                           => 'http://wwww.abc-edit.com'),
+                           'save' => 'Save'));
+           $content = $this->runControllerWithNoExceptionsAndGetContent('accounts/default/edit');
+           $this->assertContains("tagcloud en cannot be blank.", $content);
         }
 
         /**

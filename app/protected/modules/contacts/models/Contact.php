@@ -103,6 +103,10 @@
                     'state'            => array(static::HAS_ONE,   'ContactState', static::NOT_OWNED,
                                                 static::LINK_TYPE_SPECIFIC, 'state'),
                     'projects'         => array(static::MANY_MANY, 'Project'),
+                    'notificationSubscribers'   => array(static::HAS_MANY, 'NotificationSubscriber', static::OWNED,
+                                                static::LINK_TYPE_POLYMORPHIC, 'relatedModel'),
+                    'comments'         => array(static::HAS_MANY, 'Comment', static::OWNED,
+                                                static::LINK_TYPE_POLYMORPHIC, 'relatedModel')
                 ),
                 'derivedRelationsViaCastedUpModel' => array(
                     'meetings' => array(static::MANY_MANY, 'Meeting', 'activityItems'),
@@ -240,6 +244,32 @@
                     return parent::isAllowedToSetReadOnlyAttribute($attributeName);
                 }
             }
+        }
+
+        public static function getAllowedCastedUpAttributeNames()
+        {
+            return array('title');
+        }
+
+        protected function beforeSave()
+        {
+            if (parent::beforeSave())
+            {
+                $this->resolveAndSetDefaultSubscribers();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /**
+         * Resolve and set default subscribers
+         */
+        protected function resolveAndSetDefaultSubscribers()
+        {
+            NotificationSubscriberUtil::addSubscriber($this->owner, $this, false);
         }
     }
 ?>

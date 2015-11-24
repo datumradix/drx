@@ -59,7 +59,7 @@
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type'  => 'SaveButton', 'label' => "eval:Zurmo::t('ZurmoModule', 'Complete Conversion')"),
+                            array('type'  => 'SaveButton', 'label' => "eval:Zurmo::t('ZurmoModule', 'Next')"),
                             array('type'  => 'CancelConvertLink'),
                         ),
                     ),

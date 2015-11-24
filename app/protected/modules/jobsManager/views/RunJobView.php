@@ -47,22 +47,26 @@
 
         protected $timeLimit;
 
+        protected $messageLoggerClassName;
+
         /**
          * @param string $controllerId
          * @param string $moduleId
          * @param string $type
          * @param int $timeLimit
          */
-        public function __construct($controllerId, $moduleId, $type, $timeLimit)
+        public function __construct($controllerId, $moduleId, $type, $timeLimit, $messageLoggerClassName)
         {
             assert('is_string($controllerId) && $controllerId != ""');
             assert('is_string($moduleId) && $moduleId != ""');
             assert('is_string($type)');
             assert('is_int($timeLimit)');
+            assert('is_string($messageLoggerClassName)');
             $this->controllerId = $controllerId;
             $this->moduleId     = $moduleId;
             $this->type         = $type;
             $this->timeLimit    = $timeLimit;
+            $this->messageLoggerClassName    = $messageLoggerClassName;
         }
 
         protected function getJobLabel()
@@ -73,6 +77,7 @@
 
         protected function renderContent()
         {
+            $this->registerRunJobInBackgroundScript();
             $imagePath = Yii::app()->themeManager->baseUrl . '/default/images/ajax-loader.gif';
             $progressBarImageContent = ZurmoHtml::image($imagePath, 'Progress Bar');
             $content  = '<div class="wrapper">';
@@ -118,6 +123,40 @@
             $content = '<div class="float-bar"><div class="view-toolbar-container clearfix dock"><div class="form-toolbar">'
                        . $content . '</div></div></div>';
             return $content;
+        }
+
+        protected function registerRunJobInBackgroundScript()
+        {
+            $jobUrl   = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/runAjaxJob/',
+                array('type' => $this->type, 'timeLimit' => $this->timeLimit, 'messageLoggerClassName' => $this->messageLoggerClassName));
+            // Begin Not Coding Standard
+            $script = <<<EOD
+    $(function()
+    {
+        $.ajax(
+        {
+            url : '$jobUrl',
+            type : 'GET',
+            data : {
+            },
+            dataType: 'html',
+            success : function(data)
+            {
+                $('#logging-table ol').append(data);
+                $("#progress-table").hide();
+                $("#complete-table").show();
+            },
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+                $('#logging-table ol').append('The application has encountered an unknown error. Please check logs for more details!');
+            }
+        }
+        );
+    }
+    );
+EOD;
+            // End Not Coding Standard
+            Yii::app()->getClientScript()->registerScript('RunJobInBackgroundScript', $script);
         }
     }
 ?>

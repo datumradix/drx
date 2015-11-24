@@ -1276,6 +1276,7 @@
             $meeting2 = MeetingTestHelper::createMeetingByNameForOwner('Meeting2', $super);
             $meeting3 = MeetingTestHelper::createMeetingByNameForOwner('Meeting3', $super);
             $meeting4 = MeetingTestHelper::createMeetingByNameForOwner('Meeting4', $super);
+            sleep(1);
             $this->assertTrue($job->run());
             sleep(1);
 

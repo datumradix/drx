@@ -125,14 +125,19 @@
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
             $gameCoin = GameCoin::resolveByPerson($super);
             $this->assertEquals(0, $gameCoin->value);
-            $this->runControllerWithNoExceptionsAndGetContent('gamification/default/collectRandomCoin', true);
+            $this->runControllerWithNotSupportedExceptionAndGetContent('gamification/default/collectRandomCoin', true);
             $gameCoin = GameCoin::resolveByPerson($super);
-            $this->assertEquals(1, $gameCoin->value);
+            $this->assertEquals(0, $gameCoin->value);
         }
 
         public function testRefreshGameDashboardCoinContainer()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $gameCoin = GameCoin::resolveByPerson($super);
+            $gameCoin->addValue(1);
+            $saved = $gameCoin->save();
+            $this->assertEquals(1, $gameCoin->value);
+
             $gameCoin = GameCoin::resolveByPerson($super);
             $this->assertEquals(1, $gameCoin->value);
             $this->setGetArray(array('id' => $super->id));

@@ -56,19 +56,30 @@
             );
         }
 
-        public function actionList()
+        public function actionList($searchFormClassName = null)
         {
             $pageSize                       = Yii::app()->pagination->resolveActiveForCurrentUserByType(
                                               'listPageSize', get_class($this->getModule()));
             $contact                        = new Contact(false);
-            $searchForm                     = new ContactsSearchForm($contact);
+
+            if (isset($searchFormClassName) && class_exists($searchFormClassName))
+            {
+                $searchForm                     = new $searchFormClassName($contact);
+                $stickySearchKey = $searchFormClassName; // We need to change this
+            }
+            else
+            {
+                $searchForm                     = new ContactsSearchForm($contact);
+                $stickySearchKey = 'ContactsSearchView';
+            }
+
             $listAttributesSelector         = new ListAttributesSelector('ContactsListView', get_class($this->getModule()));
             $searchForm->setListAttributesSelector($listAttributesSelector);
             $dataProvider = $this->resolveSearchDataProvider(
                 $searchForm,
                 $pageSize,
                 'ContactsStateMetadataAdapter',
-                'ContactsSearchView'
+                $stickySearchKey
             );
             if (isset($_GET['ajax']) && $_GET['ajax'] == 'list-view')
             {
@@ -377,6 +388,24 @@
             echo CJSON::encode($addressData);
         }
 
+        public function actionGetAccountOfficePhoneAndFaxToCopy($id)
+        {
+            $account = static::getModelAndCatchNotFoundAndDisplayError('Account', intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($account);
+
+            $data = array();
+            if ($account->officePhone != null)
+            {
+                $data['officePhone'] = $account->officePhone;
+            }
+
+            if ($account->officeFax != null)
+            {
+                $data['officeFax'] = $account->officeFax;
+            }
+            echo CJSON::encode($data);
+        }
+
         protected static function getSearchFormClassName()
         {
             return 'ContactsSearchForm';
@@ -472,6 +501,62 @@
                 $content        = $summaryView->render();
                 $message        = $searchResult['message'];
                 echo CJSON::encode(array('content' => $content, 'message' => $message));
+            }
+        }
+
+        /**
+         * Create comment via ajax for contact
+         * @param type $id
+         * @param string $uniquePageId
+         */
+        public function actionInlineCreateCommentFromAjax($id, $uniquePageId)
+        {
+            $comment       = new Comment();
+            $redirectUrl   = Yii::app()->createUrl('/contacts/default/inlineCreateCommentFromAjax',
+                array('id'           => $id,
+                      'uniquePageId' => $uniquePageId));
+            $urlParameters = array('relatedModelId'           => (int)$id,
+                                   'relatedModelClassName'    => 'Contact',
+                                   'relatedModelRelationName' => 'comments',
+                                   'redirectUrl'              => $redirectUrl); //After save, the url to go to.
+            $uniquePageId  = 'CommentInlineEditForModelView';
+            echo             ZurmoHtml::tag('h2', array(), Zurmo::t('CommentsModule', 'Add Comment'));
+            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineCreateSave',
+                $urlParameters, $uniquePageId);
+            $view          = new AjaxPageView($inlineView);
+            echo $view->render();
+        }
+
+        /**
+         * Add subscriber for contact
+         * @param int $id
+         */
+        public function actionAddSubscriber($id)
+        {
+            $contact = Contact::getById((int)$id);
+            $contact    = NotificationSubscriberUtil::processSubscriptionRequest($contact, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::getSubscriberData($contact);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($contact, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
+            echo $content;
+        }
+
+        /**
+         * Remove subscriber for contact
+         * @param int $id
+         */
+        public function actionRemoveSubscriber($id)
+        {
+            $contact = Contact::getById((int)$id);
+            $contact    = NotificationSubscriberUtil::processUnsubscriptionRequest($contact, Yii::app()->user->userModel);
+            $content = NotificationSubscriberUtil::getSubscriberData($contact);
+            $content .= NotificationSubscriberUtil::resolveSubscriptionLink($contact, 'detail-subscribe-model-link', 'detail-unsubscribe-model-link');
+            if ($content == null)
+            {
+                echo "";
+            }
+            else
+            {
+                echo $content;
             }
         }
     }

@@ -557,7 +557,7 @@
                 //Take care of duplicates if any
                 if (!in_array($user->id, $alreadySubscribedUsers))
                 {
-                    $content .= TasksUtil::renderSubscriberImageAndLinkContent($user, 25);
+                    $content .= NotificationSubscriberUtil::renderSubscriberImageAndLinkContent($user, 25);
                     $alreadySubscribedUsers[] = $user->id;
                 }
             }

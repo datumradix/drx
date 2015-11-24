@@ -634,10 +634,28 @@
             $validated = $filter->validate();
             $this->assertFalse($validated);
             $errors = $filter->getErrors();
-            $compareErrors                       = array('value'     => array('Value cannot be blank.'),
-                                                         'operator'  => array('Operator cannot be blank.'));
+            $compareErrors                       = array('operator'  => array('Operator cannot be blank.'),
+                                                         'valueType' => array('Type cannot be blank.'));
             $this->assertEquals($compareErrors, $errors);
+
+            $filter                              = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem',
+                                                                            Report::TYPE_ROWS_AND_COLUMNS);
+            $filter->attributeIndexOrDerivedType = 'owner__User';
+            $filter->value                       = '';
+            $filter->valueType                   = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
+            $filter->operator                    = OperatorRules::TYPE_EQUALS;
+            $filter->stringifiedModelForValue    = '';
+            $validated = $filter->validate();
+            $this->assertFalse($validated);
+            $errors = $filter->getErrors();
+            $compareErrors                       = array('value'     => array('Value cannot be blank.'));
+            $this->assertEquals($compareErrors, $errors);
+
+            $filter                              = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem',
+                                                                            Report::TYPE_ROWS_AND_COLUMNS);
+            $filter->attributeIndexOrDerivedType = 'owner__User';
             $filter->value                       = '5';
+            $filter->valueType                   = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $filter->operator                    = OperatorRules::TYPE_EQUALS;
             $filter->stringifiedModelForValue    = 'Jason';
             $validated = $filter->validate();

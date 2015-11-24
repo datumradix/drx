@@ -97,7 +97,7 @@
                                                                          $parentInputId,
                                                                          $unserializedMetadata['mappingData'],
                                                                          $position,
-                                                                         $this->model->{$attribute}->value,
+                                                                         null,
                                                                          $parentAttributeLabel);
                 $parentInputId            = $inputId;
                 $parentAttributeLabel     = $this->model->getAttributeLabel($attribute);

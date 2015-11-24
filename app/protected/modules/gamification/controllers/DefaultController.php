@@ -97,12 +97,19 @@
 
         public function actionCollectRandomCoin()
         {
-            $gameCoin = GameCoin::resolveByPerson(Yii::app()->user->userModel);
-            $gameCoin->addValue(1);
-            $saved = $gameCoin->save();
-            if (!$saved)
+            if (Yii::app()->request->getUrlReferrer() != null)
             {
-                throw new FailedToSaveModelException();
+                $gameCoin = GameCoin::resolveByPerson(Yii::app()->user->userModel);
+                $gameCoin->addValue(1);
+                $saved = $gameCoin->save();
+                if (!$saved)
+                {
+                    throw new FailedToSaveModelException();
+                }
+            }
+            else
+            {
+                throw new NotSupportedException();
             }
         }
 

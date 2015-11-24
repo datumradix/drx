@@ -425,7 +425,7 @@
                 {
                     throw new NotSupportedException();
                 }
-                return 'UserNameId';
+                return 'MixedLoggedInUserTypesAndUsers';
             }
             $resolvedAttribute = static::resolveRealAttributeName($attribute);
             if (null != $filterValueElementTypeFromRule = $this->rules->getFilterValueElementType($this->model,

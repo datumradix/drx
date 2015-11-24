@@ -286,7 +286,7 @@
             $this->assertTrue($task->save());
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Notification::getCount());
-            TasksNotificationUtil::submitTaskNotificationMessage($task, TasksNotificationUtil::TASK_NEW_COMMENT,
+            TasksNotificationUtil::submitTaskNotificationMessage($task, TasksNotificationUtil::TASK_COMMENT_CREATED_OR_UPDATED,
                                                                  self::$super, $comment);
 
             $this->assertEquals(3, Yii::app()->emailHelper->getQueuedCount());

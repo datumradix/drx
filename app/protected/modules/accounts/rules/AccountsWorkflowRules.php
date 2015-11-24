@@ -47,7 +47,7 @@
             $metadata = array(
                 'Account' => array(
                     'cannotTrigger' =>
-                        array('products')
+                        array('products', 'notificationSubscribers', 'comments')
                     ),
             );
             return array_merge(parent::getDefaultMetadata(), $metadata);

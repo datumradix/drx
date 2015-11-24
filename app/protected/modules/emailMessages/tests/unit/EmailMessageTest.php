@@ -567,6 +567,7 @@
             $contact->primaryEmail      = $email;
             $this->assertTrue($contact->save());
             $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 01');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 01',
                                                                                 'subject',
                                                                                 'text Content',
@@ -608,6 +609,7 @@
             $contact->primaryEmail      = $email;
             $this->assertTrue($contact->save());
             $marketingList              = MarketingListTestHelper::createMarketingListByName('marketingList 02');
+            MarketingListMemberTestHelper::createMarketingListMember(0, $marketingList, $contact);
             $campaign                   = CampaignTestHelper::createCampaign('campaign 02',
                                                                                 'subject',
                                                                                 'text Content',

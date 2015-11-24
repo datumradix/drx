@@ -295,7 +295,7 @@
         /**
          * @depends testCreateAnNoteAfterTheCustomFieldsArePlacedForNotesModule
          */
-        public function testEditOfTheNoteForTheTagCloudFieldAfterRemovingAllTagsPlacedForNotesModule()
+        public function testEditOfTheNoteForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForNotesModule()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -333,7 +333,7 @@
                                 'decimalCstm'                       => '12',
                                 'picklistCstm'                      => array('value'  => 'b'),
                                 'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
-                                'tagcloudCstm'                      => array('values' =>  array()),
+                                'tagcloudCstm'                      => array('values' =>  array('writing')),
                                 'countrylistCstm'                   => array('value'  => 'aaaa'),
                                 'statelistCstm'                     => array('value'  => 'aaa1'),
                                 'citylistCstm'                      => array('value'  => 'ab1'),
@@ -382,11 +382,68 @@
             $this->assertEquals($note[0]->citylistCstm->value              , 'ab1');
             $this->assertContains('gg'                                     , $note[0]->multiselectCstm->values);
             $this->assertContains('hh'                                     , $note[0]->multiselectCstm->values);
-            $this->assertEquals(0                                          , $note[0]->tagcloudCstm->values->count());
+            $this->assertEquals(1                                          , $note[0]->tagcloudCstm->values->count());
             $metadata            = CalculatedDerivedAttributeMetadata::
                                    getByNameAndModelClassName('calcnumber', 'Note');
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $note[0]);
             $this->assertEquals(23                                         , $testCalculatedValue);
+        }
+
+        /**
+         * @depends testEditOfTheNoteForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForNotesModule
+         */
+        public function testEditOfTheNoteForTheTagCloudFieldAfterRemovingAllTagsPlacedForNotesModule()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            //Set the date and datetime variable values here.
+            $date           = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateFormatForInput(), time());
+            $datetime       = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateTimeFormatForInput(), time());
+
+            //Get the super user, account, opportunity and contact id.
+            $superUserId        = $super->id;
+            $superAccount       = Account::getByName('superAccount');
+            $superContactId     = self::getModelIdByModelNameAndName('Contact', 'superContact2 superContact2son');
+            $superOpportunityId = self::getModelIdByModelNameAndName('Opportunity', 'superOpp');
+            $baseCurrency       = Currency::getByCode(Yii::app()->currencyHelper->getBaseCode());
+            $explicitReadWriteModelPermission = ExplicitReadWriteModelPermissionsUtil::MIXED_TYPE_EVERYONE_GROUP;
+
+            //Retrieve the note Id based on the created note.
+            $note = Note::getByName('Note Edit Description');
+            $this->assertEquals(1, $note[0]->tagcloudCstm->values->count());
+
+            //Edit a note based on the custom fields.
+            $this->setGetArray(array('id' => $note[0]->id));
+            $this->setPostArray(array('Note' => array(
+                                'occurredOnDateTime'                => $datetime,
+                                'description'                       => 'Note Edit Description',
+                                'explicitReadWriteModelPermissions' => array('type' => $explicitReadWriteModelPermission),
+                                'owner'                             => array('id' => $superUserId),
+                                'checkboxCstm'                      => '0',
+                                'currencyCstm'                      => array('value'   => 40,
+                                                                             'currency' => array(
+                                                                             'id' => $baseCurrency->id)),
+                                'dateCstm'                          => $date,
+                                'datetimeCstm'                      => $datetime,
+                                'decimalCstm'                       => '12',
+                                'picklistCstm'                      => array('value'  => 'b'),
+                                'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
+                                'tagcloudCstm'                      => array('values' =>  array()),
+                                'countrylistCstm'                   => array('value'  => 'aaaa'),
+                                'statelistCstm'                     => array('value'  => 'aaa1'),
+                                'citylistCstm'                      => array('value'  => 'ab1'),
+                                'integerCstm'                       => '11',
+                                'phoneCstm'                         => '259-784-2069',
+                                'radioCstm'                         => array('value' => 'e'),
+                                'textCstm'                          => 'This is a test Edit Text',
+                                'textareaCstm'                      => 'This is a test Edit TextArea',
+                                'urlCstm'                           => 'http://wwww.abc-edit.com'),
+                          'ActivityItemForm'  => array(
+                                'Account'     => array('id'  => $superAccount[0]->id),
+                                'Contact'     => array('id'  => $superContactId),
+                                'Opportunity' => array('id'  => $superOpportunityId))));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('notes/default/edit');
+            $this->assertContains("tagcloud en cannot be blank.", $content);
         }
 
         /**

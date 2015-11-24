@@ -94,6 +94,14 @@
                         return true;
                     }
                     break;
+                case OperatorRules::TYPE_DOES_NOT_STARTS_WITH:
+                    if (strncmp(static::sanitize($model->$attribute),
+                        static::sanitize($this->trigger->value),
+                        strlen(static::sanitize($this->trigger->value))) !== 0)
+                    {
+                        return true;
+                    }
+                    break;
                 case OperatorRules::TYPE_ENDS_WITH:
                     if (substr(static::sanitize($model->$attribute), - strlen(static::sanitize($this->trigger->value))) ===
                         static::sanitize($this->trigger->value))
@@ -101,8 +109,21 @@
                         return true;
                     }
                     break;
+                case OperatorRules::TYPE_DOES_NOT_ENDS_WITH:
+                    if (substr(static::sanitize($model->$attribute), - strlen(static::sanitize($this->trigger->value))) !=
+                        static::sanitize($this->trigger->value))
+                    {
+                        return true;
+                    }
+                    break;
                 case OperatorRules::TYPE_CONTAINS:
                     if ((stripos($model->$attribute, $this->trigger->value)) !== false)
+                    {
+                        return true;
+                    }
+                    break;
+                case OperatorRules::TYPE_DOES_NOT_CONTAINS:
+                    if ((stripos($model->$attribute, $this->trigger->value)) === false)
                     {
                         return true;
                     }

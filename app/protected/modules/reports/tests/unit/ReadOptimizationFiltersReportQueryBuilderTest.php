@@ -131,6 +131,7 @@
             $filter->attributeIndexOrDerivedType   = 'owner__User';
             $filter->value                         = 'a value';
             $filter->operator                      = OperatorRules::TYPE_EQUALS;
+            $filter->valueType                     = MixedLoggedInUserTypesAndUsersSearchFormAttributeMappingRules::TYPE_SELECT_USER;
             $filter2                               = new FilterForReportForm('ReportsTestModule', 'ReportModelTestItem',
                                                      Report::TYPE_ROWS_AND_COLUMNS);
             $filter2->attributeIndexOrDerivedType  = 'ReadOptimization';

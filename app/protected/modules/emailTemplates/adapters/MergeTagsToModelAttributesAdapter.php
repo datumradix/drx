@@ -50,10 +50,21 @@
 
         const SUPPRESS_INVALID_TAG_ERRORS_KEEP_TAG              = -2;
 
+        /**
+         * @param $mergeTags
+         * @param $model
+         * @param array $invalidTags
+         * @param $language
+         * @param int $errorOnFirstMissing
+         * @param array $params
+         * @param bool|false $convertNewLinesToBrForAttributeValues
+         * @return bool
+         */
         public static function resolveMergeTagsArrayToAttributesFromModel(& $mergeTags, $model,
                                                                           & $invalidTags = array(), $language,
                                                                           $errorOnFirstMissing = self::DO_NOT_ERROR_ON_FIRST_INVALID_TAG,
-                                                                          $params = array())
+                                                                          $params = array(),
+                                                                          $convertNewLinesToBrForAttributeValues = false)
         {
             assert('$language == null || is_string($language)');
             if ($language == null)
@@ -86,7 +97,14 @@
                 }
                 else
                 {
-                    $resolvedMergeTags[$mergeTag] = $resolvedValue;
+                    if ($convertNewLinesToBrForAttributeValues)
+                    {
+                        $resolvedMergeTags[$mergeTag] = nl2br($resolvedValue);
+                    }
+                    else
+                    {
+                        $resolvedMergeTags[$mergeTag] = $resolvedValue;
+                    }
                 }
             }
             $mergeTags = $resolvedMergeTags;
@@ -190,6 +208,32 @@
                         }
                     }
                     return static::PROPERTY_NOT_FOUND;
+                }
+                elseif ($model->$attributeName instanceof CurrencyValue)
+                {
+                    $model = $model->$attributeName;
+                    if ($attributeName === $attributeAccessorString) // We have name of relation, don't have a property requested, like $object->owner
+                    {
+                        $attributeAccessorString = null;
+                    }
+                    else
+                    {
+                        $attributeAccessorString = str_replace($attributeName . '->', '', $attributeAccessorString);
+                    }
+                    if (empty($attributeAccessorString))
+                    {
+                        // If a user specific a relation merge tag but not a property, we assume he meant "value" property.
+                        $currencyValueModel = $model;
+                        $value = static::getAttributeValue($currencyValueModel, 'value', $timeQualifier);
+                        return CLocale::getInstance($language)->getCurrencySymbol($currencyValueModel->currency->code) . $value;
+                        // We can't use code below because it converts integer values in flat and also add slashes to '.' in float numbers
+                        //return Yii::app()->numberFormatter->formatCurrency($value,
+                        //    $currencyValueModel->currency->code);
+                    }
+
+                    return static::resolveMergeTagToStandardOrRelatedAttribute($attributeAccessorString, $model,
+                        $language, $timeQualifier,
+                        $errorOnFirstMissing, $params);
                 }
                 elseif ($model->$attributeName instanceof CustomField)
                 {

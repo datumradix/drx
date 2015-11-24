@@ -80,6 +80,23 @@
                         $this->addError($model, $attributeName, $message);
                     }
                 }
+                elseif ($model->$attributeName instanceof MultipleValuesCustomField)
+                {
+                    $multipleValues = $model->$attributeName->getValues();
+                    if (count($multipleValues) == 0 ||
+                        (count($multipleValues) == 1 && $multipleValues[0] == ''))
+                    {
+                        if ($this->message !== null)
+                        {
+                            $message = $this->message;
+                        }
+                        else
+                        {
+                            $message = Zurmo::t('Core', '{attribute} cannot be blank.');
+                        }
+                        $this->addError($model, $attributeName, $message);
+                    }
+                }
                 elseif ($model->$attributeName instanceof FileContent)
                 {
                     if ($model->$attributeName->content === null)

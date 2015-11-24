@@ -334,7 +334,7 @@
         /**
          * @depends testWhetherSearchWorksForTheCustomFieldsPlacedForProductsModuleAfterCreatingTheProduct
          */
-        public function testEditOfTheProductForTheTagCloudFieldAfterRemovingAllTagsPlacedForProductsModule()
+        public function testEditOfTheProductForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForProductsModule()
         {
             $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
 
@@ -374,7 +374,7 @@
                             'datetimeCstm'                      => $datetime,
                             'picklistCstm'                      => array('value'  => 'b'),
                             'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
-                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'tagcloudCstm'                      => array('values' =>  array('writing')),
                             'countrylistCstm'                   => array('value'  => 'aaaa'),
                             'statelistCstm'                     => array('value'  => 'aaa1'),
                             'citylistCstm'                      => array('value'  => 'ab1'),
@@ -425,11 +425,66 @@
             $this->assertEquals($product->citylistCstm->value        , 'ab1');
             $this->assertContains('gg'                                   , $product->multiselectCstm->values);
             $this->assertContains('hh'                                   , $product->multiselectCstm->values);
-            $this->assertEquals(0                                        , $product->tagcloudCstm->values->count());
+            $this->assertEquals(1                                        , $product->tagcloudCstm->values->count());
             $metadata            = CalculatedDerivedAttributeMetadata::
                                    getByNameAndModelClassName('calcnumber', 'Product');
             $testCalculatedValue = CalculatedNumberUtil::calculateByFormulaAndModelAndResolveFormat($metadata->getFormula(), $product);
             $this->assertEquals(132                                      , intval(str_replace(',', '', $testCalculatedValue))); // Not Coding Standard
+        }
+
+        /**
+         * @depends testEditOfTheProductForTheTagCloudFieldAfterLeavingOnlyOneTagPlacedForProductsModule
+         */
+        public function testEditOfTheProductForTheTagCloudFieldAfterRemovingAllTagsPlacedForProductsModule()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+
+            //Set the date and datetime variable values here.
+            $date           = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateFormatForInput(), time());
+            $datetime       = Yii::app()->dateFormatter->format(DateTimeUtil::getLocaleDateTimeFormatForInput(), time());
+            $baseCurrency   = Currency::getByCode(Yii::app()->currencyHelper->getBaseCode());
+
+            //Retrieve the account id, the super user id and product Id.
+            $accountId                        = self::getModelIdByModelNameAndName ('Account', 'superAccount');
+            $superUserId                      = $super->id;
+            $explicitReadWriteModelPermission = ExplicitReadWriteModelPermissionsUtil::MIXED_TYPE_EVERYONE_GROUP;
+            $product                          = Product::getByName('myEditProduct');
+            $productId                        = $product[0]->id;
+            $this->assertEquals(1, $product[0]->tagcloudCstm->values->count());
+
+            //Edit a new Product based on the custom fields.
+            $this->setGetArray(array('id' => $productId));
+            $this->setPostArray(array('Product' => array(
+                            'name'                              => 'myEditProduct',
+                            'owner'                             => array('id' => $superUserId),
+                            'type'                              => 1,
+                            'sellPrice'                         => array ('currency' => array('id' => $baseCurrency->id), 'value' => 200),
+                            'account'                           => array('id' => $accountId),
+                            'quantity'                          => 10,
+                            'priceFrequency'                    => 2,
+                            'stage'                             => array('value' => 'Open'),
+                            'explicitReadWriteModelPermissions' => array('type' => $explicitReadWriteModelPermission),
+                            'checkboxCstm'                      => '0',
+                            'currencyCstm'                      => array('value'       => 40,
+                                                                         'currency'    => array(
+                                                                             'id' => $baseCurrency->id)),
+                            'decimalCstm'                       => '12',
+                            'dateCstm'                          => $date,
+                            'datetimeCstm'                      => $datetime,
+                            'picklistCstm'                      => array('value'  => 'b'),
+                            'multiselectCstm'                   => array('values' =>  array('gg', 'hh')),
+                            'tagcloudCstm'                      => array('values' =>  array()),
+                            'countrylistCstm'                   => array('value'  => 'aaaa'),
+                            'statelistCstm'                     => array('value'  => 'aaa1'),
+                            'citylistCstm'                      => array('value'  => 'ab1'),
+                            'integerCstm'                       => '11',
+                            'phoneCstm'                         => '259-784-2069',
+                            'radioCstm'                         => array('value' => 'e'),
+                            'textCstm'                          => 'This is a test Edit Text',
+                            'textareaCstm'                      => 'This is a test Edit TextArea',
+                            'urlCstm'                           => 'http://wwww.abc-edit.com')));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('products/default/edit');
+            $this->assertContains("tagcloud en cannot be blank.", $content);
         }
 
         /**

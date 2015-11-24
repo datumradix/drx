@@ -46,7 +46,9 @@
                             array('type' => 'CancelLink'),
                         ),
                     ),
-                    'nonPlaceableAttributeNames' => array(),
+                    'nonPlaceableAttributeNames' => array(
+                        'productTemplate'
+                    ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
                         array(
@@ -55,52 +57,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'quantity', 'type' => 'Integer'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'account', 'type' => 'Account'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'contact', 'type' => 'Contact'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'opportunity', 'type' => 'Opportunity'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'type', 'type' => 'ProductTemplateTypeDropDown'),
-                                            ),
-                                        ),
-                                    )
-                                ),
-                                array('cells' =>
-                                    array(
-                                        array(
-                                            'elements' => array(
-                                                array('attributeName' => 'priceFrequency', 'type' => 'ProductTemplatePriceFrequencyDropDown'),
+                                                array('attributeName' => 'owner', 'type' => 'User'),
                                             ),
                                         ),
                                     )
@@ -120,11 +77,6 @@
                 ),
             );
             return $metadata;
-        }
-
-        public static function getDesignerRulesType()
-        {
-            return null;
         }
     }
 ?>

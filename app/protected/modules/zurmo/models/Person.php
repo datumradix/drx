@@ -199,5 +199,10 @@
             }
             return parent::getSortAttributesByAttribute($attribute);
         }
+
+        public static function getModuleClassName()
+        {
+            return 'ZurmoModule';
+        }
     }
 ?>

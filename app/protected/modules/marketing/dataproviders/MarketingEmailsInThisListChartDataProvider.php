@@ -50,10 +50,18 @@
                 {
                     $chartData[$chartIndexToCompare][self::QUEUED]        = $row[self::QUEUED];
                     $chartData[$chartIndexToCompare][self::SENT]          = $row[self::SENT];
+                    if (isset($row[self::FAILED_TO_SEND]))
+                    {
+                        $chartData[$chartIndexToCompare][self::FAILED_TO_SEND] = $row[self::FAILED_TO_SEND];
+                    }
                     $chartData[$chartIndexToCompare][self::UNIQUE_OPENS]  = $row[self::UNIQUE_OPENS];
                     $chartData[$chartIndexToCompare][self::UNIQUE_CLICKS] = $row[self::UNIQUE_CLICKS];
                     $chartData[$chartIndexToCompare][self::BOUNCED]       = $row[self::BOUNCED];
                     $chartData[$chartIndexToCompare][self::UNSUBSCRIBED]  = $row[self::UNSUBSCRIBED];
+                    if (isset($row[self::SKIPPED]))
+                    {
+                        $chartData[$chartIndexToCompare][self::SKIPPED] = $row[self::SKIPPED];
+                    }
                 }
             }
             $newChartData = array();
@@ -113,8 +121,10 @@
             $campaignItemTableName     = CampaignItem::getTableName();
             $itemTableName             = Item::getTableName();
             $emailMessageTableName     = EmailMessage::getTableName();
+            $emailFolderTableName      = EmailFolder::getTableName();
             $sentDateTimeColumnName    = EmailMessage::getColumnNameByAttribute('sentDateTime');
             $createdDateTimeColumnName = Item::getColumnNameByAttribute('createdDateTime');
+            $folderTypeColumnName      = EmailFolder::getColumnNameByAttribute('type');
             $joinTablesAdapter         = new RedBeanModelJoinTablesQueryAdapter('Campaign');
             $where                     = RedBeanModelDataProvider::makeWhere('Campaign', $searchAttributeData, $joinTablesAdapter);
             Campaign::resolveReadPermissionsOptimizationToSqlQuery(Yii::app()->user->userModel,
@@ -122,27 +132,46 @@
                 $where,
                 $selectDistinct);
             $selectQueryAdapter        = new RedBeanModelSelectQueryAdapter($selectDistinct);
-            $queuedEmailsSelectPart    = "sum(CASE WHEN {$quote}{$emailMessageTableName}{$quote}.{$quote}{$sentDateTimeColumnName}" .
+            // Begin Not Coding Standard
+			$queuedEmailsSelectPart     = "sum(CASE WHEN (({$quote}{$emailMessageTableName}{$quote}.{$quote}{$sentDateTimeColumnName}" .
                                          $quote . " = '0000-00-00 00:00:00' OR {$quote}{$emailMessageTableName}{$quote}" .
-                                         ".{$quote}{$sentDateTimeColumnName}{$quote} IS NULL THEN 1 ELSE 0 END)"; // Not Coding Standard
-            $sentEmailsSelectPart      = "sum(CASE WHEN {$quote}{$emailMessageTableName}{$quote}.{$quote}{$sentDateTimeColumnName}" .
-                                         $quote . " > '0000-00-00 00:00:00' THEN 1 ELSE 0 END)";
+                                         ".{$quote}{$sentDateTimeColumnName}{$quote} IS NULL) AND ".
+                                         "({$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_OUTBOX . "'" .
+                                         " OR {$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_OUTBOX_ERROR . "'))" .
+                                         " THEN 1 ELSE 0 END)";
+            $sentEmailsSelectPart       = "sum(CASE WHEN (({$quote}{$emailMessageTableName}{$quote}.{$quote}{$sentDateTimeColumnName}" .
+                                         $quote . " > '0000-00-00 00:00:00') AND " .
+                                        "{$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_SENT . "')" .
+                                        "THEN 1 ELSE 0 END)";
+
+            $failedEmailsSelectPart     = "sum(CASE WHEN (({$quote}{$emailMessageTableName}{$quote}.{$quote}{$sentDateTimeColumnName}" .
+                $quote . " = '0000-00-00 00:00:00' OR {$quote}{$emailMessageTableName}{$quote}" .
+                ".{$quote}{$sentDateTimeColumnName}{$quote} IS NULL) AND ".
+                "({$quote}{$emailFolderTableName}{$quote}.{$quote}{$folderTypeColumnName}{$quote} = '" . EmailFolder::TYPE_OUTBOX_FAILURE . "'))" .
+                " THEN 1 ELSE 0 END)"; 
+			// End Not Coding Standard
+
             $uniqueOpensSelectPart     = static::resolveCampaignTypeSubQuery(EmailMessageActivity::TYPE_OPEN);
             $uniqueClicksSelectPart    = static::resolveCampaignTypeSubQuery(EmailMessageActivity::TYPE_CLICK);
             $bouncedSelectPart         = static::resolveCampaignTypeSubQuery(EmailMessageActivity::TYPE_BOUNCE);
             $optedOutSelectPart        = static::resolveCampaignTypeSubQuery(EmailMessageActivity::TYPE_UNSUBSCRIBE);//
+            $skippedSelectPart         = static::resolveCampaignTypeSubQuery(EmailMessageActivity::TYPE_SKIP);//
+
             $selectQueryAdapter->addDayDateClause($itemTableName, $createdDateTimeColumnName, static::DAY_DATE);
             $selectQueryAdapter->addFirstDayOfWeekDateClause($itemTableName, $createdDateTimeColumnName, static::FIRST_DAY_OF_WEEK_DATE);
             $selectQueryAdapter->addFirstDayOfMonthDateClause($itemTableName, $createdDateTimeColumnName, static::FIRST_DAY_OF_MONTH_DATE);
             $selectQueryAdapter->addNonSpecificCountClause();
             $selectQueryAdapter->addClauseByQueryString($queuedEmailsSelectPart,  static::QUEUED);
             $selectQueryAdapter->addClauseByQueryString($sentEmailsSelectPart,  static::SENT);
+            $selectQueryAdapter->addClauseByQueryString($failedEmailsSelectPart,  static::FAILED_TO_SEND);
             $selectQueryAdapter->addClauseByQueryString("count((" . $uniqueOpensSelectPart  . "))",  static::UNIQUE_OPENS);
             $selectQueryAdapter->addClauseByQueryString("count((" . $uniqueClicksSelectPart . "))", static::UNIQUE_CLICKS);
             $selectQueryAdapter->addClauseByQueryString("count((" . $bouncedSelectPart . "))", static::BOUNCED);
             $selectQueryAdapter->addClauseByQueryString("count((" . $optedOutSelectPart . "))", static::UNSUBSCRIBED);
+            $selectQueryAdapter->addClauseByQueryString("count((" . $skippedSelectPart . "))", static::SKIPPED);
             $joinTablesAdapter->addLeftTableAndGetAliasName($campaignItemTableName, 'id', $campaignTableName, 'campaign_id');
             $joinTablesAdapter->addLeftTableAndGetAliasName($emailMessageTableName, 'emailmessage_id', $campaignItemTableName, 'id');
+            $joinTablesAdapter->addLeftTableAndGetAliasName($emailFolderTableName, 'folder_emailfolder_id', $emailMessageTableName, 'id');
 
             $sql   = SQLQueryUtil::makeQuery($campaignTableName, $selectQueryAdapter, $joinTablesAdapter, null, null, $where, null, $groupBy);
             return $sql;
@@ -203,12 +232,15 @@
          */
         protected static function resolveChartDataBaseGroupElements()
         {
-            return array(self::QUEUED        => 0,
-                         self::SENT          => 0,
-                         self::UNIQUE_CLICKS => 0,
-                         self::UNIQUE_OPENS  => 0,
-                         self::BOUNCED       => 0,
-                         self::UNSUBSCRIBED  => 0);
+            return array(self::QUEUED           => 0,
+                         self::SENT             => 0,
+                         self::UNIQUE_CLICKS    => 0,
+                         self::UNIQUE_OPENS     => 0,
+                         self::BOUNCED          => 0,
+                         self::UNSUBSCRIBED     => 0,
+                         self::FAILED_TO_SEND   => 0,
+                         self::SKIPPED          => 0,
+                );
         }
     }
 ?>

@@ -44,6 +44,10 @@
 
         public function getFormName()
         {
+            if ($this->model->id > 0)
+            {
+                return "comment-inline-edit-form" . $this->model->id;
+            }
             return "comment-inline-edit-form";
         }
 
@@ -70,7 +74,7 @@
                                     array(
                                         array(
                                             'elements' => array(
-                                                array('attributeName' => 'description', 'type' => 'TextArea', 'rows' => 2),
+                                                array('attributeName' => 'description', 'type' => 'MentionableTextArea', 'rows' => 2),
                                             ),
                                         ),
                                     )
@@ -122,15 +126,20 @@
         {
             // Begin Not Coding Standard
             return ZurmoHtml::ajax(array(
-                    'type' => 'POST',
-                    'data' => 'js:$("#' . $formName . '").serialize()',
-                    'url'  =>  $this->getValidateAndSaveUrl(),
-                    'update' => '#' . $this->uniquePageId,
-                    'complete' => "function(XMLHttpRequest, textStatus){
+                'type' => 'POST',
+                'data' => 'js:$("#' . $formName . '").serialize()',
+                'url'  =>  $this->getValidateAndSaveUrl(),
+                'update' => '#' . $this->uniquePageId,
+                'complete' => "function(XMLHttpRequest, textStatus){
                         //find if there is a comment thread to refresh
-                        $('.hiddenCommentRefresh').click();}"
-                ));
+                        $('." . $this->getCommentsWrappingCssClass() . " .hiddenCommentRefresh, .comments-activity .hiddenCommentRefresh').click();}"
+            ));
             // End Not Coding Standard
+        }
+
+        protected function getCommentsWrappingCssClass()
+        {
+            return 'model-comments-activity';
         }
 
         protected function doesLabelHaveOwnCell()
