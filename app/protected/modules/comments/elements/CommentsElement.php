@@ -207,8 +207,16 @@
                                    'relatedModelRelationName' => $relatedModelRelationName,
                                    'redirectUrl'              => $redirectUrl); //After save, the url to go to.
             $uniquePageId  = 'CommentInlineEditForExistingModelView' . $uniquePageId;
-            $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineEditSave',
-                $urlParameters, $uniquePageId);
+            if ($relatedModelClassName == 'Task')
+            {
+                $inlineView    = new CommentForTaskInlineEditView($comment, 'default', 'comments', 'inlineEditSave',
+                    $urlParameters, $uniquePageId);
+            }
+            else
+            {
+                $inlineView    = new CommentInlineEditView($comment, 'default', 'comments', 'inlineEditSave',
+                    $urlParameters, $uniquePageId);
+            }
             return $inlineView;
         }
     }
