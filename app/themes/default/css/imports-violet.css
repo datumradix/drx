@@ -6884,10 +6884,10 @@ a.dashboard-link .z-label {
   margin-left: 15px;
 }
 .comment-content p a:not(.user-link) {
-  color: #91A1DC;
+  color: #4A3970;
 }
 .comment-content p a:not(.user-link):hover {
-  color: #445fc3;
+  color: #1d172c;
 }
 a.user-link {
   font-weight: bold;
