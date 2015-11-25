@@ -295,7 +295,7 @@
             return $peopleToSendNotification;
         }
 
-        protected static function hasPersonHaveRightsAndPermissionsToAccessModelAndIsUserActive(OwnedSecurableItem $model, User $user)
+        public static function hasPersonHaveRightsAndPermissionsToAccessModelAndIsUserActive(OwnedSecurableItem $model, User $user)
         {
             $moduleClassName = $model->getModuleClassName();
             if (!RightsUtil::doesUserHaveAllowByRightName($moduleClassName, $moduleClassName::getAccessRight(), $user) ||
