@@ -9267,6 +9267,9 @@ a.simple-link .icon-x {
   width: 100%;
   padding-right: 160px;
 }
+.hasFilter .user-select-area .value-data {
+  padding-right: 0;
+}
 .hasFilter .dynamic-row-operator + .value-data {
   padding-left: 15px;
   width: 80%;
