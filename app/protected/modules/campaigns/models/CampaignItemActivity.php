@@ -112,40 +112,5 @@
             $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
             return self::getSubset($joinTablesAdapter, $offset, $pageSize, $where, 'latestDateTime');
         }
-
-        public static function getNotClickedItemsWithoutNotOpened($campaign)
-        {
-            $searchAttributeData = array();
-            $searchAttributeData['clauses'] = array(
-                1 => array(
-                    'attributeName'        => 'type',
-                    'operatorType'         => 'isNull',
-                    'value'                => null,
-                ),
-                2 => array(
-                    'attributeName'        => 'type',
-                    'operatorType'         => 'oneOf',
-                    'value'                => array(EmailMessageActivity::TYPE_OPEN,
-                        EmailMessageActivity::TYPE_BOUNCE,
-                        EmailMessageActivity::TYPE_SKIP,
-                        EmailMessageActivity::TYPE_SOFT_BOUNCE),
-                ),
-                3 => array(
-                    'attributeName' => 'campaignItem',
-                    'relatedModelData' => array(
-                        'attributeName'     => 'campaign',
-                        'relatedModelData'  => array(
-                            'attributeName'     => 'id',
-                            'operatorType'      => 'equals',
-                            'value'             => $campaign->id,
-                        ),
-                    ),
-                ),
-            );
-            $searchAttributeData['structure'] = '(1 OR 2) AND 3';
-            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
-            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
-            return self::getSubset($joinTablesAdapter, null, null, $where, 'latestDateTime');
-        }
     }
 ?>

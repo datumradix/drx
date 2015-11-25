@@ -44,7 +44,12 @@
          */
         public static function getDefaultMetadata()
         {
-            $metadata = array();
+            $metadata = array(
+                'Opportunity' => array(
+                    'nonReportable' =>
+                        array('notificationSubscribers', 'comments'),
+                )
+            );
             return array_merge(parent::getDefaultMetadata(), $metadata);
         }
     }
