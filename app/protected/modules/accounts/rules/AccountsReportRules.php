@@ -47,7 +47,7 @@
             $metadata = array(
                 'Account' => array(
                     'nonReportable' =>
-                    array('accounts', 'account'),
+                        array('accounts', 'account', 'notificationSubscribers', 'comments'),
                 )
             );
             return array_merge(parent::getDefaultMetadata(), $metadata);

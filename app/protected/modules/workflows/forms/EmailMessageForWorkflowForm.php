@@ -223,7 +223,7 @@
                          'sendFromType'              => Zurmo::t('WorkflowsModule', 'Send From'),
                          'sendFromName'              => Zurmo::t('EmailMessagesModule', 'From Name'),
                          'sendFromAddress'           => Zurmo::t('EmailMessagesModule', 'From Address'),
-                         'excludeIfTriggeredByUser'  => Zurmo::t('WorkflowsModule', 'Exclude if triggered by user'),
+                         'excludeIfTriggeredByUser'  => Zurmo::t('WorkflowsModule', 'Exclude user who triggered the action'),
             );
         }
 

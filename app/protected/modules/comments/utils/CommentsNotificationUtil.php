@@ -95,20 +95,24 @@
             $moduleId          = $moduleClassName::getDirectoryName();
 
             $url               = Yii::app()->createAbsoluteUrl($moduleId . '/default/details/', array('id' => $model->id));
+            $unsubscribeUrl    = Yii::app()->createAbsoluteUrl($moduleId . '/default/removeSubscriber/',
+                array('id' => $model->id, 'redirectUrl' => $url));
+
             $message->textContent        = $messageContent;
             if ($messageContentSecondPart != null)
             {
                 $message->textContent .= "\n" . $messageContentSecondPart;
             }
-            $message->textContent       .= "\n" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url,
-                    array('target' => '_blank'));
+            $message->textContent        .= "\n" . Zurmo::t('CommentsModule', 'Check more details in this link: ') .
+                ShortUrlUtil::createShortUrl($url);
+
             $message->htmlContent        = $messageContent;
             if ($messageContentSecondPart != null)
             {
                 $message->htmlContent .= "<br/>" . $messageContentSecondPart;
             }
-            $message->htmlContent       .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'), $url,
-                    array('target' => '_blank'));
+            $message->htmlContent       .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'),
+                    ShortUrlUtil::createShortUrl($url), array('target' => '_blank'));
             return $message;
         }
 
@@ -275,7 +279,13 @@
                 {
                     foreach ($peopleToSendNotification as $key => $person)
                     {
+                        $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
+                        $user     = $person->castDown(array($modelDerivationPathToItem));
                         if ($person->getClassId('Item') == $relatedUser->getClassId('Item'))
+                        {
+                            unset($peopleToSendNotification[$key]);
+                        }
+                        elseif (!static::hasPersonHaveRightsAndPermissionsToAccessModelAndIsUserActive($model, $user))
                         {
                             unset($peopleToSendNotification[$key]);
                         }
@@ -283,6 +293,25 @@
                 }
             }
             return $peopleToSendNotification;
+        }
+
+        public static function hasPersonHaveRightsAndPermissionsToAccessModelAndIsUserActive(OwnedSecurableItem $model, User $user)
+        {
+            $moduleClassName = $model->getModuleClassName();
+            if (!RightsUtil::doesUserHaveAllowByRightName($moduleClassName, $moduleClassName::getAccessRight(), $user) ||
+                !$user->isActive)
+            {
+                return false;
+            }
+            try
+            {
+                $model->checkPermissionsHasAnyOf(Permission::READ, $user);
+            }
+            catch (AccessDeniedSecurityException $e)
+            {
+                return false;
+            }
+            return true;
         }
     }
 ?>
