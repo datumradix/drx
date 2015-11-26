@@ -290,7 +290,6 @@
                             var checkExist = setInterval(function() {
                                 if ($('#" . get_class($this->model) . "_dynamicClauses_' + rowCounter + '_attributeIndexOrDerivedType').length) {
                                     $('#" . get_class($this->model) . "_dynamicClauses_' + rowCounter + '_attributeIndexOrDerivedType').val('ownedItemsOnly').change();
-                                    //$('#items-i-own-search-link" . $this->gridIdSuffix . "').closest('form').find('[type=checkbox]').last().prop('checked', true );
                                     clearInterval(checkExist);
                                     var checkExist2 = setInterval(function() {
                                         if ($('#" . get_class($this->model) . "_dynamicClauses_' + rowCounter + '_ownedItemsOnly').length) {
@@ -320,8 +319,9 @@
                         return hasOwnedItemsOnlyField;
                     }
                 ";
+                return $script;
             }
-            return $script;
+            return;
         }
     }
 ?>
