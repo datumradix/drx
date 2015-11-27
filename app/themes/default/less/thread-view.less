@@ -94,6 +94,10 @@
 	}
 }
 
+#ConversationDetailsView .panel{
+    width: 100%;
+}
+
 /*Sidebar*/
 .thread-details{
     margin:0 0 10px 0 !important;
@@ -360,7 +364,7 @@
 
 #CommentInlineEditForModelView,
 #CommentForTaskInlineEditForModelView{
-    margin-top: 0;
+    margin-top: 25px;
     padding-left: 115px;
     td{
         padding:0 0 0 0 !important;
@@ -509,13 +513,6 @@ a.user-link{
     }
 }
 
-#MissionDetailsView,
-#ConversationDetailsView{
-    .files{
-        padding-bottom: 10px;
-    }
-}
-
 /*=Social Items*/
 .SocialItemsListView,
 #AllSocialItemsForPortletView{
@@ -591,7 +588,7 @@ a.user-link{
     .form-toolbar{
         text-align: right;
         border-top:none;
-        padding: 0 15px;
+//        padding: 0 15px;
         margin-top: 0;
         a{
             color:#fff;
@@ -609,28 +606,24 @@ a.user-link{
     }
 }
 
-#comment-inline-edit-form,
-#comment-for-task-inline-edit-form{
-    .file-upload-box{
-        padding: 11px 0 10px 0;
-        float: left;
-    }
-}
-
 #social-item-inline-edit-form{
     .view-toolbar-container{
         float: none;
+        padding: 0 15px;
     }
 }
 
 #comment-inline-edit-form,
 #comment-for-task-inline-edit-form{
     border-bottom: none;
-    .file-upload-box{
-        padding: 14px 0 0 0;
-    }
     tr.template-download td{
         padding-left:0 !important;
+    }
+}
+
+#comment-for-task-inline-edit-form{
+    .file-upload-box{
+        padding: 14px 0 0 0;
     }
 }
 
@@ -685,7 +678,6 @@ a.user-link{
     .form-toolbar{
         text-align: right;
         border:none;
-        padding-top: 0;
         a{
             margin-right: 0;
         }
@@ -717,4 +709,23 @@ a.user-link{
 
 .mentions-input-box{
     margin-bottom: 10px;
+}
+
+.comment-text{
+    .form-toolbar{
+        text-align: right;
+        border-top: none;
+        a{
+            margin-right: 0;
+        }
+    }
+    .form-fields{
+        td:first-child{
+            padding: 0;
+        }
+    }
+}
+
+.comment .comment-content table{
+    margin-bottom: 0;
 }

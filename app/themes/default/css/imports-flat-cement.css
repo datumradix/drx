@@ -3143,7 +3143,7 @@ div.wide.form .errorMessage {
 }
 #CommentInlineEditForModelView .fileupload-content td.name,
 #CommentForTaskInlineEditForModelView .fileupload-content td.name {
-  padding: 5px 0 0 0 !important;
+  padding: 2px 0 !important;
 }
 .files {
   font-size: 11px;
@@ -6443,6 +6443,9 @@ a.dashboard-link .z-label {
 #ConversationDetailsAndRelationsView .toolbar-mbmenu {
   top: 8px !important;
 }
+#ConversationDetailsView .panel {
+  width: 100%;
+}
 .thread-details {
   margin: 0 0 10px 0 !important;
   width: 100%;
@@ -6771,7 +6774,7 @@ a.dashboard-link .z-label {
 }
 #CommentInlineEditForModelView,
 #CommentForTaskInlineEditForModelView {
-  margin-top: 0;
+  margin-top: 25px;
   padding-left: 115px;
 }
 #CommentInlineEditForModelView td,
@@ -6911,10 +6914,6 @@ a.user-link {
   font-weight: normal;
   font-style: italic;
 }
-#MissionDetailsView .files,
-#ConversationDetailsView .files {
-  padding-bottom: 10px;
-}
 .SocialItemsListView tr:hover,
 #AllSocialItemsForPortletView tr:hover {
   background: none !important;
@@ -7012,7 +7011,6 @@ a.user-link {
 #social-item-inline-edit-form .form-toolbar {
   text-align: right;
   border-top: none;
-  padding: 0 15px;
   margin-top: 0;
 }
 #comment-inline-edit-form .form-toolbar a,
@@ -7034,25 +7032,20 @@ a.user-link {
 #social-item-inline-edit-form .panel > table {
   border: none;
 }
-#comment-inline-edit-form .file-upload-box,
-#comment-for-task-inline-edit-form .file-upload-box {
-  padding: 11px 0 10px 0;
-  float: left;
-}
 #social-item-inline-edit-form .view-toolbar-container {
   float: none;
+  padding: 0 15px;
 }
 #comment-inline-edit-form,
 #comment-for-task-inline-edit-form {
   border-bottom: none;
 }
-#comment-inline-edit-form .file-upload-box,
-#comment-for-task-inline-edit-form .file-upload-box {
-  padding: 14px 0 0 0;
-}
 #comment-inline-edit-form tr.template-download td,
 #comment-for-task-inline-edit-form tr.template-download td {
   padding-left: 0 !important;
+}
+#comment-for-task-inline-edit-form .file-upload-box {
+  padding: 14px 0 0 0;
 }
 [id^="comment-inline-edit-form"] .left-column {
   padding: 0;
@@ -7102,7 +7095,6 @@ a.user-link {
 .social-item .form-toolbar {
   text-align: right;
   border: none;
-  padding-top: 0;
 }
 .social-item .form-toolbar a {
   margin-right: 0;
@@ -7127,6 +7119,19 @@ a.user-link {
 }
 .mentions-input-box {
   margin-bottom: 10px;
+}
+.comment-text .form-toolbar {
+  text-align: right;
+  border-top: none;
+}
+.comment-text .form-toolbar a {
+  margin-right: 0;
+}
+.comment-text .form-fields td:first-child {
+  padding: 0;
+}
+.comment .comment-content table {
+  margin-bottom: 0;
 }
 #ArchivedEmailMatchingListView .items td {
   padding-right: 10px;

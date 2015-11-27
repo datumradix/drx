@@ -2315,7 +2315,6 @@ input[type="button"]:hover:after{
 /*=Form Edit Account*/
 .modal-view-toolbar,
 .form-toolbar{
-	padding-top:13px;
 	text-align:center;
 	border-top:1px solid #fff;
 	a{
@@ -2328,6 +2327,11 @@ input[type="button"]:hover:after{
     .wizard-secondary-action-button{
         margin-left: 45px;
     }
+}
+
+.modal-view-toolbar,
+.dock .form-toolbar{
+	padding-top:13px;
 }
 
 .portlet-toolbar{
@@ -3404,6 +3408,7 @@ div.wide.form{
 		}
 	}
 	.left-column{
+		width: 100%;
 		padding: 0 15px 0 0;
 	}
 	.right-column{
