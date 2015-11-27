@@ -231,9 +231,9 @@
             return       ZurmoHtml::ajaxLink(Zurmo::t('Core', 'Edit'), $url,
                 array('type'     => 'GET',
                       'success'  => "function(data, textStatus, jqXHR){
-                            var editCommentLink = $('#editCommentLink" . $comment->id . "');
-                            editCommentLink.parents('.comment-content').find('.comment-text').html(data);
-                            editCommentLink.parents('.comment-details-wrap').hide(); }"),
+                            var commentContent = $('#editCommentLink" . $comment->id . "').parents('.comment-content');
+                            commentContent.find('.comment-text').html(data);
+                            commentContent.find('.comment-details-wrap, .attachments').hide(); }"),
                 array( 'id'         => 'editCommentLink' . $comment->id,
                        'class'     => 'editCommentLink' . $comment->id,
                        'namespace' => 'edit'));
