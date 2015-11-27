@@ -6890,10 +6890,10 @@ a.dashboard-link .z-label {
 .comment-content .missionStatusChangeArea a:first-child {
   margin-left: 15px;
 }
-.comment-content p a:not(.user-link) {
+.comment-content .comment-text a:not(.user-link) {
   color: #6C8092;
 }
-.comment-content p a:not(.user-link):hover {
+.comment-content .comment-text a:not(.user-link):hover {
   color: #414d57;
 }
 a.user-link {

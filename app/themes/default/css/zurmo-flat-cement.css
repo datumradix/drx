@@ -2321,6 +2321,9 @@ body.sandbox-mode .AppContent {
   margin-right: 0;
   margin-left: 30px;
 }
+.float-bar .form-toolbar {
+  padding-top: 11px;
+}
 .view-toolbar-container {
   display: inline-block;
   width: 100%;
@@ -2736,7 +2739,6 @@ td {
   vertical-align: middle;
   padding: 10px 5px;
   word-wrap: break-word;
-  -webkit-transform: translateZ(0);
 }
 .items > tbody > tr > th,
 .items > thead > tr > th {
