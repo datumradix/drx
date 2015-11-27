@@ -164,7 +164,7 @@
                 $stringContent  = ZurmoHtml::link($comment->createdByUser->getAvatarImage(36), $userUrl);
                 $userName       = ZurmoHtml::link(strval($comment->createdByUser), $userUrl, array('class' => 'user-link'));
                 $element        = new MentionableTextAreaElement($comment, 'description');
-                $element->nonEditableTemplate = '<div class="comment-content"><p>'. $userName . ': {content}</p>';
+                $element->nonEditableTemplate = '<div class="comment-content"><p class="comment-text">'. $userName . ': {content}</p>';
                 $stringContent .= $element->render();
 
                 //attachments
@@ -182,8 +182,8 @@
                     $deleteCommentLink = null;
                     $editCommentLink   = null;
                 }
-                $stringContent .= '<span class="comment-details"><strong>'. DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
-                                              $comment->createdDateTime, 'long', null) . '</strong></span>' . $editCommentLink . $deleteCommentLink;
+                $stringContent .= '<span class="comment-details-wrap"><span class="comment-details"><strong>'. DateTimeUtil::convertDbFormattedDateTimeToLocaleFormattedDisplay(
+                                              $comment->createdDateTime, 'long', null) . '</strong></span>' . $editCommentLink . $deleteCommentLink . '</span>';
 
                 $stringContent .= '</div>';
 
@@ -212,7 +212,7 @@
             return       ZurmoHtml::ajaxLink(Zurmo::t('Core', 'Delete'), $url,
                          array('type'     => 'GET',
                                'success'  => "function(data, textStatus, jqXHR){
-                                              $('#deleteCommentLink" . $comment->id . "').parent().parent().parent().remove();}"),
+                                              $('#deleteCommentLink" . $comment->id . "').parents('.comment').remove();}"),
                          array( 'id'         => 'deleteCommentLink' . $comment->id,
                                 'class'     => 'deleteCommentLink' . $comment->id,
                                 'namespace' => 'delete'));
@@ -231,7 +231,9 @@
             return       ZurmoHtml::ajaxLink(Zurmo::t('Core', 'Edit'), $url,
                 array('type'     => 'GET',
                       'success'  => "function(data, textStatus, jqXHR){
-                                              $('#editCommentLink" . $comment->id . "').parent().parent().find('p:first').html(data);}"),
+                            var editCommentLink = $('#editCommentLink" . $comment->id . "');
+                            editCommentLink.parents('.comment-content').find('.comment-text').html(data);
+                            editCommentLink.parents('.comment-details-wrap').hide(); }"),
                 array( 'id'         => 'editCommentLink' . $comment->id,
                        'class'     => 'editCommentLink' . $comment->id,
                        'namespace' => 'edit'));
