@@ -3049,7 +3049,6 @@ div.wide.form .errorMessage {
 }
 .file-upload-box {
   padding-left: 0;
-  margin: 0 !important;
   width: 100%;
 }
 .file-upload-box > .ui-widget {
@@ -3131,8 +3130,8 @@ div.wide.form .errorMessage {
   font-weight: normal !important;
 }
 .show-file-upload-box {
+  display: none;
   position: relative;
-  bottom: -18px;
   z-index: 99999;
   font-weight: normal;
   font-size: 11px;
@@ -3144,7 +3143,7 @@ div.wide.form .errorMessage {
 }
 #CommentInlineEditForModelView .fileupload-content td.name,
 #CommentForTaskInlineEditForModelView .fileupload-content td.name {
-  padding: 5px 0 0 0 !important;
+  padding: 2px 0 !important;
 }
 .files {
   font-size: 11px;
@@ -3271,6 +3270,7 @@ div.wide.form .errorMessage {
 }
 .addfileinput-button {
   position: relative;
+  overflow: hidden;
   float: left;
   cursor: pointer;
   display: inline-block;
@@ -3286,14 +3286,8 @@ div.wide.form .errorMessage {
   -o-border-radius: 3px;
   border-radius: 3px;
   *zoom: 1;
-  overflow: hidden;
   display: inline-block;
   text-indent: 0;
-  -webkit-box-shadow: 0 0 9px 5px rgba(153,153,153,0.15);
-  -moz-box-shadow: 0 0 9px 5px rgba(153,153,153,0.15);
-  -ms-box-shadow: 0 0 9px 5px rgba(153,153,153,0.15);
-  -o-box-shadow: 0 0 9px 5px rgba(153,153,153,0.15);
-  box-shadow: 0 0 9px 5px rgba(153,153,153,0.15);
   font-weight: normal !important;
   font-size: 36px;
   font-family: "zurmo_gamification_symbly_rRg";
@@ -3309,6 +3303,8 @@ div.wide.form .errorMessage {
   -o-text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
   text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
   background: transparent url("../images/view-toolbar-gradient.png") left bottom repeat-x;
+  line-height: 20px;
+  border: 1px solid #ddd;
 }
 .addfileinput-button span:before,
 .addfileinput-button span:after {
@@ -6447,6 +6443,10 @@ a.dashboard-link .z-label {
 #ConversationDetailsAndRelationsView .toolbar-mbmenu {
   top: 8px !important;
 }
+#MissionDetailsView .panel,
+#ConversationDetailsView .panel {
+  width: 100%;
+}
 .thread-details {
   margin: 0 0 10px 0 !important;
   width: 100%;
@@ -6657,13 +6657,22 @@ a.dashboard-link .z-label {
   margin-left: 115px;
 }
 .CommentList .comment {
-  margin-top: 15px;
+  margin-top: 10px;
 }
 .CommentList:last-child {
-  margin-bottom: 25px;
+  margin-bottom: 5px;
 }
 .comment {
+  *zoom: 1;
   line-height: 140%;
+}
+.comment:before,
+.comment:after {
+  content: " ";
+  display: table;
+}
+.comment:after {
+  clear: both;
 }
 .comment .gravatar {
   margin-top: 1px;
@@ -6766,7 +6775,7 @@ a.dashboard-link .z-label {
 }
 #CommentInlineEditForModelView,
 #CommentForTaskInlineEditForModelView {
-  margin-top: 0;
+  margin-top: 25px;
   padding-left: 115px;
 }
 #CommentInlineEditForModelView td,
@@ -6816,8 +6825,6 @@ a.dashboard-link .z-label {
   font-weight: normal !important;
   font-size: 18px;
   font-family: "zurmo_gamification_symbly_rRg";
-  float: left;
-  margin-left: -15px;
 }
 .icon-attachment:before {
   content: "H";
@@ -6883,10 +6890,10 @@ a.dashboard-link .z-label {
 .comment-content .missionStatusChangeArea a:first-child {
   margin-left: 15px;
 }
-.comment-content p a:not(.user-link) {
+.comment-content .comment-text a:not(.user-link) {
   color: #4A3970;
 }
-.comment-content p a:not(.user-link):hover {
+.comment-content .comment-text a:not(.user-link):hover {
   color: #1d172c;
 }
 a.user-link {
@@ -6907,10 +6914,6 @@ a.user-link {
   vertical-align: 60%;
   font-weight: normal;
   font-style: italic;
-}
-#MissionDetailsView .files,
-#ConversationDetailsView .files {
-  padding-bottom: 10px;
 }
 .SocialItemsListView tr:hover,
 #AllSocialItemsForPortletView tr:hover {
@@ -7004,19 +7007,11 @@ a.user-link {
 #social-item-inline-edit-form td:first-child {
   padding-left: 0;
 }
-#comment-inline-edit-form .file-upload-box,
-#comment-for-task-inline-edit-form .file-upload-box,
-#social-item-inline-edit-form .file-upload-box {
-  padding: 11px 0 10px 0;
-  display: none;
-  float: left;
-}
 #comment-inline-edit-form .form-toolbar,
 #comment-for-task-inline-edit-form .form-toolbar,
 #social-item-inline-edit-form .form-toolbar {
   text-align: right;
   border-top: none;
-  padding: 0 15px;
   margin-top: 0;
 }
 #comment-inline-edit-form .form-toolbar a,
@@ -7040,18 +7035,18 @@ a.user-link {
 }
 #social-item-inline-edit-form .view-toolbar-container {
   float: none;
+  padding: 0 15px;
 }
 #comment-inline-edit-form,
 #comment-for-task-inline-edit-form {
   border-bottom: none;
 }
-#comment-inline-edit-form .file-upload-box,
-#comment-for-task-inline-edit-form .file-upload-box {
-  padding: 14px 0 0 0;
-}
 #comment-inline-edit-form tr.template-download td,
 #comment-for-task-inline-edit-form tr.template-download td {
   padding-left: 0 !important;
+}
+[id^="comment-inline-edit-form"] .left-column {
+  padding: 0;
 }
 .SocialItemsListView .items {
   width: 100%;
@@ -7082,8 +7077,12 @@ a.user-link {
   box-shadow: none;
   padding-bottom: 0;
 }
-.social-item .wide.form form td {
-  padding: 5px 0 10px 65px !important;
+.social-item .comments-activity td {
+  padding: 0;
+  border-bottom: none;
+}
+.social-item .comments-activity .form-fields td:first-child {
+  padding-left: 0;
 }
 .social-item textarea {
   width: 100%;
@@ -7094,10 +7093,46 @@ a.user-link {
 .social-item .form-toolbar {
   text-align: right;
   border: none;
-  padding-top: 0;
 }
 .social-item .form-toolbar a {
   margin-right: 0;
+}
+.CommentInlineEditView {
+  padding-top: 2px;
+}
+.CommentForSocialItemInlineEditView {
+  margin: 10px 15px 0 80px;
+}
+.CommentForSocialItemInlineEditView.CommentInlineEditView .wide.form td {
+  padding: 0;
+}
+.SocialItemInlineEditView td {
+  padding-bottom: 0;
+}
+.SocialItemInlineEditView .file-upload-box {
+  margin-top: 7px;
+}
+.SocialItemInlineEditView .left-column {
+  padding-bottom: 0;
+}
+.mentions-input-box {
+  margin-bottom: 10px;
+}
+.comment-text .form-toolbar {
+  text-align: right;
+  border-top: none;
+}
+.comment-text .form-toolbar a {
+  margin-right: 0;
+}
+.comment-text .form-fields td:first-child {
+  padding: 0;
+}
+.comment .comment-content table {
+  margin-bottom: 0;
+}
+.details-table .left-column .left-column {
+  padding: 0;
 }
 #ArchivedEmailMatchingListView .items td {
   padding-right: 10px;
@@ -11678,13 +11713,16 @@ a#claim-item-link {
   margin-bottom: 15px;
 }
 #task-subscriber-box {
-  margin-top: 15px;
+  margin: 15px;
 }
 #task-subscriber-box h4 {
   margin-bottom: 4px;
 }
 #task-subscriber-box img {
   margin-right: 5px;
+}
+#task-subscriber-box + .model-comments-activity {
+  margin-top: 0;
 }
 .check-list {
   margin-top: 30px;
@@ -11846,7 +11884,7 @@ a#claim-item-link {
   width: 100%;
   max-width: 100%;
   margin: 10px 0 0 0;
-  padding: 8px;
+  padding: 15px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -ms-border-radius: 3px;
@@ -11855,7 +11893,7 @@ a#claim-item-link {
 }
 .task-activity #CommentList,
 .model-comments-activity #CommentList {
-  margin: 0 0 0 0;
+  margin: 0 15px;
 }
 .task-activity #comment-inline-edit-form,
 .task-activity #comment-for-task-inline-edit-form,
@@ -11867,7 +11905,6 @@ a#claim-item-link {
 .task-activity #comment-for-task-inline-edit-form .form-toolbar,
 .model-comments-activity #comment-inline-edit-form .form-toolbar,
 .model-comments-activity #comment-for-task-inline-edit-form .form-toolbar {
-  margin-top: 5px;
   padding-right: 0;
 }
 .task-activity .comment,
@@ -11892,6 +11929,7 @@ a#claim-item-link {
 }
 .task-activity .show-file-upload-box,
 .model-comments-activity .show-file-upload-box {
+  display: none;
   z-index: 99999;
   position: relative;
 }
@@ -11901,6 +11939,11 @@ a#claim-item-link {
 }
 .model-comments-activity div.wide.form {
   float: none !important;
+}
+.model-comments-activity .form form {
+  bottom: no;
+  border: none;
+  box-shadow: none;
 }
 .right-side-details-view-panel {
   margin-top: 15px;
