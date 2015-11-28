@@ -94,6 +94,13 @@
 	}
 }
 
+#MissionDetailsView,
+#ConversationDetailsView{
+    .panel{
+        width: 100%;
+    }
+}
+
 /*Sidebar*/
 .thread-details{
     margin:0 0 10px 0 !important;
@@ -274,15 +281,15 @@
 .CommentList{
     margin-left: 115px;
     .comment{
-        margin-top:15px;
+        margin-top: 10px;
     }
     &:last-child{
-        margin-bottom: 25px;
+        margin-bottom: 5px;
     }
 }
 
 .comment{
-	//.clearfix();
+    .clearfix();
     line-height: 140%;
     .gravatar{
         margin-top:1px;
@@ -360,7 +367,7 @@
 
 #CommentInlineEditForModelView,
 #CommentForTaskInlineEditForModelView{
-    margin-top: 0;
+    margin-top: 25px;
     padding-left: 115px;
     td{
         padding:0 0 0 0 !important;
@@ -400,8 +407,8 @@
 
 .icon-attachment{
     .symbly(18px);
-    float: left;
-    margin-left: -15px;
+//    float: left;
+//    margin-left: -15px;
     &:before{
         content:"H";
     }
@@ -509,13 +516,6 @@ a.user-link{
     }
 }
 
-#MissionDetailsView,
-#ConversationDetailsView{
-    .files{
-        padding-bottom: 10px;
-    }
-}
-
 /*=Social Items*/
 .SocialItemsListView,
 #AllSocialItemsForPortletView{
@@ -588,15 +588,10 @@ a.user-link{
     td:first-child{
         padding-left: 0;
     }
-    .file-upload-box{
-        padding: 11px 0 10px 0;
-        display: none;
-        float: left;
-    }
     .form-toolbar{
         text-align: right;
         border-top:none;
-        padding: 0 15px;
+//        padding: 0 15px;
         margin-top: 0;
         a{
             color:#fff;
@@ -617,17 +612,21 @@ a.user-link{
 #social-item-inline-edit-form{
     .view-toolbar-container{
         float: none;
+        padding: 0 15px;
     }
 }
 
 #comment-inline-edit-form,
 #comment-for-task-inline-edit-form{
     border-bottom: none;
-    .file-upload-box{
-        padding: 14px 0 0 0;
-    }
     tr.template-download td{
         padding-left:0 !important;
+    }
+}
+
+[id^="comment-inline-edit-form"]{
+    .left-column{
+        padding: 0;
     }
 }
 
@@ -654,8 +653,17 @@ a.user-link{
             padding-bottom: 0;
             td{
                 //padding-top: 0 !important;
-                padding: 5px 0 10px 65px !important;
+                //padding: 5px 0 10px 65px !important;
             }
+        }
+    }
+    .comments-activity{
+        td{
+            padding: 0;
+            border-bottom: none;
+        }
+        .form-fields td:first-child{
+            padding-left: 0;
         }
     }
     textarea{
@@ -667,9 +675,58 @@ a.user-link{
     .form-toolbar{
         text-align: right;
         border:none;
-        padding-top: 0;
         a{
             margin-right: 0;
         }
     }
+}
+
+.CommentInlineEditView{
+    padding-top: 2px;
+}
+
+.CommentForSocialItemInlineEditView {
+    margin: 10px 15px 0 80px;
+    &.CommentInlineEditView .wide.form td{
+        padding: 0;
+    }
+}
+
+.SocialItemInlineEditView{
+    td{
+        padding-bottom: 0;
+    }
+    .file-upload-box{
+        margin-top: 7px;
+    }
+    .left-column {
+        padding-bottom: 0;
+    }
+}
+
+.mentions-input-box{
+    margin-bottom: 10px;
+}
+
+.comment-text{
+    .form-toolbar{
+        text-align: right;
+        border-top: none;
+        a{
+            margin-right: 0;
+        }
+    }
+    .form-fields{
+        td:first-child{
+            padding: 0;
+        }
+    }
+}
+
+.comment .comment-content table{
+    margin-bottom: 0;
+}
+
+.details-table .left-column .left-column{
+    padding: 0;
 }
