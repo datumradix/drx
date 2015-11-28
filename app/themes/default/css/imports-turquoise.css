@@ -7045,9 +7045,6 @@ a.user-link {
 #comment-for-task-inline-edit-form tr.template-download td {
   padding-left: 0 !important;
 }
-#comment-for-task-inline-edit-form .file-upload-box {
-  padding: 14px 0 0 0;
-}
 [id^="comment-inline-edit-form"] .left-column {
   padding: 0;
 }
