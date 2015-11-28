@@ -6443,6 +6443,7 @@ a.dashboard-link .z-label {
 #ConversationDetailsAndRelationsView .toolbar-mbmenu {
   top: 8px !important;
 }
+#MissionDetailsView .panel,
 #ConversationDetailsView .panel {
   width: 100%;
 }
@@ -7132,6 +7133,9 @@ a.user-link {
 }
 .comment .comment-content table {
   margin-bottom: 0;
+}
+.details-table .left-column .left-column {
+  padding: 0;
 }
 #ArchivedEmailMatchingListView .items td {
   padding-right: 10px;
@@ -11712,13 +11716,16 @@ a#claim-item-link {
   margin-bottom: 15px;
 }
 #task-subscriber-box {
-  margin-top: 15px;
+  margin: 15px;
 }
 #task-subscriber-box h4 {
   margin-bottom: 4px;
 }
 #task-subscriber-box img {
   margin-right: 5px;
+}
+#task-subscriber-box + .model-comments-activity {
+  margin-top: 0;
 }
 .check-list {
   margin-top: 30px;
@@ -11880,7 +11887,7 @@ a#claim-item-link {
   width: 100%;
   max-width: 100%;
   margin: 10px 0 0 0;
-  padding: 8px;
+  padding: 15px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -ms-border-radius: 3px;
@@ -11889,7 +11896,7 @@ a#claim-item-link {
 }
 .task-activity #CommentList,
 .model-comments-activity #CommentList {
-  margin: 0 0 0 0;
+  margin: 0 15px;
 }
 .task-activity #comment-inline-edit-form,
 .task-activity #comment-for-task-inline-edit-form,
@@ -11901,7 +11908,6 @@ a#claim-item-link {
 .task-activity #comment-for-task-inline-edit-form .form-toolbar,
 .model-comments-activity #comment-inline-edit-form .form-toolbar,
 .model-comments-activity #comment-for-task-inline-edit-form .form-toolbar {
-  margin-top: 5px;
   padding-right: 0;
 }
 .task-activity .comment,
@@ -11926,7 +11932,7 @@ a#claim-item-link {
 }
 .task-activity .show-file-upload-box,
 .model-comments-activity .show-file-upload-box {
-  display: block;
+  display: none;
   z-index: 99999;
   position: relative;
 }
@@ -11936,6 +11942,11 @@ a#claim-item-link {
 }
 .model-comments-activity div.wide.form {
   float: none !important;
+}
+.model-comments-activity .form form {
+  bottom: no;
+  border: none;
+  box-shadow: none;
 }
 .right-side-details-view-panel {
   margin-top: 15px;
