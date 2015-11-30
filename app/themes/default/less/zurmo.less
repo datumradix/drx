@@ -1606,6 +1606,9 @@ body.sandbox-mode{
             }
 		}
 	}
+    .form-toolbar{
+        padding-top: 11px;
+    }
 }
 
 .view-toolbar-container{
@@ -1940,7 +1943,6 @@ caption, th, td {
 			vertical-align:middle;
 			padding:10px 5px;
 			word-wrap: break-word;
-			-webkit-transform: translateZ(0); //fix for chrome painting issue/bug
 		}
 	}
 	> tbody,
@@ -2248,6 +2250,7 @@ textarea{
 	padding: 4px;
 	word-break: normal;
 	min-height: 60px;
+	resize: vertical;
 }
 
 select.multiple {
@@ -2315,7 +2318,6 @@ input[type="button"]:hover:after{
 /*=Form Edit Account*/
 .modal-view-toolbar,
 .form-toolbar{
-	padding-top:13px;
 	text-align:center;
 	border-top:1px solid #fff;
 	a{
@@ -2328,6 +2330,11 @@ input[type="button"]:hover:after{
     .wizard-secondary-action-button{
         margin-left: 45px;
     }
+}
+
+.modal-view-toolbar,
+.dock .form-toolbar{
+	padding-top:13px;
 }
 
 .portlet-toolbar{
@@ -3404,6 +3411,7 @@ div.wide.form{
 		}
 	}
 	.left-column{
+		width: 100%;
 		padding: 0 15px 0 0;
 	}
 	.right-column{
