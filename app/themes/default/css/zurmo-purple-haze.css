@@ -2321,6 +2321,9 @@ body.sandbox-mode .AppContent {
   margin-right: 0;
   margin-left: 30px;
 }
+.float-bar .form-toolbar {
+  padding-top: 11px;
+}
 .view-toolbar-container {
   display: inline-block;
   width: 100%;
@@ -2736,7 +2739,6 @@ td {
   vertical-align: middle;
   padding: 10px 5px;
   word-wrap: break-word;
-  -webkit-transform: translateZ(0);
 }
 .items > tbody > tr > th,
 .items > thead > tr > th {
@@ -3063,6 +3065,7 @@ textarea {
   padding: 4px;
   word-break: normal;
   min-height: 60px;
+  resize: vertical;
 }
 select.multiple {
   padding: 4px 4px 4px 6px;
@@ -3136,7 +3139,6 @@ input[type="button"]:hover:after {
 }
 .modal-view-toolbar,
 .form-toolbar {
-  padding-top: 13px;
   text-align: center;
   border-top: 1px solid #fff;
 }
@@ -3152,6 +3154,10 @@ input[type="button"]:hover:after {
 .modal-view-toolbar .wizard-secondary-action-button,
 .form-toolbar .wizard-secondary-action-button {
   margin-left: 45px;
+}
+.modal-view-toolbar,
+.dock .form-toolbar {
+  padding-top: 13px;
 }
 .portlet-toolbar {
   float: right;
@@ -4430,6 +4436,7 @@ div.wide.form label.hasCheckBox {
   display: none;
 }
 .left-column .left-column {
+  width: 100%;
   padding: 0 15px 0 0;
 }
 .left-column .right-column {
