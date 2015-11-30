@@ -152,8 +152,8 @@
 
             $description       = 'Hello [~steven] and [~jack] and [~super] and [~sup], How are you?';
             $modifiedDescription = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($description);
-            $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>";
-            if(preg_match_all("/$regexp/siU", $modifiedDescription, $matches))
+            $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>"; // Not Coding Standard
+            if (preg_match_all("/$regexp/siU", $modifiedDescription, $matches))
             {
                 // $matches[2] = array of link addresses
                 // $matches[3] = array of link text - including HTML code

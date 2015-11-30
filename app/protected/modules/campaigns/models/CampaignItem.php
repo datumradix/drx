@@ -381,7 +381,6 @@
          */
         public static function getNotViewedItems($campaign, $offset, $pageSize)
         {
-
             $campaignId = $campaign->id;
             $sql = "select DISTINCT(`campaignitem`.`id`) as id
                     from `campaignitem`
