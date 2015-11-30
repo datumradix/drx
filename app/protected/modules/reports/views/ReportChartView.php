@@ -172,15 +172,29 @@
             elseif ($this->dataProvider->getReport()->getCurrencyConversionType() ==
                 Report::CURRENCY_CONVERSION_TYPE_BASE)
             {
-                //Assumes base conversion is done using sql math
-                return Yii::app()->locale->getCurrencySymbol(Yii::app()->currencyHelper->getBaseCode());
+                if ($this->dataProvider->resolveIsFirstRangeAttributeATypeOfCurrencyValue())
+                {
+                    //Assumes base conversion is done using sql math
+                    return Yii::app()->locale->getCurrencySymbol(Yii::app()->currencyHelper->getBaseCode());
+                }
+                else
+                {
+                    return null;
+                }
             }
             elseif ($this->dataProvider->getReport()->getCurrencyConversionType() ==
                 Report::CURRENCY_CONVERSION_TYPE_SPOT)
             {
-                //Assumes base conversion is done using sql math
-                return Yii::app()->locale->getCurrencySymbol(
-                           $this->dataProvider->getReport()->getSpotConversionCurrencyCode());
+                if ($this->dataProvider->resolveIsFirstRangeAttributeATypeOfCurrencyValue())
+                {
+                    //Assumes base conversion is done using sql math
+                    return Yii::app()->locale->getCurrencySymbol(
+                               $this->dataProvider->getReport()->getSpotConversionCurrencyCode());
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {

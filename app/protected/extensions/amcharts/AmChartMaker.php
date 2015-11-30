@@ -336,6 +336,7 @@
                 $this->addChartProperties('marginLeft',           "15");
                 $this->addChartProperties('labelPosition',        "'right'");
                 $this->addChartProperties('labelText',            "'[[title]]: " . $this->yAxisUnitContent . "[[value]]'");
+                $this->addChartProperties('balloonText',            "'[[title]]: " . $this->yAxisUnitContent . "[[value]]'");
                 $this->addChartProperties('numberFormatter',
                                           "{precision: 0,
                                             decimalSeparator:'" . Yii::app()->locale->getNumberSymbol('decimal') . "',
@@ -349,6 +350,7 @@
                 $this->addChartProperties('marginLeft',           "15");
                 $this->addChartProperties('labelPosition',        "'right'");
                 $this->addChartProperties('labelText',            "'[[title]]: " . $this->yAxisUnitContent . "[[value]]'");
+                $this->addChartProperties('balloonText',            "'[[title]]: " . $this->yAxisUnitContent . "[[value]]'");
                 $this->addChartProperties('numberFormatter',
                                           "{precision: 0,
                                             decimalSeparator:'" . Yii::app()->locale->getNumberSymbol('decimal') . "',
@@ -391,7 +393,6 @@
             {
                 $dataArray = $this->data;
             }
-            $this->resolveDataArraySorting($dataArray);
             return CJavaScript::encode($dataArray);
         }
 
@@ -630,23 +631,6 @@
                     $('#chartContainer{$this->id}').html('" . $content . "');
                 ";
             return $javascript;
-        }
-
-        /**
-         * Sorts the data by the valueField
-         * @param $dataArray
-         */
-        private function resolveDataArraySorting(& $dataArray)
-        {
-            if ($this->chartType == 'funnel')
-            {
-                $valueField = $this->serial[0]['valueField'];
-                foreach ($dataArray as $key => $row)
-                {
-                    $values[$key]  = $row[$valueField];
-                }
-                array_multisort($values, SORT_DESC, $dataArray);
-            }
         }
     }
 ?>
