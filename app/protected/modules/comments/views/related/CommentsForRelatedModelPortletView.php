@@ -133,12 +133,10 @@
 
         public static function getModuleClassName()
         {
-
         }
 
         public static function getPortletDescription()
         {
-
         }
 
         public function renderPortletHeadContent()
