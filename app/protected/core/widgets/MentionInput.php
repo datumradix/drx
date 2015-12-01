@@ -90,6 +90,7 @@
             if ($this->defaultValue)
             {
                 $defaultValue = str_replace("'", "\'", $this->defaultValue);
+                $defaultValue = preg_replace("/\n/m", '\n', $defaultValue); // Fix issues with new lines in javascript default value
             }
 
             // Begin Not Coding Standard
