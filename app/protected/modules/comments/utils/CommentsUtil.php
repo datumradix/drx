@@ -132,7 +132,7 @@
         public static function getMentionedUsersForNotification(Comment $comment)
         {
             $mentionedUsers = array();
-            preg_match_all("/\[\~(.+?)\]/is", $comment->description, $matches);
+            preg_match_all("/\[\~(.+?)\]/is", $comment->description, $matches); // Not Coding Standard
             if (is_array($matches[1]) && !empty($matches[1]))
             {
                 foreach ($matches[1] as $mentionedUsername)
@@ -164,7 +164,7 @@
          */
         public static function replaceMentionedUsernamesWithFullNamesAndLinksInComments($commentDescription)
         {
-            preg_match_all("/\[\~(.+?)\]/is", $commentDescription, $matches);
+            preg_match_all("/\[\~(.+?)\]/is", $commentDescription, $matches); // Not Coding Standard
             if (is_array($matches[1]) && !empty($matches[1]))
             {
                 foreach ($matches[1] as $mentionedUsername)

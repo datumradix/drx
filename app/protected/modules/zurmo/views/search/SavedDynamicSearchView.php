@@ -279,6 +279,7 @@
             $model = new $modelClassName;
             if ($this->showAdvancedSearch && $model instanceof OwnedSecurableItem)
             {
+                // Begin Not Coding Standard
                 $script = "
                     $('#items-i-own-search-link" . $this->gridIdSuffix . "').unbind('click');
                     $('#items-i-own-search-link" . $this->gridIdSuffix . "').bind('click',  function(event){
@@ -319,6 +320,7 @@
                         return hasOwnedItemsOnlyField;
                     }
                 ";
+                // End Not Coding Standard
                 return $script;
             }
             return;

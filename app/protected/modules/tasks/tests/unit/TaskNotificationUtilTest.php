@@ -293,7 +293,6 @@
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Notification::getCount());
 
-
             self::$sally->setRight('TasksModule', TasksModule::RIGHT_ACCESS_TASKS);
             $this->assertTrue(self::$sally->save());
             $task->addPermissions(self::$sally, Permission::READ_WRITE_CHANGE_PERMISSIONS);
@@ -311,7 +310,6 @@
             $task->addPermissions(self::$steve, Permission::READ_WRITE_CHANGE_PERMISSIONS);
             $this->assertTrue($task->save());
             AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($task, self::$steve);
-
 
             //Now add new comment
             $comment = new Comment();
