@@ -87,7 +87,7 @@
         {
             assert('is_int($type)');
             assert('is_int($offset)');
-            assert('is_int($pageSize) || is_null($pageSize)');
+            assert('is_int($pageSize) || ($pageSize === null)');
             $searchAttributeData = array();
             $searchAttributeData['clauses'] = array(
                 1 => array(
