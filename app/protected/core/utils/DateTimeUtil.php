@@ -53,9 +53,10 @@
         /**
          * Given a datetime, return a string representation of how much time has elapsed since the $dateTime to now
          * @param $dateTime
+         * @param boolean $durationDisplayFormat
          * @return string
          */
-        public static function getTimeSinceDisplayContent($dateTime)
+        public static function getTimeSinceDisplayContent($dateTime, $durationDisplayFormat = false)
         {
             assert('DateTimeUtil::isValidDbFormattedDateTime($dateTime)');
             $nowTimeStamp           = time();
@@ -70,28 +71,70 @@
 
             if ($timeForString['days'] >= 1)
             {
-                return Zurmo::t('Core', '{n} day ago|{n} days ago', $timeForString['days']);
+                if ($durationDisplayFormat === true)
+                {
+                    return Zurmo::t('Core', '{n} day|{n} days', $timeForString['days']);
+                }
+                else
+                {
+                    return Zurmo::t('Core', '{n} day ago|{n} days ago', $timeForString['days']);
+                }
             }
             else
             {
                 if ($timeForString['hours'] >= 1)
                 {
-                    return Zurmo::t('Core', '{n} hour ago|{n} hours ago', $timeForString['hours']);
+                    if ($durationDisplayFormat === true)
+                    {
+                        return Zurmo::t('Core', '{n} hour|{n} hours', $timeForString['hours']);
+                    }
+                    else
+                    {
+                        return Zurmo::t('Core', '{n} hour ago|{n} hours ago', $timeForString['hours']);
+                    }
                 }
                 else
                 {
                     if ($timeForString['minutes'] >= 1)
                     {
-                        return Zurmo::t('Core', '{n} minute ago|{n} minutes ago', $timeForString['minutes']);
+                        if ($durationDisplayFormat === true)
+                        {
+                            return Zurmo::t('Core', '{n} minute|{n} minutes', $timeForString['minutes']);
+                        }
+                        else
+                        {
+                            return Zurmo::t('Core', '{n} minute ago|{n} minutes ago', $timeForString['minutes']);
+                        }
                     }
                     else
                     {
-                        return Zurmo::t('Core', '{n} second ago|{n} seconds ago', $timeForString['seconds']);
+                        if ($durationDisplayFormat === true)
+                        {
+                            return Zurmo::t('Core', '{n} second|{n} seconds', $timeForString['seconds']);
+                        }
+                        else
+                        {
+                            return Zurmo::t('Core', '{n} second ago|{n} seconds ago', $timeForString['seconds']);
+                        }
                     }
                 }
             }
         }
 
+        /**
+         * Given a datetime, return the number of days that have elapsed since the $dateTime to now
+         * @param $dateTime
+         * @return integer
+         */
+        public static function getTimeSinceInDays($dateTime)
+        {
+            assert('DateTimeUtil::isValidDbFormattedDateTime($dateTime)');
+            $nowTimeStamp   = time();
+            $dateTimeStamp  = DateTimeUtil::convertDbFormatDateTimeToTimeStamp($dateTime);
+            $timeSince      = $nowTimeStamp - $dateTimeStamp;
+            return floor($timeSince / 86400);
+        }
+        
         /**
          * Convert month to a display label. If the month is invalid then it just returns the month passed in.
          * @param string $month
