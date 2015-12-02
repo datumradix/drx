@@ -34,59 +34,53 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class OpportunityConvertToViewDesignerRules extends DesignerRules
+    /**
+     * Display the opportunity's time in stage
+     */
+    class OpportunityTimeInStageElement extends Element implements DerivedElementInterface
     {
-        public function getDisplayName()
+        protected function renderEditable()
         {
-            return Zurmo::t('DesignerModule', 'Lead to Opportunity Convert View');
+            throw new NotSupportedException();
         }
 
-        public function getNonPlaceableLayoutAttributeNames()
+        protected function renderControlEditable()
+        {
+            throw new NotSupportedException();
+        }
+
+        /**
+         * Render the full name as a non-editable display
+         * @return The element's content.
+         */
+        protected function renderControlNonEditable()
+        {
+            assert('$this->attribute == "null"');
+            assert('$this->model instanceof Opportunity');
+            return OpportunitiesUtil::renderTimeInStageForListView($this->model);
+        }
+
+        protected function renderLabel()
+        {
+            return Zurmo::t('OpportunitiesModule', 'Time in stage');
+        }
+
+        public static function getDisplayName()
+        {
+            return Zurmo::t('OpportunitiesModule', 'Time in stage');
+        }
+
+        /**
+         * Get the attributeNames of attributes used in
+         * the derived element.
+         * @return array of model attributeNames used.
+         */
+        public static function getModelAttributeNames()
         {
             return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id',
-                'owner',
+                'stage',
                 'stageModifiedDateTime',
             );
-        }
-
-        public function canAddPanels()
-        {
-            return false;
-        }
-
-        public function canRemovePanels()
-        {
-            return false;
-        }
-
-        public function canMovePanels()
-        {
-            return false;
-        }
-
-        public function requireAllRequiredFieldsInLayout()
-        {
-            return true;
-        }
-
-        public function canModifyCellSettings()
-        {
-            return false;
-        }
-
-        public function canModifyPanelSettings()
-        {
-            return false;
-        }
-
-        public function getSavableMetadataRules()
-        {
-            return array('AddBlankForDropDown');
         }
     }
 ?>

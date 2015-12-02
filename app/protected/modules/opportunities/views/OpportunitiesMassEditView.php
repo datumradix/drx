@@ -49,6 +49,7 @@
                     'nonPlaceableAttributeNames' => array(
                         'name',
                         'probability',
+                        'stageModifiedDateTime',
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_ALL,
                     'panels' => array(
