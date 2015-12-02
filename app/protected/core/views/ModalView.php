@@ -123,7 +123,6 @@
             return "js:function(){
                 jQuery('#{$containerId}').html('');
                 $(this).makeLargeLoadingSpinner(true, '#{$containerId}');
-                //window.scrollTo(0, 0);
                 jQuery('#{$containerId}').dialog({
                     'title' : '{$modalTitle}',
                     'autoOpen' : true,
@@ -131,7 +130,13 @@
                     'position' : {$position},
                     'dialogClass' : {$class},
                     'height' : {$heightContent},
-                    'open': function( event, ui )  { jQuery('#{$containerId}').parent().addClass('openingModal'); },
+                    'open': function( event, ui ) {
+                        jQuery('#{$containerId}').parent().addClass('openingModal');
+                        // prevent dialog scrolls to top under Chrome, IE
+                        $('.ui-dialog-titlebar-close').mousedown(function(ev) {
+                            $('#{$containerId}').dialog('close');
+                        });
+                    },
                     'close': function( event, ui ) { jQuery('#{$containerId}').parent().removeClass('openingModal');
                                                      $('#{$containerId}').dialog('destroy');
                                                      " . $extraCloseScript . "
