@@ -121,6 +121,7 @@ onDataRequest:function (mode, query, callback) {
     defaultValue: '{$defaultValue}'.replace(/\\'/g, "'"),
     {$additionalSettingsJs}
   });
+  $('.mentions-input-box').find('textarea').off('blur');
 EOD;
             // End Not Coding Standard
             Yii::app()->getClientScript()->registerScript(__CLASS__ . '#' . $id, $javaScript, CClientScript::POS_END);
