@@ -8989,6 +8989,9 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #c43d53;
   text-shadow: 0 0 5px #c43d53;
 }
+.opportunity-time-stage-related {
+  float: none;
+}
 .led {
   font-weight: bold;
   line-height: 1;
