@@ -8899,6 +8899,9 @@ a + .autoresponder-stats {
     transform: scale(1.2);
   }
 }
+.opportunity-time-stage,
+.opportunity-time-stage-related,
+.opportunity-time-stage-kanban,
 .campaign-status {
   text-align: center;
   float: left;
@@ -8913,10 +8916,16 @@ a + .autoresponder-stats {
   line-height: 20px;
   display: inline-block;
 }
+.opportunity-time-stage span,
+.opportunity-time-stage-related span,
+.opportunity-time-stage-kanban span,
 .campaign-status span {
   font-size: 10px;
   font-weight: bold;
 }
+.opportunity-time-stage i,
+.opportunity-time-stage-related i,
+.opportunity-time-stage-kanban i,
 .campaign-status i {
   font-weight: bold;
   line-height: 1;
@@ -8933,6 +8942,9 @@ a + .autoresponder-stats {
   -o-transform-origin: 50%;
   transform-origin: 50%;
 }
+.opportunity-time-stage.completed  i,
+.opportunity-time-stage-related.completed  i,
+.opportunity-time-stage-kanban.completed  i,
 .campaign-status.completed  i {
   color: #97c43d;
   -webkit-text-shadow: 0 0 5px #97c43d;
@@ -8941,6 +8953,12 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #97c43d;
   text-shadow: 0 0 5px #97c43d;
 }
+.opportunity-time-stage.sending i,
+.opportunity-time-stage.scheduled i,
+.opportunity-time-stage-related.sending i,
+.opportunity-time-stage-related.scheduled i,
+.opportunity-time-stage-kanban.sending i,
+.opportunity-time-stage-kanban.scheduled i,
 .campaign-status.sending i,
 .campaign-status.scheduled i {
   color: #ffd900;
@@ -8950,6 +8968,9 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #ffd900;
   text-shadow: 0 0 5px #ffd900;
 }
+.opportunity-time-stage.sending i,
+.opportunity-time-stage-related.sending i,
+.opportunity-time-stage-kanban.sending i,
 .campaign-status.sending i {
   -o-animation: led-throb 0.5s ease-in-out infinite;
   -ms-animation: led-throb 0.5s ease-in-out infinite;
@@ -8957,45 +8978,15 @@ a + .autoresponder-stats {
   -webkit-animation: led-throb 0.5s ease-in-out infinite;
   animation: led-throb 0.5s ease-in-out infinite;
 }
+.opportunity-time-stage.paused i,
+.opportunity-time-stage-related.paused i,
+.opportunity-time-stage-kanban.paused i,
 .campaign-status.paused i {
   color: #c43d53;
   -webkit-text-shadow: 0 0 5px #c43d53;
   -moz-text-shadow: 0 0 5px #c43d53;
   -ms-text-shadow: 0 0 5px #c43d53;
   -o-text-shadow: 0 0 5px #c43d53;
-  text-shadow: 0 0 5px #c43d53;
-}
-.opportunity-time-stage {
-  position: relative;
-  float: left;
-  margin: 0;
-  padding-right: 6px;
-  width: auto;
-  font-size: 11px;
-  line-height: 20px;
-  font-weight: 700;
-  color: #545454;
-  text-shadow: #fff 0 1px 0;
-  text-align: center;
-}
-.opportunity-time-stage span {
-  font-size: 10px;
-  font-weight: bold;
-}
-.opportunity-time-stage i {
-  font-weight: bold;
-  line-height: 1;
-  padding: 0 6px;
-  color: #cccccc;
-  text-shadow: 0 0 5px #cccccc;
-  transform-origin: 50%;
-}
-.opportunity-time-stage.completed i {
-  color: #97c43d;
-  text-shadow: 0 0 5px #97c43d;
-}
-.opportunity-time-stage.paused i {
-  color: #c43d53;
   text-shadow: 0 0 5px #c43d53;
 }
 .led {

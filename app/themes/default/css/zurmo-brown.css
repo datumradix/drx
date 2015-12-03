@@ -4517,6 +4517,7 @@ div.wide.form label.hasCheckBox {
 #account-skip-form .hasCheckBox input[type="checkbox"] {
   margin-bottom: 0 !important;
 }
+.element-edit-form .form-toolbar,
 #edit-form .form-toolbar {
   padding-top: 13px;
 }
