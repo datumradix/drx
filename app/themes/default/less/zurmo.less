@@ -2063,11 +2063,6 @@ caption, th, td {
 
 tr.odd{
 	background:none;
-	.animateAll(0.05s);
-}
-
-tr.even{
-	.animateAll(0.05s);
 }
 
 .checkbox-column{
@@ -2895,6 +2890,9 @@ div.wide.form{
 	.form-toolbar, .z-button{
 		font-size:12px;
 	}
+    .form-toolbar{
+        padding-top: 13px;
+    }
 	table{
 		border-bottom:none;
 		width:100%;
@@ -3474,6 +3472,12 @@ div.wide.form{
 	}
 }
 
+#edit-form {
+    .form-toolbar{
+        padding-top: 13px;
+    }
+}
+
 .form-fields{
 	width:100%;
 	border-bottom:none;
@@ -3966,6 +3970,7 @@ div.wide.form{
 	}
 }
 
+.before-form-details-content,
 .after-form-details-content{
 	color:@textColor !important;
 	float:none;
@@ -3975,10 +3980,6 @@ div.wide.form{
 	font-style:italic;
 	text-align:center;
 	padding: 0 10px 10px 10px;
-
-	a{
-		//color: @themeColor;
-	}
 }
 
 .mapcanvas{
