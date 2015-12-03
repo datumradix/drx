@@ -8965,6 +8965,39 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #c43d53;
   text-shadow: 0 0 5px #c43d53;
 }
+.opportunity-time-stage {
+  position: relative;
+  float: left;
+  margin: 0;
+  padding-right: 6px;
+  width: auto;
+  font-size: 11px;
+  line-height: 20px;
+  font-weight: 700;
+  color: #545454;
+  text-shadow: #fff 0 1px 0;
+  text-align: center;
+}
+.opportunity-time-stage span {
+  font-size: 10px;
+  font-weight: bold;
+}
+.opportunity-time-stage i {
+  font-weight: bold;
+  line-height: 1;
+  padding: 0 6px;
+  color: #cccccc;
+  text-shadow: 0 0 5px #cccccc;
+  transform-origin: 50%;
+}
+.opportunity-time-stage.completed i {
+  color: #97c43d;
+  text-shadow: 0 0 5px #97c43d;
+}
+.opportunity-time-stage.paused i {
+  color: #c43d53;
+  text-shadow: 0 0 5px #c43d53;
+}
 .led {
   font-weight: bold;
   line-height: 1;
