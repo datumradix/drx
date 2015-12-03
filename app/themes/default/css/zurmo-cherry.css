@@ -9966,6 +9966,7 @@ a.simple-link .icon-x {
 .margetags-guide-link .simple-link {
   margin-left: 0;
 }
+.dynamic-rows .date-area-holder,
 .criteria-value-container .date-area-holder {
   display: -webkit-box;
   display: -moz-box;
@@ -9974,10 +9975,11 @@ a.simple-link .icon-x {
   display: flex;
   justify-content: space-between;
 }
+.dynamic-rows .date-area,
 .criteria-value-container .date-area {
-  margin-top: 10px;
   flex-grow: 1;
 }
+.dynamic-rows .second-date-area,
 .criteria-value-container .second-date-area {
   display: -webkit-box;
   display: -moz-box;
@@ -9985,10 +9987,15 @@ a.simple-link .icon-x {
   display: -webkit-flex;
   display: flex;
 }
+.dynamic-rows .second-date-area .has-date-select,
 .criteria-value-container .second-date-area .has-date-select {
   width: 100%;
 }
+.dynamic-rows .dynamic-and-for-mixed,
 .criteria-value-container .dynamic-and-for-mixed {
   display: inline-block;
   margin: 0 20px;
+}
+.criteria-value-container .date-area {
+  margin-top: 10px;
 }
