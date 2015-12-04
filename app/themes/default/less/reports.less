@@ -454,6 +454,11 @@
         width: 100%;
         padding-right: 160px;
     }
+    .user-select-area{
+        .value-data{
+            padding-right: 0;
+        }
+    }
     .dynamic-row-operator + .value-data{
         padding-left: 15px;
         width:80%;
@@ -1163,4 +1168,29 @@
 	}
 }
 
+.dynamic-rows,
+.criteria-value-container{
+    .date-area-holder{
+        .flexbox();
+        justify-content: space-between;
+    }
+    .date-area{
+        flex-grow: 1;
+    }
+    .second-date-area{
+        .flexbox();
+        .has-date-select{
+            width: 100%;
+        }
+    }
+    .dynamic-and-for-mixed{
+        display: inline-block;
+        margin: 0 20px;
+    }
+}
 
+.criteria-value-container{
+    .date-area{
+        margin-top: 10px;
+    }
+}
