@@ -42,11 +42,48 @@
          */
         public function actionInlineCreateSave($redirectUrl = null, $uniquePageId = null)
         {
-            if (isset($_POST['ajax']) && $_POST['ajax'] === 'comment-inline-edit-form' . $uniquePageId)
+            if (isset($_POST['ajax']) &&  ($_POST['ajax'] === 'comment-inline-edit-form' . $uniquePageId ||
+                    $_POST['ajax'] === 'comment-for-task-inline-edit-form' . $uniquePageId))
             {
                 $this->actionInlineEditValidate(new Comment());
             }
             $this->attemptToSaveModelFromPost(new Comment(), $redirectUrl);
+        }
+
+        /**
+         * Action to update existing comment
+         * @param $id
+         * @param null $redirectUrl
+         * @param null $uniquePageId
+         * @throws NotFoundException
+         */
+        public function actionInlineEditSave($id, $redirectUrl = null, $uniquePageId = null)
+        {
+            $comment = Comment::getById((int)$id);
+            $this->checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAjaxAccessFailure($comment, Yii::app()->user->userModel);
+            if (isset($_POST['ajax']) && $_POST['ajax'] === 'comment-inline-edit-form' . $id)
+            {
+                $this->actionInlineEditValidate($comment);
+            }
+            $this->attemptToSaveModelFromPost($comment, $redirectUrl);
+        }
+
+        /**
+         * Get inline form for editing existing comments
+         * @param $id
+         * @param $relatedModelId
+         * @param $relatedModelClassName
+         * @param $relatedModelRelationName
+         * @param null $uniquePageId
+         */
+        public function actionInlineEditCommentFromAjax($id, $relatedModelId, $relatedModelClassName, $relatedModelRelationName, $uniquePageId = null)
+        {
+            $comment = Comment::getById((int)$id);
+            $this->checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAjaxAccessFailure($comment, Yii::app()->user->userModel);
+            $inlineView    = CommentsElement::getRelatedModelCommentInlineEditView($id, $relatedModelId,
+                $relatedModelClassName, $relatedModelRelationName, $uniquePageId);
+            $view          = new AjaxPageView($inlineView);
+            echo $view->render();
         }
 
         public function actionAjaxListForRelatedModel($uniquePageId = null)
@@ -83,20 +120,9 @@
 
         public function actionDeleteViaAjax($id)
         {
-            $getData                  = GetUtil::getData();
-            $relatedModelId           = ArrayUtil::getArrayValue($getData, 'relatedModelId');
-            $relatedModelClassName    = ArrayUtil::getArrayValue($getData, 'relatedModelClassName');
             $comment                  = Comment::getById(intval($id));
-            $relatedModel             = $relatedModelClassName::getById(intval($relatedModelId));
-            if ($comment->createdByUser->id      != Yii::app()->user->userModel->id &&
-               $relatedModel->owner->id         != Yii::app()->user->userModel->id &&
-               $relatedModel->createdByUser->id != Yii::app()->user->userModel->id)
-            {
-                $messageView = new AccessFailureAjaxView();
-                $view        = new AjaxPageView($messageView);
-                echo $view->render();
-                Yii::app()->end(0, false);
-            }
+            $this->checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAjaxAccessFailure($comment, Yii::app()->user->userModel);
+
             $deleted = $comment->delete();
             if (!$deleted)
             {
@@ -129,6 +155,22 @@
             }
             $relatedModel = $relatedModelClassName::getById((int)$relatedModelId);
             return new CommentZurmoControllerUtil($relatedModel, $relatedModelRelationName);
+        }
+
+        /**
+         * Check if user have access to edit/delete comments, if not render AccessFailureAjaxView
+         * @param Comment $comment
+         * @param User $user
+         */
+        protected function checkIfUserHaveAccessToCommentEditAndDeleteAndRenderAjaxAccessFailure(Comment $comment, User $user)
+        {
+            if (!CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment, $user))
+            {
+                $messageView = new AccessFailureAjaxView();
+                $view        = new AjaxPageView($messageView);
+                echo $view->render();
+                Yii::app()->end(0, false);
+            }
         }
     }
 ?>

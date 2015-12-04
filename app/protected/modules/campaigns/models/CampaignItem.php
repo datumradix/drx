@@ -370,5 +370,64 @@
             }
             return parent::afterDelete();
         }
+
+        /**
+         * Get not Viewed items.
+         * @param $campaign
+         * @param int $offset
+         * @param int $pageSize
+         * @return array
+         *
+         */
+        public static function getNotViewedItems($campaign, $offset, $pageSize)
+        {
+            $campaignId = $campaign->id;
+            $sql = "select DISTINCT(`campaignitem`.`id`) as id
+                    from `campaignitem`
+                    left join `campaignitemactivity` on `campaignitemactivity`.`campaignitem_id` = campaignitem.id
+                    where `campaignitem`.`campaign_id` = $campaignId
+                    and `campaignitemactivity`.`id` is null
+                    order by `campaignitem`.`id`
+                    limit $offset, $pageSize
+                    ";
+            $ids   = ZurmoRedBean::getCol($sql);
+            $beans = ZurmoRedBean::batch ('campaignitem', $ids);
+            return self::makeModels($beans, __CLASS__);
+        }
+
+        /**
+         * Get activity items that are not clicked, but do not return those that are marked as spam, unsubscribed, or hard bounced
+         * @param $campaign
+         * @param int offset
+         * @param int pageSize
+         * @return array
+         */
+        public static function getNotClickedOrUnsubscribedOrSpamItems($campaign, $offset, $pageSize)
+        {
+            $campaignId = $campaign->id;
+            $sql = "select DISTINCT(`campaignitem`.`id`) as id
+                    from `campaignitem`
+                    left join `campaignitemactivity` on `campaignitemactivity`.`campaignitem_id` = campaignitem.id
+                    where `campaignitem`.`campaign_id` = $campaignId
+                    and
+                      (
+                        `campaignitemactivity`.`id` is null OR
+                        `campaignitem`.`id` NOT IN (
+                          select DISTINCT(`campaignitemactivity`.`campaignitem_id`) from campaignitemactivity
+                          left join `emailmessageactivity` on `emailmessageactivity`.`id` = `campaignitemactivity`.`emailmessageactivity_id`
+                          where
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_CLICK . " OR
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_UNSUBSCRIBE . " OR
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_SPAM . " OR
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_HARD_BOUNCE . "
+                        )
+                      )
+                    order by `campaignitem`.`id`
+                    limit $offset, $pageSize
+                    ";
+            $ids   = ZurmoRedBean::getCol($sql);
+            $beans = ZurmoRedBean::batch ('campaignitem', $ids);
+            return self::makeModels($beans, __CLASS__);
+        }
     }
 ?>

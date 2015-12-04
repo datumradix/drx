@@ -134,5 +134,34 @@
             $users = UserSearch::getUsersByPartialFullName('Root', 5, $autoCompleteOptions);
             $this->assertEquals(0, count($users));
         }
+
+        /**
+         * @depends testGetUsersByPartialFullName
+         */
+        public function testGetUsersByPartialFullNameOrUsername()
+        {
+            UserTestHelper::createBasicUser('Izo');
+            UserTestHelper::createBasicUser('Jdo');
+            UserTestHelper::createBasicUser('Ibzo');
+
+            $users = UserSearch::getUsersByPartialFullNameOrUsername('I');
+            $this->assertEquals(2, count($users));
+            $users = UserSearch::getUsersByPartialFullNameOrUsername('jd');
+            $this->assertEquals(1, count($users));
+            $users = UserSearch::getUsersByPartialFullNameOrUsername('Cz');
+            $this->assertEquals(0, count($users));
+            $users = UserSearch::getUsersByPartialFullNameOrUsername('Iz');
+            $this->assertEquals(1, count($users));
+
+            $user = new User();
+            $user->username     = 'lion';
+            $user->title->value = 'Mr.';
+            $user->firstName    = 'Samuel';
+            $user->lastName     = 'Simson';
+            $user->setPassword('asdfgh');
+            $this->assertTrue($user->save());
+            $users = UserSearch::getUsersByPartialFullNameOrUsername('lion');
+            $this->assertEquals(1, count($users));
+        }
     }
 ?>

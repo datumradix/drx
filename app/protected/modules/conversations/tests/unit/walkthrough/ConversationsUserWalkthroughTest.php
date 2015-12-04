@@ -551,7 +551,7 @@
             $conversationParticipant->person        = $mary;
             $conversation->conversationParticipants->add($conversationParticipant);
             $inboxAndEmailNotificationSettings = UserTestHelper::getDefaultNotificationSettingsValuesForTestUser();
-            $inboxAndEmailNotificationSettings['enableConversationNewCommentNotification'] = array(
+            $inboxAndEmailNotificationSettings['enableConversationCommentNotification'] = array(
                 'inbox' => false,
                 'email' => false
             );

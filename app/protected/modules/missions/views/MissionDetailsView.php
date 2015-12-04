@@ -130,6 +130,8 @@
                                                                                 $this->modelId, ($pageSize + 1));
             $view         = new CommentsForRelatedModelView('default', 'comments', $commentsData, $this->model, $pageSize, $getParams);
             $content      = $view->render();
+            $wrappingCssClass = $this->getCommentsWrappingCssClass();
+            $content  = ZurmoHtml::tag('div', array('class' => $wrappingCssClass), $content);
             return $content;
         }
 
@@ -173,6 +175,11 @@
                 return false;
             }
             return true;
+        }
+
+        protected function getCommentsWrappingCssClass()
+        {
+            return 'comments-activity';
         }
     }
 ?>

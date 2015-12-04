@@ -185,6 +185,62 @@
             echo CJSON::encode($data);
         }
 
+        public function actionResolveSubscribersFromCampaign($campaignId)
+        {
+            $resolveSubscribersForm           = new MarketingListResolveSubscribersFromCampaignForm();
+            $resolveSubscribersForm->campaignId = $campaignId;
+            $campaign = Campaign::getById(intval($campaignId));
+            if ($campaign->status != Campaign::STATUS_COMPLETED)
+            {
+                $message = Zurmo::t('MarketingListsModule', 'You can not retarget uncompleted campaigns!');
+                throw new NotSupportedException($message);
+            }
+            if (isset($_POST['MarketingListResolveSubscribersFromCampaignForm']))
+            {
+                $resolveSubscribersForm->attributes = $_POST['MarketingListResolveSubscribersFromCampaignForm'];
+                $resolveSubscribersForm->campaignId = $campaignId;
+                if ($resolveSubscribersForm->validate())
+                {
+                    $marketingList = MarketingListsUtil::resolveAndSaveMarketingList($resolveSubscribersForm, $campaign);
+                    Yii::app()->user->setFlash('notification',
+                        Zurmo::t('MarketingListsModule', 'Contacts added to Marketing List.')
+                    );
+                    $this->redirect(array($this->getId() . '/details', 'id' => $marketingList->id));
+                }
+            }
+            else
+            {
+                $resolveSubscribersForm->newMarketingListName = MarketingListsUtil::generateRandomNameForCampaignRetargetingList($campaign);
+            }
+            $introView               = new MarketingListCampaignRetargetingIntroView(get_class($this->getModule()));
+            $actionBarView           = new SecuredActionBarForMarketingListCampaignRetargetingView(
+                'default',
+                'marketingList',
+                new MarketingList(), //Just to fill in a marketing model
+                'notUsed',
+                'notUsed',
+                false,
+                null,
+                $introView);
+
+            $title                         = Zurmo::t('UsersModule', 'Retarget subscribers from existing campaign("{{campaignName}}") results',
+                array("{{campaignName}}" => $campaign->name));
+
+            $resolveSubscribersFromCampaignView                  = new MarketingListResolveSubscribersFromCampaignView(
+                $this->getId(),
+                $this->getModule()->getId(),
+                $resolveSubscribersForm,
+                $title);
+
+            $gridView                = new GridView(2, 1);
+            $gridView->setView($actionBarView, 0, 0);
+            $gridView->setView($resolveSubscribersFromCampaignView, 1, 0);
+
+            $view                       = new MarketingListsPageView(MarketingDefaultViewUtil::
+                makeViewWithBreadcrumbsForCurrentUser($this, $gridView, array(Zurmo::t('MarketingListsModule', 'Lists')), 'MarketingBreadCrumbView'));
+            echo $view->render();
+        }
+
         protected static function getSearchFormClassName()
         {
             return 'MarketingListsSearchForm';

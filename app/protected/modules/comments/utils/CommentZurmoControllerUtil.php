@@ -93,23 +93,71 @@
             $user = Yii::app()->user->userModel;
             if ($this->relatedModel instanceof Conversation)
             {
+                $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
+                $itemIds = array();
+                $conversationPeople = ConversationsUtil::resolvePeopleOnConversation($this->relatedModel);
+                foreach ($conversationPeople as $user)
+                {
+                    $itemIds[] = $user->getClassId('Item');
+                }
+                foreach ($mentionedUsers as $mentionedUser)
+                {
+                    $itemIds[] = $mentionedUser->getClassId('Item');
+                }
+                $itemIdsImploded = array();
+                $itemIdsImploded['itemIds'] = implode(',', $itemIds); // Not Coding Standard
+
+                $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($this->relatedModel);
+                ConversationParticipantsUtil::resolveConversationHasManyParticipantsFromPost($this->relatedModel,
+                    $itemIdsImploded,
+                    $explicitReadWriteModelPermissions);
+                $saved = $this->relatedModel->save();
+                if ($saved)
+                {
+                    ExplicitReadWriteModelPermissionsUtil::
+                        resolveExplicitReadWriteModelPermissions($this->relatedModel, $explicitReadWriteModelPermissions);
+                    $this->relatedModel->save();
+                }
+                else
+                {
+                    throw new FailedToSaveModelException();
+                }
+
                 $participants = ConversationsUtil::resolvePeopleToSendNotificationToOnNewComment($this->relatedModel, $user);
-                CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
+                CommentsUtil::sendNotificationOnCommentCreateOrUpdate($this->relatedModel, $model, $participants);
             }
             elseif ($this->relatedModel instanceof Mission)
             {
+                $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
                 $participants = MissionsUtil::resolvePeopleToSendNotificationToOnNewComment($this->relatedModel, $user);
-                CommentsUtil::sendNotificationOnNewComment($this->relatedModel, $model, $participants);
+                $participants  = array_merge($participants, $mentionedUsers);
+                CommentsUtil::sendNotificationOnCommentCreateOrUpdate($this->relatedModel, $model, $participants);
             }
-            elseif ($this->relatedModel instanceof Task)
+            elseif ($this->relatedModel instanceof Task || $this->relatedModel instanceof Account ||
+                    $this->relatedModel instanceof Contact || $this->relatedModel instanceof Opportunity)
             {
-                TasksNotificationUtil::submitTaskNotificationMessage($this->relatedModel,
-                                                                    TasksNotificationUtil::TASK_NEW_COMMENT,
-                                                                    $model->createdByUser, $model);
-                //Log the event
-                if ($this->relatedModel->project->id > 0)
+                $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
+                foreach ($mentionedUsers as $user)
                 {
-                    ProjectsUtil::logAddCommentEvent($this->relatedModel, $model->description);
+                    NotificationSubscriberUtil::processSubscriptionRequest($this->relatedModel, $user);
+                }
+
+                if ($this->relatedModel instanceof Task)
+                {
+                    TasksNotificationUtil::submitTaskNotificationMessage($this->relatedModel,
+                        TasksNotificationUtil::TASK_COMMENT_CREATED_OR_UPDATED,
+                        $model->createdByUser, $model);
+                    //Log the event
+                    if ($this->relatedModel->project->id > 0)
+                    {
+                        ProjectsUtil::logAddCommentEvent($this->relatedModel, $model->description);
+                    }
+                }
+                else
+                {
+                    CommentsNotificationUtil::submitNotificationMessage($this->relatedModel,
+                        CommentsNotificationUtil::COMMENT_CREATED_OR_UPDATED,
+                        $model);
                 }
             }
         }

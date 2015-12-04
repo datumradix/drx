@@ -87,7 +87,26 @@
             $timestamp                      = time();
             $model->name                    = $this->seedData['name'][$this->index];
             $model->subject                 = $this->seedData['subject'][$this->index];
-            $model->status                  = RandomDataUtil::getRandomValueFromArray($statusKeys);
+            if (count(Campaign::getByStatus($statusKeys[0])) < 1)
+            {
+                $model->status = $statusKeys[0];
+            }
+            elseif (count(Campaign::getByStatus($statusKeys[1])) < 1)
+            {
+                $model->status = $statusKeys[1];
+            }
+            elseif (count(Campaign::getByStatus($statusKeys[2])) < 1)
+            {
+                $model->status = $statusKeys[2];
+            }
+            elseif (count(Campaign::getByStatus($statusKeys[3])) < 1)
+            {
+                $model->status = $statusKeys[3];
+            }
+            else
+            {
+                $model->status = RandomDataUtil::getRandomValueFromArray($statusKeys);
+            }
             if (!(rand() % 2))
             {
                 $timestamp                 += rand(500, 5000);

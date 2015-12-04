@@ -746,5 +746,87 @@
             $this->assertContains('BelinaLead1', serialize($leads));
             $this->assertEquals(1, count($leads));
         }
+
+        public function testInlineCreateCommentFromAjax()
+        {
+            UserTestHelper::createBasicUser('sally');
+            $sally = $this->logoutCurrentUserLoginNewUserAndGetByUsername('sally');
+
+            $lead = LeadTestHelper::createLeadbyNameForOwner('testContact2', $sally);
+            $this->setGetArray(array('id' => $lead->id, 'uniquePageId' => 'CommentInlineEditForModelView'));
+            $this->runControllerShouldResultInAccessFailureAndGetContent('leads/default/inlineCreateCommentFromAjax');
+
+            //Now test peon with elevated rights to accounts
+            $sally->setRight('LeadsModule', LeadsModule::RIGHT_ACCESS_LEADS);
+            $sally->setRight('LeadsModule', LeadsModule::RIGHT_CREATE_LEADS);
+            $sally->setRight('LeadsModule', LeadsModule::RIGHT_DELETE_LEADS);
+            $this->assertTrue($sally->save());
+            $lead->addPermissions($sally, Permission::READ_WRITE_CHANGE_PERMISSIONS);
+            $this->assertTrue($lead->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($lead, $sally);
+
+            $this->setGetArray(array('id' => $lead->id, 'uniquePageId' => 'CommentInlineEditForModelView'));
+            $this->runControllerWithNoExceptionsAndGetContent('leads/default/inlineCreateCommentFromAjax');
+        }
+
+        public function testAddAndRemoveSubscriberViaAjaxWithNormalUser()
+        {
+            $super = User::getByUsername('super');
+            $billy              = $this->logoutCurrentUserLoginNewUserAndGetByUsername('billy');
+            $lead = LeadTestHelper::createLeadbyNameForOwner('testLead3', $billy);
+
+            $this->setGetArray(array('id' => $lead->id));
+            $this->runControllerShouldResultInAccessFailureAndGetContent('leads/default/removeSubscriber');
+            $this->setGetArray(array('id' => $lead->id));
+            $this->runControllerShouldResultInAccessFailureAndGetContent('leads/default/addSubscriber');
+
+            //Now test peon with elevated rights to accounts
+            $billy->setRight('LeadsModule', LeadsModule::RIGHT_ACCESS_LEADS);
+            $billy->setRight('LeadsModule', LeadsModule::RIGHT_CREATE_LEADS);
+            $billy->setRight('LeadsModule', LeadsModule::RIGHT_DELETE_LEADS);
+            $this->assertTrue($billy->save());
+            $lead->addPermissions($billy, Permission::READ_WRITE_CHANGE_PERMISSIONS);
+            $this->assertTrue($lead->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($lead, $billy);
+
+            //Test nobody with elevated rights.
+            Yii::app()->user->userModel = User::getByUsername('billy');
+
+            $this->setGetArray(array('id' => $lead->id));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/removeSubscriber', false);
+            $this->assertContains($billy->getFullName(), $content);
+            $this->assertEquals(1, $lead->notificationSubscribers->count());
+
+            //Now super user would be added as a subscriber as he becomes the owner
+            $lead->owner        = $super;
+            $this->assertTrue($lead->save());
+
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/removeSubscriber', false);
+            $this->assertNotContains($billy->getFullName(), $content);
+            $this->assertEquals(1, $lead->notificationSubscribers->count());
+
+            $this->assertFalse($this->checkIfUserFoundInSubscribersList($lead, $billy->id));
+
+            $content = $this->runControllerWithNoExceptionsAndGetContent('leads/default/addSubscriber', false);
+            $this->assertContains($billy->getFullName(), $content);
+            $this->assertEquals(2, $lead->notificationSubscribers->count());
+
+            $this->assertTrue($this->checkIfUserFoundInSubscribersList($lead, $billy->id));
+        }
+
+        private function checkIfUserFoundInSubscribersList($contact, $compareId)
+        {
+            $isUserFound = false;
+            $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
+            foreach ($contact->notificationSubscribers as $subscriber)
+            {
+                $user     = $subscriber->person->castDown(array($modelDerivationPathToItem));
+                if ($user->id == $compareId)
+                {
+                    $isUserFound = true;
+                }
+            }
+            return $isUserFound;
+        }
     }
 ?>

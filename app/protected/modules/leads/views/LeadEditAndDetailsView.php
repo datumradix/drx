@@ -229,7 +229,7 @@
         {
             return ContactDetailsViewUtil::renderAfterFormLayoutForDetailsContent($this->getModel(), null);
         }
-        
+
         public static function getDesignerRulesType()
         {
             return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';

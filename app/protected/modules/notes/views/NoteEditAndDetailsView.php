@@ -111,7 +111,7 @@
             return Zurmo::t('NotesModule', 'Create NotesModuleSingularLabel',
                                      LabelUtil::getTranslationParamsForAllModules());
         }
-        
+
         public static function getDesignerRulesType()
         {
             return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';

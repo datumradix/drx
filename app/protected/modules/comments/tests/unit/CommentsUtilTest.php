@@ -52,7 +52,7 @@
             Yii::app()->user->userModel = User::getByUsername('super');
         }
 
-        public function testsSendNotificationOnNewComment()
+        public function testSendNotificationOnCommentCreateOrUpdate()
         {
             $super                      = User::getByUsername('super');
             $steven                     = User::getByUsername('steven');
@@ -72,7 +72,7 @@
             $this->assertEquals(0, Notification::getCount());
 
             //No message was sent because Steven and Jack don't have primary email address
-            CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $jack));
+            CommentsUtil::sendNotificationOnCommentCreateOrUpdate($conversation, $comment, array($steven, $jack));
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             //Two inbox notifications sent
@@ -86,7 +86,7 @@
             $this->assertTrue($jack->save());
 
             //Two email message were sent one to Steven and one to Jack
-            CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $jack));
+            CommentsUtil::sendNotificationOnCommentCreateOrUpdate($conversation, $comment, array($steven, $jack));
             $this->assertEquals(2, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $emailMessages = EmailMessage::getAll();
@@ -99,9 +99,9 @@
 
             //One email message was sent to Super but not to Steven
             //One inbox notification to Steven but not to Super
-            NotificationTestHelper::setNotificationSettingsForUser($steven, 'ConversationNewComment', true, false);
-            NotificationTestHelper::setNotificationSettingsForUser($super, 'ConversationNewComment', false, true);
-            CommentsUtil::sendNotificationOnNewComment($conversation, $comment, array($steven, $super));
+            NotificationTestHelper::setNotificationSettingsForUser($steven, 'ConversationComment', true, false);
+            NotificationTestHelper::setNotificationSettingsForUser($super, 'ConversationComment', false, true);
+            CommentsUtil::sendNotificationOnCommentCreateOrUpdate($conversation, $comment, array($steven, $super));
             $this->assertEquals(3, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Yii::app()->emailHelper->getSentCount());
             $emailMessages = EmailMessage::getAll();
@@ -111,6 +111,93 @@
             $notifications = Notification::getAll();
             $notification  = $notifications[4];
             $this->assertEquals(strval($steven), strval($notification->owner));
+        }
+
+        public function testGetMentionedUsersForNotification()
+        {
+            $super                      = User::getByUsername('super');
+            $steven                     = User::getByUsername('steven');
+            $jack                       = User::getByUsername('jack');
+
+            $comment                    = new Comment();
+            $comment->description       = 'Hello steven, How are you?';
+
+            $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($comment);
+            $this->assertEmpty($mentionedUsers);
+
+            // Second string([~ste]) whouldn't be replaced, because username need to be full
+            $comment->description       = 'Hello [~steven] and [~ste], How are you?';
+            $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($comment);
+            $this->assertNotEmpty($mentionedUsers);
+            $this->assertEquals(1, count($mentionedUsers));
+            $this->assertEquals($steven->id, $mentionedUsers[0]->id);
+
+            $comment->description       = 'Hello [~steven] and [~jack] and [~super], How are you?';
+            $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($comment);
+            $this->assertNotEmpty($mentionedUsers);
+            $this->assertEquals(2, count($mentionedUsers));
+            $this->assertTrue(in_array($steven->id, array($mentionedUsers[0]->id, $mentionedUsers[1]->id)));
+            $this->assertTrue(in_array($jack->id, array($mentionedUsers[0]->id, $mentionedUsers[1]->id)));
+        }
+
+        public function testReplaceMentionedUsernamesWithFullNamesAndLinksInComments()
+        {
+            $super                      = User::getByUsername('super');
+            $steven                     = User::getByUsername('steven');
+            $jack                       = User::getByUsername('jack');
+
+            $description       = 'Hello steven, How are you?';
+            $modifiedDescription = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($description);
+            $this->assertEquals($description, $modifiedDescription);
+
+            $description       = 'Hello [~steven] and [~jack] and [~super] and [~sup], How are you?';
+            $modifiedDescription = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($description);
+            $regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>"; // Not Coding Standard
+            if (preg_match_all("/$regexp/siU", $modifiedDescription, $matches))
+            {
+                // $matches[2] = array of link addresses
+                // $matches[3] = array of link text - including HTML code
+                $this->assertEquals(3, count($matches[2]));
+                $this->assertEquals(3, count($matches[3]));
+                $this->assertTrue(strpos($matches[2][0], 'details?id=' . $steven->id) != null);
+                $this->assertEquals(strval($steven), $matches[3][0]);
+                $this->assertTrue(strpos($matches[2][1], 'details?id=' . $jack->id) != null);
+                $this->assertEquals(strval($jack), $matches[3][1]);
+                $this->assertTrue(strpos($matches[2][2], 'details?id=' . $super->id) != null);
+                $this->assertEquals(strval($super), $matches[3][2]);
+            }
+            else
+            {
+                $this->fail('Usernames not replaced with links in description.');
+            }
+            // Ensure that existing users are replaced with names and links, while nonexisting are not
+            $this->assertTrue(strpos($modifiedDescription, '[~steven]') == null);
+            $this->assertTrue(strpos($modifiedDescription, '[~jack]')   == null);
+            $this->assertTrue(strpos($modifiedDescription, '[~super]')  == null);
+            $this->assertTrue(strpos($modifiedDescription, '[~sup]')    != null);
+        }
+
+        public function testHasUserHaveAccessToEditOrDeleteComment()
+        {
+            $super                      = User::getByUsername('super');
+            $steven                     = User::getByUsername('steven');
+            $jack                       = User::getByUsername('jack');
+
+            Yii::app()->user->userModel = $super;
+            $comment1                  = new Comment();
+            $comment1->description     = 'Comment 1';
+            $this->assertTrue($comment1->save());
+            $this->assertTrue(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment1, $super));
+            $this->assertFalse(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment1, $steven));
+            $this->assertFalse(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment1, $jack));
+
+            Yii::app()->user->userModel = $steven;
+            $comment2                  = new Comment();
+            $comment2->description     = 'Comment 2';
+            $this->assertTrue($comment2->save());
+            $this->assertTrue(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment2, $super));
+            $this->assertTrue(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment2, $steven));
+            $this->assertFalse(CommentsUtil::hasUserHaveAccessToEditOrDeleteComment($comment2, $jack));
         }
     }
 ?>
