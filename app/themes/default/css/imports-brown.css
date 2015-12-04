@@ -3049,7 +3049,6 @@ div.wide.form .errorMessage {
 }
 .file-upload-box {
   padding-left: 0;
-  margin: 0 !important;
   width: 100%;
 }
 .file-upload-box > .ui-widget {
@@ -3131,18 +3130,20 @@ div.wide.form .errorMessage {
   font-weight: normal !important;
 }
 .show-file-upload-box {
+  display: none;
   position: relative;
-  bottom: -18px;
   z-index: 99999;
   font-weight: normal;
   font-size: 11px;
   color: #547980;
 }
-#CommentInlineEditForModelView .fileupload-content {
+#CommentInlineEditForModelView .fileupload-content,
+#CommentForTaskInlineEditForModelView .fileupload-content {
   width: 100%;
 }
-#CommentInlineEditForModelView .fileupload-content td.name {
-  padding: 5px 0 0 0 !important;
+#CommentInlineEditForModelView .fileupload-content td.name,
+#CommentForTaskInlineEditForModelView .fileupload-content td.name {
+  padding: 2px 0 !important;
 }
 .files {
   font-size: 11px;
@@ -3269,6 +3270,7 @@ div.wide.form .errorMessage {
 }
 .addfileinput-button {
   position: relative;
+  overflow: hidden;
   float: left;
   cursor: pointer;
   display: inline-block;
@@ -3284,14 +3286,8 @@ div.wide.form .errorMessage {
   -o-border-radius: 3px;
   border-radius: 3px;
   *zoom: 1;
-  overflow: hidden;
   display: inline-block;
   text-indent: 0;
-  -webkit-box-shadow: 0 0 9px 5px rgba(153,153,153,0.15);
-  -moz-box-shadow: 0 0 9px 5px rgba(153,153,153,0.15);
-  -ms-box-shadow: 0 0 9px 5px rgba(153,153,153,0.15);
-  -o-box-shadow: 0 0 9px 5px rgba(153,153,153,0.15);
-  box-shadow: 0 0 9px 5px rgba(153,153,153,0.15);
   font-weight: normal !important;
   font-size: 36px;
   font-family: "zurmo_gamification_symbly_rRg";
@@ -3307,6 +3303,8 @@ div.wide.form .errorMessage {
   -o-text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
   text-shadow: 0px -1px 0 rgba(255,255,255,0.75) !important;
   background: transparent url("../images/view-toolbar-gradient.png") left bottom repeat-x;
+  line-height: 20px;
+  border: 1px solid #ddd;
 }
 .addfileinput-button span:before,
 .addfileinput-button span:after {
@@ -6445,6 +6443,10 @@ a.dashboard-link .z-label {
 #ConversationDetailsAndRelationsView .toolbar-mbmenu {
   top: 8px !important;
 }
+#MissionDetailsView .panel,
+#ConversationDetailsView .panel {
+  width: 100%;
+}
 .thread-details {
   margin: 0 0 10px 0 !important;
   width: 100%;
@@ -6655,13 +6657,22 @@ a.dashboard-link .z-label {
   margin-left: 115px;
 }
 .CommentList .comment {
-  margin-top: 15px;
+  margin-top: 10px;
 }
 .CommentList:last-child {
-  margin-bottom: 25px;
+  margin-bottom: 5px;
 }
 .comment {
+  *zoom: 1;
   line-height: 140%;
+}
+.comment:before,
+.comment:after {
+  content: " ";
+  display: table;
+}
+.comment:after {
+  clear: both;
 }
 .comment .gravatar {
   margin-top: 1px;
@@ -6734,12 +6745,16 @@ a.dashboard-link .z-label {
 }
 #ModelDetailsSummaryView,
 #CommentInlineEditForModelView,
-#CommentsForRelatedModelView {
+#CommentsForRelatedModelView,
+#CommentForTaskInlineEditForModelView,
+#CommentsForRelatedTaskModelView {
   max-width: 600px;
 }
 #ModelDetailsSummaryView .wide.form,
 #CommentInlineEditForModelView .wide.form,
-#CommentsForRelatedModelView .wide.form {
+#CommentsForRelatedModelView .wide.form,
+#CommentForTaskInlineEditForModelView .wide.form,
+#CommentsForRelatedTaskModelView .wide.form {
   border: none;
   background: none;
   -webkit-box-shadow: none;
@@ -6753,20 +6768,26 @@ a.dashboard-link .z-label {
 }
 #ModelDetailsSummaryView h2,
 #CommentInlineEditForModelView h2,
-#CommentsForRelatedModelView h2 {
+#CommentsForRelatedModelView h2,
+#CommentForTaskInlineEditForModelView h2,
+#CommentsForRelatedTaskModelView h2 {
   font-size: 15px;
 }
-#CommentInlineEditForModelView {
-  margin-top: 0;
+#CommentInlineEditForModelView,
+#CommentForTaskInlineEditForModelView {
+  margin-top: 25px;
   padding-left: 115px;
 }
-#CommentInlineEditForModelView td {
+#CommentInlineEditForModelView td,
+#CommentForTaskInlineEditForModelView td {
   padding: 0 0 0 0 !important;
 }
-#CommentInlineEditForModelView h2 {
+#CommentInlineEditForModelView h2,
+#CommentForTaskInlineEditForModelView h2 {
   margin: 0 0 10px 0;
 }
-#CommentInlineEditForModelView .wide.form {
+#CommentInlineEditForModelView .wide.form,
+#CommentForTaskInlineEditForModelView .wide.form {
   padding: 0;
   border: none;
   background: none;
@@ -6777,15 +6798,18 @@ a.dashboard-link .z-label {
   box-shadow: none;
   margin-bottom: 0;
 }
-#CommentInlineEditForModelView form {
+#CommentInlineEditForModelView form,
+#CommentForTaskInlineEditForModelView form {
   padding: 0;
   margin-bottom: 15px;
 }
-#CommentInlineEditForModelView .panel {
+#CommentInlineEditForModelView .panel,
+#CommentForTaskInlineEditForModelView .panel {
   width: 100%;
   float: none;
 }
-#CommentInlineEditForModelView table {
+#CommentInlineEditForModelView table,
+#CommentForTaskInlineEditForModelView table {
   margin-bottom: 0;
 }
 .attachments {
@@ -6801,8 +6825,6 @@ a.dashboard-link .z-label {
   font-weight: normal !important;
   font-size: 18px;
   font-family: "zurmo_gamification_symbly_rRg";
-  float: left;
-  margin-left: -15px;
 }
 .icon-attachment:before {
   content: "H";
@@ -6868,6 +6890,12 @@ a.dashboard-link .z-label {
 .comment-content .missionStatusChangeArea a:first-child {
   margin-left: 15px;
 }
+.comment-content .comment-text a:not(.user-link) {
+  color: #547980;
+}
+.comment-content .comment-text a:not(.user-link):hover {
+  color: #2c3f42;
+}
 a.user-link {
   font-weight: bold;
   color: #545454;
@@ -6886,10 +6914,6 @@ a.user-link {
   vertical-align: 60%;
   font-weight: normal;
   font-style: italic;
-}
-#MissionDetailsView .files,
-#ConversationDetailsView .files {
-  padding-bottom: 10px;
 }
 .SocialItemsListView tr:hover,
 #AllSocialItemsForPortletView tr:hover {
@@ -6947,20 +6971,25 @@ a.user-link {
   padding-right: 15px;
 }
 #MissionsPageView #comment-inline-edit-form .left-column,
+#MissionsPageView #comment-for-task-inline-edit-form .left-column,
 #MissionsPageView #social-item-inline-edit-form .left-column,
 #ConversationsPageView #comment-inline-edit-form .left-column,
+#ConversationsPageView #comment-for-task-inline-edit-form .left-column,
 #ConversationsPageView #social-item-inline-edit-form .left-column {
   padding: 0;
   z-index: 99999;
   position: relative;
 }
 #MissionsPageView #comment-inline-edit-form .form-toolbar,
+#MissionsPageView #comment-for-task-inline-edit-form .form-toolbar,
 #MissionsPageView #social-item-inline-edit-form .form-toolbar,
 #ConversationsPageView #comment-inline-edit-form .form-toolbar,
+#ConversationsPageView #comment-for-task-inline-edit-form .form-toolbar,
 #ConversationsPageView #social-item-inline-edit-form .form-toolbar {
   padding: 0;
 }
 #comment-inline-edit-form,
+#comment-for-task-inline-edit-form,
 #social-item-inline-edit-form {
   padding-bottom: 15px;
   border: none;
@@ -6974,49 +7003,50 @@ a.user-link {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
 #comment-inline-edit-form td:first-child,
+#comment-for-task-inline-edit-form td:first-child,
 #social-item-inline-edit-form td:first-child {
   padding-left: 0;
 }
-#comment-inline-edit-form .file-upload-box,
-#social-item-inline-edit-form .file-upload-box {
-  padding: 11px 0 10px 0;
-  display: none;
-  float: left;
-}
 #comment-inline-edit-form .form-toolbar,
+#comment-for-task-inline-edit-form .form-toolbar,
 #social-item-inline-edit-form .form-toolbar {
   text-align: right;
   border-top: none;
-  padding: 0 15px;
   margin-top: 0;
 }
 #comment-inline-edit-form .form-toolbar a,
+#comment-for-task-inline-edit-form .form-toolbar a,
 #social-item-inline-edit-form .form-toolbar a {
   color: #fff;
   margin-right: 0;
   float: right;
 }
 #comment-inline-edit-form table.files,
+#comment-for-task-inline-edit-form table.files,
 #social-item-inline-edit-form table.files {
   border-bottom: none;
   float: left;
   margin-top: 5px;
 }
 #comment-inline-edit-form .panel > table,
+#comment-for-task-inline-edit-form .panel > table,
 #social-item-inline-edit-form .panel > table {
   border: none;
 }
 #social-item-inline-edit-form .view-toolbar-container {
   float: none;
+  padding: 0 15px;
 }
-#comment-inline-edit-form {
+#comment-inline-edit-form,
+#comment-for-task-inline-edit-form {
   border-bottom: none;
 }
-#comment-inline-edit-form .file-upload-box {
-  padding: 14px 0 0 0;
-}
-#comment-inline-edit-form tr.template-download td {
+#comment-inline-edit-form tr.template-download td,
+#comment-for-task-inline-edit-form tr.template-download td {
   padding-left: 0 !important;
+}
+[id^="comment-inline-edit-form"] .left-column {
+  padding: 0;
 }
 .SocialItemsListView .items {
   width: 100%;
@@ -7047,8 +7077,12 @@ a.user-link {
   box-shadow: none;
   padding-bottom: 0;
 }
-.social-item .wide.form form td {
-  padding: 5px 0 10px 65px !important;
+.social-item .comments-activity td {
+  padding: 0;
+  border-bottom: none;
+}
+.social-item .comments-activity .form-fields td:first-child {
+  padding-left: 0;
 }
 .social-item textarea {
   width: 100%;
@@ -7059,10 +7093,46 @@ a.user-link {
 .social-item .form-toolbar {
   text-align: right;
   border: none;
-  padding-top: 0;
 }
 .social-item .form-toolbar a {
   margin-right: 0;
+}
+.CommentInlineEditView {
+  padding-top: 2px;
+}
+.CommentForSocialItemInlineEditView {
+  margin: 10px 15px 0 80px;
+}
+.CommentForSocialItemInlineEditView.CommentInlineEditView .wide.form td {
+  padding: 0;
+}
+.SocialItemInlineEditView td {
+  padding-bottom: 0;
+}
+.SocialItemInlineEditView .file-upload-box {
+  margin-top: 7px;
+}
+.SocialItemInlineEditView .left-column {
+  padding-bottom: 0;
+}
+.mentions-input-box {
+  margin-bottom: 10px;
+}
+.comment-text .form-toolbar {
+  text-align: right;
+  border-top: none;
+}
+.comment-text .form-toolbar a {
+  margin-right: 0;
+}
+.comment-text .form-fields td:first-child {
+  padding: 0;
+}
+.comment .comment-content table {
+  margin-bottom: 0;
+}
+.details-table .left-column .left-column {
+  padding: 0;
 }
 #ArchivedEmailMatchingListView .items td {
   padding-right: 10px;
@@ -8829,6 +8899,9 @@ a + .autoresponder-stats {
     transform: scale(1.2);
   }
 }
+.opportunity-time-stage,
+.opportunity-time-stage-related,
+.opportunity-time-stage-kanban,
 .campaign-status {
   text-align: center;
   float: left;
@@ -8843,10 +8916,16 @@ a + .autoresponder-stats {
   line-height: 20px;
   display: inline-block;
 }
+.opportunity-time-stage span,
+.opportunity-time-stage-related span,
+.opportunity-time-stage-kanban span,
 .campaign-status span {
   font-size: 10px;
   font-weight: bold;
 }
+.opportunity-time-stage i,
+.opportunity-time-stage-related i,
+.opportunity-time-stage-kanban i,
 .campaign-status i {
   font-weight: bold;
   line-height: 1;
@@ -8863,6 +8942,9 @@ a + .autoresponder-stats {
   -o-transform-origin: 50%;
   transform-origin: 50%;
 }
+.opportunity-time-stage.completed  i,
+.opportunity-time-stage-related.completed  i,
+.opportunity-time-stage-kanban.completed  i,
 .campaign-status.completed  i {
   color: #97c43d;
   -webkit-text-shadow: 0 0 5px #97c43d;
@@ -8871,6 +8953,12 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #97c43d;
   text-shadow: 0 0 5px #97c43d;
 }
+.opportunity-time-stage.sending i,
+.opportunity-time-stage.scheduled i,
+.opportunity-time-stage-related.sending i,
+.opportunity-time-stage-related.scheduled i,
+.opportunity-time-stage-kanban.sending i,
+.opportunity-time-stage-kanban.scheduled i,
 .campaign-status.sending i,
 .campaign-status.scheduled i {
   color: #ffd900;
@@ -8880,6 +8968,9 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #ffd900;
   text-shadow: 0 0 5px #ffd900;
 }
+.opportunity-time-stage.sending i,
+.opportunity-time-stage-related.sending i,
+.opportunity-time-stage-kanban.sending i,
 .campaign-status.sending i {
   -o-animation: led-throb 0.5s ease-in-out infinite;
   -ms-animation: led-throb 0.5s ease-in-out infinite;
@@ -8887,6 +8978,9 @@ a + .autoresponder-stats {
   -webkit-animation: led-throb 0.5s ease-in-out infinite;
   animation: led-throb 0.5s ease-in-out infinite;
 }
+.opportunity-time-stage.paused i,
+.opportunity-time-stage-related.paused i,
+.opportunity-time-stage-kanban.paused i,
 .campaign-status.paused i {
   color: #c43d53;
   -webkit-text-shadow: 0 0 5px #c43d53;
@@ -8894,6 +8988,9 @@ a + .autoresponder-stats {
   -ms-text-shadow: 0 0 5px #c43d53;
   -o-text-shadow: 0 0 5px #c43d53;
   text-shadow: 0 0 5px #c43d53;
+}
+.opportunity-time-stage-related {
+  float: none;
 }
 .led {
   font-weight: bold;
@@ -8990,32 +9087,38 @@ a + .autoresponder-stats {
   content: "g7";
 }
 #ProductIntroLinkActionElement ul,
-#MarketingIntroLinkActionElement ul {
+#MarketingIntroLinkActionElement ul,
+#MarketingListCampaignRetargetingIntroLinkActionElement ul {
   right: 0;
 }
 #ProductIntroLinkActionElement ul li,
-#MarketingIntroLinkActionElement ul li {
+#MarketingIntroLinkActionElement ul li,
+#MarketingListCampaignRetargetingIntroLinkActionElement ul li {
   padding: 0 5px 5px 5px;
 }
 #ProductIntroLinkActionElement ul li .hasCheckBox,
-#MarketingIntroLinkActionElement ul li .hasCheckBox {
+#MarketingIntroLinkActionElement ul li .hasCheckBox,
+#MarketingListCampaignRetargetingIntroLinkActionElement ul li .hasCheckBox {
   display: inline-block;
   margin-right: 5px;
   position: relative;
   top: 4px;
 }
 #ProductIntroLinkActionElement .parent a,
-#MarketingIntroLinkActionElement .parent a {
+#MarketingIntroLinkActionElement .parent a,
+#MarketingListCampaignRetargetingIntroLinkActionElement .parent a {
   padding-left: 10px;
 }
 #ProductIntroLinkActionElement .parent > a > span,
-#MarketingIntroLinkActionElement .parent > a > span {
+#MarketingIntroLinkActionElement .parent > a > span,
+#MarketingListCampaignRetargetingIntroLinkActionElement .parent > a > span {
   text-indent: -9999px;
   display: inline-block;
   width: 0;
 }
 #ProductIntroLinkActionElement .parent > a:before,
-#MarketingIntroLinkActionElement .parent > a:before {
+#MarketingIntroLinkActionElement .parent > a:before,
+#MarketingListCampaignRetargetingIntroLinkActionElement .parent > a:before {
   content: "n";
   font-weight: normal !important;
   font-size: 24px;
@@ -9024,7 +9127,8 @@ a + .autoresponder-stats {
   top: 2px;
 }
 #ProductIntroLinkActionElement .parent a:after,
-#MarketingIntroLinkActionElement .parent a:after {
+#MarketingIntroLinkActionElement .parent a:after,
+#MarketingListCampaignRetargetingIntroLinkActionElement .parent a:after {
   margin-left: 2px;
   top: 0;
 }
@@ -9681,52 +9785,52 @@ a[id^="SendTestEmailLinkActionElement"] .z-label:after {
   left: 0;
   z-index: -1;
 }
-.subscribe-task-link,
-.unsubscribe-task-link {
+.subscribe-model-link,
+.unsubscribe-model-link {
   background: #DFDFDF;
   padding: 2px;
   display: inline-block;
   width: 20px;
   height: 20px;
 }
-.subscribe-task-link .icon-subscribe,
-.subscribe-task-link .icon-unsubscribe,
-.unsubscribe-task-link .icon-subscribe,
-.unsubscribe-task-link .icon-unsubscribe {
+.subscribe-model-link .icon-subscribe,
+.subscribe-model-link .icon-unsubscribe,
+.unsubscribe-model-link .icon-subscribe,
+.unsubscribe-model-link .icon-unsubscribe {
   position: relative;
   top: -3px;
   display: block;
   text-align: center;
 }
-.subscribe-task-link .icon-subscribe:after,
-.subscribe-task-link .icon-unsubscribe:after,
-.unsubscribe-task-link .icon-subscribe:after,
-.unsubscribe-task-link .icon-unsubscribe:after {
+.subscribe-model-link .icon-subscribe:after,
+.subscribe-model-link .icon-unsubscribe:after,
+.unsubscribe-model-link .icon-subscribe:after,
+.unsubscribe-model-link .icon-unsubscribe:after {
   color: #545454;
   content: '\2260';
   font-size: 29px;
 }
-.detail-subscribe-task-link,
-.detail-unsubscribe-task-link {
+.detail-subscribe-model-link,
+.detail-unsubscribe-model-link {
   background: #DFDFDF;
   padding: 2px;
   display: inline-block;
   width: 36px;
   height: 36px;
 }
-.detail-subscribe-task-link .icon-subscribe,
-.detail-subscribe-task-link .icon-unsubscribe,
-.detail-unsubscribe-task-link .icon-subscribe,
-.detail-unsubscribe-task-link .icon-unsubscribe {
+.detail-subscribe-model-link .icon-subscribe,
+.detail-subscribe-model-link .icon-unsubscribe,
+.detail-unsubscribe-model-link .icon-subscribe,
+.detail-unsubscribe-model-link .icon-unsubscribe {
   position: relative;
   top: -2px;
   display: block;
   text-align: center;
 }
-.detail-subscribe-task-link .icon-subscribe:after,
-.detail-subscribe-task-link .icon-unsubscribe:after,
-.detail-unsubscribe-task-link .icon-subscribe:after,
-.detail-unsubscribe-task-link .icon-unsubscribe:after {
+.detail-subscribe-model-link .icon-subscribe:after,
+.detail-subscribe-model-link .icon-unsubscribe:after,
+.detail-unsubscribe-model-link .icon-subscribe:after,
+.detail-unsubscribe-model-link .icon-unsubscribe:after {
   color: #545454;
   content: '\2260';
   font-size: 44px;
@@ -11636,13 +11740,16 @@ a#claim-item-link {
   margin-bottom: 15px;
 }
 #task-subscriber-box {
-  margin-top: 15px;
+  margin: 15px;
 }
 #task-subscriber-box h4 {
   margin-bottom: 4px;
 }
 #task-subscriber-box img {
   margin-right: 5px;
+}
+#task-subscriber-box + .model-comments-activity {
+  margin-top: 0;
 }
 .check-list {
   margin-top: 30px;
@@ -11784,55 +11891,86 @@ a#claim-item-link {
   width: 1%;
   vertical-align: middle;
 }
-.task-activity {
+.task-activity,
+.model-comments-activity {
   margin-top: 30px;
 }
-.task-activity #CommentsForRelatedModelView {
+.task-activity #CommentsForRelatedModelView,
+.task-activity #CommentsForRelatedTaskModelView,
+.model-comments-activity #CommentsForRelatedModelView,
+.model-comments-activity #CommentsForRelatedTaskModelView {
   width: 100%;
   max-width: 100%;
   margin: 0;
   padding: 0;
 }
-.task-activity #CommentInlineEditForModelView {
+.task-activity #CommentInlineEditForModelView,
+.task-activity #CommentForTaskInlineEditForModelView,
+.model-comments-activity #CommentInlineEditForModelView,
+.model-comments-activity #CommentForTaskInlineEditForModelView {
   width: 100%;
   max-width: 100%;
   margin: 10px 0 0 0;
-  padding: 8px;
+  padding: 15px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
-  background: rgba(236,240,241,0.25) url("../images/stripes.png") left top repeat;
 }
-.task-activity #CommentList {
-  margin: 0 0 0 0;
+.task-activity #CommentList,
+.model-comments-activity #CommentList {
+  margin: 0 15px;
 }
-.task-activity #comment-inline-edit-form {
+.task-activity #comment-inline-edit-form,
+.task-activity #comment-for-task-inline-edit-form,
+.model-comments-activity #comment-inline-edit-form,
+.model-comments-activity #comment-for-task-inline-edit-form {
   margin: 0;
 }
-.task-activity #comment-inline-edit-form .form-toolbar {
-  margin-top: 5px;
+.task-activity #comment-inline-edit-form .form-toolbar,
+.task-activity #comment-for-task-inline-edit-form .form-toolbar,
+.model-comments-activity #comment-inline-edit-form .form-toolbar,
+.model-comments-activity #comment-for-task-inline-edit-form .form-toolbar {
   padding-right: 0;
 }
-.task-activity .comment {
+.task-activity .comment,
+.model-comments-activity .comment {
   *zoom: 1;
   margin-top: 10px;
 }
 .task-activity .comment:before,
-.task-activity .comment:after {
+.task-activity .comment:after,
+.model-comments-activity .comment:before,
+.model-comments-activity .comment:after {
   content: " ";
   display: table;
 }
-.task-activity .comment:after {
+.task-activity .comment:after,
+.model-comments-activity .comment:after {
   clear: both;
 }
-.task-activity .left-column {
+.task-activity .left-column,
+.model-comments-activity .left-column {
   padding-right: 0;
 }
-.task-activity .show-file-upload-box {
+.task-activity .show-file-upload-box,
+.model-comments-activity .show-file-upload-box {
+  display: none;
   z-index: 99999;
   position: relative;
+}
+.task-activity #CommentInlineEditForModelView,
+.task-activity #CommentForTaskInlineEditForModelView {
+  background: rgba(236,240,241,0.25) url("../images/stripes.png") left top repeat;
+}
+.model-comments-activity div.wide.form {
+  float: none !important;
+}
+.model-comments-activity .form form {
+  bottom: no;
+  border: none;
+  box-shadow: none;
 }
 .right-side-details-view-panel {
   margin-top: 15px;

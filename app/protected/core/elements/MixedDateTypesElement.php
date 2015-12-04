@@ -158,19 +158,21 @@
             {
                 $thirdDateDisabled = null;
             }
-            $content  = ZurmoHtml::tag('span', array('id'    => $firstDateSpanAreaId,
-                                                     'class' => 'first-date-area',
+            $content = '<div class="date-area-holder">';
+            $content .= ZurmoHtml::tag('span', array('id'    => $firstDateSpanAreaId,
+                                                     'class' => 'date-area first-date-area',
                                                      'style' => $startingDivStyleFirstDate),
                                                      $this->renderEditableFirstDateContent($firstDateDisabled));
             $content .= ZurmoHtml::tag('span', array('id'    => $secondDateSpanAreaId,
-                                                     'class' => 'second-date-area',
+                                                     'class' => 'date-area second-date-area',
                                                      'style' => $startingDivStyleSecondDate),
                                                      ZurmoHtml::Tag('span', array('class' => 'dynamic-and-for-mixed'), Zurmo::t('Core', 'and')) .
                                                      $this->renderEditableSecondDateContent($secondDateDisabled));
             $content .= ZurmoHtml::tag('span', array('id'    => $thirdDateSpanAreaId,
-                                                     'class' => 'third-date-area',
+                                                     'class' => 'date-area third-date-area',
                                                      'style' => $startingDivStyleThirdDate),
                                                      $this->renderEditableThirdDateContent($thirdDateDisabled));
+            $content .= '</div>';
             return $content;
         }
 

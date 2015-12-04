@@ -2321,6 +2321,9 @@ body.sandbox-mode .AppContent {
   margin-right: 0;
   margin-left: 30px;
 }
+.float-bar .form-toolbar {
+  padding-top: 11px;
+}
 .view-toolbar-container {
   display: inline-block;
   width: 100%;
@@ -2736,7 +2739,6 @@ td {
   vertical-align: middle;
   padding: 10px 5px;
   word-wrap: break-word;
-  -webkit-transform: translateZ(0);
 }
 .items > tbody > tr > th,
 .items > thead > tr > th {
@@ -2856,26 +2858,6 @@ td {
 }
 tr.odd {
   background: none;
-  -webkit-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -moz-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -ms-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -o-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -ms-transform: translate(0px,0);
-  -moz-transform: translate(0px,0);
-  -webkit-transform: translate3d(0px,0,0);
-  transform: translate(0px,0);
-}
-tr.even {
-  -webkit-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -moz-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -ms-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -o-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -ms-transform: translate(0px,0);
-  -moz-transform: translate(0px,0);
-  -webkit-transform: translate3d(0px,0,0);
-  transform: translate(0px,0);
 }
 .checkbox-column {
   width: 30px;
@@ -3063,6 +3045,7 @@ textarea {
   padding: 4px;
   word-break: normal;
   min-height: 60px;
+  resize: vertical;
 }
 select.multiple {
   padding: 4px 4px 4px 6px;
@@ -3136,7 +3119,6 @@ input[type="button"]:hover:after {
 }
 .modal-view-toolbar,
 .form-toolbar {
-  padding-top: 13px;
   text-align: center;
   border-top: 1px solid #fff;
 }
@@ -3152,6 +3134,10 @@ input[type="button"]:hover:after {
 .modal-view-toolbar .wizard-secondary-action-button,
 .form-toolbar .wizard-secondary-action-button {
   margin-left: 45px;
+}
+.modal-view-toolbar,
+.dock .form-toolbar {
+  padding-top: 13px;
 }
 .portlet-toolbar {
   float: right;
@@ -3757,6 +3743,9 @@ div.wide.form label.hasCheckBox {
 #search-form .form-toolbar,
 #search-form .z-button {
   font-size: 12px;
+}
+#search-form .form-toolbar {
+  padding-top: 13px;
 }
 #search-form table {
   border-bottom: none;
@@ -4430,6 +4419,7 @@ div.wide.form label.hasCheckBox {
   display: none;
 }
 .left-column .left-column {
+  width: 100%;
   padding: 0 15px 0 0;
 }
 .left-column .right-column {
@@ -4526,6 +4516,10 @@ div.wide.form label.hasCheckBox {
 #select-account-form .hasCheckBox input[type="checkbox"],
 #account-skip-form .hasCheckBox input[type="checkbox"] {
   margin-bottom: 0 !important;
+}
+.element-edit-form .form-toolbar,
+#edit-form .form-toolbar {
+  padding-top: 13px;
 }
 .form-fields {
   width: 100%;
@@ -4994,6 +4988,7 @@ div.wide.form label.hasCheckBox {
 .DetailsView .col-0 {
   width: 20%;
 }
+.before-form-details-content,
 .after-form-details-content {
   color: #545454 !important;
   float: none;
@@ -9267,6 +9262,9 @@ a.simple-link .icon-x {
   width: 100%;
   padding-right: 160px;
 }
+.hasFilter .user-select-area .value-data {
+  padding-right: 0;
+}
 .hasFilter .dynamic-row-operator + .value-data {
   padding-left: 15px;
   width: 80%;
@@ -9968,4 +9966,37 @@ a.simple-link .icon-x {
 }
 .margetags-guide-link .simple-link {
   margin-left: 0;
+}
+.dynamic-rows .date-area-holder,
+.criteria-value-container .date-area-holder {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-between;
+}
+.dynamic-rows .date-area,
+.criteria-value-container .date-area {
+  flex-grow: 1;
+}
+.dynamic-rows .second-date-area,
+.criteria-value-container .second-date-area {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+.dynamic-rows .second-date-area .has-date-select,
+.criteria-value-container .second-date-area .has-date-select {
+  width: 100%;
+}
+.dynamic-rows .dynamic-and-for-mixed,
+.criteria-value-container .dynamic-and-for-mixed {
+  display: inline-block;
+  margin: 0 20px;
+}
+.criteria-value-container .date-area {
+  margin-top: 10px;
 }

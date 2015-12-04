@@ -589,6 +589,9 @@ a + .autoresponder-stats{
 @-ms-keyframes led-throb {     50% {.opacity(10);      -ms-transform: scale(1.2); }}
 @keyframes led-throb {         50% {.opacity(10);          transform: scale(1.2); }}
 
+.opportunity-time-stage,
+.opportunity-time-stage-related,
+.opportunity-time-stage-kanban,
 .campaign-status{
     text-align: center;
     float: left;
@@ -638,6 +641,10 @@ a + .autoresponder-stats{
         color: #c43d53;
         .t-shadow(0 0 5px #c43d53);
     }
+}
+
+.opportunity-time-stage-related{
+    float: none;
 }
 
 .led{
@@ -705,7 +712,8 @@ a + .autoresponder-stats{
 }
 
 #ProductIntroLinkActionElement,
-#MarketingIntroLinkActionElement{
+#MarketingIntroLinkActionElement,
+#MarketingListCampaignRetargetingIntroLinkActionElement{
 	ul{
 		right: 0;
 		li{
