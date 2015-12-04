@@ -178,6 +178,24 @@
             $element           = new TextElement(
                                  $this->model, 'sendFromAddress', $this->form, $params);
             $innerContent     .= '<tr>' . $element->render() . '</tr>';
+
+            // Show "Exclude if triggered by user" only for OnSaveWorkflowWizardForm
+            if ($this->workflowWizardFormClassName == 'OnSaveWorkflowWizardForm')
+            {
+                $element           = new CheckBoxElement(
+                    $this->model, 'excludeIfTriggeredByUser', $this->form, $params);
+
+                $excludeIfTriggeredByUserTitle    = Zurmo::t('EmailMessagesModule', 'Checking this box will exclude the user who triggered the workflow to fire from receiving the email message!');
+                $excludeIfTriggeredByUserContent  = '<span id="excludeIfTriggeredByUser-tooltip" class="tooltip"  title="' . $excludeIfTriggeredByUserTitle . '">?</span>';
+
+                $qtip     = new ZurmoTip();
+                $qtip->addQTip("#excludeIfTriggeredByUser-tooltip");
+
+                $element->editableTemplate = '<th>{label}' . $excludeIfTriggeredByUserContent . '</th>' .
+                    '<td colspan="{colspan}">{content}{error}</td>';
+                $innerContent     .= '<tr>' . $element->render() . '</tr>';
+            }
+
             $innerContent     .= '</table>';
             $content          .= ZurmoHtml::tag('div', array('class' => 'panel'), $innerContent);
             $content          .= '</div>';

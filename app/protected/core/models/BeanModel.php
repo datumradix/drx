@@ -115,7 +115,8 @@
         /**
          * Utilize for a polymorphic relationship.  Similar to LINK_TYPE_SPECIFIC, you must define the 5th parameter
          * of the relation array.  An example is if Y has a parent relationship, but the parent model can be more than
-         * one type of model.
+         * one TYPE of model. It is for example used in case when comment can be related to multiple modells, for
+         * example to Task, Conversation..., so in comment table we would have relatedmodel_id and relatedmodel_type
          * @var integer
          */
         const LINK_TYPE_POLYMORPHIC  = 2;

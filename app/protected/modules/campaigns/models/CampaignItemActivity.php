@@ -74,5 +74,43 @@
         {
             return 'campaignItem';
         }
+
+        /**
+         * Get ActivityItems by Type and campaign
+         * @param $type
+         * @param $campaign
+         * @param int $offset
+         * @param int $pageSize
+         * @return array of CampaignActivityItem
+         */
+        public static function getByTypeAndCampaign($type, $campaign, $offset, $pageSize)
+        {
+            assert('is_int($type)');
+            assert('is_int($offset)');
+            assert('is_int($pageSize) || ($pageSize === null)');
+            $searchAttributeData = array();
+            $searchAttributeData['clauses'] = array(
+                1 => array(
+                    'attributeName'        => 'type',
+                    'operatorType'         => 'equals',
+                    'value'                => $type,
+                ),
+                2 => array(
+                    'attributeName' => 'campaignItem',
+                    'relatedModelData' => array(
+                        'attributeName'     => 'campaign',
+                        'relatedModelData'  => array(
+                            'attributeName'     => 'id',
+                            'operatorType'      => 'equals',
+                            'value'             => $campaign->id,
+                        ),
+                    ),
+                ),
+            );
+            $searchAttributeData['structure'] = '1 AND 2';
+            $joinTablesAdapter                = new RedBeanModelJoinTablesQueryAdapter(get_called_class());
+            $where = RedBeanModelDataProvider::makeWhere(get_called_class(), $searchAttributeData, $joinTablesAdapter);
+            return self::getSubset($joinTablesAdapter, $offset, $pageSize, $where, 'latestDateTime');
+        }
     }
 ?>

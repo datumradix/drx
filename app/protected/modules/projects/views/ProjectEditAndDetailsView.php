@@ -152,7 +152,7 @@
             $content = parent::renderRightSideFormLayoutForEdit($form);
             return $content;
         }
-        
+
         public static function getDesignerRulesType()
         {
             return 'DetailsViewOnlyForUserOwnerEditAndDetailsView';

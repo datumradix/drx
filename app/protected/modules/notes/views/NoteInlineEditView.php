@@ -58,6 +58,7 @@
                     ),
                     'nonPlaceableAttributeNames' => array(
                         'latestDateTime',
+                        'owner',
                     ),
                     'panelsDisplayType' => FormLayout::PANELS_DISPLAY_TYPE_FIRST,
                     'panels' => array(
@@ -122,6 +123,11 @@
             return $metadata;
         }
 
+        public static function getDesignerRulesType()
+        {
+            return 'NoteInlineEditView';
+        }
+        
         /**
          * Override to change the editableTemplate to place the label above the input.
          * @see DetailsView::resolveElementDuringFormLayoutRender()

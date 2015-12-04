@@ -47,5 +47,10 @@
         {
             return '<h3>' . Zurmo::t('CommentsModule', 'Comments') . '</h3>';
         }
+
+        protected function getCommentsWrappingCssClass()
+        {
+            return 'task-activity';
+        }
     }
 ?>

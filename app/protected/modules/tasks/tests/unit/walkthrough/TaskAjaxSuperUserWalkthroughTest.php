@@ -101,7 +101,7 @@
             $this->assertTrue($task->save());
             $this->assertEquals(2, $task->notificationSubscribers->count());
             $this->setGetArray(array('id' => $task->id));
-            $this->assertFalse($task->doNotificationSubscribersContainPerson($super));
+            $this->assertFalse(NotificationSubscriberUtil::doNotificationSubscribersContainPerson($task, $super));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/addSubscriber', false);
             $this->assertContains('gravatar', $content);
             $this->assertContains('users/default/details', $content);
@@ -185,7 +185,7 @@
             $this->assertTrue($task->save());
             $this->assertEquals(2, $task->notificationSubscribers->count());
             $this->setGetArray(array('id' => $task->id));
-            $this->assertFalse($task->doNotificationSubscribersContainPerson($super));
+            $this->assertFalse(NotificationSubscriberUtil::doNotificationSubscribersContainPerson($task, $super));
             $content = $this->runControllerWithNoExceptionsAndGetContent('tasks/default/addKanbanSubscriber', false);
             $this->assertContains('gravatar', $content);
             $this->assertContains('users/default/details', $content);

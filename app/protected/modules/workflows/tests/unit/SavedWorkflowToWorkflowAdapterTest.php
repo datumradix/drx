@@ -211,7 +211,8 @@
                                                                 'dynamicUserType' => 'CreatedByUser',
                                                                 'type' => 'DynamicTriggeredModelUser',
                                                                 'audienceType' => 1,
-                                                            ))));
+                                                            )),
+                                                         'excludeIfTriggeredByUser' => false));
             $compareData['TimeTrigger'] = array('durationInterval' => 500,
                                                 'durationSign'     => TimeDurationUtil::DURATION_SIGN_POSITIVE,
                                                 'durationType'     => TimeDurationUtil::DURATION_TYPE_DAY,

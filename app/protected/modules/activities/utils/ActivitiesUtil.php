@@ -83,6 +83,7 @@
             if (strlen($modelDisplayString) > 200)
             {
                 $modelDisplayString = substr($modelDisplayString, 0, 200) . '...';
+                $modelDisplayString = nl2br($modelDisplayString);
             }
             if (get_class($model) == 'Task')
             {

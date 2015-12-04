@@ -55,7 +55,7 @@
                     'triggerValueElementTypes' =>
                     array('state' => 'AllContactStatesStaticDropDownForWizardModel'),
                     'cannotTrigger' =>
-                    array('products')
+                    array('products', 'notificationSubscribers', 'comments')
                 )
             );
             return array_merge(parent::getDefaultMetadata(), $metadata);

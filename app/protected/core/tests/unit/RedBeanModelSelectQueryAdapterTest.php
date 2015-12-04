@@ -255,7 +255,7 @@
             $this->assertEquals(0, $adapter->getClausesCount());
             $adapter->addWeekClause('table', 'abc', 'c');
             $this->assertEquals(1, $adapter->getClausesCount());
-            $compareString = "select week({$quote}table{$quote}.{$quote}abc{$quote}) c ";
+            $compareString = "select weekofyear({$quote}table{$quote}.{$quote}abc{$quote}) c ";
             $this->assertEquals($compareString, $adapter->getSelect());
         }
 
@@ -266,7 +266,7 @@
             $this->assertEquals(0, $adapter->getClausesCount());
             $adapter->addWeekClause('table', 'abc', 'c', true);
             $this->assertEquals(1, $adapter->getClausesCount());
-            $compareString = "select week({$quote}table{$quote}.{$quote}abc{$quote} - INTERVAL " .
+            $compareString = "select weekofyear({$quote}table{$quote}.{$quote}abc{$quote} - INTERVAL " .
                              abs(self::$chicagoOffsetInSeconds) . " SECOND) c ";
             $this->assertEquals($compareString, $adapter->getSelect());
         }

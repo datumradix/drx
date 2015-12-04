@@ -39,7 +39,7 @@
         public static function resolveElementMetadata($elementInformation, & $elementMetadata)
         {
         }
-        
+
         public static function resolveCellMetadata($elementInformation, & $cellMetadata)
         {
             $elementClassName = $elementInformation['type'] . 'Element';
