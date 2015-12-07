@@ -267,5 +267,10 @@
         public function resolveOpportunityCustomActionsBeforeSave($model)
         {
         }
+        
+        public function resolveCustomAdditionalTranslatedAttributeLabelsByModelClassName($modelClassName, $language)
+        {
+            return array();
+        }
     }
 ?>
