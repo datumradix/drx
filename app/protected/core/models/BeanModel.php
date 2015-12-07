@@ -456,7 +456,7 @@
 
         protected static function translatedAttributeLabels($language)
         {
-            return Yii::app()->custom->resolveCustomAdditionalTranslatedAttributeLabelsByModelClassName(get_called_class(), $language);
+            return Yii::app()->custom->resolveCustomTranslatedAttributeLabelsByModelClassName(get_called_class(), $language);
         }
 
         /**

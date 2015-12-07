@@ -268,7 +268,7 @@
         {
         }
         
-        public function resolveCustomAdditionalTranslatedAttributeLabelsByModelClassName($modelClassName, $language)
+        public function resolveCustomTranslatedAttributeLabelsByModelClassName($modelClassName, $language)
         {
             return array();
         }
