@@ -3155,6 +3155,8 @@ input[type="button"]:hover:after {
 .form-toolbar .wizard-secondary-action-button {
   margin-left: 45px;
 }
+.SearchView .form-toolbar,
+.element-edit-form .form-toolbar,
 .modal-view-toolbar,
 .dock .form-toolbar {
   padding-top: 13px;
