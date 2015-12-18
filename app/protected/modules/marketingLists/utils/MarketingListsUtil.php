@@ -43,24 +43,18 @@
          * How many items of each type per one request - this is done for performance reasons
          * @var int
          */
-        public static $pageSize = 50;
+        public static $pageSize = 2;
 
         /**
+         * Resolve marketing list.
+         * Because we allow users to either select existing marketingList or enter name for new marketing list,
+         * we need to determine if we will use exisitng one or create new one.
          * @param $resolveSubscribersForm
-         * @param $campaign
-         * @return A
-         * @throws Exception
+         * @return MarketingList
          * @throws NotFoundException
-         * @throws NotSupportedException
          */
-        public static function resolveAndSaveMarketingList($resolveSubscribersForm, $campaign)
+        public static function resolveMarketingList($resolveSubscribersForm)
         {
-            if ($campaign->status != Campaign::STATUS_COMPLETED)
-            {
-                $message = Zurmo::t('MarketingListsModule', 'You can not retarget uncompleted campaigns!');
-                throw new NotSupportedException($message);
-            }
-
             // First check if user selected existing marketing list, if he didn't create new marketing list
             try
             {
@@ -76,63 +70,90 @@
                 }
                 else
                 {
-                    $message = Zurmo::t('MarketingListsModule', 'Invalid or not selected marketing list entered. Please go back and select marketing list!');
+                    $message = Zurmo::t('MarketingListsModule', 'Invalid selected marketing list or not entered new marketing list name. Please go back and select marketing list!');
                     throw new NotFoundException($message);
                 }
             }
-
-            $offset = 0;
-            $pageSize = static::$pageSize;
-            do
-            {
-                $newMarketingListContacts = array();
-                if ($resolveSubscribersForm->retargetOpenedEmailRecipients)
-                {
-                    $campaignItemOpenActivities = CampaignItemActivity::getByTypeAndCampaign(CampaignItemActivity::TYPE_OPEN, $campaign, $offset, $pageSize);
-                    foreach ($campaignItemOpenActivities as $campaignItemActivity)
-                    {
-                        $newMarketingListContacts[] = $campaignItemActivity->campaignItem->contact;
-                    }
-                }
-                if ($resolveSubscribersForm->retargetClickedEmailRecipients)
-                {
-                    $campaignItemClickActivities = CampaignItemActivity::getByTypeAndCampaign(CampaignItemActivity::TYPE_CLICK, $campaign, $offset, $pageSize);
-                    foreach ($campaignItemClickActivities as $campaignItemActivity)
-                    {
-                        $newMarketingListContacts[] = $campaignItemActivity->campaignItem->contact;
-                    }
-                }
-                if ($resolveSubscribersForm->retargetNotViewedEmailRecipients)
-                {
-                    $campaignItemNotViewedItems = CampaignItem::getNotViewedItems($campaign, $offset, $pageSize);
-
-                    foreach ($campaignItemNotViewedItems as $campaignItem)
-                    {
-                        $newMarketingListContacts[] = $campaignItem->contact;
-                    }
-                }
-                if ($resolveSubscribersForm->retargetNotClickedEmailRecipients)
-                {
-                    $campaignItemNotClickedItems = CampaignItem::getNotClickedOrUnsubscribedOrSpamItems($campaign, $offset, $pageSize);
-                    foreach ($campaignItemNotClickedItems as $campaignItem)
-                    {
-                        $newMarketingListContacts[] = $campaignItem->contact;
-                    }
-                }
-                foreach ($newMarketingListContacts as $marketingListContact)
-                {
-                    if (!MarketingListMember::getByMarketingListIdAndContactId($marketingList->id, $marketingListContact->id))
-                    {
-                        $marketingListMember               = new MarketingListMember();
-                        $marketingListMember->unsubscribed = 0;
-                        $marketingListMember->contact      = $marketingListContact;
-                        $marketingList->marketingListMembers->add($marketingListMember);
-                        $marketingList->save();
-                    }
-                }
-                $offset = $offset + $pageSize;
-            } while (!empty($newMarketingListContacts));
             return $marketingList;
+        }
+
+        /**
+         * Get contacts based on campaign and activity types
+         * @param $resolveSubscribersForm
+         * @param $campaign
+         * @param $offset
+         * @param $pageSize
+         * @return array
+         */
+        public static function getContactsByResolveSubscribersFormAndCampaignAndOffsetAndPageSize($resolveSubscribersForm, $campaign, $offset, $pageSize)
+        {
+            $contacts = CampaignItem::getAllContactsFromCampaignItemBasedOnItemActivity($campaign->id, $offset, $pageSize,
+                $resolveSubscribersForm->retargetNotViewedEmailRecipients,
+                $resolveSubscribersForm->retargetNotClickedEmailRecipients,
+                $resolveSubscribersForm->retargetOpenedEmailRecipients,
+                $resolveSubscribersForm->retargetClickedEmailRecipients
+                );
+            return $contacts;
+        }
+
+        /**
+         * Get number of pages
+         * @param $resolveSubscribersForm
+         * @param $campaign
+         * @return float
+         */
+        public static function getNumberOfContactPagesByResolveSubscribersFormAndCampaign($resolveSubscribersForm, $campaign)
+        {
+            $maxItems = static::getCountOfContactsByResolveSubscribersFormAndCampaign($resolveSubscribersForm, $campaign);
+            $numberOfPages = ceil($maxItems/static::$pageSize);
+            return $numberOfPages;
+        }
+
+        /**
+         * Get count of maximum items .
+         * Because in one iteration we get paginatet results for all four types, to find out how many pages of results we have,
+         * we need to find out maximum number of results of all types.
+         * Public for test purposes only
+         * @param $resolveSubscribersForm
+         * @param $campaign
+         * @return int
+         */
+        public static function getCountOfContactsByResolveSubscribersFormAndCampaign($resolveSubscribersForm, $campaign)
+        {
+            $maxItems = 0;
+            if ($resolveSubscribersForm->retargetOpenedEmailRecipients)
+            {
+                $count = CampaignItem::getCountOfCampaignItemsByActivityTypeAndCampaign(CampaignItemActivity::TYPE_OPEN, $campaign->id);
+                if ($count > $maxItems)
+                {
+                    $maxItems = $count;
+                }
+            }
+            if ($resolveSubscribersForm->retargetClickedEmailRecipients)
+            {
+                $count = CampaignItem::getCountOfCampaignItemsByActivityTypeAndCampaign(CampaignItemActivity::TYPE_CLICK, $campaign->id);
+                if ($count > $maxItems)
+                {
+                    $maxItems = $count;
+                }
+            }
+            if ($resolveSubscribersForm->retargetNotViewedEmailRecipients)
+            {
+                $count = CampaignItem::getCountOfNotViewedContactIds($campaign->id);
+                if ($count > $maxItems)
+                {
+                    $maxItems = $count;
+                }
+            }
+            if ($resolveSubscribersForm->retargetNotClickedEmailRecipients)
+            {
+                $count = CampaignItem::getCountOfNotClickedOrUnsubscribedOrSpamContactIds($campaign->id);
+                if ($count > $maxItems)
+                {
+                    $maxItems = $count;
+                }
+            }
+            return $maxItems;
         }
 
         /**
@@ -144,6 +165,33 @@
         {
             $text = Zurmo::t('MarketingListsModule', 'Retargeting List');
             return  $campaign->name . ' - ' . $text . ' - ' . DateTimeUtil::getTodaysDate();
+        }
+
+        /**
+         * Add new subscribers to marketing list
+         * @param $marketingListId
+         * @param array $contacts
+         * @param null $scenario
+         * @return array
+         * @throws NotFoundException
+         */
+        public static function addNewSubscribersToMarketingList($marketingListId, &$contacts, $scenario = null)
+        {
+            $subscriberInformation = array('subscribedCount' => 0, 'skippedCount' => 0);
+            $marketingList         = MarketingList::getById((int) $marketingListId);
+            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($marketingList);
+            foreach ($contacts as $contact)
+            {
+                if ($marketingList->addNewMember(null, false, $contact, $scenario))
+                {
+                    $subscriberInformation['subscribedCount']++;
+                }
+                else
+                {
+                    $subscriberInformation['skippedCount']++;
+                }
+            }
+            return $subscriberInformation;
         }
     }
 ?>

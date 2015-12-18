@@ -86,6 +86,13 @@
             {
                 $additionalSettingsJs .=  $this->templates;
             };
+            $defaultValue = '';
+            if ($this->defaultValue)
+            {
+                $defaultValue = str_replace("'", "\'", $this->defaultValue);
+                $defaultValue = preg_replace("/\n/m", '\n', $defaultValue); // Fix issues with new lines in javascript default value
+            }
+
             // Begin Not Coding Standard
             $javaScript = <<<EOD
 var action = $('#$id').closest("form").attr('action');
@@ -111,9 +118,10 @@ onDataRequest:function (mode, query, callback) {
     allowRepeat: true,
     triggerChar: '{$this->triggerChar}',
     minChars:    '{$this->minChars}',
-    defaultValue: '{$this->defaultValue}',
+    defaultValue: '{$defaultValue}'.replace(/\\'/g, "'"),
     {$additionalSettingsJs}
   });
+  $('.mentions-input-box').find('textarea').off('blur');
 EOD;
             // End Not Coding Standard
             Yii::app()->getClientScript()->registerScript(__CLASS__ . '#' . $id, $javaScript, CClientScript::POS_END);
