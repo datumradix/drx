@@ -43,7 +43,7 @@
          * How many items of each type per one request - this is done for performance reasons
          * @var int
          */
-        public static $pageSize = 2;
+        public static $pageSize = 50;
 
         /**
          * Resolve marketing list.
