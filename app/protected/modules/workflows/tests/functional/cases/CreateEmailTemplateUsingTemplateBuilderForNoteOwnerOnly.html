@@ -36,43 +36,23 @@
     <td>30000</td>
 </tr>
 <tr>
-    <td>assertTextPresent</td>
-    <td>Create</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
-    <td>Workflows</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
-    <td>Templates</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
-    <td>Time Queue</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
+    <td>waitForTextPresent</td>
     <td>Message Queue</td>
     <td></td>
 </tr>
 <tr>
-    <td>assertTextPresent</td>
-    <td>Ordering</td>
-    <td></td>
+    <td>assertText</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[2]/ul[1]/li/a</td>
+    <td>Create Template</td>
 </tr>
 <tr>
     <td>assertElementPresent</td>
-    <td>link=Create Template</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[2]/ul[1]/li/a</td>
     <td></td>
 </tr>
 <tr>
-    <td>click</td>
-    <td>link=Create Template</td>
+    <td>clickAndWait</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[2]/ul[1]/li/a</td>
     <td></td>
 </tr>
 <tr>
@@ -88,36 +68,6 @@
 <tr>
     <td>waitForTextPresent</td>
     <td>Email Template Wizard</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
-    <td>Plain Text</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
-    <td>HTML</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
-    <td>Template Builder</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertElementPresent</td>
-    <td>//div[@id='EmailTemplateTypeView']/ul/li[1]/a/span</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertElementPresent</td>
-    <td>//div[@id='EmailTemplateTypeView']/ul/li[2]/a/span</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertElementPresent</td>
-    <td>//div[@id='EmailTemplateTypeView']/ul/li[2]/a/span</td>
     <td></td>
 </tr>
 <!--use template builder-->
@@ -142,6 +92,11 @@
     <td></td>
 </tr>
 <!--check validation-->
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//div[@id='GeneralDataForEmailTemplateWizardView']/div[2]/div/div/a[2]/span[3]</td>
+    <td></td>
+</tr>
 <tr>
     <td>click</td>
     <td>//div[@id='GeneralDataForEmailTemplateWizardView']/div[2]/div/div/a[2]/span[3]</td>
@@ -598,6 +553,11 @@
 
 <!--go to saved templates-->
 <tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>
+<tr>
     <td>click</td>
     <td>//a[@id='chooser-overlay']/span</td>
     <td></td>
@@ -671,6 +631,11 @@
     <td>waitForText</td>
     <td>//div[@id='BuilderCanvasWizardView']/div[1]/h3</td>
     <td>Canvas</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <tr>
     <td>waitForElementPresent</td>
