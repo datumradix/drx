@@ -45,8 +45,8 @@
             $this->assertFalse($form->validate());
             $errors = $form->getErrors();
             $this->assertEquals(1, count($errors));
-            $this->assertTrue(isset($errors['marketingList']) && is_array($errors['marketingList']));
-            $this->assertEquals('Please select existing marketing list or enter name for new marketing list.', $errors['marketingList'][0]);
+            $this->assertTrue(isset($errors['newMarketingListName']) && is_array($errors['newMarketingListName']));
+            $this->assertEquals('Please select existing marketing list or enter name for new marketing list.', $errors['newMarketingListName'][0]);
 
             $form->newMarketingListName = 'AAA';
             $this->assertTrue($form->validate());
@@ -56,15 +56,15 @@
             $this->assertFalse($form->validate());
             $errors = $form->getErrors();
             $this->assertEquals(1, count($errors));
-            $this->assertTrue(isset($errors['marketingList']) && is_array($errors['marketingList']));
-            $this->assertEquals('Please select existing marketing list or enter name for new marketing list.', $errors['marketingList'][0]);
+            $this->assertTrue(isset($errors['newMarketingListName']) && is_array($errors['newMarketingListName']));
+            $this->assertEquals('Please select existing marketing list or enter name for new marketing list.', $errors['newMarketingListName'][0]);
 
             $form->marketingList = array(); // Wrong format - empty array
             $this->assertFalse($form->validate());
             $errors = $form->getErrors();
             $this->assertEquals(1, count($errors));
-            $this->assertTrue(isset($errors['marketingList']) && is_array($errors['marketingList']));
-            $this->assertEquals('Please select existing marketing list or enter name for new marketing list.', $errors['marketingList'][0]);
+            $this->assertTrue(isset($errors['newMarketingListName']) && is_array($errors['newMarketingListName']));
+            $this->assertEquals('Please select existing marketing list or enter name for new marketing list.', $errors['newMarketingListName'][0]);
 
             $form->marketingList = array('id' => 5);
             $this->assertTrue($form->validate());
