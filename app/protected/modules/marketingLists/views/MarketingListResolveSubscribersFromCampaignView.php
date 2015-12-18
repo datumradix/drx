@@ -39,6 +39,8 @@
      */
     class MarketingListResolveSubscribersFromCampaignView extends EditView
     {
+        const NOTIFICATION_BAR_ID                           = 'FlashMessageBar';
+
         public static function getDefaultMetadata()
         {
             $metadata = array(
@@ -112,6 +114,136 @@
                 ),
             );
             return $metadata;
+        }
+
+        protected function renderAfterFormLayout($form)
+        {
+            parent::renderAfterFormLayout($form);
+            $this->registerSubscribeCampaignItemsToMarketingListScript($form);
+            $this->registerUpdateFlashBarScript($form);
+        }
+
+        protected function resolveActiveFormAjaxValidationOptions()
+        {
+            $ajaxValidationOptions = array('enableAjaxValidation' => true,
+                                           'clientOptions'        => array(
+                                               'validateOnSubmit'  => true,
+                                               'validateOnChange'  => false,
+                                               'beforeValidate'    => 'js:$(this).beforeValidateAction',
+                                               'afterValidate'     => 'js:$(this).afterValidateAjaxAction',
+                                               'afterValidateAjax' => '',
+                                               'inputContainer'    => 'td',
+                                           ));
+            return array_merge($ajaxValidationOptions,
+                array('action' => $this->getSubscribeUrl()));
+        }
+
+        protected function getValidateAndSaveUrl()
+        {
+            return Yii::app()->createUrl('/marketingLists/default/attemptToValidateAjaxSubscriberFormFromPost', $_GET);
+        }
+
+        protected function registerSubscribeCampaignItemsToMarketingListScript($form)
+        {
+            // Begin Not Coding Standard
+            $script = '$("#' . $form->getId() . '").submit(function(event){
+                           event.preventDefault();
+                           subscribeCampaignItemsToMarketingList(event, 0, 0, 0);
+                           return false;
+                       });
+
+                        function subscribeCampaignItemsToMarketingList(event, page, subscribedCount, skippedCount, marketingListId) {
+                            marketingListId = marketingListId || null; // set default value
+                            var notificationBarId   = "' . static::NOTIFICATION_BAR_ID . '";
+                            var url                 = "' . $this->getSubscribeUrl() . '&page=" + page + "&subscribedCount=" + subscribedCount + "&skippedCount=" + skippedCount;
+                            if (marketingListId)
+                            {
+                                url = url + "&marketingListId=" + marketingListId;
+                            }
+                            var event               = event;
+                            var page                = page;
+                            var subscribedCount     = subscribedCount;
+                            var skippedCount        = skippedCount;
+                            var formId = "' . $form->getId() . '";
+                            $.ajax(
+                                {
+                                    url:        url,
+                                    dataType:   "json",
+                                    type:       "post",
+                                    data:       $("#" + formId).serialize(),
+                                    beforeSend: function(request, settings)
+                                                {
+                                                    event.preventDefault();
+                                                    $(this).makeLargeLoadingSpinner(true,  $("#' . $form->getId() . '").parent());
+                                                },
+                                    success:    function(data, status, request)
+                                                {
+                                                    updateFlashBar(data, notificationBarId);
+                                                    if (data.nextPage)
+                                                    {
+                                                        subscribeCampaignItemsToMarketingList(event, data.nextPage, data.subscribedCount, data.skippedCount, data.marketingListId);
+                                                    }
+                                                    else if (data.redirectUrl)
+                                                    {
+                                                        window.location = data.redirectUrl;
+                                                    }
+                                                },
+                                    error:      function(request, status, error)
+                                                {
+                                                    var data = {' .
+                                                                '   "message" : "' .
+                                                                    Zurmo::t('Core',
+                                                                        'There was an error processing your request'). '",
+                                                                    "type"    : "error"
+                                                                };
+                                                    updateFlashBar(data, notificationBarId);
+                                                },
+                                    complete:   function(request, status)
+                                                {
+                                                    $(this).makeLargeLoadingSpinner(false,  $("#' . $form->getId() . '").parent());
+                                                    $("#' . $form->getId() . ' span.z-spinner").text("");
+                                                    return false;
+                                                }
+                                }
+                            );
+                        }';
+            // End Not Coding Standard
+            Yii::app()->clientScript->registerScript('SubscribeCampaignItemsToMarketingList', $script);
+        }
+
+        protected function registerUpdateFlashBarScript()
+        {
+            $scriptName = $this->getId() . '-updateFlashBar';
+            if (Yii::app()->clientScript->isScriptRegistered($scriptName))
+            {
+                return;
+            }
+            else
+            {
+                Yii::app()->clientScript->registerScript($scriptName, '
+                    function updateFlashBar(data, flashBarId)
+                    {
+                        $("#" + flashBarId).jnotifyAddMessage(
+                        {
+                            text: data.message,
+                            permanent: true,
+                            showIcon: true,
+                            type: data.type,
+                            removeExisting: true
+                        });
+                    }
+                ');
+            }
+        }
+
+        protected function getSubscribeUrl()
+        {
+            return Yii::app()->createUrl('/marketingLists/default/saveSubscribersFromCampaign', $_GET);
+        }
+
+        protected function getAfterClickSubmitButtonScript()
+        {
+            return "subscribeCampaignItemsToMarketingList(event, 0, 0, 0);";
         }
 
         protected function resolveElementDuringFormLayoutRender(& $element)
