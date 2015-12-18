@@ -620,6 +620,10 @@
             $autoCompleteResults  = array();
             foreach ($users as $user)
             {
+                if (!$user->isActive)
+                {
+                    continue;
+                }
                 // Check privileges if users have access to model
                 if (isset($relatedModel) &&
                     $relatedModel instanceof SecurableItem &&

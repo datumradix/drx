@@ -134,7 +134,7 @@
 
         protected function getExtraRenderFormBottomPanelScriptPart()
         {
-            return parent::getExtraRenderFormBottomPanelScriptPart() .
+            return parent::getExtraRenderFormBottomPanelScriptPart() . $this->agetExtraRenderFormBottomPanelScriptPart() .
                     "$('#save-as-advanced-search').click( function()
                     {
                         $('#save-search-area').show();
@@ -251,6 +251,79 @@
                      $('#save-search-area').hide();
                      jQuery.yii.submitForm(this, '', {}); return false;
             ";
+        }
+
+        /**
+         * Override as needed.
+         */
+        protected function renderFormBottomPanelExtraLinks()
+        {
+            $content = parent::renderFormBottomPanelExtraLinks();
+            $content .= $this->renderShowOnlyOwnedItemsInputContent();
+            return $content;
+        }
+
+        protected function renderShowOnlyOwnedItemsInputContent()
+        {
+            $modelClassName = $this->listModelClassName;
+            $model = new $modelClassName;
+            if ($this->showAdvancedSearch && $model instanceof OwnedSecurableItem)
+            {
+                return ZurmoHtml::link(Zurmo::t('Core', 'Items I Own'), '#', array('id' => 'items-i-own-search-link' . $this->gridIdSuffix));
+            }
+        }
+
+        protected function agetExtraRenderFormBottomPanelScriptPart()
+        {
+            $modelClassName = $this->listModelClassName;
+            $model = new $modelClassName;
+            if ($this->showAdvancedSearch && $model instanceof OwnedSecurableItem)
+            {
+                // Begin Not Coding Standard
+                $script = "
+                    $('#items-i-own-search-link" . $this->gridIdSuffix . "').unbind('click');
+                    $('#items-i-own-search-link" . $this->gridIdSuffix . "').bind('click',  function(event){
+                        $(this).closest('form').find('.search-view-1').show();
+                        if (!hasOwnedItemsOnlyFieldAlreadySelected())
+                        {
+                            var rowCounter = $('#rowCounter-search-form').val();
+                            $('#addExtraAdvancedSearchRowButton-" . $this->getSearchFormId() . "').click();
+                            var checkExist = setInterval(function() {
+                                if ($('#" . get_class($this->model) . "_dynamicClauses_' + rowCounter + '_attributeIndexOrDerivedType').length) {
+                                    $('#" . get_class($this->model) . "_dynamicClauses_' + rowCounter + '_attributeIndexOrDerivedType').val('ownedItemsOnly').change();
+                                    clearInterval(checkExist);
+                                    var checkExist2 = setInterval(function() {
+                                        if ($('#" . get_class($this->model) . "_dynamicClauses_' + rowCounter + '_ownedItemsOnly').length) {
+                                            $('#" . get_class($this->model) . "_dynamicClauses_' + rowCounter + '_ownedItemsOnly').click();
+                                            $('#" . get_class($this->model) . "_dynamicClauses_' + rowCounter + '_ownedItemsOnly').parent().addClass('c_on');
+
+                                            clearInterval(checkExist2);
+                                        }
+                                    }, 20)
+                                }
+                            }, 20);
+                        }
+                        return false;
+                    }
+                    );
+                    function hasOwnedItemsOnlyFieldAlreadySelected()
+                    {
+                        var hasOwnedItemsOnlyField = false;
+                        $('#items-i-own-search-link').closest('form').find('.attribute-dropdown').each(function() {
+                          console.log($(this).val());
+                            if ($(this).val() == 'ownedItemsOnly')
+                            {
+                              hasOwnedItemsOnlyField = true
+                              return false; // To break each loop
+                            }
+                        })
+                        return hasOwnedItemsOnlyField;
+                    }
+                ";
+                // End Not Coding Standard
+                return $script;
+            }
+            return;
         }
     }
 ?>

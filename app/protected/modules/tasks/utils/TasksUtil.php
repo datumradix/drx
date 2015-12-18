@@ -275,17 +275,17 @@
          */
         public static function isKanbanItemTypeValidBasedOnTaskStatus($kanbanItemType, $taskStatus)
         {
-            if($taskStatus == null && $kanbanItemType == KanbanItem::TYPE_SOMEDAY)
+            if ($taskStatus == null && $kanbanItemType == KanbanItem::TYPE_SOMEDAY)
             {
                 return true;
             }
-            elseif($taskStatus == null)
+            elseif ($taskStatus == null)
             {
                 return false;
             }
             if ($taskStatus == Task::STATUS_NEW)
             {
-                if($kanbanItemType == KanbanItem::TYPE_SOMEDAY || $kanbanItemType == KanbanItem::TYPE_TODO)
+                if ($kanbanItemType == KanbanItem::TYPE_SOMEDAY || $kanbanItemType == KanbanItem::TYPE_TODO)
                 {
                     return true;
                 }
@@ -295,7 +295,7 @@
                 }
             }
             $data = self::getTaskStatusMappingToKanbanItemTypeArray();
-            if($data[intval($taskStatus)] == $kanbanItemType)
+            if ($data[intval($taskStatus)] == $kanbanItemType)
             {
                 return true;
             }

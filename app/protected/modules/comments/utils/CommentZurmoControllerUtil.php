@@ -105,7 +105,7 @@
                     $itemIds[] = $mentionedUser->getClassId('Item');
                 }
                 $itemIdsImploded = array();
-                $itemIdsImploded['itemIds'] = implode(',', $itemIds);
+                $itemIdsImploded['itemIds'] = implode(',', $itemIds); // Not Coding Standard
 
                 $explicitReadWriteModelPermissions = ExplicitReadWriteModelPermissionsUtil::makeBySecurableItem($this->relatedModel);
                 ConversationParticipantsUtil::resolveConversationHasManyParticipantsFromPost($this->relatedModel,

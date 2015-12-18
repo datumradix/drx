@@ -195,23 +195,8 @@
                 $message = Zurmo::t('MarketingListsModule', 'You can not retarget uncompleted campaigns!');
                 throw new NotSupportedException($message);
             }
-            if (isset($_POST['MarketingListResolveSubscribersFromCampaignForm']))
-            {
-                $resolveSubscribersForm->attributes = $_POST['MarketingListResolveSubscribersFromCampaignForm'];
-                $resolveSubscribersForm->campaignId = $campaignId;
-                if ($resolveSubscribersForm->validate())
-                {
-                    $marketingList = MarketingListsUtil::resolveAndSaveMarketingList($resolveSubscribersForm, $campaign);
-                    Yii::app()->user->setFlash('notification',
-                        Zurmo::t('MarketingListsModule', 'Contacts added to Marketing List.')
-                    );
-                    $this->redirect(array($this->getId() . '/details', 'id' => $marketingList->id));
-                }
-            }
-            else
-            {
-                $resolveSubscribersForm->newMarketingListName = MarketingListsUtil::generateRandomNameForCampaignRetargetingList($campaign);
-            }
+
+            $resolveSubscribersForm->newMarketingListName = MarketingListsUtil::generateRandomNameForCampaignRetargetingList($campaign);
             $introView               = new MarketingListCampaignRetargetingIntroView(get_class($this->getModule()));
             $actionBarView           = new SecuredActionBarForMarketingListCampaignRetargetingView(
                 'default',
@@ -241,9 +226,132 @@
             echo $view->render();
         }
 
+        public function actionSaveSubscribersFromCampaign($campaignId, $page = 0, $subscribedCount = 0, $skippedCount = 0, $marketingListId = null)
+        {
+            $resolveSubscribersForm           = new MarketingListResolveSubscribersFromCampaignForm();
+            try
+            {
+                $campaign = Campaign::getById(intval($campaignId));
+            }
+            catch (NotFoundException $e)
+            {
+                $message = Zurmo::t('MarketingListsModule', 'Unknown campaign!');
+                echo CJSON::encode(array('message' => $message, 'type' => 'message'));
+                Yii::app()->end(0, false);
+            }
+            if ($campaign->status != Campaign::STATUS_COMPLETED)
+            {
+                $message = Zurmo::t('MarketingListsModule', 'You can not retarget uncompleted campaigns!');
+                echo CJSON::encode(array('message' => $message, 'type' => 'message'));
+                Yii::app()->end(0, false);
+            }
+            $resolveSubscribersForm->campaignId = $campaignId;
+            $resolveSubscribersForm->attributes = $_POST['MarketingListResolveSubscribersFromCampaignForm'];
+            // ToDo: For some reason sometime $resolveSubscribersForm->marketingList['id'] is not set, so code below is used to prevent this weird case. Should be checked.
+            if (!isset($resolveSubscribersForm->marketingList['id']) &&
+                isset($_POST['MarketingListResolveSubscribersFromCampaignForm']['marketingList']['id']) &&
+                $_POST['MarketingListResolveSubscribersFromCampaignForm']['marketingList']['id'] != null
+            )
+            {
+                $resolveSubscribersForm->marketingList['id'] = (int)$_POST['MarketingListResolveSubscribersFromCampaignForm']['marketingList']['id'];
+            }
+            $pageSize        = MarketingListsUtil::$pageSize;
+            $page            = (int)$page;
+            $subscribedCount = (int)$subscribedCount;
+            $skippedCount    = (int)$skippedCount;
+
+            if ($page > 0 && $resolveSubscribersForm->marketingList['id'] == null && $marketingListId != null)
+            {
+                $resolveSubscribersForm->marketingList['id'] = $marketingListId;
+                $resolveSubscribersForm->newMarketingListName = null;
+            }
+            $this->attemptToValidateAjaxSubscriberFormFromPost($resolveSubscribersForm);
+            if ($resolveSubscribersForm->validate())
+            {
+                $totalPages = MarketingListsUtil::getNumberOfContactPagesByResolveSubscribersFormAndCampaign($resolveSubscribersForm, $campaign);
+                $marketingList = MarketingListsUtil::resolveMarketingList($resolveSubscribersForm);
+                $offset = $page * $pageSize;
+                $contacts = MarketingListsUtil::getContactsByResolveSubscribersFormAndCampaignAndOffsetAndPageSize($resolveSubscribersForm, $campaign, $offset, $pageSize);
+                $subscriberInformation = MarketingListsUtil::addNewSubscribersToMarketingList($marketingList->id, $contacts);
+                if ($totalPages == ($page + 1) || $totalPages == 0)
+                {
+                    $subscriberInformation = array('subscribedCount' => $subscribedCount + $subscriberInformation['subscribedCount'],
+                                                   'skippedCount'    => $skippedCount    + $subscriberInformation['skippedCount'],
+                                                   );
+                    $message = $this->renderCompleteMessageBySubscriberInformation($subscriberInformation);
+                    Yii::app()->user->setFlash('notification', $message);
+                    echo CJSON::encode(array('message' => $message,
+                                             'type' => 'message',
+                                             'redirectUrl'     => Yii::app()->createAbsoluteUrl('marketingLists/default/details/', array('id' => $marketingList->id)),
+                        ));
+                }
+                else
+                {
+                    $percentageComplete = (round($page / $totalPages, 2) * 100) . ' %';
+                    $message            = Zurmo::t('MarketingListsModule', 'Processing: {percentageComplete} complete',
+                        array('{percentageComplete}' => $percentageComplete));
+                    echo CJSON::encode(array('message'         => $message,
+                                             'type'            => 'message',
+                                             'nextPage'        => $page + 1,
+                                             'subscribedCount' => $subscribedCount + $subscriberInformation['subscribedCount'],
+                                             'skippedCount'    => $skippedCount    + $subscriberInformation['skippedCount'],
+                                             'marketingListId' => $marketingList->id,
+                        ));
+                }
+            }
+            else
+            {
+                $errors = $resolveSubscribersForm->getErrors();
+                $message = Zurmo::t('MarketingListsModule', 'There are some errors.') . '<br />';
+                foreach ($errors as $attribute => $attributeErrors)
+                {
+                    foreach ($attributeErrors as $attributeError)
+                    {
+                        $message .= $attributeError . "<br />";
+                    }
+                }
+                echo CJSON::encode(array('message' => $message, 'type' => 'message'));
+            }
+            Yii::app()->end(0, false);
+        }
+
+        protected function renderCompleteMessageBySubscriberInformation(array $subscriberInformation)
+        {
+            $message = Zurmo::t('MarketingListsModule', '{subscribedCount} contacts subscribed.',
+                array('{subscribedCount}' => $subscriberInformation['subscribedCount']));
+            if (array_key_exists('skippedCount', $subscriberInformation) && $subscriberInformation['skippedCount'])
+            {
+                $message .= ' ' . Zurmo::t('MarketingListsModule', '{skippedCount} contacts skipped, already in the list.',
+                        array('{skippedCount}' => $subscriberInformation['skippedCount']));
+            }
+            return $message;
+        }
+
         protected static function getSearchFormClassName()
         {
             return 'MarketingListsSearchForm';
+        }
+
+        protected function attemptToValidateAjaxSubscriberFormFromPost($resolveSubscribersForm)
+        {
+            if (isset($_POST['ajax']) && $_POST['ajax'] == 'edit-form')
+            {
+                if ($resolveSubscribersForm->validate())
+                {
+                    $response = CJSON::encode(array());
+                }
+                else
+                {
+                    $errorData = array();
+                    foreach ($resolveSubscribersForm->getErrors() as $attribute => $errors)
+                    {
+                        $errorData[ZurmoHtml::activeId($resolveSubscribersForm, $attribute)] = $errors;
+                    }
+                    $response  = CJSON::encode($errorData);
+                }
+                echo $response;
+                Yii::app()->end(0, false);
+            }
         }
     }
 ?>

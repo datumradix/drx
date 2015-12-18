@@ -174,7 +174,13 @@
                 {
                     foreach ($peopleToSendNotification as $key => $person)
                     {
+                        $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
+                        $user     = $person->castDown(array($modelDerivationPathToItem));
                         if ($person->getClassId('Item') == $relatedUser->getClassId('Item'))
+                        {
+                            unset($peopleToSendNotification[$key]);
+                        }
+                        elseif (!CommentsNotificationUtil::hasPersonHaveRightsAndPermissionsToAccessModelAndIsUserActive($task, $user))
                         {
                             unset($peopleToSendNotification[$key]);
                         }

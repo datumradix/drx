@@ -279,6 +279,7 @@
             $task = Task::getById($taskId);
             $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(0, Notification::getCount());
+
             //Now add comment
             $comment = new Comment();
             $comment->description = 'some comment';
@@ -288,6 +289,37 @@
             $this->assertEquals(0, Notification::getCount());
             TasksNotificationUtil::submitTaskNotificationMessage($task, TasksNotificationUtil::TASK_COMMENT_CREATED_OR_UPDATED,
                                                                  self::$super, $comment);
+            // User shouldn't get notofications because they do not have permissions on task
+            $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Notification::getCount());
+
+            self::$sally->setRight('TasksModule', TasksModule::RIGHT_ACCESS_TASKS);
+            $this->assertTrue(self::$sally->save());
+            $task->addPermissions(self::$sally, Permission::READ_WRITE_CHANGE_PERMISSIONS);
+            $this->assertTrue($task->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($task, self::$sally);
+
+            self::$katie->setRight('TasksModule', TasksModule::RIGHT_ACCESS_TASKS);
+            $this->assertTrue(self::$katie->save());
+            $task->addPermissions(self::$katie, Permission::READ_WRITE_CHANGE_PERMISSIONS);
+            $this->assertTrue($task->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($task, self::$katie);
+
+            self::$steve->setRight('TasksModule', TasksModule::RIGHT_ACCESS_TASKS);
+            $this->assertTrue(self::$steve->save());
+            $task->addPermissions(self::$steve, Permission::READ_WRITE_CHANGE_PERMISSIONS);
+            $this->assertTrue($task->save());
+            AllPermissionsOptimizationUtil::securableItemGivenPermissionsForUser($task, self::$steve);
+
+            //Now add new comment
+            $comment = new Comment();
+            $comment->description = 'some comment 2';
+            $task->comments->add($comment);
+            $this->assertTrue($task->save());
+            $this->assertEquals(0, Yii::app()->emailHelper->getQueuedCount());
+            $this->assertEquals(0, Notification::getCount());
+            TasksNotificationUtil::submitTaskNotificationMessage($task, TasksNotificationUtil::TASK_COMMENT_CREATED_OR_UPDATED,
+                self::$super, $comment);
 
             $this->assertEquals(3, Yii::app()->emailHelper->getQueuedCount());
             $this->assertEquals(3, Notification::getCount());
