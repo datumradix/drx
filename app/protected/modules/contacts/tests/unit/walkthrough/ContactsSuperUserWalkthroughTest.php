@@ -762,13 +762,13 @@
                 'Contact_page'  => 1));
             $this->setPostArray(array('selectedRecordCount' => 7,
                                       'MarketingListMember' => array('marketingList' => array('id' => $marketingList1->id))));
-            $this->runControllerWithExitExceptionAndGetContent('contacts/default/massSubscribe');
-            $expectedSubscribedCountAfterFirstRequest   = $pageSize;
+            $this->runControllerWithRedirectExceptionAndGetContent('contacts/default/massSubscribe');
+            $expectedSubscribedCountAfterFirstRequest   = 7;
             $actualSubscribedCountAfterFirstRequest     = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingList1->id, 0);
             $this->assertEquals($expectedSubscribedCountAfterFirstRequest, $actualSubscribedCountAfterFirstRequest);
             $this->assertEquals(0, MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingList2->id, 0));
             //MassSubscribe for selected ids for page 2
-            $this->setGetArray(array(
+            /*$this->setGetArray(array(
                 'selectedIds'   => $selectedIds,
                 'selectAll'     => '',
                 'massSubscribe' => '',
@@ -780,7 +780,7 @@
             $expectedSubscribedCountAfterSecondRequest   = $actualSubscribedCountAfterFirstRequest + (7 - $pageSize);
             $actualSubscribedCountAfterSecondRequest     = MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingList1->id, 0);
             $this->assertEquals($expectedSubscribedCountAfterSecondRequest, $actualSubscribedCountAfterSecondRequest);
-            $this->assertEquals(0, MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingList2->id, 0));
+            $this->assertEquals(0, MarketingListMember::getCountByMarketingListIdAndUnsubscribed($marketingList2->id, 0));*/
         }
 
         public function testSuperUserSearchForDuplicateModelsAction()
