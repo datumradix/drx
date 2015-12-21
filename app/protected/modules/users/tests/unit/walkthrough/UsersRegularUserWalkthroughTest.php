@@ -54,6 +54,7 @@
             $aUser->save();
             $bUser = UserTestHelper::createBasicUser('bUser');
             $bUser->setRight('UsersModule', UsersModule::RIGHT_ACCESS_USERS);
+            $bUser->setRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS);
             $bUser->save();
             $cUser = UserTestHelper::createBasicUser('cUser');
             $dUser = UserTestHelper::createBasicUser('dUser');

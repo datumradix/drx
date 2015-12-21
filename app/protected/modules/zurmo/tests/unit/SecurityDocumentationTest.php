@@ -110,7 +110,7 @@
             $superAdminDudes->setPolicy('UsersModule', UsersModule::POLICY_PASSWORD_EXPIRES, 0);
             $this->assertTrue($superAdminDudes->save());
 
-            $adminDudes->setRight ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS);
+            $adminDudes->setRight ('UsersModule', UsersModule::RIGHT_MANAGE_USERS);
             $adminDudes->setRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB);
             $adminDudes->setRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_MOBILE);
             $adminDudes->setRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB_API);
@@ -338,15 +338,15 @@
             $this->assertEquals(Right::ALLOW, $supportDude      ->getEffectiveRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB));
             $this->assertEquals(Right::ALLOW, $everyone         ->getEffectiveRight('UsersModule', UsersModule::RIGHT_LOGIN_VIA_WEB));
 
-            $this->assertEquals(Right::ALLOW, $adminDude        ->getEffectiveRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::ALLOW, $adminDudes       ->getEffectiveRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $salesDude1       ->getEffectiveRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $salesDude2       ->getEffectiveRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $managementDudette->getEffectiveRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $salesDudes       ->getEffectiveRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $managementDudes  ->getEffectiveRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $supportDude      ->getEffectiveRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $everyone         ->getEffectiveRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
+            $this->assertEquals(Right::ALLOW, $adminDude        ->getEffectiveRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::ALLOW, $adminDudes       ->getEffectiveRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $salesDude1       ->getEffectiveRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $salesDude2       ->getEffectiveRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $managementDudette->getEffectiveRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $salesDudes       ->getEffectiveRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $managementDudes  ->getEffectiveRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $supportDude      ->getEffectiveRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $everyone         ->getEffectiveRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
 
             // All users have a password expiry days of 30 because it was set on Everyone, but that was overridden
             // for Admin Dudes with a more generous password expiry policy set for them.
