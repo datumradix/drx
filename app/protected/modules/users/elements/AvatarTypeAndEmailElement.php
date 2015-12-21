@@ -54,7 +54,7 @@
             $avatarImage = $this->model->getAvatarImage(110);
             $content     = '<div class="gravatar-container">';
             if (Yii::app()->user->userModel->id == $this->model->id ||
-                RightsUtil::canUserAccessModule('UsersModule', Yii::app()->user->userModel))
+                UserAccessUtil::canCurrentUserAccessUsersModuleAndManageUsers())
             {
                 $span        = ZurmoHtml::tag('span',
                                       array('id'    => 'profile-picture-tooltip'),

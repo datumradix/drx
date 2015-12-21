@@ -106,7 +106,7 @@
         public static function canCurrentUserViewALinkRequiringElevatedAccess(User $user)
         {
             if (Yii::app()->user->userModel->id == $user->id ||
-                RightsUtil::canUserAccessModule('UsersModule', Yii::app()->user->userModel))
+                static::canCurrentUserAccessUsersModuleAndManageUsers())
             {
                 if (!$user->isRootUser)
                 {
@@ -120,6 +120,40 @@
                 {
                     return true;
                 }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+        public static function resolveCanCurrentUserAccessALinkRequiringElevatedAccess(User $user, 
+                                                                $renderAccessViewOnFailure = true)
+        {
+            if (static::canCurrentUserViewALinkRequiringElevatedAccess($user))
+            {
+                return true;
+            }
+            elseif (!$renderAccessViewOnFailure)
+            {
+                return false;
+            }
+            else
+            {
+                $messageView = new AccessFailureView();
+                $view = new AccessFailurePageView($messageView);
+                echo $view->render();
+                Yii::app()->end(0, false);
+            }
+        }
+
+        public static function canCurrentUserAccessUsersModuleAndManageUsers()
+        {
+            if( RightsUtil::canUserAccessModule('UsersModule', Yii::app()->user->userModel) &&
+                RightsUtil::doesUserHaveAllowByRightName('UsersModule', 
+                    UsersModule::RIGHT_MANAGE_USERS, Yii::app()->user->userModel) )
+            {
+                return true;
             }
             else
             {

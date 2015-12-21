@@ -59,10 +59,10 @@
             $right = new Right();
             $right->moduleName = 'UsersModule';
             $right->type       = Right::ALLOW;
-            $right->name       = UsersModule::RIGHT_CHANGE_USER_PASSWORDS;
-            $this->assertEquals('Allow:Change User Passwords', strval($right));
+            $right->name       = UsersModule::RIGHT_MANAGE_USERS;
+            $this->assertEquals('Allow:Manage Users', strval($right));
             $right->type       = Right::DENY;
-            $this->assertEquals('Deny:Change User Passwords', strval($right));
+            $this->assertEquals('Deny:Manage Users', strval($right));
         }
 
         public function testInfiniteRecursionDoesntHappen()
@@ -87,24 +87,24 @@
             // the security classes - because it is cached.
             $this->assertTrue($everyone->save());
 
-            $this->assertEquals(Right::DENY,  $nerd      ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $salesman  ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $salesStaff->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $everyone  ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
+            $this->assertEquals(Right::DENY,  $nerd      ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $salesman  ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $salesStaff->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $everyone  ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
 
-            $this->assertEquals(Right::NONE,  $salesman  ->getActualRight         ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::NONE,  $salesman  ->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::NONE,  $salesman  ->getInheritedActualRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $salesman->setRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS);
+            $this->assertEquals(Right::NONE,  $salesman  ->getActualRight         ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::NONE,  $salesman  ->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::NONE,  $salesman  ->getInheritedActualRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $salesman->setRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS);
             $this->assertTrue($salesman->save());
-            $this->assertEquals(Right::ALLOW, $salesman  ->getActualRight         ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::ALLOW, $salesman  ->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::NONE,  $salesman  ->getInheritedActualRight('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
+            $this->assertEquals(Right::ALLOW, $salesman  ->getActualRight         ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::ALLOW, $salesman  ->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::NONE,  $salesman  ->getInheritedActualRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
 
-            $this->assertEquals(Right::DENY,  $nerd      ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::ALLOW, $salesman  ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $salesStaff->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
-            $this->assertEquals(Right::DENY,  $everyone  ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_CHANGE_USER_PASSWORDS));
+            $this->assertEquals(Right::DENY,  $nerd      ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::ALLOW, $salesman  ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $salesStaff->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
+            $this->assertEquals(Right::DENY,  $everyone  ->getEffectiveRight      ('UsersModule', UsersModule::RIGHT_MANAGE_USERS));
 
             $this->assertEquals(Right::NONE,  $salesman  ->getActualRight         ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_MOBILE));
             $this->assertEquals(Right::NONE,  $salesman  ->getExplicitActualRight ('UsersModule', UsersModule::RIGHT_LOGIN_VIA_MOBILE));
