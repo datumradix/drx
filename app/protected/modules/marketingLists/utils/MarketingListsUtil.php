@@ -58,7 +58,15 @@
             // First check if user selected existing marketing list, if he didn't create new marketing list
             try
             {
-                $marketingList = MarketingList::getById(intval($resolveSubscribersForm->marketingList['id']));
+                $marketingListId = intval($resolveSubscribersForm->marketingList['id']);
+                if ($marketingListId > 0)
+                {
+                    $marketingList = MarketingList::getById(intval($resolveSubscribersForm->marketingList['id']));
+                }
+                else
+                {
+                    throw new NotFoundException();
+                }
             }
             catch (NotFoundException $e)
             {
