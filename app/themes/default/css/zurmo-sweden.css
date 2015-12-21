@@ -4438,8 +4438,10 @@ div.wide.form label.hasCheckBox {
   display: none;
 }
 .left-column .left-column {
-  width: 100%;
   padding: 0 15px 0 0;
+}
+.left-column > .left-column {
+  width: 100%;
 }
 .left-column .right-column {
   padding: 0 0 15px 0;
