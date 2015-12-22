@@ -19,11 +19,11 @@
     <td>45000</td>
     <td></td>
 </tr>
-<tr>
+<!--tr>
     <td>setSpeed</td>
     <td>3000</td>
     <td></td>
-</tr>
+</tr-->
 <tr>
     <td>storeGlobal</td>
     <td>javascript{Math.floor(Math.random()*11000)}</td>
@@ -41,6 +41,16 @@
     <td></td>
 </tr>
 <tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//div[@id='SecuredActionBarForMarketingSearchAndListView']/div[1]/nav[1]/div[3]/ul/li/a</td>
+    <td></td>
+</tr>
+<tr>
     <td>clickAndWait</td>
     <td>//div[@id='SecuredActionBarForMarketingSearchAndListView']/div[1]/nav[1]/div[3]/ul/li/a</td>
     <td></td>
@@ -51,13 +61,18 @@
     <td></td>
 </tr>
 <tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
     <td>waitForTextPresent</td>
     <td>Email Template Wizard</td>
     <td></td>
 </tr>
 <tr>
-    <td>waitForTextPresent</td>
-    <td>HTML</td>
+    <td>waitForElementPresent</td>
+    <td>//div[@id='EmailTemplateTypeView']/ul/li[3]/a/span</td>
     <td></td>
 </tr>
 <tr>
@@ -69,6 +84,11 @@
     <td>waitForPageToLoad</td>
     <td></td>
     <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>waitForTextPresent</td>
@@ -86,6 +106,11 @@
     <td>First HTML template</td>
 </tr>
 <tr>
+    <td>waitForElementPresent</td>
+    <td>//a[@id='generalDataNextLink']/span[3]</td>
+    <td></td>
+</tr>
+<tr>
     <td>click</td>
     <td>//a[@id='generalDataNextLink']/span[3]</td>
     <td></td>
@@ -96,9 +121,19 @@
     <td></td>
 </tr>
 <tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
     <td>type</td>
     <td>ClassicEmailTemplateWizardForm_htmlContent</td>
     <td>First HTML template content</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//a[@id='contentFinishLink']/span[3]</td>
+    <td></td>
 </tr>
 <tr>
     <td>clickAndWait</td>
@@ -109,6 +144,11 @@
     <td>waitForPageToLoad</td>
     <td></td>
     <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>waitForTextPresent</td>
@@ -127,6 +167,11 @@
     <td></td>
 </tr>
 <tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
     <td>clickAndWait</td>
     <td>//div[@id='SecuredActionBarForMarketingSearchAndListView']/div[1]/nav[1]/div[3]/ul/li/a</td>
     <td></td>
@@ -155,6 +200,11 @@
     <td>waitForPageToLoad</td>
     <td></td>
     <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>waitForTextPresent</td>
@@ -182,6 +232,11 @@
     <td></td>
 </tr>
 <tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
     <td>type</td>
     <td>ClassicEmailTemplateWizardForm_htmlContent</td>
     <td>Second HTML template content</td>
@@ -195,6 +250,11 @@
     <td>waitForPageToLoad</td>
     <td></td>
     <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>waitForTextPresent</td>
@@ -272,9 +332,9 @@
     <td>Test Contact ${randomSuffix}</td>
 </tr>
 <tr>
-    <td>assertText</td>
-    <td>link=Email</td>
-    <td>Email</td>
+    <td>waitForElementPresent</td>
+    <td>//div[@id='ContactDetailsAndRelationsView']/div[2]/div/ul[1]/li[3]/div[1]/div/div/div/ul/li/ul/li/a/span</td>
+    <td></td>
 </tr>
 <tr>
     <td>click</td>
@@ -284,6 +344,16 @@
 <tr>
     <td>waitForPageToLoad</td>
     <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//div[@id='NoUserEmailConfigurationYetView']/div/a/span</td>
     <td></td>
 </tr>
 <tr>
@@ -305,6 +375,11 @@
     <td>waitForPageToLoad</td>
     <td></td>
     <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>waitForTextPresent</td>
@@ -335,6 +410,11 @@
     <td>waitForPageToLoad</td>
     <td></td>
     <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>type</td>
@@ -372,9 +452,14 @@
     <td></td>
 </tr>
 <tr>
-    <td>assertText</td>
-    <td>link=Email</td>
-    <td>Email</td>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//div[@id='ContactDetailsAndRelationsView']/div[2]/div/ul[1]/li[3]/div[1]/div/div/div/ul/li/ul/li/a/span</td>
+    <td></td>
 </tr>
 <tr>
     <td>click</td>
@@ -387,6 +472,11 @@
     <td></td>
 </tr>
 <tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>
+<tr>
     <td>clickAndWait</td>
     <td>//div[@id='NoUserEmailConfigurationYetView']/div/a/span</td>
     <td></td>
@@ -395,6 +485,11 @@
     <td>waitForPageToLoad</td>
     <td></td>
     <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>waitForElementPresent</td>
@@ -412,11 +507,6 @@
     <td></td>
 </tr>
 <tr>
-    <td>assertText</td>
-    <td>link=Email</td>
-    <td>Email</td>
-</tr>
-<tr>
     <td>click</td>
     <td>link=Email</td>
     <td></td>
@@ -425,6 +515,11 @@
     <td>waitForPageToLoad</td>
     <td></td>
     <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>click</td>
