@@ -800,7 +800,6 @@
             $this->assertEquals(1, count($campaigns));
             $campaign2 = $campaigns[0];
 
-
             $count = CampaignItem::getCountOfNotViewedContactIds($campaign1->id);
             $this->assertEquals(7, $count);
 
@@ -916,7 +915,6 @@
             $campaigns = Campaign::getByName('campaign new 04');
             $this->assertEquals(1, count($campaigns));
             $campaign2 = $campaigns[0];
-
 
             $count = CampaignItem::getCountOfNotClickedOrUnsubscribedOrSpamContactIds($campaign1->id);
             $this->assertEquals(8, $count);
@@ -1050,7 +1048,6 @@
             $campaigns = Campaign::getByName('campaign new 06');
             $this->assertEquals(1, count($campaigns));
             $campaign2 = $campaigns[0];
-
 
             $count = CampaignItem::getCountOfCampaignItemsByActivityTypeAndCampaign(CampaignItemActivity::TYPE_OPEN, $campaign1->id);
             $this->assertEquals(5, $count);

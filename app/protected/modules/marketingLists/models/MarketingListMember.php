@@ -86,7 +86,7 @@
                     'unsubscribed'     => 'CheckBox',
                 ),
                 'defaultSortAttribute' => 'createdDateTime',
-                'indexes' => array( 
+                'indexes' => array(
                     'contact_id' => array(
                         'members' => array('contact_id'),
                         'unique' => false),
