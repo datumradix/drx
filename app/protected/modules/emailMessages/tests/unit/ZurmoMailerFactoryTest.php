@@ -64,9 +64,9 @@
 
             if (EmailMessageTestHelper::isSetEmailAccountsTestConfiguration())
             {
-                EmailMessageTestHelper::createEmailAccountForMailerFactory(static::$usercstmsmtp,EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS);
-                EmailMessageTestHelper::createEmailAccountForMailerFactory(static::$bothSGandCstmUser,EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS);
-                EmailMessageTestHelper::createEmailAccountForMailerFactory(static::$userpsg,EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS);
+                EmailMessageTestHelper::createEmailAccountForMailerFactory(static::$usercstmsmtp, EmailMessageUtil::OUTBOUND_PERSONAL_SMTP_SETTINGS);
+                EmailMessageTestHelper::createEmailAccountForMailerFactory(static::$bothSGandCstmUser, EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS);
+                EmailMessageTestHelper::createEmailAccountForMailerFactory(static::$userpsg, EmailMessageUtil::OUTBOUND_PERSONAL_SENDGRID_SETTINGS);
             }
             SendGrid::register_autoloader();
             Smtpapi::register_autoloader();

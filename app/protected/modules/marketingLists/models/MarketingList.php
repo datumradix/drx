@@ -158,7 +158,7 @@
         public function memberAlreadyExists($contactId)
         {
             $sql  = "SELECT COUNT(*) FROM " . MarketingListMember::getTableName();
-            $sql .= " WHERE contact_id={$contactId} AND marketinglist_id={$this->id}";
+            $sql .= " WHERE contact_id={$contactId} AND marketinglist_id={$this->id}"; // Not Coding Standard
             return (int) ZurmoRedBean::getCell($sql);
         }
 

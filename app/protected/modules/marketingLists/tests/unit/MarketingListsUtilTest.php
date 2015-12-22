@@ -52,7 +52,6 @@
 
         public function testResolveMarketingList()
         {
-
             $existingMarketingList = MarketingListTestHelper::createMarketingListByName('Test List');
             $count = count(MarketingList::getAll());
             $resolveSubscribersForm           = new MarketingListResolveSubscribersFromCampaignForm();
