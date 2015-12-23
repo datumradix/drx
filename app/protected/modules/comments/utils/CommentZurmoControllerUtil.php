@@ -96,9 +96,9 @@
                 $mentionedUsers = CommentsUtil::getMentionedUsersForNotification($model);
                 $itemIds = array();
                 $conversationPeople = ConversationsUtil::resolvePeopleOnConversation($this->relatedModel);
-                foreach ($conversationPeople as $user)
+                foreach ($conversationPeople as $conversationUser)
                 {
-                    $itemIds[] = $user->getClassId('Item');
+                    $itemIds[] = $conversationUser->getClassId('Item');
                 }
                 foreach ($mentionedUsers as $mentionedUser)
                 {
