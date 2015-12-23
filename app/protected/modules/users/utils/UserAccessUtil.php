@@ -97,16 +97,35 @@
             }
         }
 
+        public static function resolveCanCurrentUserAccessAndManageUsers(User $user, $renderAccessViewOnFailure = true)
+        {
+            if (static::canCurrentUserViewALinkRequiringAccessAndManageRights($user))
+            {
+                return true;
+            }
+            elseif (!$renderAccessViewOnFailure)
+            {
+                return false;
+            }
+            else
+            {
+                $messageView = new AccessFailureView();
+                $view = new AccessFailurePageView($messageView);
+                echo $view->render();
+                Yii::app()->end(0, false);
+            }
+        }
+        
         /**
          * @see ActionBarForUserEditAndDetailsView, most pill box links are only available to a user viewing the profile
          * under certain conditions.
          * @param User $user
          * @return boolean if the current user can view the edit type links or not
          */
-        public static function canCurrentUserViewALinkRequiringElevatedAccess(User $user)
+        public static function canCurrentUserViewALinkRequiringAccessAndManageRights(User $user)
         {
             if (Yii::app()->user->userModel->id == $user->id ||
-                static::canCurrentUserAccessUsersModuleAndManageUsers())
+                static::doesCurrentUserHaveAccessAndManageRights())
             {
                 if (!$user->isRootUser)
                 {
@@ -127,27 +146,7 @@
             }
         }
         
-        public static function resolveCanCurrentUserAccessALinkRequiringElevatedAccess(User $user, 
-                                                                $renderAccessViewOnFailure = true)
-        {
-            if (static::canCurrentUserViewALinkRequiringElevatedAccess($user))
-            {
-                return true;
-            }
-            elseif (!$renderAccessViewOnFailure)
-            {
-                return false;
-            }
-            else
-            {
-                $messageView = new AccessFailureView();
-                $view = new AccessFailurePageView($messageView);
-                echo $view->render();
-                Yii::app()->end(0, false);
-            }
-        }
-
-        public static function canCurrentUserAccessUsersModuleAndManageUsers()
+        public static function doesCurrentUserHaveAccessAndManageRights()
         {
             if( RightsUtil::canUserAccessModule('UsersModule', Yii::app()->user->userModel) &&
                 RightsUtil::doesUserHaveAllowByRightName('UsersModule', 

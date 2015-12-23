@@ -126,7 +126,7 @@
                 $user                 = User::getById(intval($id));
                 if (UserAccessUtil::resolveCanCurrentUserAccessRootUser($user, false) &&
                     UserAccessUtil::resolveAccessingASystemUser($user, false) &&
-                    UserAccessUtil::resolveCanCurrentUserAccessALinkRequiringElevatedAccess($user,false))
+                    UserAccessUtil::resolveCanCurrentUserAccessAndManageUsers($user,false))
                 {
                     $userAvatarForm       = new UserAvatarForm($user);
                     $this->attemptToValidateAjaxFromPost($userAvatarForm, 'UserAvatarForm');
@@ -171,7 +171,7 @@
         {
             UserAccessUtil::resolveCanCurrentUserAccessAction(intval($id));
             $user            = User::getById(intval($id));
-            if (!UserAccessUtil::resolveCanCurrentUserAccessALinkRequiringElevatedAccess($user, false))
+            if (!UserAccessUtil::resolveCanCurrentUserAccessAndManageUsers($user, false))
             {
                 $viewForModal = new AccessFailureView();
                 $view = new ModalView($this, $viewForModal);
@@ -187,7 +187,7 @@
             $user = User::getById((int)$id);
             UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
             UserAccessUtil::resolveAccessingASystemUser($user);
-            UserAccessUtil::resolveCanCurrentUserAccessALinkRequiringElevatedAccess($user);
+            UserAccessUtil::resolveCanCurrentUserAccessAndManageUsers($user);
             return $user;
         }
 
@@ -216,7 +216,7 @@
             $user            = User::getById(intval($id));
             UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
             UserAccessUtil::resolveAccessingASystemUser($user);
-            UserAccessUtil::resolveCanCurrentUserAccessALinkRequiringElevatedAccess($user);
+            UserAccessUtil::resolveCanCurrentUserAccessAndManageUsers($user);
             $user->setScenario('editUser');
             $title           = Zurmo::t('Core', 'Details');
             $breadCrumbLinks = array(strval($user) => array('default/details',  'id' => $id), $title);
@@ -252,7 +252,7 @@
             $user = User::getById(intval($id));
             UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
             UserAccessUtil::resolveAccessingASystemUser($user);
-            UserAccessUtil::resolveCanCurrentUserAccessALinkRequiringElevatedAccess($user);
+            UserAccessUtil::resolveCanCurrentUserAccessAndManageUsers($user);
             $title           = Zurmo::t('UsersModule', 'Change Password');
             $breadCrumbLinks = array(strval($user) => array('default/details',  'id' => $id), $title);
             $user->setScenario('changePassword');
@@ -446,7 +446,7 @@
             $user = User::getById(intval($id));
             UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
             UserAccessUtil::resolveAccessingASystemUser($user);
-            UserAccessUtil::resolveCanCurrentUserAccessALinkRequiringElevatedAccess($user);
+            UserAccessUtil::resolveCanCurrentUserAccessAndManageUsers($user);
             $title           = Zurmo::t('UsersModule', 'Security Overview');
             $breadCrumbLinks = array(strval($user) => array('default/details',  'id' => $id), $title);
             $modulePermissionsData =  PermissionsUtil::getAllModulePermissionsDataByPermitable($user);
@@ -489,7 +489,7 @@
             $user = User::getById(intval($id));
             UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
             UserAccessUtil::resolveAccessingASystemUser($user);
-            UserAccessUtil::resolveCanCurrentUserAccessALinkRequiringElevatedAccess($user);
+            UserAccessUtil::resolveCanCurrentUserAccessAndManageUsers($user);
             $title           = Zurmo::t('ConfigurationModule', 'Configuration');
             $breadCrumbLinks = array(strval($user) => array('default/details',  'id' => $id), $title);
             $configurationForm = UserConfigurationFormAdapter::makeFormFromUserConfigurationByUser($user);
@@ -530,7 +530,7 @@
             $user  = User::getById(intval($id));
             UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
             UserAccessUtil::resolveAccessingASystemUser($user);
-            UserAccessUtil::resolveCanCurrentUserAccessALinkRequiringElevatedAccess($user);
+            UserAccessUtil::resolveCanCurrentUserAccessAndManageUsers($user);
             $title = Zurmo::t('EmailMessagesModule', 'Email Configuration');
             $breadCrumbLinks = array(strval($user) => array('default/details',  'id' => $id), $title);
             $emailAccount = EmailAccount::resolveAndGetByUserAndName($user);
@@ -773,7 +773,7 @@
             $user  = User::getById(intval($id));
             UserAccessUtil::resolveCanCurrentUserAccessRootUser($user);
             UserAccessUtil::resolveAccessingASystemUser($user);
-            UserAccessUtil::resolveCanCurrentUserAccessALinkRequiringElevatedAccess($user);
+            UserAccessUtil::resolveCanCurrentUserAccessAndManageUsers($user);
             $title = Zurmo::t('Core', 'Notifications Configuration');
             $breadCrumbLinks = array(strval($user) => array('default/details',  'id' => $id), $title);
             $userNotificationConfigurationForm = UserNotificationConfigurationFormAdapter::makeFormFromUserConfigurationByUser($user);
