@@ -136,7 +136,7 @@
             }
             if (in_array($elementInformation['type'],
                     array('UserEditMenu', 'AuditEventsModalListLink', 'ChangePasswordMenu', 'UserConfigurationMenu')) &&
-                !UserAccessUtil::canCurrentUserViewALinkRequiringElevatedAccess($this->model))
+                !UserAccessUtil::canCurrentUserViewALinkRequiringAccessAndManageRights($this->model))
             {
                 return false;
             }
