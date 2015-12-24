@@ -442,7 +442,7 @@
 <tr>
     <td>type</td>
     <td>Comment_description</td>
-    <td>Test Comment by super user</td>
+    <td>Hi [~jill],Test Comment by super user</td>
 </tr>
 <tr>
     <td>click</td>
@@ -450,11 +450,16 @@
     <td></td>
 </tr>
 <tr>
+    <td>waitForTextPresent</td>
+    <td>Hi Jill Smith,Test Comment by super user</td>
+    <td></td>
+</tr>
+<!--Add user to conversation-->
+<tr>
     <td>setSpeed</td>
     <td>3000</td>
     <td></td>
 </tr>
-<!--Add user to conversation-->
 <tr>
     <td>type</td>
     <td>id=token-input-ConversationParticipantsForm_item_ids</td>
@@ -469,6 +474,11 @@
     <td>typeKeys</td>
     <td>//*[@id=&quot;token-input-ConversationParticipantsForm_item_ids&quot;]</td>
     <td>Jil</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Participants updated successfully</td>
+    <td></td>
 </tr>
 <tr>
     <td>assertTextPresent</td>
