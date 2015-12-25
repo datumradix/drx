@@ -96,11 +96,11 @@
         {
             if ($model->note->id > 0)
             {
-                return Yii::app()->format->html(strval($model->note));
+                return TextUtil::textWithUrlToTextWithLink(Yii::app()->format->html(strval($model->note)));
             }
             else
             {
-                return Yii::app()->format->html($model->description);
+                return TextUtil::textWithUrlToTextWithLink(Yii::app()->format->html($model->description));
             }
         }
 
@@ -163,6 +163,8 @@
                                                             $getParams,
                                                             self::makeUniquePageIdByModel($model));
             $content      = $view->render();
+            $wrappingCssClass = static::getCommentsWrappingCssClass();
+            $content  = ZurmoHtml::tag('div', array('class' => $wrappingCssClass), $content);
             return $content;
         }
 
@@ -205,6 +207,11 @@
                 );
             ");
             // End Not Coding Standard
+        }
+
+        private static function getCommentsWrappingCssClass()
+        {
+            return 'comments-activity';
         }
     }
 ?>

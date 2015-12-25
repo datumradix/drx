@@ -424,7 +424,7 @@
             $notifications  = Notification::getAll();
             $notification   = $notifications[$messageCount];
             $this->assertCount(1, $notifications);
-            $this->assertEquals('Mission new comment', strval($notification));
+            $this->assertEquals('Mission comment creation or modification', strval($notification));
             $this->assertContains(strval($mission->comments[0]), $notification->notificationMessage->htmlContent);
             $this->assertContains(strval($mission->comments[0]), $notification->notificationMessage->textContent);
         }

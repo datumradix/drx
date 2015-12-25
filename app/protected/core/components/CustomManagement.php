@@ -264,8 +264,13 @@
             return $opportunity;
         }
 
-        public function resolveOpportunityCustomActionsAfterSave($model)
+        public function resolveOpportunityCustomActionsBeforeSave($model)
         {
+        }
+
+        public function resolveCustomTranslatedAttributeLabelsByModelClassName($modelClassName, $language)
+        {
+            return array();
         }
     }
 ?>

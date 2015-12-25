@@ -180,14 +180,7 @@
         {
             Yii::app()->user->userModel = User::getByUsername('jimmy');
             $beforeCount = AuditEvent::getCount();
-            if (Yii::app()->edition == 'Community')
-            {
-                $differential = 0;
-            }
-            else
-            {
-                $differential = 1;
-            }
+            $differential = 1;
             $account = new Account();
             $account->name = 'Dooble';
             $this->assertTrue($account->save());

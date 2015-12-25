@@ -80,6 +80,9 @@
                                 array(
                                     'type' => 'OpportunitiesForContactRelatedList',
                                 ),
+                                array(
+                                    'type' => 'CommentsForContactRelatedModelPortlet',
+                                ),
                             )
                         )
                     )

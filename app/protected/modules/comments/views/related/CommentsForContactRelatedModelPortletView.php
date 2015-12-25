@@ -35,9 +35,18 @@
      ********************************************************************************/
 
     /**
-     * Class UserListViewColumnAdapter
+     * Base class used for wrapping a view of social items
      */
-    class UserListViewColumnAdapter extends TextListViewColumnAdapter
+    class CommentsForContactRelatedModelPortletView extends CommentsForRelatedModelPortletView
     {
+        public static function getModuleClassName()
+        {
+            return 'ContactsModule';
+        }
+
+        public static function getAllowedOnPortletViewClassNames()
+        {
+            return array('ContactDetailsAndRelationsView');
+        }
     }
 ?>

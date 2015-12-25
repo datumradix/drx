@@ -53,96 +53,17 @@
         }
 
         /**
-         * @covers markUserHasReadLatest
-         */
-        public function testMarkUserHasReadLatest()
-        {
-            $super                     = User::getByUsername('super');
-            $steven                    = UserTestHelper::createBasicUser('steven');
-
-            $task = new Task();
-            $task->name = 'MyTest';
-            $nowStamp = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
-            $this->assertTrue($task->save());
-
-            $task = Task::getById($task->id);
-            $user = Yii::app()->user->userModel;
-            $notificationSubscriber = new NotificationSubscriber();
-            $notificationSubscriber->person = $steven;
-            $notificationSubscriber->hasReadLatest = false;
-            $task->notificationSubscribers->add($notificationSubscriber);
-            $this->assertTrue($task->save());
-
-            $id = $task->id;
-            $task->forget();
-            unset($task);
-
-            $task = Task::getById($id);
-            $this->assertEquals(0, $task->notificationSubscribers->offsetGet(0)->hasReadLatest);
-            $this->assertEquals(0, $task->notificationSubscribers->offsetGet(1)->hasReadLatest);
-            //After running for super, nothing will change.
-            TasksUtil::markUserHasReadLatest($task, $steven);
-            TasksUtil::markUserHasReadLatest($task, $super);
-            $id = $task->id;
-            $task->forget();
-            unset($task);
-
-            $task = Task::getById($id);
-            foreach ($task->notificationSubscribers as $position => $subscriber)
-            {
-                $this->assertEquals(1, $subscriber->hasReadLatest);
-            }
-        }
-
-        /**
-         * @covers getTaskSubscriberData
-         * @covers renderSubscriberImageAndLinkContent
-         */
-        public function testGetTaskSubscriberData()
-        {
-            $user  = User::getByUsername('steven');
-
-            $tasks  = Task::getByName('MyTest');
-            $task   = $tasks[0];
-
-            $content = TasksUtil::getTaskSubscriberData($task);
-            $this->assertContains('gravatar', $content);
-            $this->assertContains('users/default/details', $content);
-        }
-
-        /**
-         * @covers getTaskSubscribers
-         */
-        public function testGetTaskSubscribers()
-        {
-            $user  = User::getByUsername('steven');
-
-            $tasks  = Task::getByName('MyTest');
-            $task   = $tasks[0];
-
-            $subscribers = TasksUtil::getTaskSubscribers($task);
-            $found = false;
-            foreach ($subscribers as $subscriber)
-            {
-                if ($subscriber->id == $user->id)
-                {
-                    $found = true;
-                }
-            }
-            $this->assertTrue($found);
-        }
-
-        /**
          * @covers resolveExplicitPermissionsForRequestedByUser
          */
         public function testResolveExplicitPermissionsForRequestedByUser()
         {
             Yii::app()->user->userModel = User::getByUsername('super');
             $mark                       = UserTestHelper::createBasicUser('mark');
-            $user                       = User::getByUsername('steven');
+            $user                       = UserTestHelper::createBasicUser('steven');
 
-            $tasks  = Task::getByName('MyTest');
-            $task   = $tasks[0];
+            $task = new Task();
+            $task->name = 'MyTest';
+            $this->assertTrue($task->save());
 
             $task->requestedByUser = $user;
             $this->assertTrue($task->save());
@@ -196,71 +117,6 @@
 
             $kanbanItemType = TasksUtil::resolveKanbanItemTypeForTaskStatus(Task::STATUS_NEW);
             $this->assertEquals(KanbanItem::TYPE_SOMEDAY, $kanbanItemType);
-        }
-
-        /**
-         * @covers resolveSubscribeUrl
-         */
-        public function testResolveSubscriptionLink()
-        {
-            $tasks  = Task::getByName('MyTest');
-            $task   = $tasks[0];
-            $sally  = UserTestHelper::createBasicUser('sally');
-            $maggi  = UserTestHelper::createBasicUser('maggi');
-            $task->owner = $sally;
-            $task->requestedByUser = $maggi;
-            $task->save();
-            if ($task->doNotificationSubscribersContainPerson(Yii::app()->user->userModel) === false)
-            {
-                $notificationSubscriber = new NotificationSubscriber();
-                $notificationSubscriber->person = Yii::app()->user->userModel;
-                $task->notificationSubscribers->add($notificationSubscriber);
-                $task->save();
-            }
-            $link = TasksUtil::getKanbanSubscriptionLink($task, 0);
-            $this->assertContains('unsubscribe-task-link', $link);
-            $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
-            foreach ($task->notificationSubscribers as $notificationSubscriber)
-            {
-                $user = $notificationSubscriber->person->castDown(array($modelDerivationPathToItem));
-                if ($user->id == Yii::app()->user->userModel->id)
-                {
-                    $task->notificationSubscribers->remove($notificationSubscriber);
-                }
-            }
-            $task->save();
-            $link = TasksUtil::getKanbanSubscriptionLink($task, 0);
-            $this->assertContains('subscribe-task-link', $link);
-        }
-
-        /**
-         * @covers resolveDetailSubscribeUrl
-         */
-        public function testResolveDetailSubscriptionLink()
-        {
-            $tasks  = Task::getByName('MyTest');
-            $task   = $tasks[0];
-            if ($task->doNotificationSubscribersContainPerson(Yii::app()->user->userModel) === false)
-            {
-                $notificationSubscriber = new NotificationSubscriber();
-                $notificationSubscriber->person = Yii::app()->user->userModel;
-                $task->notificationSubscribers->add($notificationSubscriber);
-                $task->save();
-            }
-            $link = TasksUtil::getDetailSubscriptionLink($task, 0);
-            $this->assertContains('detail-unsubscribe-task-link', $link);
-            $modelDerivationPathToItem = RuntimeUtil::getModelDerivationPathToItem('User');
-            foreach ($task->notificationSubscribers as $index => $notificationSubscriber)
-            {
-                $user = $notificationSubscriber->person->castDown(array($modelDerivationPathToItem));
-                if ($user->id == Yii::app()->user->userModel->id)
-                {
-                    $task->notificationSubscribers->remove($notificationSubscriber);
-                }
-            }
-            $task->save();
-            $link = TasksUtil::getDetailSubscriptionLink($task, 0);
-            $this->assertContains('detail-subscribe-task-link', $link);
         }
 
         /**
@@ -392,28 +248,6 @@
             $this->assertEquals('MyRelatedProject', $model->name);
             $content = TasksUtil::resolveFirstRelatedModelStringValue($task);
             $this->assertEquals('MyRelatedProject', $content);
-        }
-
-        /**
-         * @covers addSubscriber
-         */
-        public function testAddSubscriberToTask()
-        {
-            Yii::app()->user->userModel = User::getByUsername('super');
-            $user = User::getByUsername('tilly');
-            $task = new Task();
-            $task->name = 'MyTest';
-            $task->owner = $user;
-            $nowStamp = DateTimeUtil::convertTimestampToDbFormatDateTime(time());
-            $this->assertTrue($task->save());
-            $this->assertEquals($user, $task->owner);
-
-            //There would be two here as default subscribers are added
-            $this->assertEquals(2, count($task->notificationSubscribers));
-            $user = Yii::app()->user->userModel;
-            TasksUtil::addSubscriber($user, $task);
-            $task->save();
-            $this->assertEquals(2, count($task->notificationSubscribers));
         }
 
         /**
@@ -569,28 +403,6 @@
             $this->assertEquals(1, $kanbanItem2->sortOrder);
             $this->assertEquals($task3->id, $kanbanItem3->task->id);
             $this->assertEquals(1, $kanbanItem3->sortOrder);
-        }
-
-        /**
-         * @covers resolveAndRenderTaskCardDetailsSubscribersContent
-         */
-        public function testResolveAndRenderTaskCardDetailsSubscribersContent()
-        {
-            $hellodear      = UserTestHelper::createBasicUser('hellodear');
-            $task           = new Task();
-            $task->name     = 'MyCardTest';
-            $task->owner    = $hellodear;
-            $this->assertTrue($task->save());
-
-            $task = Task::getById($task->id);
-            $user = Yii::app()->user->userModel;
-            TasksUtil::addSubscriber($hellodear, $task);
-            $this->assertTrue($task->save());
-            $content = TasksUtil::resolveAndRenderTaskCardDetailsSubscribersContent($task);
-            $this->assertContains('gravatar', $content);
-            $this->assertContains('users/default/details', $content);
-            $this->assertContains('hellodear', $content);
-            $this->assertContains('task-owner', $content);
         }
     }
 ?>

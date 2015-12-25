@@ -110,7 +110,7 @@
                     'attributeName'        => 'dateTime',
                     'operatorType'         => 'equals',
                     'value'                => 'Zurmo',
-                    'modifierType'         => 'Week',
+                    'modifierType'         => 'WeekOfYear',
                 ),
             );
             $compareStructure = '1';

@@ -92,7 +92,7 @@
             if ($meeting->description != null)
             {
                 $content .= ZurmoHtml::tag('strong', array(), Zurmo::t('ZurmoModule', 'Description')) . '<br/>';
-                $content .= $meeting->description;
+                $content .= nl2br($meeting->description);
             }
             return ZurmoHtml::tag('div', array('class' => 'meeting-summary'), $content);
         }

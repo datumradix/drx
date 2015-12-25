@@ -226,6 +226,15 @@
                 {
                     $this->saveExternalApiEmailMessageActivity($emailMessageActivities[0], $value);
                 }
+                $this->resolveMarkingPersonPrimaryEmailAsInvalid($value['type'], $value['personId']);
+            }
+        }
+
+        public function resolveMarkingPersonPrimaryEmailAsInvalid($type, $zurmoPersonId)
+        {
+            if ($type == EmailMessageActivity::TYPE_HARD_BOUNCE)
+            {
+                EmailBounceUtil::markPersonPrimaryEmailAsInvalid($zurmoPersonId);
             }
         }
     }

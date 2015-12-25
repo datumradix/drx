@@ -457,7 +457,7 @@
 <tr>
     <td>assertElementPresent</td>
     <td>link=Sign out</td>
-    <td</td>
+    <td></td>
 </tr>
 <tr>
     <td>click</td>
@@ -629,18 +629,23 @@
 </tr>
 <tr>
     <td>waitForElementPresent</td>
-    <td>Comment_description</td>
+    <td>Comment_descriptionTask</td>
     <td></td>
 </tr>
 <tr>
     <td>type</td>
-    <td>Comment_description</td>
+    <td>Comment_descriptionTask</td>
     <td>comment added by Super User</td>
 </tr>
 <tr>
     <td>click</td>
     <td>link=Comment</td>
     <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>waitForTextPresent</td>
@@ -1570,7 +1575,7 @@
 </tr>
 <tr>
     <td>click</td>
-    <td>id=UserNotificationConfigurationForm_enableTaskNewCommentNotificationInbox</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskCommentNotificationInbox</td>
     <td></td>
 </tr>
 <tr>
@@ -1666,7 +1671,7 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>New Task CommentsSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
+    <td>Task comment creation or modificationSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
     <td></td>
 </tr>
 <tr>
@@ -1752,7 +1757,7 @@
 </tr>
 <tr>
     <td>click</td>
-    <td>id=UserNotificationConfigurationForm_enableTaskNewCommentNotificationInbox</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskCommentNotificationInbox</td>
     <td></td>
 </tr>
 <tr>
@@ -1848,7 +1853,7 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>New Task CommentsSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
+    <td>Task comment creation or modificationSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
     <td></td>
 </tr>
 <tr>
@@ -1954,7 +1959,7 @@
 </tr>
 <tr>
     <td>click</td>
-    <td>id=UserNotificationConfigurationForm_enableTaskNewCommentNotificationInbox</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskCommentNotificationInbox</td>
     <td></td>
 </tr>
 <tr>
@@ -2635,18 +2640,23 @@
 </tr>
 <tr>
     <td>waitForElementPresent</td>
-    <td>Comment_description</td>
+    <td>Comment_descriptionTask</td>
     <td></td>
 </tr>
 <tr>
     <td>type</td>
-    <td>Comment_description</td>
+    <td>Comment_descriptionTask</td>
     <td>comment added by Super User</td>
 </tr>
 <tr>
     <td>click</td>
     <td>link=Comment</td>
     <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
 </tr>
 <tr>
     <td>waitForTextPresent</td>
@@ -3558,7 +3568,7 @@
 </tr>
 <tr>
     <td>waitForTextNotPresent</td>
-    <td>New Task CommentsSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
+    <td>Task comment creation or modificationSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
     <td></td>
 </tr>
 <tr>
@@ -3649,7 +3659,7 @@
 </tr>
 <tr>
     <td>waitForTextNotPresent</td>
-    <td>New Task CommentsSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
+    <td>Task comment creation or modificationSuper User has commented on the task 'creating task for testing task notifications ${randomSuffix}':</td>
     <td></td>
 </tr>
 <tr>

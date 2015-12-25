@@ -35,19 +35,24 @@
      ********************************************************************************/
 
     /**
-     * A  NotificationRules to manage when a new comment is added to a task
+     * A  NotificationRules to manage when a new comment is added to a account or when updated existing
      */
-    class TaskNewCommentNotificationRules extends TaskNotificationRules
+    class AccountCommentNotificationRules extends CommentNotificationRules
     {
-        protected $allowSendingEmail    = true;
-        protected $allowDuplicates      = true;
+        /**
+         * @inheritdoc
+         */
+        public function getModuleClassNames()
+        {
+            return array('AccountsModule');
+        }
 
         /**
          * @returns Translated label that describes this rule type.
          */
         public function getDisplayName()
         {
-            return Zurmo::t('TasksModule', 'New Task Comments');
+            return Zurmo::t('AccountsModule', 'Account comments creation or modification');
         }
 
         /**
@@ -55,25 +60,17 @@
          */
         public function getType()
         {
-            return 'TaskNewComment';
+            return 'AccountComment';
         }
 
         public function getTooltipId()
         {
-            return 'task-new-comment-notification-tooltip';
+            return 'account-comment-notification-tooltip';
         }
 
         public function getTooltipTitle()
         {
-            return Zurmo::t('UsersModule', 'Notify me of new comments on Tasks I am following.');
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getSubjectForEmailNotification()
-        {
-            return Zurmo::t('TasksModule', 'NEW COMMENT {relatedModel}: {task}', $this->getParamsForEmailSubject());
+            return Zurmo::t('UsersModule', 'Notify me when new comment is added or updated existing on accounts I am following.');
         }
     }
 ?>

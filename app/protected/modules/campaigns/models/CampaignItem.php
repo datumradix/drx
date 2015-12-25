@@ -370,5 +370,189 @@
             }
             return parent::afterDelete();
         }
+
+        public static function getAllContactsFromCampaignItemBasedOnItemActivity($campaignId, $offset, $pageSize,
+                                                              $getNotViewedItem = false, $getNotClickedItems = false,
+                                                              $getOpenedItems = false, $getClickedItems = false)
+        {
+            $ids = array();
+            if ($getNotViewedItem)
+            {
+                $ids = self::getNotViewedContactIds($campaignId, $offset, $pageSize);
+            }
+            if ($getNotClickedItems)
+            {
+                $ids = array_merge($ids, self::getNotClickedOrUnsubscribedOrSpamContactIds($campaignId, $offset, $pageSize));
+            }
+            if ($getOpenedItems)
+            {
+                $ids = array_merge($ids, self::getContactIdsFromCampaignItemsByActivityTypeAndCampaign(CampaignItemActivity::TYPE_OPEN, $campaignId, $offset, $pageSize));
+            }
+            if ($getClickedItems)
+            {
+                $ids = array_merge($ids, self::getContactIdsFromCampaignItemsByActivityTypeAndCampaign(CampaignItemActivity::TYPE_CLICK, $campaignId, $offset, $pageSize));
+            }
+            $ids = array_unique($ids);
+            $beans = ZurmoRedBean::batch ('contact', $ids);
+            return self::makeModels($beans, 'Contact');
+        }
+
+        /**
+         * Get not viewed contacts from campaigns.
+         * @param int $campaignId
+         * @param int $offset
+         * @param int $pageSize
+         * @return array
+         *
+         */
+        public static function getNotViewedContactIds($campaignId, $offset, $pageSize)
+        {
+            assert('is_int($campaignId)');
+            assert('is_int($offset)');
+            assert('is_int($pageSize)');
+            $sql = "select DISTINCT(`campaignitem`.`contact_id`) as id
+                    from `campaignitem`
+                    left join `campaignitemactivity` on `campaignitemactivity`.`campaignitem_id` = campaignitem.id
+                    where `campaignitem`.`campaign_id` = $campaignId
+                    and `campaignitemactivity`.`id` is null
+                    order by `campaignitem`.`id`
+                    limit $offset, $pageSize
+                    ";
+            $ids   = ZurmoRedBean::getCol($sql);
+            return $ids;
+        }
+
+        /**
+         * Get count of not viewed items.
+         * @param int $campaignId
+         * @return int
+         *
+         */
+        public static function getCountOfNotViewedContactIds($campaignId)
+        {
+            assert('is_int($campaignId)');
+            $sql = "select COUNT(DISTINCT(`campaignitem`.`contact_id`))
+                    from `campaignitem`
+                    left join `campaignitemactivity` on `campaignitemactivity`.`campaignitem_id` = campaignitem.id
+                    where `campaignitem`.`campaign_id` = $campaignId
+                    and `campaignitemactivity`.`id` is null
+                    ";
+            $count   = ZurmoRedBean::getCell($sql);
+            return $count;
+        }
+
+        /**
+         * Get contacts from campaign items that are not clicked, but do not return those that are marked as spam, unsubscribed, or hard bounced
+         * @param int $campaignId
+         * @param int offset
+         * @param int pageSize
+         * @return array
+         */
+        public static function getNotClickedOrUnsubscribedOrSpamContactIds($campaignId, $offset, $pageSize)
+        {
+            assert('is_int($campaignId)');
+            assert('is_int($offset)');
+            assert('is_int($pageSize)');
+            $sql = "select DISTINCT(`campaignitem`.`contact_id`) as id
+                    from `campaignitem`
+                    left join `campaignitemactivity` on `campaignitemactivity`.`campaignitem_id` = campaignitem.id
+                    where `campaignitem`.`campaign_id` = $campaignId
+                    and
+                      (
+                        `campaignitemactivity`.`id` is null OR
+                        `campaignitem`.`id` NOT IN (
+                          select DISTINCT(`campaignitemactivity`.`campaignitem_id`) from campaignitemactivity
+                          left join `emailmessageactivity` on `emailmessageactivity`.`id` = `campaignitemactivity`.`emailmessageactivity_id`
+                          where
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_CLICK . " OR
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_UNSUBSCRIBE . " OR
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_SPAM . " OR
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_HARD_BOUNCE . "
+                        )
+                      )
+                    order by `campaignitem`.`id`
+                    limit $offset, $pageSize
+                    ";
+            $ids   = ZurmoRedBean::getCol($sql);
+            return $ids;
+        }
+
+        /**
+         * Get count of contacts that are not clicked, but do not return those that are marked as spam, unsubscribed, or hard bounced
+         * @param int $campaignId
+         * @return int
+         */
+        public static function getCountOfNotClickedOrUnsubscribedOrSpamContactIds($campaignId)
+        {
+            assert('is_int($campaignId)');
+            $sql = "select COUNT(DISTINCT(`campaignitem`.`contact_id`))
+                    from `campaignitem`
+                    left join `campaignitemactivity` on `campaignitemactivity`.`campaignitem_id` = campaignitem.id
+                    where `campaignitem`.`campaign_id` = $campaignId
+                    and
+                      (
+                        `campaignitemactivity`.`id` is null OR
+                        `campaignitem`.`id` NOT IN (
+                          select DISTINCT(`campaignitemactivity`.`campaignitem_id`) from campaignitemactivity
+                          left join `emailmessageactivity` on `emailmessageactivity`.`id` = `campaignitemactivity`.`emailmessageactivity_id`
+                          where
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_CLICK . " OR
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_UNSUBSCRIBE . " OR
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_SPAM . " OR
+                          `emailmessageactivity`.type =  " . EmailMessageActivity::TYPE_HARD_BOUNCE . "
+                        )
+                      )
+                    ";
+            $count   = ZurmoRedBean::getCell($sql);
+            return $count;
+        }
+
+        /**
+         * Get distinct contact ids by activity type and campaign
+         * @param $type
+         * @param int $campaignId
+         * @param $offset
+         * @param $pageSize
+         * @return An
+         */
+        public static function getContactIdsFromCampaignItemsByActivityTypeAndCampaign($type, $campaignId, $offset, $pageSize)
+        {
+            assert('is_int($type)');
+            assert('is_int($campaignId)');
+            assert('is_int($offset)');
+            assert('is_int($pageSize)');
+            $sql = "select DISTINCT(`campaignitem`.`contact_id`) as id
+                    from `campaignitem`
+                    left join `campaignitemactivity` on `campaignitemactivity`.`campaignitem_id` = campaignitem.id
+                    left join `emailmessageactivity` on `emailmessageactivity`.`id` = `campaignitemactivity`.`emailmessageactivity_id`
+                    where `campaignitem`.`campaign_id` = $campaignId
+                    and `emailmessageactivity`.`type` = $type
+                    order by `campaignitem`.`id`
+                    limit $offset, $pageSize
+                    ";
+            $ids   = ZurmoRedBean::getCol($sql);
+            return $ids;
+        }
+
+        /**
+         * Get number of distinct contacts by activity type and campaign
+         * @param $type
+         * @param int $campaignId
+         * @return string
+         */
+        public static function getCountOfCampaignItemsByActivityTypeAndCampaign($type, $campaignId)
+        {
+            assert('is_int($type)');
+            assert('is_int($campaignId)');
+            $sql = "select COUNT(DISTINCT(`campaignitem`.`contact_id`))
+                    from `campaignitem`
+                    left join `campaignitemactivity` on `campaignitemactivity`.`campaignitem_id` = campaignitem.id
+                    left join `emailmessageactivity` on `emailmessageactivity`.`id` = `campaignitemactivity`.`emailmessageactivity_id`
+                    where `campaignitem`.`campaign_id` = $campaignId
+                    and `emailmessageactivity`.`type` = $type
+                    ";
+            $count   = ZurmoRedBean::getCell($sql);
+            return $count;
+        }
     }
 ?>

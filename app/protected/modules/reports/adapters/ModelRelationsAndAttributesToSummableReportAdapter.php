@@ -411,7 +411,14 @@
             $parts = explode(FormModelUtil::DELIMITER, $attribute);
             if (count($parts) > 1)
             {
-                return $parts[1];
+                if ($parts[1] == static::GROUP_BY_CALCULATION_WEEK)
+                {
+                    return 'WeekOfYear';
+                }
+                else
+                {
+                    return $parts[1];
+                }
             }
             return $attribute;
         }

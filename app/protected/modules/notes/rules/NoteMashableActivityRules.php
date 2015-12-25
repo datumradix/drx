@@ -66,7 +66,7 @@
                 }
                 else
                 {
-                    return "<span>{modelStringContent} </span><span class='less-pronounced-text'>" .
+                    return "<span>{modelStringContent} </span><br/><span class='less-pronounced-text'>" .
                            Zurmo::t('ZurmoModule', 'by {ownerStringContent}') . "</span><span>{extraContent}</span>";
                 }
             }

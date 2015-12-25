@@ -141,6 +141,10 @@
             {
                 $contact = Contact::getById($contactId);
             }
+            if ($this->memberAlreadyExists($contact->id))
+            {
+                return false;
+            }
             $member->contact            = $contact;
             $member->unsubscribed       = $unsubscribed;
             $member->marketingList      = $this;
@@ -148,36 +152,14 @@
             {
                 $member->setScenario($scenario);
             }
-            if ($this->memberAlreadyExists($contact->id))
-            {
-                return false;
-            }
             return $member->unrestrictedSave();
         }
 
         public function memberAlreadyExists($contactId)
         {
-            $searchAttributeData = array();
-            $searchAttributeData['clauses'] = array(
-                1 => array(
-                    'attributeName'             => 'id',
-                    'operatorType'              => 'equals',
-                    'value'                     => $this->id,
-                ),
-                2 => array(
-                    'attributeName'             => 'marketingListMembers',
-                    'relatedModelData'          => array(
-                        'attributeName'             => 'contact',
-                        'relatedAttributeName'      => 'id',
-                        'operatorType'              => 'equals',
-                        'value'                     => $contactId
-                    ),
-                ),
-            );
-            $searchAttributeData['structure'] = '(1 and 2)';
-            $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter(get_class($this));
-            $where             = RedBeanModelDataProvider::makeWhere(get_class($this), $searchAttributeData, $joinTablesAdapter);
-            return self::getCount($joinTablesAdapter, $where, get_class($this), true);
+            $sql  = "SELECT COUNT(*) FROM " . MarketingListMember::getTableName();
+            $sql .= " WHERE contact_id={$contactId} AND marketinglist_id={$this->id}"; // Not Coding Standard
+            return (int) ZurmoRedBean::getCell($sql);
         }
 
         public static function getByAnyoneCanSubscribe($anyoneCanSubscribe, $pageSize = null)

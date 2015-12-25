@@ -34,52 +34,19 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    /**
-     * A  NotificationRules to manage when a new comment is added for mission.
-     */
-    class MissionNewCommentNotificationRules extends NotificationRules
+    class DetailsViewOnlyForUserOwnerViewMetadataRules
     {
-        protected $allowSendingEmail    = true;
-        protected $allowDuplicates      = true;
-
-        public function getDisplayName()
+        public static function resolveElementMetadata($elementInformation, & $elementMetadata)
         {
-            return Zurmo::t('MissionsModule', 'Mission new comment');
         }
 
-        public function getType()
+        public static function resolveCellMetadata($elementInformation, & $cellMetadata)
         {
-            return 'MissionNewComment';
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getModuleClassNames()
-        {
-            return array('MissionsModule');
-        }
-
-        public function getTooltipId()
-        {
-            return 'mission-new-comment-notification-tooltip';
-        }
-
-        public function getTooltipTitle()
-        {
-            return Zurmo::t('UsersModule', 'Notify me when a comment is added to one of my missions.');
-        }
-
-        /**
-         * @inheritdoc
-         */
-        public function getSubjectForEmailNotification()
-        {
-            if ($this->model instanceof Mission)
+            $elementClassName = $elementInformation['type'] . 'Element';
+            if ($elementClassName == 'UserElement' &&
+                $elementInformation['attributeName'] == 'owner')
             {
-                return Zurmo::t('CommentsModule', 'New comment on {modelName}: {subject}',
-                    array('{subject}'   => strval($this->model),
-                          '{modelName}' => $this->model->getModelLabelByTypeAndLanguage('SingularLowerCase')));
+                $cellMetadata['detailViewOnly'] = true;
             }
         }
     }
