@@ -86,6 +86,14 @@
                     'unsubscribed'     => 'CheckBox',
                 ),
                 'defaultSortAttribute' => 'createdDateTime',
+                'indexes' => array(
+                    'contact_id' => array(
+                        'members' => array('contact_id'),
+                        'unique' => false),
+                    'marketinglist_id' => array(
+                        'members' => array('marketinglist_id'),
+                        'unique' => false)
+                ),
             );
             return $metadata;
         }

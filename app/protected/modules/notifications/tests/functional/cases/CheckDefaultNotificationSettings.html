@@ -63,12 +63,22 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>Invited to a Conversation</td>
+    <td>Account comments creation or modification</td>
     <td></td>
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>Conversation new comment</td>
+    <td>Contact comment creation or modification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Conversation comment creation or modification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Invited to a Conversation</td>
     <td></td>
 </tr>
 <tr>
@@ -113,7 +123,7 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>Mission new comment</td>
+    <td>Mission comment creation or modification</td>
     <td></td>
 </tr>
 <tr>
@@ -158,7 +168,7 @@
 </tr>
 <tr>
     <td>waitForTextPresent</td>
-    <td>New Task Comments</td>
+    <td>Task comment creation or modification</td>
     <td></td>
 </tr>
 <tr>
@@ -183,22 +193,42 @@
 </tr>
 <tr>
     <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableAccountCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableAccountCommentNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableContactCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableContactCommentNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableConversationCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertNotChecked</td>
+    <td>id=UserNotificationConfigurationForm_enableConversationCommentNotificationEmail</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertChecked</td>
     <td>id=UserNotificationConfigurationForm_enableConversationInvitesNotificationInbox</td>
     <td></td>
 </tr>
 <tr>
     <td>assertNotChecked</td>
     <td>id=UserNotificationConfigurationForm_enableConversationInvitesNotificationEmail</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertChecked</td>
-    <td>id=UserNotificationConfigurationForm_enableConversationNewCommentNotificationInbox</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertNotChecked</td>
-    <td>id=UserNotificationConfigurationForm_enableConversationNewCommentNotificationEmail</td>
     <td></td>
 </tr>
 <tr>
@@ -283,12 +313,12 @@
 </tr>
 <tr>
     <td>assertChecked</td>
-    <td>id=UserNotificationConfigurationForm_enableMissionNewCommentNotificationInbox</td>
+    <td>id=UserNotificationConfigurationForm_enableMissionCommentNotificationInbox</td>
     <td></td>
 </tr>
 <tr>
     <td>assertNotChecked</td>
-    <td>id=UserNotificationConfigurationForm_enableMissionNewCommentNotificationEmail</td>
+    <td>id=UserNotificationConfigurationForm_enableMissionCommentNotificationEmail</td>
     <td></td>
 </tr>
 <tr>
@@ -373,12 +403,12 @@
 </tr>
 <tr>
     <td>assertChecked</td>
-    <td>id=UserNotificationConfigurationForm_enableTaskNewCommentNotificationInbox</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskCommentNotificationInbox</td>
     <td></td>
 </tr>
 <tr>
     <td>assertNotChecked</td>
-    <td>id=UserNotificationConfigurationForm_enableTaskNewCommentNotificationEmail</td>
+    <td>id=UserNotificationConfigurationForm_enableTaskCommentNotificationEmail</td>
     <td></td>
 </tr>
 <tr>

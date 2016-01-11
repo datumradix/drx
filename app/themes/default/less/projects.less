@@ -169,12 +169,15 @@
 }
 
 #task-subscriber-box{
-	margin-top: 15px;
+	margin: 15px;
 	h4{
 		margin-bottom: 4px;
 	}
 	img{
 		margin-right:5px;
+	}
+	+ .model-comments-activity{
+		margin-top: 0;
 	}
 }
 
@@ -276,17 +279,17 @@
 		width: 100%;
 		max-width: 100%;
 		margin: 10px 0 0 0;
-		padding: 8px;
+		padding: 15px;
 		.radius(3px);
 	}
 	#CommentList{
-		margin: 0 0 0 0;
+		margin: 0 15px;
 	}
 	#comment-inline-edit-form,
 	#comment-for-task-inline-edit-form{
 		margin:0;
 		.form-toolbar{
-			margin-top: 5px;
+//			margin-top: 5px;
 			padding-right: 0;
 		}
 	}
@@ -298,6 +301,7 @@
 		padding-right: 0;
 	}
 	.show-file-upload-box{
+		display: none;
 		z-index: 99999;
 		position: relative;
 	}
@@ -311,7 +315,12 @@
 .model-comments-activity{
   	div.wide.form {
 		float:none !important;
-  	}
+    }
+    .form form{
+        bottom: no;
+        border: none;
+        box-shadow: none;
+    }
 }
 
 .right-side-details-view-panel{

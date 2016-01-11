@@ -36,6 +36,11 @@
         <td>30000</td>
     </tr>
     <tr>
+        <td>waitForTextPresent</td>
+        <td>Message Queue</td>
+        <td></td>
+    </tr>
+    <!--tr>
         <td>assertTextPresent</td>
         <td>Create</td>
         <td></td>
@@ -64,10 +69,10 @@
         <td>assertTextPresent</td>
         <td>Ordering</td>
         <td></td>
-    </tr>
+    </tr-->
     <tr>
         <td>clickAndWait</td>
-        <td>//div[@id='SecuredActionBarForWorkflowsSearchAndListView']/div/nav/div[2]/a[1]</td>
+        <td>//div[@id='SecuredActionBarForWorkflowsSearchAndListView']/div/nav/div[2]/a[1]/span</td>
         <td></td>
     </tr>
     <tr>
@@ -122,24 +127,29 @@
         <td>30000</td>
     </tr>
     <tr>
-        <td>setSpeed</td>
-        <td>3000</td>
-        <td></td>
-    </tr>
-    <tr>
         <td>waitForTextPresent</td>
         <td>Test Email Template Using Plain Text ${randomSuffix}</td>
         <td></td>
     </tr>
     <tr>
-        <td>assertText</td>
-        <td>link=Edit</td>
-        <td>Edit</td>
+        <td>setSpeed</td>
+        <td>3000</td>
+        <td></td>
     </tr>
     <tr>
         <td>clickAndWait</td>
         <td>link=Edit</td>
         <td></td>
+    </tr>
+    <tr>
+        <td>waitForPageToLoad</td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>waitForCondition</td>
+        <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+        <td>30000</td>
     </tr>
     <tr>
         <td>setSpeed</td>

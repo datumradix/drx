@@ -86,5 +86,6 @@ function resolveClearLinkPrefixLabelAndVisibility(formId)
     else
     {
         $('#clear-search-link').hide();
+        $('#clearingSearch-' + formId).val('1');
     }
 }

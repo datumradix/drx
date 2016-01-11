@@ -41,7 +41,7 @@
     {
         public function getDisplayName()
         {
-            return Zurmo::t('ConversationsModule', 'Conversation comments creation/modification');
+            return Zurmo::t('ConversationsModule', 'Conversation comment creation or modification');
         }
 
         public function getType()
