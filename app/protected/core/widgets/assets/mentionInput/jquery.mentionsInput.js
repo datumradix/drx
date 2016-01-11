@@ -502,7 +502,8 @@
         //Resets the text area
         function resetInput(currentVal) {
             mentionsCollection = [];
-            var mentionText = utils.htmlEncode(currentVal);
+            //var mentionText = utils.htmlEncode(currentVal);
+            var mentionText = currentVal; // Ivica: We do not want to encode html characters, when we load them in textarea
             var regex = new RegExp("(" + settings.triggerChar + ")\\[(.*?)\\]\\((.*?):(.*?)\\)", "gi");
             var match, newMentionText = mentionText;
             while ((match = regex.exec(mentionText)) != null) {

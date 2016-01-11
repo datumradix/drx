@@ -207,3 +207,7 @@ table.horizontal img {
 td.social-horizontal-expander{
     width:15px /*!important*/;
 }
+
+p[style*="text-align:center"] img {
+  margin: 0 auto;
+}

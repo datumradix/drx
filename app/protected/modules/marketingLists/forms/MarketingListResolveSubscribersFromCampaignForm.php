@@ -59,7 +59,9 @@
         {
             return array(
                 array('campaignId',                        'required'),
-                array('marketingList',                     'ExistingMarketingListOrNewMarketingListNameRequiredValidator'),
+                array('newMarketingListName',              'ExistingMarketingListOrNewMarketingListNameRequiredValidator'),
+                array('newMarketingListName',              'type',    'type' => 'string'),
+                array('newMarketingListName',              'length',  'min'  => 1, 'max' => 64),
                 array('newMarketingListName',              'safe'),
                 array('retargetOpenedEmailRecipients',     'boolean'),
                 array('retargetOpenedEmailRecipients',     'default', 'value' => false),
