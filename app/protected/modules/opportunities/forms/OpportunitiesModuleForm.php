@@ -38,20 +38,26 @@
     {
         public $stageToProbabilityMapping;
         public $automaticProbabilityMappingDisabled;
+        public $stageToRottingMapping;
+        public $opportunityRottingMappingEnabled;
 
         public function rules()
         {
             return array_merge(parent::rules(), array(
-                array('stageToProbabilityMapping', 'validateStageToProbabilityMapping'),
-                array('automaticProbabilityMappingDisabled', 'boolean'),
+                array('stageToProbabilityMapping',              'validateStageToProbabilityMapping'),
+                array('automaticProbabilityMappingDisabled',    'boolean'),
+                array('stageToRottingMapping',                  'validateStageToRottingMapping'),
+                array('opportunityRottingMappingEnabled',       'boolean'),
             ));
         }
 
         public function attributeLabels()
         {
             return array_merge(parent::attributeLabels(), array(
-                'stageToProbabilityMapping' => Zurmo::t('OpportunitiesModule', 'Probability Mapping'),
-                'automaticProbabilityMappingDisabled' => Zurmo::t('OpportunitiesModule', 'Disable Automatic Probability Mapping'),
+                'stageToProbabilityMapping'             => Zurmo::t('OpportunitiesModule', 'Probability Mapping'),
+                'automaticProbabilityMappingDisabled'   => Zurmo::t('OpportunitiesModule', 'Disable Automatic Probability Mapping'),
+                'stageToRottingMapping'                 => Zurmo::t('OpportunitiesModule', 'Days of inactivity before "Rotting"'),
+                'opportunityRottingMappingEnabled'      => Zurmo::t('OpportunitiesModule', 'Opportunity Rotting'),
             ));
         }
 
@@ -77,6 +83,29 @@
             }
             return $valid;
         }
+        
+        public function validateStageToRottingMapping()
+        {
+            $validator = new RedBeanModelTypeValidator();
+            $validator->type = 'integer';
+            $valid     = true;
+            if (!is_array($this->stageToRottingMapping))
+            {
+                $this->addError('stageToRottingMapping', Zurmo::t('Core', '{attribute} must be {type}.',
+                                array('{type}' => 'integer')));
+                $valid = false;
+            }
+            foreach ($this->stageToRottingMapping as $rottingInDays)
+            {
+                if (!$validator->validateValue($rottingInDays))
+                {
+                    $this->addError('stageToRottingMapping',
+                                    Zurmo::t('OpportunitiesModule', 'Mapped Rotting values must be integers'));
+                    $valid = false;
+                }
+            }
+            return $valid;
+        }
 
         /**
          * Override to casting automaticProbabilityMappingDisabled to integer
@@ -84,7 +113,8 @@
         public function setAttributes($values, $safeOnly = true)
         {
             parent::setAttributes($values, $safeOnly);
-            $this->automaticProbabilityMappingDisabled = (int) $this->automaticProbabilityMappingDisabled;
+            $this->automaticProbabilityMappingDisabled  = (int) $this->automaticProbabilityMappingDisabled;
+            $this->opportunityRottingMappingEnabled     = (int) $this->opportunityRottingMappingEnabled;
         }
     }
 ?>
