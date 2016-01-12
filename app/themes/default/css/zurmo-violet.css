@@ -3135,6 +3135,8 @@ input[type="button"]:hover:after {
 .form-toolbar .wizard-secondary-action-button {
   margin-left: 45px;
 }
+.SearchView .form-toolbar,
+.element-edit-form .form-toolbar,
 .modal-view-toolbar,
 .dock .form-toolbar {
   padding-top: 13px;
@@ -4419,8 +4421,10 @@ div.wide.form label.hasCheckBox {
   display: none;
 }
 .left-column .left-column {
-  width: 100%;
   padding: 0 15px 0 0;
+}
+.left-column > .left-column {
+  width: 100%;
 }
 .left-column .right-column {
   padding: 0 0 15px 0;

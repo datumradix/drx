@@ -56,7 +56,7 @@
                 (
                     (empty($object->$marketingList) || !isset($object->{$marketingList}['id']) || empty($object->{$marketingList}['id'])) &&
                     empty($object->$newMarketingListName)
-                ) && ($attribute == $marketingList))
+                ) && ($attribute == $newMarketingListName))
             {
                 if ($this->message !== null)
                 {
@@ -72,7 +72,7 @@
                 (
                     (isset($object->$marketingList) && isset($object->{$marketingList}['id']) && $object->{$marketingList}['id'] != null) &&
                     $object->$newMarketingListName != null
-                ) && ($attribute == $marketingList))
+                ) && ($attribute == $newMarketingListName))
             {
                 if ($this->message !== null)
                 {

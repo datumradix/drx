@@ -36,6 +36,11 @@
     <td>30000</td>
 </tr>
 <tr>
+    <td>waitForTextPresent</td>
+    <td>Message Queue</td>
+    <td></td>
+</tr>
+<!--tr>
     <td>assertTextPresent</td>
     <td>Create</td>
     <td></td>
@@ -64,7 +69,7 @@
     <td>assertTextPresent</td>
     <td>Ordering</td>
     <td></td>
-</tr>
+</tr-->
 <!--select workflow created in functional test-->
 <tr>
     <td>type</td>
@@ -119,28 +124,18 @@
 </tr>
 <!--edit workflow-->
 <tr>
-    <td>setSpeed</td>
-    <td>3000</td>
-    <td></td>
-</tr>
-<tr>
     <td>waitForTextPresent</td>
     <td>WorkflowTest ${randomSuffix}</td>
     <td></td>
 </tr>
 <tr>
-    <td>assertElementPresent</td>
-    <td>link=Edit</td>
+    <td>setSpeed</td>
+    <td>3000</td>
     <td></td>
 </tr>
 <tr>
     <td>clickAndWait</td>
     <td>link=Edit</td>
-    <td></td>
-</tr>
-<tr>
-    <td>setSpeed</td>
-    <td>0</td>
     <td></td>
 </tr>
 <tr>
@@ -152,6 +147,11 @@
     <td>waitForCondition</td>
     <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
     <td>30000</td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
 </tr>
 <tr>
     <td>click</td>

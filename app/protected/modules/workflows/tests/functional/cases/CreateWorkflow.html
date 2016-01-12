@@ -41,43 +41,48 @@
     <td>30000</td>
 </tr>
 <tr>
-    <td>assertTextPresent</td>
-    <td>Create</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
-    <td>Workflows</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
-    <td>Templates</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
-    <td>Time Queue</td>
-    <td></td>
-</tr>
-<tr>
-    <td>assertTextPresent</td>
+    <td>waitForTextPresent</td>
     <td>Message Queue</td>
     <td></td>
 </tr>
 <tr>
-    <td>assertTextPresent</td>
+    <td>assertText</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[1]/a[1]/span</td>
+    <td>Workflows</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[2]/a[1]/span</td>
+    <td>Templates</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[3]/a[1]/span</td>
+    <td>Time Queue</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[4]/a[1]/span</td>
+    <td>Message Queue</td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[5]/a[1]/span</td>
     <td>Ordering</td>
-    <td></td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[1]/ul[1]/li/a</td>
+    <td>Create Workflow</td>
 </tr>
 <tr>
     <td>assertElementPresent</td>
-    <td>link=Create Workflow</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[1]/ul[1]/li/a</td>
     <td></td>
 </tr>
 <tr>
     <td>clickAndWait</td>
-    <td>link=Create Workflow</td>
+    <td>//div[@id='ActionBarSearchAndListView']/div[1]/div/nav/div[1]/ul[1]/li/a</td>
     <td></td>
 </tr>
 <tr>
@@ -96,19 +101,19 @@
     <td></td>
 </tr>
 <tr>
-    <td>assertTextPresent</td>
+    <td>assertText</td>
+    <td>//div[@id='WorkflowWizardTypeView']/h1/span/span</td>
     <td>Workflow Wizard</td>
-    <td></td>
 </tr>
 <tr>
-    <td>assertTextPresent</td>
+    <td>assertText</td>
+    <td>//div[@id='WorkflowWizardTypeView']/ul/li[1]/h4</td>
     <td>On-Save Workflow</td>
-    <td></td>
 </tr>
 <tr>
-    <td>assertTextPresent</td>
+    <td>assertText</td>
+    <td>//div[@id='WorkflowWizardTypeView']/ul/li[2]/h4</td>
     <td>Time-Based Workflow</td>
-    <td></td>
 </tr>
 <!--select type of workflow-->
 <tr>
@@ -117,9 +122,24 @@
     <td></td>
 </tr>
 <tr>
-    <td>assertTextPresent</td>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
     <td>Workflow Wizard - On-Save</td>
     <td></td>
+</tr>
+<tr>
+    <td>assertText</td>
+    <td>//div[@id='OnSaveWorkflowWizardView']/div[1]/h1/span/span</td>
+    <td>Workflow Wizard - On-Save</td>
 </tr>
 <!--select module-->
 <tr>

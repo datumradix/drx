@@ -1129,6 +1129,12 @@
             {
                 $type = 'massDeleteProgressPageSize';
             }
+            elseif (MassActionUtil::isMassSubscribeLikeAction($actionId))
+            {
+                //TODO: needs to be implemented in pagination helper
+                $type = 'massSubscribeProgressPageSize';
+                return 50;
+            }
             return Yii::app()->pagination->resolveActiveForCurrentUserByType($type);
         }
 
