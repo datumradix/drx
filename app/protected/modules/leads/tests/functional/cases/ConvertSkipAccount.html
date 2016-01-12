@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="selenium.base" href="http://localhost/"/>
+    <title>ConvertSkipAccount</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr>
+    <td rowspan="1" colspan="3">Convert Skip Account</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>setTimeout</td>
+    <td>45000</td>
+    <td></td>
+</tr>
+<!--create lead to convert-->
+<tr>
+    <td>open</td>
+    <td>index.php/leads/default/create</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Lead</td>
+    <td></td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>3000</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Contact_firstName</td>
+    <td>Skip</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Contact_lastName</td>
+    <td>Account ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>setSpeed</td>
+    <td>0</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='zurmoView']/div/table/tbody/tr[1]/td</td>
+    <td>Skip Account ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Skip Account ${randomSuffix}</td>
+    <td></td>
+</tr>
+<!--go to convert lead page-->
+<tr>
+    <td>clickAndWait</td>
+    <td>link=Convert</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='LeadConvertView']/div/h1/span/span</td>
+    <td>Lead Conversion: Skip Account ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Account or Select Account or Skip Account</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//a[@class='account-skip-link']</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Complete lead conversion without selecting or creating an account.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>//a[@id='AccountSkip']/span[3]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='LeadConvertOpportunityView']/div/h1/span/span</td>
+    <td>Lead Conversion: Skip Account ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Opportunity or Skip Opportunity</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//a[@class='opportunity-skip-link']</td>
+    <td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Complete lead conversion without creating an opportunity.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//a[@id='OpportunitySkip']/span[3]</td>
+	<td></td>
+</tr>
+<!--check lead got converted-->
+<tr>
+    <td>open</td>
+    <td>index.php/leads/default</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LeadsSearchForm_anyMixedAttributes</td>
+    <td>Skip Account ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>LeadsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>No results found</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>LeadsSearchForm_anyMixedAttributes</td>
+    <td>Skip Account ${randomSuffix}</td>
+</tr>
+<!--check contact got created-->
+<tr>
+    <td>open</td>
+    <td>index.php/contacts/default</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>ContactsSearchForm_anyMixedAttributes</td>
+    <td>Skip Account ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>ContactsSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[3]/a</td>
+    <td>Skip Account ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>verifyTextPresent</td>
+    <td>Skip Account ${randomSuffix}</td>
+    <td></td>
+</tr>
+<tr>
+    <td>verifyValue</td>
+    <td>ContactsSearchForm_anyMixedAttributes</td>
+    <td>Skip Account ${randomSuffix}</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
