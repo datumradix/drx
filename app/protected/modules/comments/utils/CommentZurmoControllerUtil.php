@@ -69,7 +69,7 @@
                 if (!$this->relatedModel->{$this->relationName}->contains($model))
                 {
                     $this->relatedModel->{$this->relationName}->add($model);
-                    $saved = $this->relatedModel->save();
+                    $saved = $this->relatedModel->save(false);
                     if (!$saved)
                     {
                         throw new FailedToSaveModelException();
