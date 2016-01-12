@@ -428,12 +428,121 @@
                                       'newPassword'        => 'myPassword123',
                                       'newPassword_repeat' => 'myPassword123',
                                       'officePhone'        => '456765421',
-                                      'userStatus'         => 'Active')));
+                                      'userStatus'         => 'Active',
+                                      'primaryEmail'       => array('emailAddress' => 'test@zurmo.com',
+                                                                    'optOut' => '0',
+                                                                    'isInvalid' => '0'),
+                                      'secondaryEmail'     => array('emailAddress' => 'test1@zurmo.com',
+                                                                    'optOut' => '0',
+                                                                    'isInvalid' => '0') )));
             $this->runControllerWithRedirectExceptionAndGetContent('users/default/create');
 
             $user = User::getByUsername('somenewuser');
             $this->assertEquals('Some', $user->firstName);
             $this->assertEquals('Body', $user->lastName);
+            $this->assertEquals('test@zurmo.com', $user->primaryEmail->emailAddress);
+            $this->assertEquals('test1@zurmo.com', $user->secondaryEmail->emailAddress);
+        }
+        
+        /**
+         * @depends testSuperUserCreateAction
+         */
+        public function testSuperUserEditAction()
+        {
+            $super = $this->logoutCurrentUserLoginNewUserAndGetByUsername('super');
+            $user = User::getByUsername('somenewuser');
+            $this->setGetArray(array('id' => $user->id));
+            $this->setPostArray(array('User' =>
+                                array(
+                                      'title'              => array('value' => ''),
+                                      'firstName'          => 'Some',
+                                      'lastName'           => 'Body',
+                                      'username'           => 'somenewuser',
+                                      'jobTitle'           => '',
+                                      'officePhone'        => '',
+                                      'mobilePhone'        => '',
+                                      'department'         => '',
+                                      'manager'            => array('id' => $super->id),
+                                      'role'               => array(),
+                                      'primaryAddress'     => array('street1' => '',
+                                                           'street2' => '',
+                                                           'city' => '',
+                                                           'state' => '',
+                                                           'postalCode' => '',
+                                                           'country' => ''),
+                                      'language'           => array('value' => 'en'),
+                                      'locale'             => array('value' => ''),
+                                      'timeZone'           => array('value' => 'America/Chicago'),
+                                      'currency'           => array('id' => '1'),
+                                      'userStatus'         => 'Active',  
+                                      'primaryEmail'       => array('emailAddress' => 'test@zurmo.com',
+                                                                    'optOut' => '0',
+                                                                    'isInvalid' => '0'),
+                                      'secondaryEmail'     => array('emailAddress' => 'test2@zurmo.com',
+                                                                    'optOut' => '0',
+                                                                    'isInvalid' => '0') )));
+            $this->runControllerWithRedirectExceptionAndGetContent('users/default/edit');
+            $user = User::getByUsername('somenewuser');
+            $this->assertEquals('Some', $user->firstName);
+            $this->assertEquals('Body', $user->lastName);
+            $this->assertEquals('test@zurmo.com', $user->primaryEmail->emailAddress);
+            $this->assertEquals('test2@zurmo.com', $user->secondaryEmail->emailAddress);
+            
+            $this->setGetArray(array('id' => $user->id));
+            $this->setPostArray(array('User' =>
+                                array(
+                                      'title'              => array('value' => ''),
+                                      'firstName'          => 'Some',
+                                      'lastName'           => 'Body',
+                                      'username'           => 'somenewuser',
+                                      'userStatus'         => 'Active',  
+                                      'primaryEmail'       => array('emailAddress' => 'test@zurmo.com',
+                                                                    'optOut' => '0',
+                                                                    'isInvalid' => '0'),
+                                      'secondaryEmail'     => array('emailAddress' => 'test@zurmo.com',
+                                                                    'optOut' => '0',
+                                                                    'isInvalid' => '0') )));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/edit');
+            $this->assertContains('Secondary email address cannot be the same as the primary email address.', $content);
+            
+            $this->setPostArray(array('UserPasswordForm' =>
+                                array('firstName'          => 'Some1',
+                                      'lastName'           => 'Body1',
+                                      'username'           => 'somenewuser1',
+                                      'newPassword'        => 'myPassword123',
+                                      'newPassword_repeat' => 'myPassword123',
+                                      'officePhone'        => '456765421',
+                                      'userStatus'         => 'Active',
+                                      'primaryEmail'       => array('emailAddress' => 'test22@zurmo.com',
+                                                                    'optOut' => '0',
+                                                                    'isInvalid' => '0'),
+                                      'secondaryEmail'     => array('emailAddress' => 'test23@zurmo.com',
+                                                                    'optOut' => '0',
+                                                                    'isInvalid' => '0') )));
+            $this->runControllerWithRedirectExceptionAndGetContent('users/default/create');
+
+            $user = User::getByUsername('somenewuser1');
+            $this->assertEquals('Some1', $user->firstName);
+            $this->assertEquals('Body1', $user->lastName);
+            $this->assertEquals('test22@zurmo.com', $user->primaryEmail->emailAddress);
+            $this->assertEquals('test23@zurmo.com', $user->secondaryEmail->emailAddress);
+            
+            $this->setGetArray(array('id' => $user->id));
+            $this->setPostArray(array('User' =>
+                                array(
+                                      'title'              => array('value' => ''),
+                                      'firstName'          => 'Some',
+                                      'lastName'           => 'Body',
+                                      'username'           => 'somenewuser',
+                                      'userStatus'         => 'Active',  
+                                      'primaryEmail'       => array('emailAddress' => 'test@zurmo.com',
+                                                                    'optOut' => '0',
+                                                                    'isInvalid' => '0'),
+                                      'secondaryEmail'     => array('emailAddress' => 'test22@zurmo.com',
+                                                                    'optOut' => '0',
+                                                                    'isInvalid' => '0') )));
+            $content = $this->runControllerWithNoExceptionsAndGetContent('users/default/edit');
+            $this->assertContains('Email address already exists in system.', $content);
         }
 
         public function testSuperUserChangeAvatar()

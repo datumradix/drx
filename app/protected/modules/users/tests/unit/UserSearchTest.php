@@ -76,6 +76,26 @@
             $this->assertEquals(1, count($users));
             $this->assertEquals($user->id, $users[0]->id);
         }
+        
+        public function testGetUsersByAnyEmailAddress()
+        {
+            $user = UserTestHelper::createBasicUser('Mickey');
+            $user->primaryEmail->emailAddress = 'mickey@example.com';
+            $user->primaryEmail->optOut       = 1;
+            $user->primaryEmail->isInvalid    = 0;
+            $user->secondaryEmail->emailAddress = 'mickey_secondary@example.com';
+            $user->secondaryEmail->optOut       = 1;
+            $user->secondaryEmail->isInvalid    = 0;
+            $this->assertTrue($user->save());
+
+            $users = UserSearch::getUsersByAnyEmailAddress('mickey@example.com');
+            $this->assertEquals(1, count($users));
+            $this->assertEquals($user->id, $users[0]->id);
+
+            $users = UserSearch::getUsersByAnyEmailAddress('mickey_secondary@example.com');
+            $this->assertEquals(1, count($users));
+            $this->assertEquals($user->id, $users[0]->id);
+        }
 
         /**
          * Test users count using NonSystemUsersStateMetadataAdapter
@@ -83,7 +103,7 @@
         public function testGetUsersListUsingNonSystemUsersStateMetadataAdapter()
         {
             $users                      = User::getAll();
-            $this->assertEquals(5, count($users));
+            $this->assertEquals(6, count($users));
             $user                       = UserTestHelper::createBasicUser('mysysuser');
             $user->setIsSystemUser();
             $this->assertTrue($user->save());
@@ -93,10 +113,10 @@
             $joinTablesAdapter                  = new RedBeanModelJoinTablesQueryAdapter('User');
             $where  = RedBeanModelDataProvider::makeWhere('User', $metadata, $joinTablesAdapter);
             $models = User::getSubset($joinTablesAdapter, null, null, $where, null);
-            $this->assertEquals(5, count($models));
+            $this->assertEquals(6, count($models));
 
             $actualUsers = User::getAll();
-            $this->assertEquals(6, count($actualUsers));
+            $this->assertEquals(7, count($actualUsers));
 
             unset($user);
             $user   = User::getByUsername('mysysuser');
@@ -110,7 +130,7 @@
 
             $where  = RedBeanModelDataProvider::makeWhere('User', $metadata, $joinTablesAdapter);
             $models = User::getSubset($joinTablesAdapter, null, null, $where, null);
-            $this->assertEquals(6, count($models));
+            $this->assertEquals(7, count($models));
         }
 
         /**
@@ -145,7 +165,7 @@
             UserTestHelper::createBasicUser('Ibzo');
 
             $users = UserSearch::getUsersByPartialFullNameOrUsername('I');
-            $this->assertEquals(2, count($users));
+            $this->assertEquals(3, count($users));
             $users = UserSearch::getUsersByPartialFullNameOrUsername('jd');
             $this->assertEquals(1, count($users));
             $users = UserSearch::getUsersByPartialFullNameOrUsername('Cz');
@@ -161,6 +181,32 @@
             $user->setPassword('asdfgh');
             $this->assertTrue($user->save());
             $users = UserSearch::getUsersByPartialFullNameOrUsername('lion');
+            $this->assertEquals(1, count($users));
+        }
+        
+        /**
+         * @depends testGetUsersByPartialFullNameOrUsername
+         */
+        public function testGetUsersByPartialFullNameOrAnyEmailAddress()
+        {
+            $user = UserTestHelper::createBasicUser('Ben');
+            $user->firstName    = 'Ben';
+            $user->lastName     = 'Smith';
+            $user->primaryEmail->emailAddress = 'ben@example.com';
+            $user->primaryEmail->optOut       = 1;
+            $user->primaryEmail->isInvalid    = 0;
+            $user->secondaryEmail->emailAddress = 'ben_secondary@example.com';
+            $user->secondaryEmail->optOut       = 1;
+            $user->secondaryEmail->isInvalid    = 0;
+            $this->assertTrue($user->save());
+            
+            $users = UserSearch::getUsersByPartialFullNameOrAnyEmailAddress('Smit', 10);
+            $this->assertEquals(1, count($users));
+            $users = UserSearch::getUsersByPartialFullNameOrAnyEmailAddress('Ben', 10);
+            $this->assertEquals(1, count($users));
+            $users = UserSearch::getUsersByPartialFullNameOrAnyEmailAddress('ben@example.com', 10);
+            $this->assertEquals(1, count($users));
+            $users = UserSearch::getUsersByPartialFullNameOrAnyEmailAddress('ben_secondary@example.com', 10);
             $this->assertEquals(1, count($users));
         }
     }
