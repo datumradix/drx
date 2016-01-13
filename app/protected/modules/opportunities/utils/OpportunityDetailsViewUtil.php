@@ -34,59 +34,20 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class OpportunityConvertToViewDesignerRules extends DesignerRules
+    /**
+     * Helper functionality for rendering renderBeforeFormLayoutForDetailsContent() for opportunities
+     */
+    class OpportunityDetailsViewUtil
     {
-        public function getDisplayName()
+        public static function renderBeforeFormLayoutForDetailsContent($model)
         {
-            return Zurmo::t('DesignerModule', 'Lead to Opportunity Convert View');
-        }
-
-        public function getNonPlaceableLayoutAttributeNames()
-        {
-            return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id',
-                'owner',
-                'stageModifiedDateTime',
-            );
-        }
-
-        public function canAddPanels()
-        {
-            return false;
-        }
-
-        public function canRemovePanels()
-        {
-            return false;
-        }
-
-        public function canMovePanels()
-        {
-            return false;
-        }
-
-        public function requireAllRequiredFieldsInLayout()
-        {
-            return true;
-        }
-
-        public function canModifyCellSettings()
-        {
-            return false;
-        }
-
-        public function canModifyPanelSettings()
-        {
-            return false;
-        }
-
-        public function getSavableMetadataRules()
-        {
-            return array('AddBlankForDropDown');
+            $timeInStageDisplayContent = DateTimeUtil::
+                    getTimeSinceDisplayContent($model->stageModifiedDateTime, true);
+            $timeInStage = " (" . Zurmo::t('OpportunitiesModule', 'Time in current stage: ') . $timeInStageDisplayContent . ")";
+            
+            
+            $content = ZurmoHtml::tag('p', array('class' => 'before-form-details-content'), $timeInStage);
+            return $content;
         }
     }
 ?>

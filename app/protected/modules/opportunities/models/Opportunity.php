@@ -50,6 +50,25 @@
             return 'Closed Won';
         }
 
+        public function onCreated()
+        {
+            parent::onCreated();
+            $this->unrestrictedSet('stageModifiedDateTime',  
+                                    DateTimeUtil::convertTimestampToDbFormatDateTime(time()));
+        }
+        
+        public function onModified()
+        {
+            parent::onModified();
+            if (array_key_exists('value', $this->stage->originalAttributeValues) &&
+                    $this->stage->originalAttributeValues['value'] != "" &&
+                    $this->getScenario() != 'importModel')
+            {
+                $this->unrestrictedSet('stageModifiedDateTime',  
+                                    DateTimeUtil::convertTimestampToDbFormatDateTime(time()));
+            }
+        }
+        
         protected function beforeSave()
         {
             if (parent::beforeSave())
@@ -105,7 +124,9 @@
                 'probability' => Zurmo::t('OpportunitiesModule', 'Probability',  array(), null, $language),
                 'source'      => Zurmo::t('ContactsModule',      'Source',   array(), null, $language),
                 'stage'       => Zurmo::t('ZurmoModule',         'Stage',  array(), null, $language),
-                'tasks'       => Zurmo::t('TasksModule',         'TasksModulePluralLabel', $params, null, $language)));
+                'tasks'       => Zurmo::t('TasksModule',         'TasksModulePluralLabel', $params, null, $language),
+                'stageModifiedDateTime' 
+                              => Zurmo::t('OpportunitiesModule', 'Stage Modified Date Time',  array(), null, $language)));
         }
 
         public static function canSaveMetadata()
@@ -122,6 +143,7 @@
                     'description',
                     'name',
                     'probability',
+                    'stageModifiedDateTime',
                 ),
                 'relations' => array(
                     'account'       => array(static::HAS_ONE,   'Account'),
@@ -145,25 +167,29 @@
                     'tasks'    => array(static::MANY_MANY, 'Task',    'activityItems'),
                 ),
                 'rules' => array(
-                    array('amount',        'required'),
-                    array('closeDate',     'required'),
-                    array('closeDate',     'type',      'type' => 'date'),
-                    array('description',   'type',      'type' => 'string'),
-                    array('name',          'required'),
-                    array('name',          'type',      'type' => 'string'),
-                    array('name',          'length',    'min'  => 1, 'max' => 64),
-                    array('probability',   'type',      'type' => 'integer'),
-                    array('probability',   'numerical', 'min' => 0, 'max' => 100),
-                    array('probability',   'required'),
-                    array('probability',   'default',   'value' => 0),
-                    array('probability',   'probability'),
-                    array('stage',         'required'),
+                    array('amount',                 'required'),
+                    array('closeDate',              'required'),
+                    array('closeDate',              'type',      'type' => 'date'),
+                    array('description',            'type',      'type' => 'string'),
+                    array('name',                   'required'),
+                    array('name',                   'type',      'type' => 'string'),
+                    array('name',                   'length',    'min'  => 1, 'max' => 64),
+                    array('probability',            'type',      'type' => 'integer'),
+                    array('probability',            'numerical', 'min' => 0, 'max' => 100),
+                    array('probability',            'required'),
+                    array('probability',            'default',   'value' => 0),
+                    array('probability',            'probability'),
+                    array('stage',                  'required'),
+                    array('stageModifiedDateTime',  'required'),
+                    array('stageModifiedDateTime',  'readOnly'),
+                    array('stageModifiedDateTime',  'type', 'type' => 'datetime'),
                 ),
                 'elements' => array(
-                    'amount'      => 'CurrencyValue',
-                    'account'     => 'Account',
-                    'closeDate'   => 'Date',
-                    'description' => 'TextArea',
+                    'amount'                => 'CurrencyValue',
+                    'account'               => 'Account',
+                    'closeDate'             => 'Date',
+                    'description'           => 'TextArea',
+                    'stageModifiedDateTime' => 'DateTime',
                 ),
                 'customFields' => array(
                     'stage'  => 'SalesStages',
@@ -209,6 +235,26 @@
             else
             {
                 $this->probability = OpportunitiesModule::getProbabilityByStageValue($this->stage->value);
+            }
+        }
+        
+        /**
+         * Override to handle the set read-only stageModifiedDateTime attribute on the import scenario.
+         * (non-PHPdoc)
+         * @see RedBeanModel::isAllowedToSetReadOnlyAttribute()
+         */
+        public function isAllowedToSetReadOnlyAttribute($attributeName)
+        {
+            if ($this->getScenario() == 'importModel' || $this->getScenario() == 'searchModel')
+            {
+                if ($attributeName == 'stageModifiedDateTime')
+                {
+                    return true;
+                }
+                else
+                {
+                    return parent::isAllowedToSetReadOnlyAttribute($attributeName);
+                }
             }
         }
 
