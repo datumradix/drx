@@ -34,59 +34,24 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class OpportunityConvertToViewDesignerRules extends DesignerRules
+    /**
+     * Import rules for the stage modified date time attribute.
+     */
+    class StageModifiedDateTimeAttributeImportRules extends NonDerivedAttributeImportRules
     {
-        public function getDisplayName()
+        protected static function getImportColumnOnlyModelAttributeMappingRuleFormTypesAndElementTypes()
         {
-            return Zurmo::t('DesignerModule', 'Lead to Opportunity Convert View');
+            return array('ValueFormat' => 'ImportMappingRuleDateTimeFormatDropDown');
         }
 
-        public function getNonPlaceableLayoutAttributeNames()
+        public static function getSanitizerUtilTypesInProcessingOrder()
         {
-            return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id',
-                'owner',
-                'stageModifiedDateTime',
-            );
+            return array('DateTime');
         }
 
-        public function canAddPanels()
+        public function getDisplayLabel()
         {
-            return false;
-        }
-
-        public function canRemovePanels()
-        {
-            return false;
-        }
-
-        public function canMovePanels()
-        {
-            return false;
-        }
-
-        public function requireAllRequiredFieldsInLayout()
-        {
-            return true;
-        }
-
-        public function canModifyCellSettings()
-        {
-            return false;
-        }
-
-        public function canModifyPanelSettings()
-        {
-            return false;
-        }
-
-        public function getSavableMetadataRules()
-        {
-            return array('AddBlankForDropDown');
+            return Zurmo::t('OpportunitiesModule', 'Stage Modified Date Time');
         }
     }
 ?>
