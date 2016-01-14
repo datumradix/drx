@@ -96,6 +96,11 @@
          * The report results drill-down page size
          */
         protected $_reportResultsSubListPageSize;
+        
+        /**
+         * When a mass subscribe must complete using a progress bar, this is how many are processed at once.
+         */
+        protected $_massSubscribeProgressPageSize;
 
         /**
          * This is set from the value in the application common config file. It is used as the final fall back
@@ -195,6 +200,14 @@
             $this->_apiListPageSize = $value;
         }
 
+        /** This is set from the value in application common config file. It is used as the final fall back
+         * if no other configuration settings are found.
+         */
+        public function setMassSubscribeProgressPageSize($value)
+        {
+            $this->_massSubscribeProgressPageSize = $value;
+        }
+        
         /**
          * Call method to get the active value for a particular pagination type. If the active value doesnt exist
          * as a state on the currenet user, set the active value from the configuration
@@ -328,7 +341,8 @@
         {
             return array('listPageSize', 'subListPageSize', 'modalListPageSize', 'massEditProgressPageSize',
                          'autoCompleteListPageSize', 'importPageSize', 'dashboardListPageSize', 'apiListPageSize',
-                         'massDeleteProgressPageSize', 'reportResultsListPageSize', 'reportResultsSubListPageSize');
+                         'massDeleteProgressPageSize', 'reportResultsListPageSize', 'reportResultsSubListPageSize',
+                         'massSubscribeProgressPageSize');
         }
     }
 ?>
