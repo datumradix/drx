@@ -35,7 +35,7 @@
      ********************************************************************************/
 
     /**
-     * Workflow rules to be used with AccountContactAffiliation models
+     * Workflow rules to be used with Comments models
      */
     class CommentsWorkflowRules extends WorkflowRules
     {

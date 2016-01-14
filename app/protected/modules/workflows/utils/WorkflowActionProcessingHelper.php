@@ -545,18 +545,23 @@
             }
         }
 
+        /**
+         * Create comments for triggered model.
+         * @throws NotSupportedException
+         */
         protected function processCreateCommentAction()
         {
             $actionAttributes = $this->action->getActionAttributes();
-
             if (count($actionAttributes) > 1 ||
                 !isset($actionAttributes['comments']) ||
+                !$this->triggeredModel->isRelation('comments') ||
                 $this->triggeredModel->getRelationType('comments') != RedBeanModel::HAS_MANY)
             {
                 throw new NotSupportedException();
             }
 
             $comment = new Comment();
+            // Needed so we can resolve merge tags
             $adapter = new WorkflowActionProcessingModelAdapter($comment, $this->triggeredByUser, $this->triggeredModel);
             $actionAttributes['comments']->resolveValueAndSetToModel($adapter, 'description');
             $comment->description = $adapter->getModel()->description;

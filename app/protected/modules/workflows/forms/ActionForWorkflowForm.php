@@ -252,6 +252,12 @@
             return false;
         }
 
+        /**
+         * Used to find out if action is related to adding comments to model
+         * This function is used in ActionRowForWorkflowComponentView::resolveAndRenderActionContent to resolve if
+         * we should show merge tags guide, which should be present for comments.
+         * @return bool
+         */
         public function isModelCommentActionVariant()
         {
             if ($this->type == self::TYPE_CREATE_COMMENT)
