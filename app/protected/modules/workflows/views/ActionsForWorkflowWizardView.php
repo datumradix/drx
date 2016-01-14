@@ -142,7 +142,9 @@
                         " option[value=\"" . ActionForWorkflowForm::TYPE_SUBSCRIBE_TO_LIST . "\"]').remove();
             $('#" . ActionsForWorkflowWizardView::ACTION_TYPE_NAME .
                         " option[value=\"" . ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST . "\"]').remove();
-            if($(this).val() == 'ContactsModule')
+            $('#" . ActionsForWorkflowWizardView::ACTION_TYPE_NAME .
+                        " option[value=\"" . ActionForWorkflowForm::TYPE_CREATE_COMMENT . "\"]').remove();
+            if ($(this).val() == 'ContactsModule')
             {
                 $('#" . ActionsForWorkflowWizardView::ACTION_TYPE_NAME . "').
                     append(\"<option value='" . ActionForWorkflowForm::TYPE_SUBSCRIBE_TO_LIST . "'>" .
@@ -150,6 +152,16 @@
                 $('#" . ActionsForWorkflowWizardView::ACTION_TYPE_NAME . "').
                     append(\"<option value='" . ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST . "'>" .
                         ActionForWorkflowForm::getLabelForUnsubscribeFromList() . "</option>\");
+                $('#" . ActionsForWorkflowWizardView::ACTION_TYPE_NAME . "').
+                    append(\"<option value='" . ActionForWorkflowForm::TYPE_CREATE_COMMENT . "'>" .
+                        ActionForWorkflowForm::getLabelForCreateComment() . "</option>\");
+            }
+            if ($(this).val() == 'AccountsModule' || $(this).val() == 'ContactsModule' ||
+                $(this).val() == 'OpportunitiesModule' || $(this).val() == 'TasksModule')
+            {
+                $('#" . ActionsForWorkflowWizardView::ACTION_TYPE_NAME . "').
+                    append(\"<option value='" . ActionForWorkflowForm::TYPE_CREATE_COMMENT . "'>" .
+                        ActionForWorkflowForm::getLabelForCreateComment() . "</option>\");
             }
             ";
             // End Not Coding Standard
@@ -311,6 +323,10 @@
                     loadWorkflowAction();
                 }
                 else if ($('#" . $id . "').val() == '" . ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST . "')
+                {
+                    loadWorkflowAction();
+                }
+                else if ($('#" . $id . "').val() == '" . ActionForWorkflowForm::TYPE_CREATE_COMMENT . "')
                 {
                     loadWorkflowAction();
                 }

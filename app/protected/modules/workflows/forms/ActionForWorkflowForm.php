@@ -70,6 +70,11 @@
         const TYPE_UNSUBSCRIBE_FROM_LIST = 'UnsubscribeFromList';
 
         /**
+         * This action is if you trigger a account/contact/opportunity/task model and want to create comment
+         */
+        const TYPE_CREATE_COMMENT = 'CreateComment';
+
+        /**
          * When performing actions on related models, if there are MANY related models RELATION_FILTER_ALL means the
          * action will be performed on all related models
          */
@@ -140,6 +145,7 @@
                     self::TYPE_CREATE_RELATED           => Zurmo::t('WorkflowsModule', 'Create Related'),
                     self::TYPE_SUBSCRIBE_TO_LIST        => self::getLabelForSubscribeToList(),
                     self::TYPE_UNSUBSCRIBE_FROM_LIST    => self::getLabelForUnsubscribeFromList(),
+                    self::TYPE_CREATE_COMMENT           => self::getLabelForCreateComment(),
                 );
         }
 
@@ -151,6 +157,11 @@
         public static function getLabelForUnsubscribeFromList()
         {
             return Zurmo::t('Core', 'Unsubscribe From List');
+        }
+
+        public static function getLabelForCreateComment()
+        {
+            return Zurmo::t('Core', 'Create Comment');
         }
 
         /**
@@ -233,7 +244,17 @@
 
         public function isModelActionVariant()
         {
-            if ($this->type != self::TYPE_SUBSCRIBE_TO_LIST && $this->type != self::TYPE_UNSUBSCRIBE_FROM_LIST)
+            if ($this->type != self::TYPE_SUBSCRIBE_TO_LIST && $this->type != self::TYPE_UNSUBSCRIBE_FROM_LIST &&
+                $this->type != self::TYPE_CREATE_COMMENT)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public function isModelCommentActionVariant()
+        {
+            if ($this->type == self::TYPE_CREATE_COMMENT)
             {
                 return true;
             }
@@ -256,6 +277,10 @@
             if ($this->type == self::TYPE_SUBSCRIBE_TO_LIST || $this->type == self::TYPE_UNSUBSCRIBE_FROM_LIST)
             {
                 return $this->resolveActionAttributeFormsAndLabelsAndSortForSubscribeToList();
+            }
+            elseif ($this->type == self::TYPE_CREATE_COMMENT)
+            {
+                return $this->resolveActionAttributeFormsAndLabelsAndSortForCreateComment();
             }
             else
             {
@@ -339,6 +364,10 @@
             {
                 return 'MarketingList';
             }
+            elseif ($this->type == self::TYPE_CREATE_COMMENT)
+            {
+                return 'Comment';
+            }
             else
             {
                 $resolvedAttributeName  = static::resolveRealAttributeName($attribute);
@@ -409,7 +438,8 @@
         {
             if ($this->type == self::TYPE_UPDATE_SELF || $this->type == self::TYPE_CREATE ||
                 $this->type == self::TYPE_UPDATE_RELATED || $this->type == self::TYPE_CREATE_RELATED ||
-                $this->type == self::TYPE_SUBSCRIBE_TO_LIST || $this->type == self::TYPE_UNSUBSCRIBE_FROM_LIST)
+                $this->type == self::TYPE_SUBSCRIBE_TO_LIST || $this->type == self::TYPE_UNSUBSCRIBE_FROM_LIST ||
+                $this->type == self::TYPE_CREATE_COMMENT)
             {
                 return true;
             }
@@ -576,7 +606,8 @@
             $typeDataAndLabels = ActionForWorkflowForm::getTypeDataAndLabels();
             if ($this->type == self::TYPE_UPDATE_SELF ||
                     $this->type == self::TYPE_SUBSCRIBE_TO_LIST ||
-                    $this->type == self::TYPE_UNSUBSCRIBE_FROM_LIST)
+                    $this->type == self::TYPE_UNSUBSCRIBE_FROM_LIST ||
+                    $this->type == self::TYPE_CREATE_COMMENT)
             {
                 return $typeDataAndLabels[$this->type];
             }
@@ -694,7 +725,8 @@
         {
             if ($this->type == self::TYPE_UPDATE_SELF ||
                     $this->type == self::TYPE_SUBSCRIBE_TO_LIST ||
-                    $this->type == self::TYPE_UNSUBSCRIBE_FROM_LIST)
+                    $this->type == self::TYPE_UNSUBSCRIBE_FROM_LIST ||
+                    $this->type == self::TYPE_CREATE_COMMENT)
             {
                 return $this->_modelClassName;
             }
@@ -794,6 +826,24 @@
             return $attributeFormsIndexedByAttribute;
         }
 
+        protected function resolveActionAttributeFormsAndLabelsAndSortForCreateComment()
+        {
+            $actionAttributeForm = array();
+            if ($this->hasActionAttributeFormByName('comments'))
+            {
+                $actionAttributeForm = $this->getActionAttributeFormByName('comments');
+            }
+            else
+            {
+                $actionAttributeForm = new CommentWorkflowActionAttributeForm('Comment', 'description'); //todo: fix this, new form, with construct override
+            }
+            $attributeFormsIndexedByAttribute = array();
+            $attributeFormsIndexedByAttribute['comments'] = $actionAttributeForm;
+            $attributeFormsIndexedByAttribute['comments']->shouldSetValue = true;
+            $attributeFormsIndexedByAttribute['comments']->setDisplayLabel(Zurmo::t('CommentsModule', 'Comment'));
+            return $attributeFormsIndexedByAttribute;
+        }
+
         protected function resolveSettingAttributesForSubscribeToListType($valuesAttributes)
         {
             assert('$this->type != null');
@@ -802,6 +852,10 @@
                 if ($this->type == self::TYPE_SUBSCRIBE_TO_LIST || $this->type == self::TYPE_UNSUBSCRIBE_FROM_LIST)
                 {
                     $form = new MarketingListWorkflowActionAttributeForm('MarketingList', 'id');
+                }
+                elseif ($this->type == self::TYPE_CREATE_COMMENT)
+                {
+                    $form = new CommentWorkflowActionAttributeForm('Comment', 'description');
                 }
                 else
                 {
