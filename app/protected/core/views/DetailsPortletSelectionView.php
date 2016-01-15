@@ -108,7 +108,13 @@
             {
                 return true;
             }
-
+            foreach ($className::getAllowedOnPortletViewClassNames() as $allowedOnPortletViewClassName)
+            {
+                if (is_subclass_of($this->uniqueLayoutId, $allowedOnPortletViewClassName))
+                {
+                    return true;
+                }
+            }
             return false;
         }
     }

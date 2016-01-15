@@ -47,6 +47,9 @@
                     'searchAttributes' => array('ownedItemsOnly' => true),
                 ),
                 'global' => array(
+                    'derivedAttributeTypes' => array(
+                        'OpportunityTimeInStage',
+                    ),
                     'panels' => array(
                         array(
                             'rows' => array(
