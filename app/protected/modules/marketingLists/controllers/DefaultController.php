@@ -228,6 +228,7 @@
 
         public function actionSaveSubscribersFromCampaign($campaignId, $page = 0, $subscribedCount = 0, $skippedCount = 0, $marketingListId = null)
         {
+            sleep(20);
             $resolveSubscribersForm           = new MarketingListResolveSubscribersFromCampaignForm();
             try
             {
