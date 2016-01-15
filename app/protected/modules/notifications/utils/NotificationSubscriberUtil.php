@@ -392,7 +392,7 @@
                 $notificationSubscriber->hasReadLatest = false;
                 $model->notificationSubscribers->add($notificationSubscriber);
             }
-            $model->save();
+            $model->save(false);
             return $model;
         }
 
@@ -417,7 +417,7 @@
                     break;
                 }
             }
-            $saved = $model->save();
+            $saved = $model->save(false);
             if (!$saved)
             {
                 throw new FailedToSaveModelException();
