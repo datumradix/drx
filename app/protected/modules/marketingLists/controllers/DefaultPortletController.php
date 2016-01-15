@@ -77,10 +77,8 @@
             if  ($type === 'report')
             {
                 $attributeName      = null;
-                /*$pageSize           = Yii::app()->pagination->resolveActiveForCurrentUserByType(
-                                      'reportResultsListPageSize', get_class($this->getModule()));*/
-                //TODO: Add massSubscribeProgressPageSize field to pagination helper
-                $pageSize           = 50;
+                $pageSize           = Yii::app()->pagination->resolveActiveForCurrentUserByType(
+                                      'massSubscribeProgressPageSize', get_class($this->getModule()));
                 $reportDataProvider = MarketingListMembersUtil::makeReportDataProviderAndResolveAttributeName($id, $pageSize, $attributeName);
                 $contactIds         = MarketingListMembersUtil::getContactIdsByReportDataProviderAndAttributeName(
                                       $reportDataProvider, $attributeName);
