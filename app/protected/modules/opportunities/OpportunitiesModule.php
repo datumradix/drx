@@ -85,6 +85,15 @@
                     'Closed Lost'   => 0,
                 ),
                 'automaticProbabilityMappingDisabled' => false,
+                'stageToRottingMapping' => array(
+                    'Prospecting'   => 0,
+                    'Qualification' => 0,
+                    'Negotiating'   => 0,
+                    'Verbal'        => 0,
+                    'Closed Won'    => 0,
+                    'Closed Lost'   => 0,
+                ),
+                'opportunityRottingMappingEnabled' => false,
                 'tabMenuItems' => array(
                     array(
                         'label'  => "eval:Zurmo::t('OpportunitiesModule', 'OpportunitiesModulePluralLabel', \$translationParams)",
@@ -206,6 +215,41 @@
             if (isset($metadata['global']['automaticProbabilityMappingDisabled']))
             {
                 return (bool) $metadata['global']['automaticProbabilityMappingDisabled'];
+            }
+            return false;
+        }
+        
+        public static function getStageToRottingMappingData()
+        {
+            $metadata = static::getMetadata();
+            if (isset($metadata['global']['stageToRottingMapping']))
+            {
+                return $metadata['global']['stageToRottingMapping'];
+            }
+            return array();
+        }
+
+        /**
+         * @param string $value
+         * @return int
+         */
+        public static function getRottingByStageValue($value)
+        {
+            assert('is_string($value) || $value == null');
+            $stageToRottingMapping = self::getStageToRottingMappingData();
+            if (isset($stageToRottingMapping[$value]))
+            {
+                return $stageToRottingMapping[$value];
+            }
+            return 0;
+        }
+
+        public static function isRottingMappingEnabled()
+        {
+            $metadata = static::getMetadata();
+            if (isset($metadata['global']['opportunityRottingMappingEnabled']))
+            {
+                return (bool) $metadata['global']['opportunityRottingMappingEnabled'];
             }
             return false;
         }

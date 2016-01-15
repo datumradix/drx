@@ -46,7 +46,7 @@
         }
 
         public function testZurmoPaginationHelper()
-        {
+        {   
             $pager = new ZurmoPaginationHelper();
             $pager->setListPageSize(11);
             $pager->setSubListPageSize(12);
@@ -58,6 +58,7 @@
             $pager->setMassDeleteProgressPageSize(18);
             $pager->setReportResultsListPageSize(19);
             $pager->setReportResultsSubListPageSize(20);
+            $pager->setMassSubscribeProgressPageSize(21);
 
             //Retrieve settings for different current users.
             Yii::app()->user->userModel =  User::getByUsername('super');
@@ -75,6 +76,7 @@
             $this->assertEquals(18, $pager->resolveActiveForCurrentUserByType('massDeleteProgressPageSize'));
             $this->assertEquals(19, $pager->resolveActiveForCurrentUserByType('reportResultsListPageSize'));
             $this->assertEquals(20, $pager->resolveActiveForCurrentUserByType('reportResultsSubListPageSize'));
+            $this->assertEquals(21, $pager->resolveActiveForCurrentUserByType('massSubscribeProgressPageSize'));
 
             //Retrieve settings for different specific users
             $sally = User::getByUsername('sally');
@@ -102,6 +104,8 @@
             $this->assertEquals(19, $pager->getByUserAndType($billy, 'reportResultsListPageSize'));
             $this->assertEquals(20, $pager->getByUserAndType($super, 'reportResultsSubListPageSize'));
             $this->assertEquals(20, $pager->getByUserAndType($billy, 'reportResultsSubListPageSize'));
+            $this->assertEquals(21, $pager->getByUserAndType($super, 'massSubscribeProgressPageSize'));
+            $this->assertEquals(21, $pager->getByUserAndType($billy, 'massSubscribeProgressPageSize'));
 
             $pager->setByUserAndType($billy, 'listPageSize',                 88);
             $pager->setByUserAndType($billy, 'subListPageSize',              89);
@@ -113,6 +117,7 @@
             $pager->setByUserAndType($billy, 'massDeleteProgressPageSize',   95);
             $pager->setByUserAndType($billy, 'reportResultsListPageSize',    96);
             $pager->setByUserAndType($billy, 'reportResultsSubListPageSize', 97);
+            $pager->setByUserAndType($billy, 'massSubscribeProgressPageSize', 98);
 
             $this->assertEquals(88, $pager->getByUserAndType($billy, 'listPageSize'));
             $this->assertEquals(89, $pager->getByUserAndType($billy, 'subListPageSize'));
@@ -124,6 +129,7 @@
             $this->assertEquals(95, $pager->getByUserAndType($billy, 'massDeleteProgressPageSize'));
             $this->assertEquals(96, $pager->getByUserAndType($billy, 'reportResultsListPageSize'));
             $this->assertEquals(97, $pager->getByUserAndType($billy, 'reportResultsSubListPageSize'));
+            $this->assertEquals(98, $pager->getByUserAndType($billy, 'massSubscribeProgressPageSize'));
         }
 
         public function testSetGetGlobalValueByType()
@@ -139,6 +145,7 @@
             $pager->setMassDeleteProgressPageSize(18);
             $pager->setReportResultsListPageSize(19);
             $pager->setReportResultsSubListPageSize(20);
+            $pager->setMassSubscribeProgressPageSize(21);
             $this->assertEquals         (11, $pager->getGlobalValueByType('listPageSize'));
             $this->assertEquals         (12, $pager->getGlobalValueByType('subListPageSize'));
             $this->assertEquals         (13, $pager->getGlobalValueByType('modalListPageSize'));
@@ -149,6 +156,7 @@
             $this->assertEquals         (18, $pager->getGlobalValueByType('massDeleteProgressPageSize'));
             $this->assertEquals         (19, $pager->getGlobalValueByType('reportResultsListPageSize'));
             $this->assertEquals         (20, $pager->getGlobalValueByType('reportResultsSubListPageSize'));
+            $this->assertEquals         (21, $pager->getGlobalValueByType('massSubscribeProgressPageSize'));
             $pager->setGlobalValueByType('listPageSize',                 88);
             $pager->setGlobalValueByType('subListPageSize',              89);
             $pager->setGlobalValueByType('modalListPageSize',            90);
@@ -159,6 +167,7 @@
             $pager->setGlobalValueByType('massDeleteProgressPageSize',   95);
             $pager->setGlobalValueByType('reportResultsListPageSize',    96);
             $pager->setGlobalValueByType('reportResultsSubListPageSize', 97);
+            $pager->setGlobalValueByType('massSubscribeProgressPageSize', 98);
             $this->assertEquals         (88, $pager->getGlobalValueByType('listPageSize'));
             $this->assertEquals         (89, $pager->getGlobalValueByType('subListPageSize'));
             $this->assertEquals         (90, $pager->getGlobalValueByType('modalListPageSize'));
@@ -169,6 +178,7 @@
             $this->assertEquals         (95, $pager->getGlobalValueByType('massDeleteProgressPageSize'));
             $this->assertEquals         (96, $pager->getGlobalValueByType('reportResultsListPageSize'));
             $this->assertEquals         (97, $pager->getGlobalValueByType('reportResultsSubListPageSize'));
+            $this->assertEquals         (98, $pager->getGlobalValueByType('massSubscribeProgressPageSize'));
         }
 
         public function testSetForCurrentUserByType()
