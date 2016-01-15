@@ -113,7 +113,7 @@
             AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($task), 'TasksModule'), $task);
             if ($task->project->id > 0)
             {
-                if (RightsUtil::canUserAccessModule('ProjectModule', Yii::app()->user->userModel) &&
+                if (RightsUtil::canUserAccessModule('ProjectsModule', Yii::app()->user->userModel) &&
                     ControllerSecurityUtil::doesCurrentUserHavePermissionOnSecurableItem($task, Permission::READ_WRITE))
                 {
                     $this->redirect(Yii::app()->createUrl('projects/default/details',
