@@ -66,6 +66,9 @@
                         ),
                     ),
                     'gridViewType' => RelatedListView::GRID_VIEW_TYPE_STACKED,
+                    'derivedAttributeTypes' => array(
+                        'OpportunityTimeInStage',
+                    ),
                     'panels' => array(
                         array(
                             'rows' => array(
