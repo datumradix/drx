@@ -34,59 +34,26 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class OpportunityConvertToViewDesignerRules extends DesignerRules
+    class OpportunityTimeInStageListViewColumnAdapter extends ListViewColumnAdapter
     {
-        public function getDisplayName()
+        public function renderGridViewData()
         {
-            return Zurmo::t('DesignerModule', 'Lead to Opportunity Convert View');
-        }
-
-        public function getNonPlaceableLayoutAttributeNames()
-        {
-            return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id',
-                'owner',
-                'stageModifiedDateTime',
-            );
-        }
-
-        public function canAddPanels()
-        {
-            return false;
-        }
-
-        public function canRemovePanels()
-        {
-            return false;
-        }
-
-        public function canMovePanels()
-        {
-            return false;
-        }
-
-        public function requireAllRequiredFieldsInLayout()
-        {
-            return true;
-        }
-
-        public function canModifyCellSettings()
-        {
-            return false;
-        }
-
-        public function canModifyPanelSettings()
-        {
-            return false;
-        }
-
-        public function getSavableMetadataRules()
-        {
-            return array('AddBlankForDropDown');
+            if ($this->view instanceof OpportunitiesRelatedListView)
+            {
+                return array(
+                    'name'  => Zurmo::t('OpportunitiesModule', 'Time in stage'),
+                    'value' => 'OpportunitiesUtil::renderTimeInStageForRelatedListView($data)',
+                    'type'  => 'raw',
+                );
+            }
+            else
+            {
+                return array(
+                    'name'  => Zurmo::t('OpportunitiesModule', 'Time in stage'),
+                    'value' => 'OpportunitiesUtil::renderTimeInStageForListView($data)',
+                    'type'  => 'raw',
+                );
+            }
         }
     }
 ?>
