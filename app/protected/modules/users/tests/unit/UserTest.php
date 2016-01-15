@@ -80,6 +80,7 @@
             $user2->setPassword('myuser');
             $emailAddress = 'userA@example.com';
             $user2->primaryEmail->emailAddress = $emailAddress;
+            $user2->secondaryEmail->emailAddress = $emailAddress;
             $saved = $user2->save();
             $this->assertFalse($saved);
 
@@ -90,7 +91,27 @@
             $this->assertTrue(isset($validationErrors['primaryEmail']));
             $this->assertTrue(isset($validationErrors['primaryEmail']['emailAddress']));
             $this->assertEquals('Email address already exists in system.', $validationErrors['primaryEmail']['emailAddress'][0]);
+            $this->assertTrue(isset($validationErrors['secondaryEmail']));
+            $this->assertTrue(isset($validationErrors['secondaryEmail']['emailAddress']));
+            $this->assertEquals('Secondary email address cannot be the same as the primary email address.', $validationErrors['secondaryEmail']['emailAddress'][0]);
 
+            $user2a = new User();
+            $user2a->username = 'userb';
+            $user2a->lastName = 'UserB';
+            $user2a->setPassword('myuser');
+            $emailAddress = 'userA@example.com';
+            $user2a->secondaryEmail->emailAddress = $emailAddress;
+            $saved = $user2a->save();
+            $this->assertFalse($saved);
+
+            $validationErrors = $user2a->getErrors();
+            $this->assertTrue(count($validationErrors) > 0);
+
+            // Todo: fix array keys below
+            $this->assertTrue(isset($validationErrors['secondaryEmail']));
+            $this->assertTrue(isset($validationErrors['secondaryEmail']['emailAddress']));
+            $this->assertEquals('Email address already exists in system.', $validationErrors['secondaryEmail']['emailAddress'][0]);
+            
             // Try to save user without email address
             $user3 = new User();
             $user3->username = 'userc';
