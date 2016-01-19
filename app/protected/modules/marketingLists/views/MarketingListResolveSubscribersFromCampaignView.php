@@ -210,7 +210,6 @@
                                                 {
                                                     $(this).makeLargeLoadingSpinner(false,  $("#' . $form->getId() . '").parent());
                                                     $("#' . $form->getId() . ' span.z-spinner").text("");
-                                                    $(window).off("beforeunload");
                                                     return false;
                                                 }
                                 }
