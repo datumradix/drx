@@ -35,37 +35,14 @@
      ********************************************************************************/
 
     /**
-     * Class to adapt system configuration values into a configuration form.
-     * Saves global values from a configuration form.
+     * Helper class for working with kanban boards
      */
-    class ZurmoSystemConfigurationFormAdapter
+    class ZurmoKanbanConfigurationUtil extends BatchSizeConfigUtil
     {
-        /**
-         * Creates a form populated with the system configuration global stored values.
-         * @return ZurmoSystemConfigurationForm
-         */
-        public static function makeFormFromSystemConfiguration()
-        {
-            $form                                         = new ZurmoSystemConfigurationForm();
-            $form->autoresponderOrCampaignBatchSize       = AutoresponderOrCampaignBatchSizeConfigUtil::getBatchSize();
-            $form->outboundEmailBatchSize                 = OutboundEmailBatchSizeConfigUtil::getBatchSize();
-            $form->listPageSizeMaxLimit                   = ZurmoSystemConfigurationUtil::getBatchSize();
-            $form->kanbanBoardPageSizeMaxLimit            = ZurmoKanbanConfigurationUtil::getBatchSize();
-            return $form;
-        }
+        const CONFIG_KEY             = 'KanbanBoardPageSizeMaxLimit';
 
-        /**
-         * Given a SystemConfigurationForm, save the system configuration global values.
-         */
-        public static function setConfigurationFromForm(ZurmoSystemConfigurationForm $form)
-        {
-            if (Yii::app()->user->userModel->isRootUser)
-            {
-                AutoresponderOrCampaignBatchSizeConfigUtil::setBatchSize((int)$form->autoresponderOrCampaignBatchSize);
-                OutboundEmailBatchSizeConfigUtil::setBatchSize((int)$form->outboundEmailBatchSize);
-                ZurmoSystemConfigurationUtil::setBatchSize((int)$form->listPageSizeMaxLimit);
-                ZurmoKanbanConfigurationUtil::setBatchSize((int)$form->kanbanBoardPageSizeMaxLimit);
-            }
-        }
+        const CONFIG_MODULE_NAME     = 'ZurmoModule';
+
+        const CONFIG_DEFAULT_VALUE   = 100;
     }
 ?>
