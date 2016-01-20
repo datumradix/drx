@@ -101,6 +101,11 @@
          * When a mass subscribe must complete using a progress bar, this is how many are processed at once.
          */
         protected $_massSubscribeProgressPageSize;
+        
+        /**
+         * The kanban board page size
+         */
+        protected $_kanbanBoardPageSize;
 
         /**
          * This is set from the value in the application common config file. It is used as the final fall back
@@ -206,6 +211,15 @@
         public function setMassSubscribeProgressPageSize($value)
         {
             $this->_massSubscribeProgressPageSize = $value;
+        }
+        
+        /**
+         * This is set from the value in the application common config file. It is used as the final fall back
+         * if no other configuration settings are found.
+         */
+        public function setKanbanBoardPageSize($value)
+        {
+            $this->_kanbanBoardPageSize = $value;
         }
         
         /**
@@ -342,7 +356,7 @@
             return array('listPageSize', 'subListPageSize', 'modalListPageSize', 'massEditProgressPageSize',
                          'autoCompleteListPageSize', 'importPageSize', 'dashboardListPageSize', 'apiListPageSize',
                          'massDeleteProgressPageSize', 'reportResultsListPageSize', 'reportResultsSubListPageSize',
-                         'massSubscribeProgressPageSize');
+                         'massSubscribeProgressPageSize', 'kanbanBoardPageSize');
         }
     }
 ?>
