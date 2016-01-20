@@ -150,6 +150,7 @@
             $this->assertEquals('Negotiating', $opportunity->stage->value);
             $this->assertEquals('2011-01-01',    $opportunity->closeDate);
             $this->assertEquals(1, $currencies[0]->rateToBase);
+            $this->assertTrue($opportunity->isAttributeReadOnly('stageModifiedDateTime'));
         }
 
         /**
@@ -386,5 +387,15 @@
             $this->assertEquals('Opportunity', $modelClassNames[0]);
             $this->assertEquals('OpportunityStarred', $modelClassNames[1]);
         }
+        
+        /**
+         * @expectedException NotSupportedException
+         */
+         public function testOpportunityReadOnlyFieldStageModifiedTime()
+         {
+            Yii::app()->user->userModel = User::getByUsername('super');
+            $opportunity = new Opportunity();
+            $opportunity->stageModifiedDateTime = '2015-01-01 21:00:00';
+         }
     }
 ?>

@@ -34,59 +34,15 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
-    class OpportunityConvertToViewDesignerRules extends DesignerRules
+    /**
+     * Helper class for working with kanban boards
+     */
+    class ZurmoKanbanConfigurationUtil extends BatchSizeConfigUtil
     {
-        public function getDisplayName()
-        {
-            return Zurmo::t('DesignerModule', 'Lead to Opportunity Convert View');
-        }
+        const CONFIG_KEY             = 'KanbanBoardPageSizeMaxLimit';
 
-        public function getNonPlaceableLayoutAttributeNames()
-        {
-            return array(
-                'createdDateTime',
-                'modifiedDateTime',
-                'createdByUser',
-                'modifiedByUser',
-                'id',
-                'owner',
-                'stageModifiedDateTime',
-            );
-        }
+        const CONFIG_MODULE_NAME     = 'ZurmoModule';
 
-        public function canAddPanels()
-        {
-            return false;
-        }
-
-        public function canRemovePanels()
-        {
-            return false;
-        }
-
-        public function canMovePanels()
-        {
-            return false;
-        }
-
-        public function requireAllRequiredFieldsInLayout()
-        {
-            return true;
-        }
-
-        public function canModifyCellSettings()
-        {
-            return false;
-        }
-
-        public function canModifyPanelSettings()
-        {
-            return false;
-        }
-
-        public function getSavableMetadataRules()
-        {
-            return array('AddBlankForDropDown');
-        }
+        const CONFIG_DEFAULT_VALUE   = 100;
     }
 ?>
