@@ -192,7 +192,7 @@
             $this->assertEquals('message', $contentArray['type']);
 
             //TODO: Uncomment once massSubscribeProgressPageSize field added to pagination
-            /*Yii::app()->pagination->setForCurrentUserByType('reportResultsListPageSize', 1);
+            Yii::app()->pagination->setForCurrentUserByType('massSubscribeProgressPageSize', 1);
             $this->setGetArray(array(
                                     'marketingListId'   => $marketingListId,
                                     'id'                => $report->id,
@@ -227,7 +227,7 @@
             $this->assertArrayHasKey('type', $contentArray);
             $this->assertArrayHasKey('message', $contentArray);
             $this->assertEquals("0 subscribed. {$contactCount} skipped, already in the list.", $contentArray['message']);
-            $this->assertEquals('message', $contentArray['type']);*/
+            $this->assertEquals('message', $contentArray['type']);
         }
     }
 ?>

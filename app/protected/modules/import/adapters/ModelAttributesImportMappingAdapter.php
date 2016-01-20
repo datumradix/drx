@@ -254,6 +254,10 @@
             {
                 return 'Name';
             }
+            if ($attributeName =='stageModifiedDateTime')
+            {
+                return 'StageModifiedDateTime';
+            }
             return $type;
         }
     }

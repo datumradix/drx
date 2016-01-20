@@ -40,6 +40,9 @@
         {
             $metadata = array(
                 'global' => array(
+                    'derivedAttributeTypes' => array(
+                        'OpportunityTimeInStage',
+                    ),
                     'panels' => array(
                         array(
                             'rows' => array(
@@ -100,6 +103,7 @@
                          'amount'  =>      array('value'  => 'Yii::app()->numberFormatter->formatCurrency($data->amount->value, $data->amount->currency->code)',
                                                  'class'  => 'opportunity-amount'),
                          'name'         => array('value'  => $this->getLinkString('$data->name', 'name'), 'class' => 'opportunity-name'),
+                         'timeInStage'  => array('value'  => 'OpportunitiesUtil::renderTimeInStageForKanbanView($data)', 'class' => ''),
                          'account'      => array('value'  => $this->getRelatedLinkString('$data->account', 'account', 'accounts'),
                                                  'class'  => 'account-name'));
         }
