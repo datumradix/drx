@@ -53,6 +53,7 @@
         public $realtimeUpdatesEnabled;
         public $reCaptchaPrivateKey;
         public $reCaptchaPublicKey;
+        public $kanbanBoardPageSize;
 
         public function rules()
         {
@@ -83,6 +84,9 @@
                 array('subListPageSize',                        'type',      'type' => 'integer'),
                 array('reCaptchaPrivateKey',                    'type',      'type' => 'string'),
                 array('reCaptchaPublicKey',                     'type',      'type' => 'string'),
+                array('kanbanBoardPageSize',                    'required'),
+                array('kanbanBoardPageSize',                    'type',      'type' => 'integer'),
+                array('kanbanBoardPageSize',                    'numerical', 'min' => 1, 'max' => ZurmoKanbanConfigurationUtil::getBatchSize()),
             );
         }
 
@@ -103,6 +107,7 @@
                 'realtimeUpdatesEnabled'                 => Zurmo::t('ZurmoModule', 'Enable real-time updates'),
                 'reCaptchaPrivateKey'                    => Zurmo::t('ZurmoModule', 'ReCaptcha Private Key'),
                 'reCaptchaPublicKey'                     => Zurmo::t('ZurmoModule', 'ReCaptcha Public Key'),
+                'kanbanBoardPageSize'                    => Zurmo::t('ZurmoModule', 'Opportunity Kanban items'),
             );
         }
     }

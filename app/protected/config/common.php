@@ -249,6 +249,7 @@
                 'reportResultsListPageSize'     => 20,
                 'reportResultsSubListPageSize'  => 5,
                 'massSubscribeProgressPageSize' => 50,
+                'kanbanBoardPageSize'           => 50,
             ),
             'performance' => array(
                 'class'          => 'application.core.components.PerformanceMeasurement',
