@@ -59,6 +59,7 @@
             $pager->setReportResultsListPageSize(19);
             $pager->setReportResultsSubListPageSize(20);
             $pager->setMassSubscribeProgressPageSize(21);
+            $pager->setKanbanBoardPageSize(22);
 
             //Retrieve settings for different current users.
             Yii::app()->user->userModel =  User::getByUsername('super');
@@ -77,6 +78,7 @@
             $this->assertEquals(19, $pager->resolveActiveForCurrentUserByType('reportResultsListPageSize'));
             $this->assertEquals(20, $pager->resolveActiveForCurrentUserByType('reportResultsSubListPageSize'));
             $this->assertEquals(21, $pager->resolveActiveForCurrentUserByType('massSubscribeProgressPageSize'));
+            $this->assertEquals(22, $pager->resolveActiveForCurrentUserByType('kanbanBoardPageSize'));
 
             //Retrieve settings for different specific users
             $sally = User::getByUsername('sally');
@@ -106,6 +108,8 @@
             $this->assertEquals(20, $pager->getByUserAndType($billy, 'reportResultsSubListPageSize'));
             $this->assertEquals(21, $pager->getByUserAndType($super, 'massSubscribeProgressPageSize'));
             $this->assertEquals(21, $pager->getByUserAndType($billy, 'massSubscribeProgressPageSize'));
+            $this->assertEquals(22, $pager->getByUserAndType($super, 'kanbanBoardPageSize'));
+            $this->assertEquals(22, $pager->getByUserAndType($billy, 'kanbanBoardPageSize'));
 
             $pager->setByUserAndType($billy, 'listPageSize',                 88);
             $pager->setByUserAndType($billy, 'subListPageSize',              89);
@@ -118,6 +122,7 @@
             $pager->setByUserAndType($billy, 'reportResultsListPageSize',    96);
             $pager->setByUserAndType($billy, 'reportResultsSubListPageSize', 97);
             $pager->setByUserAndType($billy, 'massSubscribeProgressPageSize', 98);
+            $pager->setByUserAndType($billy, 'kanbanBoardPageSize',          99);
 
             $this->assertEquals(88, $pager->getByUserAndType($billy, 'listPageSize'));
             $this->assertEquals(89, $pager->getByUserAndType($billy, 'subListPageSize'));
@@ -130,6 +135,7 @@
             $this->assertEquals(96, $pager->getByUserAndType($billy, 'reportResultsListPageSize'));
             $this->assertEquals(97, $pager->getByUserAndType($billy, 'reportResultsSubListPageSize'));
             $this->assertEquals(98, $pager->getByUserAndType($billy, 'massSubscribeProgressPageSize'));
+            $this->assertEquals(99, $pager->getByUserAndType($billy, 'kanbanBoardPageSize'));
         }
 
         public function testSetGetGlobalValueByType()
@@ -146,6 +152,7 @@
             $pager->setReportResultsListPageSize(19);
             $pager->setReportResultsSubListPageSize(20);
             $pager->setMassSubscribeProgressPageSize(21);
+            $pager->setKanbanBoardPageSize(22);
             $this->assertEquals         (11, $pager->getGlobalValueByType('listPageSize'));
             $this->assertEquals         (12, $pager->getGlobalValueByType('subListPageSize'));
             $this->assertEquals         (13, $pager->getGlobalValueByType('modalListPageSize'));
@@ -157,6 +164,7 @@
             $this->assertEquals         (19, $pager->getGlobalValueByType('reportResultsListPageSize'));
             $this->assertEquals         (20, $pager->getGlobalValueByType('reportResultsSubListPageSize'));
             $this->assertEquals         (21, $pager->getGlobalValueByType('massSubscribeProgressPageSize'));
+            $this->assertEquals         (22, $pager->getGlobalValueByType('kanbanBoardPageSize'));
             $pager->setGlobalValueByType('listPageSize',                 88);
             $pager->setGlobalValueByType('subListPageSize',              89);
             $pager->setGlobalValueByType('modalListPageSize',            90);
@@ -168,6 +176,7 @@
             $pager->setGlobalValueByType('reportResultsListPageSize',    96);
             $pager->setGlobalValueByType('reportResultsSubListPageSize', 97);
             $pager->setGlobalValueByType('massSubscribeProgressPageSize', 98);
+            $pager->setGlobalValueByType('kanbanBoardPageSize',          99);
             $this->assertEquals         (88, $pager->getGlobalValueByType('listPageSize'));
             $this->assertEquals         (89, $pager->getGlobalValueByType('subListPageSize'));
             $this->assertEquals         (90, $pager->getGlobalValueByType('modalListPageSize'));
@@ -179,6 +188,7 @@
             $this->assertEquals         (96, $pager->getGlobalValueByType('reportResultsListPageSize'));
             $this->assertEquals         (97, $pager->getGlobalValueByType('reportResultsSubListPageSize'));
             $this->assertEquals         (98, $pager->getGlobalValueByType('massSubscribeProgressPageSize'));
+            $this->assertEquals         (99, $pager->getGlobalValueByType('kanbanBoardPageSize'));
         }
 
         public function testSetForCurrentUserByType()

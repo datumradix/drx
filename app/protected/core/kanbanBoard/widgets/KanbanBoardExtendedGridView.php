@@ -39,12 +39,6 @@
      */
     class KanbanBoardExtendedGridView extends StackedExtendedGridView
     {
-        const CONFIG_KEY             = 'KanbanMaxCount';
-
-        const CONFIG_MODULE_NAME     = 'ZurmoModule';
-
-        public static $maxCount = 50;
-
         /**
          * Override since Kanban Board does not support pagination. It would always show all available regardless of
          * pagination.
@@ -78,12 +72,11 @@
         public $selectedTheme;
 
         /**
-         * Need to grab one more than max count to check if we are over the max so we can properly display a message
          * @return int
          */
         public static function resolvePageSizeForMaxCount()
         {
-            return static::getMaxCount() + 1;
+            return static::getMaxCount();
         }
 
         /**
@@ -91,11 +84,7 @@
          */
         public static function getMaxCount()
         {
-            $maxCount = ZurmoConfigurationUtil::getByModuleName(static::CONFIG_MODULE_NAME, static::CONFIG_KEY);
-            if ($maxCount == null)
-            {
-                $maxCount = static::$maxCount;
-            }
+            $maxCount = Yii::app()->pagination->getGlobalValueByType('kanbanBoardPageSize');
             return (int) $maxCount;
         }
 
@@ -110,18 +99,20 @@
          */
         public function renderTableBody()
         {
-            $data        = $this->dataProvider->getData();
-            $modelsCount = count($data);
-            $columnsData = $this->resolveDataIntoKanbanColumns();
-            $width       = 100 / count($columnsData);
+            $data               = $this->dataProvider->getData();
+            $modelsCount        = count($data);
+            $totalModelsCount   = $this->dataProvider->calculateTotalItemCount();
+            $columnsData        = $this->resolveDataIntoKanbanColumns();
+            $width              = 100 / count($columnsData);
             echo "<tbody>";
             echo "<tr><td id=\"kanban-holder\" class='". $this->selectedTheme . "'>";
-            if ($this->isMaxCountCheckRequired() && $modelsCount > static::getMaxCount())
+            if ($modelsCount > 0)
             {
-                $this->renderOverMaxCountText();
-            }
-            elseif ($modelsCount > 0)
-            {
+                if ($this->isMaxCountCheckRequired() && $modelsCount == static::getMaxCount() &&
+                        $totalModelsCount > static::getMaxCount())
+                {
+                    $this->renderOverMaxCountText($totalModelsCount);
+                }
                 $counter = 0;
                 echo "<div id=\"kanban-board\">";
                 foreach ($columnsData as $attributeValue => $attributeValueAndData)
@@ -148,12 +139,14 @@
         }
 
         /**
-         * Renders the empty message when there is no data.
+         * Renders the message when the total count exceeds the max count of items allowed.
+         * @param int $totalCount
          */
-        public function renderOverMaxCountText()
+        public function renderOverMaxCountText($totalCount)
         {
-            $label = Zurmo::t('Core', 'There are too many results to display. Try filtering your search or switching to the grid view.');
-            //echo CHtml::tag('span', array('class' => 'empty'), $label);
+            $label = Zurmo::t('Core', 
+                'Too many results to display. Showing the first {maxCount} of {totalCount} records. Try filtering your search or switching to the grid view.',
+                array('{maxCount}' => static::getMaxCount(), '{totalCount}' => $totalCount));
             $content  = '<div class="general-issue-notice"><span class="icon-notice"></span><p>';
             $content .= $label;
             $content .= '</p></div>';
