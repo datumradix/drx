@@ -222,6 +222,58 @@
             $helper->processNonUpdateSelfAction();
         }
 
+        public function testAddCommentToCommentableModel()
+        {
+            $commentText = "Test Comment";
+            $action                       = new ActionForWorkflowForm('Contact', Workflow::TYPE_ON_SAVE);
+            $action->type                 = ActionForWorkflowForm::TYPE_CREATE_COMMENT;
+            $attributes                   = array('comments' => array('shouldSetValue'    => '1',
+                                                                           'type'          => WorkflowActionAttributeForm::TYPE_STATIC,
+                                                                           'value'         => $commentText));
+            $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
+            $contact = ContactTestHelper::createContactByNameForOwner('jason', Yii::app()->user->userModel);
+            $noOfComments = count($contact->comments);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $contact, Yii::app()->user->userModel);
+            $helper->processUpdateSelfAction();
+            // We need to save contact, in order to have comment saved
+            $contact->save();
+            $this->assertEquals($noOfComments + 1, count($contact->comments));
+            $this->assertEquals($commentText, $contact->comments[0]->description);
+
+            // Test with merge tags
+            $commentText = "Test Comment for [[FIRST^NAME]]";
+            $action                       = new ActionForWorkflowForm('Contact', Workflow::TYPE_ON_SAVE);
+            $action->type                 = ActionForWorkflowForm::TYPE_CREATE_COMMENT;
+            $attributes                   = array('comments' => array('shouldSetValue'    => '1',
+                                                                      'type'          => WorkflowActionAttributeForm::TYPE_STATIC,
+                                                                      'value'         => $commentText));
+            $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
+            $contact = ContactTestHelper::createContactByNameForOwner('jim', Yii::app()->user->userModel);
+            $noOfComments = count($contact->comments);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $contact, Yii::app()->user->userModel);
+            $helper->processUpdateSelfAction();
+            // We need to save contact, in order to have comment saved
+            $contact->save();
+            $this->assertEquals($noOfComments + 1, count($contact->comments));
+            $this->assertEquals("Test Comment for " . $contact->firstName, $contact->comments[0]->description);
+        }
+
+        /**
+         * @expectedException NotSupportedException
+         */
+        public function testAddCommentToNonCommentableModel()
+        {
+            $action                       = new ActionForWorkflowForm('Contact', Workflow::TYPE_ON_SAVE);
+            $action->type                 = ActionForWorkflowForm::TYPE_CREATE_COMMENT;
+            $attributes                   = array('comments' => array('shouldSetValue'    => '1',
+                                                                      'type'          => WorkflowActionAttributeForm::TYPE_STATIC,
+                                                                      'value'         => 'Not Used'));
+            $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
+            $project = ProjectTestHelper::createProjectByNameForOwner('Project', Yii::app()->user->userModel);
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, $project, Yii::app()->user->userModel);
+            $helper->processUpdateSelfAction();
+        }
+
         /**
          * Confirms that values for boolean, date, and dateTime get set on creating new records.
          */
