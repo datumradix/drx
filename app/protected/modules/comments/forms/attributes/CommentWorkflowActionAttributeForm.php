@@ -35,43 +35,10 @@
      ********************************************************************************/
 
     /**
-     * Override to handle registry of the yii js file.  This is required for the next/previous links to operate
-     * correctly.
-     *
+     * Form to work with a comments. Used by create comment workflow action
      */
-    class ImportSequentialProcessContainerView extends SequentialProcessContainerView
+    class CommentWorkflowActionAttributeForm extends TextAreaWorkflowActionAttributeForm
     {
-        protected function renderContent()
-        {
-            $content = parent::renderContent();
-            Yii::app()->clientScript->registerCoreScript('yii');
-            $this->registerCheckIfImportIsCompletedOnWindowCloseAlert();
-            return $content;
-        }
-
-        protected function registerCheckIfImportIsCompletedOnWindowCloseAlert()
-        {
-            // SHow only on import data page, not on analyzing data page
-            $message = Zurmo::t('ImportModule', 'Are you sure you want to leave this page, remaining records will not be processed');
-            // Begin Not Coding Standard
-            if ($this->title == Zurmo::t('ImportModule', 'Import Wizard - Import Data'))
-            {
-                Yii::app()->clientScript->registerScript('CheckIfImportIsCompletedOnWindowCloseAlert', "
-                $(window).on('beforeunload', function(){
-                  var processingMessage;
-                  processingMessage = $('#SequentialProcessView h3').html();
-                  if ($('#ImportSequentialProcessContainerView #ContainedViewCompleteSequentialProcessView').length > 0)
-                  {
-                    return null;
-                  }
-                  else
-                  {
-                    return '" . $message . " (' + processingMessage + ').';
-                  }
-                });
-            ");
-            }
-            // End Not Coding Standard
-        }
+        public $shouldSetValue = true;
     }
 ?>

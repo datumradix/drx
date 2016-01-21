@@ -131,7 +131,15 @@
             }
             else
             {
-                $content  = $this->renderAttributesRowsContent($this->makeAttributeRows());
+                if ($this->model->isModelCommentActionVariant())
+                {
+                    $content  = $this->renderMergeTagGuideContent();
+                    $content  .= $this->renderAttributesRowsContent($this->makeAttributeRows());
+                }
+                else
+                {
+                    $content  = $this->renderAttributesRowsContent($this->makeAttributeRows());
+                }
             }
             return $content;
         }
