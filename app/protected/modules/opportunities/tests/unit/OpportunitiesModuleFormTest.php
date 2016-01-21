@@ -70,5 +70,34 @@
             $validated = $form->validate(array('automaticProbabilityMappingDisabled'));
             $this->assertTrue($validated);
         }
+        
+        public function testValidateStageToRottingMapping()
+        {
+            $form      = new OpportunitiesModuleForm();
+            $form->stageToRottingMapping = array('a' => 'a');
+            $validated = $form->validateStageToRottingMapping();
+            $this->assertFalse($validated);
+            $compareErrors = array('stageToRottingMapping' => array('Mapped Rotting values must be integers'));
+            $this->assertEquals($compareErrors, $form->getErrors());
+
+            $form->stageToRottingMapping = array('a' => '55', 'b' => 65, 'c' => 0);
+            $form->clearErrors();
+            $validated = $form->validateStageToRottingMapping();
+            $this->assertTrue($validated);
+            $this->assertEquals(0, count($form->getErrors()));
+        }
+        
+        public function testOpportunityRottingMappingEnabledIsBoolean()
+        {
+            $form      = new OpportunitiesModuleForm();
+            $form->opportunityRottingMappingEnabled = "Some string..";
+            $validated = $form->validate(array('opportunityRottingMappingEnabled'));
+            $this->assertFalse($validated);
+
+            $form->opportunityRottingMappingEnabled = true;
+            $form->clearErrors();
+            $validated = $form->validate(array('opportunityRottingMappingEnabled'));
+            $this->assertTrue($validated);
+        }
     }
 ?>

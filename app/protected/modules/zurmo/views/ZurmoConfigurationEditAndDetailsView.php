@@ -99,6 +99,15 @@
                                     array(
                                         array(
                                             'elements' => array(
+                                                array('attributeName' => 'kanbanBoardPageSize', 'type' => 'Integer'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
                                                 array('attributeName' => 'dashboardListPageSize', 'type' => 'Integer'),
                                             ),
                                         ),
