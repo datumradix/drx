@@ -299,5 +299,24 @@
             $this->assertEquals(1, static::$marketingList->marketingListMembers[0]->unsubscribed);
             $this->assertEquals(1, MarketingListMember::getCount());
         }
+
+        public function testCreateCommentForContactUsingWorkflowAction()
+        {
+            $action                       = new ActionForWorkflowForm('Contact', Workflow::TYPE_ON_SAVE);
+            $action->type                 = ActionForWorkflowForm::TYPE_CREATE_COMMENT;
+            $attributes                   = array('comments' =>      array('shouldSetValue'    => '1',
+                                                                           'type'          => WorkflowActionAttributeForm::TYPE_STATIC,
+                                                                           'value'         => 'Sample Comment for [[FIRST^NAME]]'));
+            $noOfComments = count(static::$contact->comments);
+            $action->setAttributes(array(ActionForWorkflowForm::ACTION_ATTRIBUTES => $attributes));
+            $helper = new WorkflowActionProcessingHelper(88, 'some name', $action, static::$contact, Yii::app()->user->userModel);
+            $helper->processUpdateSelfAction();
+            // We need to save contact, in order to have comment saved
+            static::$contact->save();
+
+            $numberOfCommentsAfterWorkflow = count(static::$contact->comments);
+            $this->assertEquals($noOfComments + 1, $numberOfCommentsAfterWorkflow);
+            $this->assertEquals('Sample Comment for ' . static::$contact->firstName, static::$contact->comments[0]->description);
+        }
     }
 ?>
