@@ -71,22 +71,25 @@
             foreach ($data->activityItems as $activityItem)
             {
                 $model = TasksUtil::castDownActivityItem($activityItem);
-                $modelClassName  = get_class($model);
-                if ($isLink)
+                if (is_object($model))
                 {
-                    $moduleClassName = $modelClassName::getModuleClassName();
-                    $moduleId        = $moduleClassName::getDirectoryName();
-                    if (null != $stateAdapterClassName = $moduleClassName::getStateMetadataAdapterClassName())
+                    $modelClassName  = get_class($model);
+                    if ($isLink)
                     {
-                        $moduleClassName = $stateAdapterClassName::getModuleClassNameByModel($model);
-                        $moduleId                = $moduleClassName::getDirectoryName();
+                        $moduleClassName = $modelClassName::getModuleClassName();
+                        $moduleId        = $moduleClassName::getDirectoryName();
+                        if (null != $stateAdapterClassName = $moduleClassName::getStateMetadataAdapterClassName())
+                        {
+                            $moduleClassName = $stateAdapterClassName::getModuleClassNameByModel($model);
+                            $moduleId                = $moduleClassName::getDirectoryName();
+                        }
+                        $linkRoute = '/' . $moduleId . '/default/details/';
+                        $text .= static::getLinkStringForActivityItem($model, $linkRoute, $moduleClassName);
                     }
-                    $linkRoute = '/' . $moduleId . '/default/details/';
-                    $text .= static::getLinkStringForActivityItem($model, $linkRoute, $moduleClassName);
-                }
-                else
-                {
-                    $text .= static::getNameForActivityItem(strval($model), $modelClassName);
+                    else
+                    {
+                        $text .= static::getNameForActivityItem(strval($model), $modelClassName);
+                    }
                 }
             }
             return trim($text, ';');

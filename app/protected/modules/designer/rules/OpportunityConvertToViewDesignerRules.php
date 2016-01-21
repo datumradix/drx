@@ -49,7 +49,8 @@
                 'createdByUser',
                 'modifiedByUser',
                 'id',
-                'owner'
+                'owner',
+                'stageModifiedDateTime',
             );
         }
 
