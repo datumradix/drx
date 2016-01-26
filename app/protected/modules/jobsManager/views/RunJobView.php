@@ -127,7 +127,7 @@
 
         protected function registerRunJobInBackgroundScript()
         {
-            $jobUrl   = Yii::app()->createUrl($this->moduleId . '/' . $this->controllerId . '/runAjaxJob/',
+            $jobUrl   = Yii::app()->createUrl('jobsManager/default/runAjaxJob/',
                 array('type' => $this->type, 'timeLimit' => $this->timeLimit, 'messageLoggerClassName' => $this->messageLoggerClassName));
             // Begin Not Coding Standard
             $script = <<<EOD
