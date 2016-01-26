@@ -152,9 +152,6 @@
                 $('#" . ActionsForWorkflowWizardView::ACTION_TYPE_NAME . "').
                     append(\"<option value='" . ActionForWorkflowForm::TYPE_UNSUBSCRIBE_FROM_LIST . "'>" .
                         ActionForWorkflowForm::getLabelForUnsubscribeFromList() . "</option>\");
-                $('#" . ActionsForWorkflowWizardView::ACTION_TYPE_NAME . "').
-                    append(\"<option value='" . ActionForWorkflowForm::TYPE_CREATE_COMMENT . "'>" .
-                        ActionForWorkflowForm::getLabelForCreateComment() . "</option>\");
             }
             if ($(this).val() == 'AccountsModule' || $(this).val() == 'ContactsModule' ||
                 $(this).val() == 'OpportunitiesModule' || $(this).val() == 'TasksModule')
