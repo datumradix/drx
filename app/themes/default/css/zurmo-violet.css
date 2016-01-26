@@ -2858,26 +2858,6 @@ td {
 }
 tr.odd {
   background: none;
-  -webkit-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -moz-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -ms-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -o-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -ms-transform: translate(0px,0);
-  -moz-transform: translate(0px,0);
-  -webkit-transform: translate3d(0px,0,0);
-  transform: translate(0px,0);
-}
-tr.even {
-  -webkit-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -moz-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -ms-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -o-transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  transition: all 0.05s cubic-bezier(0.390,0.575,0.565,1.000);
-  -ms-transform: translate(0px,0);
-  -moz-transform: translate(0px,0);
-  -webkit-transform: translate3d(0px,0,0);
-  transform: translate(0px,0);
 }
 .checkbox-column {
   width: 30px;
@@ -3766,6 +3746,9 @@ div.wide.form label.hasCheckBox {
 #search-form .z-button {
   font-size: 12px;
 }
+#search-form .form-toolbar {
+  padding-top: 13px;
+}
 #search-form table {
   border-bottom: none;
   width: 100%;
@@ -4538,6 +4521,10 @@ div.wide.form label.hasCheckBox {
 #account-skip-form .hasCheckBox input[type="checkbox"] {
   margin-bottom: 0 !important;
 }
+.element-edit-form .form-toolbar,
+#edit-form .form-toolbar {
+  padding-top: 13px;
+}
 .form-fields {
   width: 100%;
   border-bottom: none;
@@ -5005,6 +4992,7 @@ div.wide.form label.hasCheckBox {
 .DetailsView .col-0 {
   width: 20%;
 }
+.before-form-details-content,
 .after-form-details-content {
   color: #545454 !important;
   float: none;
@@ -9982,4 +9970,37 @@ a.simple-link .icon-x {
 }
 .margetags-guide-link .simple-link {
   margin-left: 0;
+}
+.dynamic-rows .date-area-holder,
+.criteria-value-container .date-area-holder {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-between;
+}
+.dynamic-rows .date-area,
+.criteria-value-container .date-area {
+  flex-grow: 1;
+}
+.dynamic-rows .second-date-area,
+.criteria-value-container .second-date-area {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+.dynamic-rows .second-date-area .has-date-select,
+.criteria-value-container .second-date-area .has-date-select {
+  width: 100%;
+}
+.dynamic-rows .dynamic-and-for-mixed,
+.criteria-value-container .dynamic-and-for-mixed {
+  display: inline-block;
+  margin: 0 20px;
+}
+.criteria-value-container .date-area {
+  margin-top: 10px;
 }

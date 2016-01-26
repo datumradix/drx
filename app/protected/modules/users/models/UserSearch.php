@@ -144,6 +144,64 @@
             $users = User::getSubset($joinTablesAdapter, null, $pageSize, $where);
             return $users;
         }
+        
+        /**
+         * @param string $emailAddress
+         * @param null|string $operatorType
+         * @param bool $filterOutHideFromSelecting
+         * @param $autoCompleteOptions
+         * @param null|int $pageSize
+         * @return Array
+         */
+        public static function getUsersByAnyEmailAddress($emailAddress, $operatorType = null,
+                                                      $filterOutHideFromSelecting = false, $autoCompleteOptions = null,
+                                                      $pageSize = null)
+        {
+            assert('is_string($emailAddress)');
+            assert('$operatorType == null || is_string($operatorType)');
+            assert('is_bool($filterOutHideFromSelecting)');
+            assert('is_int($pageSize) || $pageSize === null');
+            if ($operatorType == null)
+            {
+              $operatorType = 'equals';
+            }
+            $metadata = array();
+            $metadata['clauses'] = array(
+                    1 => array(
+                            'attributeName'        => 'primaryEmail',
+                            'relatedAttributeName' => 'emailAddress',
+                            'operatorType'         => $operatorType,
+                            'value'                => $emailAddress,
+                    ),
+                    2 => array(
+                            'attributeName'        => 'secondaryEmail',
+                            'relatedAttributeName' => 'emailAddress',
+                            'operatorType'         => $operatorType,
+                            'value'                => $emailAddress,
+                    ),
+            );
+            if ($filterOutHideFromSelecting)
+            {
+                $metadata['clauses'][3] = array(
+                    'attributeName'        => 'hideFromSelecting',
+                    'operatorType'         => 'equals',
+                    'value'                => 0);
+                $metadata['clauses'][4] = array(
+                    'attributeName'        => 'hideFromSelecting',
+                    'operatorType'         => 'isNull',
+                    'value'                => null);
+                $metadata['structure'] = '((1 or 2) and (3 or 4))';
+            }
+            else
+            {
+                $metadata['structure'] = '(1 or 2)';
+            }
+            $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter('User');
+            $where  = RedBeanModelDataProvider::makeWhere('User', $metadata, $joinTablesAdapter);
+            static::handleAutoCompleteOptions($joinTablesAdapter, $where, $autoCompleteOptions);
+            $users = User::getSubset($joinTablesAdapter, null, $pageSize, $where);
+            return $users;
+        }
 
         public static function getUsersByPartialFullNameOrAnyEmailAddress($partialNameOrEmailAddress, $pageSize,
                                                                           $stateMetadataAdapterClassName = null,
@@ -169,17 +227,23 @@
                     'value'                => $partialNameOrEmailAddress,
                 ),
                 2 => array(
+                    'attributeName'        => 'secondaryEmail',
+                    'relatedAttributeName' => 'emailAddress',
+                    'operatorType'         => $operatorType,
+                    'value'                => $partialNameOrEmailAddress,
+                ),
+                3 => array(
                     'attributeName'        => 'hideFromSelecting',
                     'operatorType'         => 'equals',
                     'value'                => 0,
                 ),
-                3 => array(
+                4 => array(
                     'attributeName'        => 'hideFromSelecting',
                     'operatorType'         => 'isNull',
                     'value'                => null,
                 ),
             );
-            $metadata['structure'] = '((1 or partialnamesearch) and (2 or 3))';
+            $metadata['structure'] = '((1 or 2 or partialnamesearch) and (3 or 4))';
             $joinTablesAdapter   = new RedBeanModelJoinTablesQueryAdapter($modelName);
             if ($stateMetadataAdapterClassName != null)
             {
