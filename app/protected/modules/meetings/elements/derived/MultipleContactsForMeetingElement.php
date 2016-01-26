@@ -160,6 +160,11 @@
                     $emailAddressToUse = $user->primaryEmail->emailAddress;
                     return strval($user) . '&#160&#160<b>' . strval($emailAddressToUse) . '</b>';
                 }
+                elseif (substr($user->secondaryEmail->emailAddress, 0, strlen($keyword)) === $keyword)
+                {
+                    $emailAddressToUse = $user->secondaryEmail->emailAddress;
+                    return strval($user) . '&#160&#160<b>' . strval($emailAddressToUse) . '</b>';
+                }
                 else
                 {
                     return strval($user);

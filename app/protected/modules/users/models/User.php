@@ -536,6 +536,7 @@
                     'title'               => Zurmo::t('ZurmoModule', 'Salutation',              array(), null, $language),
                     'username'            => Zurmo::t('ZurmoModule', 'Username',                array(), null, $language),
                     'lastLoginDateTime'   => Zurmo::t('UsersModule', 'Last Login',              array(), null, $language),
+                    'secondaryEmail'      => Zurmo::t('ZurmoModule', 'Secondary Email',  array(), null, $language),
                 )
             ));
         }
@@ -783,6 +784,8 @@
                     'emailAccounts'     => array(static::HAS_MANY,            'EmailAccount'),
                     'emailSignatures'   => array(static::HAS_MANY,            'EmailSignature',
                                                     static::OWNED),
+                    'secondaryEmail'   => array(static::HAS_ONE,   'Email',            static::OWNED,
+                                                static::LINK_TYPE_SPECIFIC, 'secondaryEmail'),
                 ),
                 'foreignRelations' => array(
                     'Dashboard',
@@ -824,6 +827,7 @@
                     'locale'   => 'LocaleStaticDropDown',
                     'role'     => 'Role',
                     'timeZone' => 'TimeZoneStaticDropDown',
+                    'secondaryEmail'          => 'EmailAddressInformation',
                 ),
                 'defaultSortAttribute' => 'lastName',
                 'noExport' => array(
@@ -855,9 +859,30 @@
                 return false;
             }
 
+            $hasErrors = false;
             if (isset($this->primaryEmail) &&
                 isset($this->primaryEmail->emailAddress) &&
                 !$this->isUserEmailUnique($this->primaryEmail->emailAddress))
+            {
+                $this->primaryEmail->addError('emailAddress', Zurmo::t('UsersModule', 'Email address already exists in system.'));
+                $hasErrors = true;
+            }
+            if (isset($this->primaryEmail) && isset($this->primaryEmail->emailAddress) &&
+                isset($this->secondaryEmail) && isset($this->secondaryEmail->emailAddress) &&
+                $this->primaryEmail->emailAddress == $this->secondaryEmail->emailAddress)
+            {
+                $this->secondaryEmail->addError('emailAddress', 
+                        Zurmo::t('UsersModule', 'Secondary email address cannot be the same as the primary email address.'));
+                $hasErrors = true;
+            }
+            elseif (isset($this->secondaryEmail) &&
+                isset($this->secondaryEmail->emailAddress) &&
+                !$this->isUserEmailUnique($this->secondaryEmail->emailAddress))
+            {
+                $this->secondaryEmail->addError('emailAddress', Zurmo::t('UsersModule', 'Email address already exists in system.'));
+                $hasErrors = true;
+            }
+            if ($hasErrors)
             {
                 return false;
             }
@@ -882,21 +907,27 @@
                     'relatedAttributeName' => 'emailAddress',
                     'operatorType'         => 'equals',
                     'value'                => $email,
-                )
+                ),
+                2 => array(
+                    'attributeName'        => 'secondaryEmail',
+                    'relatedAttributeName' => 'emailAddress',
+                    'operatorType'         => 'equals',
+                    'value'                => $email,
+                ),
             );
 
             if ($this->id > 0)
             {
-                $searchAttributeData['clauses'][2] = array(
+                $searchAttributeData['clauses'][3] = array(
                     'attributeName'        => 'id',
                     'operatorType'         => 'doesNotEqual',
                     'value'                => $this->id,
                 );
-                $searchAttributeData['structure'] = '(1 AND 2)';
+                $searchAttributeData['structure'] = '(1 OR 2) AND 3';
             }
             else
             {
-                $searchAttributeData['structure'] = '1';
+                $searchAttributeData['structure'] = '1 OR 2';
             }
 
             $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('User');
@@ -905,8 +936,6 @@
 
             if (count($models) > 0 && is_array($models))
             {
-                // Todo: fix form element name below
-                $this->primaryEmail->addError('emailAddress', Zurmo::t('UsersModule', 'Email address already exists in system.'));
                 return false;
             }
             return true;

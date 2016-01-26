@@ -59,6 +59,26 @@
                     ),
                 ),
                 );
+            $metadata['global']['panels'][0]['rows'][] =
+                array('cells' =>
+                array(
+                    array(
+                        'elements' => array(
+                            array('attributeName' => 'opportunityRottingMappingEnabled', 'type' => 'CheckBox'),
+                        ),
+                    ),
+                ),
+                );
+            $metadata['global']['panels'][0]['rows'][] =
+                array('cells' =>
+                array(
+                    array(
+                        'elements' => array(
+                            array('attributeName' => 'stageToRottingMapping', 'type' => 'StageToRottingMapping'),
+                        ),
+                    ),
+                ),
+                );
             return $metadata;
         }
     }

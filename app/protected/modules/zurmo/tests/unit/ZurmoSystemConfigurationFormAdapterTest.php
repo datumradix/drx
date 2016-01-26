@@ -49,16 +49,19 @@
             $this->assertEquals(AutoresponderOrCampaignBatchSizeConfigUtil::getBatchSize(),       $form->autoresponderOrCampaignBatchSize);
             $this->assertEquals(OutboundEmailBatchSizeConfigUtil::getBatchSize(),                 $form->outboundEmailBatchSize);
             $this->assertEquals(ZurmoSystemConfigurationUtil::getBatchSize(),                     $form->listPageSizeMaxLimit);
+            $this->assertEquals(ZurmoKanbanConfigurationUtil::getBatchSize(),                     $form->kanbanBoardPageSizeMaxLimit);
 
             //User is not root so he cant change batch size
             $form->autoresponderOrCampaignBatchSize = 20;
             $form->outboundEmailBatchSize           = 30;
             $form->listPageSizeMaxLimit             = 10;
+            $form->kanbanBoardPageSizeMaxLimit      = 15;
             ZurmoSystemConfigurationFormAdapter::setConfigurationFromForm($form);
             $form = ZurmoSystemConfigurationFormAdapter::makeFormFromSystemConfiguration();
             $this->assertEquals(AutoresponderOrCampaignBatchSizeConfigUtil::CONFIG_DEFAULT_VALUE, $form->autoresponderOrCampaignBatchSize);
             $this->assertEquals(OutboundEmailBatchSizeConfigUtil::getBatchSize(),                 $form->outboundEmailBatchSize);
             $this->assertEquals(ZurmoSystemConfigurationUtil::getBatchSize(),                     $form->listPageSizeMaxLimit);
+            $this->assertEquals(ZurmoKanbanConfigurationUtil::getBatchSize(),                     $form->kanbanBoardPageSizeMaxLimit);
 
             //User is root so he can change batch size
             $super = User::getByUsername('super');
@@ -67,11 +70,13 @@
             $form->autoresponderOrCampaignBatchSize = 20;
             $form->outboundEmailBatchSize           = 30;
             $form->listPageSizeMaxLimit             = 10;
+            $form->kanbanBoardPageSizeMaxLimit      = 15;
             ZurmoSystemConfigurationFormAdapter::setConfigurationFromForm($form);
             $form = ZurmoSystemConfigurationFormAdapter::makeFormFromSystemConfiguration();
             $this->assertEquals(20,  $form->autoresponderOrCampaignBatchSize);
             $this->assertEquals(30, $form->outboundEmailBatchSize);
             $this->assertEquals(10, $form->listPageSizeMaxLimit);
+            $this->assertEquals(15, $form->kanbanBoardPageSizeMaxLimit);
         }
     }
 ?>
