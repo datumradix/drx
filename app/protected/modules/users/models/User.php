@@ -861,14 +861,14 @@
 
             $hasErrors = false;
             if (isset($this->primaryEmail) &&
-                isset($this->primaryEmail->emailAddress) &&
+                !empty($this->primaryEmail->emailAddress) &&
                 !$this->isUserEmailUnique($this->primaryEmail->emailAddress))
             {
                 $this->primaryEmail->addError('emailAddress', Zurmo::t('UsersModule', 'Email address already exists in system.'));
                 $hasErrors = true;
             }
-            if (isset($this->primaryEmail) && isset($this->primaryEmail->emailAddress) &&
-                isset($this->secondaryEmail) && isset($this->secondaryEmail->emailAddress) &&
+            if (isset($this->primaryEmail) && !empty($this->primaryEmail->emailAddress) &&
+                isset($this->secondaryEmail) && !empty($this->secondaryEmail->emailAddress) &&
                 $this->primaryEmail->emailAddress == $this->secondaryEmail->emailAddress)
             {
                 $this->secondaryEmail->addError('emailAddress', 
@@ -876,7 +876,7 @@
                 $hasErrors = true;
             }
             elseif (isset($this->secondaryEmail) &&
-                isset($this->secondaryEmail->emailAddress) &&
+                !empty($this->secondaryEmail->emailAddress) &&
                 !$this->isUserEmailUnique($this->secondaryEmail->emailAddress))
             {
                 $this->secondaryEmail->addError('emailAddress', Zurmo::t('UsersModule', 'Email address already exists in system.'));
