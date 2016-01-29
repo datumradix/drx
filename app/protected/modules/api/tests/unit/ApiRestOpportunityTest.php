@@ -154,6 +154,7 @@
             );
             $data['stage']['value']     = $stageValues[1];
 
+            $expectedTime = time();
             $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
@@ -195,6 +196,8 @@
             unset($response['data']['amount']['id']);
             unset($response['data']['amount']['rateToBase']);
             unset($response['data']['id']);
+            $stageModifiedDateTime = $response['data']['stageModifiedDateTime'];
+            unset($response['data']['stageModifiedDateTime']);
             ksort($data);
             ksort($response['data']);
             $this->assertEquals($data, $response['data']);;
@@ -214,6 +217,7 @@
             $this->assertEquals(1, $response['data']['explicitReadWriteModelPermissions']['type']);
             $this->assertArrayHasKey('nonEveryoneGroup', $response['data']['explicitReadWriteModelPermissions']);
             $this->assertEquals('', $response['data']['explicitReadWriteModelPermissions']['nonEveryoneGroup']);
+            $this->assertWithinTolerance($expectedTime, DateTimeUtil::convertDbFormatDateTimeToTimestamp($stageModifiedDateTime), 4);
         }
 
         /**
@@ -276,11 +280,12 @@
             $data['stage']['value']     = $stageValues[1];
             $data['owner']['id']        = $billy->id;
 
+            $expectedTime = time();
             $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertArrayHasKey('id', $response['data']);
-            $OpportunityId     = $response['data']['id'];
+            $opportunityId     = $response['data']['id'];
 
             $this->assertArrayHasKey('owner', $response['data']);
             $this->assertCount(2, $response['data']['owner']);
@@ -318,11 +323,14 @@
             unset($response['data']['amount']['id']);
             unset($response['data']['amount']['rateToBase']);
             unset($response['data']['id']);
+            $stageModifiedDateTime = $response['data']['stageModifiedDateTime'];
+            unset($response['data']['stageModifiedDateTime']);
+
             ksort($data);
             ksort($response['data']);
             $this->assertEquals($data, $response['data']);;
 
-            $response = $this->createApiCallWithRelativeUrl('read/' . $OpportunityId, 'GET', $headers);
+            $response = $this->createApiCallWithRelativeUrl('read/' . $opportunityId, 'GET', $headers);
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertArrayHasKey('data', $response);
@@ -337,6 +345,7 @@
             $this->assertEquals(1, $response['data']['explicitReadWriteModelPermissions']['type']);
             $this->assertArrayHasKey('nonEveryoneGroup', $response['data']['explicitReadWriteModelPermissions']);
             $this->assertEquals('', $response['data']['explicitReadWriteModelPermissions']['nonEveryoneGroup']);
+            $this->assertWithinTolerance($expectedTime, DateTimeUtil::convertDbFormatDateTimeToTimestamp($stageModifiedDateTime), 4);
         }
 
         /**
@@ -440,6 +449,8 @@
             unset($response['data']['amount']['id']);
             unset($response['data']['amount']['rateToBase']);
             unset($response['data']['id']);
+            unset($response['data']['stageModifiedDateTime']);
+
             ksort($data);
             ksort($response['data']);
             $this->assertEquals($data, $response['data']);;
