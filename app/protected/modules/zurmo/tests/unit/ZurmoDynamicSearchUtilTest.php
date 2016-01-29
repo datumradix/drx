@@ -66,6 +66,7 @@
                 'modifiedDateTime__DateTime' => 'Modified Date Time',
                 'closeDate__Date' => 'Close Date',
                 'account___name' => 'Account - Name',
+                'stageModifiedDateTime__DateTime' => 'Stage Modified Date Time',
             );
             $this->assertEquals($compareData, $searchableAttributesAndLabels);
 
@@ -87,6 +88,7 @@
                 'createdByUser'              => 'Created By User',
                 'createdDateTime__DateTime'  => 'Created Date Time',
                 'department'                 => 'Department',
+                'facebookId'                 => 'Facebook ID',
                 'firstName'                  => 'First Name',
                 'googleWebTrackingId'        => 'Google Web Tracking Id',
                 'industry'                   => 'Industry',
@@ -104,8 +106,11 @@
                 'title'                      => 'Salutation',
                 'source'                     => 'Source',
                 'ContactStateDropDown'       => 'Status',
+                'twitterId'                  => 'Twitter ID',
                 'website'                    => 'Website',
             );
+            file_put_contents('/var/www/zurmo/app/protected/runtime/boban.log', print_r(array_values($compareData),true)."\n", FILE_APPEND);
+            file_put_contents('/var/www/zurmo/app/protected/runtime/boban.log', print_r(array_values($searchableAttributesAndLabels),true)."\n", FILE_APPEND);
             $this->assertEquals(array_values($compareData), array_values($searchableAttributesAndLabels));
         }
 
