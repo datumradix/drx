@@ -109,8 +109,6 @@
                 'twitterId'                  => 'Twitter ID',
                 'website'                    => 'Website',
             );
-            file_put_contents('/var/www/zurmo/app/protected/runtime/boban.log', print_r(array_values($compareData),true)."\n", FILE_APPEND);
-            file_put_contents('/var/www/zurmo/app/protected/runtime/boban.log', print_r(array_values($searchableAttributesAndLabels),true)."\n", FILE_APPEND);
             $this->assertEquals(array_values($compareData), array_values($searchableAttributesAndLabels));
         }
 
