@@ -587,7 +587,7 @@
                                                     'iii'                        => array(
                                                     'relatedModelData'           => true,
                                                     'date__Date'                 =>
-                                                        array('firstDate' => '5/4/1011',
+                                                        array('firstDate' => '5/4/2011',
                                                               'type'      => MixedDateTypesSearchFormAttributeMappingRules::TYPE_AFTER))),
                                         1 => array('attributeIndexOrDerivedType' => 'iii' . FormModelUtil::RELATION_DELIMITER . 'dateTime__DateTime',
                                                     'structurePosition'          => '1',
@@ -606,7 +606,7 @@
                                                     'iii'                        => array(
                                                     'relatedModelData'           => true,
                                                     'date__Date'                 =>
-                                                        array('firstDate' => '1011-05-04',
+                                                        array('firstDate' => '2011-05-04',
                                                               'type'      => MixedDateTypesSearchFormAttributeMappingRules::TYPE_AFTER))),
                                         1 => array('attributeIndexOrDerivedType' => 'iii' . FormModelUtil::RELATION_DELIMITER . 'dateTime__DateTime',
                                                     'structurePosition'          => '1',
