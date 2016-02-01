@@ -86,7 +86,7 @@
         <td>OpportunitiesSearchForm_anyMixedAttributes</td>
         <td>Test Opportunity ${randomSuffix}</td>
     </tr>
-    <<!--go in detail view of opportunity-->
+    <!--go in detail view of opportunity-->
     <tr>
         <td>click</td>
         <td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[3]/a</td>
@@ -150,19 +150,19 @@
     </tr>
     <!--clear search result-->
     <tr>
-        <td>open</td>
-        <td>index.php/opportunities/default</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>waitForPageToLoad</td>
-        <td></td>
+        <td>click</td>
+        <td>id=clear-search-link</td>
         <td></td>
     </tr>
     <tr>
         <td>waitForCondition</td>
         <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
         <td>30000</td>
+    </tr>
+    <tr>
+        <td>waitForTextNotPresent</td>
+        <td>Criteria Selected</td>
+        <td></td>
     </tr>
     </tbody>
 </table>
