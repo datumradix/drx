@@ -79,7 +79,7 @@
             $parsedown = new Parsedown();
             $text = $parsedown->text($this->model->{$this->attribute});
             $text = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($text);
-            return TextUtil::textWithUrlToTextWithLink($text);
+            return $text;
         }
 
         protected function getEditableInputId($attributeName = null, $relationAttributeName = null)
