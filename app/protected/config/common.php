@@ -151,6 +151,7 @@
                     ),
                     'js' => array(
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jquery.min.js',
+                        INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jquery-migrate-1.3.0.min.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jquery.yii.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jquery.ba-bbq.min.js',
                         INSTANCE_ROOT . DIRECTORY_SEPARATOR . '/../yii/framework/web/js/source/jui/js/jquery-ui.min.js',
@@ -188,6 +189,7 @@
                 //are already loaded in the minified script that loads on every page.
                 'usingAjaxShouldNotIncludeJsPathAliasesAndFileNames' => array(
                     array('system.web.js.source',                       '/jquery.min.js'),
+                    array('system.web.js.source',                       '/jquery-migrate-1.3.0.min.js'),
                     array('system.web.js.source',                       '/jquery.yii.js'),
                     array('system.web.js.source',                       '/jquery.ba-bbq.js'),
                     array('system.web.js.source',                       '/jui/js/jquery-ui.min.js'),
@@ -458,7 +460,7 @@
 
         'params' => array(
             'redBeanVersion'            => '3.2',
-            'yiiVersion'                => '1.1.13',
+            'yiiVersion'                => '1.1.17',
             'memcacheServers'           => $memcacheServers,
             // enable if you want to clear memcache data with clearCache=1 // Not Coding Standard
             'hasDedicatedMemcachePool'  => false,

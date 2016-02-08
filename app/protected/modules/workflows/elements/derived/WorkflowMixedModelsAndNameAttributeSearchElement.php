@@ -143,12 +143,12 @@
             $cClipWidget->endClip();
 
             // Begin Not Coding Standard
-            $script = '$("#' . $this->getIdForTextField() . '").data( "autocomplete" )._renderItem = function( ul, item ) {
+            $script = '$("#' . $this->getIdForTextField() . '").data( "ui-autocomplete" )._renderItem = function( ul, item ) {
                             return $( "<li></li>" ).data( "item.autocomplete", item )
                                     .append( "<a><span class=" + item.iconClass + "></span><span>" + item.label + "</span></a>" )
                                     .appendTo( ul );
                         };
-                        $("#' . $this->getIdForTextField() . '").data( "autocomplete" )._resizeMenu = function(){
+                        $("#' . $this->getIdForTextField() . '").data( "ui-autocomplete" )._resizeMenu = function(){
                             return this.menu.element.outerWidth( 219 );
                         };';
             /// End Not Coding Standard

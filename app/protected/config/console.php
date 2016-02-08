@@ -66,6 +66,8 @@
 
     //Turn off gamification
     $common_config['components']['gamificationObserver']['enabled'] = false;
+    //Turn off Csrf Validation
+    $common_config['components']['request']['enableCsrfValidation'] = false;
     //Not applicable for console applications.
     unset($common_config['defaultController']);
     //Not applicable for console applications.

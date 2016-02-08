@@ -904,6 +904,7 @@ div:not(#MashableInboxActionBarForViews) .toolbar-mbmenu .options-menu ul {
   width: 98%;
   min-width: 98%;
   max-width: 98%;
+  z-index: 1002 !important;
 }
 .ModalGameNotification {
   padding-bottom: 60px;

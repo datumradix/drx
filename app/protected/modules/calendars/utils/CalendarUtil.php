@@ -347,7 +347,7 @@
         {
             $title = Zurmo::t('Calendarsmodule', 'Shared Calendars');
             return   ModalView::getAjaxOptionsForModalLink($title, self::getModalContainerId(), 'auto', 600,
-                     'center top+25', $class = "''");
+                     array('my'=>'center top+25','at'=>'center top+25'), $class = "''");
         }
 
         /**

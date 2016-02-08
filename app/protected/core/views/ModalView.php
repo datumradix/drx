@@ -69,8 +69,8 @@
         }
 
         public static function getAjaxOptionsForModalLink($title, $containerId = 'modalContainer', $height = 'auto',
-                                                          $width = 600, $position = 'center top+25', $class = "''", // Not Coding Standard
-                                                          $extraCloseScript = null)
+                                                          $width = 600, $position = array('my'=>'center top+25','at'=>'center top+25'), 
+                                                          $class = "''", $extraCloseScript = null)// Not Coding Standard
         {
             assert('is_string($containerId)');
             assert('is_string($title)');
@@ -90,7 +90,7 @@
                                                                           $containerId = 'modalContainer',
                                                                           $height = 'auto',
                                                                           $width = 600,
-                                                                          $position = 'center top+25', // Not Coding Standard
+                                                                          $position = array('my'=>'center top+25','at'=>'center top+25'), // Not Coding Standard
                                                                           $class = "''", // Not Coding Standard
                                                                           $extraCloseScript = null)
         {
@@ -136,9 +136,12 @@
                         $('.ui-dialog-titlebar-close').mousedown(function(ev) {
                             $('#{$containerId}').dialog('close');
                         });
+                        $('.ui-dialog .ui-dialog-content').css('height', 'auto');
+                        $('.ui-dialog .ui-dialog-content').css('display', 'block');
                     },
                     'close': function( event, ui ) { jQuery('#{$containerId}').parent().removeClass('openingModal');
                                                      $('#{$containerId}').dialog('destroy');
+                                                     $('#{$containerId}').css('display', 'none');
                                                      " . $extraCloseScript . "
                                                      }
                 });

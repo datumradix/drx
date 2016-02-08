@@ -72,7 +72,7 @@
          * Override CHtml::formatText() method, so we can use ZurmoHtml::encode() function
          * @see CHtml::formatNtext()
          */
-        public function formatNtext($value)
+        public function formatNtext($value, $paragraphs=false, $removeEmptyParagraphs=true)
         {
             return nl2br(ZurmoHtml::encode($value));
         }

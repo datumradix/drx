@@ -60,7 +60,7 @@
             // widget (via file input selection, drag & drop or add API call).
             // See the basic file upload widget for more information:
             add: function (e, data) {
-                var that = $(this).data('fileupload');
+                var that = $(this).data('blueimpUI-fileupload') || $(this).data('fileupload');
                 that._adjustMaxNumberOfFiles(-data.files.length);
                 data.isAdjusted = true;
                 data.isValidated = that._validate(data.files);
@@ -77,7 +77,7 @@
             // Callback for the start of each file upload request:
             send: function (e, data) {
                 if (!data.isValidated) {
-                    var that = $(this).data('fileupload');
+                    var that = $(this).data('blueimpUI-fileupload') || $(this).data('fileupload');
                     if (!data.isAdjusted) {
                         that._adjustMaxNumberOfFiles(-data.files.length);
                     }
@@ -98,7 +98,7 @@
             },
             // Callback for successful uploads:
             done: function (e, data) {
-                var that = $(this).data('fileupload');
+                var that = $(this).data('blueimpUI-fileupload') || $(this).data('fileupload');
                 if (data.context) {
                     data.context.each(function (index) {
                         var file = ($.isArray(data.result) &&
@@ -128,7 +128,7 @@
             },
             // Callback for failed (abort or error) uploads:
             fail: function (e, data) {
-                var that = $(this).data('fileupload');
+                var that = $(this).data('blueimpUI-fileupload') || $(this).data('fileupload');
                 that._adjustMaxNumberOfFiles(data.files.length);
                 if (data.context) {
                     data.context.each(function (index) {
@@ -187,7 +187,7 @@
             },
             // Callback for file deletion:
             destroy: function (e, data) {
-                var that = $(this).data('fileupload');
+                var that = $(this).data('blueimpUI-fileupload') || $(this).data('fileupload');
                 if (data.url) {
                     $.ajax(data)
                         .success(function () {

@@ -137,7 +137,7 @@
                                                                           'autoOpen':true,
                                                                           'modal': true,
                                                                           'height': 'auto',
-                                                                          'position': 'center',
+                                                                          'position': { my: \"center\", at: \"center\", of: window },
                                                                           'width':600}); return true;},
                     success  : function(data)
                     {

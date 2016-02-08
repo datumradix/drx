@@ -203,7 +203,7 @@ $(function () {
         add: function (e, data) {
             {$this->beforeUploadAction}
             {$sendAction}
-            var that = $(this).data('fileupload');
+            var that = $(this).data('blueimpUI-fileupload') || $(this).data('fileupload');
             that._adjustMaxNumberOfFiles(-data.files.length);
             data.isAdjusted = true;
             data.isValidated = that._validate(data.files);
@@ -246,7 +246,7 @@ $(function () {
     $('#fileUpload{$id}').bind('done', function (e, data) { {$this->onSuccessAction} });
     //load existing files
     var existingFiles = {$jsonEncodedExistingFiles};
-    var fu = $('#fileUpload{$id}').data('fileupload');
+    var fu = $('#fileUpload{$id}').data('blueimpUI-fileupload');
     fu._adjustMaxNumberOfFiles(-existingFiles.length);
     fu._renderDownload(existingFiles)
         .appendTo($('#fileUpload{$id} .files'))

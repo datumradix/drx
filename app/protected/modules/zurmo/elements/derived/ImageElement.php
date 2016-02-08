@@ -332,7 +332,7 @@
         {
             $title = $this->getModalTitleForEditingModel();
             return   ModalView::getAjaxOptionsForModalLink($title, $this->getModalContainerId(), 'auto',
-                                                           600, 'center top+25', "'image-edit-modal'"); // Not Coding Standard
+                        600, array('my'=>'center top+25','at'=>'center top+25'), "'image-edit-modal'"); // Not Coding Standard
         }
 
         protected function getModalTitleForSelectingModel()
