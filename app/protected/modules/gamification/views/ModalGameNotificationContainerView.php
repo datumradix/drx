@@ -80,7 +80,7 @@
                     'height'   => 375,
                     'width'    => 350,
                     'dialogClass' => 'ModalGameNotificationParent',
-                    'position' => 'center',
+                    'position' => array('my'=>'center','at'=>'center'),
                     'clearStyle' => true,
                     'open'     => 'js:function(event, ui) {$(this).parent().children(".ui-dialog-titlebar").hide();}',
                 ),
