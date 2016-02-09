@@ -66,7 +66,7 @@
         protected function registerScripts()
         {
             $cs = Yii::app()->getClientScript();
-            $cs->registerCoreScript('jquery-animate-sprite');
+            //$cs->registerCoreScript('jquery-animate-sprite');
             $cs->registerScriptFile(
                 Yii::app()->getAssetManager()->publish(
                     Yii::getPathOfAlias('application.modules.gamification.views.assets')
