@@ -86,22 +86,28 @@
                     'global' => array(
                         'toolbar' => array(
                             'elements' => array(
-                                array(  'type'            => 'CreateFromRelatedListLink',
-                                        'routeModuleId'   => 'eval:$this->moduleId',
-                                        'routeParameters' => 'eval:$this->getCreateLinkRouteParameters()'),
+                                array(  'type'             => 'CreateFromRelatedModalLink',
+                                        'portletId'        => 'eval:$this->params["portletId"]',
+                                        'routeModuleId'    => 'eval:$this->moduleId',
+                                        'routeParameters'  => 'eval:$this->getCreateLinkRouteParameters()',
+                                        'ajaxOptions'      => 'eval:ProductsUtil::resolveAjaxOptionsForModalView("Create")',
+                                        'uniqueLayoutId'   => 'eval:$this->uniqueLayoutId',
+                                        'modalContainerId' => 'eval:ProductsUtil::getModalContainerId()'
+                                ),
                             ),
                         ),
                         'rowMenu' => array(
                             'elements' => array(
-                                                    array('type'                      => 'ProductEditLink',
-                                                          'relationModuleId'          => 'eval:$this->relationModuleId',
-                                                          'relationModelId'           => 'eval:$this->params["relationModel"]->id'),
-                                                    array('type'                      => 'RelatedDeleteLink'),
-                                                    array('type'                      => 'RelatedUnlink',
-                                                          'relationModelClassName'    => 'eval:get_class($this->params["relationModel"])',
-                                                          'relationModelId'           => 'eval:$this->params["relationModel"]->id',
-                                                          'relationModelRelationName' => 'products',
-                                                          'userHasRelatedModelAccess' => 'eval:ActionSecurityUtil::canCurrentUserPerformAction( "Edit", $this->params["relationModel"])')
+                                array(  'type'             => 'EditModalLink',
+                                    'htmlOptions'      => 'eval:$this->getActionModalLinksHtmlOptions("Edit")'
+                                ),
+                                array('type'                      => 'RelatedDeleteLink'),
+                                array('type'                      => 'RelatedUnlink',
+                                    'relationModelClassName'    => 'eval:get_class($this->params["relationModel"])',
+                                    'relationModelId'           => 'eval:$this->params["relationModel"]->id',
+                                    'relationModelRelationName' => 'products',
+                                    'userHasRelatedModelAccess' => 'eval:ActionSecurityUtil::canCurrentUserPerformAction( "Edit", $this->params["relationModel"])'
+                                )
                             ),
                         ),
                         'derivedAttributeTypes' => array(),
@@ -495,6 +501,43 @@
                         $this->getGridViewActionRoute('details') . '", array("id" => $data->id))';
             $string .= ')';
             return $string;
+        }
+
+        /**
+         * Register the additional script for product detail modal
+         */
+        protected function renderScripts()
+        {
+            parent::renderScripts();
+            ProductsUtil::registerProductModalEditScript($this->getGridViewId(), $this->getCreateLinkRouteParameters());
+        }
+
+        /**
+         * Get action modal link html options based on type
+         * @param string $type
+         * @return array
+         */
+        protected function getActionModalLinksHtmlOptions($type)
+        {
+            if ($type == "Edit")
+            {
+                return array('class' => 'edit-related-product');
+            }
+        }
+
+        /**
+         * Override to pass the sourceId
+         * @return array
+         */
+        protected function getCreateLinkRouteParameters()
+        {
+            $routeParams = array_merge( array('sourceId' => $this->getGridViewId()),
+                parent::getCreateLinkRouteParameters());
+            if (($redirectUrl = ArrayUtil::getArrayValue($routeParams, 'redirectUrl')) != null)
+            {
+                $routeParams['redirectUrl'] = ProductsUtil::resolveProductsActionsRedirectUrlForDetailsAndRelationsView($redirectUrl);
+            }
+            return $routeParams;
         }
     }
 ?>

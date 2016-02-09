@@ -11613,7 +11613,8 @@ a#claim-item-link {
 .type-tasks .items-wrapper {
   border: 1px solid #dfdfdf;
 }
-.task-dialog {
+.task-dialog,
+.product-dialog {
   *zoom: 1;
   min-width: 1000px;
   max-width: 1000px;
@@ -11631,20 +11632,26 @@ a#claim-item-link {
   box-shadow: inset 0 0 0 1px rgba(204, 204, 204, 0.3) ,0 0 15px 0 rgba(51, 51, 51, 0.25);
 }
 .task-dialog:before,
-.task-dialog:after {
+.task-dialog:after,
+.product-dialog:before,
+.product-dialog:after {
   content: " ";
   display: table;
 }
-.task-dialog:after {
+.task-dialog:after,
+.product-dialog:after {
   clear: both;
 }
-.task-dialog .col-0 {
+.task-dialog .col-0,
+.product-dialog .col-0 {
   width: 15%;
 }
-.task-dialog .col-1 {
+.task-dialog .col-1,
+.product-dialog .col-1 {
   width: 85%;
 }
-.task-dialog .ui-dialog-title {
+.task-dialog .ui-dialog-title,
+.product-dialog .ui-dialog-title {
   padding: 0 !important;
   margin: 0 !important;
   font-size: 15px;
@@ -11667,16 +11674,20 @@ a#claim-item-link {
   height: 100%;
   display: block;
 }
-.task-dialog .toolbar-mbmenu {
+.task-dialog .toolbar-mbmenu,
+.product-dialog .toolbar-mbmenu {
   position: absolute;
   right: 0;
   top: 12px;
 }
-.task-dialog .view-toolbar .parent > ul {
+.task-dialog .view-toolbar .parent > ul,
+.product-dialog .view-toolbar .parent > ul {
   right: 0;
 }
 .task-dialog .wrapper,
-.task-dialog .details-table {
+.task-dialog .details-table,
+.product-dialog .wrapper,
+.product-dialog .details-table {
   margin: 0;
   padding: 0;
   border: none !important;
@@ -11687,19 +11698,24 @@ a#claim-item-link {
   box-shadow: none !important;
   background: none !important;
 }
-.task-dialog table {
+.task-dialog table,
+.product-dialog table {
   border: none;
 }
-.task-dialog td {
+.task-dialog td,
+.product-dialog td {
   padding-bottom: 15px;
 }
-.task-dialog .attributesContainer {
+.task-dialog .attributesContainer,
+.product-dialog .attributesContainer {
   padding-bottom: 0;
 }
-.task-dialog .float-bar {
+.task-dialog .float-bar,
+.product-dialog .float-bar {
   margin-bottom: 0;
 }
-.task-dialog .right-side-edit-view-panel {
+.task-dialog .right-side-edit-view-panel,
+.product-dialog .right-side-edit-view-panel {
   background: rgba(236,240,241,0.25) url("../images/stripes.png") left top repeat;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -14201,7 +14217,8 @@ html.cartographer-light .AppContent,
   #AboutView #leftCol > div {
     float: none;
   }
-  .task-dialog {
+  .task-dialog,
+  .product-dialog {
     min-width: 100%;
     max-width: 100%;
   }
