@@ -2247,10 +2247,12 @@ table.configuration-list tr:last-child td {
   text-align: center;
 }
 #import-temp-table-list-view .items-wrapper {
+  display: block;
+  overflow-x: auto;
   border: 1px solid #DFDFDF;
   border-bottom: none;
 }
-#import-temp-table-list-view table {
+#import-temp-table-list-view table.items {
   table-layout: auto;
   background: #fafafa;
 }
@@ -4395,8 +4397,9 @@ div.wide.form .errorMessage {
 .sticky.stick {
   width: 75%;
   position: fixed;
+  top: 0;
   z-index: 1000;
-  margin-top: 40px;
+  margin-top: 41px;
   -webkit-box-shadow: 0 0 15px 0 #333;
   -moz-box-shadow: 0 0 15px 0 #333;
   -ms-box-shadow: 0 0 15px 0 #333;
