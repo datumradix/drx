@@ -134,7 +134,7 @@
 
         protected function registerCoreScriptAndPublishToAssets()
         {
-            Yii::app()->clientScript->registerCoreScript('gamification-dashboard');
+            //Yii::app()->clientScript->registerCoreScript('gamification-dashboard');
             Yii::app()->clientScript->registerScriptFile(
                 Yii::app()->getAssetManager()->publish(
                     Yii::getPathOfAlias('application.modules.gamification.views.assets')
