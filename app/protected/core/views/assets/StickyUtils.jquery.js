@@ -35,19 +35,32 @@
 
 function sticky_relocate(e)
 {
-    if ($('#' + e.data.canvasId).contents().find('.sticky-anchor').length != 0)
+    var $container = $('#' + e.data.canvasId).contents();
+    var $sticky_anchor = $container.find('.sticky-anchor');
+    var $sticky = $container.find('.sticky');
+    var sticky_width = $sticky_anchor.width();
+    var header_height = $('#HeaderView').outerHeight();
+    var extra_margin = $('.layout-parts-container').height();
+
+    if ($sticky_anchor.length != 0)
     {
         var window_top = $(window).scrollTop();
-        var div_top    = $('#' + e.data.canvasId).contents().find('.sticky-anchor').offset().top;
+        var div_top    = $sticky_anchor.offset().top - header_height;
         if (window_top > (div_top))
         {
-            $('#' + e.data.canvasId).contents().find('.sticky').addClass('stick');
-            $('#' + e.data.canvasId).contents().find('.sticky').css('top', 0 + 'px');
+            $sticky.addClass('stick').css({
+                'width': sticky_width,
+                'margin-top': header_height
+            });
+            $sticky_anchor.css('margin-bottom', extra_margin);
         }
         else
         {
-            $('#' + e.data.canvasId).contents().find('.sticky').removeClass('stick');
-            $('#' + e.data.canvasId).contents().find('.sticky').css('top', 0 + 'px');
+            $sticky.removeClass('stick').css({
+                'width': '100%',
+                'margin-top': 0
+            });
+            $sticky_anchor.css('margin-bottom', 0);
         }
     }
 }
