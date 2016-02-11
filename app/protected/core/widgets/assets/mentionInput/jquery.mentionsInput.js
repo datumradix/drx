@@ -466,12 +466,49 @@
             if (query && query.length && query.length >= settings.minChars) {
                 //Call the onDataRequest function and then call the populateDropDrown
                 settings.onDataRequest.call(this, 'search', query, function (responseData) {
-                    populateDropdown(query, responseData);
+                    if (isMentionBeforeCaret()) {
+                      populateDropdown(query, responseData);
+                    }
                 });
             } else { //If the query is null, undefined, empty or has not the minimun chars
                 hideAutoComplete(); //Hide the autocompletelist
             }
         }
+
+      function isMentionBeforeCaret() {
+        var caretPos = getCaret(elmInputBox[0]);
+        var inputText = $(elmInputBox[0]).val().replace(/\n\r?/g, ' ').substring(0, caretPos);
+        var re = /@\w+(([ ])?(\w+)?)$/;
+
+        if (re.test(inputText)) {
+          return true;
+        } else {
+          hideAutoComplete();
+          return false;
+        }
+
+      }
+
+      function getCaret(el) {
+        if (el.selectionStart) {
+          return el.selectionStart;
+        } else if (document.selection) {
+          el.focus();
+
+          var r = document.selection.createRange();
+          if (r == null) {
+            return 0;
+          }
+
+          var re = el.createTextRange(),
+            rc = re.duplicate();
+          re.moveToBookmark(r.getBookmark());
+          rc.setEndPoint('EndToStart', re);
+
+          return rc.text.length;
+        }
+        return 0;
+      }
 
 	    function positionAutocomplete(elmAutocompleteList, elmInputBox) {
             var elmAutocompleteListPosition = elmAutocompleteList.css('position');
