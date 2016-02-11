@@ -79,6 +79,16 @@
         public static function getModalDetailsTitle()
         {
             $params = LabelUtil::getTranslationParamsForAllModules();
+            $title = Zurmo::t('ProductsModule', 'ProductsModuleSingularLabel Details', $params);
+            return $title;
+        }
+
+        /**
+         * @return string
+         */
+        public static function getModalEditTitle()
+        {
+            $params = LabelUtil::getTranslationParamsForAllModules();
             $title = Zurmo::t('ProductsModule', 'Edit ProductsModuleSingularLabel', $params);
             return $title;
         }
@@ -136,16 +146,24 @@
 
         /**
          * @param $renderType
-         * @param string|null $sourceKanbanBoardId
+         * @param string|null $sourceId
          * @return array
          */
         public static function resolveAjaxOptionsForModalView($renderType, $sourceId = null)
         {
             assert('is_string($renderType)');
-            $title = self::getModalTitleForCreateProduct($renderType);
+            $title = self::getModalTitleForProduct($renderType);
+            if ($renderType == "Details")
+            {
+                $extraCloseScriptForModalAjaxOptions = null;
+            }
+            else
+            {
+                $extraCloseScriptForModalAjaxOptions = static::resolveExtraCloseScriptForModalAjaxOptions($sourceId);
+            }
             return   ModalView::getAjaxOptionsForModalLink($title, self::getModalContainerId(), 'auto', 600,
                 'center top+25', $class = "'product-dialog'", // Not Coding Standard
-                static::resolveExtraCloseScriptForModalAjaxOptions($sourceId));
+                $extraCloseScriptForModalAjaxOptions);
         }
 
         /**
@@ -153,12 +171,16 @@
          * @param string $renderType
          * @return string
          */
-        public static function getModalTitleForCreateProduct($renderType = "Create")
+        public static function getModalTitleForProduct($renderType = "Create")
         {
             $params = LabelUtil::getTranslationParamsForAllModules();
             if ($renderType == "Create")
             {
                 $title = Zurmo::t('ProductsModule', 'Create ProductsModuleSingularLabel', $params);
+            }
+            elseif ($renderType == "Details")
+            {
+                $title = Zurmo::t('ProductsModule', 'ProductsModuleSingularLabel Details', $params);
             }
             else
             {
@@ -193,6 +215,69 @@
                 $redirectUrl = implode('?', $routeData);
             }
             return $redirectUrl;
+        }
+
+        /**
+         * @param Product $product
+         * @param $controllerId
+         * @param $moduleId
+         * @return null|string
+         */
+        public static function getModalDetailsLink(Product $product,
+                                                   $controllerId,
+                                                   $moduleId)
+        {
+            assert('is_string($controllerId) || $controllerId === null');
+            assert('is_string($moduleId)  || $moduleId === null');
+            assert('is_string($moduleClassName)');
+
+            $label =  StringUtil::getChoppedStringContent($product->name, ProductElementUtil::PRODUCT_NAME_LENGTH_IN_PORTLET_VIEW);
+            if (ActionSecurityUtil::canCurrentUserPerformAction('Details', $product))
+            {
+                $params      = array('label' => $label, 'routeModuleId' => 'products',
+                                     'wrapLabel' => false,
+                                     'htmlOptions' => array('id' => 'product-' . $product->id)
+                );
+                $goToDetailsFromRelatedModalLinkActionElement = new GoToProductDetailsFromRelatedModalLinkActionElement(
+                    $controllerId, $moduleId, $product->id, $params);
+                $linkContent = $goToDetailsFromRelatedModalLinkActionElement->render();
+                return $linkContent;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /**
+         * Register script for product detail link. This would be called from related model view
+         * @param string $sourceId
+         */
+        public static function registerProductModalDetailsScript($sourceId)
+        {
+            assert('is_string($sourceId)');
+            $modalId = ProductsUtil::getModalContainerId();
+            $url = Yii::app()->createUrl('products/default/modalDetails');
+            $ajaxOptions = ProductsUtil::resolveAjaxOptionsForModalView('Details', $sourceId);
+            $ajaxOptions['beforeSend'] = new CJavaScriptExpression($ajaxOptions['beforeSend']);
+            $script = " $(document).off('click.productDetailLink', '#{$sourceId} .product-modal-detail-link');
+                        $(document).on('click.productDetailLink',  '#{$sourceId} .product-modal-detail-link', function()
+                        {
+                            var id = $(this).attr('id');
+                            var idParts = id.split('-');
+                            var productId = parseInt(idParts[1]);
+                            $.ajax(
+                            {
+                                'type' : 'GET',
+                                'url'  : '{$url}' + '?id=' + productId,
+                                'beforeSend' : {$ajaxOptions['beforeSend']},
+                                'update'     : '{$ajaxOptions['update']}',
+                                'success': function(html){jQuery('#{$modalId}').html(html)}
+                            });
+                            return false;
+                          }
+                        );";
+            Yii::app()->clientScript->registerScript('productModalDetailsScript' . $sourceId, $script);
         }
     }
 ?>

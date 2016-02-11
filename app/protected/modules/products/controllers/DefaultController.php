@@ -557,5 +557,24 @@
                 }
             }
         }
+
+        /**
+         * Loads modal view from related view
+         * @param string $id
+         */
+        public function actionModalDetails($id)
+        {
+            $product = Product::getById(intval($id));
+            ControllerSecurityUtil::resolveAccessCanCurrentUserReadModel($product);
+            AuditEvent::logAuditEvent('ZurmoModule', ZurmoModule::AUDIT_EVENT_ITEM_VIEWED, array(strval($product), 'ProductsModule'), $product);
+            $this->processModalDetails($product);
+        }
+
+        protected function processModalDetails(Product $product)
+        {
+            echo ModalEditAndDetailsControllerUtil::setAjaxModeAndRenderModalDetailsView($this, 'ProductModalDetailsView',
+                $product,
+                'Details');
+        }
     }
 ?>

@@ -33,24 +33,19 @@
      * feasible for technical reasons, the Appropriate Legal Notices must display the words
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
+
     /**
-     * Modal window for creating and editing a task
+     * Modal window for viewing a product
      */
-    class ProductModalEditView extends SecuredEditView
+    class ProductModalDetailsView extends SecuredDetailsView
     {
-        /**
-         * @return array
-         */
         public static function getDefaultMetadata()
         {
             $metadata = array(
                 'global' => array(
                     'toolbar' => array(
                         'elements' => array(
-                            array('type'        => 'SaveButton'),
-                            array('type'        => 'ModalCancelLink',
-                                  'htmlOptions' => 'eval:static::resolveHtmlOptionsForCancel()'
-                            )
+                            array('type'  => 'ProductModalEditFromModalDetailsLink'),
                         ),
                     ),
                     'derivedAttributeTypes' => array(
@@ -185,128 +180,33 @@
             return $metadata;
         }
 
-         /**
-          * @return string
-          */
-         protected function getNewModelTitleLabel()
-         {
-             return null;
-         }
-
         /**
+         * Gets title
          * @return string
          */
-        protected static function getFormId()
-        {
-            return 'product-modal-edit-form';
-        }
-
-        /**
-         * @return array
-         */
-        protected static function resolveHtmlOptionsForCancel()
-        {
-            return array(
-                'onclick' => '$("#ModalView").parent().dialog("close");'
-            );
-        }
-
-        protected function resolveModalIdFromGet()
-        {
-            $modalId             = Yii::app()->request->getParam('modalId');
-            if ($modalId == null)
-            {
-                $modalId = TasksUtil::getModalContainerId();
-            }
-            return $modalId;
-        }
-
-        /**
-         * Resolves ajax validation option for save button
-         * @return array
-         */
-        protected function resolveActiveFormAjaxValidationOptions()
-        {
-            //Would be used from other source
-            $sourceId         = Yii::app()->request->getParam('sourceId');
-            $modalId          = $this->resolveModalIdFromGet();
-            $relationModelId  = Yii::app()->request->getParam('relationModelId');
-            $action           = ProductsUtil::resolveModalSaveActionNameForByRelationModelId($relationModelId);
-            $url              = Yii::app()->createUrl('products/default/' . $action, GetUtil::getData());
-            // Begin Not Coding Standard
-            return array('enableAjaxValidation' => true,
-                        'clientOptions' => array(
-                            'beforeValidate'    => 'js:$(this).beforeValidateAction',
-                            'afterValidate'     => 'js:function(form, data, hasError){
-                                if(hasError)
-                                {
-                                    form.find(".attachLoading:first").removeClass("loading");
-                                    form.find(".attachLoading:first").removeClass("loading-ajax-submit");
-                                }
-                                else
-                                {
-                                ' . $this->renderConfigSaveAjax($this->getFormId(), $url, $modalId, $sourceId) . '
-                                }
-                                return false;
-                            }',
-                            'validateOnSubmit'  => true,
-                            'validateOnChange'  => false,
-                            'inputContainer'    => 'td'
-                        )
-            );
-            // End Not Coding Standard
-        }
-
-        protected function renderConfigSaveAjax($formId, $url, $modalId, $sourceId)
-        {
-            // Begin Not Coding Standard
-            $refreshScript = ProductsUtil::resolveExtraCloseScriptForModalAjaxOptions($sourceId);
-            $title   = ProductsUtil::getModalDetailsTitle();
-            // Begin Not Coding Standard
-            $options = array(
-                'type' => 'POST',
-                'data' => 'js:$("#' . $formId . '").serialize()',
-                'url'  =>  $url,
-                'update' => '#' . $modalId,
-                'complete' => "function(XMLHttpRequest, textStatus){
-                                    $('#" . $modalId .  "').dialog('option', 'title', '" . $title . "');
-                                    " . $refreshScript . ";
-                                    $('#" . $modalId .  "').dialog('close');
-                               }"
-            );
-            // End Not Coding Standard
-            return ZurmoHtml::ajax($options);
-        }
-
-        protected function renderRightSideFormLayoutForEdit($form)
+        public function getTitle()
         {
             return null;
         }
 
+
         public static function getDesignerRulesType()
         {
-            return 'ProductModalEditView';
+            return 'ProductModalDetailsView';
         }
 
-        /**
-         * Override set the description row size
-         */
-        protected function resolveElementInformationDuringFormLayoutRender(& $elementInformation)
-        {
-            parent::resolveElementInformationDuringFormLayoutRender($elementInformation);
-            if ($elementInformation['attributeName'] == 'description')
-            {
-                $elementInformation['rows'] = 2;
-            }
-        }
-
-        /**
-         * Gets form layout unique id
-         * @return null
-         */
         protected function getFormLayoutUniqueId()
         {
-            return 'product-modal-edit-form-layout';
+            return 'product-details-view-form';
+        }
+
+        /**
+         * Gets the options menu class
+         * @return string
+         */
+        protected static function getOptionsMenuCssClass()
+        {
+            return 'product-modal-details-options-menu';
         }
     }
 ?>

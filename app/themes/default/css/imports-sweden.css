@@ -11723,19 +11723,26 @@ a#claim-item-link {
   -o-border-radius: 3px;
   border-radius: 3px;
 }
-.task-modal-details-options-menu .parent > a {
+.details-table .view-toolbar-container {
+  top: -35px;
+}
+.task-modal-details-options-menu .parent > a,
+.product-modal-details-options-menu .parent > a {
   padding: 0;
 }
-.task-modal-details-options-menu .parent > a span {
+.task-modal-details-options-menu .parent > a span,
+.product-modal-details-options-menu .parent > a span {
   display: none;
 }
-.task-modal-details-options-menu .parent > a:before {
+.task-modal-details-options-menu .parent > a:before,
+.product-modal-details-options-menu .parent > a:before {
   content: 'n';
   font-weight: normal !important;
   font-size: 26px;
   font-family: "zurmo_gamification_symbly_rRg";
 }
-.task-modal-details-options-menu .parent > a:after {
+.task-modal-details-options-menu .parent > a:after,
+.product-modal-details-options-menu .parent > a:after {
   margin-left: 2px;
   position: relative;
   top: -2px;
