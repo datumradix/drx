@@ -160,7 +160,7 @@
                                                   array($filePath_1, $filePath_2, $filePath_3),
                                                   self::$userMailer
             );
-            sleep(30);
+            sleep(60);
             $job = new EmailArchivingJob();
             $this->assertTrue($job->run());
 
@@ -240,7 +240,7 @@
                                                   self::$userMailer
             );
 
-            sleep(30);
+            sleep(60);
 
             $job = new EmailArchivingJob();
             $this->assertTrue($job->run());
