@@ -489,18 +489,24 @@
         }
 
         /**
-         * @param string $attributeString
-         * @param string $attribute
-         * @return string
+         * Override to handle security/access resolution on links.
          */
         public function getLinkString($attributeString, $attribute)
         {
-            $string  = 'ZurmoHtml::link(';
-            $string .=  StringUtil::getChoppedStringContent($attributeString, ProductElementUtil::PRODUCT_NAME_LENGTH_IN_PORTLET_VIEW) . ', ';
-            $string .= 'Yii::app()->createUrl("' .
-                        $this->getGridViewActionRoute('details') . '", array("id" => $data->id))';
-            $string .= ')';
-            return $string;
+            return array($this, 'resolveLinkString');
+        }
+
+        /**
+         * Resolves the link string for task detail modal view
+         * @param array $data
+         * @param int $row
+         * @return string
+         */
+        public function resolveLinkString($data, $row)
+        {
+            $content = ProductsUtil::getModalDetailsLink($data, $this->controllerId,
+                $this->moduleId);
+            return $content;
         }
 
         /**
@@ -509,6 +515,7 @@
         protected function renderScripts()
         {
             parent::renderScripts();
+            ProductsUtil::registerProductModalDetailsScript($this->getGridViewId());
             ProductsUtil::registerProductModalEditScript($this->getGridViewId(), $this->getCreateLinkRouteParameters());
         }
 
