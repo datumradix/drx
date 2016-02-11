@@ -110,5 +110,22 @@
             // update of: 1st July 12:24pm
             return null;
         }
+        
+        /**
+         * Overwritten to include additional script
+         */
+        protected function renderTextField($idInputName)
+        {
+            $content = parent::renderTextField($idInputName);
+            // Begin Not Coding Standard
+            $script = ' $("#User_username_name").data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+                            return $("<li>")
+                            .append($("<a>").text(item.label))
+                            .appendTo(ul);
+                        };';
+            /// End Not Coding Standard
+            Yii::app()->clientScript->registerScript('UserSwitcherItemCreation', $script);
+            return $content;
+        }
     }
 ?>
