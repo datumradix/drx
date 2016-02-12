@@ -118,7 +118,7 @@
                 $position = "'" . $position . "'";
             }
             $modalTitle = CJavaScript::quote($title);
-
+            
             // Begin Not Coding Standard
             return "js:function(){
                 jQuery('#{$containerId}').html('');
@@ -138,8 +138,15 @@
                         });
                         $('.ui-dialog .ui-dialog-content').css('height', 'auto');
                         $('.ui-dialog .ui-dialog-content').css('display', 'block');
+                        $('#{$containerId}').dialog('moveToTop');
+                        var zIndex = jQuery('#{$containerId}').parent().css('zIndex');
+                        zIndex = zIndex - 1;
+                        $('.ui-widget-overlay').css('zIndex', zIndex);
                     },
                     'close': function( event, ui ) { jQuery('#{$containerId}').parent().removeClass('openingModal');
+                                                     var zIndex = jQuery('#{$containerId}').parent().css('zIndex');
+                                                     zIndex = zIndex - 2;
+                                                     $('.ui-widget-overlay').css('zIndex', zIndex);
                                                      $('#{$containerId}').dialog('destroy');
                                                      $('#{$containerId}').css('display', 'none');
                                                      " . $extraCloseScript . "
