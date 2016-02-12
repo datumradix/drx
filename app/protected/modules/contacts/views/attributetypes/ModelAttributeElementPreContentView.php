@@ -114,6 +114,30 @@
                                                                 $(this).addClass('selected');
                                                                 return false;
                                                             });";
+            $script .= "$('.attributePreTagCloudElementContent').click(function(){
+                                                                var dataArray = $.map($(this).data('value').split(','), $.trim);
+                                                                $('#' + $(this).data('id')).val($(this).data('value'));
+                                                                $('#' + $(this).data('id')).tokenInput('clear');
+                                                                for (index = 0; index < dataArray.length; ++index) {
+                                                                    if (dataArray[index].length)
+                                                                    {
+                                                                        var tokenData = {id: dataArray[index], name: dataArray[index]};
+                                                                        $('#' + $(this).data('id')).tokenInput('add', tokenData);
+                                                                    }
+                                                                }
+                                                                $('#' + $(this).data('id')).focus();
+                                                                $(this).siblings('a').removeClass('selected');
+                                                                $(this).addClass('selected');
+                                                                return false;
+                                                            });";
+            $script .= "$('.attributePreMultiSelectDropDownElementContent').click(function(){
+                                                                var dataArray = $.map($(this).data('value').split(','), $.trim);
+                                                                $('#' + $(this).data('id') + '_values').val(dataArray);
+                                                                $('#' + $(this).data('id') + '_values').focus();
+                                                                $(this).siblings('a').removeClass('selected');
+                                                                $(this).addClass('selected');
+                                                                return false;
+                                                            });";
 
             $script .= "$('.attributePreElementContentModelElement').click(function(){
                                                                 $('#' + $(this).data('id')).val($(this).data('value'));
