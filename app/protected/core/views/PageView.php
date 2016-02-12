@@ -382,6 +382,7 @@
         public static function registerAllPagesScriptFiles()
         {
             Yii::app()->clientScript->registerCoreScript('jquery');
+            Yii::app()->clientScript->registerCoreScript('jquery-migrate');
             Yii::app()->clientScript->registerCoreScript('jquery.ui');
         }
 

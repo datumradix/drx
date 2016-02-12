@@ -15,6 +15,9 @@ return array(
 	'jquery'=>array(
 		'js'=>array(YII_DEBUG ? 'jquery.js' : 'jquery.min.js'),
 	),
+	'jquery-migrate'=>array(
+		'js'=>array('jquery-migrate-1.3.0.min.js'),
+	),
 	'yii'=>array(
 		'js'=>array('jquery.yii.js'),
 		'depends'=>array('jquery'),
