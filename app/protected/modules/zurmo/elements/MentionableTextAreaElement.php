@@ -34,6 +34,8 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
+    Yii::import('ext.markdown.Parsedown');
+
     /**
      * Display the text area input box.
      */
@@ -74,9 +76,10 @@
          */
         protected function renderControlNonEditable()
         {
-            $text = $this->model->{$this->attribute};
+            $parsedown = new Parsedown();
+            $text = $parsedown->text($this->model->{$this->attribute});
             $text = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($text);
-            return TextUtil::textWithUrlToTextWithLink($text);
+            return $text;
         }
 
         protected function getEditableInputId($attributeName = null, $relationAttributeName = null)

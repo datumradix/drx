@@ -34,6 +34,8 @@
      * "Copyright Zurmo Inc. 2015. All rights reserved".
      ********************************************************************************/
 
+    Yii::import('ext.markdown.Parsedown');
+
     /**
      * Helper class for working with comments
      */
@@ -95,6 +97,9 @@
             $notificationMessage  = new NotificationMessage();
             $url           = static::getUrlToEmail($model);
             $shortUrl      = ShortUrlUtil::createShortUrl($url);
+
+            $commentDescription  = strval($comment);
+
             $textContent   = Zurmo::t('CommentsModule', 'Hello, {lineBreak} {updaterName} added a new comment to the ' .
                 '{strongStartTag}{modelName}{strongEndTag}: {lineBreak}' .
                 '"{commentDescription}." {lineBreak}{lineBreak} {url} ',
@@ -104,7 +109,7 @@
                     '{updaterName}'         => strval($comment->createdByUser),
                     '{modelName}'           => $model->getModelLabelByTypeAndLanguage(
                         'SingularLowerCase'),
-                    '{commentDescription}'  => strval($comment),
+                    '{commentDescription}'  => self::resolveMarkdownTagsAndConvertToHtml(strval($comment), 'text'),
                     '{url}'                 => $shortUrl
                 ));
             $notificationMessage->textContent  = $textContent;
@@ -115,7 +120,7 @@
                     '{strongStartTag}'      => '<strong>',
                     '{strongEndTag}'        => '</strong>',
                     '{updaterName}'         => strval($comment->createdByUser),
-                    '{commentDescription}'  => strval($comment),
+                    '{commentDescription}'  => self::resolveMarkdownTagsAndConvertToHtml(strval($comment), 'html'),
                     '{url}'                 => ZurmoHtml::link($model->getModelLabelByTypeAndLanguage(
                                                                 'SingularLowerCase'), $url, array('target' => '_blank'))
                 ));
@@ -173,8 +178,8 @@
                     try
                     {
                         $user = User::getByUsername(trim(strtolower($mentionedUsername)));
-                        $link = Yii::app()->createUrl('users/default/details/', array('id' => $user->id));
-                        $link = ZurmoHtml::link(strval($user), $link);
+                        $link = Yii::app()->createAbsoluteUrl('users/default/details/', array('id' => $user->id));
+                        $link = ZurmoHtml::link(strval($user), $link, array('target' => '_blank'));
                         $commentDescription = str_replace('[~' . $mentionedUsername . ']', $link, $commentDescription);
                     }
                     catch (NotFoundException $e)
@@ -184,6 +189,24 @@
                 }
             }
             return $commentDescription;
+        }
+
+        public static function resolveMarkdownTagsAndConvertToHtml($description, $type)
+        {
+            $parsedown = new Parsedown();
+            $text = $parsedown->text($description);
+            if ($type == 'html')
+            {
+                $text = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($text);
+            }
+            else
+            {
+                $text = CommentsUtil::replaceMentionedUsernamesWithFullNamesAndLinksInComments($text);
+                $breaks = array("<br />","<br>","<br/>", "</p>");
+                $text = str_ireplace($breaks, "\r\n", $text);
+                $text = strip_tags($text);
+            }
+            return $text;
         }
 
         /**
