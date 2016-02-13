@@ -7131,6 +7131,86 @@ a.user-link {
 .comment .comment-content table {
   margin-bottom: 0;
 }
+.comment .comment-content .comment-text h1,
+.comment .comment-content .comment-text h2,
+.comment .comment-content .comment-text h3,
+.comment .comment-content .comment-text h4,
+.comment .comment-content .comment-text h5,
+.comment .comment-content .comment-text h6 {
+  color: #545454;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  text-indent: 0 !important;
+  box-shadow: none !important;
+}
+.comment .comment-content .comment-text h1 {
+  font-size: 15px !important;
+}
+.comment .comment-content .comment-text h2 {
+  font-size: 14px !important;
+}
+.comment .comment-content .comment-text h3 {
+  font-size: 14px !important;
+}
+.comment .comment-content .comment-text ul,
+.comment .comment-content .comment-text ol {
+  display: block;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 10px;
+}
+.comment .comment-content .comment-text ul {
+  list-style-type: disc;
+}
+.comment .comment-content .comment-text ol {
+  list-style-type: decimal;
+}
+.comment .comment-content .comment-text li {
+  color: #545454;
+  display: list-item;
+}
+.comment .comment-content .comment-text table,
+.comment .comment-content .comment-text th,
+.comment .comment-content .comment-text td {
+  border: 1px solid #545454;
+  border-collapse: collapse;
+}
+.comment .comment-content .comment-text table.form-fields {
+  border: 0;
+  border-collapse: collapse;
+}
+.comment .comment-content .comment-text table.form-fields th,
+.comment .comment-content .comment-text table.form-fields td {
+  border: 0;
+}
+.comment-markdown-guide-link {
+  margin: 0px 5px 0px 0px;
+  text-align: right;
+}
+.comment-markdown-guide-link .simple-link {
+  margin-left: 0;
+}
+.markdown-guide-modal {
+  padding: 15px;
+  line-height: 140%;
+}
+.markdown-guide-modal > div {
+  margin-top: 15px;
+}
+.markdown-guide-modal h4 {
+  margin-bottom: 5px;
+}
+.markdown-guide-modal ul {
+  padding-left: 16px;
+}
+.markdown-guide-modal li {
+  margin-bottom: 4px;
+}
 .details-table .left-column .left-column {
   padding: 0;
 }
