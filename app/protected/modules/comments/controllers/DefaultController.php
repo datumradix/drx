@@ -130,6 +130,13 @@
             }
         }
 
+        public function actionMarkdownGuide()
+        {
+            Yii::app()->getClientScript()->setToAjaxMode();
+            $view = new ModalView($this, new CommentsMarkdownGuideView());
+            echo $view->render();
+        }
+
         protected function actionInlineEditValidate($model)
         {
             $postData                      = PostUtil::getData();
