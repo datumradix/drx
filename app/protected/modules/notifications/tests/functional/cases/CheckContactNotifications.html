@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="selenium.base" href="http://localhost/"/>
+    <title>CheckConversationNotifications</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr>
+    <td rowspan="1" colspan="3">Check Contact Notifications</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>setTimeout</td>
+    <td>45000</td>
+    <td></td>
+</tr>
+<!--create contact notifications test-->
+<tr>
+    <td>open</td>
+    <td>index.php/contacts/default/create</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Contact</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Contact_lastName</td>
+    <td>Test Contact ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>Contact_owner_SelectLink</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-viewmodal']/div[2]/table/tbody/tr[1]/td/a</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>assertElementPresent</td>
+    <td>link=Jill Smith</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Jill Smith</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForValue</td>
+    <td>Contact_owner_name</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Test Contact ${randomSuffix}</td>
+    <td></td>
+</tr>
+<!--adding comment by Super User-->
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//div[@id='CommentInlineEditForModelView']/div/div/form/div[2]/div/table/tbody/tr[1]/td/div[1]/textarea</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>//div[@id='CommentInlineEditForModelView']/div/div/form/div[2]/div/table/tbody/tr[1]/td/div[1]/textarea</td>
+    <td>comment added by Super User.</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='CommentInlineEditForModelView']/div/div/form/div[3]/div/a/span[3]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>comment added by Super User.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>comment added by Super User.</td>
+    <td></td>
+</tr>
+<!--login as Jill and check notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Contact comment creation or modification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Super User has commented on the contact 'Test Contact ${randomSuffix}':</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>comment added by Super User.</td>
+    <td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='list-view']/div[2]/table/tbody/tr[1]/td[1]/label/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete selected</td>
+	<td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--go to user profile and disable notification-->
+<tr>
+    <td>open</td>
+    <td>index.php/users/default/profile</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Configuration</td>
+    <td></td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>link=Notifications</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>id=UserNotificationConfigurationForm_enableContactCommentNotificationInbox</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertElementPresent</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Sign out</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<!--sign in as Super User-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+<!--when notifications settings are disabled, create contact and add comment-->
+<tr>
+    <td>open</td>
+    <td>index.php/contacts/default/create</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Create Contact</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>Contact_lastName</td>
+    <td>Test Contact New ${randomSuffix}</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>Contact_owner_SelectLink</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForElementPresent</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>keyUp</td>
+    <td>UsersSearchForm_anyMixedAttributes</td>
+    <td>\10</td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//div[@id='list-viewmodal']/div[2]/table/tbody/tr[1]/td/a</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>assertElementPresent</td>
+    <td>link=Jill Smith</td>
+    <td></td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>link=Jill Smith</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForValue</td>
+    <td>Contact_owner_name</td>
+    <td>Jill Smith</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>save</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>Test Contact New ${randomSuffix}</td>
+    <td></td>
+</tr>
+<!--adding comment by Super User-->
+<tr>
+    <td>waitForElementPresent</td>
+    <td>//div[@id='CommentInlineEditForModelView']/div/div/form/div[2]/div/table/tbody/tr[1]/td/div[1]/textarea</td>
+    <td></td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>//div[@id='CommentInlineEditForModelView']/div/div/form/div[2]/div/table/tbody/tr[1]/td/div[1]/textarea</td>
+    <td>comment added by Super User.</td>
+</tr>
+<tr>
+    <td>click</td>
+    <td>//div[@id='CommentInlineEditForModelView']/div/div/form/div[3]/div/a/span[3]</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextPresent</td>
+    <td>comment added by Super User.</td>
+    <td></td>
+</tr>
+<tr>
+    <td>assertTextPresent</td>
+    <td>comment added by Super User.</td>
+    <td></td>
+</tr>
+<!--login as Jill and check notifications-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>jill</td>
+</tr>
+<tr>
+    <td>open</td>
+    <td>index.php/mashableInbox/default/list?modelClassName=Notification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Contact comment creation or modification</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>Super User has commented on the contact 'Test Contact New ${randomSuffix}':</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForTextNotPresent</td>
+    <td>comment added by Super User.</td>
+    <td></td>
+</tr>
+<!--sign in as Super User-->
+<tr>
+    <td>open</td>
+    <td>index.php/zurmo/default/login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_username</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>type</td>
+    <td>LoginForm_password</td>
+    <td>super</td>
+</tr>
+<tr>
+    <td>clickAndWait</td>
+    <td>Login</td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForPageToLoad</td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>waitForCondition</td>
+    <td>selenium.browserbot.getCurrentWindow().jQuery.active == 0</td>
+    <td>30000</td>
+</tr>
+<tr>
+    <td>waitForText</td>
+    <td>//ul[@id='user-header-menu']/li/a/span</td>
+    <td>super</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
