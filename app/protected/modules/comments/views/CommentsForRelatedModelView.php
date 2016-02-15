@@ -111,7 +111,20 @@
                 }
                 $content .= '<div id="CommentList' . $this->uniquePageId . '" class="CommentList">' . $this->renderCommentsContent() . '</div>';
             }
+            $content .= $this->renderMarkdownGuideContent();
             return $content;
+        }
+
+        protected function renderMarkdownGuideContent()
+        {
+            if (get_class($this->relatedModel) == 'Task')
+            {
+                return;
+            }
+            $commentMarkdownGuideElement = new CommentMarkdownGuideAjaxLinkActionElement('default', 'comments', 'notUsed',
+                array('htmlOptions' => array('namespace' => 'comment-markdown')));
+            $commentMarkupGuide = ZurmoHtml::tag('div', array('class' => 'comment-markdown-guide-link'), $commentMarkdownGuideElement->render());
+            return $commentMarkupGuide;
         }
 
         /**
@@ -164,7 +177,7 @@
                 $stringContent  = ZurmoHtml::link($comment->createdByUser->getAvatarImage(36), $userUrl);
                 $userName       = ZurmoHtml::link(strval($comment->createdByUser), $userUrl, array('class' => 'user-link'));
                 $element        = new MentionableTextAreaElement($comment, 'description');
-                $element->nonEditableTemplate = '<div class="comment-content"><p class="comment-text">'. $userName . ': {content}</p>';
+                $element->nonEditableTemplate = '<div class="comment-content"><div class="comment-text">'. $userName . ': {content}</div>';
                 $stringContent .= $element->render();
 
                 //attachments
