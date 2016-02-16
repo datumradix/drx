@@ -170,6 +170,8 @@
             $data['description']         = "Some desc.";
             $data['companyName']         = "Samuel Co";
             $data['website']             = "http://sample.com";
+            $data['facebookId']          = "abced";
+            $data['twitterId']           = "xyz";
 
             $data['industry']['value']   = $industryValues[2];
             $data['source']['value']     = $sourceValues[1];
@@ -180,6 +182,8 @@
             $data['primaryEmail']        = $primaryEmail;
             $data['secondaryEmail']      = $secondaryEmail;
             $data['primaryAddress']      = $primaryAddress;
+            $data['secondaryAddress']    = $secondaryAddress;
+            $data['secondaryAddress']    = $secondaryAddress;
             $data['secondaryAddress']    = $secondaryAddress;
 
             $response = $this->createApiCallWithRelativeUrl('create/', 'POST', $headers, array('data' => $data));
@@ -401,6 +405,8 @@
             unset($response['data']['id']);
             unset($response['data']['googleWebTrackingId']);
             unset($response['data']['latestActivityDateTime']);
+            unset($response['data']['facebookId']);
+            unset($response['data']['twitterId']);
 
             ksort($data);
             ksort($response['data']);
@@ -567,6 +573,8 @@
             unset($response['data']['id']);
             unset($response['data']['googleWebTrackingId']);
             unset($response['data']['latestActivityDateTime']);
+            unset($response['data']['facebookId']);
+            unset($response['data']['twitterId']);
 
             ksort($data);
             ksort($response['data']);

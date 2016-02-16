@@ -675,7 +675,7 @@
         {
             // Well, we're not testing all rights, but a representative sample.
 
-            $rights = array(UsersModule::RIGHT_CHANGE_USER_PASSWORDS,
+            $rights = array(UsersModule::RIGHT_MANAGE_USERS,
                             UsersModule::RIGHT_LOGIN_VIA_MOBILE,
                             UsersModule::RIGHT_LOGIN_VIA_WEB,
                             UsersModule::RIGHT_LOGIN_VIA_WEB_API);

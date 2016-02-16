@@ -164,6 +164,17 @@
                                     array(
                                         array(
                                             'elements' => array(
+                                                array('attributeName' => 'secondaryEmail',
+                                                      'type'          => 'EmailAddressInformation',
+                                                      'hideOptOut'    => true),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
                                                 array('attributeName' => 'primaryAddress', 'type' => 'Address'),
                                             ),
                                         ),

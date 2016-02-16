@@ -146,6 +146,8 @@
         protected function registerSubscribeCampaignItemsToMarketingListScript($form)
         {
             // Begin Not Coding Standard
+            $unloadWindowMessage = Zurmo::t('MarketingListsModule',
+                'Are you sure you want to leave this page, remaining contacts will not be retargeted.');
             $script = '$("#' . $form->getId() . '").submit(function(event){
                            event.preventDefault();
                            subscribeCampaignItemsToMarketingList(event, 0, 0, 0);
@@ -173,6 +175,10 @@
                                     data:       $("#" + formId).serialize(),
                                     beforeSend: function(request, settings)
                                                 {
+                                                    $(window).off("beforeunload");
+                                                    $(window).on("beforeunload", function(){
+                                                        return "' . $unloadWindowMessage . '";
+                                                    });
                                                     event.preventDefault();
                                                     $(this).makeLargeLoadingSpinner(true,  $("#' . $form->getId() . '").parent());
                                                 },
@@ -185,6 +191,7 @@
                                                     }
                                                     else if (data.redirectUrl)
                                                     {
+                                                        $(window).off("beforeunload")
                                                         window.location = data.redirectUrl;
                                                     }
                                                 },
@@ -197,6 +204,7 @@
                                                                     "type"    : "error"
                                                                 };
                                                     updateFlashBar(data, notificationBarId);
+                                                    $(window).off("beforeunload");
                                                 },
                                     complete:   function(request, status)
                                                 {

@@ -7131,6 +7131,86 @@ a.user-link {
 .comment .comment-content table {
   margin-bottom: 0;
 }
+.comment .comment-content .comment-text h1,
+.comment .comment-content .comment-text h2,
+.comment .comment-content .comment-text h3,
+.comment .comment-content .comment-text h4,
+.comment .comment-content .comment-text h5,
+.comment .comment-content .comment-text h6 {
+  color: #545454;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  text-indent: 0 !important;
+  box-shadow: none !important;
+}
+.comment .comment-content .comment-text h1 {
+  font-size: 15px !important;
+}
+.comment .comment-content .comment-text h2 {
+  font-size: 14px !important;
+}
+.comment .comment-content .comment-text h3 {
+  font-size: 14px !important;
+}
+.comment .comment-content .comment-text ul,
+.comment .comment-content .comment-text ol {
+  display: block;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 10px;
+}
+.comment .comment-content .comment-text ul {
+  list-style-type: disc;
+}
+.comment .comment-content .comment-text ol {
+  list-style-type: decimal;
+}
+.comment .comment-content .comment-text li {
+  color: #545454;
+  display: list-item;
+}
+.comment .comment-content .comment-text table,
+.comment .comment-content .comment-text th,
+.comment .comment-content .comment-text td {
+  border: 1px solid #545454;
+  border-collapse: collapse;
+}
+.comment .comment-content .comment-text table.form-fields {
+  border: 0;
+  border-collapse: collapse;
+}
+.comment .comment-content .comment-text table.form-fields th,
+.comment .comment-content .comment-text table.form-fields td {
+  border: 0;
+}
+.comment-markdown-guide-link {
+  margin: 0px 5px 0px 0px;
+  text-align: right;
+}
+.comment-markdown-guide-link .simple-link {
+  margin-left: 0;
+}
+.markdown-guide-modal {
+  padding: 15px;
+  line-height: 140%;
+}
+.markdown-guide-modal > div {
+  margin-top: 15px;
+}
+.markdown-guide-modal h4 {
+  margin-bottom: 5px;
+}
+.markdown-guide-modal ul {
+  padding-left: 16px;
+}
+.markdown-guide-modal li {
+  margin-bottom: 4px;
+}
 .details-table .left-column .left-column {
   padding: 0;
 }
@@ -8899,6 +8979,9 @@ a + .autoresponder-stats {
     transform: scale(1.2);
   }
 }
+.opportunity-time-stage,
+.opportunity-time-stage-related,
+.opportunity-time-stage-kanban,
 .campaign-status {
   text-align: center;
   float: left;
@@ -8913,10 +8996,16 @@ a + .autoresponder-stats {
   line-height: 20px;
   display: inline-block;
 }
+.opportunity-time-stage span,
+.opportunity-time-stage-related span,
+.opportunity-time-stage-kanban span,
 .campaign-status span {
   font-size: 10px;
   font-weight: bold;
 }
+.opportunity-time-stage i,
+.opportunity-time-stage-related i,
+.opportunity-time-stage-kanban i,
 .campaign-status i {
   font-weight: bold;
   line-height: 1;
@@ -8933,6 +9022,9 @@ a + .autoresponder-stats {
   -o-transform-origin: 50%;
   transform-origin: 50%;
 }
+.opportunity-time-stage.completed  i,
+.opportunity-time-stage-related.completed  i,
+.opportunity-time-stage-kanban.completed  i,
 .campaign-status.completed  i {
   color: #97c43d;
   -webkit-text-shadow: 0 0 5px #97c43d;
@@ -8941,6 +9033,12 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #97c43d;
   text-shadow: 0 0 5px #97c43d;
 }
+.opportunity-time-stage.sending i,
+.opportunity-time-stage.scheduled i,
+.opportunity-time-stage-related.sending i,
+.opportunity-time-stage-related.scheduled i,
+.opportunity-time-stage-kanban.sending i,
+.opportunity-time-stage-kanban.scheduled i,
 .campaign-status.sending i,
 .campaign-status.scheduled i {
   color: #ffd900;
@@ -8950,6 +9048,9 @@ a + .autoresponder-stats {
   -o-text-shadow: 0 0 5px #ffd900;
   text-shadow: 0 0 5px #ffd900;
 }
+.opportunity-time-stage.sending i,
+.opportunity-time-stage-related.sending i,
+.opportunity-time-stage-kanban.sending i,
 .campaign-status.sending i {
   -o-animation: led-throb 0.5s ease-in-out infinite;
   -ms-animation: led-throb 0.5s ease-in-out infinite;
@@ -8957,6 +9058,9 @@ a + .autoresponder-stats {
   -webkit-animation: led-throb 0.5s ease-in-out infinite;
   animation: led-throb 0.5s ease-in-out infinite;
 }
+.opportunity-time-stage.paused i,
+.opportunity-time-stage-related.paused i,
+.opportunity-time-stage-kanban.paused i,
 .campaign-status.paused i {
   color: #c43d53;
   -webkit-text-shadow: 0 0 5px #c43d53;
@@ -8964,6 +9068,9 @@ a + .autoresponder-stats {
   -ms-text-shadow: 0 0 5px #c43d53;
   -o-text-shadow: 0 0 5px #c43d53;
   text-shadow: 0 0 5px #c43d53;
+}
+.opportunity-time-stage-related {
+  float: none;
 }
 .led {
   font-weight: bold;

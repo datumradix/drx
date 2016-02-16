@@ -104,6 +104,15 @@
                                     array(
                                         array(
                                             'elements' => array(
+                                                array('attributeName' => 'secondaryEmail', 'type' => 'EmailAddressInformation'),
+                                            ),
+                                        ),
+                                    )
+                                ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
                                                 array('attributeName' => 'username', 'type' => 'Text'),
                                             ),
                                         ),

@@ -150,6 +150,9 @@
             $primaryEmail['emailAddress']   = "a@example.com";
             $primaryEmail['optOut']         = 1;
 
+            $secondaryEmail['emailAddress'] = "b@example.com";
+            $secondaryEmail['optOut']       = 1;
+
             $primaryAddress['street1']      = '129 Noodle Boulevard';
             $primaryAddress['street2']      = 'Apartment 6000A';
             $primaryAddress['city']         = 'Noodleville';
@@ -185,6 +188,7 @@
             $data['manager']['id']        = $manager->id;
 
             $data['primaryEmail']         = $primaryEmail;
+            $data['secondaryEmail']       = $secondaryEmail;
             $data['primaryAddress']       = $primaryAddress;
             $data['serializedAvatarData'] = '';
 
@@ -212,6 +216,8 @@
             unset($response['data']['modifiedDateTime']);
             unset($response['data']['primaryEmail']['id'] );
             unset($response['data']['primaryEmail']['isInvalid'] );
+            unset($response['data']['secondaryEmail']['id'] );
+            unset($response['data']['secondaryEmail']['isInvalid'] );
             unset($response['data']['primaryAddress']['id']);
             unset($response['data']['primaryAddress']['state']);
             unset($response['data']['primaryAddress']['longitude']);

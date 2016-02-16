@@ -36,7 +36,7 @@
 
     class UsersModule extends SecurableModule
     {
-        const RIGHT_CHANGE_USER_PASSWORDS       = 'Change User Passwords';
+        const RIGHT_MANAGE_USERS                = 'Manage Users';
         const RIGHT_LOGIN_VIA_WEB               = 'Login Via Web';
         const RIGHT_LOGIN_VIA_MOBILE            = 'Login Via Mobile';
         const RIGHT_LOGIN_VIA_WEB_API           = 'Login Via Web API';
@@ -82,7 +82,7 @@
         {
             $labels                                = array();
 
-            $labels[self::RIGHT_CHANGE_USER_PASSWORDS]  = Zurmo::t('UsersModule', 'Change User Passwords');
+            $labels[self::RIGHT_MANAGE_USERS]           = Zurmo::t('UsersModule', 'Manage Users');
             $labels[self::RIGHT_LOGIN_VIA_WEB]          = Zurmo::t('UsersModule', 'Sign in Via Web');
             $labels[self::RIGHT_LOGIN_VIA_MOBILE]       = Zurmo::t('UsersModule', 'Sign in Via Mobile');
             $labels[self::RIGHT_LOGIN_VIA_WEB_API]      = Zurmo::t('UsersModule', 'Sign in Via Web API');

@@ -89,7 +89,8 @@
             }
             $message                     = new NotificationMessage();
             $messageContent              = static::getEmailMessageContent($model, $action, $relatedUser);
-            $messageContentSecondPart    = static::getEmailMessageContentSecondPart($action, $comment);
+            $messageContentSecondPartText    = static::getEmailMessageContentSecondPart($action, $comment, 'text');
+            $messageContentSecondPartHtml    = static::getEmailMessageContentSecondPart($action, $comment, 'html');
 
             $moduleClassName   = $model::getModuleClassName();
             $moduleId          = $moduleClassName::getDirectoryName();
@@ -99,17 +100,17 @@
                 array('id' => $model->id, 'redirectUrl' => $url));
 
             $message->textContent        = $messageContent;
-            if ($messageContentSecondPart != null)
+            if ($messageContentSecondPartText != null)
             {
-                $message->textContent .= "\n" . $messageContentSecondPart;
+                $message->textContent .= "\n" . $messageContentSecondPartText;
             }
             $message->textContent        .= "\n" . Zurmo::t('CommentsModule', 'Check more details in this link: ') .
                 ShortUrlUtil::createShortUrl($url);
 
             $message->htmlContent        = $messageContent;
-            if ($messageContentSecondPart != null)
+            if ($messageContentSecondPartHtml != null)
             {
-                $message->htmlContent .= "<br/>" . $messageContentSecondPart;
+                $message->htmlContent .= "<br/>" . $messageContentSecondPartHtml;
             }
             $message->htmlContent       .= "<br/>" . ZurmoHtml::link(Zurmo::t('Core', 'Click Here'),
                     ShortUrlUtil::createShortUrl($url), array('target' => '_blank'));
@@ -234,12 +235,20 @@
          * @param Comment $comment
          * @return string
          */
-        public static function getEmailMessageContentSecondPart($action, Comment $comment = null)
+        public static function getEmailMessageContentSecondPart($action, Comment $comment = null, $type = null)
         {
             assert('is_string($action)');
             if ($action == self::COMMENT_CREATED_OR_UPDATED)
             {
-                return $comment->description;
+                if ($type = 'html')
+                {
+                    $emailContent = CommentsUtil::resolveMarkdownTagsAndConvertToHtml($comment->description, 'html');
+                }
+                else
+                {
+                    $emailContent = CommentsUtil::resolveMarkdownTagsAndConvertToHtml($comment->description, 'text');
+                }
+                return $emailContent;
             }
         }
 
