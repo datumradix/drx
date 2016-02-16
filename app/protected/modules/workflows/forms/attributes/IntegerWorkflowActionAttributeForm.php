@@ -69,5 +69,20 @@
             $data[static::TYPE_STATIC]      = Zurmo::t('WorkflowsModule', 'As');
             return $data;
         }
+        
+        /**
+         * Value is required based on the type. Override in children as needed to add more scenarios.
+         * @return bool
+         */
+        public function validateValue()
+        {
+            if ($this->type == self::TYPE_STATIC && $this->value != '0' &&
+                empty($this->value) && $this->shouldSetValue)
+            {
+                $this->addError('value', Zurmo::t('Core', 'Value cannot be blank.'));
+                return false;
+            }
+            return true;
+        }
     }
 ?>

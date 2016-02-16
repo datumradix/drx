@@ -727,6 +727,82 @@ a.user-link{
     margin-bottom: 0;
 }
 
+.comment .comment-content .comment-text{
+    h1, h2, h3, h4, h5, h6{
+        color: @textColor;
+        margin:0 !important;
+        padding:0 !important;
+        background: none !important;
+        border:0 !important;
+        outline:0 !important;
+        text-indent: 0 !important;
+        box-shadow: none !important;
+    }
+    h1{
+        font-size: 15px !important;
+    }
+    h2{
+        font-size: 14px !important;
+    }
+    h3{
+        font-size: 14px !important;
+    }
+    ul, ol{
+        display: block;
+        margin-top: 0.25em;
+        margin-bottom: 0.25em;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 10px;
+    }
+    ul{
+        list-style-type: disc;
+    }
+    ol{
+        list-style-type: decimal;
+    }
+    li{
+        color: @textColor;
+        display: list-item;
+    }
+    table, th, td {
+        border: 1px solid @textColor;
+        border-collapse: collapse;
+    }
+    table.form-fields{
+        border: 0;
+        border-collapse: collapse;
+        th, td{
+            border: 0;
+        }
+    }
+}
+
+.comment-markdown-guide-link{
+    margin: 0px 5px 0px 0px;
+    text-align: right;
+    .simple-link {
+        margin-left: 0;
+    }
+}
+
+.markdown-guide-modal{
+    padding: 15px;
+    line-height: 140%;
+    > div{
+        margin-top: 15px;
+    }
+    h4{
+        margin-bottom: 5px;
+    }
+    ul{
+        padding-left: 16px;
+    }
+    li{
+        margin-bottom: 4px;
+    }
+}
+
 .details-table .left-column .left-column{
     padding: 0;
 }

@@ -172,7 +172,9 @@
             $modelClassName = $this->modelClassName;
             $model = new $modelClassName();
             if ($model->isAttribute(ModelMetadataUtil::resolveName($this->attributeName)) ||
-                $model->isAttribute($this->attributeName))
+                $model->isAttribute($this->attributeName) ||
+                $model->isAttributeWithLowerCaseConversion(ModelMetadataUtil::resolveName($this->attributeName)) ||
+                $model->isAttributeWithLowerCaseConversion($this->attributeName))
             {
                 $this->addError('attributeName', Zurmo::t('DesignerModule', 'A field with this name is already used.'));
             }

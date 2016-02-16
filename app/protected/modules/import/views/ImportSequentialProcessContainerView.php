@@ -56,7 +56,6 @@
             // Begin Not Coding Standard
             if ($this->title == Zurmo::t('ImportModule', 'Import Wizard - Import Data'))
             {
-                $allStepMessage = $this->allStepsMessage;
                 Yii::app()->clientScript->registerScript('CheckIfImportIsCompletedOnWindowCloseAlert', "
                 $(window).on('beforeunload', function(){
                   var processingMessage;

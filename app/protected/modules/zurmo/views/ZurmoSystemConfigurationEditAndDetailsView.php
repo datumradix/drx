@@ -89,6 +89,16 @@
                                         ),
                                     )
                                 ),
+                                array('cells' =>
+                                    array(
+                                        array(
+                                            'elements' => array(
+                                                array('attributeName' => 'kanbanBoardPageSizeMaxLimit',
+                                                    'type'          => 'BatchConfigInteger'),
+                                            ),
+                                        ),
+                                    )
+                                ),
                             ),
                         ),
                     ),

@@ -174,6 +174,8 @@
             $data['description']         = "Some desc.";
             $data['companyName']         = "Michael Co";
             $data['website']             = "http://sample.com";
+            $data['facebookId']          = "abced";
+            $data['twitterId']           = "xyz";
 
             $data['industry']['value']   = $industryValues[2];
             $data['source']['value']     = $sourceValues[1];
@@ -406,6 +408,8 @@
             unset($response['data']['id']);
             unset($response['data']['googleWebTrackingId']);
             unset($response['data']['latestActivityDateTime']);
+            unset($response['data']['facebookId']);
+            unset($response['data']['twitterId']);
 
             ksort($data);
             ksort($response['data']);
@@ -572,6 +576,8 @@
             unset($response['data']['id']);
             unset($response['data']['googleWebTrackingId']);
             unset($response['data']['latestActivityDateTime']);
+            unset($response['data']['facebookId']);
+            unset($response['data']['twitterId']);
 
             ksort($data);
             ksort($response['data']);
@@ -1066,7 +1072,6 @@
             );
 
             $response = $this->createApiCallWithRelativeUrl('search/filter/', 'POST', $headers, array('data' => $data));
-
             $response = json_decode($response, true);
             $this->assertEquals(ApiResponse::STATUS_SUCCESS, $response['status']);
             $this->assertEquals(2, count($response['data']['items']));

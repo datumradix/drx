@@ -60,6 +60,8 @@
                     'state'            => Zurmo::t('ZurmoModule', 'Status', $params, null, $language),
                     'tasks'            => Zurmo::t('TasksModule', 'TasksModulePluralLabel', $params, null, $language),
                     'website'          => Zurmo::t('ZurmoModule', 'Website',  array(), null, $language),
+                    'twitterId'        => Zurmo::t('ContactsModule', 'Twitter ID',  array(), null, $language),
+                    'facebookId'       => Zurmo::t('ContactsModule', 'Facebook ID',  array(), null, $language),
                 )
             );
         }
@@ -84,6 +86,8 @@
                     'latestActivityDateTime',
                     'website',
                     'googleWebTrackingId',
+                    'twitterId',
+                    'facebookId',
                 ),
                 'relations' => array(
                     'account'             => array(static::HAS_ONE,   'Account'),
@@ -122,6 +126,8 @@
                     array('state',                  'required'),
                     array('website',                'url',     'defaultScheme' => 'http'),
                     array('googleWebTrackingId',    'type',    'type' => 'string'),
+                    array('twitterId',              'type',    'type' => 'string'),
+                    array('facebookId',             'type',    'type' => 'string'),
                 ),
                 'elements' => array(
                     'account'                 => 'Account',

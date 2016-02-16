@@ -62,8 +62,8 @@
             $data = RightsUtil::getAllModuleRightsDataByPermitable($group);
             $compareData = array(
                 'UsersModule' => array(
-                    'RIGHT_CHANGE_USER_PASSWORDS'   => array(
-                        'displayName' => UsersModule::RIGHT_CHANGE_USER_PASSWORDS,
+                    'RIGHT_MANAGE_USERS'   => array(
+                        'displayName' => UsersModule::RIGHT_MANAGE_USERS,
                         'explicit'    => null,
                         'inherited'   => null,
                         'effective'   => Right::DENY,
@@ -119,8 +119,8 @@
             $form = RightsFormUtil::makeFormFromRightsData($data);
             $compareData = array(
                 'UsersModule' => array(
-                    'RIGHT_CHANGE_USER_PASSWORDS'   => array(
-                        'displayName' => UsersModule::RIGHT_CHANGE_USER_PASSWORDS,
+                    'RIGHT_MANAGE_USERS'   => array(
+                        'displayName' => UsersModule::RIGHT_MANAGE_USERS,
                         'explicit'    => null,
                         'inherited'   => null,
                         'effective'   => Right::DENY,
@@ -172,8 +172,8 @@
             $form = RightsFormUtil::makeFormFromRightsData($data);
             $compareData = array(
                 'UsersModule' => array(
-                    'RIGHT_CHANGE_USER_PASSWORDS'   => array(
-                        'displayName' => UsersModule::RIGHT_CHANGE_USER_PASSWORDS,
+                    'RIGHT_MANAGE_USERS'   => array(
+                        'displayName' => UsersModule::RIGHT_MANAGE_USERS,
                         'explicit'    => null,
                         'inherited'   => null,
                         'effective'   => Right::DENY,
@@ -224,8 +224,8 @@
             $group = Group::getByName('viewGroup');
             $compareData = array(
                 'UsersModule' => array(
-                    'RIGHT_CHANGE_USER_PASSWORDS'   => array(
-                        'displayName' => UsersModule::RIGHT_CHANGE_USER_PASSWORDS,
+                    'RIGHT_MANAGE_USERS'   => array(
+                        'displayName' => UsersModule::RIGHT_MANAGE_USERS,
                         'explicit'    => null,
                         'inherited'   => null,
                         'effective'   => Right::DENY,

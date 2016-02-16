@@ -54,9 +54,12 @@
             $aUser->save();
             $bUser = UserTestHelper::createBasicUser('bUser');
             $bUser->setRight('UsersModule', UsersModule::RIGHT_ACCESS_USERS);
+            $bUser->setRight('UsersModule', UsersModule::RIGHT_MANAGE_USERS);
             $bUser->save();
             $cUser = UserTestHelper::createBasicUser('cUser');
             $dUser = UserTestHelper::createBasicUser('dUser');
+            $dUser->setRight('UsersModule', UsersModule::RIGHT_ACCESS_USERS);
+            $dUser->save();
         }
 
         public function testRegularUserAllControllerActions()
@@ -77,6 +80,12 @@
 
             //Access to edit other User and Role should fail.
             $this->runControllerShouldResultInAccessFailureAndGetContent('users/default/edit');
+            
+            //Access to General Configuration of other User and Role should fail.
+            $this->runControllerShouldResultInAccessFailureAndGetContent('users/default/configurationEdit');
+            
+            //Access to Security Overview of other User and Role should fail.
+            $this->runControllerShouldResultInAccessFailureAndGetContent('users/default/securityDetails');
 
             $this->setGetArray(array('id' => $aUser->id));
             //Access to allowed to view Audit Trail.
@@ -87,7 +96,7 @@
             $this->assertNotContains('User_role_SelectLink', $content);
             $this->assertNotContains('User_role_name', $content);
 
-            //Check if the user who has right access for users can access any users audit trail.
+            //Check if the user who has rights access AND manage for users can access any users audit trail.
             $bUser = $this->logoutCurrentUserLoginNewUserAndGetByUsername('bUser');
             $this->setGetArray(array('id' => $bUser->id));
             //Access to audit Trail should not fail.
@@ -110,6 +119,13 @@
             //Access to details of a portlet for self user should be fine.
             $this->runControllerWithNoExceptionsAndGetContent('users/defaultPortlet/details');
 
+            $dUser = $this->logoutCurrentUserLoginNewUserAndGetByUsername('dUser');
+            //Access to users list should not fail.
+            $this->runControllerWithNoExceptionsAndGetContent('users/default');
+            $this->setGetArray(array('id' => $bUser->id));
+            //Access to edit other User and Role should fail.
+            $this->runControllerShouldResultInAccessFailureAndGetContent('users/default/edit');
+            
             //Now test peon with elevated rights to tabs /other available rights
             //such as convert lead
             //Now test peon with elevated permissions to models.

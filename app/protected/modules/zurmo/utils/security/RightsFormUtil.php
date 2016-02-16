@@ -48,8 +48,8 @@
             <?php
                 $moduleRightsData = array(
                     'UsersModule' => array(
-                        'RIGHT_CHANGE_USER_PASSWORDS' => array(
-                            'displayName' => UsersModule::RIGHT_CHANGE_USER_PASSWORDS,
+                        'RIGHT_MANAGE_USERS' => array(
+                            'displayName' => UsersModule::RIGHT_MANAGE_USERS,
                             'selected'    => null,
                             'inherited'   => null,
                         ),
