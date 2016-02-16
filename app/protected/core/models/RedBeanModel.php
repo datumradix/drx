@@ -1585,6 +1585,24 @@
         }
 
         /**
+         * Check if attribute name exist, but ignore case sensitivity
+         * This is used by designer to make difference for example between firstValue and firstvalue, because
+         * regular isAttribute methoed doesn't make difference.
+         * In most case you would want to use isAttribute method.
+         * @param string $attributeName
+         * @return bool
+         */
+        public function isAttributeWithLowerCaseConversion($attributeName)
+        {
+            $existingAttributeNames = static::getAttributeNames();
+            $existingAttributeNames = array_map('strtolower', $existingAttributeNames);
+            if (in_array(strtolower($attributeName), $existingAttributeNames))
+            {
+                return true;
+            }
+        }
+
+        /**
          * Returns true if the attribute is read-only.
          */
         public function isAttributeReadOnly($attributeName)

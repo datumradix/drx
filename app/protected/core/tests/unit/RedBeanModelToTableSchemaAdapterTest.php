@@ -255,6 +255,14 @@
                             'collation' => null,
                             'default' => 'DEFAULT NULL', // Not Coding Standard
                         ),
+                        array(
+                            'name' => 'secondaryemail_email_id',
+                            'type' => 'INT(11)',
+                            'unsigned' => 'UNSIGNED',
+                            'notNull' => 'NULL', // Not Coding Standard
+                            'collation' => null,
+                            'default' => 'DEFAULT NULL', // Not Coding Standard
+                        ),
                     ),
                     'indexes' => array(
                         'unique_emanresu' => array(

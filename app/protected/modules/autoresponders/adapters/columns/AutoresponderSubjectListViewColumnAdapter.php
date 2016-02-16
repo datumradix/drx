@@ -99,15 +99,20 @@
         {
             $dataProvider = new AutoresponderGroupedChartDataProvider($autoresponder);
             $data = $dataProvider->getChartData();
-            $sentQuantity         = Yii::app()->numberFormatter->formatDecimal((int)$data[MarketingChartDataProvider::SENT]);
-            $openQuantity         = Yii::app()->numberFormatter->formatDecimal((int)$data[MarketingChartDataProvider::UNIQUE_OPENS]);
-            $openRate             = round(NumberUtil::divisionForZero($openQuantity, $sentQuantity) * 100, 2);
-            $clickQuantity        = Yii::app()->numberFormatter->formatDecimal((int)$data[MarketingChartDataProvider::UNIQUE_CLICKS]);
-            $clickRate            = round(NumberUtil::divisionForZero($clickQuantity, $sentQuantity) * 100, 2);
-            $unsubscribedQuantity = Yii::app()->numberFormatter->formatDecimal((int)$data[MarketingChartDataProvider::UNSUBSCRIBED]);
-            $unsubscribedRate     = round(NumberUtil::divisionForZero($unsubscribedQuantity, $sentQuantity) * 100, 2);
-            $bouncedQuantity      = Yii::app()->numberFormatter->formatDecimal((int)$data[MarketingChartDataProvider::BOUNCED]);
-            $bouncedRate          = round(NumberUtil::divisionForZero($bouncedQuantity, $sentQuantity) * 100, 2);
+            $sentQuantityRaw         = (int) $data[MarketingChartDataProvider::SENT];
+            $sentQuantity            = Yii::app()->numberFormatter->formatDecimal((int)$data[MarketingChartDataProvider::SENT]);
+            $openQuantityRaw         = (int) $data[MarketingChartDataProvider::UNIQUE_OPENS];
+            $openQuantity            = Yii::app()->numberFormatter->formatDecimal((int)$data[MarketingChartDataProvider::UNIQUE_OPENS]);
+            $openRate                = round(NumberUtil::divisionForZero($openQuantityRaw, $sentQuantityRaw) * 100, 2);
+            $clickQuantityRaw        = (int) $data[MarketingChartDataProvider::UNIQUE_CLICKS];
+            $clickQuantity           = Yii::app()->numberFormatter->formatDecimal((int)$data[MarketingChartDataProvider::UNIQUE_CLICKS]);
+            $clickRate               = round(NumberUtil::divisionForZero($clickQuantityRaw, $sentQuantityRaw) * 100, 2);
+            $unsubscribedQuantityRaw = (int) $data[MarketingChartDataProvider::UNSUBSCRIBED];
+            $unsubscribedQuantity    = Yii::app()->numberFormatter->formatDecimal((int)$data[MarketingChartDataProvider::UNSUBSCRIBED]);
+            $unsubscribedRate        = round(NumberUtil::divisionForZero($unsubscribedQuantityRaw, $sentQuantityRaw) * 100, 2);
+            $bouncedQuantityRaw      = (int)$data[MarketingChartDataProvider::BOUNCED];
+            $bouncedQuantity         = Yii::app()->numberFormatter->formatDecimal((int)$data[MarketingChartDataProvider::BOUNCED]);
+            $bouncedRate             = round(NumberUtil::divisionForZero($bouncedQuantityRaw, $sentQuantityRaw) * 100, 2);
 
             $content = null;
             $content .= ZurmoHtml::tag('div', array('class' => 'autoresponder-stats'),
