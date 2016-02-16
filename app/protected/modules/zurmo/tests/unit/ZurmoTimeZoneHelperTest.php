@@ -139,8 +139,8 @@
             $createdTimeStamp  = strtotime( $account->createdDateTime);
             $modifiedTimeStamp = strtotime( $account->modifiedDateTime);
             date_default_timezone_set('America/New_York');
-            $this->assertWithinTolerance($time, $createdTimeStamp, 2);
-            $this->assertWithinTolerance($time, $modifiedTimeStamp, 2);
+            $this->assertWithinTolerance($time, $createdTimeStamp, 3);
+            $this->assertWithinTolerance($time, $modifiedTimeStamp, 3);
             date_default_timezone_set($tz);
         }
 

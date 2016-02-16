@@ -40,8 +40,8 @@
         {
             $rightsData = array(
                 'UsersModule' => array(
-                    'RIGHT_CHANGE_USER_PASSWORDS'   => array(
-                        'displayName' => UsersModule::RIGHT_CHANGE_USER_PASSWORDS,
+                    'RIGHT_MANAGE_USERS'   => array(
+                        'displayName' => UsersModule::RIGHT_MANAGE_USERS,
                         'explicit'    => null,
                         'inherited'   => Right::ALLOW,
                     ),
@@ -81,7 +81,7 @@
                                         array(
                                             'elements' => array(
                                                 array(
-                                                    'attributeName' => 'UsersModule__RIGHT_CHANGE_USER_PASSWORDS',
+                                                    'attributeName' => 'UsersModule__RIGHT_MANAGE_USERS',
                                                     'type' => 'RightInheritedAllowStaticDropDown'),
                                             ),
                                         ),
@@ -146,7 +146,7 @@
                                         array(
                                             'elements' => array(
                                                 array(
-                                                    'attributeName' => 'UsersModule__RIGHT_CHANGE_USER_PASSWORDS__effective',
+                                                    'attributeName' => 'UsersModule__RIGHT_MANAGE_USERS__effective',
                                                     'type' => 'RightEffective'),
                                             ),
                                         ),

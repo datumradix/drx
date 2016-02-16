@@ -458,7 +458,7 @@
             if ($marketingListMember['marketingList']['id'] > 0)
             {
                 $marketingList = MarketingList::getById((int) $marketingListMember['marketingList']['id']);
-                $marketingList->addNewMember($model->id);
+                $marketingList->addNewMember(null, false, $model);
                 return true;
             }
         }

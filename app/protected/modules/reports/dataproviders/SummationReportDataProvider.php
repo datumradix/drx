@@ -133,6 +133,21 @@
                 }
             }
         }
+        
+        /**
+         * @return bool
+         */
+        public function resolveIsFirstRangeAttributeATypeOfCurrencyValue()
+        {
+            foreach ($this->report->getDisplayAttributes() as $key => $displayAttribute)
+            {
+                if ($displayAttribute->attributeIndexOrDerivedType == $this->report->getChart()->firstRange)
+                {
+                    return $displayAttribute->isATypeOfCurrencyValue();
+                }
+            }
+            return false;
+        }
 
         /**
          * @return bool|void

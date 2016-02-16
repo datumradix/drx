@@ -59,12 +59,18 @@
                         'value'                => $emailMessage->fromEmail,
                     ),
                     2 => array(
+                        'attributeName'        => 'secondaryEmail',
+                        'relatedAttributeName' => 'emailAddress',
+                        'operatorType'         => 'equals',
+                        'value'                => $emailMessage->fromEmail,
+                    ),
+                    3 => array(
                         'attributeName'        => 'isActive',
                         'operatorType'         => 'equals',
                         'value'                => 1,
                     )
                 );
-                $searchAttributeData['structure'] = '1 and 2';
+                $searchAttributeData['structure'] = '((1 or 2) and 3)';
                 $joinTablesAdapter = new RedBeanModelJoinTablesQueryAdapter('User');
                 $where = RedBeanModelDataProvider::makeWhere('User', $searchAttributeData, $joinTablesAdapter);
                 $models = User::getSubset($joinTablesAdapter, null, null, $where, null);
@@ -282,7 +288,7 @@
             }
 
             $personsAndAccounts = array_merge($personsAndAccounts,
-                                              UserSearch::getUsersByEmailAddress($emailAddress));
+                                              UserSearch::getUsersByAnyEmailAddress($emailAddress));
 
             return $personsAndAccounts;
         }
@@ -333,7 +339,7 @@
                 }
                 else
                 {
-                    $users = UserSearch::getUsersByEmailAddress($emailAddress);
+                    $users = UserSearch::getUsersByAnyEmailAddress($emailAddress);
                     if (count($users))
                     {
                         $personOrAccount = $users[0];

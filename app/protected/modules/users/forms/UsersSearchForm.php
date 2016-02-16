@@ -70,6 +70,7 @@
             return array_merge(parent::getAttributesMappedToRealAttributesMetadata(), array(
                 'anyEmail' => array(
                     array('primaryEmail',   'emailAddress'),
+                    array('secondaryEmail',   'emailAddress'),
                 ),
                 'fullName' => array(
                     array('firstName'),

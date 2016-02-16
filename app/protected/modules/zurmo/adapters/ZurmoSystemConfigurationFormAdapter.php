@@ -50,6 +50,7 @@
             $form->autoresponderOrCampaignBatchSize       = AutoresponderOrCampaignBatchSizeConfigUtil::getBatchSize();
             $form->outboundEmailBatchSize                 = OutboundEmailBatchSizeConfigUtil::getBatchSize();
             $form->listPageSizeMaxLimit                   = ZurmoSystemConfigurationUtil::getBatchSize();
+            $form->kanbanBoardPageSizeMaxLimit            = ZurmoKanbanConfigurationUtil::getBatchSize();
             return $form;
         }
 
@@ -63,6 +64,7 @@
                 AutoresponderOrCampaignBatchSizeConfigUtil::setBatchSize((int)$form->autoresponderOrCampaignBatchSize);
                 OutboundEmailBatchSizeConfigUtil::setBatchSize((int)$form->outboundEmailBatchSize);
                 ZurmoSystemConfigurationUtil::setBatchSize((int)$form->listPageSizeMaxLimit);
+                ZurmoKanbanConfigurationUtil::setBatchSize((int)$form->kanbanBoardPageSizeMaxLimit);
             }
         }
     }

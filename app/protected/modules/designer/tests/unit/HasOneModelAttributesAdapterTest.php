@@ -48,7 +48,7 @@
         public function testModifyingAHasOneModelRelationDoesNotCreateNewAttribute()
         {
             $opportunity = new Opportunity(false);
-            $this->assertEquals(19, count($opportunity->getAttributes()));
+            $this->assertEquals(20, count($opportunity->getAttributes()));
             $validated   = $opportunity->validate();
             $this->assertFalse($validated);
             $this->assertEquals(6, count($opportunity->getErrors()));
@@ -61,7 +61,7 @@
             $adapter->setAttributeMetadataFromForm($attributeForm);
 
             $opportunity = new Opportunity(false);
-            $this->assertEquals(19, count($opportunity->getAttributes()));
+            $this->assertEquals(20, count($opportunity->getAttributes()));
             $validated = $opportunity->validate();
             $this->assertFalse($validated);
             $this->assertEquals(7, count($opportunity->getErrors()));
