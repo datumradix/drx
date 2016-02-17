@@ -52,7 +52,7 @@
 
         public static function getAllowedOnPortletViewClassNames()
         {
-            return array('ContactDetailsAndRelationsView');
+            return array('ContactDetailsAndRelationsView', 'LeadDetailsAndRelationsView');
         }
     }
 ?>

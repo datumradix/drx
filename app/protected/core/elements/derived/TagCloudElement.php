@@ -97,6 +97,11 @@
             }
         }
 
+        public function getIdForSelectInput()
+        {
+            return $this->getEditableInputId($this->attribute, 'values');
+        }
+
         protected function getFormattedAttributeLabel()
         {
             return Yii::app()->format->text($this->model->getAttributeLabel($this->attribute));

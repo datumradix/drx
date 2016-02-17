@@ -107,7 +107,7 @@
             $elementClassName = get_class($this->element);
             if (in_array('DerivedElementInterface', $interfaces))
             {
-                if ($this->element instanceof DropDownElement)
+                if ($this->element instanceof DropDownElement || $this->element instanceof TagCloudElement)
                 {
                     $attributeInputIdMap[] = $this->element->getIdForSelectInput();
                 }
@@ -241,6 +241,21 @@
                         $hiddenInputValue = '';
                     }
                 }
+                elseif ($this->element instanceof TagCloudElement)
+                {
+                    $values   = $this->model->$attribute->getValues();
+                    $inputValue = $this->model->$attribute->stringifyOneToManyRelatedModelsValues($values);
+                    $displayValue = $this->model->stringifyOneToManyRelatedModelsValues($values);
+
+                    if ($inputValue == null)
+                    {
+                        $inputValue = '';
+                    }
+                    if ($displayValue == null)
+                    {
+                        $displayValue = Zurmo::t('Core', '(None)');
+                    }
+                }
                 else
                 {
                     $inputValue   = $this->model->$attribute->$relatedAttribute;
@@ -260,6 +275,18 @@
                                                                                        'data-hiddenid'     => $hiddenInputId,
                                                                                        'data-hiddenvalue'  => $hiddenInputValue,
                                                                                        'class'             => 'possible attributePreElementContentModelElement merge-color-' . $this->position  . $class));
+                    }
+                    elseif ($this->element instanceof TagCloudElement)
+                    {
+                        $decoratedContent .= ZurmoHtml::link($displayValue, '#', array('data-id'     => $inputId,
+                                                                                       'data-value'  => $inputValue,
+                                                                                       'class'       => 'possible attributePreTagCloudElementContent merge-color-' . $this->position . $class));
+                    }
+                    elseif ($this->element instanceof MultiSelectDropDownElement)
+                    {
+                        $decoratedContent .= ZurmoHtml::link($displayValue, '#', array('data-id'     => $inputId,
+                                                                                       'data-value'  => $inputValue,
+                                                                                       'class'       => 'possible attributePreMultiSelectDropDownElementContent merge-color-' . $this->position . $class));
                     }
                     else
                     {

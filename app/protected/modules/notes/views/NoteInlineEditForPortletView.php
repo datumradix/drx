@@ -108,7 +108,8 @@
 
         public static function getAllowedOnPortletViewClassNames()
         {
-            return array('AccountDetailsAndRelationsView', 'ContactDetailsAndRelationsView', 'OpportunityDetailsAndRelationsView');
+            return array('AccountDetailsAndRelationsView', 'ContactDetailsAndRelationsView', 
+                         'LeadDetailsAndRelationsView', 'OpportunityDetailsAndRelationsView');
         }
     }
 ?>
