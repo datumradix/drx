@@ -118,5 +118,10 @@
             }
             return $userPanels;
         }
+
+        public static function getDesignerRulesType()
+        {
+            return 'UserNotificationConfigurationEditView';
+        }
     }
 ?>
