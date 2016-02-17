@@ -58,7 +58,7 @@
          */
         public static function getAllowedOnPortletViewClassNames()
         {
-            return array('ContactDetailsAndRelationsView');
+            return array('ContactDetailsAndRelationsView', 'LeadDetailsAndRelationsView');
         }
 
         protected function getRelatedListLinkRouteParametersForTasks()
