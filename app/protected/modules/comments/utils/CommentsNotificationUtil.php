@@ -93,7 +93,15 @@
             $messageContentSecondPartHtml    = static::getEmailMessageContentSecondPart($action, $comment, 'html');
 
             $moduleClassName   = $model::getModuleClassName();
-            $moduleId          = $moduleClassName::getDirectoryName();
+            if (null != $stateAdapterClassName = $moduleClassName::getStateMetadataAdapterClassName())
+            {
+                $resolvedModuleClassName = $stateAdapterClassName::getModuleClassNameByModel($model);
+                $moduleId                = $resolvedModuleClassName::getDirectoryName();
+            }
+            else
+            {
+                $moduleId           = $moduleClassName::getDirectoryName();
+            }
 
             $url               = Yii::app()->createAbsoluteUrl($moduleId . '/default/details/', array('id' => $model->id));
             $unsubscribeUrl    = Yii::app()->createAbsoluteUrl($moduleId . '/default/removeSubscriber/',
