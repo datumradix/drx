@@ -52,11 +52,15 @@
             if (isset($postData['ProjectAccountsForm']))
             {
                 $this->projectAccounts = self::resolveProjectManyManyAccountsFromPost($model,
-                                                               $postData['ProjectAccountsForm']);
-
+                    $postData['ProjectAccountsForm']);
+            }
+            if (isset($postData['ProjectContactsForm']))
+            {
                 $this->projectContacts = self::resolveProjectManyManyContactsFromPost($model,
-                                                               $postData['ProjectContactsForm']);
-
+                    $postData['ProjectContactsForm']);
+            }
+            if (isset($postData['ProjectOpportunitiesForm']))
+            {
                 $this->projectOpportunities = self::resolveProjectManyManyOpportunitiesFromPost($model,
                                                                $postData['ProjectOpportunitiesForm']);
             }
